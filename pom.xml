@@ -128,7 +128,7 @@
         <artifactId>maven-surefire-plugin</artifactId>
         <configuration>
           <!-- tests are currently host specific and require authorization -->
-          <skipTests>false</skipTests>
+          <skipTests>true</skipTests>
           <suiteXmlFiles>
             <suiteXmlFile>${testng.dir}/testng.xml</suiteXmlFile>
           </suiteXmlFiles>
