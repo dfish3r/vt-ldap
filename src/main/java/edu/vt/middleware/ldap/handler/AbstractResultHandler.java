@@ -1,0 +1,76 @@
+/*
+  $Id$
+
+  Copyright (C) 2003-2008 Virginia Tech.
+  All rights reserved.
+
+  SEE LICENSE FOR MORE INFORMATION
+
+  Author:  Middleware Services
+  Email:   middleware@vt.edu
+  Version: $Revision$
+  Updated: $Date$
+*/
+package edu.vt.middleware.ldap.handler;
+
+import java.util.ArrayList;
+import java.util.List;
+import javax.naming.NamingEnumeration;
+import javax.naming.NamingException;
+
+/**
+ * <code>AbstractResultHandler</code> implements common handler functionality.
+ *
+ * @param  <R>  type of result
+ * @param  <O>  type of output
+ *
+ * @author  Middleware Services
+ * @version  $Revision$ $Date$
+ */
+public abstract class AbstractResultHandler<R, O> implements ResultHandler<R, O>
+{
+
+
+  /**
+   * This will enumerate through the supplied <code>NamingEnumeration</code> and
+   * return a List of those results. The results are unaltered and the dn is
+   * ignored.
+   *
+   * @param  sc  <code>SearchCriteria</code> used to find enumeration
+   * @param  en  <code>NamingEnumeration</code> LDAP results
+   *
+   * @return  <code>List</code> - LDAP results
+   *
+   * @throws  NamingException  if the LDAP returns an error
+   */
+  public List<O> process(
+    final SearchCriteria sc,
+    final NamingEnumeration<? extends R> en)
+    throws NamingException
+  {
+    final List<O> results = new ArrayList<O>();
+    if (en != null) {
+      while (en.hasMore()) {
+        final O o = processResult(sc, en.next());
+        if (o != null) {
+          results.add(o);
+        }
+      }
+    }
+    return results;
+  }
+
+
+  /**
+   * Processes the supplied result.
+   *
+   * @param  sc  <code>SearchCriteria</code> used to retrieve the result
+   * @param  r  <code>R</code> result to process
+   *
+   * @return  <code>O</code> processed result
+   *
+   * @throws  NamingException  if the supplied result cannot be read
+   */
+  protected abstract O processResult(final SearchCriteria sc, final R r)
+    throws NamingException;
+}

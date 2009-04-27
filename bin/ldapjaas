@@ -1,0 +1,31 @@
+#!/bin/sh
+
+JAVA=java
+
+# sample options for jaas
+JAAS_OPTS="-Djava.security.auth.login.config=properties/ldap_jaas.config"
+
+#KEYSTORE_OPTS="-Djavax.net.ssl.keyStore= -Djavax.net.ssl.keyStorePassword=changeit -Djavax.net.ssl.keyStoreType=BKS"
+
+#TRUSTSTORE_OPTS="-Djavax.net.ssl.trustStore= -Djavax.net.ssl.trustStorePassword=changeit -Djavax.net.ssl.trustStoreType=BKS"
+
+# uncomment for debug logging
+#LOGGING_OPTS="-Dorg.apache.commons.logging.Log=org.apache.commons.logging.impl.SimpleLog -Dorg.apache.commons.logging.simplelog.log.edu.vt.middleware.ldap=debug"
+
+JAVA_OPTS="${JAVA_OPTS} ${JAAS_OPTS} ${KEYSTORE_OPTS} ${TRUSTSTORE_OPTS} ${LOGGING_OPTS}"
+
+if [ "x$VTLDAP_HOME" = "x" ]; then
+  PREFIX=`dirname $0`/..
+else
+  PREFIX="$VTLDAP_HOME"
+fi
+
+CLASSPATH="${PREFIX}/jars/vt-ldap-3.0.jar"
+CLASSPATH=${CLASSPATH}:${PREFIX}/properties
+for JAR in `ls ${PREFIX}/lib/*.jar` ; do
+  CLASSPATH=${CLASSPATH}:$JAR
+done
+
+${JAVA} ${JAVA_OPTS} -cp ${CLASSPATH} \
+  edu.vt.middleware.ldap.jaas.LdapLoginModule $@
+

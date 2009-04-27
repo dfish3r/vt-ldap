@@ -1,0 +1,21 @@
+authoritative:whether to require an authoritative source (true|false)
+authtype:type of authentication (none|simple|strong)
+base:base dn
+batchSize:result batch size
+binaryAttributes:space delimited list of binary attributes
+countLimit:maximum number of entries to return
+derefAliases:how to handle aliases (always|never|finding|searching)
+derefLinkFlag:whether to force dereferencing (true|false)
+hostnameVerifier:fully qualified class name which implements HostnameVerifier
+ignoreCase:whether to ignore case in attribute names (true|false)
+language:preferred language
+ldapUrl:URL that identifies the LDAP server to search
+referral:how to handle referrals (throw|ignore|follow)
+searchScope:scope of the search (0:object|1:one level|2: subtree)
+serviceCredential:password for the serviceUser
+serviceUser:fully qualified dn to bind as
+ssl:whether to use ssl (true|false)
+sslSocketFactory:fully qualified class name which implements SSLSocketFactory
+timeLimit:amount of time in milliseconds that search operations will block
+tls:whether to use tls (true|false)
+typesOnly:whether to return only attribute types (true|false)

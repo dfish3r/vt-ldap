@@ -1,0 +1,269 @@
+/*
+  $Id$
+
+  Copyright (C) 2003-2008 Virginia Tech.
+  All rights reserved.
+
+  SEE LICENSE FOR MORE INFORMATION
+
+  Author:  Middleware Services
+  Email:   middleware@vt.edu
+  Version: $Revision$
+  Updated: $Date$
+*/
+package edu.vt.middleware.ldap;
+
+/**
+ * <code>LdapConstants</code> contains all the constants needed for creating a
+ * <code>Ldap</code>. See
+ * http://java.sun.com/j2se/1.4.2/docs/guide/jndi/jndi-ldap.html or
+ * http://java.sun.com/j2se/1.4.2/docs/guide/jndi/spec/jndi/properties.html for
+ * more information on JNDI properties.
+ *
+ * @author  Middleware Services
+ * @version  $Revision$ $Date$
+ */
+public final class LdapConstants
+{
+
+  /**
+   * The value of this property is a fully qualified class name of the factory
+   * class which creates the initial context for the LDAP service provider
+   */
+  public static final String CONTEXT_FACTORY = "java.naming.factory.initial";
+
+  /**
+   * The value of this property is a string identifying the class name of a
+   * socket factory
+   */
+  public static final String SOCKET_FACTORY = "java.naming.ldap.factory.socket";
+
+  /**
+   * The value of this property is a string specifying the authoritativeness of
+   * the service requested
+   */
+  public static final String AUTHORITATIVE = "java.naming.authoritative";
+
+  /**
+   * The value of this property is a java.io.OutputStream object into which a
+   * hexadecimal dump of the incoming and outgoing LDAP ASN.1 BER packets is
+   * written
+   */
+  public static final String TRACE = "com.sun.jndi.ldap.trace.ber";
+
+  /**
+   * The value of this property is a string that specifies the authentication
+   * mechanism(s) for the provider to use
+   */
+  public static final String AUTHENTICATION =
+    "java.naming.security.authentication";
+
+  /**
+   * The value of this property is a string that specifies the identity of the
+   * principal to be authenticated
+   */
+  public static final String PRINCIPAL = "java.naming.security.principal";
+
+  /**
+   * The value of this property is an object that specifies the credentials of
+   * the principal to be authenticated
+   */
+  public static final String CREDENTIALS = "java.naming.security.credentials";
+
+  /**
+   * The value of this property is a string of decimal digits that specifies the
+   * batch size of search results returned by the server
+   */
+  public static final String BATCH_SIZE = "java.naming.batchsize";
+
+  /**
+   * The value of this property is a string that specifies the DNS host and
+   * domain names
+   */
+  public static final String DNS_URL = "java.naming.dns.url";
+
+  /**
+   * The value of this property is a string language tag according to RFC 1766
+   */
+  public static final String LANGUAGE = "java.naming.language";
+
+  /**
+   * The value of this property is a string that specifies how referrals shall
+   * be handled by the provider
+   */
+  public static final String REFERRAL = "java.naming.referral";
+
+  /**
+   * The value of this property is a string that specifies how aliases shall be
+   * handled by the provider
+   */
+  public static final String DEREF_ALIASES = "java.naming.ldap.derefAliases";
+
+  /**
+   * The value of this property is a string that specifies additional binary
+   * attributes
+   */
+  public static final String BINARY_ATTRIBUTES =
+    "java.naming.ldap.attributes.binary";
+
+  /**
+   * The value of this property is a string that specifies a SASL authorization
+   * id
+   */
+  public static final String SASL_AUTHORIZATION_ID =
+    "java.naming.security.sasl.authorizationId";
+
+  /** The value of this property is a string that specifies a SASL realm */
+  public static final String SASL_REALM = "java.naming.security.sasl.realm";
+
+  /**
+   * The value of this property is a string that specifies to only return
+   * attribute type names, no values
+   */
+  public static final String TYPES_ONLY = "java.naming.ldap.typesOnly";
+
+  /**
+   * The value of this property is a string that specifies the security protocol
+   * for the provider to use
+   */
+  public static final String PROTOCOL = "java.naming.security.protocol";
+
+  /**
+   * The value of this property is a string that specifies the protocol version
+   * for the provider
+   */
+  public static final String VERSION = "java.naming.ldap.version";
+
+  /**
+   * The value of this property is a URL string that specifies the hostname and
+   * port number of the LDAP server, and the root distinguished name of the
+   * naming context to use
+   */
+  public static final String PROVIDER_URL = "java.naming.provider.url";
+
+  /**
+   * The value of this property is a string that specifies the time in
+   * milliseconds that a connection attempt will abort if the connection cannot
+   * be made
+   */
+  public static final String TIMEOUT = "com.sun.jndi.ldap.connect.timeout";
+
+  /** Value passed to PROTOCOL to use SSL */
+  public static final String SSL_PROTOCOL = "ssl";
+
+  /** Value passed to AUTHENTICATION to use simple authentication */
+  public static final String SIMPLE_AUTHTYPE = "simple";
+
+  /** Value passed to AUTHENTICATION to use simple authentication */
+  public static final String STRONG_AUTHTYPE = "strong";
+
+  /** Value passed to AUTHENTICATION to use none authentication */
+  public static final String NONE_AUTHTYPE = "none";
+
+  /** Value passed to VERSION to use ldap version 3 controls */
+  public static final String VERSION_THREE = "3";
+
+  /** Ldap scheme */
+  public static final String PROVIDER_URL_SCHEME = "ldap";
+
+  /** Secure ldap scheme */
+  public static final String PROVIDER_URL_SSL_SCHEME = "ldaps";
+
+  /** URL prefix used for constructing URLs */
+  public static final String PROVIDER_URL_PREFIX = "://";
+
+  /** URL separator used for constructing URLs */
+  public static final String PROVIDER_URL_SEPARATOR = ":";
+
+  /** Ldap command which returns a list of supported SASL mechanisms */
+  public static final String SUPPORTED_SASL_MECHANISMS =
+    "supportedSASLMechanisms";
+
+  /** Ldap command which returns a list of supported controls */
+  public static final String SUPPORTED_CONTROL = "supportedcontrol";
+
+  /** Value passed to AUTHENTICATION to use SASL authentication */
+  public static final String SASL_MECHANISM_EXTERNAL = "EXTERNAL";
+
+  /** Value passed to AUTHENTICATION to use DIGEST-MD5 authentication */
+  public static final String SASL_MECHANISM_DIGEST_MD5 = "DIGEST-MD5";
+
+  /** Value passed to AUTHENTICATION to use CRAM-MD5 authentication */
+  public static final String SASL_MECHANISM_CRAM_MD5 = "CRAM-MD5";
+
+  /** Value passed to AUTHENTICATION to use GSS-API authentication */
+  public static final String SASL_MECHANISM_GSS_API = "GSSAPI";
+
+  /** List of supported SASL Mechanisms */
+  public static final String[] SASL_MECHANISMS = new String[] {
+    SASL_MECHANISM_EXTERNAL,
+    SASL_MECHANISM_DIGEST_MD5,
+    SASL_MECHANISM_CRAM_MD5,
+    SASL_MECHANISM_GSS_API,
+  };
+
+  /** Default context factory */
+  public static final String DEFAULT_CONTEXT_FACTORY =
+    "com.sun.jndi.ldap.LdapCtxFactory";
+
+  /** Default timeout, -1 means use provider setting */
+  public static final int DEFAULT_TIMEOUT = -1;
+
+  /** Default authentication type */
+  public static final String DEFAULT_AUTHTYPE = SIMPLE_AUTHTYPE;
+
+  /** Default time limit, 0 means wait indefinitely */
+  public static final int DEFAULT_TIME_LIMIT = 0;
+
+  /** Default count limit, 0 means return all results */
+  public static final long DEFAULT_COUNT_LIMIT = 0;
+
+  /** Default batch size, -1 means use provider setting */
+  public static final int DEFAULT_BATCH_SIZE = -1;
+
+  /** Default authoritative value */
+  public static final boolean DEFAULT_AUTHORITATIVE = false;
+
+  /** Default pool value */
+  public static final boolean DEFAULT_POOL = false;
+
+  /** Default type only value */
+  public static final boolean DEFAULT_TYPES_ONLY = false;
+
+  /** Default ignore case value */
+  public static final boolean DEFAULT_IGNORE_CASE = true;
+
+  /** Default ldap port */
+  public static final String DEFAULT_PORT = "389";
+
+  /** Default ldaps port */
+  public static final String DEFAULT_SSL_PORT = "636";
+
+  /** Whether to use SSL by default */
+  public static final boolean DEFAULT_USE_SSL = false;
+
+  /** Whether to use TLS by default */
+  public static final boolean DEFAULT_USE_TLS = false;
+
+  /** Whether to log authentication credentials */
+  public static final boolean DEFAULT_LOG_CREDENTIALS = false;
+
+  /** Default userfield field used by Authenticator */
+  public static final String DEFAULT_USER_FIELD = "uid";
+
+  /** Whether Authenticator should construct DNs by default */
+  public static final boolean DEFAULT_CONSTRUCT_DN = false;
+
+  /** Whether Authenticator should perform subtree searches for DNs */
+  public static final boolean DEFAULT_SUBTREE_SEARCH = false;
+
+  /** Default character set for creating strings */
+  public static final String DEFAULT_CHARSET = "UTF-8";
+
+  /** Number of times to retry an operation on CommunicationException */
+  public static final int OPERATION_RETRY = 1;
+
+
+  /** Default constructor. */
+  private LdapConstants() {}
+}
