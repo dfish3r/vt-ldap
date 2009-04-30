@@ -622,8 +622,14 @@ public class LdapTLSSocketFactory extends SSLSocketFactory
         }
       }
     }
-    if (LOG.isDebugEnabled()) {
-      LOG.debug("Successfully loaded " + filename + " from " + pt);
+    if (is != null) {
+      if (LOG.isDebugEnabled()) {
+        LOG.debug("Successfully loaded " + filename + " from " + pt);
+      }
+    } else {
+      if (LOG.isDebugEnabled()) {
+        LOG.debug("Failed to load " + filename + " from " + pt);
+      }
     }
     return is;
   }
