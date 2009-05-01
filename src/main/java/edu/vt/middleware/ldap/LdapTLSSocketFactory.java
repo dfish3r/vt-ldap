@@ -617,8 +617,8 @@ public class LdapTLSSocketFactory extends SSLSocketFactory
       try {
         is = new FileInputStream(file);
       } catch (IOException e) {
-        if (LOG.isErrorEnabled()) {
-          LOG.error("Error loading keystore from " + filename, e);
+        if (LOG.isWarnEnabled()) {
+          LOG.warn("Error loading keystore from " + filename, e);
         }
       }
     }
@@ -669,8 +669,8 @@ public class LdapTLSSocketFactory extends SSLSocketFactory
       try {
         keystore.load(is, pw);
       } catch (IOException e) {
-        if (LOG.isErrorEnabled()) {
-          LOG.error("Error loading keystore for key manager", e);
+        if (LOG.isWarnEnabled()) {
+          LOG.warn("Error loading keystore for key manager", e);
         }
         throw new GeneralSecurityException(e);
       }
