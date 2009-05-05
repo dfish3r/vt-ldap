@@ -77,4 +77,25 @@ public abstract class AbstractPropertyConfig implements PropertyConfig
 
   /** {@inheritDoc}. */
   public abstract boolean hasEnvironmentProperty(final String name);
+
+
+  /**
+   * Verifies that a string is not null or empty.
+   *
+   * @param s to verify
+   * @param allowNull whether null strings are valid
+   * @throws IllegalArgumentException if the string is null or empty
+   */
+  protected void checkStringInput(final String s, final boolean allowNull)
+  {
+    if (allowNull) {
+      if (s != null && s.equals("")) {
+        throw new IllegalArgumentException("Input cannot be empty");
+      }
+    } else {
+      if (s == null || s.equals("")) {
+        throw new IllegalArgumentException("Input cannot be null or empty");
+      }
+    }
+  }
 }

@@ -360,8 +360,8 @@ public class LdapConfig extends AbstractPropertyConfig
   public int getTimeout()
   {
     int time = LdapConstants.DEFAULT_TIMEOUT;
-    if (this.timeLimit != null) {
-      time = this.timeLimit.intValue();
+    if (this.timeout != null) {
+      time = this.timeout.intValue();
     }
     return time;
   }
@@ -876,6 +876,7 @@ public class LdapConfig extends AbstractPropertyConfig
    */
   public void setContextFactory(final String contextFactory)
   {
+    checkStringInput(contextFactory, false);
     this.contextFactory = contextFactory;
   }
 
@@ -909,6 +910,7 @@ public class LdapConfig extends AbstractPropertyConfig
    */
   public void setLdapUrl(final String ldapUrl)
   {
+    checkStringInput(ldapUrl, true);
     this.ldapUrl = ldapUrl;
   }
 
@@ -1002,6 +1004,7 @@ public class LdapConfig extends AbstractPropertyConfig
    */
   public void setServiceUser(final String user)
   {
+    checkStringInput(user, true);
     this.serviceUser = user;
   }
 
@@ -1026,6 +1029,7 @@ public class LdapConfig extends AbstractPropertyConfig
    */
   public void setService(final String user, final Object credential)
   {
+    checkStringInput(user, true);
     this.setServiceUser(user);
     this.setServiceCredential(credential);
   }
@@ -1096,6 +1100,7 @@ public class LdapConfig extends AbstractPropertyConfig
    */
   public void setAuthtype(final String authtype)
   {
+    checkStringInput(authtype, false);
     this.authtype = authtype;
   }
 
@@ -1255,6 +1260,7 @@ public class LdapConfig extends AbstractPropertyConfig
 
   /**
    * This sets the batch size for the <code>LdapConfig</code>.
+   * A value of -1 indicates to use the provider default.
    *
    * @param  batchSize  <code>int</code> batch size to use when returning
    * results
@@ -1276,6 +1282,7 @@ public class LdapConfig extends AbstractPropertyConfig
    */
   public void setDnsUrl(final String dnsUrl)
   {
+    checkStringInput(dnsUrl, true);
     this.dnsUrl = dnsUrl;
   }
 
@@ -1287,6 +1294,7 @@ public class LdapConfig extends AbstractPropertyConfig
    */
   public void setLanguage(final String language)
   {
+    checkStringInput(language, true);
     this.language = language;
   }
 
@@ -1299,6 +1307,7 @@ public class LdapConfig extends AbstractPropertyConfig
    */
   public void setReferral(final String referral)
   {
+    checkStringInput(referral, true);
     this.referral = referral;
   }
 
@@ -1311,6 +1320,7 @@ public class LdapConfig extends AbstractPropertyConfig
    */
   public void setDerefAliases(final String derefAliases)
   {
+    checkStringInput(derefAliases, true);
     this.derefAliases = derefAliases;
   }
 
@@ -1323,6 +1333,7 @@ public class LdapConfig extends AbstractPropertyConfig
    */
   public void setBinaryAttributes(final String binaryAttributes)
   {
+    checkStringInput(binaryAttributes, true);
     this.binaryAttributes = binaryAttributes;
   }
 
@@ -1334,6 +1345,7 @@ public class LdapConfig extends AbstractPropertyConfig
    */
   public void setSaslAuthorizationId(final String saslAuthorizationId)
   {
+    checkStringInput(saslAuthorizationId, true);
     this.saslAuthorizationId = saslAuthorizationId;
   }
 
@@ -1345,6 +1357,7 @@ public class LdapConfig extends AbstractPropertyConfig
    */
   public void setSaslRealm(final String saslRealm)
   {
+    checkStringInput(saslRealm, true);
     this.saslRealm = saslRealm;
   }
 
