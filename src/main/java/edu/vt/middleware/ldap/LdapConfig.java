@@ -1060,40 +1060,6 @@ public class LdapConfig extends AbstractPropertyConfig
 
 
   /**
-   * This sets the search scope for the <code>LdapConfig</code> to use object
-   * scope searching. See {@link javax.naming.directory.SearchControls} for
-   * possible values and their meanings.
-   */
-  public void useObjectSearchScope()
-  {
-    this.setSearchScope(SearchControls.OBJECT_SCOPE);
-  }
-
-
-  /**
-   * This sets the search scope for the <code>LdapConfig</code> to use one level
-   * scope searching. See {@link javax.naming.directory.SearchControls} for
-   * possible values and their meanings.
-   */
-  public void useOneLevelSearchScope()
-  {
-    this.setSearchScope(SearchControls.ONELEVEL_SCOPE);
-  }
-
-
-  /**
-   * This sets the search scope for the <code>LdapConfig</code> to use one
-   * subtree scope searching. This is the default action for this class. See
-   * {@link javax.naming.directory.SearchControls} for possible values and their
-   * meanings.
-   */
-  public void useSubTreeSearchScope()
-  {
-    this.setSearchScope(SearchControls.SUBTREE_SCOPE);
-  }
-
-
-  /**
    * This sets the security level for the <code>LdapConfig</code>.
    *
    * @param  authtype  <code>String</code> security level
@@ -1102,76 +1068,6 @@ public class LdapConfig extends AbstractPropertyConfig
   {
     checkStringInput(authtype, false);
     this.authtype = authtype;
-  }
-
-
-  /**
-   * This sets this <code>LdapConfig</code> to use the anonymous authentication
-   * when binding.
-   */
-  public void useAnonymousAuth()
-  {
-    this.setAuthtype(LdapConstants.NONE_AUTHTYPE);
-  }
-
-
-  /**
-   * This sets this <code>LdapConfig</code> to use simple authentication when
-   * binding.
-   */
-  public void useSimpleAuth()
-  {
-    this.setAuthtype(LdapConstants.SIMPLE_AUTHTYPE);
-  }
-
-
-  /**
-   * This sets this <code>LdapConfig</code> to use strong authentication when
-   * binding.
-   */
-  public void useStrongAuth()
-  {
-    this.setAuthtype(LdapConstants.STRONG_AUTHTYPE);
-  }
-
-
-  /**
-   * This sets this <code>LdapConfig</code> to use the SASL EXTERNAL mechanism
-   * for binding.
-   */
-  public void useExternalAuth()
-  {
-    this.setAuthtype(LdapConstants.SASL_MECHANISM_EXTERNAL);
-  }
-
-
-  /**
-   * This sets this <code>LdapConfig</code> to use the SASL DIGEST-MD5 mechanism
-   * for binding.
-   */
-  public void useDigestMD5Auth()
-  {
-    this.setAuthtype(LdapConstants.SASL_MECHANISM_DIGEST_MD5);
-  }
-
-
-  /**
-   * This sets this <code>LdapConfig</code> to use the SASL CRAM-MD5 mechanism
-   * for binding.
-   */
-  public void useCramMD5Auth()
-  {
-    this.setAuthtype(LdapConstants.SASL_MECHANISM_CRAM_MD5);
-  }
-
-
-  /**
-   * This sets this <code>LdapConfig</code> to use the SASL GSSAPI mechanism for
-   * binding.
-   */
-  public void useGSSAPIAuth()
-  {
-    this.setAuthtype(LdapConstants.SASL_MECHANISM_GSS_API);
   }
 
 

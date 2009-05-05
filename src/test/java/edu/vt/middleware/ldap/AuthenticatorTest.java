@@ -538,7 +538,7 @@ public class AuthenticatorTest
 
     // must do this test after the search connection has been setup or
     // the anon auth will block the search
-    ldap.getAuthenticatorConfig().useAnonymousAuth();
+    ldap.getAuthenticatorConfig().setAuthtype(LdapConstants.NONE_AUTHTYPE);
     try {
       ldap.authenticate(user, credential, returnAttrs.split("\\|"));
     } catch (Exception e) {
