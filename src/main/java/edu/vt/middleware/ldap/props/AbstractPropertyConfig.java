@@ -27,6 +27,31 @@ import java.util.Properties;
 public abstract class AbstractPropertyConfig implements PropertyConfig
 {
 
+  /** Whether this config has been marked immutable. */
+  private boolean immutable;
+
+
+  /**
+   * Make this property config immutable.
+   */
+  public void makeImmutable()
+  {
+    this.immutable = true;
+  }
+
+
+  /**
+   * Verifies if this property config is immutable
+   *
+   * @throws IllegalStateException if this property config is immutable
+   */
+  public void checkImmutable()
+  {
+    if (this.immutable) {
+      throw new IllegalStateException("Cannot modify immutable object");
+    }
+  }
+
 
   /** {@inheritDoc}. */
   public abstract String getPropertiesDomain();

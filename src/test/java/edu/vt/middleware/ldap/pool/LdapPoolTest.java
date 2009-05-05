@@ -18,6 +18,7 @@ import java.util.Iterator;
 import java.util.Map;
 import javax.naming.directory.SearchResult;
 import edu.vt.middleware.ldap.Ldap;
+import edu.vt.middleware.ldap.LdapConfig;
 import edu.vt.middleware.ldap.TestUtil;
 import edu.vt.middleware.ldap.bean.LdapEntry;
 import edu.vt.middleware.ldap.ldif.Ldif;
@@ -389,6 +390,40 @@ public class LdapPoolTest
 
 
   /**
+   * @throws  Exception  On test failure.
+   */
+  @Test(groups = {"softlimitpooltest"})
+  public void checkSoftLimitPoolImmutable()
+    throws Exception
+  {
+    try {
+      this.softLimitPool.getLdapPoolConfig().setMinPoolSize(8);
+      AssertJUnit.fail("Expected illegalstateexception to be thrown");
+    } catch (IllegalStateException e) {
+      AssertJUnit.assertEquals(IllegalStateException.class, e.getClass());
+    }
+    Ldap ldap = null;
+    try {
+      ldap = this.softLimitPool.checkOut();
+      try {
+        ldap.setLdapConfig(new LdapConfig());
+        AssertJUnit.fail("Expected illegalstateexception to be thrown");
+      } catch (IllegalStateException e) {
+        AssertJUnit.assertEquals(IllegalStateException.class, e.getClass());
+      }
+      try {
+        ldap.getLdapConfig().setTimeout(10000);
+        AssertJUnit.fail("Expected illegalstateexception to be thrown");
+      } catch (IllegalStateException e) {
+        AssertJUnit.assertEquals(IllegalStateException.class, e.getClass());
+      }
+    } finally {
+      this.softLimitPool.checkIn(ldap);
+    }
+  }
+
+
+  /**
    * @param  filter  to search with.
    * @param  returnAttrs  to search for.
    * @param  results  to expect from the search.
@@ -458,6 +493,40 @@ public class LdapPoolTest
     AssertJUnit.assertEquals(
       LdapPoolConfig.DEFAULT_MIN_POOL_SIZE,
       this.softLimitPool.availableCount());
+  }
+
+
+  /**
+   * @throws  Exception  On test failure.
+   */
+  @Test(groups = {"blockingpooltest"})
+  public void checkBlockingPoolImmutable()
+    throws Exception
+  {
+    try {
+      this.blockingPool.getLdapPoolConfig().setMinPoolSize(8);
+      AssertJUnit.fail("Expected illegalstateexception to be thrown");
+    } catch (IllegalStateException e) {
+      AssertJUnit.assertEquals(IllegalStateException.class, e.getClass());
+    }
+    Ldap ldap = null;
+    try {
+      ldap = this.blockingPool.checkOut();
+      try {
+        ldap.setLdapConfig(new LdapConfig());
+        AssertJUnit.fail("Expected illegalstateexception to be thrown");
+      } catch (IllegalStateException e) {
+        AssertJUnit.assertEquals(IllegalStateException.class, e.getClass());
+      }
+      try {
+        ldap.getLdapConfig().setTimeout(10000);
+        AssertJUnit.fail("Expected illegalstateexception to be thrown");
+      } catch (IllegalStateException e) {
+        AssertJUnit.assertEquals(IllegalStateException.class, e.getClass());
+      }
+    } finally {
+      this.blockingPool.checkIn(ldap);
+    }
   }
 
 
@@ -674,6 +743,40 @@ public class LdapPoolTest
     AssertJUnit.assertEquals(
       LdapPoolConfig.DEFAULT_MIN_POOL_SIZE,
       this.blockingTimeoutPool.availableCount());
+  }
+
+
+  /**
+   * @throws  Exception  On test failure.
+   */
+  @Test(groups = {"sharedpooltest"})
+  public void checkShredPoolImmutable()
+    throws Exception
+  {
+    try {
+      this.sharedPool.getLdapPoolConfig().setMinPoolSize(8);
+      AssertJUnit.fail("Expected illegalstateexception to be thrown");
+    } catch (IllegalStateException e) {
+      AssertJUnit.assertEquals(IllegalStateException.class, e.getClass());
+    }
+    Ldap ldap = null;
+    try {
+      ldap = this.sharedPool.checkOut();
+      try {
+        ldap.setLdapConfig(new LdapConfig());
+        AssertJUnit.fail("Expected illegalstateexception to be thrown");
+      } catch (IllegalStateException e) {
+        AssertJUnit.assertEquals(IllegalStateException.class, e.getClass());
+      }
+      try {
+        ldap.getLdapConfig().setTimeout(10000);
+        AssertJUnit.fail("Expected illegalstateexception to be thrown");
+      } catch (IllegalStateException e) {
+        AssertJUnit.assertEquals(IllegalStateException.class, e.getClass());
+      }
+    } finally {
+      this.sharedPool.checkIn(ldap);
+    }
   }
 
 

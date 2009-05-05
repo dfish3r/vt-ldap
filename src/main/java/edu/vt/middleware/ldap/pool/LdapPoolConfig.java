@@ -201,6 +201,7 @@ public class LdapPoolConfig extends AbstractPropertyConfig
    */
   public void setMinPoolSize(final int size)
   {
+    checkImmutable();
     if (size >= 0) {
       this.minPoolSize = size;
     }
@@ -214,6 +215,7 @@ public class LdapPoolConfig extends AbstractPropertyConfig
    */
   public void setMaxPoolSize(final int size)
   {
+    checkImmutable();
     if (size >= 0) {
       this.maxPoolSize = size;
     }
@@ -228,6 +230,7 @@ public class LdapPoolConfig extends AbstractPropertyConfig
    */
   public void setValidateOnCheckIn(final boolean b)
   {
+    checkImmutable();
     this.validateOnCheckIn = b;
   }
 
@@ -240,6 +243,7 @@ public class LdapPoolConfig extends AbstractPropertyConfig
    */
   public void setValidateOnCheckOut(final boolean b)
   {
+    checkImmutable();
     this.validateOnCheckOut = b;
   }
 
@@ -252,6 +256,7 @@ public class LdapPoolConfig extends AbstractPropertyConfig
    */
   public void setValidatePeriodically(final boolean b)
   {
+    checkImmutable();
     this.validatePeriodically = b;
   }
 
@@ -263,6 +268,7 @@ public class LdapPoolConfig extends AbstractPropertyConfig
    */
   public void setPruneTimerPeriod(final long time)
   {
+    checkImmutable();
     if (time >= 0) {
       this.pruneTimerPeriod = time;
     }
@@ -276,6 +282,7 @@ public class LdapPoolConfig extends AbstractPropertyConfig
    */
   public void setValidateTimerPeriod(final long time)
   {
+    checkImmutable();
     if (time >= 0) {
       this.validateTimerPeriod = time;
     }
@@ -290,6 +297,7 @@ public class LdapPoolConfig extends AbstractPropertyConfig
    */
   public void setExpirationTime(final long time)
   {
+    checkImmutable();
     if (time >= 0) {
       this.expirationTime = time;
     }
@@ -306,6 +314,7 @@ public class LdapPoolConfig extends AbstractPropertyConfig
   /** {@inheritDoc}. */
   public void setEnvironmentProperties(final String name, final String value)
   {
+    checkImmutable();
     if (name != null && value != null) {
       if (PROPERTIES.hasProperty(name)) {
         PROPERTIES.setProperty(this, name, value);

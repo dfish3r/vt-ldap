@@ -75,6 +75,7 @@ public abstract class AbstractLdapPool<T extends BaseLdap>
 
   /**
    * Creates a new pool with the supplied pool configuration and ldap factory.
+   * The pool configuration will be marked as immutable by this pool.
    *
    * @param  lpc  <code>LdapPoolConfig</code>
    * @param  lf  <code>LdapFactory</code>
@@ -82,6 +83,7 @@ public abstract class AbstractLdapPool<T extends BaseLdap>
   public AbstractLdapPool(final LdapPoolConfig lpc, final LdapFactory<T> lf)
   {
     this.poolConfig = lpc;
+    this.poolConfig.makeImmutable();
     this.ldapFactory = lf;
   }
 

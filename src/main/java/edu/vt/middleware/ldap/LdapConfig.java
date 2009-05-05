@@ -14,8 +14,11 @@
 package edu.vt.middleware.ldap;
 
 import java.io.PrintStream;
+import java.util.Collections;
 import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.Map;
 import javax.naming.directory.SearchControls;
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLSocketFactory;
@@ -125,9 +128,9 @@ public class LdapConfig extends AbstractPropertyConfig
   /** Whether only attribute type names should be returned */
   private boolean typesOnly = LdapConstants.DEFAULT_TYPES_ONLY;
 
-  /** Environment properties */
-  private Hashtable<String, Object> environmentProperties =
-    new Hashtable<String, Object>();
+  /** Additional environment properties */
+  private Map<String, Object> additionalEnvironmentProperties =
+    new HashMap<String, Object>();
 
   /** Whether to log authentication credentials */
   private boolean logCredentials = LdapConstants.DEFAULT_LOG_CREDENTIALS;
@@ -240,14 +243,10 @@ public class LdapConfig extends AbstractPropertyConfig
       environment.put(LdapConstants.TIMEOUT, this.timeout.toString());
     }
 
-    if (!this.environmentProperties.isEmpty()) {
-      final Enumeration<String> en = this.environmentProperties.keys();
-      if (en != null) {
-        while (en.hasMoreElements()) {
-          final String name = en.nextElement();
-          final Object value = this.environmentProperties.get(name);
-          environment.put(name, value);
-        }
+    if (!this.additionalEnvironmentProperties.isEmpty()) {
+      for (Map.Entry<String, Object> entry :
+           this.additionalEnvironmentProperties.entrySet()) {
+        environment.put(entry.getKey(), entry.getValue());
       }
     }
 
@@ -801,13 +800,15 @@ public class LdapConfig extends AbstractPropertyConfig
   /**
    * This returns any environment properties that may have been set for the
    * <code>LdapConfig</code> using {@link
-   * #setEnvironmentProperties(String,String)}.
+   * #setEnvironmentProperties(String,String)} that do not represent
+   * properties of this config.
+   * The collection returned is unmodifiable.
    *
-   * @return  <code>Hashtable</code> - additional environment properties
+   * @return  <code>Map</code> - additional environment properties
    */
-  public Hashtable getEnvironmentProperties()
+  public Map<String, Object> getEnvironmentProperties()
   {
-    return this.environmentProperties;
+    return Collections.unmodifiableMap(this.additionalEnvironmentProperties);
   }
 
 
@@ -876,6 +877,7 @@ public class LdapConfig extends AbstractPropertyConfig
    */
   public void setContextFactory(final String contextFactory)
   {
+    checkImmutable();
     checkStringInput(contextFactory, false);
     this.contextFactory = contextFactory;
   }
@@ -888,6 +890,7 @@ public class LdapConfig extends AbstractPropertyConfig
    */
   public void setSslSocketFactory(final SSLSocketFactory sslSocketFactory)
   {
+    checkImmutable();
     this.sslSocketFactory = sslSocketFactory;
   }
 
@@ -899,6 +902,7 @@ public class LdapConfig extends AbstractPropertyConfig
    */
   public void setHostnameVerifier(final HostnameVerifier hostnameVerifier)
   {
+    checkImmutable();
     this.hostnameVerifier = hostnameVerifier;
   }
 
@@ -910,6 +914,7 @@ public class LdapConfig extends AbstractPropertyConfig
    */
   public void setLdapUrl(final String ldapUrl)
   {
+    checkImmutable();
     checkStringInput(ldapUrl, true);
     this.ldapUrl = ldapUrl;
   }
@@ -927,6 +932,7 @@ public class LdapConfig extends AbstractPropertyConfig
   @Deprecated
   public void setHost(final String host)
   {
+    checkImmutable();
     if (host != null) {
       final int prefixLength = LdapConstants.PROVIDER_URL_PREFIX.length();
       final int separatorLength = LdapConstants.PROVIDER_URL_SEPARATOR.length();
@@ -980,6 +986,7 @@ public class LdapConfig extends AbstractPropertyConfig
   @Deprecated
   public void setPort(final String port)
   {
+    checkImmutable();
     this.port = port;
   }
 
@@ -992,6 +999,7 @@ public class LdapConfig extends AbstractPropertyConfig
    */
   public void setTimeout(final int timeout)
   {
+    checkImmutable();
     this.timeout = new Integer(timeout);
   }
 
@@ -1004,6 +1012,7 @@ public class LdapConfig extends AbstractPropertyConfig
    */
   public void setServiceUser(final String user)
   {
+    checkImmutable();
     checkStringInput(user, true);
     this.serviceUser = user;
   }
@@ -1016,6 +1025,7 @@ public class LdapConfig extends AbstractPropertyConfig
    */
   public void setServiceCredential(final Object credential)
   {
+    checkImmutable();
     this.serviceCredential = credential;
   }
 
@@ -1029,6 +1039,7 @@ public class LdapConfig extends AbstractPropertyConfig
    */
   public void setService(final String user, final Object credential)
   {
+    checkImmutable();
     checkStringInput(user, true);
     this.setServiceUser(user);
     this.setServiceCredential(credential);
@@ -1042,6 +1053,7 @@ public class LdapConfig extends AbstractPropertyConfig
    */
   public void setBase(final String base)
   {
+    checkImmutable();
     this.base = base;
   }
 
@@ -1055,6 +1067,7 @@ public class LdapConfig extends AbstractPropertyConfig
    */
   public void setSearchScope(final int searchScope)
   {
+    checkImmutable();
     this.searchScope = new Integer(searchScope);
   }
 
@@ -1066,6 +1079,7 @@ public class LdapConfig extends AbstractPropertyConfig
    */
   public void setAuthtype(final String authtype)
   {
+    checkImmutable();
     checkStringInput(authtype, false);
     this.authtype = authtype;
   }
@@ -1079,6 +1093,7 @@ public class LdapConfig extends AbstractPropertyConfig
    */
   public void setAuthoritative(final boolean authoritative)
   {
+    checkImmutable();
     this.authoritative = authoritative;
   }
 
@@ -1091,6 +1106,7 @@ public class LdapConfig extends AbstractPropertyConfig
    */
   public void setIgnoreCase(final boolean ignoreCase)
   {
+    checkImmutable();
     this.ignoreCase = ignoreCase;
   }
 
@@ -1103,6 +1119,7 @@ public class LdapConfig extends AbstractPropertyConfig
    */
   public void setTimeLimit(final int timeLimit)
   {
+    checkImmutable();
     this.timeLimit = new Integer(timeLimit);
   }
 
@@ -1114,6 +1131,7 @@ public class LdapConfig extends AbstractPropertyConfig
    */
   public void setCountLimit(final long countLimit)
   {
+    checkImmutable();
     this.countLimit = new Long(countLimit);
   }
 
@@ -1126,6 +1144,7 @@ public class LdapConfig extends AbstractPropertyConfig
    */
   public void setOperationRetry(final int operationRetry)
   {
+    checkImmutable();
     this.operationRetry = new Integer(operationRetry);
   }
 
@@ -1138,6 +1157,7 @@ public class LdapConfig extends AbstractPropertyConfig
    */
   public void setDerefLinkFlag(final boolean derefLinkFlag)
   {
+    checkImmutable();
     this.derefLinkFlag = derefLinkFlag;
   }
 
@@ -1150,6 +1170,7 @@ public class LdapConfig extends AbstractPropertyConfig
    */
   public void setReturningObjFlag(final boolean returningObjFlag)
   {
+    checkImmutable();
     this.returningObjFlag = returningObjFlag;
   }
 
@@ -1163,6 +1184,7 @@ public class LdapConfig extends AbstractPropertyConfig
    */
   public void setBatchSize(final int batchSize)
   {
+    checkImmutable();
     if (batchSize == -1) {
       this.batchSize = null;
     } else {
@@ -1178,6 +1200,7 @@ public class LdapConfig extends AbstractPropertyConfig
    */
   public void setDnsUrl(final String dnsUrl)
   {
+    checkImmutable();
     checkStringInput(dnsUrl, true);
     this.dnsUrl = dnsUrl;
   }
@@ -1190,6 +1213,7 @@ public class LdapConfig extends AbstractPropertyConfig
    */
   public void setLanguage(final String language)
   {
+    checkImmutable();
     checkStringInput(language, true);
     this.language = language;
   }
@@ -1203,6 +1227,7 @@ public class LdapConfig extends AbstractPropertyConfig
    */
   public void setReferral(final String referral)
   {
+    checkImmutable();
     checkStringInput(referral, true);
     this.referral = referral;
   }
@@ -1216,6 +1241,7 @@ public class LdapConfig extends AbstractPropertyConfig
    */
   public void setDerefAliases(final String derefAliases)
   {
+    checkImmutable();
     checkStringInput(derefAliases, true);
     this.derefAliases = derefAliases;
   }
@@ -1229,6 +1255,7 @@ public class LdapConfig extends AbstractPropertyConfig
    */
   public void setBinaryAttributes(final String binaryAttributes)
   {
+    checkImmutable();
     checkStringInput(binaryAttributes, true);
     this.binaryAttributes = binaryAttributes;
   }
@@ -1241,6 +1268,7 @@ public class LdapConfig extends AbstractPropertyConfig
    */
   public void setSaslAuthorizationId(final String saslAuthorizationId)
   {
+    checkImmutable();
     checkStringInput(saslAuthorizationId, true);
     this.saslAuthorizationId = saslAuthorizationId;
   }
@@ -1253,6 +1281,7 @@ public class LdapConfig extends AbstractPropertyConfig
    */
   public void setSaslRealm(final String saslRealm)
   {
+    checkImmutable();
     checkStringInput(saslRealm, true);
     this.saslRealm = saslRealm;
   }
@@ -1266,6 +1295,7 @@ public class LdapConfig extends AbstractPropertyConfig
    */
   public void setTypesOnly(final boolean typesOnly)
   {
+    checkImmutable();
     this.typesOnly = typesOnly;
   }
 
@@ -1280,11 +1310,12 @@ public class LdapConfig extends AbstractPropertyConfig
   /** {@inheritDoc}. */
   public void setEnvironmentProperties(final String name, final String value)
   {
+    checkImmutable();
     if (name != null && value != null) {
       if (PROPERTIES.hasProperty(name)) {
         PROPERTIES.setProperty(this, name, value);
       } else {
-        this.environmentProperties.put(name, value);
+        this.additionalEnvironmentProperties.put(name, value);
       }
     }
   }
@@ -1327,6 +1358,7 @@ public class LdapConfig extends AbstractPropertyConfig
    */
   public void setLogCredentials(final boolean log)
   {
+    checkImmutable();
     this.logCredentials = log;
   }
 
@@ -1341,6 +1373,7 @@ public class LdapConfig extends AbstractPropertyConfig
    */
   public void setSsl(final boolean ssl)
   {
+    checkImmutable();
     this.ssl = ssl;
   }
 
@@ -1354,6 +1387,7 @@ public class LdapConfig extends AbstractPropertyConfig
    */
   public void setTls(final boolean tls)
   {
+    checkImmutable();
     this.tls = tls;
   }
 
@@ -1402,6 +1436,7 @@ public class LdapConfig extends AbstractPropertyConfig
    */
   public void setTracePackets(final PrintStream stream)
   {
+    checkImmutable();
     this.tracePackets = stream;
   }
 

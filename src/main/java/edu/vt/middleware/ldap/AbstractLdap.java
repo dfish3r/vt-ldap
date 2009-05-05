@@ -91,6 +91,9 @@ public abstract class AbstractLdap<T extends LdapConfig> implements BaseLdap
    */
   protected void setLdapConfig(final T ldapConfig)
   {
+    if (this.config != null) {
+      this.config.checkImmutable();
+    }
     this.config = ldapConfig;
     if (this.config.isTlsEnabled()) {
       try {

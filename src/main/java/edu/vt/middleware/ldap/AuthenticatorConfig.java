@@ -149,6 +149,7 @@ public class AuthenticatorConfig extends LdapConfig
    */
   public void setUserField(final String[] userField)
   {
+    checkImmutable();
     this.userField = userField;
   }
 
@@ -161,6 +162,7 @@ public class AuthenticatorConfig extends LdapConfig
    */
   public void setUser(final String user)
   {
+    checkImmutable();
     this.user = user;
   }
 
@@ -172,6 +174,7 @@ public class AuthenticatorConfig extends LdapConfig
    */
   public void setCredential(final Object credential)
   {
+    checkImmutable();
     this.credential = credential;
   }
 
@@ -184,6 +187,7 @@ public class AuthenticatorConfig extends LdapConfig
    */
   public void setAuthorizationFilter(final String authorizationFilter)
   {
+    checkImmutable();
     this.authorizationFilter = authorizationFilter;
   }
 
@@ -198,6 +202,7 @@ public class AuthenticatorConfig extends LdapConfig
    */
   public void setConstructDn(final boolean constructDn)
   {
+    checkImmutable();
     this.constructDn = constructDn;
   }
 
@@ -212,6 +217,7 @@ public class AuthenticatorConfig extends LdapConfig
    */
   public void setSubtreeSearch(final boolean subtreeSearch)
   {
+    checkImmutable();
     this.subtreeSearch = subtreeSearch;
   }
 
@@ -226,6 +232,7 @@ public class AuthenticatorConfig extends LdapConfig
   /** {@inheritDoc}. */
   public void setEnvironmentProperties(final String name, final String value)
   {
+    checkImmutable();
     if (name != null && value != null) {
       if (PROPERTIES.hasProperty(name)) {
         PROPERTIES.setProperty(this, name, value);

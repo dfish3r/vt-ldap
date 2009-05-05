@@ -41,6 +41,7 @@ public class DefaultLdapFactory extends AbstractLdapFactory<Ldap>
   public DefaultLdapFactory()
   {
     this.config = LdapConfig.createFromProperties(null);
+    this.config.makeImmutable();
     this.validator = new ConnectLdapValidator();
   }
 
@@ -54,6 +55,7 @@ public class DefaultLdapFactory extends AbstractLdapFactory<Ldap>
   public DefaultLdapFactory(final String propertiesFile)
   {
     this.config = LdapConfig.createFromProperties(propertiesFile);
+    this.config.makeImmutable();
     this.validator = new ConnectLdapValidator();
   }
 
@@ -61,12 +63,14 @@ public class DefaultLdapFactory extends AbstractLdapFactory<Ldap>
   /**
    * This creates a new <code>DefaultLdapFactory</code> with the supplied ldap
    * configuration.
+   * The ldap configuration will be marked as immutable by this factory.
    *
    * @param  lc  ldap config
    */
   public DefaultLdapFactory(final LdapConfig lc)
   {
     this.config = lc;
+    this.config.makeImmutable();
     this.validator = new ConnectLdapValidator();
   }
 
