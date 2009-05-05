@@ -36,7 +36,7 @@ import edu.vt.middleware.ldap.props.PropertyInvoker;
 public class LdapConfig extends AbstractPropertyConfig
 {
 
-  /** Domain to look for ldap properties in */
+  /** Domain to look for ldap properties in, value is {@value} */
   public static final String PROPERTIES_DOMAIN = "edu.vt.middleware.ldap.";
 
   /** Invoker for ldap properties. */

@@ -27,31 +27,31 @@ import edu.vt.middleware.ldap.props.PropertyInvoker;
 public class LdapPoolConfig extends AbstractPropertyConfig
 {
 
-  /** Domain to look for ldap properties in */
+  /** Domain to look for ldap properties in, value is {@value} */
   public static final String PROPERTIES_DOMAIN = "edu.vt.middleware.ldap.pool.";
 
-  /** Default min pool size. */
+  /** Default min pool size, value is {@value}. */
   public static final int DEFAULT_MIN_POOL_SIZE = 3;
 
-  /** Default max pool size. */
+  /** Default max pool size, value is {@value}. */
   public static final int DEFAULT_MAX_POOL_SIZE = 10;
 
-  /** Default validate on check in. */
+  /** Default validate on check in, value is {@value}. */
   public static final boolean DEFAULT_VALIDATE_ON_CHECKIN = false;
 
-  /** Default validate on check out. */
+  /** Default validate on check out, value is {@value}. */
   public static final boolean DEFAULT_VALIDATE_ON_CHECKOUT = false;
 
-  /** Default validate periodically. */
+  /** Default validate periodically, value is {@value}. */
   public static final boolean DEFAULT_VALIDATE_PERIODICALLY = false;
 
-  /** Default validate timer period, 30 minutes. */
+  /** Default validate timer period, value is {@value}. */
   public static final long DEFAULT_VALIDATE_TIMER_PERIOD = 1800000;
 
-  /** Default prune timer period, 5 minutes. */
+  /** Default prune timer period, value is {@value}. */
   public static final long DEFAULT_PRUNE_TIMER_PERIOD = 300000;
 
-  /** Default expiration time, 10 minutes. */
+  /** Default expiration time, value is {@value}. */
   public static final long DEFAULT_EXPIRATION_TIME = 600000;
 
   /** Invoker for ldap properties. */

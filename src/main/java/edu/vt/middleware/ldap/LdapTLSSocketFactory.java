@@ -46,25 +46,25 @@ import org.apache.commons.logging.LogFactory;
 public class LdapTLSSocketFactory extends SSLSocketFactory
 {
 
-  /** Default SSL protocol */
+  /** Default SSL protocol, value is {@value} */
   public static final String DEFAULT_PROTOCOL = "TLS";
 
-  /** Default truststore name */
+  /** Default truststore name, value is {@value} */
   public static final String DEFAULT_TRUSTSTORE_NAME = "/vt-ldap.truststore";
 
-  /** Default truststore password */
+  /** Default truststore password, value is {@value} */
   public static final String DEFAULT_TRUSTSTORE_PASSWORD = "changeit";
 
-  /** Default truststore type */
+  /** Default truststore type, value is {@value} */
   public static final String DEFAULT_TRUSTSTORE_TYPE = "JKS";
 
-  /** Default keystore name */
+  /** Default keystore name, value is {@value} */
   public static final String DEFAULT_KEYSTORE_NAME = "/vt-ldap.keystore";
 
-  /** Default keystore password */
+  /** Default keystore password, value is {@value} */
   public static final String DEFAULT_KEYSTORE_PASSWORD = "changeit";
 
-  /** Default keystore type */
+  /** Default keystore type, value is {@value} */
   public static final String DEFAULT_KEYSTORE_TYPE = "JKS";
 
   /** Log for this class */
