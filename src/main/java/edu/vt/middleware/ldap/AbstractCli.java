@@ -58,19 +58,19 @@ public abstract class AbstractCli
   /** Option for dsmlv2 output. */
   protected static final String OPT_DSMLV2 = "dsmlv2";
 
-  /** List of command options */
+  /** List of command options. */
   protected List<String> opts = new ArrayList<String>();
 
-  /** Log */
+  /** Log. */
   protected final Log logger = LogFactory.getLog(getClass());
 
   /** Command line options. */
   protected Options options = new Options();
 
-  /** Whether to output dsml version 1, the default is ldif */
+  /** Whether to output dsml version 1, the default is ldif. */
   protected boolean outputDsmlv1;
 
-  /** Whether to output dsml version 2, the default is ldif */
+  /** Whether to output dsml version 2, the default is ldif. */
   protected boolean outputDsmlv2;
 
 

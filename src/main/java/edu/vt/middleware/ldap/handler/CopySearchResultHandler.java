@@ -28,7 +28,7 @@ public class CopySearchResultHandler extends CopyResultHandler<SearchResult>
   implements SearchResultHandler
 {
 
-  /** Attribute handler */
+  /** Attribute handler. */
   private AttributeHandler attributeHandler;
 
 

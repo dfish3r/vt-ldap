@@ -62,8 +62,8 @@ public class DefaultLdapFactory extends AbstractLdapFactory<Ldap>
 
   /**
    * This creates a new <code>DefaultLdapFactory</code> with the supplied ldap
-   * configuration.
-   * The ldap configuration will be marked as immutable by this factory.
+   * configuration. The ldap configuration will be marked as immutable by this
+   * factory.
    *
    * @param  lc  ldap config
    */

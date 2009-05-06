@@ -32,7 +32,7 @@ import org.apache.commons.logging.LogFactory;
 public class DefaultSessionManager extends SessionManager
 {
 
-  /** Log for this class */
+  /** Log for this class. */
   private static final Log LOG = LogFactory.getLog(DefaultSessionManager.class);
 
 

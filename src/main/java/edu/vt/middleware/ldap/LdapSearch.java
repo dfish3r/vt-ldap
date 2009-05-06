@@ -34,10 +34,10 @@ import org.apache.commons.logging.LogFactory;
 public class LdapSearch
 {
 
-  /** Log for this class */
+  /** Log for this class. */
   private static final Log LOG = LogFactory.getLog(LdapSearch.class);
 
-  /** Ldap object to use for searching */
+  /** Ldap object to use for searching. */
   protected LdapPool<Ldap> pool;
 
 

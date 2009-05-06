@@ -24,7 +24,7 @@ package edu.vt.middleware.ldap.pool;
 public class PoolInterruptedException extends LdapPoolException
 {
 
-  /** serialVersionUID */
+  /** serialVersionUID. */
   private static final long serialVersionUID = 3788775913431470860L;
 
 

@@ -39,34 +39,34 @@ import org.apache.commons.logging.LogFactory;
 public class Ldif implements Serializable
 {
 
-  /** ASCII decimal value of nul */
+  /** ASCII decimal value of nul. */
   public static final int NUL_CHAR = 0;
 
-  /** ASCII decimal value of line feed */
+  /** ASCII decimal value of line feed. */
   public static final int LF_CHAR = 10;
 
-  /** ASCII decimal value of carriage return */
+  /** ASCII decimal value of carriage return. */
   public static final int CR_CHAR = 13;
 
-  /** ASCII decimal value of space */
+  /** ASCII decimal value of space. */
   public static final int SP_CHAR = 32;
 
-  /** ASCII decimal value of colon */
+  /** ASCII decimal value of colon. */
   public static final int COLON_CHAR = 58;
 
-  /** ASCII decimal value of left arrow */
+  /** ASCII decimal value of left arrow. */
   public static final int LA_CHAR = 60;
 
-  /** ASCII decimal value of highest character */
+  /** ASCII decimal value of highest character. */
   public static final int MAX_ASCII_CHAR = 127;
 
-  /** serial version uid */
+  /** serial version uid. */
   private static final long serialVersionUID = 4704446748426929544L;
 
-  /** Log for this class */
+  /** Log for this class. */
   private static final Log LOG = LogFactory.getLog(Ldif.class);
 
-  /** Line separator */
+  /** Line separator. */
   private static final String LINE_SEPARATOR = System.getProperty(
     "line.separator");
 

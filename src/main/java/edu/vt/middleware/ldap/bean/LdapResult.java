@@ -33,10 +33,10 @@ import javax.naming.directory.SearchResult;
 public class LdapResult extends AbstractLdapBean
 {
 
-  /** hash code seed */
+  /** hash code seed. */
   protected static final int HASH_CODE_SEED = 44;
 
-  /** Entries contained in this result */
+  /** Entries contained in this result. */
   private Map<String, LdapEntry> entries = new HashMap<String, LdapEntry>();
 
 
@@ -219,7 +219,7 @@ public class LdapResult extends AbstractLdapBean
   }
 
 
-  /** {@inheritDoc} */
+  /** {@inheritDoc}. */
   public int hashCode()
   {
     int hc = HASH_CODE_SEED;

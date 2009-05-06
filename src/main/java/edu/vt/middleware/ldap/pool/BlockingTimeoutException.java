@@ -24,7 +24,7 @@ package edu.vt.middleware.ldap.pool;
 public class BlockingTimeoutException extends LdapPoolException
 {
 
-  /** serialVersionUID */
+  /** serialVersionUID. */
   private static final long serialVersionUID = -5152940431346111294L;
 
 

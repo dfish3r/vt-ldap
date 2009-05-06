@@ -26,13 +26,13 @@ import javax.naming.directory.SearchResult;
 public class LdapEntry extends AbstractLdapBean
 {
 
-  /** hash code seed */
+  /** hash code seed. */
   protected static final int HASH_CODE_SEED = 43;
 
-  /** Distinguished name for this entry */
+  /** Distinguished name for this entry. */
   private String dn;
 
-  /** Attributes contained in this entry */
+  /** Attributes contained in this entry. */
   private LdapAttributes ldapAttributes = new LdapAttributes();
 
 
@@ -143,7 +143,7 @@ public class LdapEntry extends AbstractLdapBean
   }
 
 
-  /** {@inheritDoc} */
+  /** {@inheritDoc}. */
   public int hashCode()
   {
     int hc = HASH_CODE_SEED;

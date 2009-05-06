@@ -51,36 +51,36 @@ import org.apache.commons.logging.LogFactory;
 public abstract class AbstractLdap<T extends LdapConfig> implements BaseLdap
 {
 
-  /** Default copy search result handler, used if none supplied */
+  /** Default copy search result handler, used if none supplied. */
   protected static final CopyResultHandler<SearchResult>
   SR_COPY_RESULT_HANDLER = new CopyResultHandler<SearchResult>();
 
-  /** Default copy name class pair handler */
+  /** Default copy name class pair handler. */
   protected static final CopyResultHandler<NameClassPair>
   NCP_COPY_RESULT_HANDLER = new CopyResultHandler<NameClassPair>();
 
-  /** Default copy binding handler */
+  /** Default copy binding handler. */
   protected static final CopyResultHandler<Binding>
   BINDING_COPY_RESULT_HANDLER = new CopyResultHandler<Binding>();
 
-  /** Default copy result handler */
+  /** Default copy result handler. */
   protected static final CopyResultHandler<Object> COPY_RESULT_HANDLER =
     new CopyResultHandler<Object>();
 
-  /** Default search result handler, used if none configured */
+  /** Default search result handler, used if none configured. */
   protected static final SearchResultHandler SEARCH_RESULT_HANDLER =
     new FqdnSearchResultHandler();
 
-  /** Log for this class */
+  /** Log for this class. */
   protected final Log logger = LogFactory.getLog(this.getClass());
 
-  /** LDAP interface for directory operations */
+  /** LDAP interface for directory operations. */
   protected LdapContext context;
 
-  /** TLS Session */
+  /** TLS Session. */
   protected StartTlsResponse tlsResponse;
 
-  /** LDAP configuration environment */
+  /** LDAP configuration environment. */
   protected T config;
 
 

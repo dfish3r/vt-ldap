@@ -64,27 +64,29 @@ import org.apache.commons.logging.LogFactory;
 public final class SearchServlet extends HttpServlet
 {
 
-  /** Log for this class */
+  /** Log for this class. */
   private static final Log LOG = LogFactory.getLog(SearchServlet.class);
 
-  /** Types of available output */
+  /** Types of available output. */
   private enum OutputType {
+
     /** LDIF output type. */
     LDIF,
+
     /** DSML output type. */
     DSML
   }
 
-  /** Type of output to produce */
+  /** Type of output to produce. */
   private OutputType output;
 
-  /** Object to use for searching */
+  /** Object to use for searching. */
   private LdifSearch ldifSearch;
 
-  /** Object to use for searching */
+  /** Object to use for searching. */
   private DsmlSearch dsmlv1Search;
 
-  /** Object to use for searching */
+  /** Object to use for searching. */
   private DsmlSearch dsmlv2Search;
 
 

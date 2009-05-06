@@ -28,13 +28,13 @@ import org.apache.commons.logging.LogFactory;
 public class DsmlResult extends LdapResult
 {
 
-  /** Log for this class */
+  /** Log for this class. */
   private static final Log LOG = LogFactory.getLog(DsmlResult.class);
 
-  /** Class for outputting version 1 DSML */
+  /** Class for outputting version 1 DSML. */
   private Dsmlv1 dsmlv1 = new Dsmlv1();
 
-  /** Class for outputting version 2 DSML */
+  /** Class for outputting version 2 DSML. */
   private Dsmlv2 dsmlv2 = new Dsmlv2();
 
 

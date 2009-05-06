@@ -18,7 +18,7 @@ import java.util.Properties;
 
 /**
  * <code>PropertyConfig</code> provides an interface for objects that can be
- * configured with a <code>PropertyInvoker</code>
+ * configured with a <code>PropertyInvoker.</code>
  *
  * @author  Middleware Services
  * @version  $Revision$ $Date$

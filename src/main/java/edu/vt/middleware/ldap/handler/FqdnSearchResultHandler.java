@@ -27,7 +27,7 @@ import javax.naming.directory.SearchResult;
 public class FqdnSearchResultHandler extends CopySearchResultHandler
 {
 
-  /** Whether to remove the URL from any DNs which are not relative */
+  /** Whether to remove the URL from any DNs which are not relative. */
   private boolean removeUrls = true;
 
 

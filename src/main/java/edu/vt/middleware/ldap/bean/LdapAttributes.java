@@ -33,10 +33,10 @@ import javax.naming.directory.BasicAttributes;
 public class LdapAttributes extends AbstractLdapBean
 {
 
-  /** hash code seed */
+  /** hash code seed. */
   protected static final int HASH_CODE_SEED = 42;
 
-  /** Attributes contained in this bean */
+  /** Attributes contained in this bean. */
   private Map<String, LdapAttribute> attributes =
     new HashMap<String, LdapAttribute>();
 
@@ -254,7 +254,7 @@ public class LdapAttributes extends AbstractLdapBean
   }
 
 
-  /** {@inheritDoc} */
+  /** {@inheritDoc}. */
   public int hashCode()
   {
     int hc = HASH_CODE_SEED;

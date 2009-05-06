@@ -54,40 +54,40 @@ import edu.vt.middleware.ldap.props.LdapProperties;
 public class LdapLoginModule implements LoginModule
 {
 
-  /** Initialized subject */
+  /** Initialized subject. */
   private Subject subject;
 
-  /** Initialized callback handler */
+  /** Initialized callback handler. */
   private CallbackHandler callbackHandler;
 
-  /** Initialized sharedState */
+  /** Initialized sharedState. */
   private Map<String, ?> sharedState;
 
-  /** Initialized options */
+  /** Initialized options. */
   private Map<String, ?> options;
 
-  /** Whether authentication was successful */
+  /** Whether authentication was successful. */
   private boolean success;
 
-  /** Principals to add to the subject */
+  /** Principals to add to the subject. */
   private Set<Principal> principals;
 
-  /** Credentials to add to the subject */
+  /** Credentials to add to the subject. */
   private Set<LdapCredential> credentials;
 
-  /** Authenticator to use against the LDAP */
+  /** Authenticator to use against the LDAP. */
   private Authenticator auth;
 
-  /** Ldap to use for searching roles against the LDAP */
+  /** Ldap to use for searching roles against the LDAP. */
   private Ldap ldap;
 
-  /** User attribute to add to role data */
+  /** User attribute to add to role data. */
   private String[] userRoleAttribute;
 
-  /** Ldap filter for role searches */
+  /** Ldap filter for role searches. */
   private String roleFilter;
 
-  /** Role attribute to add to role data */
+  /** Role attribute to add to role data. */
   private String[] roleAttribute;
 
 

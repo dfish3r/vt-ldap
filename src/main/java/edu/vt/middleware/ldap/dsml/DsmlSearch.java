@@ -34,24 +34,26 @@ import org.apache.commons.logging.LogFactory;
 public class DsmlSearch extends LdapSearch
 {
 
-  /** Log for this class */
+  /** Log for this class. */
   private static final Log LOG = LogFactory.getLog(DsmlSearch.class);
 
-  /** Valid DSML versions */
+  /** Valid DSML versions. */
   public enum Version {
+
     /** DSML version 1. */
     ONE,
+
     /** DSML version 2. */
     TWO
   }
 
-  /** Version of DSML to produce, default is 1 */
+  /** Version of DSML to produce, default is 1. */
   private Version version = Version.ONE;
 
-  /** Dsml version 1 object */
+  /** Dsml version 1 object. */
   private Dsmlv1 dsmlv1 = new Dsmlv1();
 
-  /** Dsml version 2 object */
+  /** Dsml version 2 object. */
   private Dsmlv2 dsmlv2 = new Dsmlv2();
 
 

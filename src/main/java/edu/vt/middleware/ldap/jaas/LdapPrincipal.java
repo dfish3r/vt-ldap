@@ -26,13 +26,13 @@ import java.security.Principal;
 public class LdapPrincipal implements Principal, Serializable, Comparable
 {
 
-  /** hash code seed */
+  /** hash code seed. */
   protected static final int HASH_CODE_SEED = 79;
 
-  /** serial version uid */
+  /** serial version uid. */
   private static final long serialVersionUID = 1575574310250098272L;
 
-  /** LDAP user name */
+  /** LDAP user name. */
   private String name;
 
 

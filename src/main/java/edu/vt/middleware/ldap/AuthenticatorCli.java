@@ -48,7 +48,7 @@ public class AuthenticatorCli extends AbstractCli
   }
 
 
-  /** {@inheritDoc} */
+  /** {@inheritDoc}. */
   protected void initOptions()
   {
     super.initOptions(
@@ -106,7 +106,7 @@ public class AuthenticatorCli extends AbstractCli
   }
 
 
-  /** {@inheritDoc} */
+  /** {@inheritDoc}. */
   protected void dispatch(final CommandLine line)
     throws Exception
   {
@@ -166,7 +166,7 @@ public class AuthenticatorCli extends AbstractCli
   }
 
 
-  /** {@inheritDoc} */
+  /** {@inheritDoc}. */
   protected String getCommandName()
   {
     return COMMAND_NAME;

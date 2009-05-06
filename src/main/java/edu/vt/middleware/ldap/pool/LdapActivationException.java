@@ -24,7 +24,7 @@ package edu.vt.middleware.ldap.pool;
 public class LdapActivationException extends LdapPoolException
 {
 
-  /** serialVersionUID */
+  /** serialVersionUID. */
   private static final long serialVersionUID = -6185502955113178610L;
 
 

@@ -27,7 +27,7 @@ import org.apache.commons.logging.LogFactory;
 public abstract class AbstractLdapBean
 {
 
-  /** Log for this class */
+  /** Log for this class. */
   protected final Log logger = LogFactory.getLog(getClass());
 
 

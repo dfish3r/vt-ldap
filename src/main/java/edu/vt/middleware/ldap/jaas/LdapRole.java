@@ -26,10 +26,10 @@ import java.security.Principal;
 public class LdapRole implements Principal, Serializable, Comparable
 {
 
-  /** serial version uid */
+  /** serial version uid. */
   private static final long serialVersionUID = -1626824505627475228L;
 
-  /** LDAP role name */
+  /** LDAP role name. */
   private String name;
 
 

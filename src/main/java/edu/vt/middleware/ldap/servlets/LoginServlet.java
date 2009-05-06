@@ -46,16 +46,16 @@ import org.apache.commons.logging.LogFactory;
 public final class LoginServlet extends CommonServlet
 {
 
-  /** Log for this class */
+  /** Log for this class. */
   private static final Log LOG = LogFactory.getLog(LoginServlet.class);
 
-  /** URL of the page that does collects user credentials */
+  /** URL of the page that does collects user credentials. */
   private String loginUrl;
 
-  /** Message to display if authentication fails */
+  /** Message to display if authentication fails. */
   private String errorMsg;
 
-  /** Used to authenticate against a LDAP */
+  /** Used to authenticate against a LDAP. */
   private Authenticator auth;
 
 

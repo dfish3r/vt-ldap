@@ -35,7 +35,7 @@ import javax.naming.ldap.StartTlsResponse;
 public class Authenticator extends AbstractLdap<AuthenticatorConfig>
 {
 
-  /** serial version uid */
+  /** serial version uid. */
   private static final long serialVersionUID = -5125279149546967709L;
 
   /** Default constructor. */

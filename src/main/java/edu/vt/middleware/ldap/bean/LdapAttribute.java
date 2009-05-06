@@ -31,13 +31,13 @@ import edu.vt.middleware.ldap.LdapUtil;
 public class LdapAttribute extends AbstractLdapBean
 {
 
-  /** hash code seed */
+  /** hash code seed. */
   protected static final int HASH_CODE_SEED = 41;
 
-  /** Name for this attribute */
+  /** Name for this attribute. */
   private String name;
 
-  /** Values for this attrbute */
+  /** Values for this attrbute. */
   private List<Object> values = new ArrayList<Object>();
 
 
@@ -168,7 +168,7 @@ public class LdapAttribute extends AbstractLdapBean
   }
 
 
-  /** {@inheritDoc} */
+  /** {@inheritDoc}. */
   public int hashCode()
   {
     int hc = HASH_CODE_SEED;

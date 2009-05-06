@@ -30,10 +30,10 @@ import org.apache.commons.logging.LogFactory;
 public class CommonServlet extends HttpServlet
 {
 
-  /** Log for this class */
+  /** Log for this class. */
   private static final Log LOG = LogFactory.getLog(CommonServlet.class);
 
-  /** Used to manage a session after login and logout */
+  /** Used to manage a session after login and logout. */
   protected SessionManager sessionManager;
 
 

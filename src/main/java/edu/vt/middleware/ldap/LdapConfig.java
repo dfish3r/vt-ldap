@@ -15,7 +15,6 @@ package edu.vt.middleware.ldap;
 
 import java.io.PrintStream;
 import java.util.Collections;
-import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
@@ -36,7 +35,7 @@ import edu.vt.middleware.ldap.props.PropertyInvoker;
 public class LdapConfig extends AbstractPropertyConfig
 {
 
-  /** Domain to look for ldap properties in, value is {@value} */
+  /** Domain to look for ldap properties in, value is {@value}. */
   public static final String PROPERTIES_DOMAIN = "edu.vt.middleware.ldap.";
 
   /** Invoker for ldap properties. */
@@ -44,104 +43,104 @@ public class LdapConfig extends AbstractPropertyConfig
     LdapConfig.class,
     PROPERTIES_DOMAIN);
 
-  /** Default context factory */
+  /** Default context factory. */
   private String contextFactory = LdapConstants.DEFAULT_CONTEXT_FACTORY;
 
-  /** Default ldap socket factory used for SSL and TLS */
+  /** Default ldap socket factory used for SSL and TLS. */
   private SSLSocketFactory sslSocketFactory;
 
-  /** Default hostname verifier for TLS connections */
+  /** Default hostname verifier for TLS connections. */
   private HostnameVerifier hostnameVerifier;
 
-  /** URL to the LDAP(s) */
+  /** URL to the LDAP(s). */
   private String ldapUrl;
 
-  /** Hostname of the LDAP server */
+  /** Hostname of the LDAP server. */
   private String host;
 
-  /** Port the LDAP server is listening on */
+  /** Port the LDAP server is listening on. */
   private String port = LdapConstants.DEFAULT_PORT;
 
-  /** Amount of time in milliseconds that connect operations will block */
+  /** Amount of time in milliseconds that connect operations will block. */
   private Integer timeout;
 
-  /** Username for a service user, this must be a fully qualified DN */
+  /** Username for a service user, this must be a fully qualified DN. */
   private String serviceUser;
 
-  /** Credential for a service user */
+  /** Credential for a service user. */
   private Object serviceCredential;
 
-  /** Base dn for LDAP searching */
+  /** Base dn for LDAP searching. */
   private String base;
 
-  /** Type of search scope to use, default is subtree */
+  /** Type of search scope to use, default is subtree. */
   private Integer searchScope = new Integer(SearchControls.SUBTREE_SCOPE);
 
-  /** Security level to use when binding to the LDAP */
+  /** Security level to use when binding to the LDAP. */
   private String authtype = LdapConstants.DEFAULT_AUTHTYPE;
 
-  /** Whether to require the most authoritative source for this service */
+  /** Whether to require the most authoritative source for this service. */
   private boolean authoritative = LdapConstants.DEFAULT_AUTHORITATIVE;
 
-  /** Whether to ignore case in attribute names */
+  /** Whether to ignore case in attribute names. */
   private boolean ignoreCase = LdapConstants.DEFAULT_IGNORE_CASE;
 
-  /** Preferred batch size to use when returning results */
+  /** Preferred batch size to use when returning results. */
   private Integer batchSize;
 
-  /** Amount of time in milliseconds that search operations will block */
+  /** Amount of time in milliseconds that search operations will block. */
   private Integer timeLimit;
 
-  /** Maximum number of entries that search operations will return */
+  /** Maximum number of entries that search operations will return. */
   private Long countLimit;
 
-  /** Number of times to retry ldap operations on communication exception */
+  /** Number of times to retry ldap operations on communication exception. */
   private Integer operationRetry;
 
-  /** Whether link dereferencing should be performed during the search */
+  /** Whether link dereferencing should be performed during the search. */
   private boolean derefLinkFlag;
 
-  /** Whether objects will be returned in the result */
+  /** Whether objects will be returned in the result. */
   private boolean returningObjFlag;
 
-  /** DNS host to use for JNDI URL context implementation */
+  /** DNS host to use for JNDI URL context implementation. */
   private String dnsUrl;
 
-  /** Preferred language as defined by RFC 1766 */
+  /** Preferred language as defined by RFC 1766. */
   private String language;
 
-  /** How the provider should handle referrals */
+  /** How the provider should handle referrals. */
   private String referral;
 
-  /** How the provider should handle aliases */
+  /** How the provider should handle aliases. */
   private String derefAliases;
 
-  /** Additional attributes that should be considered binary */
+  /** Additional attributes that should be considered binary. */
   private String binaryAttributes;
 
-  /** SASL authorization ID */
+  /** SASL authorization ID. */
   private String saslAuthorizationId;
 
-  /** SASL realm */
+  /** SASL realm. */
   private String saslRealm;
 
-  /** Whether only attribute type names should be returned */
+  /** Whether only attribute type names should be returned. */
   private boolean typesOnly = LdapConstants.DEFAULT_TYPES_ONLY;
 
-  /** Additional environment properties */
+  /** Additional environment properties. */
   private Map<String, Object> additionalEnvironmentProperties =
     new HashMap<String, Object>();
 
-  /** Whether to log authentication credentials */
+  /** Whether to log authentication credentials. */
   private boolean logCredentials = LdapConstants.DEFAULT_LOG_CREDENTIALS;
 
-  /** Connect to LDAP using SSL protocol */
+  /** Connect to LDAP using SSL protocol. */
   private boolean ssl = LdapConstants.DEFAULT_USE_SSL;
 
-  /** Connect to LDAP using TLS protocol */
+  /** Connect to LDAP using TLS protocol. */
   private boolean tls = LdapConstants.DEFAULT_USE_TLS;
 
-  /** Stream to print LDAP ASN.1 BER packets */
+  /** Stream to print LDAP ASN.1 BER packets. */
   private PrintStream tracePackets;
 
 
@@ -244,8 +243,9 @@ public class LdapConfig extends AbstractPropertyConfig
     }
 
     if (!this.additionalEnvironmentProperties.isEmpty()) {
-      for (Map.Entry<String, Object> entry :
-           this.additionalEnvironmentProperties.entrySet()) {
+      for (
+        Map.Entry<String, Object> entry :
+          this.additionalEnvironmentProperties.entrySet()) {
         environment.put(entry.getKey(), entry.getValue());
       }
     }
@@ -800,9 +800,8 @@ public class LdapConfig extends AbstractPropertyConfig
   /**
    * This returns any environment properties that may have been set for the
    * <code>LdapConfig</code> using {@link
-   * #setEnvironmentProperties(String,String)} that do not represent
-   * properties of this config.
-   * The collection returned is unmodifiable.
+   * #setEnvironmentProperties(String,String)} that do not represent properties
+   * of this config. The collection returned is unmodifiable.
    *
    * @return  <code>Map</code> - additional environment properties
    */
@@ -1176,8 +1175,8 @@ public class LdapConfig extends AbstractPropertyConfig
 
 
   /**
-   * This sets the batch size for the <code>LdapConfig</code>.
-   * A value of -1 indicates to use the provider default.
+   * This sets the batch size for the <code>LdapConfig</code>. A value of -1
+   * indicates to use the provider default.
    *
    * @param  batchSize  <code>int</code> batch size to use when returning
    * results

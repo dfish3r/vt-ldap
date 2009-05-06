@@ -26,7 +26,7 @@ import edu.vt.middleware.ldap.props.PropertyInvoker;
 public class AuthenticatorConfig extends LdapConfig
 {
 
-  /** Domain to look for ldap properties in, value is {@value} */
+  /** Domain to look for ldap properties in, value is {@value}. */
   public static final String PROPERTIES_DOMAIN = "edu.vt.middleware.ldap.auth.";
 
   /** Invoker for ldap properties. */
@@ -34,24 +34,24 @@ public class AuthenticatorConfig extends LdapConfig
     AuthenticatorConfig.class,
     PROPERTIES_DOMAIN);
 
-  /** Directory user field */
+  /** Directory user field. */
   private String[] userField = new String[] {
     LdapConstants.DEFAULT_USER_FIELD,
   };
 
-  /** User to authenticate */
+  /** User to authenticate. */
   private String user;
 
-  /** Credential for authenticating user */
+  /** Credential for authenticating user. */
   private Object credential;
 
-  /** Filter for authorizing user */
+  /** Filter for authorizing user. */
   private String authorizationFilter;
 
-  /** Whether to construct the DN when authenticating */
+  /** Whether to construct the DN when authenticating. */
   private boolean constructDn = LdapConstants.DEFAULT_CONSTRUCT_DN;
 
-  /** Whether to perform subtree searches for DNs */
+  /** Whether to perform subtree searches for DNs. */
   private boolean subtreeSearch = LdapConstants.DEFAULT_SUBTREE_SEARCH;
 
 

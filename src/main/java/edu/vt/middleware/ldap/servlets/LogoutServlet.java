@@ -35,7 +35,7 @@ import org.apache.commons.logging.LogFactory;
 public final class LogoutServlet extends CommonServlet
 {
 
-  /** Log for this class */
+  /** Log for this class. */
   private static final Log LOG = LogFactory.getLog(LogoutServlet.class);
 
 

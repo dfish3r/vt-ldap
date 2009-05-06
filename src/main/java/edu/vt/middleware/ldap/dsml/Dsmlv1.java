@@ -42,7 +42,7 @@ import org.dom4j.QName;
 public final class Dsmlv1 extends AbstractDsml
 {
 
-  /** Log for this class */
+  /** Log for this class. */
   private static final Log LOG = LogFactory.getLog(Dsmlv1.class);
 
 

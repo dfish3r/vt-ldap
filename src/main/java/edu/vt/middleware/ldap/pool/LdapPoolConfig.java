@@ -27,7 +27,7 @@ import edu.vt.middleware.ldap.props.PropertyInvoker;
 public class LdapPoolConfig extends AbstractPropertyConfig
 {
 
-  /** Domain to look for ldap properties in, value is {@value} */
+  /** Domain to look for ldap properties in, value is {@value}. */
   public static final String PROPERTIES_DOMAIN = "edu.vt.middleware.ldap.pool.";
 
   /** Default min pool size, value is {@value}. */

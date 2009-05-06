@@ -31,9 +31,7 @@ public abstract class AbstractPropertyConfig implements PropertyConfig
   private boolean immutable;
 
 
-  /**
-   * Make this property config immutable.
-   */
+  /** Make this property config immutable. */
   public void makeImmutable()
   {
     this.immutable = true;
@@ -41,9 +39,9 @@ public abstract class AbstractPropertyConfig implements PropertyConfig
 
 
   /**
-   * Verifies if this property config is immutable
+   * Verifies if this property config is immutable.
    *
-   * @throws IllegalStateException if this property config is immutable
+   * @throws  IllegalStateException  if this property config is immutable
    */
   public void checkImmutable()
   {
@@ -107,9 +105,10 @@ public abstract class AbstractPropertyConfig implements PropertyConfig
   /**
    * Verifies that a string is not null or empty.
    *
-   * @param s to verify
-   * @param allowNull whether null strings are valid
-   * @throws IllegalArgumentException if the string is null or empty
+   * @param  s  to verify
+   * @param  allowNull  whether null strings are valid
+   *
+   * @throws  IllegalArgumentException  if the string is null or empty
    */
   protected void checkStringInput(final String s, final boolean allowNull)
   {

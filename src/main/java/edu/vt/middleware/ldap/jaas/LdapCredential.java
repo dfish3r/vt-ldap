@@ -23,7 +23,7 @@ package edu.vt.middleware.ldap.jaas;
 public class LdapCredential
 {
 
-  /** LDAP credential */
+  /** LDAP credential. */
   private Object credential;
 
 

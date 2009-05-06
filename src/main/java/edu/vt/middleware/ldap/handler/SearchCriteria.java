@@ -26,19 +26,19 @@ import javax.naming.directory.Attributes;
 public class SearchCriteria
 {
 
-  /** dn */
+  /** dn. */
   private String dn;
 
-  /** filter */
+  /** filter. */
   private String filter;
 
-  /** filter arguments */
+  /** filter arguments. */
   private Object[] filterArgs;
 
-  /** return attributes */
+  /** return attributes. */
   private String[] returnAttrs;
 
-  /** match attributes */
+  /** match attributes. */
   private Attributes matchAttrs;
 
 

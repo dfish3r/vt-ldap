@@ -30,7 +30,7 @@ import org.apache.commons.logging.LogFactory;
 public class ValidatePoolTask<T extends BaseLdap> extends TimerTask
 {
 
-  /** Log for this class */
+  /** Log for this class. */
   protected final Log logger = LogFactory.getLog(this.getClass());
 
   /** Pool to clean. */

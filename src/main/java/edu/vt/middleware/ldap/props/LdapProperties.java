@@ -34,10 +34,10 @@ import org.apache.commons.logging.LogFactory;
 public final class LdapProperties
 {
 
-  /** Default file to read properties from, value is {@value} */
+  /** Default file to read properties from, value is {@value}. */
   public static final String PROPERTIES_FILE = "/ldap.properties";
 
-  /** Log for this class */
+  /** Log for this class. */
   private static final Log LOG = LogFactory.getLog(LdapProperties.class);
 
   /** Class with properties. */
@@ -46,7 +46,7 @@ public final class LdapProperties
   /** Underlying properties. */
   private Properties config;
 
-  /** Configured file to read properties from */
+  /** Configured file to read properties from. */
   private String propertiesFile;
 
 

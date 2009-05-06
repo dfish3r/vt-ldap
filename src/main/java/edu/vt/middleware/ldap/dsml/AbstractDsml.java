@@ -55,10 +55,10 @@ import org.dom4j.io.XMLWriter;
 public abstract class AbstractDsml implements Serializable
 {
 
-  /** serial version uid */
+  /** serial version uid. */
   private static final long serialVersionUID = 5951425968736507129L;
 
-  /** Log for this class */
+  /** Log for this class. */
   private static final Log LOG = LogFactory.getLog(AbstractDsml.class);
 
 

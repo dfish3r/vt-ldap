@@ -28,66 +28,60 @@ public final class LdapConstants
 
   /**
    * The value of this property is a fully qualified class name of the factory
-   * class which creates the initial context for the LDAP service provider.
-   * The value of this constant is {@value}.
+   * class which creates the initial context for the LDAP service provider. The
+   * value of this constant is {@value}.
    */
   public static final String CONTEXT_FACTORY = "java.naming.factory.initial";
 
   /**
    * The value of this property is a string identifying the class name of a
-   * socket factory.
-   * The value of this constant is {@value}.
+   * socket factory. The value of this constant is {@value}.
    */
   public static final String SOCKET_FACTORY = "java.naming.ldap.factory.socket";
 
   /**
    * The value of this property is a string specifying the authoritativeness of
-   * the service requested.
-   * The value of this constant is {@value}.
+   * the service requested. The value of this constant is {@value}.
    */
   public static final String AUTHORITATIVE = "java.naming.authoritative";
 
   /**
    * The value of this property is a java.io.OutputStream object into which a
    * hexadecimal dump of the incoming and outgoing LDAP ASN.1 BER packets is
-   * written.
-   * The value of this constant is {@value}.
+   * written. The value of this constant is {@value}.
    */
   public static final String TRACE = "com.sun.jndi.ldap.trace.ber";
 
   /**
    * The value of this property is a string that specifies the authentication
-   * mechanism(s) for the provider to use.
-   * The value of this constant is {@value}.
+   * mechanism(s) for the provider to use. The value of this constant is {@value
+   * }.
    */
   public static final String AUTHENTICATION =
     "java.naming.security.authentication";
 
   /**
    * The value of this property is a string that specifies the identity of the
-   * principal to be authenticated.
-   * The value of this constant is {@value}.
+   * principal to be authenticated. The value of this constant is {@value}.
    */
   public static final String PRINCIPAL = "java.naming.security.principal";
 
   /**
    * The value of this property is an object that specifies the credentials of
-   * the principal to be authenticated.
-   * The value of this constant is {@value}.
+   * the principal to be authenticated. The value of this constant is {@value}.
    */
   public static final String CREDENTIALS = "java.naming.security.credentials";
 
   /**
    * The value of this property is a string of decimal digits that specifies the
-   * batch size of search results returned by the server.
-   * The value of this constant is {@value}.
+   * batch size of search results returned by the server. The value of this
+   * constant is {@value}.
    */
   public static final String BATCH_SIZE = "java.naming.batchsize";
 
   /**
    * The value of this property is a string that specifies the DNS host and
-   * domain names.
-   * The value of this constant is {@value}.
+   * domain names. The value of this constant is {@value}.
    */
   public static final String DNS_URL = "java.naming.dns.url";
 
@@ -99,74 +93,65 @@ public final class LdapConstants
 
   /**
    * The value of this property is a string that specifies how referrals shall
-   * be handled by the provider.
-   * The value of this constant is {@value}.
+   * be handled by the provider. The value of this constant is {@value}.
    */
   public static final String REFERRAL = "java.naming.referral";
 
   /**
    * The value of this property is a string that specifies how aliases shall be
-   * handled by the provider.
-   * The value of this constant is {@value}.
+   * handled by the provider. The value of this constant is {@value}.
    */
   public static final String DEREF_ALIASES = "java.naming.ldap.derefAliases";
 
   /**
    * The value of this property is a string that specifies additional binary
-   * attributes.
-   * The value of this constant is {@value}.
+   * attributes. The value of this constant is {@value}.
    */
   public static final String BINARY_ATTRIBUTES =
     "java.naming.ldap.attributes.binary";
 
   /**
    * The value of this property is a string that specifies a SASL authorization
-   * id.
-   * The value of this constant is {@value}.
+   * id. The value of this constant is {@value}.
    */
   public static final String SASL_AUTHORIZATION_ID =
     "java.naming.security.sasl.authorizationId";
 
   /**
-   * The value of this property is a string that specifies a SASL realm.
-   * The value of this constant is {@value}.
+   * The value of this property is a string that specifies a SASL realm. The
+   * value of this constant is {@value}.
    */
   public static final String SASL_REALM = "java.naming.security.sasl.realm";
 
   /**
    * The value of this property is a string that specifies to only return
-   * attribute type names, no values.
-   * The value of this constant is {@value}.
+   * attribute type names, no values. The value of this constant is {@value}.
    */
   public static final String TYPES_ONLY = "java.naming.ldap.typesOnly";
 
   /**
    * The value of this property is a string that specifies the security protocol
-   * for the provider to use.
-   * The value of this constant is {@value}.
+   * for the provider to use. The value of this constant is {@value}.
    */
   public static final String PROTOCOL = "java.naming.security.protocol";
 
   /**
    * The value of this property is a string that specifies the protocol version
-   * for the provider.
-   * The value of this constant is {@value}.
+   * for the provider. The value of this constant is {@value}.
    */
   public static final String VERSION = "java.naming.ldap.version";
 
   /**
    * The value of this property is a URL string that specifies the hostname and
    * port number of the LDAP server, and the root distinguished name of the
-   * naming context to use.
-   * The value of this constant is {@value}.
+   * naming context to use. The value of this constant is {@value}.
    */
   public static final String PROVIDER_URL = "java.naming.provider.url";
 
   /**
    * The value of this property is a string that specifies the time in
    * milliseconds that a connection attempt will abort if the connection cannot
-   * be made.
-   * The value of this constant is {@value}.
+   * be made. The value of this constant is {@value}.
    */
   public static final String TIMEOUT = "com.sun.jndi.ldap.connect.timeout";
 
@@ -177,26 +162,26 @@ public final class LdapConstants
   public static final String SSL_PROTOCOL = "ssl";
 
   /**
-   * Value passed to AUTHENTICATION to use simple authentication.
-   * The value of this constant is {@value}.
+   * Value passed to AUTHENTICATION to use simple authentication. The value of
+   * this constant is {@value}.
    */
   public static final String SIMPLE_AUTHTYPE = "simple";
 
   /**
-   * Value passed to AUTHENTICATION to use simple authentication.
-   * The value of this constant is {@value}.
+   * Value passed to AUTHENTICATION to use simple authentication. The value of
+   * this constant is {@value}.
    */
   public static final String STRONG_AUTHTYPE = "strong";
 
   /**
-   * Value passed to AUTHENTICATION to use none authentication
-   * The value of this constant is {@value}.
+   * Value passed to AUTHENTICATION to use none authentication The value of this
+   * constant is {@value}.
    */
   public static final String NONE_AUTHTYPE = "none";
 
   /**
-   * Value passed to VERSION to use ldap version 3 controls
-   * The value of this constant is {@value}.
+   * Value passed to VERSION to use ldap version 3 controls The value of this
+   * constant is {@value}.
    */
   public static final String VERSION_THREE = "3";
 
@@ -207,55 +192,55 @@ public final class LdapConstants
   public static final String PROVIDER_URL_SSL_SCHEME = "ldaps";
 
   /**
-   * URL prefix used for constructing URLs.
-   * The value of this constant is {@value}.
+   * URL prefix used for constructing URLs. The value of this constant is
+   * {@value}.
    */
   public static final String PROVIDER_URL_PREFIX = "://";
 
   /**
-   * URL separator used for constructing URLs.
-   * The value of this constant is {@value}.
+   * URL separator used for constructing URLs. The value of this constant is
+   * {@value}.
    */
   public static final String PROVIDER_URL_SEPARATOR = ":";
 
   /**
-   * Ldap command which returns a list of supported SASL mechanisms.
-   * The value of this constant is {@value}.
+   * Ldap command which returns a list of supported SASL mechanisms. The value
+   * of this constant is {@value}.
    */
   public static final String SUPPORTED_SASL_MECHANISMS =
     "supportedSASLMechanisms";
 
   /**
-   * Ldap command which returns a list of supported controls.
-   * The value of this constant is {@value}.
+   * Ldap command which returns a list of supported controls. The value of this
+   * constant is {@value}.
    */
   public static final String SUPPORTED_CONTROL = "supportedcontrol";
 
   /**
-   * Value passed to AUTHENTICATION to use SASL authentication.
-   * The value of this constant is {@value}.
+   * Value passed to AUTHENTICATION to use SASL authentication. The value of
+   * this constant is {@value}.
    */
   public static final String SASL_MECHANISM_EXTERNAL = "EXTERNAL";
 
   /**
-   * Value passed to AUTHENTICATION to use DIGEST-MD5 authentication.
-   * The value of this constant is {@value}.
+   * Value passed to AUTHENTICATION to use DIGEST-MD5 authentication. The value
+   * of this constant is {@value}.
    */
   public static final String SASL_MECHANISM_DIGEST_MD5 = "DIGEST-MD5";
 
   /**
-   * Value passed to AUTHENTICATION to use CRAM-MD5 authentication.
-   * The value of this constant is {@value}.
+   * Value passed to AUTHENTICATION to use CRAM-MD5 authentication. The value of
+   * this constant is {@value}.
    */
   public static final String SASL_MECHANISM_CRAM_MD5 = "CRAM-MD5";
 
   /**
-   * Value passed to AUTHENTICATION to use GSS-API authentication.
-   * The value of this constant is {@value}.
+   * Value passed to AUTHENTICATION to use GSS-API authentication. The value of
+   * this constant is {@value}.
    */
   public static final String SASL_MECHANISM_GSS_API = "GSSAPI";
 
-  /** List of supported SASL Mechanisms */
+  /** List of supported SASL Mechanisms. */
   public static final String[] SASL_MECHANISMS = new String[] {
     SASL_MECHANISM_EXTERNAL,
     SASL_MECHANISM_DIGEST_MD5,
@@ -268,8 +253,8 @@ public final class LdapConstants
     "com.sun.jndi.ldap.LdapCtxFactory";
 
   /**
-   * Default timeout, -1 means use provider setting.
-   * The value of this constant is {@value}.
+   * Default timeout, -1 means use provider setting. The value of this constant
+   * is {@value}.
    */
   public static final int DEFAULT_TIMEOUT = -1;
 
@@ -277,20 +262,20 @@ public final class LdapConstants
   public static final String DEFAULT_AUTHTYPE = SIMPLE_AUTHTYPE;
 
   /**
-   * Default time limit, 0 means wait indefinitely.
-   * The value of this constant is {@value}.
+   * Default time limit, 0 means wait indefinitely. The value of this constant
+   * is {@value}.
    */
   public static final int DEFAULT_TIME_LIMIT = 0;
 
   /**
-   * Default count limit, 0 means return all results.
-   * The value of this constant is {@value}.
+   * Default count limit, 0 means return all results. The value of this constant
+   * is {@value}.
    */
   public static final long DEFAULT_COUNT_LIMIT = 0;
 
   /**
-   * Default batch size, -1 means use provider setting.
-   * The value of this constant is {@value}.
+   * Default batch size, -1 means use provider setting. The value of this
+   * constant is {@value}.
    */
   public static final int DEFAULT_BATCH_SIZE = -1;
 
@@ -316,38 +301,38 @@ public final class LdapConstants
   public static final boolean DEFAULT_USE_TLS = false;
 
   /**
-   * Whether to log authentication credentials.
-   * The value of this constant is {@value}.
+   * Whether to log authentication credentials. The value of this constant is
+   * {@value}.
    */
   public static final boolean DEFAULT_LOG_CREDENTIALS = false;
 
   /**
-   * Default userfield field used by Authenticator.
-   * The value of this constant is {@value}.
+   * Default userfield field used by Authenticator. The value of this constant
+   * is {@value}.
    */
   public static final String DEFAULT_USER_FIELD = "uid";
 
   /**
-   * Whether Authenticator should construct DNs by default.
-   * The value of this constant is {@value}.
+   * Whether Authenticator should construct DNs by default. The value of this
+   * constant is {@value}.
    */
   public static final boolean DEFAULT_CONSTRUCT_DN = false;
 
   /**
-   * Whether Authenticator should perform subtree searches for DNs.
-   * The value of this constant is {@value}.
+   * Whether Authenticator should perform subtree searches for DNs. The value of
+   * this constant is {@value}.
    */
   public static final boolean DEFAULT_SUBTREE_SEARCH = false;
 
   /**
-   * Default character set for creating strings.
-   * The value of this constant is {@value}.
+   * Default character set for creating strings. The value of this constant is
+   * {@value}.
    */
   public static final String DEFAULT_CHARSET = "UTF-8";
 
   /**
-   * Number of times to retry an operation on CommunicationException.
-   * The value of this constant is {@value}.
+   * Number of times to retry an operation on CommunicationException. The value
+   * of this constant is {@value}.
    */
   public static final int OPERATION_RETRY = 1;
 

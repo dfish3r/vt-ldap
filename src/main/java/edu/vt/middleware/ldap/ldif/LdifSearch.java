@@ -34,7 +34,7 @@ import org.apache.commons.logging.LogFactory;
 public class LdifSearch extends LdapSearch
 {
 
-  /** Log for this class */
+  /** Log for this class. */
   private static final Log LOG = LogFactory.getLog(LdifSearch.class);
 
 

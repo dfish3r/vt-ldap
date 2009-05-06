@@ -46,63 +46,65 @@ import org.apache.commons.logging.LogFactory;
 public class LdapTLSSocketFactory extends SSLSocketFactory
 {
 
-  /** Default SSL protocol, value is {@value} */
+  /** Default SSL protocol, value is {@value}. */
   public static final String DEFAULT_PROTOCOL = "TLS";
 
-  /** Default truststore name, value is {@value} */
+  /** Default truststore name, value is {@value}. */
   public static final String DEFAULT_TRUSTSTORE_NAME = "/vt-ldap.truststore";
 
-  /** Default truststore password, value is {@value} */
+  /** Default truststore password, value is {@value}. */
   public static final String DEFAULT_TRUSTSTORE_PASSWORD = "changeit";
 
-  /** Default truststore type, value is {@value} */
+  /** Default truststore type, value is {@value}. */
   public static final String DEFAULT_TRUSTSTORE_TYPE = "JKS";
 
-  /** Default keystore name, value is {@value} */
+  /** Default keystore name, value is {@value}. */
   public static final String DEFAULT_KEYSTORE_NAME = "/vt-ldap.keystore";
 
-  /** Default keystore password, value is {@value} */
+  /** Default keystore password, value is {@value}. */
   public static final String DEFAULT_KEYSTORE_PASSWORD = "changeit";
 
-  /** Default keystore type, value is {@value} */
+  /** Default keystore type, value is {@value}. */
   public static final String DEFAULT_KEYSTORE_TYPE = "JKS";
 
-  /** Log for this class */
+  /** Log for this class. */
   private static final Log LOG = LogFactory.getLog(LdapTLSSocketFactory.class);
 
-  /** Types of paths */
+  /** Types of paths. */
   public enum PathType {
+
     /** File path location. */
     FILEPATH,
+
     /** Classpath location. */
     CLASSPATH
   }
 
-  /** SSLSocketFactory used for creating SSL sockets */
+  /** SSLSocketFactory used for creating SSL sockets. */
   protected SSLSocketFactory factory;
 
-  /** Name of the truststore to use for the SSL connection */
+  /** Name of the truststore to use for the SSL connection. */
   private String trustStoreName = DEFAULT_TRUSTSTORE_NAME;
 
-  /** Password needed to open the truststore */
+  /** Password needed to open the truststore. */
   private String trustStorePassword = DEFAULT_TRUSTSTORE_PASSWORD;
 
-  /** Truststore path type */
+  /** Truststore path type. */
   private PathType trustStorePathType = PathType.CLASSPATH;
 
-  /** Truststore type */
+  /** Truststore type. */
   private String trustStoreType = DEFAULT_TRUSTSTORE_TYPE;
 
-  /** Name of the keystore to use for the SSL connection */
+  /** Name of the keystore to use for the SSL connection. */
   private String keyStoreName = DEFAULT_KEYSTORE_NAME;
 
-  /** Password needed to open the keystore */
+  /** Password needed to open the keystore. */
   private String keyStorePassword = DEFAULT_KEYSTORE_PASSWORD;
 
-  /** Keystore path type */
+  /** Keystore path type. */
   private PathType keyStorePathType = PathType.CLASSPATH;
 
-  /** Keystore type */
+  /** Keystore type. */
   private String keyStoreType = DEFAULT_KEYSTORE_TYPE;
 
 

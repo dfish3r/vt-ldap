@@ -39,7 +39,7 @@ import edu.vt.middleware.ldap.handler.SearchResultHandler;
 public class Ldap extends AbstractLdap<LdapConfig> implements Serializable
 {
 
-  /** serial version uid */
+  /** serial version uid. */
   private static final long serialVersionUID = -3248718478821722604L;
 
   /** Default constructor. */

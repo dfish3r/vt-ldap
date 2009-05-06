@@ -30,13 +30,13 @@ import org.apache.commons.logging.LogFactory;
 public abstract class SessionManager
 {
 
-  /** Log for this class */
+  /** Log for this class. */
   private static final Log LOG = LogFactory.getLog(SessionManager.class);
 
-  /** Identifier to set in the session after valid authentication */
+  /** Identifier to set in the session after valid authentication. */
   protected String sessionId;
 
-  /** Whether to invalidate session on logout */
+  /** Whether to invalidate session on logout. */
   protected boolean invalidateSession = true;
 
 

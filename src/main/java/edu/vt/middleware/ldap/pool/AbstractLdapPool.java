@@ -49,7 +49,7 @@ public abstract class AbstractLdapPool<T extends BaseLdap>
   /** Lock for check outs. */
   protected final ReentrantLock checkOutLock = new ReentrantLock();
 
-  /** Log for this class */
+  /** Log for this class. */
   protected final Log logger = LogFactory.getLog(this.getClass());
 
   /** List of available ldap objects in the pool. */
@@ -558,7 +558,7 @@ public abstract class AbstractLdapPool<T extends BaseLdap>
   static protected class PooledLdap<T extends BaseLdap>
   {
 
-    /** hash code seed */
+    /** hash code seed. */
     protected static final int HASH_CODE_SEED = 89;
 
     /** Underlying ldap object. */
