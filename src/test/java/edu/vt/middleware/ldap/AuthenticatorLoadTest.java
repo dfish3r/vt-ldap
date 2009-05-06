@@ -34,10 +34,10 @@ import org.testng.annotations.Test;
 public class AuthenticatorLoadTest
 {
 
-  /** Invalid password test data */
+  /** Invalid password test data. */
   public static final String INVALID_PASSWD = "not-a-password";
 
-  /** Invalid filter test data */
+  /** Invalid filter test data. */
   public static final String INVALID_FILTER = "departmentNumber=1111";
 
   /** Entries for auth tests. */
@@ -53,7 +53,7 @@ public class AuthenticatorLoadTest
     }
   }
 
-  /** Ldap instance for concurrency testing */
+  /** Ldap instance for concurrency testing. */
   private Authenticator singleTLSAuth;
 
 

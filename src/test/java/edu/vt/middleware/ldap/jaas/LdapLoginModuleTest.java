@@ -35,10 +35,10 @@ import org.testng.annotations.Test;
 public class LdapLoginModuleTest
 {
 
-  /** Invalid password test data */
+  /** Invalid password test data. */
   public static final String INVALID_PASSWD = "not-a-password";
 
-  /** Entry created for auth tests */
+  /** Entry created for auth tests. */
   private static LdapEntry testLdapEntry;
 
 

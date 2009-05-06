@@ -33,7 +33,7 @@ import org.testng.annotations.DataProvider;
 public final class TestUtil
 {
 
-  /** Location of the hostname in the output of netstat */
+  /** Location of the hostname in the output of netstat. */
   public static final int NETSTAT_HOST_INDEX = 4;
 
 

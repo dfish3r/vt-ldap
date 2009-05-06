@@ -30,7 +30,7 @@ import org.testng.annotations.Test;
 public class LdapResultTest
 {
 
-  /** Entry created for tests */
+  /** Entry created for tests. */
   private static LdapEntry testLdapEntry;
 
 

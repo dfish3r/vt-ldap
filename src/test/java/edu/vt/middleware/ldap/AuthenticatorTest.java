@@ -32,19 +32,19 @@ import org.testng.annotations.Test;
 public class AuthenticatorTest
 {
 
-  /** Invalid password test data */
+  /** Invalid password test data. */
   public static final String INVALID_PASSWD = "not-a-password";
 
-  /** Invalid filter test data */
+  /** Invalid filter test data. */
   public static final String INVALID_FILTER = "departmentNumber=1111";
 
-  /** Entry created for auth tests */
+  /** Entry created for auth tests. */
   private static LdapEntry testLdapEntry;
 
-  /** Ldap instance for concurrency testing */
+  /** Ldap instance for concurrency testing. */
   private Authenticator singleTLSAuth;
 
-  /** Ldap instance for concurrency testing */
+  /** Ldap instance for concurrency testing. */
   private Authenticator singleSSLAuth;
 
 

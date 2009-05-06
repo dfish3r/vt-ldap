@@ -42,13 +42,13 @@ import org.testng.annotations.Test;
 public class LdapTest
 {
 
-  /** Invalid search filter */
+  /** Invalid search filter. */
   public static final String INVALID_FILTER = "(cn=not-a-name)";
 
-  /** Entry created for ldap tests */
+  /** Entry created for ldap tests. */
   private static LdapEntry testLdapEntry;
 
-  /** Ldap instance for concurrency testing */
+  /** Ldap instance for concurrency testing. */
   private Ldap singleLdap;
 
 

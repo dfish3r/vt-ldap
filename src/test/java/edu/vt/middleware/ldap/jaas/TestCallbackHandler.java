@@ -29,10 +29,10 @@ import javax.security.auth.callback.UnsupportedCallbackException;
 public class TestCallbackHandler implements CallbackHandler
 {
 
-  /** test name */
+  /** test name. */
   private String name;
 
-  /** test password */
+  /** test password. */
   private String password;
 
 

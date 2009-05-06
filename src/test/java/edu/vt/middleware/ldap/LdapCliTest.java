@@ -31,7 +31,7 @@ import org.testng.annotations.Test;
 public class LdapCliTest
 {
 
-  /** Entry created for ldap tests */
+  /** Entry created for ldap tests. */
   private static LdapEntry testLdapEntry;
 
 

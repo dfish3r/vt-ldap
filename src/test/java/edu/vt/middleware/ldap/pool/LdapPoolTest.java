@@ -53,31 +53,31 @@ public class LdapPoolTest
     }
   }
 
-  /** Log for this class */
+  /** Log for this class. */
   protected final Log logger = LogFactory.getLog(this.getClass());
 
-  /** LdapPool instance for concurrency testing */
+  /** LdapPool instance for concurrency testing. */
   private SoftLimitLdapPool softLimitPool;
 
-  /** LdapPool instance for concurrency testing */
+  /** LdapPool instance for concurrency testing. */
   private BlockingLdapPool blockingPool;
 
-  /** LdapPool instance for concurrency testing */
+  /** LdapPool instance for concurrency testing. */
   private BlockingLdapPool blockingTimeoutPool;
 
-  /** LdapPool instance for concurrency testing */
+  /** LdapPool instance for concurrency testing. */
   private SharedLdapPool sharedPool;
 
-  /** Time in millis it takes the pool test to run */
+  /** Time in millis it takes the pool test to run. */
   private long softLimitRuntime;
 
-  /** Time in millis it takes the pool test to run */
+  /** Time in millis it takes the pool test to run. */
   private long blockingRuntime;
 
-  /** Time in millis it takes the pool test to run */
+  /** Time in millis it takes the pool test to run. */
   private long blockingTimeoutRuntime;
 
-  /** Time in millis it takes the pool test to run */
+  /** Time in millis it takes the pool test to run. */
   private long sharedRuntime;
 
 
@@ -389,9 +389,7 @@ public class LdapPoolTest
   }
 
 
-  /**
-   * @throws  Exception  On test failure.
-   */
+  /** @throws  Exception  On test failure. */
   @Test(groups = {"softlimitpooltest"})
   public void checkSoftLimitPoolImmutable()
     throws Exception
@@ -402,6 +400,7 @@ public class LdapPoolTest
     } catch (IllegalStateException e) {
       AssertJUnit.assertEquals(IllegalStateException.class, e.getClass());
     }
+
     Ldap ldap = null;
     try {
       ldap = this.softLimitPool.checkOut();
@@ -496,9 +495,7 @@ public class LdapPoolTest
   }
 
 
-  /**
-   * @throws  Exception  On test failure.
-   */
+  /** @throws  Exception  On test failure. */
   @Test(groups = {"blockingpooltest"})
   public void checkBlockingPoolImmutable()
     throws Exception
@@ -509,6 +506,7 @@ public class LdapPoolTest
     } catch (IllegalStateException e) {
       AssertJUnit.assertEquals(IllegalStateException.class, e.getClass());
     }
+
     Ldap ldap = null;
     try {
       ldap = this.blockingPool.checkOut();
@@ -746,9 +744,7 @@ public class LdapPoolTest
   }
 
 
-  /**
-   * @throws  Exception  On test failure.
-   */
+  /** @throws  Exception  On test failure. */
   @Test(groups = {"sharedpooltest"})
   public void checkShredPoolImmutable()
     throws Exception
@@ -759,6 +755,7 @@ public class LdapPoolTest
     } catch (IllegalStateException e) {
       AssertJUnit.assertEquals(IllegalStateException.class, e.getClass());
     }
+
     Ldap ldap = null;
     try {
       ldap = this.sharedPool.checkOut();

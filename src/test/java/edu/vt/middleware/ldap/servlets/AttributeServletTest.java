@@ -37,10 +37,10 @@ import org.testng.annotations.Test;
 public class AttributeServletTest
 {
 
-  /** Entry created for tests */
+  /** Entry created for tests. */
   private static LdapEntry testLdapEntry;
 
-  /** To test servlets with */
+  /** To test servlets with. */
   private ServletRunner servletRunner;
 
 
