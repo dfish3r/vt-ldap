@@ -19,6 +19,7 @@ import java.util.HashMap;
 import java.util.Map;
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLSocketFactory;
+import edu.vt.middleware.ldap.LdapConfig;
 
 /**
  * <code>PropertyInvoker</code> stores setter methods for a class to make method
@@ -111,6 +112,10 @@ public class PropertyInvoker
       } else if (
         HostnameVerifier.class.isAssignableFrom(getter.getReturnType())) {
         newValue = instantiateType(HostnameVerifier.class, value);
+      } else if (getter.getReturnType().isEnum()) {
+        if (LdapConfig.SearchScope.class == getter.getReturnType()) {
+          newValue = Enum.valueOf(LdapConfig.SearchScope.class, value);
+        }
       } else if (String[].class == getter.getReturnType()) {
         newValue = value.split(",");
       } else if (float.class == getter.getReturnType()) {

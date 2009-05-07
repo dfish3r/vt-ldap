@@ -35,6 +35,46 @@ import edu.vt.middleware.ldap.props.PropertyInvoker;
 public class LdapConfig extends AbstractPropertyConfig
 {
 
+
+  /**
+   * Enum to define the type of search scope.
+   * See {@link javax.naming.directory.SearchControls}.
+   */
+  public enum SearchScope
+  {
+    /** object level search. */
+    OBJECT,
+
+    /** one level search. */
+    ONELEVEL,
+
+    /** subtree search. */
+    SUBTREE;
+
+
+    /**
+     * Method to convert a JNDI constant value to an enum.
+     * Returns null if the supplied constant does not match
+     * a known value.
+     *
+     * @param  i  jndi constant
+     * @return  search scope
+     */
+    public static SearchScope parseSearchScope(final int i)
+    {
+      SearchScope ss = null;
+      if (OBJECT.ordinal() == i) {
+        ss = OBJECT;
+      } else if (ONELEVEL.ordinal() == i) {
+        ss = ONELEVEL;
+      } else if (SUBTREE.ordinal() == i) {
+        ss = SUBTREE;
+      }
+      return ss;
+    }
+  }
+
+
   /** Domain to look for ldap properties in, value is {@value}. */
   public static final String PROPERTIES_DOMAIN = "edu.vt.middleware.ldap.";
 
@@ -74,7 +114,7 @@ public class LdapConfig extends AbstractPropertyConfig
   private String base;
 
   /** Type of search scope to use, default is subtree. */
-  private Integer searchScope = new Integer(SearchControls.SUBTREE_SCOPE);
+  private SearchScope searchScope = SearchScope.SUBTREE;
 
   /** Security level to use when binding to the LDAP. */
   private String authtype = LdapConstants.DEFAULT_AUTHTYPE;
@@ -400,16 +440,15 @@ public class LdapConfig extends AbstractPropertyConfig
 
 
   /**
-   * This returns the search scope for the <code>LdapConfig</code>. See {@link
-   * javax.naming.directory.SearchControls} for possible values and their
-   * meanings.
+   * This returns the search scope for the <code>LdapConfig</code>.
    *
-   * @return  <code>int</code> - search scope
+   * @return  <code>SearchScope</code> - search scope
    */
-  public int getSearchScope()
+  public SearchScope getSearchScope()
   {
-    return this.searchScope.intValue();
+    return this.searchScope;
   }
+
 
   /**
    * This returns whether the search scope is set to object.
@@ -418,7 +457,7 @@ public class LdapConfig extends AbstractPropertyConfig
    */
   public boolean isObjectSearchScope()
   {
-    return this.searchScope.intValue() == SearchControls.OBJECT_SCOPE;
+    return this.searchScope == SearchScope.OBJECT;
   }
 
 
@@ -429,7 +468,7 @@ public class LdapConfig extends AbstractPropertyConfig
    */
   public boolean isOneLevelSearchScope()
   {
-    return this.searchScope.intValue() == SearchControls.ONELEVEL_SCOPE;
+    return this.searchScope == SearchScope.ONELEVEL;
   }
 
 
@@ -440,7 +479,7 @@ public class LdapConfig extends AbstractPropertyConfig
    */
   public boolean isSubTreeSearchScope()
   {
-    return this.searchScope.intValue() == SearchControls.SUBTREE_SCOPE;
+    return this.searchScope == SearchScope.SUBTREE;
   }
 
 
@@ -1058,16 +1097,14 @@ public class LdapConfig extends AbstractPropertyConfig
 
 
   /**
-   * This sets the search scope for the <code>LdapConfig</code>. See {@link
-   * javax.naming.directory.SearchControls} for possible values and their
-   * meanings.
+   * This sets the search scope for the <code>LdapConfig</code>.
    *
-   * @param  searchScope  <code>int</code>
+   * @param  searchScope  <code>SearchScope</code>
    */
-  public void setSearchScope(final int searchScope)
+  public void setSearchScope(final SearchScope searchScope)
   {
     checkImmutable();
-    this.searchScope = new Integer(searchScope);
+    this.searchScope = searchScope;
   }
 
 
@@ -1403,7 +1440,7 @@ public class LdapConfig extends AbstractPropertyConfig
   {
     final SearchControls ctls = new SearchControls();
     ctls.setReturningAttributes(retAttrs);
-    ctls.setSearchScope(this.getSearchScope());
+    ctls.setSearchScope(this.getSearchScope().ordinal());
     ctls.setTimeLimit(this.getTimeLimit());
     ctls.setCountLimit(this.getCountLimit());
     ctls.setDerefLinkFlag(this.getDerefLinkFlag());
@@ -1422,7 +1459,7 @@ public class LdapConfig extends AbstractPropertyConfig
   {
     final SearchControls ctls = new SearchControls();
     ctls.setReturningAttributes(new String[0]);
-    ctls.setSearchScope(SearchControls.OBJECT_SCOPE);
+    ctls.setSearchScope(SearchScope.OBJECT.ordinal());
     return ctls;
   }
 
