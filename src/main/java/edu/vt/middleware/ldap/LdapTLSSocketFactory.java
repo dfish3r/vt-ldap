@@ -117,10 +117,11 @@ public class LdapTLSSocketFactory extends SSLSocketFactory
    * and makes this factory ready for use. Must be called before factory can be
    * used.
    *
+   * @throws  IOException  if the keystore cannot be loaded
    * @throws  GeneralSecurityException  if the SSLContext cannot be created
    */
   public void initialize()
-    throws GeneralSecurityException
+    throws IOException, GeneralSecurityException
   {
     final SSLContext ctx = SSLContext.getInstance(DEFAULT_PROTOCOL);
     final TrustManager[] tm = this.initTrustManager(
@@ -146,6 +147,7 @@ public class LdapTLSSocketFactory extends SSLSocketFactory
    *
    * @return  <code>TrustManager[]</code>
    *
+   * @throws  IOException  if the keystore cannot be loaded
    * @throws  GeneralSecurityException  if an errors occurs while loading the
    * TrustManagers
    */
@@ -153,7 +155,7 @@ public class LdapTLSSocketFactory extends SSLSocketFactory
     final InputStream is,
     final String password,
     final String storeType)
-    throws GeneralSecurityException
+    throws IOException, GeneralSecurityException
   {
     TrustManager[] tm = null;
     if (is != null) {
@@ -176,6 +178,7 @@ public class LdapTLSSocketFactory extends SSLSocketFactory
    *
    * @return  <code>KeyManager[]</code>
    *
+   * @throws  IOException  if the keystore cannot be loaded
    * @throws  GeneralSecurityException  if an errors occurs while loading the
    * KeyManagers
    */
@@ -183,7 +186,7 @@ public class LdapTLSSocketFactory extends SSLSocketFactory
     final InputStream is,
     final String password,
     final String storeType)
-    throws GeneralSecurityException
+    throws IOException, GeneralSecurityException
   {
     KeyManager[] km = null;
     if (is != null) {
@@ -420,6 +423,10 @@ public class LdapTLSSocketFactory extends SSLSocketFactory
     final LdapTLSSocketFactory sf = new LdapTLSSocketFactory();
     try {
       sf.initialize();
+    } catch (IOException e) {
+      if (LOG.isErrorEnabled()) {
+        LOG.error("Error loading keystore", e);
+      }
     } catch (GeneralSecurityException e) {
       if (LOG.isErrorEnabled()) {
         LOG.error("Error initializing socket factory", e);
@@ -647,6 +654,7 @@ public class LdapTLSSocketFactory extends SSLSocketFactory
    *
    * @return  <code>KeyStore</code>
    *
+   * @throws  IOException  if the keystore cannot be loaded
    * @throws  GeneralSecurityException  if an errors occurs while loading the
    * KeyManagers
    */
@@ -654,7 +662,7 @@ public class LdapTLSSocketFactory extends SSLSocketFactory
     final InputStream is,
     final String password,
     final String storeType)
-    throws GeneralSecurityException
+    throws IOException, GeneralSecurityException
   {
     KeyStore keystore = null;
     if (is != null) {
@@ -668,14 +676,7 @@ public class LdapTLSSocketFactory extends SSLSocketFactory
       if (password != null) {
         pw = password.toCharArray();
       }
-      try {
-        keystore.load(is, pw);
-      } catch (IOException e) {
-        if (LOG.isWarnEnabled()) {
-          LOG.warn("Error loading keystore for key manager", e);
-        }
-        throw new GeneralSecurityException(e);
-      }
+      keystore.load(is, pw);
     }
     return keystore;
   }
