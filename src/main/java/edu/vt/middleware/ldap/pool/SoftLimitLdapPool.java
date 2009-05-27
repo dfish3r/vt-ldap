@@ -23,9 +23,9 @@ import edu.vt.middleware.ldap.Ldap;
  * based on the configuration of the prune timer. See {@link
  * LdapPoolConfig#setPruneTimerPeriod} and {@link
  * LdapPoolConfig#setExpirationTime}. This implementation should be used when
- * you have some flexibility in the number of ldap connections that can created
- * to handle spikes in load. See {@link AbstractLdapPool}. Note that this pool
- * will begin blocking if it cannot create new ldap connections.
+ * you have some flexibility in the number of ldap connections that can be
+ * created to handle spikes in load. See {@link AbstractLdapPool}. Note that
+ * this pool will begin blocking if it cannot create new ldap connections.
  *
  * @author  Middleware Services
  * @version  $Revision$ $Date$

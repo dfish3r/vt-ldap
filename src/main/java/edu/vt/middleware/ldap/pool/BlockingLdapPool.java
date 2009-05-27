@@ -21,12 +21,12 @@ import edu.vt.middleware.ldap.Ldap;
  * <code>BlockingLdapPool</code> implements a pool of ldap objects that has a
  * set minimum and maximum size. The pool will not grow beyond the maximum size
  * and when the pool is exhausted, requests for new objects will block. The
- * length of time the pool will block is determined by {@link #blockWaitTime}.
- * By default the pool will block indefinitely and there is no guarantee that
- * waiting threads will be serviced in the order in which they made their
- * request. This implementation should be used when you need to control the <em>
- * exact</em> number of ldap connections that can be created. See {@link
- * AbstractLdapPool}.
+ * length of time the pool will block is determined by {@link
+ * #getBlockWaitTime()}.  By default the pool will block indefinitely and there
+ * is no guarantee that waiting threads will be serviced in the order in which
+ * they made their request. This implementation should be used when you need to
+ * control the <em>exact</em> number of ldap connections that can be created.
+ * See {@link AbstractLdapPool}.
  *
  * @author  Middleware Services
  * @version  $Revision$ $Date$
