@@ -13,8 +13,9 @@
 */
 package edu.vt.middleware.ldap.pool;
 
+import java.util.LinkedList;
 import java.util.Timer;
-import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.Queue;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
 import edu.vt.middleware.ldap.BaseLdap;
@@ -53,12 +54,10 @@ public abstract class AbstractLdapPool<T extends BaseLdap>
   protected final Log logger = LogFactory.getLog(this.getClass());
 
   /** List of available ldap objects in the pool. */
-  protected ConcurrentLinkedQueue<PooledLdap<T>> available =
-    new ConcurrentLinkedQueue<PooledLdap<T>>();
+  protected Queue<PooledLdap<T>> available = new LinkedList<PooledLdap<T>>();
 
   /** List of ldap objects in use. */
-  protected ConcurrentLinkedQueue<PooledLdap<T>> active =
-    new ConcurrentLinkedQueue<PooledLdap<T>>();
+  protected Queue<PooledLdap<T>> active = new LinkedList<PooledLdap<T>>();
 
   /** Ldap pool config. */
   protected LdapPoolConfig poolConfig;
@@ -472,8 +471,7 @@ public abstract class AbstractLdapPool<T extends BaseLdap>
               "validate for pool of size " + this.available.size());
           }
 
-          final ConcurrentLinkedQueue<PooledLdap<T>> remove =
-            new ConcurrentLinkedQueue<PooledLdap<T>>();
+          final Queue<PooledLdap<T>> remove = new LinkedList<PooledLdap<T>>();
           for (PooledLdap<T> pl : this.available) {
             if (this.logger.isTraceEnabled()) {
               this.logger.trace("validating " + pl.getLdap());
