@@ -13,6 +13,7 @@
 */
 package edu.vt.middleware.ldap.pool;
 
+import java.util.Timer;
 import edu.vt.middleware.ldap.BaseLdap;
 
 /**
@@ -33,6 +34,16 @@ public interface LdapPool<T extends BaseLdap>
    * @return  ldap pool config
    */
   LdapPoolConfig getLdapPoolConfig();
+
+
+  /**
+   * Sets the pool to use an existing timer.
+   * Pool will use an internal timer if none is provided.
+   * Must be called before {@link #initialize()}.
+   *
+   * @param  t  timer used to schedule pool tasks
+   */
+  void setPoolTimer(Timer t);
 
 
   /** Initialize this pool for use. */

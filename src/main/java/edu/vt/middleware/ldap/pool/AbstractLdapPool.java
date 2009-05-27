@@ -28,6 +28,11 @@ import org.apache.commons.logging.LogFactory;
  * implementations is to provide a pool that does not block on object creation
  * or destruction. This is what accounts for the multiple locks available on
  * this class.
+ * The pool is backed by two queues, one for available objects and one for
+ * active objects. Objects that are available for {@link #checkOut()} exist
+ * in the available queue. Objects that are actively in use exist in the
+ * active queue. Note that depending on the implementation an object can exist
+ * in both queues at the same time.
  *
  * @param  <T>  type of ldap object
  *
@@ -65,11 +70,8 @@ public abstract class AbstractLdapPool<T extends BaseLdap>
   /** Factory to create ldap objects. */
   protected LdapFactory<T> ldapFactory;
 
-  /** Timer to remove excess ldap objects. */
-  private Timer prunePoolTimer = new Timer(true);
-
-  /** Timer to validate ldap objects in the pool. */
-  private Timer validatePoolTimer = new Timer(true);
+  /** Timer for scheduling pool tasks. */
+  private Timer poolTimer = new Timer(true);
 
 
   /**
@@ -95,14 +97,21 @@ public abstract class AbstractLdapPool<T extends BaseLdap>
 
 
   /** {@inheritDoc}. */
+  public void setPoolTimer(final Timer t)
+  {
+    this.poolTimer = t;
+  }
+
+
+  /** {@inheritDoc}. */
   public void initialize()
   {
-    this.prunePoolTimer.scheduleAtFixedRate(
+    this.poolTimer.scheduleAtFixedRate(
       new PrunePoolTask<T>(this),
       this.poolConfig.getPruneTimerPeriod(),
       this.poolConfig.getPruneTimerPeriod());
 
-    this.validatePoolTimer.scheduleAtFixedRate(
+    this.poolTimer.scheduleAtFixedRate(
       new ValidatePoolTask<T>(this),
       this.poolConfig.getValidateTimerPeriod(),
       this.poolConfig.getValidateTimerPeriod());
@@ -170,8 +179,7 @@ public abstract class AbstractLdapPool<T extends BaseLdap>
       this.poolLock.unlock();
     }
 
-    this.prunePoolTimer.cancel();
-    this.validatePoolTimer.cancel();
+    this.poolTimer.cancel();
   }
 
 
