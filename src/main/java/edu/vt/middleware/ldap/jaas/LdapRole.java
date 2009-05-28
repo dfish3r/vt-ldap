@@ -23,7 +23,7 @@ import java.security.Principal;
  * @author  Middleware Services
  * @version  $Revision$ $Date$
  */
-public class LdapRole implements Principal, Serializable, Comparable
+public class LdapRole implements Principal, Serializable, Comparable<Principal>
 {
 
   /** serial version uid. */
@@ -107,19 +107,12 @@ public class LdapRole implements Principal, Serializable, Comparable
    * always greater than any other object. Otherwise principals are compared
    * lexicographically on name.
    *
-   * @param  o  <code>Object</code>
+   * @param  p  <code>Principal</code>
    *
    * @return  <code>int</code>
    */
-  public int compareTo(final Object o)
+  public int compareTo(final Principal p)
   {
-    int result;
-    if (o instanceof LdapRole) {
-      final Principal p = (LdapRole) o;
-      result = this.name.compareTo(p.getName());
-    } else {
-      result = 1;
-    }
-    return result;
+    return this.name.compareTo(p.getName());
   }
 }

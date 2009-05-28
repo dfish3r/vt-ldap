@@ -42,6 +42,9 @@ import org.dom4j.QName;
 public final class Dsmlv1 extends AbstractDsml
 {
 
+  /** serial version uid. */
+  private static final long serialVersionUID = 7584496747917061037L;
+
   /** Log for this class. */
   private static final Log LOG = LogFactory.getLog(Dsmlv1.class);
 
@@ -106,7 +109,7 @@ public final class Dsmlv1 extends AbstractDsml
    */
   protected Element createDsmlAttribute(
     final String attrName,
-    final List attrValues,
+    final List<?> attrValues,
     final Namespace ns)
   {
     Element attrElement = DocumentHelper.createElement("");
@@ -116,7 +119,7 @@ public final class Dsmlv1 extends AbstractDsml
 
         attrElement.setQName(new QName("objectclass", ns));
         if (attrValues != null) {
-          final Iterator i = attrValues.iterator();
+          final Iterator<?> i = attrValues.iterator();
           while (i.hasNext()) {
             final String value = (String) i.next();
             if (value != null) {
@@ -148,7 +151,7 @@ public final class Dsmlv1 extends AbstractDsml
     final List<SearchResult> results = new ArrayList<SearchResult>();
 
     if (doc != null && doc.hasContent()) {
-      final Iterator entryIterator = doc.selectNodes(
+      final Iterator<?> entryIterator = doc.selectNodes(
         "/dsml:dsml/dsml:directory-entries/dsml:entry").iterator();
       while (entryIterator.hasNext()) {
         final SearchResult result = this.createSearchResult(
@@ -186,13 +189,14 @@ public final class Dsmlv1 extends AbstractDsml
 
       if (entryElement.hasContent()) {
 
-        final Iterator ocIterator = entryElement.elementIterator("objectclass");
+        final Iterator<?> ocIterator = entryElement.elementIterator(
+          "objectclass");
         while (ocIterator.hasNext()) {
           final Element ocElement = (Element) ocIterator.next();
           if (ocElement != null && ocElement.hasContent()) {
             final String ocName = "objectClass";
             final Attribute entryAttribute = new BasicAttribute(ocName);
-            final Iterator valueIterator = ocElement.elementIterator(
+            final Iterator<?> valueIterator = ocElement.elementIterator(
               "oc-value");
             while (valueIterator.hasNext()) {
               final Element valueElement = (Element) valueIterator.next();

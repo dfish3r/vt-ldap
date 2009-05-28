@@ -14,8 +14,8 @@
 package edu.vt.middleware.ldap.pool;
 
 import java.util.LinkedList;
-import java.util.Timer;
 import java.util.Queue;
+import java.util.Timer;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
 import edu.vt.middleware.ldap.BaseLdap;

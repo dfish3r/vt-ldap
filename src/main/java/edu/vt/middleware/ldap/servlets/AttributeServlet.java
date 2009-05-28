@@ -54,6 +54,9 @@ import org.apache.commons.logging.LogFactory;
 public final class AttributeServlet extends HttpServlet
 {
 
+  /** serial version uid. */
+  private static final long serialVersionUID = -5420737961961379785L;
+
   /** Log for this class. */
   private static final Log LOG = LogFactory.getLog(AttributeServlet.class);
 

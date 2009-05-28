@@ -55,7 +55,7 @@ public final class LdapUtil
    *
    * @throws  NamingException  if the LDAP returns an error
    */
-  public static Iterator searchAttributesRecursive(
+  public static Iterator<SearchResult> searchAttributesRecursive(
     final Ldap ldap,
     final Attributes matchAttrs)
     throws NamingException
@@ -127,7 +127,6 @@ public final class LdapUtil
         while (ae.hasMore()) {
           final Attribute attr = ae.next();
           if (attr != null) {
-            final String id = attr.getID();
             final NamingEnumeration<?> e = attr.getAll();
             while (e.hasMore()) {
               final Object rawValue = e.next();

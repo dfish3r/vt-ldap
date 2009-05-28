@@ -382,14 +382,14 @@ public abstract class AbstractDsml implements Serializable
       if (entryElement.hasContent()) {
 
         // load the attr elements
-        final Iterator attrIterator = entryElement.elementIterator("attr");
+        final Iterator<?> attrIterator = entryElement.elementIterator("attr");
         while (attrIterator.hasNext()) {
           final Element attrElement = (Element) attrIterator.next();
           if (attrElement != null) {
             final String attrName = attrElement.attributeValue("name");
             if (attrName != null && attrElement.hasContent()) {
               final Attribute entryAttribute = new BasicAttribute(attrName);
-              final Iterator valueIterator = attrElement.elementIterator(
+              final Iterator<?> valueIterator = attrElement.elementIterator(
                 "value");
               while (valueIterator.hasNext()) {
                 final Element valueElement = (Element) valueIterator.next();

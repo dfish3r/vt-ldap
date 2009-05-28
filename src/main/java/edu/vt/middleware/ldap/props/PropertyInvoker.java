@@ -32,7 +32,7 @@ public class PropertyInvoker
 {
 
   /** Class to invoke methods on. */
-  private final Class clazz;
+  private final Class<?> clazz;
 
   /** Map of all properties to their getter and setter methods. */
   private final Map<String, Method[]> properties =
@@ -46,7 +46,7 @@ public class PropertyInvoker
    * @param  propertiesDomain  <code>String</code> to prepend to each setter
    * name
    */
-  public PropertyInvoker(final Class c, final String propertiesDomain)
+  public PropertyInvoker(final Class<?> c, final String propertiesDomain)
   {
     this.clazz = c;
     for (Method setterMethod : c.getMethods()) {

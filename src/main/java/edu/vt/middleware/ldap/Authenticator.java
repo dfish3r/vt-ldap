@@ -461,7 +461,7 @@ public class Authenticator extends AbstractLdap<AuthenticatorConfig>
         // authentication succeeded, perform authorization if supplied
         if (filter != null) {
           // perform ldap compare operation
-          NamingEnumeration results = null;
+          NamingEnumeration<SearchResult> results = null;
           try {
             results = ctx.search(
               dn,

@@ -19,8 +19,6 @@ import javax.naming.NamingException;
 import edu.vt.middleware.ldap.Ldap;
 import edu.vt.middleware.ldap.LdapSearch;
 import edu.vt.middleware.ldap.pool.LdapPool;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
 /**
  * <code>LdifSearch</code> queries an LDAP and returns the result as a LDIF.
@@ -33,9 +31,6 @@ import org.apache.commons.logging.LogFactory;
 
 public class LdifSearch extends LdapSearch
 {
-
-  /** Log for this class. */
-  private static final Log LOG = LogFactory.getLog(LdifSearch.class);
 
 
   /**

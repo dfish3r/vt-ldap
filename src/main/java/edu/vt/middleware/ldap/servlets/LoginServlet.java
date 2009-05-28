@@ -46,6 +46,9 @@ import org.apache.commons.logging.LogFactory;
 public final class LoginServlet extends CommonServlet
 {
 
+  /** serial version uid. */
+  private static final long serialVersionUID = -1987565072388102546L;
+
   /** Log for this class. */
   private static final Log LOG = LogFactory.getLog(LoginServlet.class);
 

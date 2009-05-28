@@ -64,6 +64,9 @@ import org.apache.commons.logging.LogFactory;
 public final class SearchServlet extends HttpServlet
 {
 
+  /** serial version uid. */
+  private static final long serialVersionUID = -507762004623806651L;
+
   /** Log for this class. */
   private static final Log LOG = LogFactory.getLog(SearchServlet.class);
 

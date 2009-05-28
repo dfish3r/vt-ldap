@@ -15,8 +15,6 @@ package edu.vt.middleware.ldap.dsml;
 
 import edu.vt.middleware.ldap.bean.LdapEntry;
 import edu.vt.middleware.ldap.bean.LdapResult;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
 /**
  * <code>DsmlResult</code> represents a DSML search result.
@@ -27,9 +25,6 @@ import org.apache.commons.logging.LogFactory;
 
 public class DsmlResult extends LdapResult
 {
-
-  /** Log for this class. */
-  private static final Log LOG = LogFactory.getLog(DsmlResult.class);
 
   /** Class for outputting version 1 DSML. */
   private Dsmlv1 dsmlv1 = new Dsmlv1();

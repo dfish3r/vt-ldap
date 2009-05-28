@@ -127,8 +127,8 @@ public class LdapLoginModule implements LoginModule
         }
       }
     }
-    this.auth = this.createAuthenticator(options);
-    this.ldap = this.createLdap(options);
+    this.auth = createAuthenticator(options);
+    this.ldap = createLdap(options);
   }
 
 

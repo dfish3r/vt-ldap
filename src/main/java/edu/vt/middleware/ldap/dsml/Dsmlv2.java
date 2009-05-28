@@ -37,6 +37,9 @@ import org.dom4j.QName;
 public final class Dsmlv2 extends AbstractDsml
 {
 
+  /** serial version uid. */
+  private static final long serialVersionUID = 4052208816312309345L;
+
   /** Log for this class. */
   private static final Log LOG = LogFactory.getLog(Dsmlv2.class);
 
@@ -108,7 +111,7 @@ public final class Dsmlv2 extends AbstractDsml
     final List<SearchResult> results = new ArrayList<SearchResult>();
 
     if (doc != null && doc.hasContent()) {
-      final Iterator entryIterator = doc.selectNodes(
+      final Iterator<?> entryIterator = doc.selectNodes(
         "/*[name()='batchResponse']" +
         "/*[name()='searchResponse']" +
         "/*[name()='searchResultEntry']").iterator();

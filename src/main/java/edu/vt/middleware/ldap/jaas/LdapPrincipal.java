@@ -23,7 +23,8 @@ import java.security.Principal;
  * @author  Middleware Services
  * @version  $Revision$ $Date$
  */
-public class LdapPrincipal implements Principal, Serializable, Comparable
+public class LdapPrincipal implements
+  Principal, Serializable, Comparable<Principal>
 {
 
   /** hash code seed. */
@@ -108,19 +109,12 @@ public class LdapPrincipal implements Principal, Serializable, Comparable
    * always less than any other object. Otherwise principals are compared
    * lexicographically on name.
    *
-   * @param  o  <code>Object</code>
+   * @param  p  <code>Principal</code>
    *
    * @return  <code>int</code>
    */
-  public int compareTo(final Object o)
+  public int compareTo(final Principal p)
   {
-    int result;
-    if (o instanceof LdapPrincipal) {
-      final Principal p = (LdapPrincipal) o;
-      result = this.name.compareTo(p.getName());
-    } else {
-      result = -1;
-    }
-    return result;
+    return this.name.compareTo(p.getName());
   }
 }
