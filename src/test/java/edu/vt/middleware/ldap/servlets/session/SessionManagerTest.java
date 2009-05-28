@@ -13,6 +13,7 @@
 */
 package edu.vt.middleware.ldap.servlets.session;
 
+import java.io.File;
 import com.meterware.httpunit.GetMethodWebRequest;
 import com.meterware.httpunit.PostMethodWebRequest;
 import com.meterware.httpunit.WebRequest;
@@ -68,11 +69,11 @@ public class SessionManagerTest
       !ldap.compare(
           testLdapEntry.getDn(),
           testLdapEntry.getDn().split(",")[0])) {
-      Thread.currentThread().sleep(100);
+      Thread.sleep(100);
     }
     ldap.close();
 
-    this.servletRunner = new ServletRunner(webXml);
+    this.servletRunner = new ServletRunner(new File(webXml));
   }
 
 

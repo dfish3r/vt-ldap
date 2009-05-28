@@ -31,6 +31,9 @@ import javax.servlet.http.HttpSession;
 public class SessionCheck extends HttpServlet
 {
 
+  /** serial version uid. */
+  private static final long serialVersionUID = 2862964801686577549L;
+
 
   /**
    * Handle all requests sent to this servlet.
@@ -48,7 +51,7 @@ public class SessionCheck extends HttpServlet
   {
     final PrintWriter out = response.getWriter();
     final HttpSession session = request.getSession();
-    final Enumeration e = session.getAttributeNames();
+    final Enumeration<?> e = session.getAttributeNames();
     while (e.hasMoreElements()) {
       final String k = (String) e.nextElement();
       out.println(k + ":" + session.getAttribute(k));

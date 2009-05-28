@@ -58,7 +58,7 @@ public class AuthenticatorCliTest
       !ldap.compare(
           testLdapEntry.getDn(),
           testLdapEntry.getDn().split(",")[0])) {
-      Thread.currentThread().sleep(100);
+      Thread.sleep(100);
     }
     ldap.close();
   }

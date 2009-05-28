@@ -148,7 +148,7 @@ public class AuthenticatorLoadTest
         !ldap.compare(
             e.getValue()[0].getDn(),
             e.getValue()[0].getDn().split(",")[0])) {
-        Thread.currentThread().sleep(100);
+        Thread.sleep(100);
       }
     }
     ldap.close();

@@ -65,7 +65,7 @@ public class LdapLoginModuleTest
       !ldap.compare(
           testLdapEntry.getDn(),
           testLdapEntry.getDn().split(",")[0])) {
-      Thread.currentThread().sleep(100);
+      Thread.sleep(100);
     }
     ldap.close();
 
@@ -178,19 +178,20 @@ public class LdapLoginModuleTest
       AssertJUnit.fail(e.getMessage());
     }
 
-    Set principals = lc.getSubject().getPrincipals(LdapPrincipal.class);
+    final Set<LdapPrincipal> principals = lc.getSubject().getPrincipals(
+      LdapPrincipal.class);
     AssertJUnit.assertEquals(principals.size(), 1);
 
-    final LdapPrincipal p = (LdapPrincipal) principals.iterator().next();
+    final LdapPrincipal p = principals.iterator().next();
     AssertJUnit.assertEquals(p.getName(), user);
 
-    principals = lc.getSubject().getPrincipals(LdapRole.class);
+    final Set<LdapRole> roles = lc.getSubject().getPrincipals(LdapRole.class);
 
-    final Iterator roleIter = principals.iterator();
+    final Iterator<LdapRole> roleIter = roles.iterator();
     final String[] checkRoles = role.split("\\|");
-    AssertJUnit.assertEquals(checkRoles.length, principals.size());
+    AssertJUnit.assertEquals(checkRoles.length, roles.size());
     while (roleIter.hasNext()) {
-      final LdapRole r = (LdapRole) roleIter.next();
+      final LdapRole r = roleIter.next();
       boolean match = false;
       for (String s : checkRoles) {
         if (s.equals(r.getName())) {
@@ -200,11 +201,11 @@ public class LdapLoginModuleTest
       AssertJUnit.assertTrue(match);
     }
 
-    final Set credentials = lc.getSubject().getPrivateCredentials(
-      LdapCredential.class);
+    final Set<LdapCredential> credentials =
+      lc.getSubject().getPrivateCredentials(LdapCredential.class);
     AssertJUnit.assertEquals(credentials.size(), 1);
 
-    final LdapCredential c = (LdapCredential) credentials.iterator().next();
+    final LdapCredential c = credentials.iterator().next();
     AssertJUnit.assertEquals(
       new String((char[]) c.getCredential()),
       credential);

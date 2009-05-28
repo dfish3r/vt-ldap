@@ -87,7 +87,7 @@ public class LdapTest
       !ldap.compare(
           testLdapEntry.getDn(),
           testLdapEntry.getDn().split(",")[0])) {
-      Thread.currentThread().sleep(100);
+      Thread.sleep(100);
     }
     ldap.close();
   }
@@ -276,7 +276,7 @@ public class LdapTest
       l.add(ncp.getName());
     }
 
-    final List expected = Arrays.asList(results.split("\\|"));
+    final List<String> expected = Arrays.asList(results.split("\\|"));
     AssertJUnit.assertTrue(l.containsAll(expected));
     ldap.close();
   }
@@ -301,8 +301,8 @@ public class LdapTest
       l.add(b.getName());
     }
 
-    final List expected = Arrays.asList(results.split("\\|"));
-    AssertJUnit.assertTrue(l.containsAll(l));
+    final List<String> expected = Arrays.asList(results.split("\\|"));
+    AssertJUnit.assertTrue(l.containsAll(expected));
     ldap.close();
   }
 

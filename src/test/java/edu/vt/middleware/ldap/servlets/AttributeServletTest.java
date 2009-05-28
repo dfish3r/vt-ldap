@@ -13,6 +13,7 @@
 */
 package edu.vt.middleware.ldap.servlets;
 
+import java.io.File;
 import com.meterware.httpunit.PostMethodWebRequest;
 import com.meterware.httpunit.WebRequest;
 import com.meterware.httpunit.WebResponse;
@@ -68,11 +69,11 @@ public class AttributeServletTest
       !ldap.compare(
           testLdapEntry.getDn(),
           testLdapEntry.getDn().split(",")[0])) {
-      Thread.currentThread().sleep(100);
+      Thread.sleep(100);
     }
     ldap.close();
 
-    this.servletRunner = new ServletRunner(webXml);
+    this.servletRunner = new ServletRunner(new File(webXml));
   }
 
 
@@ -138,6 +139,6 @@ public class AttributeServletTest
   public void prunePools()
     throws Exception
   {
-    Thread.currentThread().sleep(10000);
+    Thread.sleep(10000);
   }
 }

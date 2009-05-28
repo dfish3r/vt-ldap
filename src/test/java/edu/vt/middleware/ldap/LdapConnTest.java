@@ -38,7 +38,7 @@ public class LdapConnTest
   public void sleep(final String host, final int sleepTime)
     throws Exception
   {
-    Thread.currentThread().sleep(sleepTime);
+    Thread.sleep(sleepTime);
 
     /*
      * -- expected open connections --

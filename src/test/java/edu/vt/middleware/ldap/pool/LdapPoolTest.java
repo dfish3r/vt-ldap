@@ -212,7 +212,7 @@ public class LdapPoolTest
         !ldap.compare(
             e.getValue()[0].getDn(),
             e.getValue()[0].getDn().split(",")[0])) {
-        Thread.currentThread().sleep(100);
+        Thread.sleep(100);
       }
     }
     ldap.close();
@@ -487,7 +487,7 @@ public class LdapPoolTest
   public void softLimitMaxClean()
     throws Exception
   {
-    Thread.currentThread().sleep(10000);
+    Thread.sleep(10000);
     AssertJUnit.assertEquals(0, this.softLimitPool.activeCount());
     AssertJUnit.assertEquals(
       LdapPoolConfig.DEFAULT_MIN_POOL_SIZE,
@@ -622,7 +622,7 @@ public class LdapPoolTest
   public void blockingMaxClean()
     throws Exception
   {
-    Thread.currentThread().sleep(10000);
+    Thread.sleep(10000);
     AssertJUnit.assertEquals(0, this.blockingPool.activeCount());
     AssertJUnit.assertEquals(
       LdapPoolConfig.DEFAULT_MIN_POOL_SIZE,
@@ -736,7 +736,7 @@ public class LdapPoolTest
   public void blockingTimeoutMaxClean()
     throws Exception
   {
-    Thread.currentThread().sleep(10000);
+    Thread.sleep(10000);
     AssertJUnit.assertEquals(0, this.blockingTimeoutPool.activeCount());
     AssertJUnit.assertEquals(
       LdapPoolConfig.DEFAULT_MIN_POOL_SIZE,
@@ -871,7 +871,7 @@ public class LdapPoolTest
   public void sharedMaxClean()
     throws Exception
   {
-    Thread.currentThread().sleep(10000);
+    Thread.sleep(10000);
     AssertJUnit.assertEquals(0, this.sharedPool.activeCount());
     AssertJUnit.assertEquals(
       LdapPoolConfig.DEFAULT_MIN_POOL_SIZE,
