@@ -9,7 +9,7 @@ set JAVA=%JAVA_HOME%\bin\java
 set LDAP_JAR=%VTLDAP_HOME%\jars\vt-ldap-3.0.jar
 set LIBDIR=%VTLDAP_HOME%\lib
 
-set JAAS_OPTS=-Djava.security.auth.login.config=properties/ldap_jaas.config
+set JAAS_OPTS=-Djava.security.auth.login.config=%VTLDAP_HOME%\properties\ldap_jaas.config
 
 set CLASSPATH=%LIBDIR%\commons-cli-1.2.jar;%LIBDIR%\commons-codec-1.3.jar;%LIBDIR%\commons-logging-1.1.1.jar;%LIBDIR%\dom4j-1.6.1.jar;%LDAP_JAR%
 
