@@ -37,9 +37,8 @@ public interface LdapPool<T extends BaseLdap>
 
 
   /**
-   * Sets the pool to use an existing timer.
-   * Pool will use an internal timer if none is provided.
-   * Must be called before {@link #initialize()}.
+   * Sets the pool to use an existing timer. Pool will use an internal timer if
+   * none is provided. Must be called before {@link #initialize()}.
    *
    * @param  t  timer used to schedule pool tasks
    */

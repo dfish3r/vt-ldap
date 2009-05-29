@@ -201,8 +201,8 @@ public class LdapLoginModuleTest
       AssertJUnit.assertTrue(match);
     }
 
-    final Set<LdapCredential> credentials =
-      lc.getSubject().getPrivateCredentials(LdapCredential.class);
+    final Set<LdapCredential> credentials = lc.getSubject()
+        .getPrivateCredentials(LdapCredential.class);
     AssertJUnit.assertEquals(credentials.size(), 1);
 
     final LdapCredential c = credentials.iterator().next();

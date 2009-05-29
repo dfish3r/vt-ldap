@@ -156,8 +156,8 @@ public final class LdapConstants
   public static final String TIMEOUT = "com.sun.jndi.ldap.connect.timeout";
 
   /**
-   * Value passed to PROTOCOL to use SSL.
-   * The value of this constant is {@value}.
+   * Value passed to PROTOCOL to use SSL. The value of this constant is
+   * {@value}.
    */
   public static final String SSL_PROTOCOL = "ssl";
 

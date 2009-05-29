@@ -27,10 +27,9 @@ import org.apache.commons.logging.LogFactory;
  * ldap objects. The main design objective for the supplied pooling
  * implementations is to provide a pool that does not block on object creation
  * or destruction. This is what accounts for the multiple locks available on
- * this class.
- * The pool is backed by two queues, one for available objects and one for
- * active objects. Objects that are available for {@link #checkOut()} exist
- * in the available queue. Objects that are actively in use exist in the
+ * this class. The pool is backed by two queues, one for available objects and
+ * one for active objects. Objects that are available for {@link #checkOut()}
+ * exist in the available queue. Objects that are actively in use exist in the
  * active queue. Note that depending on the implementation an object can exist
  * in both queues at the same time.
  *

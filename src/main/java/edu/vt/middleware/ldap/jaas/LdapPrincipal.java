@@ -23,8 +23,8 @@ import java.security.Principal;
  * @author  Middleware Services
  * @version  $Revision$ $Date$
  */
-public class LdapPrincipal implements
-  Principal, Serializable, Comparable<Principal>
+public class LdapPrincipal
+  implements Principal, Serializable, Comparable<Principal>
 {
 
   /** hash code seed. */

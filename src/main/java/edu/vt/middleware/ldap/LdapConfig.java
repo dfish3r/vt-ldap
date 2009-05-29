@@ -36,12 +36,21 @@ public class LdapConfig extends AbstractPropertyConfig
 {
 
 
+  /** Domain to look for ldap properties in, value is {@value}. */
+  public static final String PROPERTIES_DOMAIN = "edu.vt.middleware.ldap.";
+
+  /** Invoker for ldap properties. */
+  private static final PropertyInvoker PROPERTIES = new PropertyInvoker(
+    LdapConfig.class,
+    PROPERTIES_DOMAIN);
+
+
   /**
-   * Enum to define the type of search scope.
-   * See {@link javax.naming.directory.SearchControls}.
+   * Enum to define the type of search scope. See {@link
+   * javax.naming.directory.SearchControls}.
    */
-  public enum SearchScope
-  {
+  public enum SearchScope {
+
     /** object level search. */
     OBJECT,
 
@@ -53,11 +62,11 @@ public class LdapConfig extends AbstractPropertyConfig
 
 
     /**
-     * Method to convert a JNDI constant value to an enum.
-     * Returns null if the supplied constant does not match
-     * a known value.
+     * Method to convert a JNDI constant value to an enum. Returns null if the
+     * supplied constant does not match a known value.
      *
      * @param  i  jndi constant
+     *
      * @return  search scope
      */
     public static SearchScope parseSearchScope(final int i)
@@ -73,15 +82,6 @@ public class LdapConfig extends AbstractPropertyConfig
       return ss;
     }
   }
-
-
-  /** Domain to look for ldap properties in, value is {@value}. */
-  public static final String PROPERTIES_DOMAIN = "edu.vt.middleware.ldap.";
-
-  /** Invoker for ldap properties. */
-  private static final PropertyInvoker PROPERTIES = new PropertyInvoker(
-    LdapConfig.class,
-    PROPERTIES_DOMAIN);
 
   /** Default context factory. */
   private String contextFactory = LdapConstants.DEFAULT_CONTEXT_FACTORY;
