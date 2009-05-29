@@ -786,7 +786,6 @@ public abstract class AbstractLdap<T extends LdapConfig> implements BaseLdap
   public void useTls(final boolean tls)
     throws NamingException
   {
-    this.config.setTls(tls);
     if (this.context != null) {
       if (tls) {
         if (this.tlsResponse == null) {
