@@ -38,6 +38,9 @@ public final class ServletConstants
   /** Format of search output, value is {@value}. */
   public static final String OUTPUT_FORMAT = PROPERTIES_DOMAIN + "outputFormat";
 
+  /** Default format of search output, value is {@value}. */
+  public static final String DEFAULT_OUTPUT_FORMAT = "DSML";
+
   /** Type of pool used, value is {@value}. */
   public static final String POOL_TYPE = PROPERTIES_DOMAIN + "poolType";
 

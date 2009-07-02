@@ -70,6 +70,19 @@ public final class SearchServlet extends HttpServlet
   /** Log for this class. */
   private static final Log LOG = LogFactory.getLog(SearchServlet.class);
 
+  /** Types of available pools. */
+  private enum PoolType {
+
+    /** blocking. */
+    BLOCKING,
+
+    /** soft limit. */
+    SOFTLIMIT,
+
+    /** shared. */
+    SHARED
+  };
+
   /** Types of available output. */
   private enum OutputType {
 
@@ -78,7 +91,7 @@ public final class SearchServlet extends HttpServlet
 
     /** DSML output type. */
     DSML
-  }
+  };
 
   /** Type of output to produce. */
   private OutputType output;
@@ -129,18 +142,20 @@ public final class SearchServlet extends HttpServlet
     if (LOG.isDebugEnabled()) {
       LOG.debug(ServletConstants.POOL_TYPE + " = " + poolType);
     }
-    if (poolType != null && poolType.equalsIgnoreCase("blocking")) {
+    if (PoolType.BLOCKING == PoolType.valueOf(poolType)) {
       ldapPool = new BlockingLdapPool(
-        ldapPoolConfig,
-        new DefaultLdapFactory(ldapConfig));
-    } else if (poolType != null && poolType.equalsIgnoreCase("softlimit")) {
+          ldapPoolConfig,
+          new DefaultLdapFactory(ldapConfig));
+    } else if (PoolType.SOFTLIMIT == PoolType.valueOf(poolType)) {
       ldapPool = new SoftLimitLdapPool(
         ldapPoolConfig,
         new DefaultLdapFactory(ldapConfig));
-    } else {
+    } else if (PoolType.SHARED == PoolType.valueOf(poolType)) {
       ldapPool = new SharedLdapPool(
         ldapPoolConfig,
         new DefaultLdapFactory(ldapConfig));
+    } else {
+      throw new ServletException("Unknown pool type: "+poolType);
     }
     ldapPool.initialize();
 
@@ -150,16 +165,14 @@ public final class SearchServlet extends HttpServlet
     this.dsmlv2Search = new DsmlSearch(ldapPool);
     this.dsmlv2Search.setVersion(DsmlSearch.Version.TWO);
 
-    final String outputFormat = getInitParameter(
-      ServletConstants.OUTPUT_FORMAT);
+    String outputType = getInitParameter(ServletConstants.OUTPUT_FORMAT);
+    if (outputType == null) {
+      outputType = ServletConstants.DEFAULT_OUTPUT_FORMAT;
+    }
     if (LOG.isDebugEnabled()) {
-      LOG.debug(ServletConstants.OUTPUT_FORMAT + " = " + outputFormat);
+      LOG.debug(ServletConstants.OUTPUT_FORMAT + " = " + outputType);
     }
-    if (outputFormat != null && outputFormat.equalsIgnoreCase("ldif")) {
-      this.output = OutputType.LDIF;
-    } else {
-      this.output = OutputType.DSML;
-    }
+    this.output = OutputType.valueOf(outputType);
   }
 
 
@@ -226,7 +239,7 @@ public final class SearchServlet extends HttpServlet
   public void destroy()
   {
     try {
-      // all search instances  share the same pool
+      // all search instances share the same pool
       // only need to close one of them
       this.ldifSearch.close();
     } finally {

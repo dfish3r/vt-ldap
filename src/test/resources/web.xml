@@ -17,11 +17,11 @@
     </init-param>
     <init-param>
       <param-name>edu.vt.middleware.ldap.servlets.poolType</param-name>
-      <param-value>shared</param-value>
+      <param-value>BLOCKING</param-value>
     </init-param>
     <init-param>
       <param-name>edu.vt.middleware.ldap.servlets.outputFormat</param-name>
-      <param-value>ldif</param-value>
+      <param-value>LDIF</param-value>
     </init-param>
   </servlet>
   <servlet>
@@ -37,11 +37,11 @@
     </init-param>
     <init-param>
       <param-name>edu.vt.middleware.ldap.servlets.poolType</param-name>
-      <param-value>shared</param-value>
+      <param-value>SOFTLIMIT</param-value>
     </init-param>
     <init-param>
       <param-name>edu.vt.middleware.ldap.servlets.outputFormat</param-name>
-      <param-value>dsml</param-value>
+      <param-value>DSML</param-value>
     </init-param>
   </servlet>
   <servlet>
@@ -57,7 +57,7 @@
     </init-param>
     <init-param>
       <param-name>edu.vt.middleware.ldap.servlets.poolType</param-name>
-      <param-value>shared</param-value>
+      <param-value>SHARED</param-value>
     </init-param>
   </servlet>
   <servlet>
