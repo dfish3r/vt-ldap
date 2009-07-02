@@ -175,9 +175,9 @@ public class LdapAttribute extends AbstractLdapBean
     if (this.name != null) {
       hc += this.name.hashCode();
     }
-    for (Object o : this.values) {
-      if (o != null) {
-        hc += o.hashCode();
+    for (String s : this.getStringValues()) {
+      if (s != null) {
+        hc += s.hashCode();
       }
     }
     return hc;
