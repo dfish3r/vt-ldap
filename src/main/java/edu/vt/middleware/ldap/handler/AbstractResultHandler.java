@@ -62,9 +62,8 @@ public abstract class AbstractResultHandler<R, O> implements ResultHandler<R, O>
 
 
   /**
-   * This will enumerate through the supplied <code>List</code> and
-   * return a List of those results. The results are unaltered and the dn is
-   * ignored.
+   * This will enumerate through the supplied <code>List</code> and return a
+   * List of those results. The results are unaltered and the dn is ignored.
    *
    * @param  sc  <code>SearchCriteria</code> used to find enumeration
    * @param  l  <code>List</code> LDAP results

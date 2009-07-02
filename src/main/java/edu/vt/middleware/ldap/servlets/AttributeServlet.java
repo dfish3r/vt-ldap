@@ -71,7 +71,7 @@ public final class AttributeServlet extends HttpServlet
 
     /** shared. */
     SHARED
-  };
+  }
 
   /** Pool to use for searching. */
   private LdapPool<Ldap> pool;
@@ -114,8 +114,8 @@ public final class AttributeServlet extends HttpServlet
     }
     if (PoolType.BLOCKING == PoolType.valueOf(poolType)) {
       this.pool = new BlockingLdapPool(
-          ldapPoolConfig,
-          new DefaultLdapFactory(ldapConfig));
+        ldapPoolConfig,
+        new DefaultLdapFactory(ldapConfig));
     } else if (PoolType.SOFTLIMIT == PoolType.valueOf(poolType)) {
       this.pool = new SoftLimitLdapPool(
         ldapPoolConfig,
@@ -125,7 +125,7 @@ public final class AttributeServlet extends HttpServlet
         ldapPoolConfig,
         new DefaultLdapFactory(ldapConfig));
     } else {
-      throw new ServletException("Unknown pool type: "+poolType);
+      throw new ServletException("Unknown pool type: " + poolType);
     }
     this.pool.initialize();
   }

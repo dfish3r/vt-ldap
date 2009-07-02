@@ -19,8 +19,8 @@ import javax.naming.directory.SearchResult;
 
 /**
  * <code>EntryDnSearchResultHandler</code> adds the search result DN as an
- * attribute to the result set.
- * Provides a client side implementation of RFC 5020.
+ * attribute to the result set. Provides a client side implementation of RFC
+ * 5020.
  *
  * @author  Middleware Services
  * @version  $Revision$ $Date$
@@ -29,14 +29,13 @@ public class EntryDnSearchResultHandler extends CopySearchResultHandler
 {
 
   /**
-   * Attribute name for the entry dn.
-   * The value of this constant is {@value}.
+   * Attribute name for the entry dn. The value of this constant is {@value}.
    */
   private String dnAttributeName = "entryDN";
 
   /**
-   * Whether to add the entry dn if an attribute of the same name exists.
-   * The value of this constant is {@value}.
+   * Whether to add the entry dn if an attribute of the same name exists. The
+   * value of this constant is {@value}.
    */
   private boolean addIfExists;
 

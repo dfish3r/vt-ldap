@@ -547,9 +547,9 @@ public abstract class AbstractLdap<T extends LdapConfig> implements BaseLdap
       if (handler != null && handler.length > 0) {
         for (int i = 0; i < handler.length; i++) {
           attrs = AttributesProcessor.executeHandler(
-              new SearchCriteria(dn),
-              attrs,
-              handler[i]);
+            new SearchCriteria(dn),
+            attrs,
+            handler[i]);
         }
       }
     } finally {

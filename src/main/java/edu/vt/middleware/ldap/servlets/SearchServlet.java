@@ -81,7 +81,7 @@ public final class SearchServlet extends HttpServlet
 
     /** shared. */
     SHARED
-  };
+  }
 
   /** Types of available output. */
   private enum OutputType {
@@ -91,7 +91,7 @@ public final class SearchServlet extends HttpServlet
 
     /** DSML output type. */
     DSML
-  };
+  }
 
   /** Type of output to produce. */
   private OutputType output;
@@ -144,8 +144,8 @@ public final class SearchServlet extends HttpServlet
     }
     if (PoolType.BLOCKING == PoolType.valueOf(poolType)) {
       ldapPool = new BlockingLdapPool(
-          ldapPoolConfig,
-          new DefaultLdapFactory(ldapConfig));
+        ldapPoolConfig,
+        new DefaultLdapFactory(ldapConfig));
     } else if (PoolType.SOFTLIMIT == PoolType.valueOf(poolType)) {
       ldapPool = new SoftLimitLdapPool(
         ldapPoolConfig,
@@ -155,7 +155,7 @@ public final class SearchServlet extends HttpServlet
         ldapPoolConfig,
         new DefaultLdapFactory(ldapConfig));
     } else {
-      throw new ServletException("Unknown pool type: "+poolType);
+      throw new ServletException("Unknown pool type: " + poolType);
     }
     ldapPool.initialize();
 

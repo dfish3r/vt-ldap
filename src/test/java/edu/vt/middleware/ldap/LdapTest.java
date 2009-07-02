@@ -185,9 +185,11 @@ public class LdapTest
     final LdapEntry shortDnEntry = TestUtil.convertLdifToEntry(expected);
     shortDnEntry.setDn(
       shortDnEntry.getDn().substring(0, shortDnEntry.getDn().indexOf(",")));
+
     final LdapEntry entryDnEntry = TestUtil.convertLdifToEntry(expected);
     entryDnEntry.getLdapAttributes().addAttribute(
-      "entryDN", entryDnEntry.getDn());
+      "entryDN",
+      entryDnEntry.getDn());
 
     // test searching
     Iterator<SearchResult> iter = ldap.search(
@@ -223,15 +225,15 @@ public class LdapTest
       entryDnEntry,
       TestUtil.convertLdifToEntry((new Ldif()).createLdif(iter)));
 
-     // test that entry dn handler is no-op if attribute name conflicts
+    // test that entry dn handler is no-op if attribute name conflicts
     srh.setDnAttributeName("givenName");
     iter = ldap.search(
-        dn,
-        filter,
-        filterArgs.split("\\|"),
-        returnAttrs.split("\\|"),
-        new FqdnSearchResultHandler(),
-        srh);
+      dn,
+      filter,
+      filterArgs.split("\\|"),
+      returnAttrs.split("\\|"),
+      new FqdnSearchResultHandler(),
+      srh);
     AssertJUnit.assertEquals(
       entry,
       TestUtil.convertLdifToEntry((new Ldif()).createLdif(iter)));

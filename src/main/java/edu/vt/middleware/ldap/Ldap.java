@@ -240,8 +240,8 @@ public class Ldap extends AbstractLdap<LdapConfig> implements Serializable
   /**
    * This will query the LDAP with the supplied dn, filter, filter arguments and
    * return attributes. See {@link
-   * #search(String,String,Object[],String[],SearchResultHandler)}. This method
-   * converts relative DNs to fully qualified DNs, no post processing is
+   * #search(String,String,Object[],String[],SearchResultHandler[])}. This
+   * method converts relative DNs to fully qualified DNs, no post processing is
    * required.
    *
    * @param  dn  <code>String</code> name to begin search at
@@ -342,7 +342,7 @@ public class Ldap extends AbstractLdap<LdapConfig> implements Serializable
   /**
    * This will query the LDAP for the supplied dn, matching attributes and
    * return attributes. All attributes will be returned. See {@link
-   * #searchAttributes( String, Attributes, String[], SearchResultHandler)}.
+   * #searchAttributes( String, Attributes, String[], SearchResultHandler[])}.
    * This method converts relative DNs to fully qualified DNs, no post
    * processing is required
    *
@@ -414,7 +414,7 @@ public class Ldap extends AbstractLdap<LdapConfig> implements Serializable
    * This will return the matching attributes associated with the supplied dn.
    * If retAttrs is null then all attributes will be returned. If retAttrs is an
    * empty array then no attributes will be returned. See {@link
-   * #getAttributes(String, String[], AttributeHandler)}.
+   * #getAttributes(String, String[], AttributeHandler[])}.
    *
    * @param  dn  <code>String</code> named object in the LDAP
    * @param  retAttrs  <code>String[]</code> attributes to return

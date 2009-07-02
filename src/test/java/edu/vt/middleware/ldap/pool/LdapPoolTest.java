@@ -165,7 +165,7 @@ public class LdapPoolTest
       "softlimitpooltest",
       "blockingpooltest",
       "sharedpooltest"
-      }
+    }
   )
   public void createPoolEntry(
     final String ldifFile2,
@@ -256,7 +256,7 @@ public class LdapPoolTest
       "softlimitpooltest",
       "blockingpooltest",
       "sharedpooltest"
-      }
+    }
   )
   public void loadPoolSearchResults(
     final String ldifFile2,
@@ -298,7 +298,7 @@ public class LdapPoolTest
       "softlimitpooltest",
       "blockingpooltest",
       "sharedpooltest"
-      }
+    }
   )
   public void deletePoolEntry()
     throws Exception
