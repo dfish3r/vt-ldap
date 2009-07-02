@@ -372,7 +372,7 @@ public class LdapPoolTest
         },
         {
           "mail=jdoe8@vt.edu",
-          "departmentNumber|givenName|sn",
+          "departmentNumber|givenName|sn|jpegPhoto",
           entries.get("8")[1],
         },
         {
