@@ -68,18 +68,12 @@ public final class Dsmlv2 extends AbstractDsml
     if (results != null) {
       try {
         while (results.hasNext()) {
-          try {
-            final SearchResult sr = results.next();
-            final Element entryElement = this.createDsmlEntry(
-              new QName("searchResultEntry", ns),
-              sr,
-              ns);
-            entriesElement.add(entryElement);
-          } catch (ClassCastException e) {
-            if (LOG.isDebugEnabled()) {
-              LOG.debug("Could not cast item in Iterator as a SearchResult");
-            }
-          }
+          final SearchResult sr = results.next();
+          final Element entryElement = this.createDsmlEntry(
+            new QName("searchResultEntry", ns),
+            sr,
+            ns);
+          entriesElement.add(entryElement);
         }
       } catch (NamingException e) {
         if (LOG.isErrorEnabled()) {

@@ -23,6 +23,7 @@ import javax.naming.directory.Attributes;
 import javax.naming.directory.BasicAttribute;
 import javax.naming.directory.BasicAttributes;
 import javax.naming.directory.SearchResult;
+import edu.vt.middleware.ldap.LdapUtil;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.dom4j.Document;
@@ -73,18 +74,12 @@ public final class Dsmlv1 extends AbstractDsml
     if (results != null) {
       try {
         while (results.hasNext()) {
-          try {
-            final SearchResult sr = results.next();
-            final Element entryElement = this.createDsmlEntry(
-              new QName("entry", ns),
-              sr,
-              ns);
-            entriesElement.add(entryElement);
-          } catch (ClassCastException e) {
-            if (LOG.isDebugEnabled()) {
-              LOG.debug("Could not cast item in Iterator as a SearchResult");
-            }
-          }
+          final SearchResult sr = results.next();
+          final Element entryElement = this.createDsmlEntry(
+            new QName("entry", ns),
+            sr,
+            ns);
+          entriesElement.add(entryElement);
         }
       } catch (NamingException e) {
         if (LOG.isErrorEnabled()) {
@@ -121,11 +116,22 @@ public final class Dsmlv1 extends AbstractDsml
         if (attrValues != null) {
           final Iterator<?> i = attrValues.iterator();
           while (i.hasNext()) {
-            final String value = (String) i.next();
+            final Object rawValue = i.next();
+            String value = null;
+            boolean isBase64 = false;
+            if (rawValue instanceof String) {
+              value = (String) rawValue;
+            } else {
+              value = LdapUtil.base64Encode(rawValue);
+              isBase64 = true;
+            }
             if (value != null) {
               final Element ocValueElement = attrElement.addElement(
                 new QName("oc-value", ns));
               ocValueElement.addText(value);
+              if (isBase64) {
+                ocValueElement.addAttribute("encoding", "base64");
+              }
             }
           }
         }

@@ -155,11 +155,11 @@
   <parameter name="webXml" value="src/test/resources/web.xml"/>
 
   <parameter name="ldifSearchServletQuery" value="mail=jdoe8@vt.edu"/>
-  <parameter name="ldifSearchServletAttrs" value="departmentNumber|givenName|sn"/>
+  <parameter name="ldifSearchServletAttrs" value="departmentNumber|givenName|sn|jpegPhoto"/>
   <parameter name="ldifSearchServletLdif" value="/edu/vt/middleware/ldap/searchResults-8.ldif"/>
 
   <parameter name="dsmlSearchServletQuery" value="uid=8"/>
-  <parameter name="dsmlSearchServletAttrs" value="departmentNumber|givenName|sn"/>
+  <parameter name="dsmlSearchServletAttrs" value="departmentNumber|givenName|sn|jpegPhoto"/>
   <parameter name="dsmlSearchServletLdif" value="/edu/vt/middleware/ldap/searchResults-8.ldif"/>
 
   <parameter name="attributeServletQuery" value="(&amp;(givenName=johu)(sn=dol))"/>

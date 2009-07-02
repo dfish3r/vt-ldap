@@ -30,6 +30,7 @@ import javax.naming.directory.Attributes;
 import javax.naming.directory.BasicAttribute;
 import javax.naming.directory.BasicAttributes;
 import javax.naming.directory.SearchResult;
+import edu.vt.middleware.ldap.LdapUtil;
 import edu.vt.middleware.ldap.bean.LdapAttribute;
 import edu.vt.middleware.ldap.bean.LdapEntry;
 import org.apache.commons.logging.Log;
@@ -159,11 +160,22 @@ public abstract class AbstractDsml implements Serializable
       if (attrValues != null) {
         final Iterator<?> i = attrValues.iterator();
         while (i.hasNext()) {
-          final String value = (String) i.next();
+          final Object rawValue = i.next();
+          String value = null;
+          boolean isBase64 = false;
+          if (rawValue instanceof String) {
+            value = (String) rawValue;
+          } else {
+            value = LdapUtil.base64Encode(rawValue);
+            isBase64 = true;
+          }
           if (value != null) {
             final Element valueElement = attrElement.addElement(
               new QName("value", ns));
             valueElement.addText(value);
+            if (isBase64) {
+              valueElement.addAttribute("encoding", "base64");
+            }
           }
         }
       }
