@@ -13,7 +13,9 @@
 */
 package edu.vt.middleware.ldap.servlets;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.InputStream;
 import com.meterware.httpunit.PostMethodWebRequest;
 import com.meterware.httpunit.WebRequest;
 import com.meterware.httpunit.WebResponse;
@@ -125,9 +127,23 @@ public class AttributeServletTest
     AssertJUnit.assertEquals(
       "attachment; filename=\"" + attr + ".bin\"",
       response.getHeaderField("Content-Disposition"));
+
+    final InputStream input = response.getInputStream();
+    final ByteArrayOutputStream data = new ByteArrayOutputStream();
+    if (input != null) {
+      try {
+        final byte[] buffer = new byte[128];
+        int length;
+        while ((length = input.read(buffer)) != -1) {
+          data.write(buffer, 0, length);
+        }
+      } finally {
+        data.close();
+      }
+    }
     AssertJUnit.assertEquals(
       attributeValue,
-      LdapUtil.base64Encode(response.getText().getBytes()));
+      LdapUtil.base64Encode(data.toByteArray()));
   }
 
 
