@@ -181,7 +181,7 @@ public abstract class AbstractLdap<T extends LdapConfig> implements BaseLdap
    * @param  filterArgs  <code>Object[]</code> to substitute for variables in
    * the filter
    * @param  retAttrs  <code>String[]</code> attributes to return
-   * @param  handler  <code>SearchResultHandler</code> to post process results
+   * @param  handler  <code>SearchResultHandler[]</code> to post process results
    *
    * @return  <code>Iterator</code> - of LDAP search results
    *
@@ -192,7 +192,7 @@ public abstract class AbstractLdap<T extends LdapConfig> implements BaseLdap
     final String filter,
     final Object[] filterArgs,
     final String[] retAttrs,
-    final SearchResultHandler handler)
+    final SearchResultHandler... handler)
     throws NamingException
   {
     if (this.logger.isDebugEnabled()) {
@@ -219,7 +219,7 @@ public abstract class AbstractLdap<T extends LdapConfig> implements BaseLdap
           this.logger.debug("    " + Arrays.asList(retAttrs));
         }
       }
-      this.logger.debug("  handler = " + handler);
+      this.logger.debug("  handler = " + Arrays.asList(handler));
       if (this.logger.isTraceEnabled()) {
         this.logger.trace("  config = " + this.config.getEnvironment());
       }
@@ -255,8 +255,14 @@ public abstract class AbstractLdap<T extends LdapConfig> implements BaseLdap
       sc.setFilter(filter);
       sc.setFilterArgs(filterArgs);
       sc.setReturnAttrs(retAttrs);
-      if (handler != null) {
-        results = handler.process(sc, en);
+      if (handler != null && handler.length > 0) {
+        for (int i = 0; i < handler.length; i++) {
+          if (i == 0) {
+            results = handler[i].process(sc, en);
+          } else {
+            results = handler[i].process(sc, results);
+          }
+        }
       } else {
         results = SR_COPY_RESULT_HANDLER.process(sc, en);
       }
@@ -284,7 +290,7 @@ public abstract class AbstractLdap<T extends LdapConfig> implements BaseLdap
    * @param  dn  <code>String</code> name to search in
    * @param  matchAttrs  <code>Attributes</code> attributes to match
    * @param  retAttrs  <code>String[]</code> attributes to return
-   * @param  handler  <code>SearchResultHandler</code> to post process results
+   * @param  handler  <code>SearchResultHandler[]</code> to post process results
    *
    * @return  <code>Iterator</code> - of LDAP search results
    *
@@ -294,7 +300,7 @@ public abstract class AbstractLdap<T extends LdapConfig> implements BaseLdap
     final String dn,
     final Attributes matchAttrs,
     final String[] retAttrs,
-    final SearchResultHandler handler)
+    final SearchResultHandler... handler)
     throws NamingException
   {
     if (this.logger.isDebugEnabled()) {
@@ -311,7 +317,7 @@ public abstract class AbstractLdap<T extends LdapConfig> implements BaseLdap
           this.logger.debug("    " + Arrays.asList(retAttrs));
         }
       }
-      this.logger.debug("  handler = " + handler);
+      this.logger.debug("  handler = " + Arrays.asList(handler));
       if (this.logger.isTraceEnabled()) {
         this.logger.trace("  config = " + this.config.getEnvironment());
       }
@@ -342,8 +348,14 @@ public abstract class AbstractLdap<T extends LdapConfig> implements BaseLdap
       final SearchCriteria sc = new SearchCriteria(dn);
       sc.setMatchAttrs(matchAttrs);
       sc.setReturnAttrs(retAttrs);
-      if (handler != null) {
-        results = handler.process(sc, en);
+      if (handler != null && handler.length > 0) {
+        for (int i = 0; i < handler.length; i++) {
+          if (i == 0) {
+            results = handler[i].process(sc, en);
+          } else {
+            results = handler[i].process(sc, results);
+          }
+        }
       } else {
         results = SR_COPY_RESULT_HANDLER.process(sc, en);
       }
@@ -480,7 +492,7 @@ public abstract class AbstractLdap<T extends LdapConfig> implements BaseLdap
    *
    * @param  dn  <code>String</code> named object in the LDAP
    * @param  retAttrs  <code>String[]</code> attributes to return
-   * @param  handler  <code>AttributeHandler</code> to post process results
+   * @param  handler  <code>AttributeHandler[]</code> to post process results
    *
    * @return  <code>Attributes</code>
    *
@@ -489,7 +501,7 @@ public abstract class AbstractLdap<T extends LdapConfig> implements BaseLdap
   protected Attributes getAttributes(
     final String dn,
     final String[] retAttrs,
-    final AttributeHandler handler)
+    final AttributeHandler... handler)
     throws NamingException
   {
     if (this.logger.isDebugEnabled()) {
@@ -505,7 +517,7 @@ public abstract class AbstractLdap<T extends LdapConfig> implements BaseLdap
           this.logger.debug("    " + Arrays.asList(retAttrs));
         }
       }
-      this.logger.debug("  handler = " + handler);
+      this.logger.debug("  handler = " + Arrays.asList(handler));
       if (this.logger.isTraceEnabled()) {
         this.logger.trace("  config = " + this.config.getEnvironment());
       }
@@ -532,11 +544,13 @@ public abstract class AbstractLdap<T extends LdapConfig> implements BaseLdap
         }
       }
 
-      if (handler != null) {
-        attrs = AttributesProcessor.executeHandler(
-          new SearchCriteria(dn),
-          attrs,
-          handler);
+      if (handler != null && handler.length > 0) {
+        for (int i = 0; i < handler.length; i++) {
+          attrs = AttributesProcessor.executeHandler(
+              new SearchCriteria(dn),
+              attrs,
+              handler[i]);
+        }
       }
     } finally {
       if (ctx != null) {

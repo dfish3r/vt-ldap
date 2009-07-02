@@ -271,7 +271,7 @@ public class Ldap extends AbstractLdap<LdapConfig> implements Serializable
     final String filter,
     final Object[] filterArgs,
     final String[] retAttrs,
-    final SearchResultHandler handler)
+    final SearchResultHandler... handler)
     throws NamingException
   {
     return super.search(dn, filter, filterArgs, retAttrs, handler);
@@ -370,7 +370,7 @@ public class Ldap extends AbstractLdap<LdapConfig> implements Serializable
     final String dn,
     final Attributes matchAttrs,
     final String[] retAttrs,
-    final SearchResultHandler handler)
+    final SearchResultHandler... handler)
     throws NamingException
   {
     return super.searchAttributes(dn, matchAttrs, retAttrs, handler);
@@ -426,7 +426,7 @@ public class Ldap extends AbstractLdap<LdapConfig> implements Serializable
   public Attributes getAttributes(final String dn, final String[] retAttrs)
     throws NamingException
   {
-    return this.getAttributes(dn, retAttrs, null);
+    return this.getAttributes(dn, retAttrs, new AttributeHandler[0]);
   }
 
 
@@ -434,7 +434,7 @@ public class Ldap extends AbstractLdap<LdapConfig> implements Serializable
   public Attributes getAttributes(
     final String dn,
     final String[] retAttrs,
-    final AttributeHandler handler)
+    final AttributeHandler... handler)
     throws NamingException
   {
     return super.getAttributes(dn, retAttrs, handler);

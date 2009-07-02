@@ -42,4 +42,18 @@ public interface ResultHandler<R, O>
    */
   List<O> process(SearchCriteria sc, NamingEnumeration<? extends R> en)
     throws NamingException;
+
+
+  /**
+   * Process the results from a ldap search.
+   *
+   * @param  sc  <code>SearchCriteria</code> used to perform the search
+   * @param  l  <code>List</code> of search results
+   *
+   * @return  <code>List</code> of result objects
+   *
+   * @throws  NamingException  if the LDAP returns an error
+   */
+  List<O> process(SearchCriteria sc, List<? extends R> l)
+    throws NamingException;
 }

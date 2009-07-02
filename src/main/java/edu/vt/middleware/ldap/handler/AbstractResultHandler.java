@@ -62,6 +62,34 @@ public abstract class AbstractResultHandler<R, O> implements ResultHandler<R, O>
 
 
   /**
+   * This will enumerate through the supplied <code>List</code> and
+   * return a List of those results. The results are unaltered and the dn is
+   * ignored.
+   *
+   * @param  sc  <code>SearchCriteria</code> used to find enumeration
+   * @param  l  <code>List</code> LDAP results
+   *
+   * @return  <code>List</code> - LDAP results
+   *
+   * @throws  NamingException  if the LDAP returns an error
+   */
+  public List<O> process(final SearchCriteria sc, final List<? extends R> l)
+    throws NamingException
+  {
+    final List<O> results = new ArrayList<O>();
+    if (l != null) {
+      for (R r : l) {
+        final O o = processResult(sc, r);
+        if (o != null) {
+          results.add(o);
+        }
+      }
+    }
+    return results;
+  }
+
+
+  /**
    * Processes the supplied result.
    *
    * @param  sc  <code>SearchCriteria</code> used to retrieve the result
