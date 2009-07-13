@@ -165,9 +165,15 @@ public abstract class AbstractDsml implements Serializable
           boolean isBase64 = false;
           if (rawValue instanceof String) {
             value = (String) rawValue;
-          } else {
+          } else if (rawValue instanceof byte[]) {
             value = LdapUtil.base64Encode(rawValue);
             isBase64 = true;
+          } else {
+            if (LOG.isWarnEnabled()) {
+              LOG.warn(
+                "Could not cast attribute value as a byte[]" +
+                " or a String");
+            }
           }
           if (value != null) {
             final Element valueElement = attrElement.addElement(
