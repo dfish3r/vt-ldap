@@ -195,7 +195,7 @@ public final class LdapUtil
 
   /**
    * This will convert the supplied value to a base64 encoded string if it is of
-   * type byte[]. Returns the suppied value if it is of type String. Returns
+   * type byte[]. Returns the supplied value if it is of type String. Returns
    * null if the supplied value is not of type String or byte[].
    *
    * @param  value  <code>Object</code> to base64 encode
