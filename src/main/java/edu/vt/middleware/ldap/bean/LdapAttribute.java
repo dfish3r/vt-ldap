@@ -130,11 +130,20 @@ public class LdapAttribute extends AbstractLdapBean
    */
   public List<String> getStringValues()
   {
-    final List<String> encodedValues = new ArrayList<String>();
+    final List<String> stringValues = new ArrayList<String>();
     for (Object o : this.values) {
-      encodedValues.add(LdapUtil.base64Encode(o));
+      if (o != null) {
+        if (o instanceof String) {
+          stringValues.add((String) o);
+        } else if (o instanceof byte[]) {
+          final String encodedValue = LdapUtil.base64Encode((byte[]) o);
+          if (encodedValue != null) {
+            stringValues.add(encodedValue);
+          }
+        }
+      }
     }
-    return encodedValues;
+    return stringValues;
   }
 
 

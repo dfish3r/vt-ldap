@@ -16,15 +16,14 @@ package edu.vt.middleware.ldap.ldif;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.Serializable;
-import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.util.Iterator;
 import javax.naming.NamingException;
 import javax.naming.directory.SearchResult;
 import edu.vt.middleware.ldap.LdapConstants;
+import edu.vt.middleware.ldap.LdapUtil;
 import edu.vt.middleware.ldap.bean.LdapAttribute;
 import edu.vt.middleware.ldap.bean.LdapEntry;
-import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -134,19 +133,12 @@ public class Ldif implements Serializable
     if (result != null) {
 
       final LdapEntry ldapEntry = new LdapEntry(result);
-      String dn = ldapEntry.getDn();
+      final String dn = ldapEntry.getDn();
       if (dn != null) {
         if (encodeData(dn)) {
-          try {
-            dn = new String(
-              Base64.encodeBase64(dn.getBytes(LdapConstants.DEFAULT_CHARSET)),
-              LdapConstants.DEFAULT_CHARSET);
+          final String encodedDn = LdapUtil.base64Encode(dn);
+          if (encodedDn != null) {
             entry.append("dn:: ").append(dn).append(LINE_SEPARATOR);
-          } catch (UnsupportedEncodingException e) {
-            if (LOG.isErrorEnabled()) {
-              LOG.error(
-                "Could not encode dn using " + LdapConstants.DEFAULT_CHARSET);
-            }
           }
         } else {
           entry.append("dn: ").append(dn).append(LINE_SEPARATOR);
@@ -157,35 +149,21 @@ public class Ldif implements Serializable
         final String attrName = attr.getName();
         for (Object attrValue : attr.getValues()) {
           if (encodeData(attrValue)) {
-            try {
-              if (attrValue instanceof String) {
-                final String attrValueString = (String) attrValue;
-                attrValue = new String(
-                  Base64.encodeBase64(
-                    attrValueString.getBytes(LdapConstants.DEFAULT_CHARSET)),
-                  LdapConstants.DEFAULT_CHARSET);
-                entry.append(attrName).append(":: ").append(attrValue).append(
-                  LINE_SEPARATOR);
-              } else if (attrValue instanceof byte[]) {
-                final byte[] attrValueBytes = (byte[]) attrValue;
-                attrValue = new String(
-                  Base64.encodeBase64(attrValueBytes),
-                  LdapConstants.DEFAULT_CHARSET);
-                entry.append(attrName).append(":: ").append(attrValue).append(
-                  LINE_SEPARATOR);
-              } else {
-                if (LOG.isWarnEnabled()) {
-                  LOG.warn(
-                    "Could not cast attribute value as a byte[]" +
-                    " or a String");
-                }
+            String encodedAttrValue = null;
+            if (attrValue instanceof String) {
+              encodedAttrValue = LdapUtil.base64Encode((String) attrValue);
+            } else if (attrValue instanceof byte[]) {
+              encodedAttrValue = LdapUtil.base64Encode((byte[]) attrValue);
+            } else {
+              if (LOG.isWarnEnabled()) {
+                LOG.warn(
+                  "Could not cast attribute value as a byte[]" +
+                  " or a String");
               }
-            } catch (UnsupportedEncodingException e) {
-              if (LOG.isErrorEnabled()) {
-                LOG.error(
-                  "Could not encode attribute value using " +
-                  LdapConstants.DEFAULT_CHARSET);
-              }
+            }
+            if (encodedAttrValue != null) {
+              entry.append(attrName).append(":: ").append(
+                encodedAttrValue).append(LINE_SEPARATOR);
             }
           } else {
             try {

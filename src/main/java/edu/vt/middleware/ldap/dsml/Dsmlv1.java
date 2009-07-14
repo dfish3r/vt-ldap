@@ -122,7 +122,7 @@ public final class Dsmlv1 extends AbstractDsml
             if (rawValue instanceof String) {
               value = (String) rawValue;
             } else if (rawValue instanceof byte[]) {
-              value = LdapUtil.base64Encode(rawValue);
+              value = LdapUtil.base64Encode((byte[]) rawValue);
               isBase64 = true;
             } else {
               if (LOG.isWarnEnabled()) {

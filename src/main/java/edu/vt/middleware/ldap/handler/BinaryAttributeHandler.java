@@ -36,6 +36,10 @@ public class BinaryAttributeHandler extends CopyAttributeHandler
    */
   protected Object processValue(final SearchCriteria sc, final Object value)
   {
-    return LdapUtil.base64Encode(value);
+    if (value instanceof byte[]) {
+      return LdapUtil.base64Encode((byte[]) value);
+    } else {
+      return value;
+    }
   }
 }

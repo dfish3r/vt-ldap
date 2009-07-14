@@ -194,36 +194,51 @@ public final class LdapUtil
 
 
   /**
-   * This will convert the supplied value to a base64 encoded string if it is of
-   * type byte[]. Returns the supplied value if it is of type String. Returns
-   * null if the supplied value is not of type String or byte[].
+   * This will convert the supplied value to a base64 encoded string.
+   * Returns null if the bytes cannot be encoded.
    *
-   * @param  value  <code>Object</code> to base64 encode
+   * @param  value  <code>byte[]</code> to base64 encode
    *
    * @return  <code>String</code>
    */
-  public static String base64Encode(final Object value)
+  public static String base64Encode(final byte[] value)
   {
     String encodedValue = null;
     if (value != null) {
-      if (value instanceof String) {
-        encodedValue = (String) value;
-      } else if (value instanceof byte[]) {
-        final byte[] valueBytes = (byte[]) value;
-        try {
-          encodedValue = new String(
-            Base64.encodeBase64(valueBytes),
-            LdapConstants.DEFAULT_CHARSET);
-        } catch (UnsupportedEncodingException e) {
-          if (LOG.isErrorEnabled()) {
-            LOG.error(
-              "Could not encode attribute value using " +
-              LdapConstants.DEFAULT_CHARSET);
-          }
+      try {
+        encodedValue = new String(
+          Base64.encodeBase64(value),
+          LdapConstants.DEFAULT_CHARSET);
+      } catch (UnsupportedEncodingException e) {
+        if (LOG.isErrorEnabled()) {
+          LOG.error(
+            "Could not encode value using " + LdapConstants.DEFAULT_CHARSET);
         }
-      } else {
-        if (LOG.isWarnEnabled()) {
-          LOG.warn("Could not cast value as a byte[] or a String");
+      }
+    }
+    return encodedValue;
+  }
+
+
+  /**
+   * This will convert the supplied value to a base64 encoded string.
+   * Returns null if the string cannot be encoded.
+   *
+   * @param  value  <code>String</code> to base64 encode
+   *
+   * @return  <code>String</code>
+   */
+  public static String base64Encode(final String value)
+  {
+    String encodedValue = null;
+    if (value != null) {
+      try {
+        encodedValue = base64Encode(
+          value.getBytes(LdapConstants.DEFAULT_CHARSET));
+      } catch (UnsupportedEncodingException e) {
+        if (LOG.isErrorEnabled()) {
+          LOG.error(
+            "Could not encode value using " + LdapConstants.DEFAULT_CHARSET);
         }
       }
     }

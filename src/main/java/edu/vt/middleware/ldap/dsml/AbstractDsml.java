@@ -166,7 +166,7 @@ public abstract class AbstractDsml implements Serializable
           if (rawValue instanceof String) {
             value = (String) rawValue;
           } else if (rawValue instanceof byte[]) {
-            value = LdapUtil.base64Encode(rawValue);
+            value = LdapUtil.base64Encode((byte[]) rawValue);
             isBase64 = true;
           } else {
             if (LOG.isWarnEnabled()) {
