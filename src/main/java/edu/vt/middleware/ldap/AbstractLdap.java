@@ -33,7 +33,6 @@ import javax.naming.ldap.StartTlsResponse;
 import edu.vt.middleware.ldap.handler.AttributeHandler;
 import edu.vt.middleware.ldap.handler.AttributesProcessor;
 import edu.vt.middleware.ldap.handler.CopyResultHandler;
-import edu.vt.middleware.ldap.handler.FqdnSearchResultHandler;
 import edu.vt.middleware.ldap.handler.SearchCriteria;
 import edu.vt.middleware.ldap.handler.SearchResultHandler;
 import org.apache.commons.logging.Log;
@@ -66,10 +65,6 @@ public abstract class AbstractLdap<T extends LdapConfig> implements BaseLdap
   /** Default copy result handler. */
   protected static final CopyResultHandler<Object> COPY_RESULT_HANDLER =
     new CopyResultHandler<Object>();
-
-  /** Default search result handler, used if none configured. */
-  protected static final SearchResultHandler SEARCH_RESULT_HANDLER =
-    new FqdnSearchResultHandler();
 
   /** Log for this class. */
   protected final Log logger = LogFactory.getLog(this.getClass());

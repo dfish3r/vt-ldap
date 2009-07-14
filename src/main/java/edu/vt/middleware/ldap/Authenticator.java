@@ -155,14 +155,14 @@ public class Authenticator extends AbstractLdap<AuthenticatorConfig>
             searchFilter.toString(),
             null,
             new String[] {},
-            SEARCH_RESULT_HANDLER);
+            this.config.getSearchResultHandlers());
         } else {
           for (int i = 0; i < this.config.getUserField().length; i++) {
             answer = this.searchAttributes(
               this.config.getBase(),
               new BasicAttributes(this.config.getUserField()[i], user),
               new String[] {},
-              SEARCH_RESULT_HANDLER);
+              this.config.getSearchResultHandlers());
             if (answer != null && answer.hasNext()) {
               break;
             }

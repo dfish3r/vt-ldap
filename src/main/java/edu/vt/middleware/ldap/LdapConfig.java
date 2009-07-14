@@ -21,6 +21,8 @@ import java.util.Map;
 import javax.naming.directory.SearchControls;
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLSocketFactory;
+import edu.vt.middleware.ldap.handler.FqdnSearchResultHandler;
+import edu.vt.middleware.ldap.handler.SearchResultHandler;
 import edu.vt.middleware.ldap.props.AbstractPropertyConfig;
 import edu.vt.middleware.ldap.props.LdapProperties;
 import edu.vt.middleware.ldap.props.PropertyInvoker;
@@ -157,6 +159,10 @@ public class LdapConfig extends AbstractPropertyConfig
 
   /** Additional attributes that should be considered binary. */
   private String binaryAttributes;
+
+  /** Handlers to process search results. */
+  private SearchResultHandler[] searchResultHandlers = new SearchResultHandler[]
+  {new FqdnSearchResultHandler()};
 
   /** SASL authorization ID. */
   private String saslAuthorizationId;
@@ -792,6 +798,17 @@ public class LdapConfig extends AbstractPropertyConfig
 
 
   /**
+   * This returns the handlers to use for processing search results.
+   *
+   * @return  <code>SearchResultHandler[]</code>
+   */
+  public SearchResultHandler[] getSearchResultHandlers()
+  {
+    return this.searchResultHandlers;
+  }
+
+
+  /**
    * This returns ths SASL authorization id for the <code>LdapConfig</code>.
    *
    * @return  <code>String</code> - authorization id
@@ -1294,6 +1311,18 @@ public class LdapConfig extends AbstractPropertyConfig
     checkImmutable();
     checkStringInput(binaryAttributes, true);
     this.binaryAttributes = binaryAttributes;
+  }
+
+
+  /**
+   * This sets the handlers for processing search results.
+   *
+   * @param  handlers  <code>SearchResultHandler[]</code>
+   */
+  public void setSearchResultHandlers(final SearchResultHandler[] handlers)
+  {
+    checkImmutable();
+    this.searchResultHandlers = handlers;
   }
 
 

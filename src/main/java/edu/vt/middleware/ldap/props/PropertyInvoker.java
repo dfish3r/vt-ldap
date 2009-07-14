@@ -13,6 +13,7 @@
 */
 package edu.vt.middleware.ldap.props;
 
+import java.lang.reflect.Array;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
@@ -20,6 +21,7 @@ import java.util.Map;
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLSocketFactory;
 import edu.vt.middleware.ldap.LdapConfig;
+import edu.vt.middleware.ldap.handler.SearchResultHandler;
 
 /**
  * <code>PropertyInvoker</code> stores setter methods for a class to make method
@@ -112,6 +114,16 @@ public class PropertyInvoker
       } else if (
         HostnameVerifier.class.isAssignableFrom(getter.getReturnType())) {
         newValue = instantiateType(HostnameVerifier.class, value);
+      } else if (
+        SearchResultHandler[].class.isAssignableFrom(getter.getReturnType())) {
+        final String[] classes = value.split(",");
+        newValue = Array.newInstance(SearchResultHandler.class, classes.length);
+        for (int i = 0; i < classes.length; i++) {
+          Array.set(
+            newValue,
+            i,
+            instantiateType(SearchResultHandler.class, classes[i]));
+        }
       } else if (getter.getReturnType().isEnum()) {
         if (LdapConfig.SearchScope.class == getter.getReturnType()) {
           newValue = Enum.valueOf(LdapConfig.SearchScope.class, value);
