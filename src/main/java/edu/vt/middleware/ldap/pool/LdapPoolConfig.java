@@ -13,6 +13,7 @@
 */
 package edu.vt.middleware.ldap.pool;
 
+import java.io.InputStream;
 import edu.vt.middleware.ldap.props.AbstractPropertyConfig;
 import edu.vt.middleware.ldap.props.LdapProperties;
 import edu.vt.middleware.ldap.props.PropertyInvoker;
@@ -332,19 +333,19 @@ public class LdapPoolConfig extends AbstractPropertyConfig
 
   /**
    * Create an instance of this class initialized with properties from the
-   * properties file. If propertiesFile is null, load properties from the
+   * input stream. If the input stream is null, load properties from the
    * default properties file.
    *
-   * @param  propertiesFile  to load properties from
+   * @param  is  to load properties from
    *
    * @return  <code>LdapPoolConfig</code> initialized ldap pool config
    */
-  public static LdapPoolConfig createFromProperties(final String propertiesFile)
+  public static LdapPoolConfig createFromProperties(final InputStream is)
   {
     final LdapPoolConfig poolConfig = new LdapPoolConfig();
     LdapProperties properties = null;
-    if (propertiesFile != null) {
-      properties = new LdapProperties(poolConfig, propertiesFile);
+    if (is != null) {
+      properties = new LdapProperties(poolConfig, is);
     } else {
       properties = new LdapProperties(poolConfig);
     }

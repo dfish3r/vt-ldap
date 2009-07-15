@@ -13,6 +13,7 @@
 */
 package edu.vt.middleware.ldap;
 
+import java.io.InputStream;
 import java.io.PrintStream;
 import java.util.Collections;
 import java.util.HashMap;
@@ -1395,19 +1396,19 @@ public class LdapConfig extends AbstractPropertyConfig
 
   /**
    * Create an instance of this class initialized with properties from the
-   * properties file. If propertiesFile is null, load properties from the
+   * input stream. If the input stream is null, load properties from the
    * default properties file.
    *
-   * @param  propertiesFile  to load properties from
+   * @param  is  to load properties from
    *
    * @return  <code>LdapPoolConfig</code> initialized ldap pool config
    */
-  public static LdapConfig createFromProperties(final String propertiesFile)
+  public static LdapConfig createFromProperties(final InputStream is)
   {
     final LdapConfig ldapConfig = new LdapConfig();
     LdapProperties properties = null;
-    if (propertiesFile != null) {
-      properties = new LdapProperties(ldapConfig, propertiesFile);
+    if (is != null) {
+      properties = new LdapProperties(ldapConfig, is);
     } else {
       properties = new LdapProperties(ldapConfig);
     }

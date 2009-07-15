@@ -13,6 +13,7 @@
 */
 package edu.vt.middleware.ldap.pool;
 
+import java.io.InputStream;
 import javax.naming.NamingException;
 import edu.vt.middleware.ldap.Ldap;
 import edu.vt.middleware.ldap.LdapConfig;
@@ -48,13 +49,13 @@ public class DefaultLdapFactory extends AbstractLdapFactory<Ldap>
 
   /**
    * This creates a new <code>DefaultLdapFactory</code> with the supplied
-   * properties file, which must be located in your classpath.
+   * input stream.
    *
-   * @param  propertiesFile  <code>String</code>
+   * @param  is  <code>InputStream</code>
    */
-  public DefaultLdapFactory(final String propertiesFile)
+  public DefaultLdapFactory(final InputStream is)
   {
-    this.config = LdapConfig.createFromProperties(propertiesFile);
+    this.config = LdapConfig.createFromProperties(is);
     this.config.makeImmutable();
     this.validator = new ConnectLdapValidator();
   }

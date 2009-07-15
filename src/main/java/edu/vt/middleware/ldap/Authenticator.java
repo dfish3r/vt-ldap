@@ -13,6 +13,7 @@
 */
 package edu.vt.middleware.ldap;
 
+import java.io.InputStream;
 import java.util.Arrays;
 import java.util.Iterator;
 import javax.naming.AuthenticationException;
@@ -89,15 +90,13 @@ public class Authenticator extends AbstractLdap<AuthenticatorConfig>
 
   /**
    * This will set the config parameters of this <code>Authenticator</code>
-   * using the supplied properties file, which must be located in your
-   * classpath.
+   * using the supplied input stream.
    *
-   * @param  propertiesFile  <code>String</code>
+   * @param  is  <code>InputStream</code>
    */
-  public void loadFromProperties(final String propertiesFile)
+  public void loadFromProperties(final InputStream is)
   {
-    this.setAuthenticatorConfig(
-      AuthenticatorConfig.createFromProperties(propertiesFile));
+    this.setAuthenticatorConfig(AuthenticatorConfig.createFromProperties(is));
   }
 
 

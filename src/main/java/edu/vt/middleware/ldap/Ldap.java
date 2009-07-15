@@ -13,6 +13,7 @@
 */
 package edu.vt.middleware.ldap;
 
+import java.io.InputStream;
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Iterator;
@@ -88,13 +89,13 @@ public class Ldap extends AbstractLdap<LdapConfig> implements Serializable
 
   /**
    * This will set the config parameters of this <code>Ldap</code> using the
-   * supplied properties file, which must be located in your classpath.
+   * supplied input stream.
    *
-   * @param  propertiesFile  <code>String</code>
+   * @param  is  <code>InputStream</code>
    */
-  public void loadFromProperties(final String propertiesFile)
+  public void loadFromProperties(final InputStream is)
   {
-    this.setLdapConfig(LdapConfig.createFromProperties(propertiesFile));
+    this.setLdapConfig(LdapConfig.createFromProperties(is));
   }
 
 

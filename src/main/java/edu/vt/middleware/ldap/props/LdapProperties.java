@@ -13,11 +13,8 @@
 */
 package edu.vt.middleware.ldap.props;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URI;
 import java.util.Properties;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -46,9 +43,6 @@ public final class LdapProperties
   /** Underlying properties. */
   private Properties config;
 
-  /** Configured file to read properties from. */
-  private String propertiesFile;
-
 
   /**
    * This will create a new <code>LdapProperties</code> for the supplied
@@ -68,85 +62,47 @@ public final class LdapProperties
    * properties properties config and file.
    *
    * @param  pc  object to set properties for
-   * @param  propertiesFile  <code>String</code> of classpath resource or
-   * filename
+   * @param  is  <code>InputStream</code> containing properties
    */
-  public LdapProperties(final PropertyConfig pc, final String propertiesFile)
+  public LdapProperties(final PropertyConfig pc, final InputStream is)
   {
     this.propertyConfig = pc;
-    this.usePropertiesFile(propertiesFile);
+    this.useProperties(is);
   }
 
 
   /** This will load properties from the default properties file. */
   public void useDefaultPropertiesFile()
   {
-    this.usePropertiesFile(PROPERTIES_FILE);
+    this.useProperties(
+      LdapProperties.class.getResourceAsStream(PROPERTIES_FILE));
   }
 
 
   /**
-   * This will load properties from the supplied properties file.
+   * This will load properties from the supplied input stream.
    *
-   * @param  propertiesFile  <code>String</code> of classpath resource or
-   * filename
+   * @param  is  <code>InputStream</code> containing properties
    */
-  public void usePropertiesFile(final String propertiesFile)
+  public void useProperties(final InputStream is)
   {
-    this.propertiesFile = propertiesFile;
     if (this.config == null) {
-      this.config = loadProperties(this.propertiesFile);
+      this.config = loadProperties(is);
     } else {
-      this.config.putAll(loadProperties(this.propertiesFile));
+      this.config.putAll(loadProperties(is));
     }
   }
 
 
   /**
-   * This creates a <code>Properties</code> from the supplied properties file.
+   * This creates a <code>Properties</code> from the supplied input stream.
    *
-   * @param  propertiesFile  <code>String</code>
+   * @param  is  <code>InputStream</code>
    *
    * @return  <code>Properties</code>
    */
-  private Properties loadProperties(final String propertiesFile)
+  private Properties loadProperties(final InputStream is)
   {
-    // try to get properties from classpath
-    InputStream is = LdapProperties.class.getResourceAsStream(propertiesFile);
-    if (is == null) {
-      if (LOG.isDebugEnabled()) {
-        LOG.debug("Did not find properties from resource");
-      }
-
-      // try to get properties from a system file
-      File file;
-      try {
-        file = new File(URI.create(propertiesFile));
-        if (LOG.isDebugEnabled()) {
-          LOG.debug("Supplied properties is a URI");
-        }
-      } catch (IllegalArgumentException e) {
-        if (LOG.isDebugEnabled()) {
-          LOG.debug("Supplied properties is not a URI");
-        }
-        file = new File(propertiesFile);
-      }
-      try {
-        is = new FileInputStream(file);
-        if (LOG.isDebugEnabled()) {
-          LOG.debug("Found properties from file system");
-        }
-      } catch (IOException e) {
-        if (LOG.isDebugEnabled()) {
-          LOG.debug("Did not find properties from file system");
-        }
-      }
-    } else {
-      if (LOG.isDebugEnabled()) {
-        LOG.debug("Found properties from classpath");
-      }
-    }
-
     final Properties properties = new Properties();
     if (is != null) {
       try {
@@ -166,18 +122,6 @@ public final class LdapProperties
       }
     }
     return properties;
-  }
-
-
-  /**
-   * This returns the name of the properties file being used by this <code>
-   * LdapProperties</code>. Returns null if no properties file is being used.
-   *
-   * @return  <code>String</code>
-   */
-  public String getPropertiesFile()
-  {
-    return this.propertiesFile;
   }
 
 

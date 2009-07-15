@@ -125,7 +125,7 @@ public final class SearchServlet extends HttpServlet
     }
 
     final LdapConfig ldapConfig = LdapConfig.createFromProperties(
-      propertiesFile);
+      SearchServlet.class.getResourceAsStream(propertiesFile));
 
     final String poolPropertiesFile = getInitParameter(
       ServletConstants.POOL_PROPERTIES_FILE);
@@ -135,7 +135,7 @@ public final class SearchServlet extends HttpServlet
     }
 
     final LdapPoolConfig ldapPoolConfig = LdapPoolConfig.createFromProperties(
-      poolPropertiesFile);
+      SearchServlet.class.getResourceAsStream(poolPropertiesFile));
 
     LdapPool<Ldap> ldapPool = null;
     final String poolType = getInitParameter(ServletConstants.POOL_TYPE);

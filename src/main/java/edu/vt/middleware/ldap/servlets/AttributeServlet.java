@@ -96,7 +96,7 @@ public final class AttributeServlet extends HttpServlet
     }
 
     final LdapConfig ldapConfig = LdapConfig.createFromProperties(
-      propertiesFile);
+      AttributeServlet.class.getResourceAsStream(propertiesFile));
 
     final String poolPropertiesFile = getInitParameter(
       ServletConstants.POOL_PROPERTIES_FILE);
@@ -106,7 +106,7 @@ public final class AttributeServlet extends HttpServlet
     }
 
     final LdapPoolConfig ldapPoolConfig = LdapPoolConfig.createFromProperties(
-      poolPropertiesFile);
+      AttributeServlet.class.getResourceAsStream(poolPropertiesFile));
 
     final String poolType = getInitParameter(ServletConstants.POOL_TYPE);
     if (LOG.isDebugEnabled()) {

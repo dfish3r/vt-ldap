@@ -96,7 +96,8 @@ public final class LoginServlet extends CommonServlet
       LOG.debug(ServletConstants.PROPERTIES_FILE + " = " + propertiesFile);
     }
     this.auth = new Authenticator();
-    this.auth.loadFromProperties(propertiesFile);
+    this.auth.loadFromProperties(
+      LoginServlet.class.getResourceAsStream(propertiesFile));
   }
 
 

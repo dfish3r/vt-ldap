@@ -47,7 +47,8 @@ public final class TestUtil
     throws Exception
   {
     final Ldap l = new Ldap();
-    l.loadFromProperties("/ldap.setup.properties");
+    l.loadFromProperties(
+      TestUtil.class.getResourceAsStream("/ldap.setup.properties"));
     return l;
   }
 
@@ -62,7 +63,8 @@ public final class TestUtil
     throws Exception
   {
     final Ldap l = new Ldap();
-    l.loadFromProperties("/ldap.properties");
+    l.loadFromProperties(
+      TestUtil.class.getResourceAsStream("/ldap.properties"));
     return l;
   }
 
@@ -77,7 +79,8 @@ public final class TestUtil
     throws Exception
   {
     final Ldap l = new Ldap();
-    l.loadFromProperties("/ldap.sasl.properties");
+    l.loadFromProperties(
+      TestUtil.class.getResourceAsStream("/ldap.sasl.properties"));
 
     final LdapTLSSocketFactory sf = new LdapTLSSocketFactory();
     sf.setTrustStoreName("/ed.truststore");
@@ -100,7 +103,8 @@ public final class TestUtil
     throws Exception
   {
     final Ldap l = new Ldap();
-    l.loadFromProperties("/ldap.gssapi.properties");
+    l.loadFromProperties(
+      TestUtil.class.getResourceAsStream("/ldap.gssapi.properties"));
     return l;
   }
 
@@ -115,7 +119,8 @@ public final class TestUtil
     throws Exception
   {
     final Authenticator a = new Authenticator();
-    a.loadFromProperties("/ldap.ssl.properties");
+    a.loadFromProperties(
+      TestUtil.class.getResourceAsStream("/ldap.ssl.properties"));
     return a;
   }
 
@@ -130,7 +135,8 @@ public final class TestUtil
     throws Exception
   {
     final Authenticator a = new Authenticator();
-    a.loadFromProperties("/ldap.tls.properties");
+    a.loadFromProperties(
+      TestUtil.class.getResourceAsStream("/ldap.tls.properties"));
 
     final LdapTLSSocketFactory sf = new LdapTLSSocketFactory();
     sf.setTrustStoreName("/ed.truststore");
@@ -151,7 +157,8 @@ public final class TestUtil
     throws Exception
   {
     final Authenticator a = new Authenticator();
-    a.loadFromProperties("/ldap.digest-md5.properties");
+    a.loadFromProperties(
+      TestUtil.class.getResourceAsStream("/ldap.digest-md5.properties"));
     return a;
   }
 
@@ -166,7 +173,8 @@ public final class TestUtil
     throws Exception
   {
     final Authenticator a = new Authenticator();
-    a.loadFromProperties("/ldap.cram-md5.properties");
+    a.loadFromProperties(
+      TestUtil.class.getResourceAsStream("/ldap.cram-md5.properties"));
     return a;
   }
 

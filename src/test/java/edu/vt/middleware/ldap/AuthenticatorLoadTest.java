@@ -66,7 +66,9 @@ public class AuthenticatorLoadTest
     throws Exception
   {
     this.singleTLSAuth = new Authenticator();
-    this.singleTLSAuth.loadFromProperties("/ldap.tls.load.properties");
+    this.singleTLSAuth.loadFromProperties(
+      AuthenticatorLoadTest.class.getResourceAsStream(
+        "/ldap.tls.load.properties"));
 
     final LdapTLSSocketFactory sf = new LdapTLSSocketFactory();
     sf.setTrustStoreName("/ed.truststore");

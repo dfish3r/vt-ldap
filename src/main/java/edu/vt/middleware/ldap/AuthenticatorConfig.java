@@ -13,6 +13,7 @@
 */
 package edu.vt.middleware.ldap;
 
+import java.io.InputStream;
 import edu.vt.middleware.ldap.props.LdapProperties;
 import edu.vt.middleware.ldap.props.PropertyInvoker;
 
@@ -252,20 +253,19 @@ public class AuthenticatorConfig extends LdapConfig
 
   /**
    * Create an instance of this class initialized with properties from the
-   * properties file. If propertiesFile is null, load properties from the
+   * input stream. If the input stream is null, load properties from the
    * default properties file.
    *
-   * @param  propertiesFile  to load properties from
+   * @param  is  to load properties from
    *
    * @return  <code>AuthenticatorConfig</code> initialized ldap pool config
    */
-  public static AuthenticatorConfig createFromProperties(
-    final String propertiesFile)
+  public static AuthenticatorConfig createFromProperties(final InputStream is)
   {
     final AuthenticatorConfig authConfig = new AuthenticatorConfig();
     LdapProperties properties = null;
-    if (propertiesFile != null) {
-      properties = new LdapProperties(authConfig, propertiesFile);
+    if (is != null) {
+      properties = new LdapProperties(authConfig, is);
     } else {
       properties = new LdapProperties(authConfig);
     }
