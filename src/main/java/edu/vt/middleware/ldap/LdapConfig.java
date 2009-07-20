@@ -1316,28 +1316,6 @@ public class LdapConfig extends AbstractPropertyConfig
 
 
   /**
-   * This adds a handler to the existing array of handlers.
-   * If the current array is null, it is created.
-   *
-   * @param  handler  <code>SearchResultHandler</code>
-   */
-  public void addSearchResultHandler(final SearchResultHandler handler)
-  {
-    checkImmutable();
-    if (this.searchResultHandlers == null) {
-      this.searchResultHandlers = new SearchResultHandler[1];
-    } else {
-      final SearchResultHandler[] srh =
-        new SearchResultHandler[this.searchResultHandlers.length + 1];
-      System.arraycopy(
-        this.searchResultHandlers, 0, srh, 0, this.searchResultHandlers.length);
-      this.searchResultHandlers = srh;
-    }
-    this.searchResultHandlers[this.searchResultHandlers.length - 1] = handler;
-  }
-
-
-  /**
    * This sets the handlers for processing search results.
    *
    * @param  handlers  <code>SearchResultHandler[]</code>
