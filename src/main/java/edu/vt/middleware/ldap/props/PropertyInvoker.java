@@ -194,11 +194,11 @@ public class PropertyInvoker
     try {
       return (T) Class.forName(className).newInstance();
     } catch (ClassNotFoundException e) {
-      throw new IllegalArgumentException(e.getMessage());
+      throw new IllegalArgumentException(e);
     } catch (InstantiationException e) {
-      throw new IllegalArgumentException(e.getMessage());
+      throw new IllegalArgumentException(e);
     } catch (IllegalAccessException e) {
-      throw new IllegalArgumentException(e.getMessage());
+      throw new IllegalArgumentException(e);
     }
   }
 }
