@@ -118,7 +118,7 @@ public abstract class AbstractLdapPool<T extends BaseLdap>
     this.initializePool();
 
     if (this.available.size() == 0) {
-      throw new IllegalStateException("unnable to initialize ldap pool");
+      throw new IllegalStateException("unable to initialize ldap pool");
     }
     if (this.logger.isDebugEnabled()) {
       this.logger.debug("pool initialized to size " + this.available.size());
