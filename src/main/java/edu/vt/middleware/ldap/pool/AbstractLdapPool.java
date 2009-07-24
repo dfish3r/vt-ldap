@@ -105,21 +105,28 @@ public abstract class AbstractLdapPool<T extends BaseLdap>
   /** {@inheritDoc}. */
   public void initialize()
   {
+    if (this.logger.isDebugEnabled()) {
+      this.logger.debug("beginning pool initialization");
+    }
+
     this.poolTimer.scheduleAtFixedRate(
       new PrunePoolTask<T>(this),
       this.poolConfig.getPruneTimerPeriod(),
       this.poolConfig.getPruneTimerPeriod());
+    if (this.logger.isDebugEnabled()) {
+      this.logger.debug("prune pool task scheduled");
+    }
 
     this.poolTimer.scheduleAtFixedRate(
       new ValidatePoolTask<T>(this),
       this.poolConfig.getValidateTimerPeriod(),
       this.poolConfig.getValidateTimerPeriod());
+    if (this.logger.isDebugEnabled()) {
+      this.logger.debug("validate pool task scheduled");
+    }
 
     this.initializePool();
 
-    if (this.available.size() == 0) {
-      throw new IllegalStateException("unable to initialize ldap pool");
-    }
     if (this.logger.isDebugEnabled()) {
       this.logger.debug("pool initialized to size " + this.available.size());
     }
@@ -129,6 +136,10 @@ public abstract class AbstractLdapPool<T extends BaseLdap>
   /** Attempts to fill the pool to its minimum size. */
   private void initializePool()
   {
+    if (this.logger.isDebugEnabled()) {
+      this.logger.debug("initializing ldap pool to size " +
+                        this.poolConfig.getMinPoolSize());
+    }
     int count = 0;
     this.poolLock.lock();
     try {
