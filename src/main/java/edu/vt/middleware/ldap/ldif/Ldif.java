@@ -162,8 +162,8 @@ public class Ldif implements Serializable
               }
             }
             if (encodedAttrValue != null) {
-              entry.append(attrName).append(":: ").append(
-                encodedAttrValue).append(LINE_SEPARATOR);
+              entry.append(attrName).append(":: ").append(encodedAttrValue)
+                .append(LINE_SEPARATOR);
             }
           } else {
             try {

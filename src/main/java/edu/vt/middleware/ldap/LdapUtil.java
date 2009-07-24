@@ -194,8 +194,8 @@ public final class LdapUtil
 
 
   /**
-   * This will convert the supplied value to a base64 encoded string.
-   * Returns null if the bytes cannot be encoded.
+   * This will convert the supplied value to a base64 encoded string. Returns
+   * null if the bytes cannot be encoded.
    *
    * @param  value  <code>byte[]</code> to base64 encode
    *
@@ -221,8 +221,8 @@ public final class LdapUtil
 
 
   /**
-   * This will convert the supplied value to a base64 encoded string.
-   * Returns null if the string cannot be encoded.
+   * This will convert the supplied value to a base64 encoded string. Returns
+   * null if the string cannot be encoded.
    *
    * @param  value  <code>String</code> to base64 encode
    *

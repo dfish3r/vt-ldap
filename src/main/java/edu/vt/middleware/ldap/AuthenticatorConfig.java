@@ -252,9 +252,9 @@ public class AuthenticatorConfig extends LdapConfig
 
 
   /**
-   * Create an instance of this class initialized with properties from the
-   * input stream. If the input stream is null, load properties from the
-   * default properties file.
+   * Create an instance of this class initialized with properties from the input
+   * stream. If the input stream is null, load properties from the default
+   * properties file.
    *
    * @param  is  to load properties from
    *

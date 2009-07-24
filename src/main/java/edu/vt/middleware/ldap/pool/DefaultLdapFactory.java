@@ -48,8 +48,8 @@ public class DefaultLdapFactory extends AbstractLdapFactory<Ldap>
 
 
   /**
-   * This creates a new <code>DefaultLdapFactory</code> with the supplied
-   * input stream.
+   * This creates a new <code>DefaultLdapFactory</code> with the supplied input
+   * stream.
    *
    * @param  is  <code>InputStream</code>
    */
