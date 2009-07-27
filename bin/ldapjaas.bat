@@ -6,7 +6,7 @@ if not defined VTLDAP_HOME goto no_vtldap_home
 
 set JAVA=%JAVA_HOME%\bin\java
 
-set LDAP_JAR=%VTLDAP_HOME%\jars\vt-ldap-3.0.jar
+set LDAP_JAR=%VTLDAP_HOME%\jars\vt-ldap-${project.version}.jar
 set LIBDIR=%VTLDAP_HOME%\lib
 
 set JAAS_OPTS=-Djava.security.auth.login.config=%VTLDAP_HOME%\properties\ldap_jaas.config

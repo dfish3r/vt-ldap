@@ -20,7 +20,7 @@ else
   PREFIX="$VTLDAP_HOME"
 fi
 
-CLASSPATH="${PREFIX}/jars/vt-ldap-3.0.jar"
+CLASSPATH="${PREFIX}/jars/vt-ldap-${project.version}.jar"
 CLASSPATH=${CLASSPATH}:${PREFIX}/properties
 for JAR in `ls ${PREFIX}/lib/*.jar` ; do
   CLASSPATH=${CLASSPATH}:$JAR

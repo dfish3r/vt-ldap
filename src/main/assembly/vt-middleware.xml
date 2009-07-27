@@ -42,7 +42,8 @@
       <useDefaultExcludes>true</useDefaultExcludes>
     </fileSet>
     <fileSet>
-      <directory>bin</directory>
+      <directory>target/bin</directory>
+      <outputDirectory>bin</outputDirectory>
       <fileMode>0755</fileMode>
       <useDefaultExcludes>true</useDefaultExcludes>
       <excludes>
@@ -50,7 +51,8 @@
       </excludes>
     </fileSet>
     <fileSet>
-      <directory>bin</directory>
+      <directory>target/bin</directory>
+      <outputDirectory>bin</outputDirectory>
       <useDefaultExcludes>true</useDefaultExcludes>
       <includes>
         <include>*.bat</include>

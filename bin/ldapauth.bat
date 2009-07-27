@@ -6,7 +6,7 @@ if not defined VTLDAP_HOME goto no_vtldap_home
 
 set JAVA=%JAVA_HOME%\bin\java
 
-set LDAP_JAR=%VTLDAP_HOME%\jars\vt-ldap-3.0.jar
+set LDAP_JAR=%VTLDAP_HOME%\jars\vt-ldap-${project.version}.jar
 set LIBDIR=%VTLDAP_HOME%\lib
 
 set CLASSPATH=%LIBDIR%\commons-cli-1.2.jar;%LIBDIR%\commons-codec-1.3.jar;%LIBDIR%\commons-logging-1.1.1.jar;%LIBDIR%\dom4j-1.6.1.jar;%LDAP_JAR%
