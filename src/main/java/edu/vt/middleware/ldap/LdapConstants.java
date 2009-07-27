@@ -252,6 +252,9 @@ public final class LdapConstants
   public static final String DEFAULT_CONTEXT_FACTORY =
     "com.sun.jndi.ldap.LdapCtxFactory";
 
+  /** Default base DN, value of this constant is {@value}. */
+  public static final String DEFAULT_BASE_DN = "";
+
   /**
    * Default timeout, -1 means use provider setting. The value of this constant
    * is {@value}.

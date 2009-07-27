@@ -114,7 +114,7 @@ public class LdapConfig extends AbstractPropertyConfig
   private Object serviceCredential;
 
   /** Base dn for LDAP searching. */
-  private String base;
+  private String base = LdapConstants.DEFAULT_BASE_DN;
 
   /** Type of search scope to use, default is subtree. */
   private SearchScope searchScope = SearchScope.SUBTREE;
