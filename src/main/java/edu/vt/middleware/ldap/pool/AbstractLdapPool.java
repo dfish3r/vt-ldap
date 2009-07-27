@@ -138,7 +138,7 @@ public abstract class AbstractLdapPool<T extends BaseLdap>
   {
     if (this.logger.isDebugEnabled()) {
       this.logger.debug(
-        "initializing ldap pool to size " + this.poolConfig.getMinPoolSize());
+        "checking ldap pool size >= " + this.poolConfig.getMinPoolSize());
     }
 
     int count = 0;
