@@ -935,6 +935,9 @@ public class LdapConfig extends AbstractPropertyConfig
   {
     checkImmutable();
     checkStringInput(contextFactory, false);
+    if (this.logger.isTraceEnabled()) {
+      this.logger.trace("setting contextFactory: " + contextFactory);
+    }
     this.contextFactory = contextFactory;
   }
 
@@ -947,6 +950,9 @@ public class LdapConfig extends AbstractPropertyConfig
   public void setSslSocketFactory(final SSLSocketFactory sslSocketFactory)
   {
     checkImmutable();
+    if (this.logger.isTraceEnabled()) {
+      this.logger.trace("setting sslSocketFactory: " + sslSocketFactory);
+    }
     this.sslSocketFactory = sslSocketFactory;
   }
 
@@ -959,6 +965,9 @@ public class LdapConfig extends AbstractPropertyConfig
   public void setHostnameVerifier(final HostnameVerifier hostnameVerifier)
   {
     checkImmutable();
+    if (this.logger.isTraceEnabled()) {
+      this.logger.trace("setting hostnameVerifier: " + hostnameVerifier);
+    }
     this.hostnameVerifier = hostnameVerifier;
   }
 
@@ -972,6 +981,9 @@ public class LdapConfig extends AbstractPropertyConfig
   {
     checkImmutable();
     checkStringInput(ldapUrl, true);
+    if (this.logger.isTraceEnabled()) {
+      this.logger.trace("setting ldapUrl: " + ldapUrl);
+    }
     this.ldapUrl = ldapUrl;
   }
 
@@ -1043,6 +1055,9 @@ public class LdapConfig extends AbstractPropertyConfig
   public void setPort(final String port)
   {
     checkImmutable();
+    if (this.logger.isTraceEnabled()) {
+      this.logger.trace("setting port: " + port);
+    }
     this.port = port;
   }
 
@@ -1056,6 +1071,9 @@ public class LdapConfig extends AbstractPropertyConfig
   public void setTimeout(final int timeout)
   {
     checkImmutable();
+    if (this.logger.isTraceEnabled()) {
+      this.logger.trace("setting timeout: " + timeout);
+    }
     this.timeout = new Integer(timeout);
   }
 
@@ -1070,6 +1088,9 @@ public class LdapConfig extends AbstractPropertyConfig
   {
     checkImmutable();
     checkStringInput(user, true);
+    if (this.logger.isTraceEnabled()) {
+      this.logger.trace("setting serviceUser: " + user);
+    }
     this.serviceUser = user;
   }
 
@@ -1082,6 +1103,13 @@ public class LdapConfig extends AbstractPropertyConfig
   public void setServiceCredential(final Object credential)
   {
     checkImmutable();
+    if (this.logger.isTraceEnabled()) {
+      if (this.getLogCredentials()) {
+        this.logger.trace("setting serviceCredential: " + credential);
+      } else {
+        this.logger.trace("setting serviceCredential: <suppressed>");
+      }
+    }
     this.serviceCredential = credential;
   }
 
@@ -1110,6 +1138,9 @@ public class LdapConfig extends AbstractPropertyConfig
   public void setBase(final String base)
   {
     checkImmutable();
+    if (this.logger.isTraceEnabled()) {
+      this.logger.trace("setting base: " + base);
+    }
     this.base = base;
   }
 
@@ -1122,6 +1153,9 @@ public class LdapConfig extends AbstractPropertyConfig
   public void setSearchScope(final SearchScope searchScope)
   {
     checkImmutable();
+    if (this.logger.isTraceEnabled()) {
+      this.logger.trace("setting searchScope: " + searchScope);
+    }
     this.searchScope = searchScope;
   }
 
@@ -1135,6 +1169,9 @@ public class LdapConfig extends AbstractPropertyConfig
   {
     checkImmutable();
     checkStringInput(authtype, false);
+    if (this.logger.isTraceEnabled()) {
+      this.logger.trace("setting authtype: " + authtype);
+    }
     this.authtype = authtype;
   }
 
@@ -1148,6 +1185,9 @@ public class LdapConfig extends AbstractPropertyConfig
   public void setAuthoritative(final boolean authoritative)
   {
     checkImmutable();
+    if (this.logger.isTraceEnabled()) {
+      this.logger.trace("setting authoritative: " + authoritative);
+    }
     this.authoritative = authoritative;
   }
 
@@ -1161,6 +1201,9 @@ public class LdapConfig extends AbstractPropertyConfig
   public void setIgnoreCase(final boolean ignoreCase)
   {
     checkImmutable();
+    if (this.logger.isTraceEnabled()) {
+      this.logger.trace("setting ignoreCase: " + ignoreCase);
+    }
     this.ignoreCase = ignoreCase;
   }
 
@@ -1174,6 +1217,9 @@ public class LdapConfig extends AbstractPropertyConfig
   public void setTimeLimit(final int timeLimit)
   {
     checkImmutable();
+    if (this.logger.isTraceEnabled()) {
+      this.logger.trace("setting timeLimit: " + timeLimit);
+    }
     this.timeLimit = new Integer(timeLimit);
   }
 
@@ -1186,6 +1232,9 @@ public class LdapConfig extends AbstractPropertyConfig
   public void setCountLimit(final long countLimit)
   {
     checkImmutable();
+    if (this.logger.isTraceEnabled()) {
+      this.logger.trace("setting countLimit: " + countLimit);
+    }
     this.countLimit = new Long(countLimit);
   }
 
@@ -1199,6 +1248,9 @@ public class LdapConfig extends AbstractPropertyConfig
   public void setOperationRetry(final int operationRetry)
   {
     checkImmutable();
+    if (this.logger.isTraceEnabled()) {
+      this.logger.trace("setting operationRetry: " + operationRetry);
+    }
     this.operationRetry = new Integer(operationRetry);
   }
 
@@ -1212,6 +1264,9 @@ public class LdapConfig extends AbstractPropertyConfig
   public void setDerefLinkFlag(final boolean derefLinkFlag)
   {
     checkImmutable();
+    if (this.logger.isTraceEnabled()) {
+      this.logger.trace("setting derefLinkFlag: " + derefLinkFlag);
+    }
     this.derefLinkFlag = derefLinkFlag;
   }
 
@@ -1225,6 +1280,9 @@ public class LdapConfig extends AbstractPropertyConfig
   public void setReturningObjFlag(final boolean returningObjFlag)
   {
     checkImmutable();
+    if (this.logger.isTraceEnabled()) {
+      this.logger.trace("setting returningObjFlag: " + returningObjFlag);
+    }
     this.returningObjFlag = returningObjFlag;
   }
 
@@ -1240,8 +1298,14 @@ public class LdapConfig extends AbstractPropertyConfig
   {
     checkImmutable();
     if (batchSize == -1) {
+      if (this.logger.isTraceEnabled()) {
+        this.logger.trace("setting batchSize: " + null);
+      }
       this.batchSize = null;
     } else {
+      if (this.logger.isTraceEnabled()) {
+        this.logger.trace("setting batchSize: " + batchSize);
+      }
       this.batchSize = new Integer(batchSize);
     }
   }
@@ -1256,6 +1320,9 @@ public class LdapConfig extends AbstractPropertyConfig
   {
     checkImmutable();
     checkStringInput(dnsUrl, true);
+    if (this.logger.isTraceEnabled()) {
+      this.logger.trace("setting dnsUrl: " + dnsUrl);
+    }
     this.dnsUrl = dnsUrl;
   }
 
@@ -1269,6 +1336,9 @@ public class LdapConfig extends AbstractPropertyConfig
   {
     checkImmutable();
     checkStringInput(language, true);
+    if (this.logger.isTraceEnabled()) {
+      this.logger.trace("setting language: " + language);
+    }
     this.language = language;
   }
 
@@ -1283,6 +1353,9 @@ public class LdapConfig extends AbstractPropertyConfig
   {
     checkImmutable();
     checkStringInput(referral, true);
+    if (this.logger.isTraceEnabled()) {
+      this.logger.trace("setting referral: " + referral);
+    }
     this.referral = referral;
   }
 
@@ -1297,6 +1370,9 @@ public class LdapConfig extends AbstractPropertyConfig
   {
     checkImmutable();
     checkStringInput(derefAliases, true);
+    if (this.logger.isTraceEnabled()) {
+      this.logger.trace("setting derefAliases: " + derefAliases);
+    }
     this.derefAliases = derefAliases;
   }
 
@@ -1311,6 +1387,9 @@ public class LdapConfig extends AbstractPropertyConfig
   {
     checkImmutable();
     checkStringInput(binaryAttributes, true);
+    if (this.logger.isTraceEnabled()) {
+      this.logger.trace("setting binaryAttributes: " + binaryAttributes);
+    }
     this.binaryAttributes = binaryAttributes;
   }
 
@@ -1323,6 +1402,9 @@ public class LdapConfig extends AbstractPropertyConfig
   public void setSearchResultHandlers(final SearchResultHandler[] handlers)
   {
     checkImmutable();
+    if (this.logger.isTraceEnabled()) {
+      this.logger.trace("setting searchResultsHandlers: " + handlers);
+    }
     this.searchResultHandlers = handlers;
   }
 
@@ -1336,6 +1418,9 @@ public class LdapConfig extends AbstractPropertyConfig
   {
     checkImmutable();
     checkStringInput(saslAuthorizationId, true);
+    if (this.logger.isTraceEnabled()) {
+      this.logger.trace("setting saslAuthorizationId: " + saslAuthorizationId);
+    }
     this.saslAuthorizationId = saslAuthorizationId;
   }
 
@@ -1349,6 +1434,9 @@ public class LdapConfig extends AbstractPropertyConfig
   {
     checkImmutable();
     checkStringInput(saslRealm, true);
+    if (this.logger.isTraceEnabled()) {
+      this.logger.trace("setting saslRealm: " + saslRealm);
+    }
     this.saslRealm = saslRealm;
   }
 
@@ -1362,6 +1450,9 @@ public class LdapConfig extends AbstractPropertyConfig
   public void setTypesOnly(final boolean typesOnly)
   {
     checkImmutable();
+    if (this.logger.isTraceEnabled()) {
+      this.logger.trace("setting typesOnly: " + typesOnly);
+    }
     this.typesOnly = typesOnly;
   }
 
@@ -1381,6 +1472,9 @@ public class LdapConfig extends AbstractPropertyConfig
       if (PROPERTIES.hasProperty(name)) {
         PROPERTIES.setProperty(this, name, value);
       } else {
+        if (this.logger.isTraceEnabled()) {
+          this.logger.trace("setting property " + name + ": " + value);
+        }
         this.additionalEnvironmentProperties.put(name, value);
       }
     }
@@ -1425,6 +1519,9 @@ public class LdapConfig extends AbstractPropertyConfig
   public void setLogCredentials(final boolean log)
   {
     checkImmutable();
+    if (this.logger.isTraceEnabled()) {
+      this.logger.trace("setting logCredentials: " + log);
+    }
     this.logCredentials = log;
   }
 
@@ -1440,6 +1537,9 @@ public class LdapConfig extends AbstractPropertyConfig
   public void setSsl(final boolean ssl)
   {
     checkImmutable();
+    if (this.logger.isTraceEnabled()) {
+      this.logger.trace("setting ssl: " + ssl);
+    }
     this.ssl = ssl;
   }
 
@@ -1454,6 +1554,9 @@ public class LdapConfig extends AbstractPropertyConfig
   public void setTls(final boolean tls)
   {
     checkImmutable();
+    if (this.logger.isTraceEnabled()) {
+      this.logger.trace("setting tls: " + tls);
+    }
     this.tls = tls;
   }
 

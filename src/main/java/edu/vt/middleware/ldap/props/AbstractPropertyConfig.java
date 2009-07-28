@@ -16,6 +16,8 @@ package edu.vt.middleware.ldap.props;
 import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Properties;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 /**
  * <code>AbstractPropertyConfig</code> provides a base implementation of <code>
@@ -26,6 +28,9 @@ import java.util.Properties;
  */
 public abstract class AbstractPropertyConfig implements PropertyConfig
 {
+
+  /** Log for this class. */
+  protected final Log logger = LogFactory.getLog(this.getClass());
 
   /** Whether this config has been marked immutable. */
   private boolean immutable;

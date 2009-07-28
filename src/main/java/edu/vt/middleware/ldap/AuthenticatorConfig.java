@@ -166,6 +166,9 @@ public class AuthenticatorConfig extends LdapConfig
   public void setUserField(final String[] userField)
   {
     checkImmutable();
+    if (this.logger.isTraceEnabled()) {
+      this.logger.trace("setting userField: " + userField);
+    }
     this.userField = userField;
   }
 
@@ -179,6 +182,9 @@ public class AuthenticatorConfig extends LdapConfig
   public void setUser(final String user)
   {
     checkImmutable();
+    if (this.logger.isTraceEnabled()) {
+      this.logger.trace("setting user: " + user);
+    }
     this.user = user;
   }
 
@@ -191,6 +197,13 @@ public class AuthenticatorConfig extends LdapConfig
   public void setCredential(final Object credential)
   {
     checkImmutable();
+    if (this.logger.isTraceEnabled()) {
+      if (this.getLogCredentials()) {
+        this.logger.trace("setting credential: " + credential);
+      } else {
+        this.logger.trace("setting credential: <suppressed>");
+      }
+    }
     this.credential = credential;
   }
 
@@ -204,6 +217,9 @@ public class AuthenticatorConfig extends LdapConfig
   public void setAuthorizationFilter(final String authorizationFilter)
   {
     checkImmutable();
+    if (this.logger.isTraceEnabled()) {
+      this.logger.trace("setting authorizationFilter: " + authorizationFilter);
+    }
     this.authorizationFilter = authorizationFilter;
   }
 
@@ -219,6 +235,9 @@ public class AuthenticatorConfig extends LdapConfig
   public void setConstructDn(final boolean constructDn)
   {
     checkImmutable();
+    if (this.logger.isTraceEnabled()) {
+      this.logger.trace("setting constructDn: " + constructDn);
+    }
     this.constructDn = constructDn;
   }
 
@@ -234,6 +253,9 @@ public class AuthenticatorConfig extends LdapConfig
   public void setSubtreeSearch(final boolean subtreeSearch)
   {
     checkImmutable();
+    if (this.logger.isTraceEnabled()) {
+      this.logger.trace("setting subtreeSearch: " + subtreeSearch);
+    }
     this.subtreeSearch = subtreeSearch;
   }
 
@@ -246,6 +268,9 @@ public class AuthenticatorConfig extends LdapConfig
   public void setAuthenticationHandlers(final AuthenticationHandler[] handlers)
   {
     checkImmutable();
+    if (this.logger.isTraceEnabled()) {
+      this.logger.trace("setting authenticationHandlers: " + handlers);
+    }
     this.authenticationHandlers = handlers;
   }
 
