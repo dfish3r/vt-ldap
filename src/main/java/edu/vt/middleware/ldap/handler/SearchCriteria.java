@@ -165,4 +165,23 @@ public class SearchCriteria
   {
     this.matchAttrs = a;
   }
+
+
+  /**
+   * This returns a string representation of this search criteria.
+   *
+   * @return  <code>String</code>
+   */
+  @Override
+  public String toString()
+  {
+    return
+      String.format(
+        "dn=%s,filter=%s,filterArgs=%s,returnAttrs=%s,matchAttrs=%s",
+        this.dn,
+        this.filter,
+        this.filterArgs,
+        this.returnAttrs,
+        this.matchAttrs);
+  }
 }
