@@ -246,7 +246,12 @@ public abstract class AbstractLdap<T extends LdapConfig> implements BaseLdap
         }
       }
 
-      final SearchCriteria sc = new SearchCriteria(dn);
+      final SearchCriteria sc = new SearchCriteria();
+      if (ctx != null && !ctx.getNameInNamespace().equals("")) {
+        sc.setDn(ctx.getNameInNamespace());
+      } else {
+        sc.setDn(dn);
+      }
       sc.setFilter(filter);
       sc.setFilterArgs(filterArgs);
       sc.setReturnAttrs(retAttrs);
@@ -340,7 +345,12 @@ public abstract class AbstractLdap<T extends LdapConfig> implements BaseLdap
         }
       }
 
-      final SearchCriteria sc = new SearchCriteria(dn);
+      final SearchCriteria sc = new SearchCriteria();
+      if (ctx != null && !ctx.getNameInNamespace().equals("")) {
+        sc.setDn(ctx.getNameInNamespace());
+      } else {
+        sc.setDn(dn);
+      }
       sc.setMatchAttrs(matchAttrs);
       sc.setReturnAttrs(retAttrs);
       if (handler != null && handler.length > 0) {
@@ -410,7 +420,13 @@ public abstract class AbstractLdap<T extends LdapConfig> implements BaseLdap
         }
       }
 
-      results = NCP_COPY_RESULT_HANDLER.process(new SearchCriteria(dn), en);
+      final SearchCriteria sc = new SearchCriteria();
+      if (ctx != null && !ctx.getNameInNamespace().equals("")) {
+        sc.setDn(ctx.getNameInNamespace());
+      } else {
+        sc.setDn(dn);
+      }
+      results = NCP_COPY_RESULT_HANDLER.process(sc, en);
     } finally {
       if (en != null) {
         en.close();
@@ -467,7 +483,13 @@ public abstract class AbstractLdap<T extends LdapConfig> implements BaseLdap
         }
       }
 
-      results = BINDING_COPY_RESULT_HANDLER.process(new SearchCriteria(dn), en);
+      final SearchCriteria sc = new SearchCriteria();
+      if (ctx != null && !ctx.getNameInNamespace().equals("")) {
+        sc.setDn(ctx.getNameInNamespace());
+      } else {
+        sc.setDn(dn);
+      }
+      results = BINDING_COPY_RESULT_HANDLER.process(sc, en);
     } finally {
       if (en != null) {
         en.close();
@@ -540,9 +562,15 @@ public abstract class AbstractLdap<T extends LdapConfig> implements BaseLdap
       }
 
       if (handler != null && handler.length > 0) {
+        final SearchCriteria sc = new SearchCriteria();
+        if (ctx != null && !ctx.getNameInNamespace().equals("")) {
+          sc.setDn(ctx.getNameInNamespace());
+        } else {
+          sc.setDn(dn);
+        }
         for (int i = 0; i < handler.length; i++) {
           attrs = AttributesProcessor.executeHandler(
-            new SearchCriteria(dn),
+            sc,
             attrs,
             handler[i]);
         }
@@ -602,7 +630,13 @@ public abstract class AbstractLdap<T extends LdapConfig> implements BaseLdap
         }
       }
 
-      results = SR_COPY_RESULT_HANDLER.process(new SearchCriteria(dn), en);
+      final SearchCriteria sc = new SearchCriteria();
+      if (ctx != null && !ctx.getNameInNamespace().equals("")) {
+        sc.setDn(ctx.getNameInNamespace());
+      } else {
+        sc.setDn(dn);
+      }
+      results = SR_COPY_RESULT_HANDLER.process(sc, en);
     } finally {
       if (schema != null) {
         schema.close();
