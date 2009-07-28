@@ -14,6 +14,7 @@
 package edu.vt.middleware.ldap;
 
 import java.io.InputStream;
+import edu.vt.middleware.ldap.handler.AuthenticationHandler;
 import edu.vt.middleware.ldap.props.LdapProperties;
 import edu.vt.middleware.ldap.props.PropertyInvoker;
 
@@ -54,6 +55,9 @@ public class AuthenticatorConfig extends LdapConfig
 
   /** Whether to perform subtree searches for DNs. */
   private boolean subtreeSearch = LdapConstants.DEFAULT_SUBTREE_SEARCH;
+
+  /** Handlers to process authentications. */
+  private AuthenticationHandler[] authenticationHandlers;
 
 
   /** Default constructor. */
@@ -143,6 +147,17 @@ public class AuthenticatorConfig extends LdapConfig
 
 
   /**
+   * This returns the handlers to use for processing authentications.
+   *
+   * @return  <code>AuthenticationHandler[]</code>
+   */
+  public AuthenticationHandler[] getAuthenticationHandlers()
+  {
+    return this.authenticationHandlers;
+  }
+
+
+  /**
    * This sets the user fields for the <code>Authenticator</code>. The user
    * field is used to lookup a user's dn.
    *
@@ -220,6 +235,18 @@ public class AuthenticatorConfig extends LdapConfig
   {
     checkImmutable();
     this.subtreeSearch = subtreeSearch;
+  }
+
+
+  /**
+   * This sets the handlers for processing authentications.
+   *
+   * @param  handlers  <code>AuthenticationHandler[]</code>
+   */
+  public void setAuthenticationHandlers(final AuthenticationHandler[] handlers)
+  {
+    checkImmutable();
+    this.authenticationHandlers = handlers;
   }
 
 

@@ -25,6 +25,8 @@ import javax.naming.directory.BasicAttributes;
 import javax.naming.directory.SearchResult;
 import javax.naming.ldap.LdapContext;
 import javax.naming.ldap.StartTlsResponse;
+import edu.vt.middleware.ldap.handler.AuthenticationCriteria;
+import edu.vt.middleware.ldap.handler.AuthenticationHandler;
 
 /**
  * <code>Authenticator</code> contains functions for authenticating a user
@@ -217,7 +219,8 @@ public class Authenticator extends AbstractLdap<AuthenticatorConfig>
    * equal dfisher in the LDAP. If {@link
    * AuthenticatorConfig#setAuthorizationFilter} has been called, then it will
    * be used to authorize the user by performing an ldap compare. See {@link
-   * #authenticateAndAuthorize(String, Object, String)}
+   * #authenticateAndAuthorize(
+   * String, Object, String, AuthenticationHandler...)}
    *
    * @param  user  <code>String</code> username for bind
    * @param  credential  <code>Object</code> credential for bind
@@ -241,7 +244,7 @@ public class Authenticator extends AbstractLdap<AuthenticatorConfig>
    * bind by searching on the user field, unless constructDn has been set. The
    * user field default is set to 'uid', so to authenticate 'dfisher', uid must
    * equal dfisher in the LDAP. See {@link #authenticateAndAuthorize(String,
-   * Object, String)}
+   * Object, String, AuthenticationHandler...)}
    *
    * @param  user  <code>String</code> username for bind
    * @param  credential  <code>Object</code> credential for bind
@@ -258,18 +261,56 @@ public class Authenticator extends AbstractLdap<AuthenticatorConfig>
     final String filter)
     throws NamingException
   {
-    return this.authenticateAndAuthorize(this.getDn(user), credential, filter);
+    return this.authenticateAndAuthorize(
+      this.getDn(user),
+      credential,
+      filter,
+      this.config.getAuthenticationHandlers());
+  }
+
+
+  /**
+   * This will authenticate credentials by binding to the LDAP with the supplied
+   * user and credential. The user's DN will be looked up before performing the
+   * bind by searching on the user field, unless constructDn has been set. The
+   * user field default is set to 'uid', so to authenticate 'dfisher', uid must
+   * equal dfisher in the LDAP. See {@link #authenticateAndAuthorize(String,
+   * Object, String, AuthenticationHandler...)}
+   *
+   * @param  user  <code>String</code> username for bind
+   * @param  credential  <code>Object</code> credential for bind
+   * @param  filter  <code>String</code> to authorize user
+   * @param  handler  <code>AuthenticationHandler[]</code> to post process
+   * authentication results
+   *
+   * @return  <code>boolean</code> - whether the bind succeeded
+   *
+   * @throws  NamingException  if the authentication fails for any other reason
+   * than invalid credentials
+   */
+  public boolean authenticate(
+    final String user,
+    final Object credential,
+    final String filter,
+    final AuthenticationHandler... handler)
+    throws NamingException
+  {
+    return this.authenticateAndAuthorize(
+      this.getDn(user), credential, filter, handler);
   }
 
 
   /**
    * This will authenticate credentials by binding to the LDAP with the supplied
    * dn and credential. See {@link
-   * #authenticateAndAuthorize(String,Object,String,boolean,String[])}.
+   * #authenticateAndAuthorize(
+   * String,Object,String,boolean,String[],AuthenticationHandler...)}.
    *
    * @param  dn  <code>String</code> for bind
    * @param  credential  <code>Object</code> for bind
    * @param  filter  <code>String</code> to authorize user
+   * @param  handler  <code>AuthenticationHandler[]</code> to post process
+   * authentication results
    *
    * @return  <code>boolean</code> - whether the bind succeeded
    *
@@ -279,12 +320,14 @@ public class Authenticator extends AbstractLdap<AuthenticatorConfig>
   private boolean authenticateAndAuthorize(
     final String dn,
     final Object credential,
-    final String filter)
+    final String filter,
+    final AuthenticationHandler... handler)
     throws NamingException
   {
     boolean success = false;
     try {
-      this.authenticateAndAuthorize(dn, credential, filter, false, null);
+      this.authenticateAndAuthorize(
+        dn, credential, filter, false, null, handler);
       success = true;
     } catch (AuthenticationException e) {
       if (this.logger.isDebugEnabled()) {
@@ -359,7 +402,7 @@ public class Authenticator extends AbstractLdap<AuthenticatorConfig>
    * bind by searching on the user field, unless constructDn has been set. The
    * user field default is set to 'uid', so to authenticate 'dfisher', uid must
    * equal dfisher in the LDAP. See {@link #authenticateAndAuthorize(String,
-   * Object, String, boolean, String[])}
+   * Object, String, boolean, String[], AuthenticationHandler...)}
    *
    * @param  user  <code>String</code> username for bind
    * @param  credential  <code>Object</code> credential for bind
@@ -383,7 +426,46 @@ public class Authenticator extends AbstractLdap<AuthenticatorConfig>
         credential,
         filter,
         true,
-        retAttrs);
+        retAttrs,
+        this.config.getAuthenticationHandlers());
+  }
+
+
+  /**
+   * This will authenticate credentials by binding to the LDAP with the supplied
+   * user and credential. The user's DN will be looked up before performing the
+   * bind by searching on the user field, unless constructDn has been set. The
+   * user field default is set to 'uid', so to authenticate 'dfisher', uid must
+   * equal dfisher in the LDAP. See {@link #authenticateAndAuthorize(String,
+   * Object, String, boolean, String[], AuthenticationHandler...)}
+   *
+   * @param  user  <code>String</code> username for bind
+   * @param  credential  <code>Object</code> credential for bind
+   * @param  filter  <code>String</code> to authorize user
+   * @param  retAttrs  <code>String[]</code> to return
+   * @param  handler  <code>AuthenticationHandler[]</code> to post process
+   * authentication results
+   *
+   * @return  <code>Attributes</code> - of authenticated user
+   *
+   * @throws  NamingException  if any of the ldap operations fail
+   */
+  public Attributes authenticate(
+    final String user,
+    final Object credential,
+    final String filter,
+    final String[] retAttrs,
+    final AuthenticationHandler... handler)
+    throws NamingException
+  {
+    return
+      this.authenticateAndAuthorize(
+        this.getDn(user),
+        credential,
+        filter,
+        true,
+        retAttrs,
+        handler);
   }
 
 
@@ -406,6 +488,8 @@ public class Authenticator extends AbstractLdap<AuthenticatorConfig>
    * @param  searchAttrs  <code>boolean</code> whether to perform attribute
    * search
    * @param  retAttrs  <code>String[]</code> user attributes to return
+   * @param  handler  <code>AuthenticationHandler[]</code> to post process
+   * authentication results
    *
    * @return  <code>Attribute</code> - belonging to the supplied user, returns
    * null if searchAttrs is false
@@ -418,7 +502,8 @@ public class Authenticator extends AbstractLdap<AuthenticatorConfig>
     final Object credential,
     final String filter,
     final boolean searchAttrs,
-    final String[] retAttrs)
+    final String[] retAttrs,
+    final AuthenticationHandler... handler)
     throws NamingException
   {
     // check the authentication type
@@ -446,14 +531,26 @@ public class Authenticator extends AbstractLdap<AuthenticatorConfig>
     LdapContext ctx = null;
     for (int i = 0; i <= LdapConstants.OPERATION_RETRY; i++) {
       try {
+        final AuthenticationCriteria ac = new AuthenticationCriteria(dn);
+        ac.setCredential(credential);
         try {
           ctx = this.bind(dn, credential, tls);
           if (this.logger.isInfoEnabled()) {
             this.logger.info("Authentication succeeded for dn: " + dn);
           }
+          if (handler != null && handler.length > 0) {
+            for (AuthenticationHandler ah : handler) {
+              ah.process(ac, true);
+            }
+          }
         } catch (AuthenticationException e) {
           if (this.logger.isInfoEnabled()) {
             this.logger.info("Authentication failed for dn: " + dn);
+          }
+          if (handler != null && handler.length > 0) {
+            for (AuthenticationHandler ah : handler) {
+              ah.process(ac, false);
+            }
           }
           throw e;
         }
@@ -530,7 +627,7 @@ public class Authenticator extends AbstractLdap<AuthenticatorConfig>
    * dn and credential. If {@link AuthenticatorConfig#setAuthorizationFilter}
    * has been called, then it will be used to authorize the user by performing
    * an ldap compare. See {@link #authenticateAndAuthorize(String, Object,
-   * String)}
+   * String, AuthenticationHandler...)}
    *
    * @param  dn  <code>String</code> dn for bind
    * @param  credential  <code>Object</code> credential for bind
@@ -551,7 +648,7 @@ public class Authenticator extends AbstractLdap<AuthenticatorConfig>
   /**
    * This will authenticate credentials by binding to the LDAP with the supplied
    * dn and credential. See {@link #authenticateAndAuthorize(String, Object,
-   * String)}
+   * String, AuthenticationHandler...)}
    *
    * @param  dn  <code>String</code> dn for bind
    * @param  credential  <code>Object</code> credential for bind
@@ -568,7 +665,35 @@ public class Authenticator extends AbstractLdap<AuthenticatorConfig>
     final String filter)
     throws NamingException
   {
-    return this.authenticateAndAuthorize(dn, credential, filter);
+    return this.authenticateDn(
+      dn, credential, filter, this.config.getAuthenticationHandlers());
+  }
+
+
+  /**
+   * This will authenticate credentials by binding to the LDAP with the supplied
+   * dn and credential. See {@link #authenticateAndAuthorize(String, Object,
+   * String, AuthenticationHandler...)}
+   *
+   * @param  dn  <code>String</code> dn for bind
+   * @param  credential  <code>Object</code> credential for bind
+   * @param  filter  <code>String</code> to authorize user
+   * @param  handler  <code>AuthenticationHandler[]</code> to post process
+   * authentication results
+   *
+   * @return  <code>boolean</code> - whether the bind succeeded
+   *
+   * @throws  NamingException  if the authentication fails for any other reason
+   * than invalid credentials
+   */
+  public boolean authenticateDn(
+    final String dn,
+    final Object credential,
+    final String filter,
+    final AuthenticationHandler... handler)
+    throws NamingException
+  {
+    return this.authenticateAndAuthorize(dn, credential, filter, handler);
   }
 
 
@@ -577,7 +702,7 @@ public class Authenticator extends AbstractLdap<AuthenticatorConfig>
    * dn and credential. If {@link AuthenticatorConfig#setAuthorizationFilter}
    * has been called, then it will be used to authorize the user by performing
    * an ldap compare. See {@link #authenticateDn(String, Object, String,
-   * String[])}
+   * String[], AuthenticationHandler...)}
    *
    * @param  dn  <code>String</code> dn for bind
    * @param  credential  <code>Object</code> credential for bind
@@ -605,7 +730,7 @@ public class Authenticator extends AbstractLdap<AuthenticatorConfig>
   /**
    * This will authenticate credentials by binding to the LDAP with the supplied
    * dn and credential. See {@link #authenticateAndAuthorize(String, Object,
-   * String, boolean, String[])}
+   * String, boolean, String[], AuthenticationHandler...)}
    *
    * @param  dn  <code>String</code> dn for bind
    * @param  credential  <code>Object</code> credential for bind
@@ -624,6 +749,42 @@ public class Authenticator extends AbstractLdap<AuthenticatorConfig>
     throws NamingException
   {
     return
-      this.authenticateAndAuthorize(dn, credential, filter, true, retAttrs);
+      this.authenticateAndAuthorize(
+        dn,
+        credential,
+        filter,
+        true,
+        retAttrs,
+        this.config.getAuthenticationHandlers());
+  }
+
+
+  /**
+   * This will authenticate credentials by binding to the LDAP with the supplied
+   * dn and credential. See {@link #authenticateAndAuthorize(String, Object,
+   * String, boolean, String[], AuthenticationHandler...)}
+   *
+   * @param  dn  <code>String</code> dn for bind
+   * @param  credential  <code>Object</code> credential for bind
+   * @param  filter  <code>String</code> to authorize user
+   * @param  retAttrs  <code>String[]</code> to return
+   * @param  handler  <code>AuthenticationHandler[]</code> to post process
+   * authentication results
+   *
+   * @return  <code>Attributes</code> - of authenticated user
+   *
+   * @throws  NamingException  if any of the ldap operations fail
+   */
+  public Attributes authenticateDn(
+    final String dn,
+    final Object credential,
+    final String filter,
+    final String[] retAttrs,
+    final AuthenticationHandler... handler)
+    throws NamingException
+  {
+    return
+      this.authenticateAndAuthorize(
+        dn, credential, filter, true, retAttrs, handler);
   }
 }

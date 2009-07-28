@@ -17,6 +17,8 @@ import javax.naming.AuthenticationException;
 import javax.naming.directory.Attributes;
 import edu.vt.middleware.ldap.bean.LdapAttributes;
 import edu.vt.middleware.ldap.bean.LdapEntry;
+import edu.vt.middleware.ldap.handler.AuthenticationHandler;
+import edu.vt.middleware.ldap.handler.TestAuthenticationHandler;
 import org.testng.AssertJUnit;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
@@ -315,6 +317,36 @@ public class AuthenticatorTest
       returnAttrs.split("\\|"));
     final LdapAttributes expected = TestUtil.convertStringToAttributes(results);
     AssertJUnit.assertEquals(expected, new LdapAttributes(attrs));
+  }
+
+
+  /**
+   * @param  dn  to authenticate.
+   * @param  credential  to authenticate with.
+   *
+   * @throws  Exception  On test failure.
+   */
+  @Parameters(
+    {
+      "authenticateDn",
+      "authenticateDnCredential"
+    }
+  )
+  @Test(groups = {"authtest"})
+  public void authenticateDnHandler(
+    final String dn,
+    final String credential)
+    throws Exception
+  {
+    // test authenticator handler
+    final Authenticator ldap = this.createTLSAuthenticator(true);
+    final TestAuthenticationHandler ah = new TestAuthenticationHandler();
+    ldap.getAuthenticatorConfig().setAuthenticationHandlers(
+      new AuthenticationHandler[]{ah});
+    AssertJUnit.assertFalse(ldap.authenticateDn(dn, INVALID_PASSWD));
+    AssertJUnit.assertFalse(ah.getResults().get(dn).booleanValue());
+    AssertJUnit.assertTrue(ldap.authenticateDn(dn, credential));
+    AssertJUnit.assertTrue(ah.getResults().get(dn).booleanValue());
   }
 
 
