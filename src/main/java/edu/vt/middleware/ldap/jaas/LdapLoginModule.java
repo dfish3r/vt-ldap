@@ -342,7 +342,7 @@ public class LdapLoginModule implements LoginModule
               propName.substring(1));
           ldapProperties.setProperty(newKey.toString(), value);
         }
-      } else {
+      } else if (!key.equalsIgnoreCase("userRoleAttribute")) {
         if (!ldapProperties.isPropertySet(key)) {
           ldapProperties.setProperty(key, value);
         }
