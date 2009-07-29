@@ -14,12 +14,13 @@
 package edu.vt.middleware.ldap.handler;
 
 /**
- * AuthenticationHandler provides post processing of authentication results.
+ * AuthenticationResultHandler provides post processing of
+ * authentication results.
  *
  * @author  Middleware Services
  * @version  $Revision$
  */
-public interface AuthenticationHandler
+public interface AuthenticationResultHandler
 {
 
 

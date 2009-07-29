@@ -14,7 +14,7 @@
 package edu.vt.middleware.ldap;
 
 import java.io.InputStream;
-import edu.vt.middleware.ldap.handler.AuthenticationHandler;
+import edu.vt.middleware.ldap.handler.AuthenticationResultHandler;
 import edu.vt.middleware.ldap.props.LdapProperties;
 import edu.vt.middleware.ldap.props.PropertyInvoker;
 
@@ -57,7 +57,7 @@ public class AuthenticatorConfig extends LdapConfig
   private boolean subtreeSearch = LdapConstants.DEFAULT_SUBTREE_SEARCH;
 
   /** Handlers to process authentications. */
-  private AuthenticationHandler[] authenticationHandlers;
+  private AuthenticationResultHandler[] authenticationResultHandlers;
 
 
   /** Default constructor. */
@@ -149,11 +149,11 @@ public class AuthenticatorConfig extends LdapConfig
   /**
    * This returns the handlers to use for processing authentications.
    *
-   * @return  <code>AuthenticationHandler[]</code>
+   * @return  <code>AuthenticationResultHandler[]</code>
    */
-  public AuthenticationHandler[] getAuthenticationHandlers()
+  public AuthenticationResultHandler[] getAuthenticationResultHandlers()
   {
-    return this.authenticationHandlers;
+    return this.authenticationResultHandlers;
   }
 
 
@@ -263,15 +263,16 @@ public class AuthenticatorConfig extends LdapConfig
   /**
    * This sets the handlers for processing authentications.
    *
-   * @param  handlers  <code>AuthenticationHandler[]</code>
+   * @param  handlers  <code>AuthenticationResultHandler[]</code>
    */
-  public void setAuthenticationHandlers(final AuthenticationHandler[] handlers)
+  public void setAuthenticationResultHandlers(
+    final AuthenticationResultHandler[] handlers)
   {
     checkImmutable();
     if (this.logger.isTraceEnabled()) {
-      this.logger.trace("setting authenticationHandlers: " + handlers);
+      this.logger.trace("setting authenticationResultHandlers: " + handlers);
     }
-    this.authenticationHandlers = handlers;
+    this.authenticationResultHandlers = handlers;
   }
 
 

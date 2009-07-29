@@ -26,7 +26,7 @@ import javax.naming.directory.SearchResult;
 import javax.naming.ldap.LdapContext;
 import javax.naming.ldap.StartTlsResponse;
 import edu.vt.middleware.ldap.handler.AuthenticationCriteria;
-import edu.vt.middleware.ldap.handler.AuthenticationHandler;
+import edu.vt.middleware.ldap.handler.AuthenticationResultHandler;
 
 /**
  * <code>Authenticator</code> contains functions for authenticating a user
@@ -220,7 +220,7 @@ public class Authenticator extends AbstractLdap<AuthenticatorConfig>
    * AuthenticatorConfig#setAuthorizationFilter} has been called, then it will
    * be used to authorize the user by performing an ldap compare. See {@link
    * #authenticateAndAuthorize(
-   * String, Object, String, AuthenticationHandler...)}
+   * String, Object, String, AuthenticationResultHandler...)}
    *
    * @param  user  <code>String</code> username for bind
    * @param  credential  <code>Object</code> credential for bind
@@ -244,7 +244,7 @@ public class Authenticator extends AbstractLdap<AuthenticatorConfig>
    * bind by searching on the user field, unless constructDn has been set. The
    * user field default is set to 'uid', so to authenticate 'dfisher', uid must
    * equal dfisher in the LDAP. See {@link #authenticateAndAuthorize(String,
-   * Object, String, AuthenticationHandler...)}
+   * Object, String, AuthenticationResultHandler...)}
    *
    * @param  user  <code>String</code> username for bind
    * @param  credential  <code>Object</code> credential for bind
@@ -265,7 +265,7 @@ public class Authenticator extends AbstractLdap<AuthenticatorConfig>
       this.getDn(user),
       credential,
       filter,
-      this.config.getAuthenticationHandlers());
+      this.config.getAuthenticationResultHandlers());
   }
 
 
@@ -275,12 +275,12 @@ public class Authenticator extends AbstractLdap<AuthenticatorConfig>
    * bind by searching on the user field, unless constructDn has been set. The
    * user field default is set to 'uid', so to authenticate 'dfisher', uid must
    * equal dfisher in the LDAP. See {@link #authenticateAndAuthorize(String,
-   * Object, String, AuthenticationHandler...)}
+   * Object, String, AuthenticationResultHandler...)}
    *
    * @param  user  <code>String</code> username for bind
    * @param  credential  <code>Object</code> credential for bind
    * @param  filter  <code>String</code> to authorize user
-   * @param  handler  <code>AuthenticationHandler[]</code> to post process
+   * @param  handler  <code>AuthenticationResultHandler[]</code> to post process
    * authentication results
    *
    * @return  <code>boolean</code> - whether the bind succeeded
@@ -292,7 +292,7 @@ public class Authenticator extends AbstractLdap<AuthenticatorConfig>
     final String user,
     final Object credential,
     final String filter,
-    final AuthenticationHandler... handler)
+    final AuthenticationResultHandler... handler)
     throws NamingException
   {
     return this.authenticateAndAuthorize(
@@ -304,12 +304,12 @@ public class Authenticator extends AbstractLdap<AuthenticatorConfig>
    * This will authenticate credentials by binding to the LDAP with the supplied
    * dn and credential. See {@link
    * #authenticateAndAuthorize(
-   * String,Object,String,boolean,String[],AuthenticationHandler...)}.
+   * String,Object,String,boolean,String[],AuthenticationResultHandler...)}.
    *
    * @param  dn  <code>String</code> for bind
    * @param  credential  <code>Object</code> for bind
    * @param  filter  <code>String</code> to authorize user
-   * @param  handler  <code>AuthenticationHandler[]</code> to post process
+   * @param  handler  <code>AuthenticationResultHandler[]</code> to post process
    * authentication results
    *
    * @return  <code>boolean</code> - whether the bind succeeded
@@ -321,7 +321,7 @@ public class Authenticator extends AbstractLdap<AuthenticatorConfig>
     final String dn,
     final Object credential,
     final String filter,
-    final AuthenticationHandler... handler)
+    final AuthenticationResultHandler... handler)
     throws NamingException
   {
     boolean success = false;
@@ -402,7 +402,7 @@ public class Authenticator extends AbstractLdap<AuthenticatorConfig>
    * bind by searching on the user field, unless constructDn has been set. The
    * user field default is set to 'uid', so to authenticate 'dfisher', uid must
    * equal dfisher in the LDAP. See {@link #authenticateAndAuthorize(String,
-   * Object, String, boolean, String[], AuthenticationHandler...)}
+   * Object, String, boolean, String[], AuthenticationResultHandler...)}
    *
    * @param  user  <code>String</code> username for bind
    * @param  credential  <code>Object</code> credential for bind
@@ -427,7 +427,7 @@ public class Authenticator extends AbstractLdap<AuthenticatorConfig>
         filter,
         true,
         retAttrs,
-        this.config.getAuthenticationHandlers());
+        this.config.getAuthenticationResultHandlers());
   }
 
 
@@ -437,13 +437,13 @@ public class Authenticator extends AbstractLdap<AuthenticatorConfig>
    * bind by searching on the user field, unless constructDn has been set. The
    * user field default is set to 'uid', so to authenticate 'dfisher', uid must
    * equal dfisher in the LDAP. See {@link #authenticateAndAuthorize(String,
-   * Object, String, boolean, String[], AuthenticationHandler...)}
+   * Object, String, boolean, String[], AuthenticationResultHandler...)}
    *
    * @param  user  <code>String</code> username for bind
    * @param  credential  <code>Object</code> credential for bind
    * @param  filter  <code>String</code> to authorize user
    * @param  retAttrs  <code>String[]</code> to return
-   * @param  handler  <code>AuthenticationHandler[]</code> to post process
+   * @param  handler  <code>AuthenticationResultHandler[]</code> to post process
    * authentication results
    *
    * @return  <code>Attributes</code> - of authenticated user
@@ -455,7 +455,7 @@ public class Authenticator extends AbstractLdap<AuthenticatorConfig>
     final Object credential,
     final String filter,
     final String[] retAttrs,
-    final AuthenticationHandler... handler)
+    final AuthenticationResultHandler... handler)
     throws NamingException
   {
     return
@@ -488,7 +488,7 @@ public class Authenticator extends AbstractLdap<AuthenticatorConfig>
    * @param  searchAttrs  <code>boolean</code> whether to perform attribute
    * search
    * @param  retAttrs  <code>String[]</code> user attributes to return
-   * @param  handler  <code>AuthenticationHandler[]</code> to post process
+   * @param  handler  <code>AuthenticationResultHandler[]</code> to post process
    * authentication results
    *
    * @return  <code>Attribute</code> - belonging to the supplied user, returns
@@ -503,7 +503,7 @@ public class Authenticator extends AbstractLdap<AuthenticatorConfig>
     final String filter,
     final boolean searchAttrs,
     final String[] retAttrs,
-    final AuthenticationHandler... handler)
+    final AuthenticationResultHandler... handler)
     throws NamingException
   {
     // check the authentication type
@@ -539,7 +539,7 @@ public class Authenticator extends AbstractLdap<AuthenticatorConfig>
             this.logger.info("Authentication succeeded for dn: " + dn);
           }
           if (handler != null && handler.length > 0) {
-            for (AuthenticationHandler ah : handler) {
+            for (AuthenticationResultHandler ah : handler) {
               ah.process(ac, true);
             }
           }
@@ -548,7 +548,7 @@ public class Authenticator extends AbstractLdap<AuthenticatorConfig>
             this.logger.info("Authentication failed for dn: " + dn);
           }
           if (handler != null && handler.length > 0) {
-            for (AuthenticationHandler ah : handler) {
+            for (AuthenticationResultHandler ah : handler) {
               ah.process(ac, false);
             }
           }
@@ -627,7 +627,7 @@ public class Authenticator extends AbstractLdap<AuthenticatorConfig>
    * dn and credential. If {@link AuthenticatorConfig#setAuthorizationFilter}
    * has been called, then it will be used to authorize the user by performing
    * an ldap compare. See {@link #authenticateAndAuthorize(String, Object,
-   * String, AuthenticationHandler...)}
+   * String, AuthenticationResultHandler...)}
    *
    * @param  dn  <code>String</code> dn for bind
    * @param  credential  <code>Object</code> credential for bind
@@ -648,7 +648,7 @@ public class Authenticator extends AbstractLdap<AuthenticatorConfig>
   /**
    * This will authenticate credentials by binding to the LDAP with the supplied
    * dn and credential. See {@link #authenticateAndAuthorize(String, Object,
-   * String, AuthenticationHandler...)}
+   * String, AuthenticationResultHandler...)}
    *
    * @param  dn  <code>String</code> dn for bind
    * @param  credential  <code>Object</code> credential for bind
@@ -666,19 +666,19 @@ public class Authenticator extends AbstractLdap<AuthenticatorConfig>
     throws NamingException
   {
     return this.authenticateDn(
-      dn, credential, filter, this.config.getAuthenticationHandlers());
+      dn, credential, filter, this.config.getAuthenticationResultHandlers());
   }
 
 
   /**
    * This will authenticate credentials by binding to the LDAP with the supplied
    * dn and credential. See {@link #authenticateAndAuthorize(String, Object,
-   * String, AuthenticationHandler...)}
+   * String, AuthenticationResultHandler...)}
    *
    * @param  dn  <code>String</code> dn for bind
    * @param  credential  <code>Object</code> credential for bind
    * @param  filter  <code>String</code> to authorize user
-   * @param  handler  <code>AuthenticationHandler[]</code> to post process
+   * @param  handler  <code>AuthenticationResultHandler[]</code> to post process
    * authentication results
    *
    * @return  <code>boolean</code> - whether the bind succeeded
@@ -690,7 +690,7 @@ public class Authenticator extends AbstractLdap<AuthenticatorConfig>
     final String dn,
     final Object credential,
     final String filter,
-    final AuthenticationHandler... handler)
+    final AuthenticationResultHandler... handler)
     throws NamingException
   {
     return this.authenticateAndAuthorize(dn, credential, filter, handler);
@@ -702,7 +702,7 @@ public class Authenticator extends AbstractLdap<AuthenticatorConfig>
    * dn and credential. If {@link AuthenticatorConfig#setAuthorizationFilter}
    * has been called, then it will be used to authorize the user by performing
    * an ldap compare. See {@link #authenticateDn(String, Object, String,
-   * String[], AuthenticationHandler...)}
+   * String[], AuthenticationResultHandler...)}
    *
    * @param  dn  <code>String</code> dn for bind
    * @param  credential  <code>Object</code> credential for bind
@@ -730,7 +730,7 @@ public class Authenticator extends AbstractLdap<AuthenticatorConfig>
   /**
    * This will authenticate credentials by binding to the LDAP with the supplied
    * dn and credential. See {@link #authenticateAndAuthorize(String, Object,
-   * String, boolean, String[], AuthenticationHandler...)}
+   * String, boolean, String[], AuthenticationResultHandler...)}
    *
    * @param  dn  <code>String</code> dn for bind
    * @param  credential  <code>Object</code> credential for bind
@@ -755,20 +755,20 @@ public class Authenticator extends AbstractLdap<AuthenticatorConfig>
         filter,
         true,
         retAttrs,
-        this.config.getAuthenticationHandlers());
+        this.config.getAuthenticationResultHandlers());
   }
 
 
   /**
    * This will authenticate credentials by binding to the LDAP with the supplied
    * dn and credential. See {@link #authenticateAndAuthorize(String, Object,
-   * String, boolean, String[], AuthenticationHandler...)}
+   * String, boolean, String[], AuthenticationResultHandler...)}
    *
    * @param  dn  <code>String</code> dn for bind
    * @param  credential  <code>Object</code> credential for bind
    * @param  filter  <code>String</code> to authorize user
    * @param  retAttrs  <code>String[]</code> to return
-   * @param  handler  <code>AuthenticationHandler[]</code> to post process
+   * @param  handler  <code>AuthenticationResultHandler[]</code> to post process
    * authentication results
    *
    * @return  <code>Attributes</code> - of authenticated user
@@ -780,7 +780,7 @@ public class Authenticator extends AbstractLdap<AuthenticatorConfig>
     final Object credential,
     final String filter,
     final String[] retAttrs,
-    final AuthenticationHandler... handler)
+    final AuthenticationResultHandler... handler)
     throws NamingException
   {
     return

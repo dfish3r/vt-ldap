@@ -17,8 +17,8 @@ import javax.naming.AuthenticationException;
 import javax.naming.directory.Attributes;
 import edu.vt.middleware.ldap.bean.LdapAttributes;
 import edu.vt.middleware.ldap.bean.LdapEntry;
-import edu.vt.middleware.ldap.handler.AuthenticationHandler;
-import edu.vt.middleware.ldap.handler.TestAuthenticationHandler;
+import edu.vt.middleware.ldap.handler.AuthenticationResultHandler;
+import edu.vt.middleware.ldap.handler.TestAuthenticationResultHandler;
 import org.testng.AssertJUnit;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
@@ -340,9 +340,10 @@ public class AuthenticatorTest
   {
     // test authenticator handler
     final Authenticator ldap = this.createTLSAuthenticator(true);
-    final TestAuthenticationHandler ah = new TestAuthenticationHandler();
-    ldap.getAuthenticatorConfig().setAuthenticationHandlers(
-      new AuthenticationHandler[]{ah});
+    final TestAuthenticationResultHandler ah =
+      new TestAuthenticationResultHandler();
+    ldap.getAuthenticatorConfig().setAuthenticationResultHandlers(
+      new AuthenticationResultHandler[]{ah});
     AssertJUnit.assertFalse(ldap.authenticateDn(dn, INVALID_PASSWD));
     AssertJUnit.assertFalse(ah.getResults().get(dn).booleanValue());
     AssertJUnit.assertTrue(ldap.authenticateDn(dn, credential));

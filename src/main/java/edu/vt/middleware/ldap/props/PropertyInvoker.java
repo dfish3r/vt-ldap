@@ -21,7 +21,7 @@ import java.util.Map;
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLSocketFactory;
 import edu.vt.middleware.ldap.LdapConfig;
-import edu.vt.middleware.ldap.handler.AuthenticationHandler;
+import edu.vt.middleware.ldap.handler.AuthenticationResultHandler;
 import edu.vt.middleware.ldap.handler.SearchResultHandler;
 
 /**
@@ -126,16 +126,16 @@ public class PropertyInvoker
             instantiateType(SearchResultHandler.class, classes[i]));
         }
       } else if (
-        AuthenticationHandler[].class.isAssignableFrom(
+        AuthenticationResultHandler[].class.isAssignableFrom(
           getter.getReturnType())) {
         final String[] classes = value.split(",");
         newValue = Array.newInstance(
-          AuthenticationHandler.class, classes.length);
+          AuthenticationResultHandler.class, classes.length);
         for (int i = 0; i < classes.length; i++) {
           Array.set(
             newValue,
             i,
-            instantiateType(AuthenticationHandler.class, classes[i]));
+            instantiateType(AuthenticationResultHandler.class, classes[i]));
         }
       } else if (getter.getReturnType().isEnum()) {
         if (LdapConfig.SearchScope.class == getter.getReturnType()) {

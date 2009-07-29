@@ -17,12 +17,13 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * <code>TestAuthenticationHandler</code>.
+ * <code>TestAuthenticationResultHandler</code>.
  *
  * @author  Middleware Services
  * @version  $Revision$ $Date$
  */
-public class TestAuthenticationHandler implements AuthenticationHandler
+public class TestAuthenticationResultHandler
+  implements AuthenticationResultHandler
 {
   /** results. */
   private Map<String, Boolean> results = new HashMap<String, Boolean>();
