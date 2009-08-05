@@ -60,12 +60,6 @@ public class LdapLoginModule implements LoginModule
   /** Initialized callback handler. */
   private CallbackHandler callbackHandler;
 
-  /** Initialized sharedState. */
-  private Map<String, ?> sharedState;
-
-  /** Initialized options. */
-  private Map<String, ?> options;
-
   /** Whether authentication was successful. */
   private boolean success;
 
@@ -107,8 +101,6 @@ public class LdapLoginModule implements LoginModule
   {
     this.subject = subject;
     this.callbackHandler = callbackHandler;
-    this.sharedState = sharedState;
-    this.options = options;
 
     this.principals = new TreeSet<Principal>();
     this.credentials = new HashSet<LdapCredential>();
