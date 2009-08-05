@@ -162,8 +162,8 @@ public class LdapConfig extends AbstractPropertyConfig
   private String binaryAttributes;
 
   /** Handlers to process search results. */
-  private SearchResultHandler[] searchResultHandlers = new SearchResultHandler[]
-  {new FqdnSearchResultHandler()};
+  private SearchResultHandler[] searchResultHandlers =
+    new SearchResultHandler[] {new FqdnSearchResultHandler()};
 
   /** SASL authorization ID. */
   private String saslAuthorizationId;
@@ -1489,9 +1489,9 @@ public class LdapConfig extends AbstractPropertyConfig
 
 
   /**
-   * Create an instance of this class initialized with properties from the
-   * input stream. If the input stream is null, load properties from the
-   * default properties file.
+   * Create an instance of this class initialized with properties from the input
+   * stream. If the input stream is null, load properties from the default
+   * properties file.
    *
    * @param  is  to load properties from
    *

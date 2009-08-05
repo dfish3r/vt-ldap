@@ -262,8 +262,13 @@ public class Ldap extends AbstractLdap<LdapConfig> implements Serializable
     final String[] retAttrs)
     throws NamingException
   {
-    return this.search(
-      dn, filter, filterArgs, retAttrs, this.config.getSearchResultHandlers());
+    return
+      this.search(
+        dn,
+        filter,
+        filterArgs,
+        retAttrs,
+        this.config.getSearchResultHandlers());
   }
 
 
@@ -362,8 +367,12 @@ public class Ldap extends AbstractLdap<LdapConfig> implements Serializable
     final String[] retAttrs)
     throws NamingException
   {
-    return this.searchAttributes(
-      dn, matchAttrs, retAttrs, this.config.getSearchResultHandlers());
+    return
+      this.searchAttributes(
+        dn,
+        matchAttrs,
+        retAttrs,
+        this.config.getSearchResultHandlers());
   }
 
 

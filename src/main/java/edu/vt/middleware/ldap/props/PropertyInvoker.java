@@ -127,10 +127,11 @@ public class PropertyInvoker
         }
       } else if (
         AuthenticationResultHandler[].class.isAssignableFrom(
-          getter.getReturnType())) {
+            getter.getReturnType())) {
         final String[] classes = value.split(",");
         newValue = Array.newInstance(
-          AuthenticationResultHandler.class, classes.length);
+          AuthenticationResultHandler.class,
+          classes.length);
         for (int i = 0; i < classes.length; i++) {
           Array.set(
             newValue,

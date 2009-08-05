@@ -25,6 +25,7 @@ import java.util.Map;
 public class TestAuthenticationResultHandler
   implements AuthenticationResultHandler
 {
+
   /** results. */
   private Map<String, Boolean> results = new HashMap<String, Boolean>();
 
@@ -39,7 +40,7 @@ public class TestAuthenticationResultHandler
   /**
    * Returns the authentication results.
    *
-   * @return authentication results
+   * @return  authentication results
    */
   public Map<String, Boolean> getResults()
   {

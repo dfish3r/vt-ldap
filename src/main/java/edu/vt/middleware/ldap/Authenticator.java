@@ -219,8 +219,8 @@ public class Authenticator extends AbstractLdap<AuthenticatorConfig>
    * equal dfisher in the LDAP. If {@link
    * AuthenticatorConfig#setAuthorizationFilter} has been called, then it will
    * be used to authorize the user by performing an ldap compare. See {@link
-   * #authenticateAndAuthorize(
-   * String, Object, String, AuthenticationResultHandler...)}
+   * #authenticateAndAuthorize( String, Object, String,
+   * AuthenticationResultHandler...)}
    *
    * @param  user  <code>String</code> username for bind
    * @param  credential  <code>Object</code> credential for bind
@@ -261,11 +261,12 @@ public class Authenticator extends AbstractLdap<AuthenticatorConfig>
     final String filter)
     throws NamingException
   {
-    return this.authenticateAndAuthorize(
-      this.getDn(user),
-      credential,
-      filter,
-      this.config.getAuthenticationResultHandlers());
+    return
+      this.authenticateAndAuthorize(
+        this.getDn(user),
+        credential,
+        filter,
+        this.config.getAuthenticationResultHandlers());
   }
 
 
@@ -295,15 +296,18 @@ public class Authenticator extends AbstractLdap<AuthenticatorConfig>
     final AuthenticationResultHandler... handler)
     throws NamingException
   {
-    return this.authenticateAndAuthorize(
-      this.getDn(user), credential, filter, handler);
+    return
+      this.authenticateAndAuthorize(
+        this.getDn(user),
+        credential,
+        filter,
+        handler);
   }
 
 
   /**
    * This will authenticate credentials by binding to the LDAP with the supplied
-   * dn and credential. See {@link
-   * #authenticateAndAuthorize(
+   * dn and credential. See {@link #authenticateAndAuthorize(
    * String,Object,String,boolean,String[],AuthenticationResultHandler...)}.
    *
    * @param  dn  <code>String</code> for bind
@@ -327,7 +331,12 @@ public class Authenticator extends AbstractLdap<AuthenticatorConfig>
     boolean success = false;
     try {
       this.authenticateAndAuthorize(
-        dn, credential, filter, false, null, handler);
+        dn,
+        credential,
+        filter,
+        false,
+        null,
+        handler);
       success = true;
     } catch (AuthenticationException e) {
       if (this.logger.isDebugEnabled()) {
@@ -665,8 +674,12 @@ public class Authenticator extends AbstractLdap<AuthenticatorConfig>
     final String filter)
     throws NamingException
   {
-    return this.authenticateDn(
-      dn, credential, filter, this.config.getAuthenticationResultHandlers());
+    return
+      this.authenticateDn(
+        dn,
+        credential,
+        filter,
+        this.config.getAuthenticationResultHandlers());
   }
 
 
@@ -785,6 +798,11 @@ public class Authenticator extends AbstractLdap<AuthenticatorConfig>
   {
     return
       this.authenticateAndAuthorize(
-        dn, credential, filter, true, retAttrs, handler);
+        dn,
+        credential,
+        filter,
+        true,
+        retAttrs,
+        handler);
   }
 }

@@ -569,10 +569,7 @@ public abstract class AbstractLdap<T extends LdapConfig> implements BaseLdap
           sc.setDn(dn);
         }
         for (int i = 0; i < handler.length; i++) {
-          attrs = AttributesProcessor.executeHandler(
-            sc,
-            attrs,
-            handler[i]);
+          attrs = AttributesProcessor.executeHandler(sc, attrs, handler[i]);
         }
       }
     } finally {

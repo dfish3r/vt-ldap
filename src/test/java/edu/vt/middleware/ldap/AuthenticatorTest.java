@@ -326,16 +326,12 @@ public class AuthenticatorTest
    *
    * @throws  Exception  On test failure.
    */
-  @Parameters(
-    {
+  @Parameters({
       "authenticateDn",
       "authenticateDnCredential"
-    }
-  )
+    })
   @Test(groups = {"authtest"})
-  public void authenticateDnHandler(
-    final String dn,
-    final String credential)
+  public void authenticateDnHandler(final String dn, final String credential)
     throws Exception
   {
     // test authenticator handler
@@ -343,7 +339,7 @@ public class AuthenticatorTest
     final TestAuthenticationResultHandler ah =
       new TestAuthenticationResultHandler();
     ldap.getAuthenticatorConfig().setAuthenticationResultHandlers(
-      new AuthenticationResultHandler[]{ah});
+      new AuthenticationResultHandler[] {ah});
     AssertJUnit.assertFalse(ldap.authenticateDn(dn, INVALID_PASSWD));
     AssertJUnit.assertFalse(ah.getResults().get(dn).booleanValue());
     AssertJUnit.assertTrue(ldap.authenticateDn(dn, credential));

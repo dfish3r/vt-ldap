@@ -98,10 +98,6 @@ public class AuthenticationCriteria
   @Override
   public String toString()
   {
-    return
-      String.format(
-        "dn=%s,credential=%s",
-        this.dn,
-        this.credential);
+    return String.format("dn=%s,credential=%s", this.dn, this.credential);
   }
 }

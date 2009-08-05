@@ -14,8 +14,8 @@
 package edu.vt.middleware.ldap.handler;
 
 /**
- * AuthenticationResultHandler provides post processing of
- * authentication results.
+ * AuthenticationResultHandler provides post processing of authentication
+ * results.
  *
  * @author  Middleware Services
  * @version  $Revision$
@@ -27,8 +27,8 @@ public interface AuthenticationResultHandler
   /**
    * Process the results from a ldap authentication.
    *
-   * @param  ac  <code>AuthenticationCriteria</code> used to perform
-   * the authentication
+   * @param  ac  <code>AuthenticationCriteria</code> used to perform the
+   * authentication
    * @param  success  <code>boolean</code> whether the authentication succeeded
    */
   void process(AuthenticationCriteria ac, boolean success);
