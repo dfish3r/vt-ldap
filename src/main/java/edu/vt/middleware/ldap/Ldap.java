@@ -348,7 +348,7 @@ public class Ldap extends AbstractLdap<LdapConfig> implements Serializable
 
   /**
    * This will query the LDAP for the supplied dn, matching attributes and
-   * return attributes. All attributes will be returned. See {@link
+   * return attributes. See {@link
    * #searchAttributes( String, Attributes, String[], SearchResultHandler[])}.
    * This method converts relative DNs to fully qualified DNs, no post
    * processing is required
