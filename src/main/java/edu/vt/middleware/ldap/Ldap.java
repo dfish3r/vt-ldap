@@ -508,16 +508,8 @@ public class Ldap extends AbstractLdap<LdapConfig> implements Serializable
       this.logger.debug("Add attribute with the following parameters:");
       this.logger.debug("  dn = " + dn);
       this.logger.debug("  field = " + field);
-      this.logger.debug("  values = ");
-      if (values != null) {
-        if (this.logger.isDebugEnabled()) {
-          this.logger.debug("    " + Arrays.asList(values));
-        }
-      } else {
-        if (this.logger.isDebugEnabled()) {
-          this.logger.debug("    null");
-        }
-      }
+      this.logger.debug("  values = " +
+        (values == null ? "null" : Arrays.asList(values)));
       if (this.logger.isTraceEnabled()) {
         this.logger.trace("  config = " + this.config.getEnvironment());
       }
@@ -600,16 +592,8 @@ public class Ldap extends AbstractLdap<LdapConfig> implements Serializable
       this.logger.debug("Replace attribute with the following parameters:");
       this.logger.debug("  dn = " + dn);
       this.logger.debug("  field = " + field);
-      this.logger.debug("  values = ");
-      if (values != null) {
-        if (this.logger.isDebugEnabled()) {
-          this.logger.debug("    " + Arrays.asList(values));
-        }
-      } else {
-        if (this.logger.isDebugEnabled()) {
-          this.logger.debug("    null");
-        }
-      }
+      this.logger.debug("  values = " +
+        (values == null ? "null" : Arrays.asList(values)));
       if (this.logger.isTraceEnabled()) {
         this.logger.trace("  config = " + this.config.getEnvironment());
       }
@@ -712,16 +696,8 @@ public class Ldap extends AbstractLdap<LdapConfig> implements Serializable
       this.logger.debug("Remove attribute with the following parameters:");
       this.logger.debug("  dn = " + dn);
       this.logger.debug("  field = " + field);
-      this.logger.debug("  values = ");
-      if (values != null) {
-        if (this.logger.isDebugEnabled()) {
-          this.logger.debug("    " + Arrays.asList(values));
-        }
-      } else {
-        if (this.logger.isDebugEnabled()) {
-          this.logger.debug("    null");
-        }
-      }
+      this.logger.debug("  values = " +
+        (values == null ? "null" : Arrays.asList(values)));
       if (this.logger.isTraceEnabled()) {
         this.logger.trace("  config = " + this.config.getEnvironment());
       }

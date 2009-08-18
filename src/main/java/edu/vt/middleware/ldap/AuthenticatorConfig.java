@@ -14,6 +14,7 @@
 package edu.vt.middleware.ldap;
 
 import java.io.InputStream;
+import java.util.Arrays;
 import edu.vt.middleware.ldap.handler.AuthenticationResultHandler;
 import edu.vt.middleware.ldap.props.LdapProperties;
 import edu.vt.middleware.ldap.props.PropertyInvoker;
@@ -167,7 +168,8 @@ public class AuthenticatorConfig extends LdapConfig
   {
     checkImmutable();
     if (this.logger.isTraceEnabled()) {
-      this.logger.trace("setting userField: " + userField);
+      this.logger.trace("setting userField: " +
+        (userField == null ? "null" : Arrays.asList(userField)));
     }
     this.userField = userField;
   }

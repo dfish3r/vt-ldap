@@ -15,6 +15,7 @@ package edu.vt.middleware.ldap;
 
 import java.io.InputStream;
 import java.io.PrintStream;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Hashtable;
@@ -1403,7 +1404,8 @@ public class LdapConfig extends AbstractPropertyConfig
   {
     checkImmutable();
     if (this.logger.isTraceEnabled()) {
-      this.logger.trace("setting searchResultsHandlers: " + handlers);
+      this.logger.trace("setting searchResultsHandlers: " +
+        (handlers == null ? "null" : Arrays.asList(handlers)));
     }
     this.searchResultHandlers = handlers;
   }

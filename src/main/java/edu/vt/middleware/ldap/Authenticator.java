@@ -177,7 +177,8 @@ public class Authenticator extends AbstractLdap<AuthenticatorConfig>
           if (this.logger.isInfoEnabled()) {
             this.logger.info(
               "Search for user: " + user + " failed using attribute(s): " +
-              Arrays.asList(this.config.getUserField()));
+              (this.config.getUserField() == null ?
+                "null" : Arrays.asList(this.config.getUserField())));
           }
         }
       }
@@ -603,7 +604,8 @@ public class Authenticator extends AbstractLdap<AuthenticatorConfig>
               }
             } else {
               if (this.logger.isDebugEnabled()) {
-                this.logger.debug("    " + Arrays.asList(retAttrs));
+                this.logger.debug("    " +
+                  (retAttrs == null ? "null" : Arrays.asList(retAttrs)));
               }
             }
           }
