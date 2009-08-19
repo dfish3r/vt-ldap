@@ -66,7 +66,9 @@ public class TestCallbackHandler implements CallbackHandler
         nc.setName(name);
       } else if (callbacks[i] instanceof PasswordCallback) {
         final PasswordCallback pc = (PasswordCallback) callbacks[i];
-        pc.setPassword(password.toCharArray());
+        if (password != null) {
+          pc.setPassword(password.toCharArray());
+        }
       } else {
         throw new UnsupportedCallbackException(callbacks[i], "Unsupported");
       }

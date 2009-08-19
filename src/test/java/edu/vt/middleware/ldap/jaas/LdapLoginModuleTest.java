@@ -97,13 +97,14 @@ public class LdapLoginModuleTest
 
 
   /**
+   * @param  dn  of this user
    * @param  user  to authenticate.
    * @param  role  to set for this user
    * @param  credential  to authenticate with.
    *
    * @throws  Exception  On test failure.
    */
-  @Parameters({ "jaasUser", "jaasRole", "jaasCredential" })
+  @Parameters({ "jaasDn", "jaasUser", "jaasUserRole", "jaasCredential" })
   @Test(
     groups = {"jaastest"},
     threadPoolSize = 10,
@@ -111,41 +112,114 @@ public class LdapLoginModuleTest
     timeOut = 60000
   )
   public void contextTest(
+    final String dn,
     final String user,
     final String role,
     final String credential)
     throws Exception
   {
-    this.doContextTest(user, role, credential);
+    this.doContextTest("vt-ldap", dn, user, role, credential);
   }
 
 
   /**
+   * @param  dn  of this user
    * @param  user  to authenticate.
    * @param  role  to set for this user
    * @param  credential  to authenticate with.
    *
    * @throws  Exception  On test failure.
    */
-  @Parameters({ "jaasUser", "jaasRole", "jaasCredential" })
+  @Parameters({ "jaasDn", "jaasUser", "jaasRoleCombined", "jaasCredential" })
   @Test(
     groups = {"jaastest"},
-    dependsOnMethods = {"contextTest"}
+    threadPoolSize = 10,
+    invocationCount = 100,
+    timeOut = 60000
   )
-  public void oldContextTest(
+  public void rolesContextTest(
+    final String dn,
     final String user,
     final String role,
     final String credential)
     throws Exception
   {
-    System.setProperty(
-      "java.security.auth.login.config",
-      "src/test/resources/ldap_jaas.deprecated.config");
-    this.doContextTest(user, role, credential);
+    this.doContextTest("vt-ldap-roles", dn, user, role, credential);
   }
 
 
   /**
+   * @param  dn  of this user
+   * @param  user  to authenticate.
+   * @param  role  to set for this user
+   * @param  credential  to authenticate with.
+   *
+   * @throws  Exception  On test failure.
+   */
+  @Parameters({ "jaasDn", "jaasUser", "jaasUserRole", "jaasCredential" })
+  @Test(
+    groups = {"jaastest"}
+  )
+  public void useFirstContextTest(
+    final String dn,
+    final String user,
+    final String role,
+    final String credential)
+    throws Exception
+  {
+    this.doContextTest("vt-ldap-use-first", dn, user, role, credential);
+  }
+
+
+  /**
+   * @param  dn  of this user
+   * @param  user  to authenticate.
+   * @param  role  to set for this user
+   * @param  credential  to authenticate with.
+   *
+   * @throws  Exception  On test failure.
+   */
+  @Parameters({ "jaasDn", "jaasUser", "jaasRoleCombined", "jaasCredential" })
+  @Test(
+    groups = {"jaastest"}
+  )
+  public void tryFirstContextTest(
+    final String dn,
+    final String user,
+    final String role,
+    final String credential)
+    throws Exception
+  {
+    this.doContextTest("vt-ldap-try-first", dn, user, role, credential);
+  }
+
+
+  /**
+   * @param  dn  of this user
+   * @param  user  to authenticate.
+   * @param  role  to set for this user
+   * @param  credential  to authenticate with.
+   *
+   * @throws  Exception  On test failure.
+   */
+  @Parameters({ "jaasDn", "jaasUser", "jaasUserRole", "jaasCredential" })
+  @Test(
+    groups = {"jaastest"}
+  )
+  public void oldContextTest(
+    final String dn,
+    final String user,
+    final String role,
+    final String credential)
+    throws Exception
+  {
+    this.doContextTest("vt-ldap-deprecated", dn, user, role, credential);
+  }
+
+
+  /**
+   * @param  name  of the jaas configuration
+   * @param  dn  of this user
    * @param  user  to authenticate.
    * @param  role  to set for this user
    * @param  credential  to authenticate with.
@@ -153,6 +227,8 @@ public class LdapLoginModuleTest
    * @throws  Exception  On test failure.
    */
   private void doContextTest(
+    final String name,
+    final String dn,
     final String user,
     final String role,
     final String credential)
@@ -162,7 +238,7 @@ public class LdapLoginModuleTest
     callback.setName(user);
     callback.setPassword(INVALID_PASSWD);
 
-    LoginContext lc = new LoginContext("vt-ldap", callback);
+    LoginContext lc = new LoginContext(name, callback);
     try {
       lc.login();
       AssertJUnit.fail("Invalid password, login should have failed");
@@ -171,7 +247,7 @@ public class LdapLoginModuleTest
     }
 
     callback.setPassword(credential);
-    lc = new LoginContext("vt-ldap", callback);
+    lc = new LoginContext(name, callback);
     try {
       lc.login();
     } catch (Exception e) {
@@ -180,10 +256,15 @@ public class LdapLoginModuleTest
 
     final Set<LdapPrincipal> principals = lc.getSubject().getPrincipals(
       LdapPrincipal.class);
-    AssertJUnit.assertEquals(principals.size(), 1);
-
+    AssertJUnit.assertEquals(1, principals.size());
     final LdapPrincipal p = principals.iterator().next();
     AssertJUnit.assertEquals(p.getName(), user);
+
+    final Set<LdapDnPrincipal> dnPrincipals = lc.getSubject().getPrincipals(
+        LdapDnPrincipal.class);
+    AssertJUnit.assertEquals(1, dnPrincipals.size());
+    final LdapDnPrincipal dnP = dnPrincipals.iterator().next();
+    AssertJUnit.assertEquals(dnP.getName(), dn);
 
     final Set<LdapRole> roles = lc.getSubject().getPrincipals(LdapRole.class);
 
@@ -203,7 +284,7 @@ public class LdapLoginModuleTest
 
     final Set<LdapCredential> credentials = lc.getSubject()
         .getPrivateCredentials(LdapCredential.class);
-    AssertJUnit.assertEquals(credentials.size(), 1);
+    AssertJUnit.assertEquals(1, credentials.size());
 
     final LdapCredential c = credentials.iterator().next();
     AssertJUnit.assertEquals(
@@ -216,7 +297,111 @@ public class LdapLoginModuleTest
       AssertJUnit.fail(e.getMessage());
     }
 
-    AssertJUnit.assertEquals(lc.getSubject().getPrincipals().size(), 0);
-    AssertJUnit.assertEquals(lc.getSubject().getPrivateCredentials().size(), 0);
+    AssertJUnit.assertEquals(0, lc.getSubject().getPrincipals().size());
+    AssertJUnit.assertEquals(0, lc.getSubject().getPrivateCredentials().size());
+  }
+
+
+  /**
+   * @param  dn  of this user
+   * @param  user  to authenticate.
+   * @param  role  to set for this user
+   *
+   * @throws  Exception  On test failure.
+   */
+  @Parameters({ "jaasDn", "jaasUser", "jaasRoleCombined" })
+  @Test(
+    groups = {"jaastest"},
+    threadPoolSize = 10,
+    invocationCount = 100,
+    timeOut = 60000
+  )
+  public void rolesOnlyContextTest(
+    final String dn,
+    final String user,
+    final String role)
+    throws Exception
+  {
+    this.doRolesContextTest("vt-ldap-roles-only", dn, user, role);
+  }
+
+
+  /**
+   * @param  dn  of this user
+   * @param  user  to authenticate.
+   * @param  role  to set for this user
+   *
+   * @throws  Exception  On test failure.
+   */
+  @Parameters({ "jaasDn", "jaasUser", "jaasRoleCombined" })
+  @Test(
+    groups = {"jaastest"},
+    threadPoolSize = 10,
+    invocationCount = 100,
+    timeOut = 60000
+  )
+  public void dnRolesOnlyContextTest(
+    final String dn,
+    final String user,
+    final String role)
+    throws Exception
+  {
+    this.doRolesContextTest("vt-ldap-dn-roles-only", dn, user, role);
+  }
+
+
+  /**
+   * @param  name  of the jaas configuration
+   * @param  dn  of this user
+   * @param  user  to authenticate.
+   * @param  role  to set for this user
+   *
+   * @throws  Exception  On test failure.
+   */
+  private void doRolesContextTest(
+    final String name,
+    final String dn,
+    final String user,
+    final String role)
+    throws Exception
+  {
+    final TestCallbackHandler callback = new TestCallbackHandler();
+    callback.setName(user);
+
+    final LoginContext lc = new LoginContext(name, callback);
+    try {
+      lc.login();
+    } catch (Exception e) {
+      AssertJUnit.fail(e.getMessage());
+    }
+
+    final Set<LdapRole> roles = lc.getSubject().getPrincipals(LdapRole.class);
+
+    final Iterator<LdapRole> roleIter = roles.iterator();
+    final String[] checkRoles = role.split("\\|");
+    AssertJUnit.assertEquals(checkRoles.length, roles.size());
+    while (roleIter.hasNext()) {
+      final LdapRole r = roleIter.next();
+      boolean match = false;
+      for (String s : checkRoles) {
+        if (s.equals(r.getName())) {
+          match = true;
+        }
+      }
+      AssertJUnit.assertTrue(match);
+    }
+
+    final Set<?> credentials = lc.getSubject()
+        .getPrivateCredentials();
+    AssertJUnit.assertEquals(0, credentials.size());
+
+    try {
+      lc.logout();
+    } catch (Exception e) {
+      AssertJUnit.fail(e.getMessage());
+    }
+
+    AssertJUnit.assertEquals(0, lc.getSubject().getPrincipals().size());
+    AssertJUnit.assertEquals(0, lc.getSubject().getPrivateCredentials().size());
   }
 }

@@ -148,8 +148,11 @@
   <parameter name="cliAuthResults"
              value="/edu/vt/middleware/ldap/searchResults-6.ldif"/>
 
+  <parameter name="jaasDn" value="uid=7,ou=test,dc=vt,dc=edu"/>
   <parameter name="jaasUser" value="jdoe7@vt.edu"/>
-  <parameter name="jaasRole" value="0827|inetOrgPerson|organizationalPerson|person|top"/>
+  <parameter name="jaasUserRole" value="0827"/>
+  <parameter name="jaasRole" value="inetOrgPerson|organizationalPerson|person|top"/>
+  <parameter name="jaasRoleCombined" value="0827|inetOrgPerson|organizationalPerson|person|top"/>
   <parameter name="jaasCredential" value="password7"/>
 
   <parameter name="webXml" value="src/test/resources/web.xml"/>
