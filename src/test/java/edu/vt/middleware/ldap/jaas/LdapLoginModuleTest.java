@@ -157,9 +157,7 @@ public class LdapLoginModuleTest
    * @throws  Exception  On test failure.
    */
   @Parameters({ "jaasDn", "jaasUser", "jaasUserRole", "jaasCredential" })
-  @Test(
-    groups = {"jaastest"}
-  )
+  @Test(groups = {"jaastest"})
   public void useFirstContextTest(
     final String dn,
     final String user,
@@ -180,9 +178,7 @@ public class LdapLoginModuleTest
    * @throws  Exception  On test failure.
    */
   @Parameters({ "jaasDn", "jaasUser", "jaasRoleCombined", "jaasCredential" })
-  @Test(
-    groups = {"jaastest"}
-  )
+  @Test(groups = {"jaastest"})
   public void tryFirstContextTest(
     final String dn,
     final String user,
@@ -203,9 +199,7 @@ public class LdapLoginModuleTest
    * @throws  Exception  On test failure.
    */
   @Parameters({ "jaasDn", "jaasUser", "jaasUserRole", "jaasCredential" })
-  @Test(
-    groups = {"jaastest"}
-  )
+  @Test(groups = {"jaastest"})
   public void oldContextTest(
     final String dn,
     final String user,
@@ -257,12 +251,14 @@ public class LdapLoginModuleTest
     final Set<LdapPrincipal> principals = lc.getSubject().getPrincipals(
       LdapPrincipal.class);
     AssertJUnit.assertEquals(1, principals.size());
+
     final LdapPrincipal p = principals.iterator().next();
     AssertJUnit.assertEquals(p.getName(), user);
 
     final Set<LdapDnPrincipal> dnPrincipals = lc.getSubject().getPrincipals(
-        LdapDnPrincipal.class);
+      LdapDnPrincipal.class);
     AssertJUnit.assertEquals(1, dnPrincipals.size());
+
     final LdapDnPrincipal dnP = dnPrincipals.iterator().next();
     AssertJUnit.assertEquals(dnP.getName(), dn);
 
@@ -391,8 +387,7 @@ public class LdapLoginModuleTest
       AssertJUnit.assertTrue(match);
     }
 
-    final Set<?> credentials = lc.getSubject()
-        .getPrivateCredentials();
+    final Set<?> credentials = lc.getSubject().getPrivateCredentials();
     AssertJUnit.assertEquals(0, credentials.size());
 
     try {

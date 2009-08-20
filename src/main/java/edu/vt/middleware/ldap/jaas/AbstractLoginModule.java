@@ -79,13 +79,16 @@ public abstract class AbstractLoginModule implements LoginModule
   protected CallbackHandler callbackHandler;
 
   /** Shared state from other login module. */
-  @SuppressWarnings("unchecked") protected Map sharedState;
+  @SuppressWarnings("unchecked")
+  protected Map sharedState;
 
   /** Whether credentials from the shared state should be used. */
   protected boolean useFirstPass;
 
-  /** Whether credentials from the shared state should be used
-   * if they are available. */
+  /**
+   * Whether credentials from the shared state should be used if they are
+   * available.
+   */
   protected boolean tryFirstPass;
 
   /** Whether credentials should be stored in the shared state map. */
@@ -158,7 +161,8 @@ public abstract class AbstractLoginModule implements LoginModule
 
 
   /** {@inheritDoc}. */
-  public abstract boolean login() throws LoginException;
+  public abstract boolean login()
+    throws LoginException;
 
 
   /** {@inheritDoc}. */
@@ -266,8 +270,7 @@ public abstract class AbstractLoginModule implements LoginModule
    *
    * @return  <code>Authenticator</code>
    */
-  public static Authenticator createAuthenticator(
-    final Map<String, ?> options)
+  public static Authenticator createAuthenticator(final Map<String, ?> options)
   {
     final AuthenticatorConfig authConfig = new AuthenticatorConfig();
     final LdapProperties authProperties = new LdapProperties(authConfig);
@@ -290,10 +293,11 @@ public abstract class AbstractLoginModule implements LoginModule
    * data is retrieved from shared state. Otherwise a callback handler is used
    * to get the data. Set useCallback to force a callback handler to be used.
    *
-   * @param nameCb to set name for
-   * @param passCb to set password for
-   * @param useCallback whether to force a callback handler
-   * @throws LoginException if the callback handler fails
+   * @param  nameCb  to set name for
+   * @param  passCb  to set password for
+   * @param  useCallback  whether to force a callback handler
+   *
+   * @throws  LoginException  if the callback handler fails
    */
   protected void getCredentials(
     final NameCallback nameCb,
@@ -321,18 +325,19 @@ public abstract class AbstractLoginModule implements LoginModule
       } else if (this.callbackHandler != null) {
         this.callbackHandler.handle(new Callback[] {nameCb, passCb});
       } else {
-        throw new LoginException("No CallbackHandler available. " +
+        throw new LoginException(
+          "No CallbackHandler available. " +
           "Set useFirstPass, tryFirstPass, or provide a CallbackHandler");
       }
     } catch (IOException e) {
       if (this.logger.isErrorEnabled()) {
-        this.logger.error("Error reading data from callback handler" ,e);
+        this.logger.error("Error reading data from callback handler", e);
       }
       this.success = false;
       throw new LoginException(e.toString());
     } catch (UnsupportedCallbackException e) {
       if (this.logger.isErrorEnabled()) {
-        this.logger.error("Unsupported callback" ,e);
+        this.logger.error("Unsupported callback", e);
       }
       this.success = false;
       throw new LoginException(e.toString());
@@ -344,9 +349,9 @@ public abstract class AbstractLoginModule implements LoginModule
    * This will store the supplied name, password, and entry dn in the stored
    * state map. storePass must be set for this method to have any affect.
    *
-   * @param nameCb to store
-   * @param passCb to store
-   * @param loginDn to store
+   * @param  nameCb  to store
+   * @param  passCb  to store
+   * @param  loginDn  to store
    */
   @SuppressWarnings("unchecked")
   protected void storeCredentials(

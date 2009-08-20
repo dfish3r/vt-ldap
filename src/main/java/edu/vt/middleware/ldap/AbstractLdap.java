@@ -194,12 +194,14 @@ public abstract class AbstractLdap<T extends LdapConfig> implements BaseLdap
       this.logger.debug("Search with the following parameters:");
       this.logger.debug("  dn = " + dn);
       this.logger.debug("  filter = " + filter);
-      this.logger.debug("  filterArgs = " +
+      this.logger.debug(
+        "  filterArgs = " +
         (filterArgs == null ? "none" : Arrays.asList(filterArgs)));
-      this.logger.debug("  retAttrs = " +
+      this.logger.debug(
+        "  retAttrs = " +
         (retAttrs == null ? "all attributes" : Arrays.asList(retAttrs)));
-      this.logger.debug("  handler = " +
-        (handler == null ? "null" : Arrays.asList(handler)));
+      this.logger.debug(
+        "  handler = " + (handler == null ? "null" : Arrays.asList(handler)));
       if (this.logger.isTraceEnabled()) {
         this.logger.trace("  config = " + this.config.getEnvironment());
       }
@@ -292,10 +294,11 @@ public abstract class AbstractLdap<T extends LdapConfig> implements BaseLdap
       this.logger.debug("One level search with the following parameters:");
       this.logger.debug("  dn = " + dn);
       this.logger.debug("  matchAttrs = " + matchAttrs);
-      this.logger.debug("  retAttrs = " +
+      this.logger.debug(
+        "  retAttrs = " +
         (retAttrs == null ? "all attributes" : Arrays.asList(retAttrs)));
-      this.logger.debug("  handler = " +
-        (handler == null ? "null" : Arrays.asList(handler)));
+      this.logger.debug(
+        "  handler = " + (handler == null ? "null" : Arrays.asList(handler)));
       if (this.logger.isTraceEnabled()) {
         this.logger.trace("  config = " + this.config.getEnvironment());
       }
@@ -502,10 +505,11 @@ public abstract class AbstractLdap<T extends LdapConfig> implements BaseLdap
     if (this.logger.isDebugEnabled()) {
       this.logger.debug("Attribute search with the following parameters:");
       this.logger.debug("  dn = " + dn);
-      this.logger.debug("  retAttrs = " +
+      this.logger.debug(
+        "  retAttrs = " +
         (retAttrs == null ? "all attributes" : Arrays.asList(retAttrs)));
-      this.logger.debug("  handler = " +
-        (handler == null ? "null" : Arrays.asList(handler)));
+      this.logger.debug(
+        "  handler = " + (handler == null ? "null" : Arrays.asList(handler)));
       if (this.logger.isTraceEnabled()) {
         this.logger.trace("  config = " + this.config.getEnvironment());
       }

@@ -348,10 +348,9 @@ public class Ldap extends AbstractLdap<LdapConfig> implements Serializable
 
   /**
    * This will query the LDAP for the supplied dn, matching attributes and
-   * return attributes. See {@link
-   * #searchAttributes( String, Attributes, String[], SearchResultHandler[])}.
-   * This method converts relative DNs to fully qualified DNs, no post
-   * processing is required
+   * return attributes. See {@link #searchAttributes( String, Attributes,
+   * String[], SearchResultHandler[])}. This method converts relative DNs to
+   * fully qualified DNs, no post processing is required
    *
    * @param  dn  <code>String</code> name to search in
    * @param  matchAttrs  <code>Attributes</code> attributes to match
@@ -508,8 +507,8 @@ public class Ldap extends AbstractLdap<LdapConfig> implements Serializable
       this.logger.debug("Add attribute with the following parameters:");
       this.logger.debug("  dn = " + dn);
       this.logger.debug("  field = " + field);
-      this.logger.debug("  values = " +
-        (values == null ? "null" : Arrays.asList(values)));
+      this.logger.debug(
+        "  values = " + (values == null ? "null" : Arrays.asList(values)));
       if (this.logger.isTraceEnabled()) {
         this.logger.trace("  config = " + this.config.getEnvironment());
       }
@@ -592,8 +591,8 @@ public class Ldap extends AbstractLdap<LdapConfig> implements Serializable
       this.logger.debug("Replace attribute with the following parameters:");
       this.logger.debug("  dn = " + dn);
       this.logger.debug("  field = " + field);
-      this.logger.debug("  values = " +
-        (values == null ? "null" : Arrays.asList(values)));
+      this.logger.debug(
+        "  values = " + (values == null ? "null" : Arrays.asList(values)));
       if (this.logger.isTraceEnabled()) {
         this.logger.trace("  config = " + this.config.getEnvironment());
       }
@@ -696,8 +695,8 @@ public class Ldap extends AbstractLdap<LdapConfig> implements Serializable
       this.logger.debug("Remove attribute with the following parameters:");
       this.logger.debug("  dn = " + dn);
       this.logger.debug("  field = " + field);
-      this.logger.debug("  values = " +
-        (values == null ? "null" : Arrays.asList(values)));
+      this.logger.debug(
+        "  values = " + (values == null ? "null" : Arrays.asList(values)));
       if (this.logger.isTraceEnabled()) {
         this.logger.trace("  config = " + this.config.getEnvironment());
       }

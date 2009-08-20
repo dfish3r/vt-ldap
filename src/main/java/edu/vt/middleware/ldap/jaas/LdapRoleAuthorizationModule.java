@@ -34,9 +34,9 @@ import edu.vt.middleware.ldap.Ldap;
 
 /**
  * <code>LdapRoleAuthorizationModule</code> provides a JAAS authentication hook
- * into LDAP roles. No authentication is performed in this module.
- * Role data is set for the login name in the shared state or for the name
- * returned by the CallbackHandler.
+ * into LDAP roles. No authentication is performed in this module. Role data is
+ * set for the login name in the shared state or for the name returned by the
+ * CallbackHandler.
  *
  * @author  Middleware Services
  * @version  $Revision$ $Date$
@@ -77,9 +77,10 @@ public class LdapRoleAuthorizationModule extends AbstractLoginModule
 
     if (this.logger.isDebugEnabled()) {
       this.logger.debug("roleFilter = " + this.roleFilter);
-      this.logger.debug("roleAttribute = " +
-        (this.roleAttribute == null ?
-          "null" : Arrays.asList(this.roleAttribute)));
+      this.logger.debug(
+        "roleAttribute = " +
+        (this.roleAttribute == null ? "null"
+                                    : Arrays.asList(this.roleAttribute)));
     }
 
     this.ldap = createLdap(options);
@@ -109,6 +110,7 @@ public class LdapRoleAuthorizationModule extends AbstractLoginModule
         this.principals.add(new LdapPrincipal(loginName));
         this.success = true;
       }
+
       final String loginDn = (String) this.sharedState.get(LOGIN_DN);
       if (loginDn != null && this.setLdapDnPrincipal) {
         this.principals.add(new LdapDnPrincipal(loginDn));
@@ -156,9 +158,8 @@ public class LdapRoleAuthorizationModule extends AbstractLoginModule
     if (args.length > 0) {
       name = args[0];
     }
-    final LoginContext lc = new LoginContext(
-      name,
-      new TextCallbackHandler());
+
+    final LoginContext lc = new LoginContext(name, new TextCallbackHandler());
     lc.login();
     System.out.println("Authorization succeeded");
 

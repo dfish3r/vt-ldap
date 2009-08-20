@@ -23,7 +23,6 @@ import java.util.Set;
 import javax.naming.AuthenticationException;
 import javax.naming.NamingException;
 import javax.naming.directory.Attributes;
-import javax.naming.directory.SearchResult;
 import javax.security.auth.Subject;
 import javax.security.auth.callback.CallbackHandler;
 import javax.security.auth.callback.NameCallback;
@@ -74,9 +73,10 @@ public class LdapLoginModule extends AbstractLoginModule implements LoginModule
     }
 
     if (this.logger.isDebugEnabled()) {
-      this.logger.debug("userRoleAttribute = " +
-        (this.userRoleAttribute == null ?
-          "null" : Arrays.asList(this.userRoleAttribute)));
+      this.logger.debug(
+        "userRoleAttribute = " +
+        (this.userRoleAttribute == null
+          ? "null" : Arrays.asList(this.userRoleAttribute)));
     }
 
     this.auth = createAuthenticator(options);
@@ -129,6 +129,7 @@ public class LdapLoginModule extends AbstractLoginModule implements LoginModule
         if (this.setLdapPrincipal) {
           this.principals.add(new LdapPrincipal(nameCb.getName()));
         }
+
         final String loginDn = this.auth.getDn(nameCb.getName());
         if (loginDn != null && this.setLdapDnPrincipal) {
           this.principals.add(new LdapDnPrincipal(loginDn));
@@ -165,9 +166,8 @@ public class LdapLoginModule extends AbstractLoginModule implements LoginModule
     if (args.length > 0) {
       name = args[0];
     }
-    final LoginContext lc = new LoginContext(
-      name,
-      new TextCallbackHandler());
+
+    final LoginContext lc = new LoginContext(name, new TextCallbackHandler());
     lc.login();
     System.out.println("Authentication/Authorization succeeded");
 

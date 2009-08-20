@@ -168,7 +168,8 @@ public class AuthenticatorConfig extends LdapConfig
   {
     checkImmutable();
     if (this.logger.isTraceEnabled()) {
-      this.logger.trace("setting userField: " +
+      this.logger.trace(
+        "setting userField: " +
         (userField == null ? "null" : Arrays.asList(userField)));
     }
     this.userField = userField;

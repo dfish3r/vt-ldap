@@ -30,8 +30,8 @@ import edu.vt.middleware.ldap.Authenticator;
 
 /**
  * <code>LdapDnAuthorizationModule</code> provides a JAAS authentication hook
- * into LDAP DNs. No authentication is performed in this module.
- * The LDAP entry dn can be stored and shared with other modules.
+ * into LDAP DNs. No authentication is performed in this module. The LDAP entry
+ * dn can be stored and shared with other modules.
  *
  * @author  Middleware Services
  * @version  $Revision$ $Date$
@@ -81,6 +81,7 @@ public class LdapDnAuthorizationModule extends AbstractLoginModule
         this.principals.add(new LdapPrincipal(loginName));
         this.success = true;
       }
+
       final String loginDn = this.auth.getDn(nameCb.getName());
       if (loginDn != null && this.setLdapDnPrincipal) {
         this.principals.add(new LdapDnPrincipal(loginDn));
@@ -111,9 +112,8 @@ public class LdapDnAuthorizationModule extends AbstractLoginModule
     if (args.length > 0) {
       name = args[0];
     }
-    final LoginContext lc = new LoginContext(
-      name,
-      new TextCallbackHandler());
+
+    final LoginContext lc = new LoginContext(name, new TextCallbackHandler());
     lc.login();
     System.out.println("Authorization succeeded");
 

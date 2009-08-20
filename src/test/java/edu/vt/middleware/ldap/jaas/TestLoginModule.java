@@ -40,7 +40,8 @@ public class TestLoginModule implements LoginModule
   protected CallbackHandler callbackHandler;
 
   /** Shared state from other login module. */
-  @SuppressWarnings("unchecked") protected Map sharedState;
+  @SuppressWarnings("unchecked")
+  protected Map sharedState;
 
   /** Whether authentication was successful. */
   protected boolean success;
@@ -73,7 +74,8 @@ public class TestLoginModule implements LoginModule
 
       this.sharedState.put(LdapLoginModule.LOGIN_NAME, nameCb.getName());
       this.sharedState.put(
-        LdapLoginModule.LOGIN_PASSWORD, passCb.getPassword());
+        LdapLoginModule.LOGIN_PASSWORD,
+        passCb.getPassword());
       this.success = true;
     } catch (IOException e) {
       this.success = false;

@@ -1404,7 +1404,8 @@ public class LdapConfig extends AbstractPropertyConfig
   {
     checkImmutable();
     if (this.logger.isTraceEnabled()) {
-      this.logger.trace("setting searchResultsHandlers: " +
+      this.logger.trace(
+        "setting searchResultsHandlers: " +
         (handlers == null ? "null" : Arrays.asList(handlers)));
     }
     this.searchResultHandlers = handlers;
