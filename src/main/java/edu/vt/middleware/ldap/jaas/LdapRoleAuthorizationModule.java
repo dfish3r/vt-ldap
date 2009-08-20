@@ -68,13 +68,7 @@ public class LdapRoleAuthorizationModule extends AbstractLoginModule
     while (i.hasNext()) {
       final String key = i.next();
       final String value = (String) options.get(key);
-      if (key.equalsIgnoreCase("useFirstPass")) {
-        this.useFirstPass = Boolean.valueOf(value);
-      } else if (key.equalsIgnoreCase("tryFirstPass")) {
-        this.tryFirstPass = Boolean.valueOf(value);
-      } else if (key.equalsIgnoreCase("storePass")) {
-        this.storePass = Boolean.valueOf(value);
-      } else if (key.equalsIgnoreCase("roleFilter")) {
+      if (key.equalsIgnoreCase("roleFilter")) {
         this.roleFilter = value;
       } else if (key.equalsIgnoreCase("roleAttribute")) {
         this.roleAttribute = value.split(",");
@@ -82,9 +76,6 @@ public class LdapRoleAuthorizationModule extends AbstractLoginModule
     }
 
     if (this.logger.isDebugEnabled()) {
-      this.logger.debug("useFirstPass = " + this.useFirstPass);
-      this.logger.debug("tryFirstPass = " + this.tryFirstPass);
-      this.logger.debug("storePass = " + this.storePass);
       this.logger.debug("roleFilter = " + this.roleFilter);
       this.logger.debug("roleAttribute = " +
         (this.roleAttribute == null ?
