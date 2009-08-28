@@ -63,8 +63,7 @@ public final class TestUtil
     throws Exception
   {
     final Ldap l = new Ldap();
-    l.loadFromProperties(
-      TestUtil.class.getResourceAsStream("/ldap.properties"));
+    l.loadFromProperties();
     return l;
   }
 
