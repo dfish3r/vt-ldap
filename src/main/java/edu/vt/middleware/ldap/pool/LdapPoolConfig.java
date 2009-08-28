@@ -372,6 +372,7 @@ public class LdapPoolConfig extends AbstractPropertyConfig
       properties = new LdapProperties(poolConfig, is);
     } else {
       properties = new LdapProperties(poolConfig);
+      properties.useDefaultPropertiesFile();
     }
     properties.configure();
     return poolConfig;

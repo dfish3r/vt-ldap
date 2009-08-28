@@ -324,6 +324,7 @@ public class AuthenticatorConfig extends LdapConfig
       properties = new LdapProperties(authConfig, is);
     } else {
       properties = new LdapProperties(authConfig);
+      properties.useDefaultPropertiesFile();
     }
     properties.configure();
     return authConfig;

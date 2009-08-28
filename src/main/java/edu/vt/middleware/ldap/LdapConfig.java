@@ -1508,6 +1508,7 @@ public class LdapConfig extends AbstractPropertyConfig
       properties = new LdapProperties(ldapConfig, is);
     } else {
       properties = new LdapProperties(ldapConfig);
+      properties.useDefaultPropertiesFile();
     }
     properties.configure();
     return ldapConfig;
