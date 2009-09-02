@@ -1032,7 +1032,7 @@ public class LdapConfig extends AbstractPropertyConfig
         final String p = h.substring(
           h.indexOf(LdapConstants.PROVIDER_URL_SEPARATOR) + separatorLength,
           h.length());
-        this.setPort(p);
+        this.port = p;
         h = h.substring(0, h.indexOf(LdapConstants.PROVIDER_URL_SEPARATOR));
       }
 
@@ -1056,10 +1056,10 @@ public class LdapConfig extends AbstractPropertyConfig
   public void setPort(final String port)
   {
     checkImmutable();
-    if (this.logger.isTraceEnabled()) {
-      this.logger.trace("setting port: " + port);
-    }
     this.port = port;
+    this.setLdapUrl(
+      LdapConstants.PROVIDER_URL_SCHEME + LdapConstants.PROVIDER_URL_PREFIX +
+      this.host + LdapConstants.PROVIDER_URL_SEPARATOR + this.port);
   }
 
 
