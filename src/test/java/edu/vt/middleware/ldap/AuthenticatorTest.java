@@ -138,6 +138,22 @@ public class AuthenticatorTest
 
 
   /**
+   * @param  ldapUrl  to check
+   * @param  base  to check
+   */
+  @Parameters({ "loadPropertiesUrl", "loadPropertiesBase" })
+  @Test(groups = {"authtest"})
+  public void loadProperties(final String ldapUrl, final String base)
+  {
+    final Authenticator a = new Authenticator();
+    a.loadFromProperties(
+      TestUtil.class.getResourceAsStream("/ldap.tls.properties"));
+    AssertJUnit.assertEquals(ldapUrl, a.getAuthenticatorConfig().getLdapUrl());
+    AssertJUnit.assertEquals(base, a.getAuthenticatorConfig().getBase());
+  }
+
+
+  /**
    * @param  uid  to get dn for.
    * @param  user  to get dn for.
    *

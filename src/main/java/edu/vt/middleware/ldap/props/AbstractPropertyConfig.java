@@ -14,7 +14,9 @@
 package edu.vt.middleware.ldap.props;
 
 import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.Map;
 import java.util.Properties;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -70,12 +72,20 @@ public abstract class AbstractPropertyConfig implements PropertyConfig
   public void setEnvironmentProperties(final Properties properties)
   {
     if (properties != null) {
+      final Map<String, String> props = new HashMap<String, String>();
       final Enumeration<?> en = properties.keys();
       if (en != null) {
         while (en.hasMoreElements()) {
           final String name = (String) en.nextElement();
           final String value = (String) properties.get(name);
-          this.setEnvironmentProperties(name, value);
+          if (this.hasEnvironmentProperty(name)) {
+            props.put(name, value);
+          } else {
+            this.setEnvironmentProperties(name, value);
+          }
+        }
+        for (Map.Entry<String, String> e : props.entrySet()) {
+          this.setEnvironmentProperties(e.getKey(), e.getValue());
         }
       }
     }
@@ -91,13 +101,16 @@ public abstract class AbstractPropertyConfig implements PropertyConfig
     final Hashtable<String, String> properties)
   {
     if (properties != null) {
-      final Enumeration<String> en = properties.keys();
-      if (en != null) {
-        while (en.hasMoreElements()) {
-          final String name = en.nextElement();
-          final String value = properties.get(name);
-          this.setEnvironmentProperties(name, value);
+      final Map<String, String> props = new HashMap<String, String>();
+      for (Map.Entry<String, String> e : properties.entrySet()) {
+        if (this.hasEnvironmentProperty(e.getKey())) {
+          props.put(e.getKey(), e.getValue());
+        } else {
+          this.setEnvironmentProperties(e.getKey(), e.getValue());
         }
+      }
+      for (Map.Entry<String, String> e : props.entrySet()) {
+        this.setEnvironmentProperties(e.getKey(), e.getValue());
       }
     }
   }
