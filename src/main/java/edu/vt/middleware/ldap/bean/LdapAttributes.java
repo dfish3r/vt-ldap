@@ -247,6 +247,17 @@ public class LdapAttributes extends AbstractLdapBean
   }
 
 
+  /**
+   * This returns the number of attributes in this attributes.
+   *
+   * @return  <code>int</code>
+   */
+  public int size()
+  {
+    return this.attributes.size();
+  }
+
+
   /** This removes all attributes from this <code>LdapAttributes</code>. */
   public void clear()
   {
@@ -280,12 +291,26 @@ public class LdapAttributes extends AbstractLdapBean
 
   /**
    * This returns an <code>Attributes</code> that represents this entry.
+   * Attributes will be case-insensitive.
    *
    * @return  <code>Attributes</code>
    */
   public Attributes toAttributes()
   {
-    final Attributes attributes = new BasicAttributes(true);
+    return this.toAttributes(true);
+  }
+
+
+  /**
+   * This returns an <code>Attributes</code> that represents this entry.
+   * Attributes will be case-insensitive.
+   *
+   * @param  ignoreCase whether to ignore attribute case
+   * @return  <code>Attributes</code>
+   */
+  public Attributes toAttributes(final boolean ignoreCase)
+  {
+    final Attributes attributes = new BasicAttributes(ignoreCase);
     for (LdapAttribute a : this.attributes.values()) {
       attributes.put(a.toAttribute());
     }

@@ -212,6 +212,17 @@ public class LdapResult extends AbstractLdapBean
   }
 
 
+  /**
+   * This returns the number of entries in this result.
+   *
+   * @return  <code>int</code>
+   */
+  public int size()
+  {
+    return this.entries.size();
+  }
+
+
   /** This removes all entries from this <code>LdapResult</code>. */
   public void clear()
   {
