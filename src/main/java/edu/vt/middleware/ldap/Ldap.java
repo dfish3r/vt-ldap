@@ -15,16 +15,14 @@ package edu.vt.middleware.ldap;
 
 import java.io.InputStream;
 import java.io.Serializable;
-import java.util.Arrays;
 import java.util.Iterator;
 import javax.naming.Binding;
 import javax.naming.NameClassPair;
 import javax.naming.NamingException;
 import javax.naming.directory.Attribute;
 import javax.naming.directory.Attributes;
-import javax.naming.directory.BasicAttribute;
-import javax.naming.directory.BasicAttributes;
 import javax.naming.directory.DirContext;
+import javax.naming.directory.ModificationItem;
 import javax.naming.directory.SearchResult;
 import edu.vt.middleware.ldap.handler.AttributeHandler;
 import edu.vt.middleware.ldap.handler.SearchCriteria;
@@ -42,6 +40,71 @@ public class Ldap extends AbstractLdap<LdapConfig> implements Serializable
 
   /** serial version uid. */
   private static final long serialVersionUID = -3248718478821722604L;
+
+  /**
+   * Enum to define the type of attribute modification. See {@link
+   * javax.naming.directory.DirContext}.
+   */
+  public enum AttributeModification {
+
+    /** add an attribute. */
+    ADD(DirContext.ADD_ATTRIBUTE),
+
+    /** replace an attribute. */
+    REPLACE(DirContext.REPLACE_ATTRIBUTE),
+
+    /** remove an attribute. */
+    REMOVE(DirContext.REMOVE_ATTRIBUTE);
+
+
+    /** underlying modification operation integer. */
+    private int modOp;
+
+
+    /**
+     * Creates a new <code>AttributeModification</code> with the supplied
+     * integer.
+     *
+     * @param i modification operation
+     */
+    AttributeModification(final int i)
+    {
+      this.modOp = i;
+    }
+
+
+    /**
+     * Returns the modification operation integer.
+     *
+     * @return  <code>int</code>
+     */
+    public int modOp()
+    {
+      return this.modOp;
+    }
+
+
+    /**
+     * Method to convert a JNDI constant value to an enum. Returns null if the
+     * supplied constant does not match a valid value.
+     *
+     * @param  i  modification operation
+     *
+     * @return  attribute modification
+     */
+    public static AttributeModification parseModificationOperation(final int i)
+    {
+      AttributeModification am = null;
+      if (ADD.modOp() == i) {
+        am = ADD;
+      } else if (REPLACE.modOp() == i) {
+        am = REPLACE;
+      } else if (REMOVE.modOp() == i) {
+        am = REMOVE;
+      }
+      return am;
+    }
+  }
 
   /** Default constructor. */
   public Ldap() {}
@@ -459,277 +522,20 @@ public class Ldap extends AbstractLdap<LdapConfig> implements Serializable
   }
 
 
-  /**
-   * This will add the attribute with supplied field with the supplied value for
-   * the entry with the supplied dn. If attribute already exists, replaces all
-   * existing values with new specified value. If the attribute does not exist,
-   * creates it.
-   *
-   * @param  dn  <code>String</code> named object in the LDAP
-   * @param  field  <code>String</code> attribute name
-   * @param  value  <code>Object</code> attribute value to add
-   *
-   * @throws  NamingException  if the LDAP returns an error
-   */
-  public void addAttribute(
-    final String dn,
-    final String field,
-    final Object value)
+  /** {@inheritDoc}. */
+  public void modifyAttributes(
+    final String dn, final AttributeModification mod, final Attributes attrs)
     throws NamingException
   {
-    if (value == null) {
-      this.addAttribute(dn, field, null);
-    } else {
-      this.addAttribute(dn, field, new Object[] {value});
-    }
+    super.modifyAttributes(dn, mod.modOp(), attrs);
   }
 
 
-  /**
-   * This will add the attribute with supplied field with the supplied values
-   * for the entry with the supplied dn. If attribute already exists, replaces
-   * all existing values with new specified value. If the attribute does not
-   * exist, creates it.
-   *
-   * @param  dn  <code>String</code> named object in the LDAP
-   * @param  field  <code>String</code> attribute name
-   * @param  values  <code>Object[]</code> attribute values to add
-   *
-   * @throws  NamingException  if the LDAP returns an error
-   */
-  public void addAttribute(
-    final String dn,
-    final String field,
-    final Object[] values)
+  /** {@inheritDoc}. */
+  public void modifyAttributes(final String dn, final ModificationItem[] mods)
     throws NamingException
   {
-    if (this.logger.isDebugEnabled()) {
-      this.logger.debug("Add attribute with the following parameters:");
-      this.logger.debug("  dn = " + dn);
-      this.logger.debug("  field = " + field);
-      this.logger.debug(
-        "  values = " + (values == null ? "null" : Arrays.asList(values)));
-      if (this.logger.isTraceEnabled()) {
-        this.logger.trace("  config = " + this.config.getEnvironment());
-      }
-    }
-
-    final Attributes attrs = new BasicAttributes(this.config.isIgnoreCase());
-    final Attribute attr = new BasicAttribute(field);
-    if (values != null) {
-      for (Object o : values) {
-        attr.add(o);
-      }
-    }
-    attrs.put(attr);
-    this.addAttributes(dn, attrs);
-  }
-
-
-  /**
-   * This will add the supplied attributes for the entry with the supplied dn.
-   * If an attribute already exists, replaces all existing values with new
-   * specified value. If an attribute does not exist, creates it.
-   *
-   * @param  dn  <code>String</code> named object in the LDAP
-   * @param  attrs  <code>Attributes</code> attributes to add
-   *
-   * @throws  NamingException  if the LDAP returns an error
-   */
-  public void addAttributes(final String dn, final Attributes attrs)
-    throws NamingException
-  {
-    this.modifyAttributes(dn, DirContext.ADD_ATTRIBUTE, attrs);
-  }
-
-
-  /**
-   * This will replace the attribute with supplied field with the supplied value
-   * for the entry with the supplied dn. If attribute already exists, replaces
-   * all existing values with new specified value. If the attribute does not
-   * exist, creates it.
-   *
-   * @param  dn  <code>String</code> named object in the LDAP
-   * @param  field  <code>String</code> attribute name
-   * @param  value  <code>Object</code> attribute value to replace with
-   *
-   * @throws  NamingException  if the LDAP returns an error
-   */
-  public void replaceAttribute(
-    final String dn,
-    final String field,
-    final Object value)
-    throws NamingException
-  {
-    if (value == null) {
-      this.replaceAttribute(dn, field, null);
-    } else {
-      this.replaceAttribute(dn, field, new Object[] {value});
-    }
-  }
-
-
-  /**
-   * This will replace the attribute with supplied field with the supplied
-   * values for the entry with the supplied dn. If attribute already exists,
-   * replaces all existing values with new specified value. If the attribute
-   * does not exist, creates it.
-   *
-   * @param  dn  <code>String</code> named object in the LDAP
-   * @param  field  <code>String</code> attribute name
-   * @param  values  <code>Object[]</code> attribute values to replace with
-   *
-   * @throws  NamingException  if the LDAP returns an error
-   */
-  public void replaceAttribute(
-    final String dn,
-    final String field,
-    final Object[] values)
-    throws NamingException
-  {
-    if (this.logger.isDebugEnabled()) {
-      this.logger.debug("Replace attribute with the following parameters:");
-      this.logger.debug("  dn = " + dn);
-      this.logger.debug("  field = " + field);
-      this.logger.debug(
-        "  values = " + (values == null ? "null" : Arrays.asList(values)));
-      if (this.logger.isTraceEnabled()) {
-        this.logger.trace("  config = " + this.config.getEnvironment());
-      }
-    }
-
-    final Attributes attrs = new BasicAttributes(this.config.isIgnoreCase());
-    final Attribute attr = new BasicAttribute(field);
-    if (values != null) {
-      for (Object o : values) {
-        attr.add(o);
-      }
-    }
-    attrs.put(attr);
-    this.replaceAttributes(dn, attrs);
-  }
-
-
-  /**
-   * This will replace the supplied attributes for the entry with the supplied
-   * dn. If an attribute already exists, replaces all existing values with new
-   * specified value. If an attribute does not exist, creates it.
-   *
-   * @param  dn  <code>String</code> named object in the LDAP
-   * @param  attrs  <code>Attributes</code> attributes to replace with
-   *
-   * @throws  NamingException  if the LDAP returns an error
-   */
-  public void replaceAttributes(final String dn, final Attributes attrs)
-    throws NamingException
-  {
-    this.modifyAttributes(dn, DirContext.REPLACE_ATTRIBUTE, attrs);
-  }
-
-
-  /**
-   * This will remove the attribute with supplied field for the entry with the
-   * supplied dn.
-   *
-   * @param  dn  <code>String</code> named object in the LDAP
-   * @param  field  <code>String</code> attribute name
-   *
-   * @throws  NamingException  if the LDAP returns an error
-   */
-  public void removeAttribute(final String dn, final String field)
-    throws NamingException
-  {
-    this.removeAttribute(dn, field, null);
-  }
-
-
-  /**
-   * This will remove the attribute with supplied field with the supplied value
-   * for the entry with the supplied dn. The resulting attribute has the set
-   * difference of its prior value set and the specified value set. If no values
-   * are specified, deletes the entire attribute. Removal of the last value will
-   * remove the attribute if the attribute is required to have at least one
-   * value.
-   *
-   * @param  dn  <code>String</code> named object in the LDAP
-   * @param  field  <code>String</code> attribute name
-   * @param  value  <code>Object</code> attribute value to replace with
-   *
-   * @throws  NamingException  if the LDAP returns an error
-   */
-  public void removeAttribute(
-    final String dn,
-    final String field,
-    final Object value)
-    throws NamingException
-  {
-    if (value == null) {
-      this.removeAttribute(dn, field, null);
-    } else {
-      this.removeAttribute(dn, field, new Object[] {value});
-    }
-  }
-
-
-  /**
-   * This will remove the attribute with supplied field with the supplied values
-   * for the entry with the supplied dn. The resulting attribute has the set
-   * difference of its prior value set and the specified value set. If no values
-   * are specified, deletes the entire attribute. Removal of the last value will
-   * remove the attribute if the attribute is required to have at least one
-   * value.
-   *
-   * @param  dn  <code>String</code> named object in the LDAP
-   * @param  field  <code>String</code> attribute name
-   * @param  values  <code>Object[]</code> attribute values to replace with
-   *
-   * @throws  NamingException  if the LDAP returns an error
-   */
-  public void removeAttribute(
-    final String dn,
-    final String field,
-    final Object[] values)
-    throws NamingException
-  {
-    if (this.logger.isDebugEnabled()) {
-      this.logger.debug("Remove attribute with the following parameters:");
-      this.logger.debug("  dn = " + dn);
-      this.logger.debug("  field = " + field);
-      this.logger.debug(
-        "  values = " + (values == null ? "null" : Arrays.asList(values)));
-      if (this.logger.isTraceEnabled()) {
-        this.logger.trace("  config = " + this.config.getEnvironment());
-      }
-    }
-
-    final Attributes attrs = new BasicAttributes(this.config.isIgnoreCase());
-    final Attribute attr = new BasicAttribute(field);
-    if (values != null) {
-      for (Object o : values) {
-        attr.add(o);
-      }
-    }
-    attrs.put(attr);
-    this.removeAttributes(dn, attrs);
-  }
-
-
-  /**
-   * This will remove the supplied attributes for the entry with the supplied
-   * dn. The resulting attribute has the set difference of its prior value set
-   * and the specified value set. If no values are specified, deletes the entire
-   * attribute. Removal of the last value will remove the attribute if the
-   * attribute is required to have at least one value.
-   *
-   * @param  dn  <code>String</code> named object in the LDAP
-   * @param  attrs  <code>Attributes</code> attributes to replace with
-   *
-   * @throws  NamingException  if the LDAP returns an error
-   */
-  public void removeAttributes(final String dn, final Attributes attrs)
-    throws NamingException
-  {
-    this.modifyAttributes(dn, DirContext.REMOVE_ATTRIBUTE, attrs);
+    super.modifyAttributes(dn, mods);
   }
 
 

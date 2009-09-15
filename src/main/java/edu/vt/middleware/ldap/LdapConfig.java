@@ -56,31 +56,58 @@ public class LdapConfig extends AbstractPropertyConfig
   public enum SearchScope {
 
     /** object level search. */
-    OBJECT,
+    OBJECT(SearchControls.OBJECT_SCOPE),
 
     /** one level search. */
-    ONELEVEL,
+    ONELEVEL(SearchControls.ONELEVEL_SCOPE),
 
     /** subtree search. */
-    SUBTREE;
+    SUBTREE(SearchControls.SUBTREE_SCOPE);
+
+    /** underlying search scope integer. */
+    private int scope;
+
+
+    /**
+     * Creates a new <code>SearchScope</code> with the supplied
+     * integer.
+     *
+     * @param i search scope
+     */
+    SearchScope(final int i)
+    {
+      this.scope = i;
+    }
+
+
+    /**
+     * Returns the search scope integer.
+     *
+     * @return  <code>int</code>
+     */
+    public int scope()
+    {
+      return this.scope;
+    }
+
 
 
     /**
      * Method to convert a JNDI constant value to an enum. Returns null if the
      * supplied constant does not match a known value.
      *
-     * @param  i  jndi constant
+     * @param  i  search scope
      *
      * @return  search scope
      */
     public static SearchScope parseSearchScope(final int i)
     {
       SearchScope ss = null;
-      if (OBJECT.ordinal() == i) {
+      if (OBJECT.scope() == i) {
         ss = OBJECT;
-      } else if (ONELEVEL.ordinal() == i) {
+      } else if (ONELEVEL.scope() == i) {
         ss = ONELEVEL;
-      } else if (SUBTREE.ordinal() == i) {
+      } else if (SUBTREE.scope() == i) {
         ss = SUBTREE;
       }
       return ss;
@@ -125,9 +152,6 @@ public class LdapConfig extends AbstractPropertyConfig
 
   /** Whether to require the most authoritative source for this service. */
   private boolean authoritative = LdapConstants.DEFAULT_AUTHORITATIVE;
-
-  /** Whether to ignore case in attribute names. */
-  private boolean ignoreCase = LdapConstants.DEFAULT_IGNORE_CASE;
 
   /** Preferred batch size to use when returning results. */
   private Integer batchSize;
@@ -627,29 +651,6 @@ public class LdapConfig extends AbstractPropertyConfig
   public boolean isAuthoritative()
   {
     return this.authoritative;
-  }
-
-
-  /**
-   * See {@link #isIgnoreCase()}.
-   *
-   * @return  <code>boolean</code>
-   */
-  public boolean getIgnoreCase()
-  {
-    return this.isIgnoreCase();
-  }
-
-
-  /**
-   * This returns whether the <code>LdapConfig</code> is set to ignore case in
-   * attribute names.
-   *
-   * @return  <code>boolean</code>
-   */
-  public boolean isIgnoreCase()
-  {
-    return this.ignoreCase;
   }
 
 
@@ -1190,22 +1191,6 @@ public class LdapConfig extends AbstractPropertyConfig
       this.logger.trace("setting authoritative: " + authoritative);
     }
     this.authoritative = authoritative;
-  }
-
-
-  /**
-   * This specifies whether or not to force this <code>LdapConfig</code> to
-   * ignore case for attributes names.
-   *
-   * @param  ignoreCase  <code>boolean</code>
-   */
-  public void setIgnoreCase(final boolean ignoreCase)
-  {
-    checkImmutable();
-    if (this.logger.isTraceEnabled()) {
-      this.logger.trace("setting ignoreCase: " + ignoreCase);
-    }
-    this.ignoreCase = ignoreCase;
   }
 
 

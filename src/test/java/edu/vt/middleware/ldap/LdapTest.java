@@ -21,7 +21,10 @@ import javax.naming.Binding;
 import javax.naming.NameClassPair;
 import javax.naming.directory.Attributes;
 import javax.naming.directory.BasicAttributes;
+import javax.naming.directory.DirContext;
+import javax.naming.directory.ModificationItem;
 import javax.naming.directory.SearchResult;
+import edu.vt.middleware.ldap.Ldap.AttributeModification;
 import edu.vt.middleware.ldap.bean.LdapAttribute;
 import edu.vt.middleware.ldap.bean.LdapAttributes;
 import edu.vt.middleware.ldap.bean.LdapEntry;
@@ -440,7 +443,7 @@ public class LdapTest
     throws Exception
   {
     final Ldap ldap = this.createLdap(true);
-    final String[] results = ldap.getSaslMechanisms();
+    ldap.getSaslMechanisms();
     ldap.close();
   }
 
@@ -454,7 +457,7 @@ public class LdapTest
     throws Exception
   {
     final Ldap ldap = this.createLdap(true);
-    final String[] results = ldap.getSupportedControls();
+    ldap.getSupportedControls();
     ldap.close();
   }
 
@@ -473,7 +476,11 @@ public class LdapTest
     final LdapAttribute expected = TestUtil.convertStringToAttributes(attrs)
         .getAttributes().iterator().next();
     final Ldap ldap = this.createLdap(true);
-    ldap.addAttribute(dn, expected.getName(), expected.getValues().toArray());
+    ldap.modifyAttributes(
+      dn,
+      AttributeModification.ADD,
+      AttributesFactory.createAttributes(
+        expected.getName(), expected.getValues().toArray()));
 
     final Attributes a = ldap.getAttributes(
       dn,
@@ -498,7 +505,14 @@ public class LdapTest
   {
     final LdapAttributes expected = TestUtil.convertStringToAttributes(attrs);
     final Ldap ldap = this.createLdap(true);
-    ldap.addAttributes(dn, expected.toAttributes());
+    final ModificationItem[] mods = new ModificationItem[expected.size()];
+    int i = 0;
+    for (LdapAttribute la : expected.getAttributes()) {
+      mods[i] = new ModificationItem(
+        DirContext.ADD_ATTRIBUTE, la.toAttribute());
+      i++;
+    }
+    ldap.modifyAttributes(dn, mods);
 
     final Attributes a = ldap.getAttributes(dn, expected.getAttributeNames());
     AssertJUnit.assertEquals(expected, new LdapAttributes(a));
@@ -523,10 +537,11 @@ public class LdapTest
     final LdapAttribute expected = TestUtil.convertStringToAttributes(attrs)
         .getAttributes().iterator().next();
     final Ldap ldap = this.createLdap(true);
-    ldap.replaceAttribute(
+    ldap.modifyAttributes(
       dn,
-      expected.getName(),
-      expected.getValues().toArray());
+      AttributeModification.REPLACE,
+      AttributesFactory.createAttributes(
+        expected.getName(), expected.getValues().toArray()));
 
     final Attributes a = ldap.getAttributes(
       dn,
@@ -554,7 +569,14 @@ public class LdapTest
   {
     final LdapAttributes expected = TestUtil.convertStringToAttributes(attrs);
     final Ldap ldap = this.createLdap(true);
-    ldap.replaceAttributes(dn, expected.toAttributes());
+    final ModificationItem[] mods = new ModificationItem[expected.size()];
+    int i = 0;
+    for (LdapAttribute la : expected.getAttributes()) {
+      mods[i] = new ModificationItem(
+        DirContext.REPLACE_ATTRIBUTE, la.toAttribute());
+      i++;
+    }
+    ldap.modifyAttributes(dn, mods);
 
     final Attributes a = ldap.getAttributes(dn, expected.getAttributeNames());
     AssertJUnit.assertEquals(expected, new LdapAttributes(a));
@@ -583,7 +605,11 @@ public class LdapTest
     expected.getValues().remove(1);
 
     final Ldap ldap = this.createLdap(true);
-    ldap.removeAttribute(dn, remove.getName(), remove.getValues().toArray());
+    ldap.modifyAttributes(
+      dn,
+      AttributeModification.REMOVE,
+      AttributesFactory.createAttributes(
+        remove.getName(), remove.getValues().toArray()));
 
     final Attributes a = ldap.getAttributes(
       dn,
@@ -617,7 +643,14 @@ public class LdapTest
     expected.getAttributes().remove(expected.getAttribute(attrsName[1]));
 
     final Ldap ldap = this.createLdap(true);
-    ldap.removeAttributes(dn, remove.toAttributes());
+    final ModificationItem[] mods = new ModificationItem[expected.size()];
+    int i = 0;
+    for (LdapAttribute la : remove.getAttributes()) {
+      mods[i] = new ModificationItem(
+        DirContext.REMOVE_ATTRIBUTE, la.toAttribute());
+      i++;
+    }
+    ldap.modifyAttributes(dn, mods);
 
     final Attributes a = ldap.getAttributes(dn, expected.getAttributeNames());
     AssertJUnit.assertEquals(expected, new LdapAttributes(a));

@@ -25,6 +25,7 @@ import javax.naming.NamingEnumeration;
 import javax.naming.NamingException;
 import javax.naming.directory.Attributes;
 import javax.naming.directory.DirContext;
+import javax.naming.directory.ModificationItem;
 import javax.naming.directory.SearchResult;
 import javax.naming.ldap.InitialLdapContext;
 import javax.naming.ldap.LdapContext;
@@ -627,7 +628,8 @@ public abstract class AbstractLdap<T extends LdapConfig> implements BaseLdap
   /**
    * This will modify the supplied attributes for the supplied value given by
    * the modification operation. modOp must be one of: ADD_ATTRIBUTE,
-   * REPLACE_ATTRIBUTE, REMOVE_ATTRIBUTE.
+   * REPLACE_ATTRIBUTE, REMOVE_ATTRIBUTE. The order of the modifications is not
+   * specified. Where possible, the modifications are performed atomically.
    *
    * @param  dn  <code>String</code> named object in the LDAP
    * @param  modOp  <code>int</code> modification operation
@@ -658,6 +660,59 @@ public abstract class AbstractLdap<T extends LdapConfig> implements BaseLdap
         try {
           ctx = this.getContext();
           ctx.modifyAttributes(dn, modOp, attrs);
+          break;
+        } catch (CommunicationException e) {
+          if (i == this.config.getOperationRetry()) {
+            throw e;
+          }
+          if (this.logger.isWarnEnabled()) {
+            this.logger.warn(
+              "Error while communicating with the LDAP, retrying",
+              e);
+          }
+          this.reconnect();
+        }
+      }
+    } finally {
+      if (ctx != null) {
+        ctx.close();
+      }
+    }
+  }
+
+
+  /**
+   * This will modify the supplied dn using the supplied modifications.
+   * The modifications are performed in the order specified. Each modification
+   * specifies a modification operation code and an attribute on which to
+   * operate. Where possible, the modifications are performed atomically.
+   *
+   * @param  dn  <code>String</code> named object in the LDAP
+   * @param  mods  <code>ModificationItem[]</code> modifications
+   *
+   * @throws  NamingException  if the LDAP returns an error
+   */
+  protected void modifyAttributes(
+    final String dn,
+    final ModificationItem[] mods)
+    throws NamingException
+  {
+    if (this.logger.isDebugEnabled()) {
+      this.logger.debug("Modifiy attributes with the following parameters:");
+      this.logger.debug("  dn = " + dn);
+      this.logger.debug(
+        "  mods = " + (mods == null ? "null" : Arrays.asList(mods)));
+      if (this.logger.isTraceEnabled()) {
+        this.logger.trace("  config = " + this.config.getEnvironment());
+      }
+    }
+
+    LdapContext ctx = null;
+    try {
+      for (int i = 0; i <= this.config.getOperationRetry(); i++) {
+        try {
+          ctx = this.getContext();
+          ctx.modifyAttributes(dn, mods);
           break;
         } catch (CommunicationException e) {
           if (i == this.config.getOperationRetry()) {
