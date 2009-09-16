@@ -134,6 +134,7 @@ public class LdapTest
     } catch (Exception e) {
       AssertJUnit.fail("Should have thrown NameNotFoundException, threw " + e);
     }
+    ldap.close();
   }
 
 
