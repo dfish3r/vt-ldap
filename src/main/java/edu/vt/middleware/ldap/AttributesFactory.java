@@ -129,9 +129,9 @@ public final class AttributesFactory
    * Creates a new <code>Attribute</code> with the supplied name.
    *
    * @param  name of the attribute
+   * @return  <code>Attribute</code>
    */
-  public static Attribute createAttribute(
-    final Attributes attrs, final String name)
+  public static Attribute createAttribute(final String name)
   {
     return createAttribute(name, null);
   }
@@ -142,6 +142,7 @@ public final class AttributesFactory
    *
    * @param  name of the attribute
    * @param  value of the attribute
+   * @return  <code>Attribute</code>
    */
   public static Attribute createAttribute(final String name, final Object value)
   {
@@ -158,6 +159,7 @@ public final class AttributesFactory
    *
    * @param  name of the attribute
    * @param  values of the attribute
+   * @return  <code>Attribute</code>
    */
   public static Attribute createAttribute(
     final String name, final Object[] values)
