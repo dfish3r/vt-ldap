@@ -19,6 +19,7 @@ import java.util.Iterator;
 import java.util.List;
 import javax.naming.Binding;
 import javax.naming.NameClassPair;
+import javax.naming.NameNotFoundException;
 import javax.naming.directory.Attributes;
 import javax.naming.directory.BasicAttributes;
 import javax.naming.directory.DirContext;
@@ -98,9 +99,47 @@ public class LdapTest
     ldap.close();
   }
 
+  /**
+   * @param  oldDn  to rename.
+   * @param  newDn  to rename to.
+   *
+   * @throws  Exception  On test failure.
+   */
+  @Parameters({ "renameOldDn", "renameNewDn" })
+  @AfterClass(groups = {"ldaptest"})
+  public void renameLdapEntry(final String oldDn, final String newDn)
+    throws Exception
+  {
+    final Ldap ldap = this.createLdap(true);
+    AssertJUnit.assertNotNull(ldap.getAttributes(oldDn));
+    ldap.rename(oldDn, newDn);
+    AssertJUnit.assertNotNull(ldap.getAttributes(newDn));
+    try {
+      ldap.getAttributes(oldDn);
+      AssertJUnit.fail(
+        "Should have thrown NameNotFoundException, no exception thrown");
+    } catch (NameNotFoundException e) {
+      AssertJUnit.assertEquals(NameNotFoundException.class, e.getClass());
+    } catch (Exception e) {
+      AssertJUnit.fail("Should have thrown NameNotFoundException, threw " + e);
+    }
+    ldap.rename(newDn, oldDn);
+    AssertJUnit.assertNotNull(ldap.getAttributes(oldDn));
+    try {
+      ldap.getAttributes(newDn);
+      AssertJUnit.fail(
+        "Should have thrown NameNotFoundException, no exception thrown");
+    } catch (NameNotFoundException e) {
+      AssertJUnit.assertEquals(NameNotFoundException.class, e.getClass());
+    } catch (Exception e) {
+      AssertJUnit.fail("Should have thrown NameNotFoundException, threw " + e);
+    }
+  }
+
+
 
   /** @throws  Exception  On test failure. */
-  @AfterClass(groups = {"ldaptest"})
+  @AfterClass(groups = {"ldaptest"}, dependsOnMethods = {"renameLdapEntry"})
   public void deleteLdapEntry()
     throws Exception
   {

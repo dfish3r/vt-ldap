@@ -548,6 +548,14 @@ public class Ldap extends AbstractLdap<LdapConfig> implements Serializable
 
 
   /** {@inheritDoc}. */
+  public void rename(final String oldDn, final String newDn)
+    throws NamingException
+  {
+    super.rename(oldDn, newDn);
+  }
+
+
+  /** {@inheritDoc}. */
   public void delete(final String dn)
     throws NamingException
   {

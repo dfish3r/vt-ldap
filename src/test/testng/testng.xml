@@ -42,6 +42,9 @@
   <parameter name="searchResults10"
              value="/edu/vt/middleware/ldap/searchResults-10.ldif"/>
 
+  <parameter name="renameOldDn" value="uid=2,ou=test,dc=vt,dc=edu"/>
+  <parameter name="renameNewDn" value="uid=1002,ou=test,dc=vt,dc=edu"/>
+
   <parameter name="compareDn" value="uid=2,ou=test,dc=vt,dc=edu"/>
   <parameter name="compareFilter" value="(departmentNumber=0822)"/>
 

@@ -783,6 +783,53 @@ public abstract class AbstractLdap<T extends LdapConfig> implements BaseLdap
 
 
   /**
+   * This will rename the supplied dn in the LDAP namespace.
+   *
+   * @param  oldDn  <code>String</code> object to rename
+   * @param  newDn  <code>String</code> new name
+   *
+   * @throws  NamingException  if the LDAP returns an error
+   */
+  protected void rename(final String oldDn, final String newDn)
+    throws NamingException
+  {
+    if (this.logger.isDebugEnabled()) {
+      this.logger.debug("Rename name with the following parameters:");
+      this.logger.debug("  oldDn = " + oldDn);
+      this.logger.debug("  newDn = " + newDn);
+      if (this.logger.isTraceEnabled()) {
+        this.logger.trace("  config = " + this.config.getEnvironment());
+      }
+    }
+
+    LdapContext ctx = null;
+    try {
+      for (int i = 0; i <= this.config.getOperationRetry(); i++) {
+        try {
+          ctx = this.getContext();
+          ctx.rename(oldDn, newDn);
+          break;
+        } catch (CommunicationException e) {
+          if (i == this.config.getOperationRetry()) {
+            throw e;
+          }
+          if (this.logger.isWarnEnabled()) {
+            this.logger.warn(
+              "Error while communicating with the LDAP, retrying",
+              e);
+          }
+          this.reconnect();
+        }
+      }
+    } finally {
+      if (ctx != null) {
+        ctx.close();
+      }
+    }
+  }
+
+
+  /**
    * This will delete the supplied dn from the LDAP namespace.
    *
    * @param  dn  <code>String</code> named object in the LDAP
