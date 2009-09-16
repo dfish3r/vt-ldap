@@ -176,7 +176,28 @@ public class Ldap extends AbstractLdap<LdapConfig> implements Serializable
   public boolean compare(final String filter)
     throws NamingException
   {
-    return this.compare(this.config.getBase(), filter);
+    return this.compare(this.config.getBase(), filter, null);
+  }
+
+
+  /**
+   * This will perform an LDAP compare operation with the supplied filter and
+   * filter arguments.
+   * {@link LdapConfig#getBase()} is used as the dn to compare. See {@link
+   * #compare(String, String)}.
+   *
+   * @param  filter  <code>String</code> expression to use for compare
+   * @param  filterArgs  <code>Object[]</code> to substitute for variables in
+   * the filter
+   *
+   * @return  <code>boolean</code> - result of compare operation
+   *
+   * @throws  NamingException  if the LDAP returns an error
+   */
+  public boolean compare(final String filter, final Object[] filterArgs)
+    throws NamingException
+  {
+    return this.compare(this.config.getBase(), filter, filterArgs);
   }
 
 
@@ -194,7 +215,28 @@ public class Ldap extends AbstractLdap<LdapConfig> implements Serializable
   public boolean compare(final String dn, final String filter)
     throws NamingException
   {
-    return super.compare(dn, filter);
+    return this.compare(dn, filter, null);
+  }
+
+
+  /**
+   * This will perform an LDAP compare operation with the supplied filter,
+   * filter arguments, and dn.
+   *
+   * @param  dn  <code>String</code> name to compare
+   * @param  filter  <code>String</code> expression to use for compare
+   * @param  filterArgs  <code>Object[]</code> to substitute for variables in
+   * the filter
+   *
+   * @return  <code>boolean</code> - result of compare operation
+   *
+   * @throws  NamingException  if the LDAP returns an error
+   */
+  public boolean compare(
+    final String dn, final String filter, final Object[] filterArgs)
+    throws NamingException
+  {
+    return super.compare(dn, filter, filterArgs);
   }
 
 

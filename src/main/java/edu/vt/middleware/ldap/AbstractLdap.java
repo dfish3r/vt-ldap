@@ -109,18 +109,24 @@ public abstract class AbstractLdap<T extends LdapConfig> implements BaseLdap
    *
    * @param  dn  <code>String</code> name to compare
    * @param  filter  <code>String</code> expression to use for compare
+   * @param  filterArgs  <code>Object[]</code> to substitute for variables in
+   * the filter
    *
    * @return  <code>boolean</code> - result of compare operation
    *
    * @throws  NamingException  if the LDAP returns an error
    */
-  protected boolean compare(final String dn, final String filter)
+  protected boolean compare(
+    final String dn, final String filter, final Object[] filterArgs)
     throws NamingException
   {
     if (this.logger.isDebugEnabled()) {
       this.logger.debug("Compare with the following parameters:");
       this.logger.debug("  dn = " + dn);
       this.logger.debug("  filter = " + filter);
+      this.logger.debug(
+        "  filterArgs = " +
+        (filterArgs == null ? "none" : Arrays.asList(filterArgs)));
       if (this.logger.isTraceEnabled()) {
         this.logger.trace("  config = " + this.config.getEnvironment());
       }
@@ -133,7 +139,8 @@ public abstract class AbstractLdap<T extends LdapConfig> implements BaseLdap
       for (int i = 0; i <= this.config.getOperationRetry(); i++) {
         try {
           ctx = this.getContext();
-          en = ctx.search(dn, filter, LdapConfig.getCompareSearchControls());
+          en = ctx.search(
+            dn, filter, filterArgs, LdapConfig.getCompareSearchControls());
           break;
         } catch (CommunicationException e) {
           if (i == this.config.getOperationRetry()) {

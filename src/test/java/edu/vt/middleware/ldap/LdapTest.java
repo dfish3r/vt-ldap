@@ -169,22 +169,25 @@ public class LdapTest
   /**
    * @param  dn  to compare.
    * @param  filter  to compare with.
+   * @param  filterArgs  to replace args in filter with.
    *
    * @throws  Exception  On test failure.
    */
-  @Parameters({ "compareDn", "compareFilter" })
+  @Parameters({ "compareDn", "compareFilter", "compareFilterArgs" })
   @Test(
     groups = {"ldaptest"},
     threadPoolSize = 10,
     invocationCount = 100,
     timeOut = 60000
   )
-  public void compare(final String dn, final String filter)
+  public void compare(
+    final String dn, final String filter, final String filterArgs)
     throws Exception
   {
     final Ldap ldap = this.createLdap(false);
-    AssertJUnit.assertFalse(ldap.compare(dn, INVALID_FILTER));
-    AssertJUnit.assertTrue(ldap.compare(dn, filter));
+    AssertJUnit.assertFalse(
+      ldap.compare(dn, INVALID_FILTER, filterArgs.split("\\|")));
+    AssertJUnit.assertTrue(ldap.compare(dn, filter, filterArgs.split("\\|")));
   }
 
 
