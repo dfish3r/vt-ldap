@@ -1058,9 +1058,11 @@ public class LdapConfig extends AbstractPropertyConfig
   {
     checkImmutable();
     this.port = port;
-    this.setLdapUrl(
-      LdapConstants.PROVIDER_URL_SCHEME + LdapConstants.PROVIDER_URL_PREFIX +
-      this.host + LdapConstants.PROVIDER_URL_SEPARATOR + this.port);
+    if (this.host != null) {
+      this.setLdapUrl(
+        LdapConstants.PROVIDER_URL_SCHEME + LdapConstants.PROVIDER_URL_PREFIX +
+        this.host + LdapConstants.PROVIDER_URL_SEPARATOR + this.port);
+    }
   }
 
 
@@ -1554,7 +1556,7 @@ public class LdapConfig extends AbstractPropertyConfig
    * This returns a <code>SearchControls</code> object configured with this
    * <code>LdapConfig</code>.
    *
-   * @param  retAttrs  <code>String[]</code> attributres to return from search
+   * @param  retAttrs  <code>String[]</code> attributes to return from search
    *
    * @return  <code>SearchControls</code>
    */
