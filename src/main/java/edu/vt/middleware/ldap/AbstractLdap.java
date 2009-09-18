@@ -175,8 +175,8 @@ public abstract class AbstractLdap<T extends LdapConfig> implements BaseLdap
    * and return attributes. This method will perform a search whose scope is
    * defined in the <code>LdapConfig</code>, the default scope is subtree. The
    * resulting <code>Iterator</code> is a deep copy of the original search
-   * results. If filterArgs is null, then no variable substitution will occur If
-   * retAttrs is null then all attributes will be returned. If retAttrs is an
+   * results. If filterArgs is null, then no variable substitution will occur.
+   * If retAttrs is null then all attributes will be returned. If retAttrs is an
    * empty array then no attributes will be returned.
    *
    * @param  dn  <code>String</code> name to begin search at
