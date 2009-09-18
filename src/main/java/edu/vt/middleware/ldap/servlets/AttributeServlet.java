@@ -24,6 +24,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import edu.vt.middleware.ldap.Ldap;
 import edu.vt.middleware.ldap.LdapConfig;
+import edu.vt.middleware.ldap.SearchFilter;
 import edu.vt.middleware.ldap.bean.LdapAttribute;
 import edu.vt.middleware.ldap.bean.LdapEntry;
 import edu.vt.middleware.ldap.bean.LdapResult;
@@ -164,7 +165,7 @@ public final class AttributeServlet extends HttpServlet
         ldap = this.pool.checkOut();
 
         final Iterator<SearchResult> i = ldap.search(
-          request.getParameter("query"),
+          new SearchFilter(request.getParameter("query")),
           request.getParameterValues("attr"));
 
         final LdapResult r = new LdapResult(i);

@@ -15,6 +15,7 @@ package edu.vt.middleware.ldap.pool;
 
 import javax.naming.NamingException;
 import edu.vt.middleware.ldap.Ldap;
+import edu.vt.middleware.ldap.SearchFilter;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -35,7 +36,7 @@ public class CompareLdapValidator implements LdapValidator<Ldap>
   private String validateDn;
 
   /** Filter for validating connections. */
-  private String validateFilter;
+  private SearchFilter validateFilter;
 
 
   /**
@@ -45,7 +46,7 @@ public class CompareLdapValidator implements LdapValidator<Ldap>
    * @param  dn  to use for compares
    * @param  filter  to use for compares
    */
-  public CompareLdapValidator(final String dn, final String filter)
+  public CompareLdapValidator(final String dn, final SearchFilter filter)
   {
     this.validateDn = dn;
     this.validateFilter = filter;

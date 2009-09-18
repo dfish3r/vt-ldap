@@ -31,6 +31,7 @@ import javax.security.auth.login.LoginException;
 import javax.security.auth.spi.LoginModule;
 import com.sun.security.auth.callback.TextCallbackHandler;
 import edu.vt.middleware.ldap.Ldap;
+import edu.vt.middleware.ldap.SearchFilter;
 
 /**
  * <code>LdapRoleAuthorizationModule</code> provides a JAAS authentication hook
@@ -121,8 +122,7 @@ public class LdapRoleAuthorizationModule extends AbstractLoginModule
       if (this.roleFilter != null) {
         final Object[] filterArgs = new Object[] {loginDn, loginName, };
         final Iterator<SearchResult> results = this.ldap.search(
-          this.roleFilter,
-          filterArgs,
+          new SearchFilter(this.roleFilter, filterArgs),
           this.roleAttribute);
         while (results.hasNext()) {
           final SearchResult sr = results.next();

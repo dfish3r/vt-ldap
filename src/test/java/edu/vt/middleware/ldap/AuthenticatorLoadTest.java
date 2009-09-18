@@ -149,7 +149,7 @@ public class AuthenticatorLoadTest
       while (
         !ldap.compare(
             e.getValue()[0].getDn(),
-            e.getValue()[0].getDn().split(",")[0])) {
+            new SearchFilter(e.getValue()[0].getDn().split(",")[0]))) {
         Thread.sleep(100);
       }
     }
@@ -189,63 +189,72 @@ public class AuthenticatorLoadTest
         {
           "jdoe2@vt.edu",
           "password2",
-          "departmentNumber=0822",
+          "departmentNumber={0}",
+          "0822",
           "givenName|sn",
           "givenName=John|sn=Doe",
         },
         {
           "jdoe3@vt.edu",
           "password3",
-          "departmentNumber=0823",
+          "departmentNumber={0}",
+          "0823",
           "givenName|sn",
           "givenName=Joho|sn=Dof",
         },
         {
           "jdoe4@vt.edu",
           "password4",
-          "departmentNumber=0824",
+          "departmentNumber={0}",
+          "0824",
           "givenName|sn",
           "givenName=Johp|sn=Dog",
         },
         {
           "jdoe5@vt.edu",
           "password5",
-          "departmentNumber=0825",
+          "departmentNumber={0}",
+          "0825",
           "givenName|sn",
           "givenName=Johq|sn=Doh",
         },
         {
           "jdoe6@vt.edu",
           "password6",
-          "departmentNumber=0826",
+          "departmentNumber={0}",
+          "0826",
           "givenName|sn",
           "givenName=Johr|sn=Doi",
         },
         {
           "jdoe7@vt.edu",
           "password7",
-          "departmentNumber=0827",
+          "departmentNumber={0}",
+          "0827",
           "givenName|sn",
           "givenName=Johs|sn=Doj",
         },
         {
           "jdoe8@vt.edu",
           "password8",
-          "departmentNumber=0828",
+          "departmentNumber={0}",
+          "0828",
           "givenName|sn",
           "givenName=Joht|sn=Dok",
         },
         {
           "jdoe9@vt.edu",
           "password9",
-          "departmentNumber=0829",
+          "departmentNumber={0}",
+          "0829",
           "givenName|sn",
           "givenName=Johu|sn=Dol",
         },
         {
           "jdoe10@vt.edu",
           "password10",
-          "departmentNumber=0830",
+          "departmentNumber={0}",
+          "0830",
           "givenName|sn",
           "givenName=Johv|sn=Dom",
         },
@@ -257,6 +266,7 @@ public class AuthenticatorLoadTest
    * @param  user  to authenticate.
    * @param  credential  to authenticate with.
    * @param  filter  to authorize with.
+   * @param  filterArgs  to authorize with
    * @param  returnAttrs  to search for.
    * @param  results  to expect from the search.
    *
@@ -273,6 +283,7 @@ public class AuthenticatorLoadTest
     final String user,
     final String credential,
     final String filter,
+    final String filterArgs,
     final String returnAttrs,
     final String results)
     throws Exception
@@ -281,7 +292,7 @@ public class AuthenticatorLoadTest
     final Attributes attrs = this.singleTLSAuth.authenticate(
       user,
       credential,
-      filter,
+      new SearchFilter(filter, filterArgs.split("\\|")),
       returnAttrs.split("\\|"));
     final LdapAttributes expected = TestUtil.convertStringToAttributes(results);
     AssertJUnit.assertEquals(expected, new LdapAttributes(attrs));

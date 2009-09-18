@@ -21,7 +21,6 @@ import javax.naming.Binding;
 import javax.naming.NameClassPair;
 import javax.naming.NameNotFoundException;
 import javax.naming.directory.Attributes;
-import javax.naming.directory.BasicAttributes;
 import javax.naming.directory.DirContext;
 import javax.naming.directory.ModificationItem;
 import javax.naming.directory.SearchResult;
@@ -93,7 +92,7 @@ public class LdapTest
     while (
       !ldap.compare(
           testLdapEntry.getDn(),
-          testLdapEntry.getDn().split(",")[0])) {
+          new SearchFilter(testLdapEntry.getDn().split(",")[0]))) {
       Thread.sleep(100);
     }
     ldap.close();
@@ -240,8 +239,7 @@ public class LdapTest
     // test searching
     Iterator<SearchResult> iter = ldap.search(
       dn,
-      filter,
-      filterArgs.split("\\|"),
+      new SearchFilter(filter, filterArgs.split("\\|")),
       returnAttrs.split("\\|"));
     AssertJUnit.assertEquals(
       entry,
@@ -250,8 +248,7 @@ public class LdapTest
     // test searching without handler
     iter = ldap.search(
       dn,
-      filter,
-      filterArgs.split("\\|"),
+      new SearchFilter(filter, filterArgs.split("\\|")),
       returnAttrs.split("\\|"),
       new SearchResultHandler[0]);
     AssertJUnit.assertEquals(
@@ -262,8 +259,7 @@ public class LdapTest
     final EntryDnSearchResultHandler srh = new EntryDnSearchResultHandler();
     iter = ldap.search(
       dn,
-      filter,
-      filterArgs.split("\\|"),
+      new SearchFilter(filter, filterArgs.split("\\|")),
       returnAttrs.split("\\|"),
       new FqdnSearchResultHandler(),
       srh);
@@ -275,8 +271,7 @@ public class LdapTest
     srh.setDnAttributeName("givenName");
     iter = ldap.search(
       dn,
-      filter,
-      filterArgs.split("\\|"),
+      new SearchFilter(filter, filterArgs.split("\\|")),
       returnAttrs.split("\\|"),
       new FqdnSearchResultHandler(),
       srh);
@@ -320,7 +315,7 @@ public class LdapTest
     // test searching
     Iterator<SearchResult> iter = ldap.searchAttributes(
       dn,
-      new BasicAttributes(matchAttrs[0], matchAttrs[1]),
+      AttributesFactory.createAttributes(matchAttrs[0], matchAttrs[1]),
       returnAttrs.split("\\|"));
     final String expected = TestUtil.readFileIntoString(ldifFile);
     AssertJUnit.assertEquals(
@@ -329,7 +324,7 @@ public class LdapTest
     // test searching without handler
     iter = ldap.searchAttributes(
       dn,
-      new BasicAttributes(matchAttrs[0], matchAttrs[1]),
+      AttributesFactory.createAttributes(matchAttrs[0], matchAttrs[1]),
       returnAttrs.split("\\|"),
       new SearchResultHandler[0]);
 
@@ -755,8 +750,7 @@ public class LdapTest
     final Ldap ldap = TestUtil.createGssApiLdap();
     final Iterator<SearchResult> iter = ldap.search(
       dn,
-      filter,
-      filterArgs.split("\\|"),
+      new SearchFilter(filter, filterArgs.split("\\|")),
       returnAttrs.split("\\|"));
     final String expected = TestUtil.readFileIntoString(ldifFile);
     AssertJUnit.assertEquals(

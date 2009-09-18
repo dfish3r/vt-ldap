@@ -85,7 +85,7 @@ public class AuthenticatorTest
     while (
       !ldap.compare(
           testLdapEntry.getDn(),
-          testLdapEntry.getDn().split(",")[0])) {
+          new SearchFilter(testLdapEntry.getDn().split(",")[0]))) {
       Thread.sleep(100);
     }
     ldap.close();
@@ -289,6 +289,7 @@ public class AuthenticatorTest
    * @param  dn  to authenticate.
    * @param  credential  to authenticate with.
    * @param  filter  to authorize with.
+   * @param  filterArgs  to authorize with.
    * @param  returnAttrs  to search for.
    * @param  results  to expect from the search.
    *
@@ -299,6 +300,7 @@ public class AuthenticatorTest
       "authenticateDn",
       "authenticateDnCredential",
       "authenticateDnFilter",
+      "authenticateDnFilterArgs",
       "authenticateDnReturnAttrs",
       "authenticateDnResults"
     }
@@ -313,6 +315,7 @@ public class AuthenticatorTest
     final String dn,
     final String credential,
     final String filter,
+    final String filterArgs,
     final String returnAttrs,
     final String results)
     throws Exception
@@ -320,16 +323,22 @@ public class AuthenticatorTest
     final Authenticator ldap = this.createTLSAuthenticator(false);
 
     // test plain auth
-    AssertJUnit.assertFalse(ldap.authenticateDn(dn, INVALID_PASSWD, filter));
     AssertJUnit.assertFalse(
-      ldap.authenticateDn(dn, credential, INVALID_FILTER));
-    AssertJUnit.assertTrue(ldap.authenticateDn(dn, credential, filter));
+      ldap.authenticateDn(dn, INVALID_PASSWD, new SearchFilter(filter)));
+    AssertJUnit.assertFalse(
+      ldap.authenticateDn(
+        dn, credential, new SearchFilter(INVALID_FILTER)));
+    AssertJUnit.assertTrue(
+      ldap.authenticateDn(
+        dn,
+        credential,
+        new SearchFilter(filter, filterArgs.split("\\|"))));
 
     // test auth with return attributes
     final Attributes attrs = ldap.authenticateDn(
       dn,
       credential,
-      filter,
+      new SearchFilter(filter, filterArgs.split("\\|")),
       returnAttrs.split("\\|"));
     final LdapAttributes expected = TestUtil.convertStringToAttributes(results);
     AssertJUnit.assertEquals(expected, new LdapAttributes(attrs));
@@ -524,16 +533,19 @@ public class AuthenticatorTest
     final Authenticator ldap = this.createTLSAuthenticator(false);
 
     // test plain auth
-    AssertJUnit.assertFalse(ldap.authenticate(user, INVALID_PASSWD, filter));
     AssertJUnit.assertFalse(
-      ldap.authenticate(user, credential, INVALID_FILTER));
-    AssertJUnit.assertTrue(ldap.authenticate(user, credential, filter));
+      ldap.authenticate(user, INVALID_PASSWD, new SearchFilter(filter)));
+    AssertJUnit.assertFalse(
+      ldap.authenticate(
+        user, credential, new SearchFilter(INVALID_FILTER)));
+    AssertJUnit.assertTrue(
+      ldap.authenticate(user, credential, new SearchFilter(filter)));
 
     // test auth with return attributes
     final Attributes attrs = ldap.authenticate(
       user,
       credential,
-      filter,
+      new SearchFilter(filter),
       returnAttrs.split("\\|"));
     final LdapAttributes expected = TestUtil.convertStringToAttributes(results);
     AssertJUnit.assertEquals(expected, new LdapAttributes(attrs));

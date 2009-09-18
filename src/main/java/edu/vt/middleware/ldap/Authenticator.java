@@ -14,14 +14,15 @@
 package edu.vt.middleware.ldap;
 
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
+import java.util.List;
 import javax.naming.AuthenticationException;
 import javax.naming.CommunicationException;
 import javax.naming.NamingEnumeration;
 import javax.naming.NamingException;
 import javax.naming.directory.Attributes;
-import javax.naming.directory.BasicAttributes;
 import javax.naming.directory.SearchResult;
 import javax.naming.ldap.LdapContext;
 import javax.naming.ldap.StartTlsResponse;
@@ -120,71 +121,79 @@ public class Authenticator extends AbstractLdap<AuthenticatorConfig>
   {
     String dn = null;
     if (user != null && !user.equals("")) {
-      if (
-        this.config.getUserField() == null ||
-          this.config.getUserField().length == 0) {
-        if (this.logger.isErrorEnabled()) {
-          this.logger.error("Invalid userField, cannot be null or empty.");
-        }
-      } else if (this.config.getConstructDn()) {
+      if (this.config.getConstructDn()) {
         if (this.logger.isDebugEnabled()) {
           this.logger.debug("Constructing DN from first userfield and base");
         }
         dn = this.config.getUserField()[0] + "=" + user + "," +
           this.config.getBase();
       } else {
-        if (this.logger.isDebugEnabled()) {
-          this.logger.debug("Looking up DN from userfield and base");
-        }
-
-        Iterator<SearchResult> answer = null;
-        if (this.config.getSubtreeSearch()) {
-          final StringBuffer searchFilter = new StringBuffer();
-          if (this.config.getUserField().length > 1) {
-            searchFilter.append("(|");
-            for (int i = 0; i < this.config.getUserField().length; i++) {
-              searchFilter.append("(").append(this.config.getUserField()[i])
+        // create the search filter
+        final SearchFilter filter = new SearchFilter();
+        if (this.config.getUserFilter() != null) {
+          if (this.logger.isDebugEnabled()) {
+            this.logger.debug("Looking up DN using userFilter");
+          }
+          filter.setFilter(this.config.getUserFilter());
+          filter.setFilterArgs(this.config.getUserFilterArgs());
+        } else {
+          if (this.logger.isDebugEnabled()) {
+            this.logger.debug("Looking up DN using userField");
+          }
+          if (this.config.getUserField() == null ||
+              this.config.getUserField().length == 0) {
+            if (this.logger.isErrorEnabled()) {
+              this.logger.error("Invalid userField, cannot be null or empty.");
+            }
+          } else {
+            final StringBuffer searchFilter = new StringBuffer();
+            if (this.config.getUserField().length > 1) {
+              searchFilter.append("(|");
+              for (int i = 0; i < this.config.getUserField().length; i++) {
+                searchFilter.append("(").append(this.config.getUserField()[i])
+                  .append("=").append(user).append(")");
+              }
+              searchFilter.append(")");
+            } else {
+              searchFilter.append("(").append(this.config.getUserField()[0])
                 .append("=").append(user).append(")");
             }
-            searchFilter.append(")");
-          } else {
-            searchFilter.append("(").append(this.config.getUserField()[0])
-              .append("=").append(user).append(")");
-          }
-          answer = this.search(
-            this.config.getBase(),
-            searchFilter.toString(),
-            null,
-            new String[] {},
-            this.config.getSearchResultHandlers());
-        } else {
-          for (int i = 0; i < this.config.getUserField().length; i++) {
-            answer = this.searchAttributes(
-              this.config.getBase(),
-              new BasicAttributes(this.config.getUserField()[i], user),
-              new String[] {},
-              this.config.getSearchResultHandlers());
-            if (answer != null && answer.hasNext()) {
-              break;
-            }
+            filter.setFilter(searchFilter.toString());
           }
         }
-        // return first match, otherwise user doesn't exist
-        if (answer != null && answer.hasNext()) {
-          final SearchResult sr = answer.next();
-          dn = sr.getName();
+
+        if (filter.getFilter() != null) {
+          // make user the first filter arg
+          final List<Object> filterArgs = new ArrayList<Object>();
+          filterArgs.add(user);
+          filterArgs.addAll(filter.getFilterArgs());
+          final Iterator<SearchResult> answer = this.search(
+            this.config.getBase(),
+            filter.getFilter(),
+            filterArgs.toArray(),
+            new String[] {},
+            this.config.getSearchResultHandlers());
+          // return first match, otherwise user doesn't exist
+          if (answer != null && answer.hasNext()) {
+            final SearchResult sr = answer.next();
+            dn = sr.getName();
+          } else {
+            if (this.logger.isInfoEnabled()) {
+              this.logger.info(
+                "Search for user: " + user +
+                " failed using filter: " + filter.getFilter());
+            }
+          }
         } else {
-          if (this.logger.isInfoEnabled()) {
-            this.logger.info(
-              "Search for user: " + user + " failed using attribute(s): " +
-              (this.config.getUserField() == null
-                ? "null" : Arrays.asList(this.config.getUserField())));
+          if (this.logger.isErrorEnabled()) {
+            this.logger.error(
+              "DN search filter not found, no search performed");
           }
         }
       }
     } else {
       if (this.logger.isDebugEnabled()) {
-        this.logger.debug("Input was empty or null");
+        this.logger.debug("User input was empty or null");
       }
     }
     return dn;
@@ -220,7 +229,7 @@ public class Authenticator extends AbstractLdap<AuthenticatorConfig>
    * equal dfisher in the LDAP. If {@link
    * AuthenticatorConfig#setAuthorizationFilter} has been called, then it will
    * be used to authorize the user by performing an ldap compare. See {@link
-   * #authenticateAndAuthorize( String, Object, String,
+   * #authenticateAndAuthorize( String, Object, SearchFilter,
    * AuthenticationResultHandler...)}
    *
    * @param  user  <code>String</code> username for bind
@@ -235,7 +244,12 @@ public class Authenticator extends AbstractLdap<AuthenticatorConfig>
     throws NamingException
   {
     return
-      this.authenticate(user, credential, this.config.getAuthorizationFilter());
+      this.authenticate(
+        user,
+        credential,
+        new SearchFilter(
+          this.config.getAuthorizationFilter(),
+          this.config.getAuthorizationFilterArgs()));
   }
 
 
@@ -245,11 +259,11 @@ public class Authenticator extends AbstractLdap<AuthenticatorConfig>
    * bind by searching on the user field, unless constructDn has been set. The
    * user field default is set to 'uid', so to authenticate 'dfisher', uid must
    * equal dfisher in the LDAP. See {@link #authenticateAndAuthorize(String,
-   * Object, String, AuthenticationResultHandler...)}
+   * Object, SearchFilter, AuthenticationResultHandler...)}
    *
    * @param  user  <code>String</code> username for bind
    * @param  credential  <code>Object</code> credential for bind
-   * @param  filter  <code>String</code> to authorize user
+   * @param  filter  <code>SearchFilter</code> to authorize user
    *
    * @return  <code>boolean</code> - whether the bind succeeded
    *
@@ -259,7 +273,7 @@ public class Authenticator extends AbstractLdap<AuthenticatorConfig>
   public boolean authenticate(
     final String user,
     final Object credential,
-    final String filter)
+    final SearchFilter filter)
     throws NamingException
   {
     return
@@ -277,11 +291,11 @@ public class Authenticator extends AbstractLdap<AuthenticatorConfig>
    * bind by searching on the user field, unless constructDn has been set. The
    * user field default is set to 'uid', so to authenticate 'dfisher', uid must
    * equal dfisher in the LDAP. See {@link #authenticateAndAuthorize(String,
-   * Object, String, AuthenticationResultHandler...)}
+   * Object, SearchFilter, AuthenticationResultHandler...)}
    *
    * @param  user  <code>String</code> username for bind
    * @param  credential  <code>Object</code> credential for bind
-   * @param  filter  <code>String</code> to authorize user
+   * @param  filter  <code>SearchFilter</code> to authorize user
    * @param  handler  <code>AuthenticationResultHandler[]</code> to post process
    * authentication results
    *
@@ -293,7 +307,7 @@ public class Authenticator extends AbstractLdap<AuthenticatorConfig>
   public boolean authenticate(
     final String user,
     final Object credential,
-    final String filter,
+    final SearchFilter filter,
     final AuthenticationResultHandler... handler)
     throws NamingException
   {
@@ -313,7 +327,7 @@ public class Authenticator extends AbstractLdap<AuthenticatorConfig>
    *
    * @param  dn  <code>String</code> for bind
    * @param  credential  <code>Object</code> for bind
-   * @param  filter  <code>String</code> to authorize user
+   * @param  filter  <code>SearchFilter</code> to authorize user
    * @param  handler  <code>AuthenticationResultHandler[]</code> to post process
    * authentication results
    *
@@ -325,7 +339,7 @@ public class Authenticator extends AbstractLdap<AuthenticatorConfig>
   private boolean authenticateAndAuthorize(
     final String dn,
     final Object credential,
-    final String filter,
+    final SearchFilter filter,
     final AuthenticationResultHandler... handler)
     throws NamingException
   {
@@ -381,7 +395,7 @@ public class Authenticator extends AbstractLdap<AuthenticatorConfig>
    * equal dfisher in the LDAP. If {@link
    * AuthenticatorConfig#setAuthorizationFilter} has been called, then it will
    * be used to authorize the user by performing an ldap compare. See {@link
-   * #authenticate(String, Object, String, String[])}
+   * #authenticate(String, Object, SearchFilter, String[])}
    *
    * @param  user  <code>String</code> username for bind
    * @param  credential  <code>Object</code> credential for bind
@@ -401,7 +415,9 @@ public class Authenticator extends AbstractLdap<AuthenticatorConfig>
       this.authenticate(
         user,
         credential,
-        this.config.getAuthorizationFilter(),
+        new SearchFilter(
+          this.config.getAuthorizationFilter(),
+          this.config.getAuthorizationFilterArgs()),
         retAttrs);
   }
 
@@ -412,11 +428,11 @@ public class Authenticator extends AbstractLdap<AuthenticatorConfig>
    * bind by searching on the user field, unless constructDn has been set. The
    * user field default is set to 'uid', so to authenticate 'dfisher', uid must
    * equal dfisher in the LDAP. See {@link #authenticateAndAuthorize(String,
-   * Object, String, boolean, String[], AuthenticationResultHandler...)}
+   * Object, SearchFilter, boolean, String[], AuthenticationResultHandler...)}
    *
    * @param  user  <code>String</code> username for bind
    * @param  credential  <code>Object</code> credential for bind
-   * @param  filter  <code>String</code> to authorize user
+   * @param  filter  <code>SearchFilter</code> to authorize user
    * @param  retAttrs  <code>String[]</code> to return
    *
    * @return  <code>Attributes</code> - of authenticated user
@@ -426,7 +442,7 @@ public class Authenticator extends AbstractLdap<AuthenticatorConfig>
   public Attributes authenticate(
     final String user,
     final Object credential,
-    final String filter,
+    final SearchFilter filter,
     final String[] retAttrs)
     throws NamingException
   {
@@ -447,11 +463,11 @@ public class Authenticator extends AbstractLdap<AuthenticatorConfig>
    * bind by searching on the user field, unless constructDn has been set. The
    * user field default is set to 'uid', so to authenticate 'dfisher', uid must
    * equal dfisher in the LDAP. See {@link #authenticateAndAuthorize(String,
-   * Object, String, boolean, String[], AuthenticationResultHandler...)}
+   * Object, SearchFilter, boolean, String[], AuthenticationResultHandler...)}
    *
    * @param  user  <code>String</code> username for bind
    * @param  credential  <code>Object</code> credential for bind
-   * @param  filter  <code>String</code> to authorize user
+   * @param  filter  <code>SearchFilter</code> to authorize user
    * @param  retAttrs  <code>String[]</code> to return
    * @param  handler  <code>AuthenticationResultHandler[]</code> to post process
    * authentication results
@@ -463,7 +479,7 @@ public class Authenticator extends AbstractLdap<AuthenticatorConfig>
   public Attributes authenticate(
     final String user,
     final Object credential,
-    final String filter,
+    final SearchFilter filter,
     final String[] retAttrs,
     final AuthenticationResultHandler... handler)
     throws NamingException
@@ -494,7 +510,7 @@ public class Authenticator extends AbstractLdap<AuthenticatorConfig>
    *
    * @param  dn  <code>String</code> for bind
    * @param  credential  <code>Object</code> for bind
-   * @param  filter  <code>String</code> to authorize user
+   * @param  filter  <code>SearchFilter</code> to authorize user
    * @param  searchAttrs  <code>boolean</code> whether to perform attribute
    * search
    * @param  retAttrs  <code>String[]</code> user attributes to return
@@ -510,7 +526,7 @@ public class Authenticator extends AbstractLdap<AuthenticatorConfig>
   private Attributes authenticateAndAuthorize(
     final String dn,
     final Object credential,
-    final String filter,
+    final SearchFilter filter,
     final boolean searchAttrs,
     final String[] retAttrs,
     final AuthenticationResultHandler... handler)
@@ -565,13 +581,18 @@ public class Authenticator extends AbstractLdap<AuthenticatorConfig>
           throw e;
         }
         // authentication succeeded, perform authorization if supplied
-        if (filter != null) {
+        if (filter != null && filter.getFilter() != null) {
+          // make DN the first filter arg
+          final List<Object> filterArgs = new ArrayList<Object>();
+          filterArgs.add(dn);
+          filterArgs.addAll(filter.getFilterArgs());
           // perform ldap compare operation
           NamingEnumeration<SearchResult> results = null;
           try {
             results = ctx.search(
               dn,
-              filter,
+              filter.getFilter(),
+              filterArgs.toArray(),
               LdapConfig.getCompareSearchControls());
             if (results.hasMore()) {
               if (this.logger.isInfoEnabled()) {
@@ -631,7 +652,7 @@ public class Authenticator extends AbstractLdap<AuthenticatorConfig>
    * dn and credential. If {@link AuthenticatorConfig#setAuthorizationFilter}
    * has been called, then it will be used to authorize the user by performing
    * an ldap compare. See {@link #authenticateAndAuthorize(String, Object,
-   * String, AuthenticationResultHandler...)}
+   * SearchFilter, AuthenticationResultHandler...)}
    *
    * @param  dn  <code>String</code> dn for bind
    * @param  credential  <code>Object</code> credential for bind
@@ -645,18 +666,23 @@ public class Authenticator extends AbstractLdap<AuthenticatorConfig>
     throws NamingException
   {
     return
-      this.authenticateDn(dn, credential, this.config.getAuthorizationFilter());
+      this.authenticateDn(
+        dn,
+        credential,
+        new SearchFilter(
+          this.config.getAuthorizationFilter(),
+          this.config.getAuthorizationFilterArgs()));
   }
 
 
   /**
    * This will authenticate credentials by binding to the LDAP with the supplied
    * dn and credential. See {@link #authenticateAndAuthorize(String, Object,
-   * String, AuthenticationResultHandler...)}
+   * SearchFilter, AuthenticationResultHandler...)}
    *
    * @param  dn  <code>String</code> dn for bind
    * @param  credential  <code>Object</code> credential for bind
-   * @param  filter  <code>String</code> to authorize user
+   * @param  filter  <code>SearchFilter</code> to authorize user
    *
    * @return  <code>boolean</code> - whether the bind succeeded
    *
@@ -666,7 +692,7 @@ public class Authenticator extends AbstractLdap<AuthenticatorConfig>
   public boolean authenticateDn(
     final String dn,
     final Object credential,
-    final String filter)
+    final SearchFilter filter)
     throws NamingException
   {
     return
@@ -681,11 +707,11 @@ public class Authenticator extends AbstractLdap<AuthenticatorConfig>
   /**
    * This will authenticate credentials by binding to the LDAP with the supplied
    * dn and credential. See {@link #authenticateAndAuthorize(String, Object,
-   * String, AuthenticationResultHandler...)}
+   * SearchFilter, AuthenticationResultHandler...)}
    *
    * @param  dn  <code>String</code> dn for bind
    * @param  credential  <code>Object</code> credential for bind
-   * @param  filter  <code>String</code> to authorize user
+   * @param  filter  <code>SearchFilter</code> to authorize user
    * @param  handler  <code>AuthenticationResultHandler[]</code> to post process
    * authentication results
    *
@@ -697,7 +723,7 @@ public class Authenticator extends AbstractLdap<AuthenticatorConfig>
   public boolean authenticateDn(
     final String dn,
     final Object credential,
-    final String filter,
+    final SearchFilter filter,
     final AuthenticationResultHandler... handler)
     throws NamingException
   {
@@ -709,7 +735,7 @@ public class Authenticator extends AbstractLdap<AuthenticatorConfig>
    * This will authenticate credentials by binding to the LDAP with the supplied
    * dn and credential. If {@link AuthenticatorConfig#setAuthorizationFilter}
    * has been called, then it will be used to authorize the user by performing
-   * an ldap compare. See {@link #authenticateDn(String, Object, String,
+   * an ldap compare. See {@link #authenticateDn(String, Object, SearchFilter,
    * String[], AuthenticationResultHandler...)}
    *
    * @param  dn  <code>String</code> dn for bind
@@ -730,7 +756,9 @@ public class Authenticator extends AbstractLdap<AuthenticatorConfig>
       this.authenticateDn(
         dn,
         credential,
-        this.config.getAuthorizationFilter(),
+        new SearchFilter(
+          this.config.getAuthorizationFilter(),
+          this.config.getAuthorizationFilterArgs()),
         retAttrs);
   }
 
@@ -738,11 +766,11 @@ public class Authenticator extends AbstractLdap<AuthenticatorConfig>
   /**
    * This will authenticate credentials by binding to the LDAP with the supplied
    * dn and credential. See {@link #authenticateAndAuthorize(String, Object,
-   * String, boolean, String[], AuthenticationResultHandler...)}
+   * SearchFilter, boolean, String[], AuthenticationResultHandler...)}
    *
    * @param  dn  <code>String</code> dn for bind
    * @param  credential  <code>Object</code> credential for bind
-   * @param  filter  <code>String</code> to authorize user
+   * @param  filter  <code>SearchFilter</code> to authorize user
    * @param  retAttrs  <code>String[]</code> to return
    *
    * @return  <code>Attributes</code> - of authenticated user
@@ -752,7 +780,7 @@ public class Authenticator extends AbstractLdap<AuthenticatorConfig>
   public Attributes authenticateDn(
     final String dn,
     final Object credential,
-    final String filter,
+    final SearchFilter filter,
     final String[] retAttrs)
     throws NamingException
   {
@@ -770,11 +798,11 @@ public class Authenticator extends AbstractLdap<AuthenticatorConfig>
   /**
    * This will authenticate credentials by binding to the LDAP with the supplied
    * dn and credential. See {@link #authenticateAndAuthorize(String, Object,
-   * String, boolean, String[], AuthenticationResultHandler...)}
+   * SearchFilter, boolean, String[], AuthenticationResultHandler...)}
    *
    * @param  dn  <code>String</code> dn for bind
    * @param  credential  <code>Object</code> credential for bind
-   * @param  filter  <code>String</code> to authorize user
+   * @param  filter  <code>SearchFilter</code> to authorize user
    * @param  retAttrs  <code>String[]</code> to return
    * @param  handler  <code>AuthenticationResultHandler[]</code> to post process
    * authentication results
@@ -786,7 +814,7 @@ public class Authenticator extends AbstractLdap<AuthenticatorConfig>
   public Attributes authenticateDn(
     final String dn,
     final Object credential,
-    final String filter,
+    final SearchFilter filter,
     final String[] retAttrs,
     final AuthenticationResultHandler... handler)
     throws NamingException

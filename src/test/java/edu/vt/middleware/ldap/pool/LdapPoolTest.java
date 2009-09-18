@@ -19,6 +19,7 @@ import java.util.Map;
 import javax.naming.directory.SearchResult;
 import edu.vt.middleware.ldap.Ldap;
 import edu.vt.middleware.ldap.LdapConfig;
+import edu.vt.middleware.ldap.SearchFilter;
 import edu.vt.middleware.ldap.TestUtil;
 import edu.vt.middleware.ldap.bean.LdapEntry;
 import edu.vt.middleware.ldap.ldif.Ldif;
@@ -92,7 +93,9 @@ public class LdapPoolTest
     final DefaultLdapFactory factory = new DefaultLdapFactory(
       TestUtil.createLdap().getLdapConfig());
     factory.setLdapValidator(
-      new CompareLdapValidator("ou=test,dc=vt,dc=edu", "ou=test"));
+      new CompareLdapValidator(
+        "ou=test,dc=vt,dc=edu",
+        new SearchFilter("ou=test")));
 
     final LdapPoolConfig softLimitLpc = new LdapPoolConfig();
     softLimitLpc.setValidateOnCheckIn(true);
@@ -211,7 +214,7 @@ public class LdapPoolTest
       while (
         !ldap.compare(
             e.getValue()[0].getDn(),
-            e.getValue()[0].getDn().split(",")[0])) {
+            new SearchFilter(e.getValue()[0].getDn().split(",")[0]))) {
         Thread.sleep(100);
       }
     }
@@ -341,47 +344,47 @@ public class LdapPoolTest
     return
       new Object[][] {
         {
-          "mail=jdoe2@vt.edu",
+          new SearchFilter("mail=jdoe2@vt.edu"),
           "departmentNumber|givenName|sn",
           entries.get("2")[1],
         },
         {
-          "mail=jdoe3@vt.edu",
+          new SearchFilter("mail=jdoe3@vt.edu"),
           "departmentNumber|givenName|sn",
           entries.get("3")[1],
         },
         {
-          "mail=jdoe4@vt.edu",
+          new SearchFilter("mail=jdoe4@vt.edu"),
           "departmentNumber|givenName|sn",
           entries.get("4")[1],
         },
         {
-          "mail=jdoe5@vt.edu",
+          new SearchFilter("mail=jdoe5@vt.edu"),
           "departmentNumber|givenName|sn",
           entries.get("5")[1],
         },
         {
-          "mail=jdoe6@vt.edu",
+          new SearchFilter("mail=jdoe6@vt.edu"),
           "departmentNumber|givenName|sn",
           entries.get("6")[1],
         },
         {
-          "mail=jdoe7@vt.edu",
+          new SearchFilter("mail=jdoe7@vt.edu"),
           "departmentNumber|givenName|sn",
           entries.get("7")[1],
         },
         {
-          "mail=jdoe8@vt.edu",
+          new SearchFilter("mail=jdoe8@vt.edu"),
           "departmentNumber|givenName|sn|jpegPhoto",
           entries.get("8")[1],
         },
         {
-          "mail=jdoe9@vt.edu",
+          new SearchFilter("mail=jdoe9@vt.edu"),
           "departmentNumber|givenName|sn",
           entries.get("9")[1],
         },
         {
-          "mail=jdoe10@vt.edu",
+          new SearchFilter("mail=jdoe10@vt.edu"),
           "departmentNumber|givenName|sn",
           entries.get("10")[1],
         },
@@ -437,7 +440,7 @@ public class LdapPoolTest
     timeOut = 60000
   )
   public void softLimitSmallSearch(
-    final String filter,
+    final SearchFilter filter,
     final String returnAttrs,
     final LdapEntry results)
     throws Exception
@@ -466,7 +469,7 @@ public class LdapPoolTest
     dependsOnMethods = {"softLimitSmallSearch"}
   )
   public void softLimitMediumSearch(
-    final String filter,
+    final SearchFilter filter,
     final String returnAttrs,
     final LdapEntry results)
     throws Exception
@@ -543,7 +546,7 @@ public class LdapPoolTest
     timeOut = 60000
   )
   public void blockingSmallSearch(
-    final String filter,
+    final SearchFilter filter,
     final String returnAttrs,
     final LdapEntry results)
     throws Exception
@@ -572,7 +575,7 @@ public class LdapPoolTest
     dependsOnMethods = {"blockingSmallSearch"}
   )
   public void blockingMediumSearch(
-    final String filter,
+    final SearchFilter filter,
     final String returnAttrs,
     final LdapEntry results)
     throws Exception
@@ -601,7 +604,7 @@ public class LdapPoolTest
     dependsOnMethods = {"blockingMediumSearch"}
   )
   public void blockingLargeSearch(
-    final String filter,
+    final SearchFilter filter,
     final String returnAttrs,
     final LdapEntry results)
     throws Exception
@@ -645,7 +648,7 @@ public class LdapPoolTest
     timeOut = 60000
   )
   public void blockingTimeoutSmallSearch(
-    final String filter,
+    final SearchFilter filter,
     final String returnAttrs,
     final LdapEntry results)
     throws Exception
@@ -678,7 +681,7 @@ public class LdapPoolTest
     dependsOnMethods = {"blockingTimeoutSmallSearch"}
   )
   public void blockingTimeoutMediumSearch(
-    final String filter,
+    final SearchFilter filter,
     final String returnAttrs,
     final LdapEntry results)
     throws Exception
@@ -711,7 +714,7 @@ public class LdapPoolTest
     dependsOnMethods = {"blockingTimeoutMediumSearch"}
   )
   public void blockingoTimeoutLargeSearch(
-    final String filter,
+    final SearchFilter filter,
     final String returnAttrs,
     final LdapEntry results)
     throws Exception
@@ -792,7 +795,7 @@ public class LdapPoolTest
     timeOut = 60000
   )
   public void sharedSmallSearch(
-    final String filter,
+    final SearchFilter filter,
     final String returnAttrs,
     final LdapEntry results)
     throws Exception
@@ -821,7 +824,7 @@ public class LdapPoolTest
     dependsOnMethods = {"sharedSmallSearch"}
   )
   public void sharedMediumSearch(
-    final String filter,
+    final SearchFilter filter,
     final String returnAttrs,
     final LdapEntry results)
     throws Exception
@@ -850,7 +853,7 @@ public class LdapPoolTest
     dependsOnMethods = {"sharedMediumSearch"}
   )
   public void sharedLargeSearch(
-    final String filter,
+    final SearchFilter filter,
     final String returnAttrs,
     final LdapEntry results)
     throws Exception
@@ -891,7 +894,7 @@ public class LdapPoolTest
    */
   private long search(
     final LdapPool<Ldap> pool,
-    final String filter,
+    final SearchFilter filter,
     final String returnAttrs,
     final LdapEntry results)
     throws Exception

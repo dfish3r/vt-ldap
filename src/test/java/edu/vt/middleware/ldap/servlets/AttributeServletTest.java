@@ -23,6 +23,7 @@ import com.meterware.servletunit.ServletRunner;
 import com.meterware.servletunit.ServletUnitClient;
 import edu.vt.middleware.ldap.Ldap;
 import edu.vt.middleware.ldap.LdapUtil;
+import edu.vt.middleware.ldap.SearchFilter;
 import edu.vt.middleware.ldap.TestUtil;
 import edu.vt.middleware.ldap.bean.LdapEntry;
 import org.testng.AssertJUnit;
@@ -70,7 +71,7 @@ public class AttributeServletTest
     while (
       !ldap.compare(
           testLdapEntry.getDn(),
-          testLdapEntry.getDn().split(",")[0])) {
+          new SearchFilter(testLdapEntry.getDn().split(",")[0]))) {
       Thread.sleep(100);
     }
     ldap.close();

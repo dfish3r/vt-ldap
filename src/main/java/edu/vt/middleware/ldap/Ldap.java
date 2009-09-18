@@ -165,128 +165,64 @@ public class Ldap extends AbstractLdap<LdapConfig> implements Serializable
   /**
    * This will perform an LDAP compare operation with the supplied filter.
    * {@link LdapConfig#getBase()} is used as the dn to compare. See {@link
-   * #compare(String, String)}.
+   * #compare(String, SearchFilter)}.
    *
-   * @param  filter  <code>String</code> expression to use for compare
-   *
-   * @return  <code>boolean</code> - result of compare operation
-   *
-   * @throws  NamingException  if the LDAP returns an error
-   */
-  public boolean compare(final String filter)
-    throws NamingException
-  {
-    return this.compare(this.config.getBase(), filter, null);
-  }
-
-
-  /**
-   * This will perform an LDAP compare operation with the supplied filter and
-   * filter arguments.
-   * {@link LdapConfig#getBase()} is used as the dn to compare. See {@link
-   * #compare(String, String)}.
-   *
-   * @param  filter  <code>String</code> expression to use for compare
-   * @param  filterArgs  <code>Object[]</code> to substitute for variables in
-   * the filter
+   * @param  filter  <code>SearchFilter</code> expression to use for compare
    *
    * @return  <code>boolean</code> - result of compare operation
    *
    * @throws  NamingException  if the LDAP returns an error
    */
-  public boolean compare(final String filter, final Object[] filterArgs)
+  public boolean compare(final SearchFilter filter)
     throws NamingException
   {
-    return this.compare(this.config.getBase(), filter, filterArgs);
+    return this.compare(this.config.getBase(), filter);
   }
 
 
   /**
-   * This will perform an LDAP compare operation with the supplied filter and
-   * dn.
+   * This will perform an LDAP compare operation with the supplied filter
+   * and dn.
    *
    * @param  dn  <code>String</code> name to compare
-   * @param  filter  <code>String</code> expression to use for compare
+   * @param  filter  <code>SearchFilter</code> expression to use for compare
    *
    * @return  <code>boolean</code> - result of compare operation
    *
    * @throws  NamingException  if the LDAP returns an error
    */
-  public boolean compare(final String dn, final String filter)
+  public boolean compare(final String dn, final SearchFilter filter)
     throws NamingException
   {
-    return this.compare(dn, filter, null);
-  }
-
-
-  /**
-   * This will perform an LDAP compare operation with the supplied filter,
-   * filter arguments, and dn.
-   *
-   * @param  dn  <code>String</code> name to compare
-   * @param  filter  <code>String</code> expression to use for compare
-   * @param  filterArgs  <code>Object[]</code> to substitute for variables in
-   * the filter
-   *
-   * @return  <code>boolean</code> - result of compare operation
-   *
-   * @throws  NamingException  if the LDAP returns an error
-   */
-  public boolean compare(
-    final String dn, final String filter, final Object[] filterArgs)
-    throws NamingException
-  {
-    return super.compare(dn, filter, filterArgs);
+    return super.compare(
+      dn, filter.getFilter(), filter.getFilterArgs().toArray());
   }
 
 
   /**
    * This will query the LDAP with the supplied filter. All attributes will be
    * returned. {@link LdapConfig#getBase()} is used as the start point for
-   * searching. See {@link #search(String,String,Object[],String[])}.
+   * searching. See {@link #search(String,SearchFilter,String[])}.
    *
-   * @param  filter  <code>String</code> expression to use for the search
-   *
-   * @return  <code>Iterator</code> - of LDAP search results
-   *
-   * @throws  NamingException  if the LDAP returns an error
-   */
-  public Iterator<SearchResult> search(final String filter)
-    throws NamingException
-  {
-    return this.search(this.config.getBase(), filter, null, null);
-  }
-
-
-  /**
-   * This will query the LDAP with the supplied filter and return attributes.
-   * {@link LdapConfig#getBase()} is used as the start point for searching. See
-   * {@link #search(String,String,Object[],String[])}.
-   *
-   * @param  filter  <code>String</code> expression to use for the search
-   * @param  retAttrs  <code>String[]</code> attributes to return
+   * @param  filter  <code>SearchFilter</code> expression to use for the search
    *
    * @return  <code>Iterator</code> - of LDAP search results
    *
    * @throws  NamingException  if the LDAP returns an error
    */
-  public Iterator<SearchResult> search(
-    final String filter,
-    final String[] retAttrs)
+  public Iterator<SearchResult> search(final SearchFilter filter)
     throws NamingException
   {
-    return this.search(this.config.getBase(), filter, null, retAttrs);
+    return this.search(this.config.getBase(), filter, null);
   }
 
 
   /**
-   * This will query the LDAP with the supplied filter, filter arguments, and
+   * This will query the LDAP with the supplied filter and
    * return attributes. {@link LdapConfig#getBase()} is used as the start point
-   * for searching. See {@link #search(String,String,Object[],String[])}.
+   * for searching. See {@link #search(String,SearchFilter,String[])}.
    *
-   * @param  filter  <code>String</code> expression to use for the search
-   * @param  filterArgs  <code>Object[]</code> to substitute for variables in
-   * the filter
+   * @param  filter  <code>SearchFilter</code> expression to use for the search
    * @param  retAttrs  <code>String[]</code> attributes to return
    *
    * @return  <code>Iterator</code> - of LDAP search results
@@ -294,66 +230,41 @@ public class Ldap extends AbstractLdap<LdapConfig> implements Serializable
    * @throws  NamingException  if the LDAP returns an error
    */
   public Iterator<SearchResult> search(
-    final String filter,
-    final Object[] filterArgs,
-    final String[] retAttrs)
+    final SearchFilter filter, final String[] retAttrs)
     throws NamingException
   {
-    return this.search(this.config.getBase(), filter, filterArgs, retAttrs);
+    return this.search(this.config.getBase(), filter, retAttrs);
   }
 
 
   /**
    * This will query the LDAP with the supplied dn and filter. All attributes
-   * will be returned. See {@link #search(String,String,Object[],String[])}.
+   * will be returned. See {@link #search(String,SearchFilter,String[])}.
    *
    * @param  dn  <code>String</code> name to begin search at
-   * @param  filter  <code>String</code> expression to use for the search
-   *
-   * @return  <code>Iterator</code> - of LDAP search results
-   *
-   * @throws  NamingException  if the LDAP returns an error
-   */
-  public Iterator<SearchResult> search(final String dn, final String filter)
-    throws NamingException
-  {
-    return this.search(dn, filter, null, null);
-  }
-
-
-  /**
-   * This will query the LDAP with the supplied dn, filter and return
-   * attributes. See {@link #search(String,String,Object[],String[])}.
-   *
-   * @param  dn  <code>String</code> name to begin search at
-   * @param  filter  <code>String</code> expression to use for the search
-   * @param  retAttrs  <code>String[]</code> attributes to return
+   * @param  filter  <code>SearchFilter</code> expression to use for the search
    *
    * @return  <code>Iterator</code> - of LDAP search results
    *
    * @throws  NamingException  if the LDAP returns an error
    */
   public Iterator<SearchResult> search(
-    final String dn,
-    final String filter,
-    final String[] retAttrs)
+    final String dn, final SearchFilter filter)
     throws NamingException
   {
-    return this.search(dn, filter, null, retAttrs);
+    return this.search(dn, filter, null);
   }
 
 
   /**
-   * This will query the LDAP with the supplied dn, filter, filter arguments and
+   * This will query the LDAP with the supplied dn, filter, and
    * return attributes. See {@link
-   * #search(String,String,Object[],String[],SearchResultHandler[])}. This
+   * #search(String,SearchFilter,String[],SearchResultHandler[])}. This
    * method converts relative DNs to fully qualified DNs, no post processing is
    * required.
    *
    * @param  dn  <code>String</code> name to begin search at
-   * @param  filter  <code>String</code> expression to use for the search
-   * @param  filterArgs  <code>Object[]</code> to substitute for variables in
-   * the filter
+   * @param  filter  <code>SearchFilter</code> expression to use for the search
    * @param  retAttrs  <code>String[]</code> attributes to return
    *
    * @return  <code>Iterator</code> - of LDAP search results
@@ -362,8 +273,7 @@ public class Ldap extends AbstractLdap<LdapConfig> implements Serializable
    */
   public Iterator<SearchResult> search(
     final String dn,
-    final String filter,
-    final Object[] filterArgs,
+    final SearchFilter filter,
     final String[] retAttrs)
     throws NamingException
   {
@@ -371,22 +281,37 @@ public class Ldap extends AbstractLdap<LdapConfig> implements Serializable
       this.search(
         dn,
         filter,
-        filterArgs,
         retAttrs,
         this.config.getSearchResultHandlers());
   }
 
 
-  /** {@inheritDoc}. */
+  /**
+   * This will query the LDAP with the supplied dn, filter, return attributes,
+   * and search result handler. See {@link AbstractLdap
+   * #search(String,String,Object[],String[],SearchResultHandler[])}.
+   *
+   * @param  dn  <code>String</code> name to begin search at
+   * @param  filter  <code>SearchFilter</code> expression to use for the search
+   * @param  retAttrs  <code>String[]</code> attributes to return
+   *
+   * @return  <code>Iterator</code> - of LDAP search results
+   *
+   * @throws  NamingException  if the LDAP returns an error
+   */
   public Iterator<SearchResult> search(
     final String dn,
-    final String filter,
-    final Object[] filterArgs,
+    final SearchFilter filter,
     final String[] retAttrs,
     final SearchResultHandler... handler)
     throws NamingException
   {
-    return super.search(dn, filter, filterArgs, retAttrs, handler);
+    return super.search(
+      dn,
+      filter.getFilter(),
+      filter.getFilterArgs().toArray(),
+      retAttrs,
+      handler);
   }
 
 
@@ -564,7 +489,18 @@ public class Ldap extends AbstractLdap<LdapConfig> implements Serializable
   }
 
 
-  /** {@inheritDoc}. */
+  /**
+   * This will modify the supplied attributes for the supplied value given by
+   * the modification operation. See {@link
+   * AbstractLdap#modifyAttributes(String, int, Attributes)}.
+   *
+   * @param  dn  <code>String</code> named object in the LDAP
+   * @param  mod  <code>AttributeModification</code> modification operation
+   * @param  attrs  <code>Attributes</code> attributes to be used for the
+   * operation, may be null
+   *
+   * @throws  NamingException  if the LDAP returns an error
+   */
   public void modifyAttributes(
     final String dn, final AttributeModification mod, final Attributes attrs)
     throws NamingException

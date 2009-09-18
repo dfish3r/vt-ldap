@@ -18,6 +18,7 @@ import java.util.Set;
 import javax.security.auth.login.LoginContext;
 import javax.security.auth.login.LoginException;
 import edu.vt.middleware.ldap.Ldap;
+import edu.vt.middleware.ldap.SearchFilter;
 import edu.vt.middleware.ldap.TestUtil;
 import edu.vt.middleware.ldap.bean.LdapEntry;
 import org.testng.AssertJUnit;
@@ -64,7 +65,7 @@ public class LdapLoginModuleTest
     while (
       !ldap.compare(
           testLdapEntry.getDn(),
-          testLdapEntry.getDn().split(",")[0])) {
+          new SearchFilter(testLdapEntry.getDn().split(",")[0]))) {
       Thread.sleep(100);
     }
     ldap.close();
@@ -119,6 +120,58 @@ public class LdapLoginModuleTest
     throws Exception
   {
     this.doContextTest("vt-ldap", dn, user, role, credential);
+  }
+
+
+  /**
+   * @param  dn  of this user
+   * @param  user  to authenticate.
+   * @param  role  to set for this user
+   * @param  credential  to authenticate with.
+   *
+   * @throws  Exception  On test failure.
+   */
+  @Parameters({ "jaasDn", "jaasUser", "jaasUserRole", "jaasCredential" })
+  @Test(
+    groups = {"jaastest"},
+    threadPoolSize = 10,
+    invocationCount = 100,
+    timeOut = 60000
+  )
+  public void authzContextTest(
+    final String dn,
+    final String user,
+    final String role,
+    final String credential)
+    throws Exception
+  {
+    this.doContextTest("vt-ldap-authz", dn, user, role, credential);
+  }
+
+
+  /**
+   * @param  dn  of this user
+   * @param  user  to authenticate.
+   * @param  role  to set for this user
+   * @param  credential  to authenticate with.
+   *
+   * @throws  Exception  On test failure.
+   */
+  @Parameters({ "jaasDn", "jaasUser", "jaasUserRole", "jaasCredential" })
+  @Test(
+    groups = {"jaastest"},
+    threadPoolSize = 10,
+    invocationCount = 100,
+    timeOut = 60000
+  )
+  public void filterContextTest(
+    final String dn,
+    final String user,
+    final String role,
+    final String credential)
+    throws Exception
+  {
+    this.doContextTest("vt-ldap-filter", dn, user, role, credential);
   }
 
 

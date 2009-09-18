@@ -123,7 +123,8 @@
 
   <parameter name="authenticateDn" value="uid=3,ou=test,dc=vt,dc=edu"/>
   <parameter name="authenticateDnCredential" value="password3"/>
-  <parameter name="authenticateDnFilter" value="departmentNumber=0823"/>
+  <parameter name="authenticateDnFilter" value="departmentNumber={1}"/>
+  <parameter name="authenticateDnFilterArgs" value="0823"/>
   <parameter name="authenticateDnReturnAttrs" value="givenName|sn"/>
   <parameter name="authenticateDnResults" value="givenName=Joho|sn=Dof"/>
 

@@ -72,7 +72,7 @@ public class LdapSearch
         Ldap ldap = null;
         try {
           ldap = this.pool.checkOut();
-          queryResults = ldap.search(query, attrs);
+          queryResults = ldap.search(new SearchFilter(query), attrs);
         } catch (NamingException e) {
           if (LOG.isErrorEnabled()) {
             LOG.error("Error attempting LDAP search", e);

@@ -42,6 +42,12 @@ public class AuthenticatorConfig extends LdapConfig
     LdapConstants.DEFAULT_USER_FIELD,
   };
 
+  /** Filter for searching for the user. */
+  private String userFilter;
+
+  /** Filter arguments for searching for the user. */
+  private Object[] userFilterArgs;
+
   /** User to authenticate. */
   private String user;
 
@@ -51,18 +57,21 @@ public class AuthenticatorConfig extends LdapConfig
   /** Filter for authorizing user. */
   private String authorizationFilter;
 
+  /** Filter arguments for authorizing user. */
+  private Object[] authorizationFilterArgs;
+
   /** Whether to construct the DN when authenticating. */
   private boolean constructDn = LdapConstants.DEFAULT_CONSTRUCT_DN;
-
-  /** Whether to perform subtree searches for DNs. */
-  private boolean subtreeSearch = LdapConstants.DEFAULT_SUBTREE_SEARCH;
 
   /** Handlers to process authentications. */
   private AuthenticationResultHandler[] authenticationResultHandlers;
 
 
   /** Default constructor. */
-  public AuthenticatorConfig() {}
+  public AuthenticatorConfig()
+  {
+    this.setSearchScope(SearchScope.ONELEVEL);
+  }
 
 
   /**
@@ -88,6 +97,28 @@ public class AuthenticatorConfig extends LdapConfig
   public String[] getUserField()
   {
     return this.userField;
+  }
+
+
+  /**
+   * This returns the filter used to search for the user.
+   *
+   * @return  <code>String</code> - filter
+   */
+  public String getUserFilter()
+  {
+    return this.userFilter;
+  }
+
+
+  /**
+   * This returns the filter arguments used to search for the user.
+   *
+   * @return  <code>Object[]</code> - filter arguments
+   */
+  public Object[] getUserFilterArgs()
+  {
+    return this.userFilterArgs;
   }
 
 
@@ -125,6 +156,17 @@ public class AuthenticatorConfig extends LdapConfig
 
 
   /**
+   * This returns the filter arguments used to authorize users.
+   *
+   * @return  <code>Object[]</code> - filter arguments
+   */
+  public Object[] getAuthorizationFilterArgs()
+  {
+    return this.authorizationFilterArgs;
+  }
+
+
+  /**
    * This returns the constructDn of the <code>Authenticator</code>.
    *
    * @return  <code>boolean</code> - whether the DN will be constructed
@@ -143,7 +185,7 @@ public class AuthenticatorConfig extends LdapConfig
    */
   public boolean getSubtreeSearch()
   {
-    return this.subtreeSearch;
+    return SearchScope.SUBTREE == this.getSearchScope();
   }
 
 
@@ -173,6 +215,40 @@ public class AuthenticatorConfig extends LdapConfig
         (userField == null ? "null" : Arrays.asList(userField)));
     }
     this.userField = userField;
+  }
+
+
+  /**
+   * This sets the filter used to search for users. If not set, the user field
+   * is used to build a search filter.
+   *
+   * @param  userFilter  <code>String</code>
+   */
+  public void setUserFilter(final String userFilter)
+  {
+    checkImmutable();
+    if (this.logger.isTraceEnabled()) {
+      this.logger.trace("setting userFilter: " + userFilter);
+    }
+    this.userFilter = userFilter;
+  }
+
+
+  /**
+   * This sets the filter arguments used to search for users.
+   *
+   * @param  userFilterArgs  <code>Object[]</code>
+   */
+  public void setUserFilterArgs(final Object[] userFilterArgs)
+  {
+    checkImmutable();
+    if (this.logger.isTraceEnabled()) {
+      this.logger.trace(
+        "setting userFilterArgs: " +
+        (userFilterArgs == null ?
+          "null" : Arrays.asList(userFilterArgs)));
+    }
+    this.userFilterArgs = userFilterArgs;
   }
 
 
@@ -228,6 +304,24 @@ public class AuthenticatorConfig extends LdapConfig
 
 
   /**
+   * This sets the filter arguments used to authorize users.
+   *
+   * @param  authorizationFilterArgs  <code>Object[]</code>
+   */
+  public void setAuthorizationFilterArgs(final Object[] authorizationFilterArgs)
+  {
+    checkImmutable();
+    if (this.logger.isTraceEnabled()) {
+      this.logger.trace(
+        "setting authorizationFilterArgs: " +
+        (authorizationFilterArgs == null ?
+          "null" : Arrays.asList(authorizationFilterArgs)));
+    }
+    this.authorizationFilterArgs = authorizationFilterArgs;
+  }
+
+
+  /**
    * This sets the constructDn for the <code>Authenticator</code>. If true, the
    * DN used for authenticating will be constructed using the {@link #userField}
    * and {@link LdapConfig#getBase()}. In the form: dn =
@@ -259,7 +353,11 @@ public class AuthenticatorConfig extends LdapConfig
     if (this.logger.isTraceEnabled()) {
       this.logger.trace("setting subtreeSearch: " + subtreeSearch);
     }
-    this.subtreeSearch = subtreeSearch;
+    if (subtreeSearch) {
+      this.setSearchScope(SearchScope.SUBTREE);
+    } else {
+      this.setSearchScope(SearchScope.ONELEVEL);
+    }
   }
 
 

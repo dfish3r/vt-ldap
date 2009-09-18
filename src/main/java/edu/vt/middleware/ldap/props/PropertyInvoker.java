@@ -144,6 +144,8 @@ public class PropertyInvoker
         }
       } else if (String[].class == getter.getReturnType()) {
         newValue = value.split(",");
+      } else if (Object[].class == getter.getReturnType()) {
+        newValue = value.split(",");
       } else if (float.class == getter.getReturnType()) {
         newValue = Float.parseFloat(value);
       } else if (int.class == getter.getReturnType()) {

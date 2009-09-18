@@ -144,9 +144,9 @@ public class LdapCli extends AbstractCli
     try {
       Iterator<SearchResult> results = null;
       if (attrs == null || attrs.length == 0) {
-        results = ldap.search(filter);
+        results = ldap.search(new SearchFilter(filter));
       } else {
-        results = ldap.search(filter, attrs);
+        results = ldap.search(new SearchFilter(filter), attrs);
       }
       if (this.outputDsmlv1) {
         (new Dsmlv1()).outputDsml(results, System.out);
