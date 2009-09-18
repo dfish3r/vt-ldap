@@ -41,6 +41,17 @@ public class LdapEntry extends AbstractLdapBean
 
 
   /**
+   * This creates a new <code>LdapEntry</code> with the supplied dn.
+   *
+   * @param  dn  <code>String</code>
+   */
+  public LdapEntry(final String dn)
+  {
+    this.setDn(dn);
+  }
+
+
+  /**
    * This creates a new <code>LdapEntry</code> with the supplied <code>
    * LdapEntry</code>.
    *

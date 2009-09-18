@@ -46,6 +46,17 @@ public class LdapAttribute extends AbstractLdapBean
 
 
   /**
+   * This creates a new <code>LdapAttribute</code> with the supplied name.
+   *
+   * @param  name  <code>String</code>
+   */
+  public LdapAttribute(final String name)
+  {
+    this.setName(name);
+  }
+
+
+  /**
    * This creates a new <code>LdapAttribute</code> with the supplied <code>
    * LdapAttribute</code>.
    *
