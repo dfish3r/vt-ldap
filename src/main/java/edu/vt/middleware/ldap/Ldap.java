@@ -294,6 +294,7 @@ public class Ldap extends AbstractLdap<LdapConfig> implements Serializable
    * @param  dn  <code>String</code> name to begin search at
    * @param  filter  <code>SearchFilter</code> expression to use for the search
    * @param  retAttrs  <code>String[]</code> attributes to return
+   * @param  handler  <code>SearchResultHandler[]</code> of handlers to execute
    *
    * @return  <code>Iterator</code> - of LDAP search results
    *
