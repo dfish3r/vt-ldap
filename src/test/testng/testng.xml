@@ -23,6 +23,15 @@
   <parameter name="createEntry10"
              value="/edu/vt/middleware/ldap/createLdapEntry-10.ldif"/>
 
+  <parameter name="createGroup2"
+             value="/edu/vt/middleware/ldap/createGroupEntry-2.ldif"/>
+  <parameter name="createGroup3"
+             value="/edu/vt/middleware/ldap/createGroupEntry-3.ldif"/>
+  <parameter name="createGroup4"
+             value="/edu/vt/middleware/ldap/createGroupEntry-4.ldif"/>
+  <parameter name="createGroup5"
+             value="/edu/vt/middleware/ldap/createGroupEntry-5.ldif"/>
+
   <parameter name="searchResults2"
              value="/edu/vt/middleware/ldap/searchResults-2.ldif"/>
   <parameter name="searchResults3"
@@ -61,6 +70,12 @@
   <parameter name="searchAttributesReturnAttrs" value="departmentNumber|givenName|sn"/>
   <parameter name="searchAttributesResults"
              value="/edu/vt/middleware/ldap/searchAttributesResults-2.ldif"/>
+
+  <parameter name="recursiveSearchDn" value="ou=test,dc=vt,dc=edu"/>
+  <parameter name="recursiveSearchFilter" value="(uugid={0})"/>
+  <parameter name="recursiveSearchFilterArgs" value="group2"/>
+  <parameter name="recursiveSearchResults"
+             value="/edu/vt/middleware/ldap/groupResults-2.ldif"/>
 
   <parameter name="listDn" value="ou=test,dc=vt,dc=edu"/>
   <parameter name="listResults" value="uid=1|uid=2"/>

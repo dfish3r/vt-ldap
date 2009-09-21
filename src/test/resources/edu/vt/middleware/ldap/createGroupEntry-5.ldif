@@ -1,0 +1,6 @@
+dn: uugid=group5,ou=test,dc=vt,dc=edu
+contactPerson: uid=2,ou=test,dc=vt,dc=edu
+creationDate: 2010-06-06T12:00:00
+objectClass: virginiaTechGroup
+uid: 2005
+uugid: group5

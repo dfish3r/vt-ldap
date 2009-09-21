@@ -15,8 +15,10 @@ package edu.vt.middleware.ldap;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import javax.naming.Binding;
 import javax.naming.NameClassPair;
 import javax.naming.NameNotFoundException;
@@ -28,9 +30,11 @@ import edu.vt.middleware.ldap.Ldap.AttributeModification;
 import edu.vt.middleware.ldap.bean.LdapAttribute;
 import edu.vt.middleware.ldap.bean.LdapAttributes;
 import edu.vt.middleware.ldap.bean.LdapEntry;
+import edu.vt.middleware.ldap.handler.AttributeHandler;
 import edu.vt.middleware.ldap.handler.BinaryAttributeHandler;
 import edu.vt.middleware.ldap.handler.EntryDnSearchResultHandler;
 import edu.vt.middleware.ldap.handler.FqdnSearchResultHandler;
+import edu.vt.middleware.ldap.handler.RecursiveAttributeHandler;
 import edu.vt.middleware.ldap.handler.SearchResultHandler;
 import edu.vt.middleware.ldap.ldif.Ldif;
 import org.testng.AssertJUnit;
@@ -54,8 +58,21 @@ public class LdapTest
   /** Entry created for ldap tests. */
   private static LdapEntry testLdapEntry;
 
+  /** Entries for group tests. */
+  private static Map<String, LdapEntry[]> groupEntries =
+    new HashMap<String, LdapEntry[]>();
+
   /** Ldap instance for concurrency testing. */
   private Ldap singleLdap;
+
+  /**
+   * Initialize the map of group entries.
+   */
+  static {
+    for (int i = 2; i <= 5; i++) {
+      groupEntries.put(String.valueOf(i), new LdapEntry[2]);
+    }
+  }
 
 
   /**
@@ -97,6 +114,79 @@ public class LdapTest
     }
     ldap.close();
   }
+
+
+  /**
+   * @param  ldifFile2  to create.
+   * @param  ldifFile3  to create.
+   * @param  ldifFile4  to create.
+   * @param  ldifFile5  to create.
+   *
+   * @throws  Exception  On test failure.
+   */
+  @Parameters({
+    "createGroup2",
+    "createGroup3",
+    "createGroup4",
+    "createGroup5" })
+  @BeforeClass(groups = {"ldaptest"})
+  public void createGroupEntry(
+    final String ldifFile2,
+    final String ldifFile3,
+    final String ldifFile4,
+    final String ldifFile5)
+    throws Exception
+  {
+    groupEntries.get("2")[0] = TestUtil.convertLdifToEntry(
+      TestUtil.readFileIntoString(ldifFile2));
+    groupEntries.get("3")[0] = TestUtil.convertLdifToEntry(
+      TestUtil.readFileIntoString(ldifFile3));
+    groupEntries.get("4")[0] = TestUtil.convertLdifToEntry(
+      TestUtil.readFileIntoString(ldifFile4));
+    groupEntries.get("5")[0] = TestUtil.convertLdifToEntry(
+      TestUtil.readFileIntoString(ldifFile5));
+
+    Ldap ldap = TestUtil.createSetupLdap();
+    for (Map.Entry<String, LdapEntry[]> e : groupEntries.entrySet()) {
+      ldap.create(
+        e.getValue()[0].getDn(),
+        e.getValue()[0].getLdapAttributes().toAttributes());
+    }
+    ldap.close();
+
+    ldap = TestUtil.createLdap();
+    for (Map.Entry<String, LdapEntry[]> e : groupEntries.entrySet()) {
+      while (
+        !ldap.compare(
+          e.getValue()[0].getDn(),
+          new SearchFilter(e.getValue()[0].getDn().split(",")[0]))) {
+        Thread.sleep(100);
+      }
+    }
+
+    // setup group relationships
+    ldap.modifyAttributes(
+      groupEntries.get("2")[0].getDn(),
+      AttributeModification.ADD,
+      AttributesFactory.createAttributes(
+        "member", "uugid=group3,ou=test,dc=vt,dc=edu"));
+    ldap.modifyAttributes(
+      groupEntries.get("3")[0].getDn(),
+      AttributeModification.ADD,
+      AttributesFactory.createAttributes(
+        "member",
+        new String[]{
+          "uugid=group4,ou=test,dc=vt,dc=edu",
+          "uugid=group5,ou=test,dc=vt,dc=edu", }));
+    ldap.modifyAttributes(
+      groupEntries.get("4")[0].getDn(),
+      AttributeModification.ADD,
+      AttributesFactory.createAttributes(
+        "member",
+        "uugid=group3,ou=test,dc=vt,dc=edu"));
+    ldap.close();
+  }
+
 
   /**
    * @param  oldDn  to rename.
@@ -145,6 +235,10 @@ public class LdapTest
   {
     final Ldap ldap = TestUtil.createSetupLdap();
     ldap.delete(testLdapEntry.getDn());
+    ldap.delete(groupEntries.get("2")[0].getDn());
+    ldap.delete(groupEntries.get("3")[0].getDn());
+    ldap.delete(groupEntries.get("4")[0].getDn());
+    ldap.delete(groupEntries.get("5")[0].getDn());
     ldap.close();
   }
 
@@ -275,6 +369,56 @@ public class LdapTest
       returnAttrs.split("\\|"),
       new FqdnSearchResultHandler(),
       srh);
+    AssertJUnit.assertEquals(
+      entry,
+      TestUtil.convertLdifToEntry((new Ldif()).createLdif(iter)));
+  }
+
+
+  /**
+   * @param  dn  to search on.
+   * @param  filter  to search with.
+   * @param  filterArgs  to replace args in filter with.
+   * @param  ldifFile  to compare with
+   *
+   * @throws  Exception  On test failure.
+   */
+  @Parameters(
+    {
+      "recursiveSearchDn",
+      "recursiveSearchFilter",
+      "recursiveSearchFilterArgs",
+      "recursiveSearchResults"
+    }
+  )
+  @Test(groups = {"ldaptest"})
+  public void recursiveSearch(
+    final String dn,
+    final String filter,
+    final String filterArgs,
+    final String ldifFile)
+    throws Exception
+  {
+    final Ldap ldap = this.createLdap(false);
+
+    final String expected = TestUtil.readFileIntoString(ldifFile);
+    final LdapEntry entry = TestUtil.convertLdifToEntry(expected);
+
+    final LdapEntry entryDnEntry = TestUtil.convertLdifToEntry(expected);
+    entryDnEntry.getLdapAttributes().addAttribute(
+      "entryDN",
+      entryDnEntry.getDn());
+
+    // test recursive searching
+    final FqdnSearchResultHandler handler = new FqdnSearchResultHandler();
+    handler.setAttributeHandler(
+      new AttributeHandler[]{new RecursiveAttributeHandler(ldap, "member")});
+
+    final Iterator<SearchResult> iter = ldap.search(
+      dn,
+      new SearchFilter(filter, filterArgs.split("\\|")),
+      null,
+      handler);
     AssertJUnit.assertEquals(
       entry,
       TestUtil.convertLdifToEntry((new Ldif()).createLdif(iter)));
