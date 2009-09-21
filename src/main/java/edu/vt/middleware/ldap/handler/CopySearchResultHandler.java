@@ -29,18 +29,18 @@ public class CopySearchResultHandler extends CopyResultHandler<SearchResult>
 {
 
   /** Attribute handler. */
-  private AttributeHandler attributeHandler;
+  private AttributeHandler[] attributeHandler;
 
 
   /** {@inheritDoc}. */
-  public AttributeHandler getAttributeHandler()
+  public AttributeHandler[] getAttributeHandler()
   {
     return this.attributeHandler;
   }
 
 
   /** {@inheritDoc}. */
-  public void setAttributeHandler(final AttributeHandler ah)
+  public void setAttributeHandler(final AttributeHandler[] ah)
   {
     this.attributeHandler = ah;
   }
@@ -100,14 +100,11 @@ public class CopySearchResultHandler extends CopyResultHandler<SearchResult>
     final SearchResult sr)
     throws NamingException
   {
-    Attributes newAttrs = null;
-    if (this.attributeHandler != null) {
-      newAttrs = AttributesProcessor.executeHandler(
-        sc,
-        sr.getAttributes(),
-        this.attributeHandler);
-    } else {
-      newAttrs = sr.getAttributes();
+    Attributes newAttrs = sr.getAttributes();
+    if (this.attributeHandler != null && this.attributeHandler.length > 0) {
+      for (AttributeHandler ah : this.attributeHandler) {
+        newAttrs = AttributesProcessor.executeHandler(sc, newAttrs, ah);
+      }
     }
     return newAttrs;
   }

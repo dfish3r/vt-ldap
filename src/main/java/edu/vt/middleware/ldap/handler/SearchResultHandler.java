@@ -27,17 +27,17 @@ public interface SearchResultHandler
 
 
   /**
-   * Gets the attribute handler.
+   * Gets the attribute handlers.
    *
-   * @return  <code>AttributeHandler</code>
+   * @return  <code>AttributeHandler[]</code>
    */
-  AttributeHandler getAttributeHandler();
+  AttributeHandler[] getAttributeHandler();
 
 
   /**
-   * Sets the attribute handler.
+   * Sets the attribute handlers.
    *
-   * @param  ah  <code>AttributeHandler</code>
+   * @param  ah  <code>AttributeHandler[]</code>
    */
-  void setAttributeHandler(final AttributeHandler ah);
+  void setAttributeHandler(final AttributeHandler[] ah);
 }
