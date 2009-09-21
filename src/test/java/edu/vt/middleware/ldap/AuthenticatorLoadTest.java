@@ -45,7 +45,7 @@ public class AuthenticatorLoadTest
     new HashMap<String, LdapEntry[]>();
 
   /**
-   * Intialize the map of entries.
+   * Initialize the map of entries.
    */
   static {
     for (int i = 2; i <= 10; i++) {
