@@ -77,6 +77,10 @@
   <parameter name="recursiveSearchResults"
              value="/edu/vt/middleware/ldap/groupResults-2.ldif"/>
 
+  <parameter name="searchExceptionDn" value="ou=test,dc=vt,dc=edu"/>
+  <parameter name="searchExceptionFilter" value="(|(uugid=group2)(uugid=group3)(uugid=group4))"/>
+  <parameter name="searchExceptionResultsSize" value="3"/>
+
   <parameter name="listDn" value="ou=test,dc=vt,dc=edu"/>
   <parameter name="listResults" value="uid=1|uid=2"/>
 

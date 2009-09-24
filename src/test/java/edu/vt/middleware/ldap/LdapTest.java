@@ -20,8 +20,12 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import javax.naming.Binding;
+import javax.naming.LimitExceededException;
 import javax.naming.NameClassPair;
 import javax.naming.NameNotFoundException;
+import javax.naming.NamingException;
+import javax.naming.SizeLimitExceededException;
+import javax.naming.TimeLimitExceededException;
 import javax.naming.directory.Attributes;
 import javax.naming.directory.DirContext;
 import javax.naming.directory.ModificationItem;
@@ -30,6 +34,7 @@ import edu.vt.middleware.ldap.Ldap.AttributeModification;
 import edu.vt.middleware.ldap.bean.LdapAttribute;
 import edu.vt.middleware.ldap.bean.LdapAttributes;
 import edu.vt.middleware.ldap.bean.LdapEntry;
+import edu.vt.middleware.ldap.bean.LdapResult;
 import edu.vt.middleware.ldap.handler.AttributeHandler;
 import edu.vt.middleware.ldap.handler.BinaryAttributeHandler;
 import edu.vt.middleware.ldap.handler.EntryDnSearchResultHandler;
@@ -404,11 +409,6 @@ public class LdapTest
     final String expected = TestUtil.readFileIntoString(ldifFile);
     final LdapEntry entry = TestUtil.convertLdifToEntry(expected);
 
-    final LdapEntry entryDnEntry = TestUtil.convertLdifToEntry(expected);
-    entryDnEntry.getLdapAttributes().addAttribute(
-      "entryDN",
-      entryDnEntry.getDn());
-
     // test recursive searching
     final FqdnSearchResultHandler handler = new FqdnSearchResultHandler();
     handler.setAttributeHandler(
@@ -422,6 +422,59 @@ public class LdapTest
     AssertJUnit.assertEquals(
       entry,
       TestUtil.convertLdifToEntry((new Ldif()).createLdif(iter)));
+  }
+
+
+  /**
+   * @param  dn  to search on.
+   * @param  filter  to search with.
+   * @param  resultsSize  of search results.
+   *
+   * @throws  Exception  On test failure.
+   */
+  @Parameters(
+    {
+      "searchExceptionDn",
+      "searchExceptionFilter",
+      "searchExceptionResultsSize"
+    }
+  )
+  @Test(groups = {"ldaptest"})
+  public void searchWithException(
+    final String dn,
+    final String filter,
+    final int resultsSize)
+    throws Exception
+  {
+    final Ldap ldap = this.createLdap(true);
+
+    // test exception searching
+    ldap.getLdapConfig().setCountLimit(resultsSize);
+    ldap.getLdapConfig().setSearchIgnoreExceptions(null);
+
+    try {
+      ldap.search(dn, new SearchFilter("(uugid=*)"));
+      AssertJUnit.fail("Should have thrown SizeLimitExceededException");
+    } catch (NamingException e) {
+      AssertJUnit.assertEquals(SizeLimitExceededException.class, e.getClass());
+    }
+
+    ldap.getLdapConfig().setSearchIgnoreExceptions(
+      new NamingException[]{new TimeLimitExceededException()});
+    try {
+      ldap.search(dn, new SearchFilter("(uugid=*)"));
+      AssertJUnit.fail("Should have thrown SizeLimitExceededException");
+    } catch (NamingException e) {
+      AssertJUnit.assertEquals(SizeLimitExceededException.class, e.getClass());
+    }
+
+    ldap.getLdapConfig().setSearchIgnoreExceptions(
+      new NamingException[]{new LimitExceededException()});
+    final Iterator<SearchResult> iter = ldap.search(
+      dn, new SearchFilter(filter));
+    AssertJUnit.assertEquals(resultsSize, (new LdapResult(iter)).size());
+
+    ldap.close();
   }
 
 

@@ -48,6 +48,25 @@ public interface ResultHandler<R, O>
    * Process the results from a ldap search.
    *
    * @param  sc  <code>SearchCriteria</code> used to perform the search
+   * @param  en  <code>NamingEnumeration</code> of search results
+   * @param  ignore  <code>NamingException[]</code> to ignore when processing
+   * results
+   *
+   * @return  <code>List</code> of result objects
+   *
+   * @throws  NamingException  if the LDAP returns an error
+   */
+  List<O> process(
+    SearchCriteria sc,
+    NamingEnumeration<? extends R> en,
+    NamingException[] ignore)
+    throws NamingException;
+
+
+  /**
+   * Process the results from a ldap search.
+   *
+   * @param  sc  <code>SearchCriteria</code> used to perform the search
    * @param  l  <code>List</code> of search results
    *
    * @return  <code>List</code> of result objects

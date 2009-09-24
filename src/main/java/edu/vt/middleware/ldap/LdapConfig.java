@@ -20,6 +20,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
+import javax.naming.LimitExceededException;
+import javax.naming.NamingException;
 import javax.naming.directory.SearchControls;
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLSocketFactory;
@@ -189,6 +191,10 @@ public class LdapConfig extends AbstractPropertyConfig
   /** Handlers to process search results. */
   private SearchResultHandler[] searchResultHandlers =
     new SearchResultHandler[] {new FqdnSearchResultHandler()};
+
+  /** Exception types to ignore when searching. */
+  private NamingException[] searchIgnoreExceptions =
+    new NamingException[] {new LimitExceededException()};
 
   /** SASL authorization ID. */
   private String saslAuthorizationId;
@@ -812,6 +818,17 @@ public class LdapConfig extends AbstractPropertyConfig
 
 
   /**
+   * This returns the exceptions to ignore when searching.
+   *
+   * @return  <code>NamingException[]</code>
+   */
+  public NamingException[] getSearchIgnoreExceptions()
+  {
+    return this.searchIgnoreExceptions;
+  }
+
+
+  /**
    * This returns ths SASL authorization id for the <code>LdapConfig</code>.
    *
    * @return  <code>String</code> - authorization id
@@ -1396,6 +1413,23 @@ public class LdapConfig extends AbstractPropertyConfig
         (handlers == null ? "null" : Arrays.asList(handlers)));
     }
     this.searchResultHandlers = handlers;
+  }
+
+
+  /**
+   * This sets the exceptions to ignore when searching.
+   *
+   * @param  exceptions  <code>NamingException[]</code>
+   */
+  public void setSearchIgnoreExceptions(final NamingException[] exceptions)
+  {
+    checkImmutable();
+    if (this.logger.isTraceEnabled()) {
+      this.logger.trace(
+        "setting searchIgnoreExceptions: " +
+        (exceptions == null ? "null" : Arrays.asList(exceptions)));
+    }
+    this.searchIgnoreExceptions = exceptions;
   }
 
 

@@ -18,6 +18,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
+import javax.naming.NamingException;
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLSocketFactory;
 import edu.vt.middleware.ldap.LdapConfig;
@@ -137,6 +138,16 @@ public class PropertyInvoker
             newValue,
             i,
             instantiateType(AuthenticationResultHandler.class, classes[i]));
+        }
+      } else if (
+        NamingException[].class.isAssignableFrom(getter.getReturnType())) {
+        final String[] classes = value.split(",");
+        newValue = Array.newInstance(NamingException.class, classes.length);
+        for (int i = 0; i < classes.length; i++) {
+          Array.set(
+            newValue,
+            i,
+            instantiateType(NamingException.class, classes[i]));
         }
       } else if (getter.getReturnType().isEnum()) {
         if (LdapConfig.SearchScope.class == getter.getReturnType()) {

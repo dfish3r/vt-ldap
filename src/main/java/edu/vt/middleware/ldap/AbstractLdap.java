@@ -253,13 +253,15 @@ public abstract class AbstractLdap<T extends LdapConfig> implements BaseLdap
       if (handler != null && handler.length > 0) {
         for (int i = 0; i < handler.length; i++) {
           if (i == 0) {
-            results = handler[i].process(sc, en);
+            results = handler[i].process(
+              sc, en, this.config.getSearchIgnoreExceptions());
           } else {
             results = handler[i].process(sc, results);
           }
         }
       } else {
-        results = SR_COPY_RESULT_HANDLER.process(sc, en);
+        results = SR_COPY_RESULT_HANDLER.process(
+          sc, en, this.config.getSearchIgnoreExceptions());
       }
     } finally {
       if (en != null) {
@@ -345,13 +347,15 @@ public abstract class AbstractLdap<T extends LdapConfig> implements BaseLdap
       if (handler != null && handler.length > 0) {
         for (int i = 0; i < handler.length; i++) {
           if (i == 0) {
-            results = handler[i].process(sc, en);
+            results = handler[i].process(
+              sc, en, this.config.getSearchIgnoreExceptions());
           } else {
             results = handler[i].process(sc, results);
           }
         }
       } else {
-        results = SR_COPY_RESULT_HANDLER.process(sc, en);
+        results = SR_COPY_RESULT_HANDLER.process(
+          sc, en, this.config.getSearchIgnoreExceptions());
       }
     } finally {
       if (en != null) {
@@ -415,7 +419,8 @@ public abstract class AbstractLdap<T extends LdapConfig> implements BaseLdap
       } else {
         sc.setDn(dn);
       }
-      results = NCP_COPY_RESULT_HANDLER.process(sc, en);
+      results = NCP_COPY_RESULT_HANDLER.process(
+        sc, en, this.config.getSearchIgnoreExceptions());
     } finally {
       if (en != null) {
         en.close();
@@ -478,7 +483,8 @@ public abstract class AbstractLdap<T extends LdapConfig> implements BaseLdap
       } else {
         sc.setDn(dn);
       }
-      results = BINDING_COPY_RESULT_HANDLER.process(sc, en);
+      results = BINDING_COPY_RESULT_HANDLER.process(
+        sc, en, this.config.getSearchIgnoreExceptions());
     } finally {
       if (en != null) {
         en.close();
@@ -616,7 +622,8 @@ public abstract class AbstractLdap<T extends LdapConfig> implements BaseLdap
       } else {
         sc.setDn(dn);
       }
-      results = SR_COPY_RESULT_HANDLER.process(sc, en);
+      results = SR_COPY_RESULT_HANDLER.process(
+        sc, en, this.config.getSearchIgnoreExceptions());
     } finally {
       if (schema != null) {
         schema.close();
