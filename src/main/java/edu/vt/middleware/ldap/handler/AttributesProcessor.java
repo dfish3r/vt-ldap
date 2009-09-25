@@ -50,10 +50,35 @@ public final class AttributesProcessor
     final AttributeHandler handler)
     throws NamingException
   {
+    return executeHandler(sc, attrs, handler, null);
+  }
+
+
+  /**
+   * Process the attributes of a ldap search search.
+   * Any exceptions passed into this method will be ignored and
+   * results will be returned as if no exception occurred.
+   *
+   * @param  sc  <code>SearchCriteria</code> used to find search result
+   * @param  attrs  <code>Attributes</code> to pass to the handler
+   * @param  handler  <code>AttributeHandler</code> to process attributes
+   * @param  ignore  <code>NamingException[]</code> to ignore
+   *
+   * @return  <code>Attributes</code> handler processed attributes
+   *
+   * @throws  NamingException  if the LDAP returns an error
+   */
+  public static Attributes executeHandler(
+    final SearchCriteria sc,
+    final Attributes attrs,
+    final AttributeHandler handler,
+    final NamingException[] ignore)
+    throws NamingException
+  {
     Attributes newAttrs = null;
     if (handler != null) {
       newAttrs = new BasicAttributes(attrs.isCaseIgnored());
-      for (Attribute attr : handler.process(sc, attrs.getAll())) {
+      for (Attribute attr : handler.process(sc, attrs.getAll(), ignore)) {
         newAttrs.put(attr);
       }
     } else {

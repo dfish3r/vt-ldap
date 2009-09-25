@@ -450,7 +450,7 @@ public class LdapTest
 
     // test exception searching
     ldap.getLdapConfig().setCountLimit(resultsSize);
-    ldap.getLdapConfig().setSearchIgnoreExceptions(null);
+    ldap.getLdapConfig().setHandlerIgnoreExceptions(null);
 
     try {
       ldap.search(dn, new SearchFilter("(uugid=*)"));
@@ -459,7 +459,7 @@ public class LdapTest
       AssertJUnit.assertEquals(SizeLimitExceededException.class, e.getClass());
     }
 
-    ldap.getLdapConfig().setSearchIgnoreExceptions(
+    ldap.getLdapConfig().setHandlerIgnoreExceptions(
       new NamingException[]{new TimeLimitExceededException()});
     try {
       ldap.search(dn, new SearchFilter("(uugid=*)"));
@@ -468,7 +468,7 @@ public class LdapTest
       AssertJUnit.assertEquals(SizeLimitExceededException.class, e.getClass());
     }
 
-    ldap.getLdapConfig().setSearchIgnoreExceptions(
+    ldap.getLdapConfig().setHandlerIgnoreExceptions(
       new NamingException[]{new LimitExceededException()});
     final Iterator<SearchResult> iter = ldap.search(
       dn, new SearchFilter(filter));

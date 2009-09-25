@@ -192,8 +192,8 @@ public class LdapConfig extends AbstractPropertyConfig
   private SearchResultHandler[] searchResultHandlers =
     new SearchResultHandler[] {new FqdnSearchResultHandler()};
 
-  /** Exception types to ignore when searching. */
-  private NamingException[] searchIgnoreExceptions =
+  /** Exception types to ignore when handling results. */
+  private NamingException[] handlerIgnoreExceptions =
     new NamingException[] {new LimitExceededException()};
 
   /** SASL authorization ID. */
@@ -818,13 +818,13 @@ public class LdapConfig extends AbstractPropertyConfig
 
 
   /**
-   * This returns the exceptions to ignore when searching.
+   * This returns the exceptions to ignore when handling results.
    *
    * @return  <code>NamingException[]</code>
    */
-  public NamingException[] getSearchIgnoreExceptions()
+  public NamingException[] getHandlerIgnoreExceptions()
   {
-    return this.searchIgnoreExceptions;
+    return this.handlerIgnoreExceptions;
   }
 
 
@@ -1417,19 +1417,19 @@ public class LdapConfig extends AbstractPropertyConfig
 
 
   /**
-   * This sets the exceptions to ignore when searching.
+   * This sets the exceptions to ignore when handling results.
    *
    * @param  exceptions  <code>NamingException[]</code>
    */
-  public void setSearchIgnoreExceptions(final NamingException[] exceptions)
+  public void setHandlerIgnoreExceptions(final NamingException[] exceptions)
   {
     checkImmutable();
     if (this.logger.isTraceEnabled()) {
       this.logger.trace(
-        "setting searchIgnoreExceptions: " +
+        "setting handlerIgnoreExceptions: " +
         (exceptions == null ? "null" : Arrays.asList(exceptions)));
     }
-    this.searchIgnoreExceptions = exceptions;
+    this.handlerIgnoreExceptions = exceptions;
   }
 
 
