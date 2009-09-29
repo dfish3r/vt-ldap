@@ -39,6 +39,7 @@ import edu.vt.middleware.ldap.handler.AttributeHandler;
 import edu.vt.middleware.ldap.handler.BinaryAttributeHandler;
 import edu.vt.middleware.ldap.handler.EntryDnSearchResultHandler;
 import edu.vt.middleware.ldap.handler.FqdnSearchResultHandler;
+import edu.vt.middleware.ldap.handler.MergeSearchResultHandler;
 import edu.vt.middleware.ldap.handler.RecursiveAttributeHandler;
 import edu.vt.middleware.ldap.handler.SearchResultHandler;
 import edu.vt.middleware.ldap.ldif.Ldif;
@@ -419,6 +420,87 @@ public class LdapTest
       new SearchFilter(filter, filterArgs.split("\\|")),
       null,
       handler);
+    AssertJUnit.assertEquals(
+      entry,
+      TestUtil.convertLdifToEntry((new Ldif()).createLdif(iter)));
+  }
+
+
+  /**
+   * @param  dn  to search on.
+   * @param  filter  to search with.
+   * @param  ldifFile  to compare with
+   *
+   * @throws  Exception  On test failure.
+   */
+  @Parameters(
+    {
+      "mergeSearchDn",
+      "mergeSearchFilter",
+      "mergeSearchResults"
+    }
+  )
+  @Test(groups = {"ldaptest"})
+  public void mergeSearch(
+    final String dn,
+    final String filter,
+    final String ldifFile)
+    throws Exception
+  {
+    final Ldap ldap = this.createLdap(false);
+
+    final String expected = TestUtil.readFileIntoString(ldifFile);
+    final LdapEntry entry = TestUtil.convertLdifToEntry(expected);
+
+    // test merge searching
+    final MergeSearchResultHandler handler = new MergeSearchResultHandler();
+
+    final Iterator<SearchResult> iter = ldap.search(
+      dn,
+      new SearchFilter(filter),
+      null,
+      new FqdnSearchResultHandler(), handler);
+    AssertJUnit.assertEquals(
+      entry,
+      TestUtil.convertLdifToEntry((new Ldif()).createLdif(iter)));
+  }
+
+
+  /**
+   * @param  dn  to search on.
+   * @param  filter  to search with.
+   * @param  ldifFile  to compare with
+   *
+   * @throws  Exception  On test failure.
+   */
+  @Parameters(
+    {
+      "mergeDuplicateSearchDn",
+      "mergeDuplicateSearchFilter",
+      "mergeDuplicateSearchResults"
+    }
+  )
+  @Test(groups = {"ldaptest"})
+  public void mergeDuplicateSearch(
+    final String dn,
+    final String filter,
+    final String ldifFile)
+    throws Exception
+  {
+    final Ldap ldap = this.createLdap(false);
+
+    final String expected = TestUtil.readFileIntoString(ldifFile);
+    final LdapEntry entry = TestUtil.convertLdifToEntry(expected);
+
+    // test merge searching
+    final MergeSearchResultHandler handler = new MergeSearchResultHandler();
+    handler.setAllowDuplicates(true);
+
+    final Iterator<SearchResult> iter = ldap.search(
+      dn,
+      new SearchFilter(filter),
+      null,
+      new FqdnSearchResultHandler(), handler);
     AssertJUnit.assertEquals(
       entry,
       TestUtil.convertLdifToEntry((new Ldif()).createLdif(iter)));
