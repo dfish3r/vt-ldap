@@ -62,7 +62,7 @@ public final class AttributesProcessor
    * @param  sc  <code>SearchCriteria</code> used to find search result
    * @param  attrs  <code>Attributes</code> to pass to the handler
    * @param  handler  <code>AttributeHandler</code> to process attributes
-   * @param  ignore  <code>NamingException[]</code> to ignore
+   * @param  ignore  <code>Class[]</code> of exception types to ignore
    *
    * @return  <code>Attributes</code> handler processed attributes
    *
@@ -72,7 +72,7 @@ public final class AttributesProcessor
     final SearchCriteria sc,
     final Attributes attrs,
     final AttributeHandler handler,
-    final NamingException[] ignore)
+    final Class[] ignore)
     throws NamingException
   {
     Attributes newAttrs = null;

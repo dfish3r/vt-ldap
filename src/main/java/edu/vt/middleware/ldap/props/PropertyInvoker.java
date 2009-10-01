@@ -18,7 +18,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
-import javax.naming.NamingException;
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLSocketFactory;
 import edu.vt.middleware.ldap.LdapConfig;
@@ -140,14 +139,11 @@ public class PropertyInvoker
             instantiateType(AuthenticationResultHandler.class, classes[i]));
         }
       } else if (
-        NamingException[].class.isAssignableFrom(getter.getReturnType())) {
+        Class[].class.isAssignableFrom(getter.getReturnType())) {
         final String[] classes = value.split(",");
-        newValue = Array.newInstance(NamingException.class, classes.length);
+        newValue = Array.newInstance(Class.class, classes.length);
         for (int i = 0; i < classes.length; i++) {
-          Array.set(
-            newValue,
-            i,
-            instantiateType(NamingException.class, classes[i]));
+          Array.set(newValue, i, createClass(classes[i]));
         }
       } else if (getter.getReturnType().isEnum()) {
         if (LdapConfig.SearchScope.class == getter.getReturnType()) {
@@ -219,12 +215,30 @@ public class PropertyInvoker
   private static <T> T instantiateType(final T type, final String className)
   {
     try {
-      return (T) Class.forName(className).newInstance();
-    } catch (ClassNotFoundException e) {
-      throw new IllegalArgumentException(e);
+      return (T) createClass(className).newInstance();
     } catch (InstantiationException e) {
       throw new IllegalArgumentException(e);
     } catch (IllegalAccessException e) {
+      throw new IllegalArgumentException(e);
+    }
+  }
+
+
+  /**
+   * Creates the class with the supplied name.
+   *
+   * @param  className  to create
+   *
+   * @return  class
+   *
+   * @throws  IllegalArgumentException  if the supplied class name cannot
+   * be created
+   */
+  private static Class<?> createClass(final String className)
+  {
+    try {
+      return Class.forName(className);
+    } catch (ClassNotFoundException e) {
       throw new IllegalArgumentException(e);
     }
   }

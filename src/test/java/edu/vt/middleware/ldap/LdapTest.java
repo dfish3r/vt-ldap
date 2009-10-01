@@ -590,7 +590,7 @@ public class LdapTest
     }
 
     ldap.getLdapConfig().setHandlerIgnoreExceptions(
-      new NamingException[]{new TimeLimitExceededException()});
+      new Class[]{TimeLimitExceededException.class});
     try {
       ldap.search(dn, new SearchFilter("(uugid=*)"));
       AssertJUnit.fail("Should have thrown SizeLimitExceededException");
@@ -599,7 +599,7 @@ public class LdapTest
     }
 
     ldap.getLdapConfig().setHandlerIgnoreExceptions(
-      new NamingException[]{new LimitExceededException()});
+      new Class[]{LimitExceededException.class});
     final Iterator<SearchResult> iter = ldap.search(
       dn, new SearchFilter(filter));
     AssertJUnit.assertEquals(resultsSize, (new LdapResult(iter)).size());

@@ -64,7 +64,7 @@ public abstract class AbstractResultHandler<R, O> implements ResultHandler<R, O>
    *
    * @param  sc  <code>SearchCriteria</code> used to find enumeration
    * @param  en  <code>NamingEnumeration</code> LDAP results
-   * @param  ignore  <code>NamingException[]</code> to ignore
+   * @param  ignore  <code>Class[]</code> of exception types to ignore
    *
    * @return  <code>List</code> - LDAP results
    *
@@ -73,7 +73,7 @@ public abstract class AbstractResultHandler<R, O> implements ResultHandler<R, O>
   public List<O> process(
     final SearchCriteria sc,
     final NamingEnumeration<? extends R> en,
-    final NamingException[] ignore)
+    final Class[] ignore)
     throws NamingException
   {
     final List<O> results = new ArrayList<O>();
@@ -88,8 +88,8 @@ public abstract class AbstractResultHandler<R, O> implements ResultHandler<R, O>
       } catch (NamingException e) {
         boolean ignoreException = false;
         if (ignore != null && ignore.length > 0) {
-          for (NamingException ne : ignore) {
-            if (ne.getClass().isInstance(e)) {
+          for (Class<?> ne : ignore) {
+            if (ne.isInstance(e)) {
               if (this.logger.isDebugEnabled()) {
                 this.logger.debug("Ignoring naming exception", e);
               }

@@ -21,7 +21,6 @@ import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
 import javax.naming.LimitExceededException;
-import javax.naming.NamingException;
 import javax.naming.directory.SearchControls;
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLSocketFactory;
@@ -193,8 +192,8 @@ public class LdapConfig extends AbstractPropertyConfig
     new SearchResultHandler[] {new FqdnSearchResultHandler()};
 
   /** Exception types to ignore when handling results. */
-  private NamingException[] handlerIgnoreExceptions =
-    new NamingException[] {new LimitExceededException()};
+  private Class[] handlerIgnoreExceptions =
+    new Class[] {LimitExceededException.class};
 
   /** SASL authorization ID. */
   private String saslAuthorizationId;
@@ -818,11 +817,11 @@ public class LdapConfig extends AbstractPropertyConfig
 
 
   /**
-   * This returns the exceptions to ignore when handling results.
+   * This returns the exception types to ignore when handling results.
    *
-   * @return  <code>NamingException[]</code>
+   * @return  <code>Class[]</code>
    */
-  public NamingException[] getHandlerIgnoreExceptions()
+  public Class[] getHandlerIgnoreExceptions()
   {
     return this.handlerIgnoreExceptions;
   }
@@ -1417,11 +1416,11 @@ public class LdapConfig extends AbstractPropertyConfig
 
 
   /**
-   * This sets the exceptions to ignore when handling results.
+   * This sets the exception types to ignore when handling results.
    *
-   * @param  exceptions  <code>NamingException[]</code>
+   * @param  exceptions  <code>Class[]</code>
    */
-  public void setHandlerIgnoreExceptions(final NamingException[] exceptions)
+  public void setHandlerIgnoreExceptions(final Class[] exceptions)
   {
     checkImmutable();
     if (this.logger.isTraceEnabled()) {

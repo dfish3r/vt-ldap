@@ -49,7 +49,7 @@ public interface ResultHandler<R, O>
    *
    * @param  sc  <code>SearchCriteria</code> used to perform the search
    * @param  en  <code>NamingEnumeration</code> of search results
-   * @param  ignore  <code>NamingException[]</code> to ignore when processing
+   * @param  ignore  <code>Class[]</code> of exception types to ignore
    * results
    *
    * @return  <code>List</code> of result objects
@@ -59,7 +59,7 @@ public interface ResultHandler<R, O>
   List<O> process(
     SearchCriteria sc,
     NamingEnumeration<? extends R> en,
-    NamingException[] ignore)
+    Class[] ignore)
     throws NamingException;
 
 
