@@ -72,7 +72,7 @@ public final class AttributesProcessor
     final SearchCriteria sc,
     final Attributes attrs,
     final AttributeHandler handler,
-    final Class[] ignore)
+    final Class<?>[] ignore)
     throws NamingException
   {
     Attributes newAttrs = null;

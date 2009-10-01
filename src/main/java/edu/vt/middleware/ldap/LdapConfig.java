@@ -192,7 +192,7 @@ public class LdapConfig extends AbstractPropertyConfig
     new SearchResultHandler[] {new FqdnSearchResultHandler()};
 
   /** Exception types to ignore when handling results. */
-  private Class[] handlerIgnoreExceptions =
+  private Class<?>[] handlerIgnoreExceptions =
     new Class[] {LimitExceededException.class};
 
   /** SASL authorization ID. */
@@ -821,7 +821,7 @@ public class LdapConfig extends AbstractPropertyConfig
    *
    * @return  <code>Class[]</code>
    */
-  public Class[] getHandlerIgnoreExceptions()
+  public Class<?>[] getHandlerIgnoreExceptions()
   {
     return this.handlerIgnoreExceptions;
   }

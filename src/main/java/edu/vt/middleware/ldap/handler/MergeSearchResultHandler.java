@@ -60,7 +60,7 @@ public class MergeSearchResultHandler extends CopySearchResultHandler
   public List<SearchResult> process(
     final SearchCriteria sc,
     final NamingEnumeration<? extends SearchResult> en,
-    final Class[] ignore)
+    final Class<?>[] ignore)
     throws NamingException
   {
     return this.mergeResults(super.process(sc, en, ignore));

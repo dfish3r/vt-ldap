@@ -73,7 +73,7 @@ public abstract class AbstractResultHandler<R, O> implements ResultHandler<R, O>
   public List<O> process(
     final SearchCriteria sc,
     final NamingEnumeration<? extends R> en,
-    final Class[] ignore)
+    final Class<?>[] ignore)
     throws NamingException
   {
     final List<O> results = new ArrayList<O>();

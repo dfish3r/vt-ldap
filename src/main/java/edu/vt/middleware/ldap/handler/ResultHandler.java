@@ -59,7 +59,7 @@ public interface ResultHandler<R, O>
   List<O> process(
     SearchCriteria sc,
     NamingEnumeration<? extends R> en,
-    Class[] ignore)
+    Class<?>[] ignore)
     throws NamingException;
 
 
