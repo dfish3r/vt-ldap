@@ -37,6 +37,7 @@ import edu.vt.middleware.ldap.bean.LdapEntry;
 import edu.vt.middleware.ldap.bean.LdapResult;
 import edu.vt.middleware.ldap.handler.AttributeHandler;
 import edu.vt.middleware.ldap.handler.BinaryAttributeHandler;
+import edu.vt.middleware.ldap.handler.BinarySearchResultHandler;
 import edu.vt.middleware.ldap.handler.EntryDnSearchResultHandler;
 import edu.vt.middleware.ldap.handler.FqdnSearchResultHandler;
 import edu.vt.middleware.ldap.handler.MergeSearchResultHandler;
@@ -504,6 +505,53 @@ public class LdapTest
     AssertJUnit.assertEquals(
       entry,
       TestUtil.convertLdifToEntry((new Ldif()).createLdif(iter)));
+  }
+
+
+  /**
+   * @param  dn  to search on.
+   * @param  filter  to search with.
+   * @param  returnAttr  to return from search.
+   * @param  base64Value  to compare with
+   *
+   * @throws  Exception  On test failure.
+   */
+  @Parameters(
+    {
+      "binarySearchDn",
+      "binarySearchFilter",
+      "binarySearchReturnAttr",
+      "binarySearchResult"
+    }
+  )
+  @Test(groups = {"ldaptest"})
+  public void binarySearch(
+    final String dn,
+    final String filter,
+    final String returnAttr,
+    final String base64Value)
+    throws Exception
+  {
+    final Ldap ldap = this.createLdap(false);
+
+    // test binary searching
+    Iterator<SearchResult> iter = ldap.search(
+      dn,
+      new SearchFilter(filter),
+      new String[]{returnAttr},
+      new FqdnSearchResultHandler());
+    AssertJUnit.assertNotSame(
+      base64Value,
+      iter.next().getAttributes().get(returnAttr).get());
+
+    iter = ldap.search(
+      dn,
+      new SearchFilter(filter),
+      new String[]{returnAttr},
+      new FqdnSearchResultHandler(), new BinarySearchResultHandler());
+    AssertJUnit.assertEquals(
+      base64Value,
+      iter.next().getAttributes().get(returnAttr).get());
   }
 
 

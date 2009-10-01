@@ -87,6 +87,12 @@
   <parameter name="mergeDuplicateSearchResults"
              value="/edu/vt/middleware/ldap/mergeDuplicateResults.ldif"/>
 
+  <parameter name="binarySearchDn" value="ou=test,dc=vt,dc=edu"/>
+  <parameter name="binarySearchFilter" value="uid=2"/>
+  <parameter name="binarySearchReturnAttr" value="jpegPhoto"/>
+  <parameter name="binarySearchResult"
+             value="/9j/4AAQSkZJRgABAQEASABIAAD//gATQ3JlYXRlZCB3aXRoIEdJTVD/2wBDAFA3PEY8MlBGQUZaVVBfeMiCeG5uePWvuZHI////////////////////////////////////////////////////2wBDAVVaWnhpeOuCguv/////////////////////////////////////////////////////////////////////////wAARCAANABcDASIAAhEBAxEB/8QAGAAAAwEBAAAAAAAAAAAAAAAAAAIEAQP/xAAiEAEAAgIABQUAAAAAAAAAAAABAAMCEQQSMUFxISIjMnP/xAAUAQEAAAAAAAAAAAAAAAAAAAAA/8QAFBEBAAAAAAAAAAAAAAAAAAAAAP/aAAwDAQACEQMRAD8A71fHZZW+ge48MWqvG0bLMRcnZvsdpnGH0R0ryvhlAAAdCBPRTXkZ7wHWaEI/D9LP0yhA/9k="/>
+
   <parameter name="searchExceptionDn" value="ou=test,dc=vt,dc=edu"/>
   <parameter name="searchExceptionFilter" value="(|(uugid=group2)(uugid=group3)(uugid=group4))"/>
   <parameter name="searchExceptionResultsSize" value="3"/>
