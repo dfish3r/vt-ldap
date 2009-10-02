@@ -13,6 +13,7 @@
 */
 package edu.vt.middleware.ldap.bean;
 
+import java.util.Comparator;
 import javax.naming.NamingException;
 import javax.naming.directory.SearchResult;
 
@@ -188,5 +189,27 @@ public class LdapEntry extends AbstractLdapBean
   public SearchResult toSearchResult()
   {
     return new SearchResult(this.dn, null, this.ldapAttributes.toAttributes());
+  }
+
+
+  /** Inner class to compare <code>LdapEntry</code>'s by DN. */
+  public static final class LdapEntryComparator implements Comparator<LdapEntry>
+  {
+
+
+    /**
+     * Compares two <code>LdapEntry</code> objects by DN.
+     * Delegates to String.compareToIgnoreCase().
+     *
+     * @param  le1  first <code>LdapEntry</code> for the comparison
+     * @param  le2  second <code>LdapEntry</code> for the comparison
+     *
+     * @return  a negative integer, zero, or a positive integer as the first
+     * argument is less than, equal to, or greater than the second.
+     */
+    public int compare(final LdapEntry le1, final LdapEntry le2)
+    {
+      return le1.getDn().compareToIgnoreCase(le2.getDn());
+    }
   }
 }

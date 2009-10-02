@@ -15,10 +15,13 @@ package edu.vt.middleware.ldap.bean;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.SortedSet;
+import java.util.TreeSet;
 import javax.naming.NamingEnumeration;
 import javax.naming.NamingException;
 import javax.naming.directory.SearchResult;
@@ -122,6 +125,22 @@ public class LdapResult extends AbstractLdapBean
   public Collection<LdapEntry> getEntries()
   {
     return this.entries.values();
+  }
+
+
+  /**
+   * This returns a <code>SortedSet</code> of <code>LdapEntry</code> for this
+   * <code>LdapResult</code>.
+   *
+   * @param  comparator  to sort the set with
+   * @return  <code>SortedSet</code>
+   */
+  public SortedSet<LdapEntry> getSortedEntries(
+    final Comparator<LdapEntry> comparator)
+  {
+    final SortedSet<LdapEntry> sorted = new TreeSet<LdapEntry>(comparator);
+    sorted.addAll(this.entries.values());
+    return sorted;
   }
 
 

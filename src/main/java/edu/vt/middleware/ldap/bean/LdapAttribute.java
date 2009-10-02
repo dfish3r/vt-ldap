@@ -14,6 +14,7 @@
 package edu.vt.middleware.ldap.bean;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import javax.naming.NamingEnumeration;
 import javax.naming.NamingException;
@@ -230,5 +231,28 @@ public class LdapAttribute extends AbstractLdapBean
       attribute.add(o);
     }
     return attribute;
+  }
+
+
+  /** Inner class to compare <code>LdapAttribute</code>'s by name. */
+  public static final class LdapAttributeComparator
+    implements Comparator<LdapAttribute>
+  {
+
+
+    /**
+     * Compares two <code>LdapAttribute</code> objects by name.
+     * Delegates to String.compareToIgnoreCase().
+     *
+     * @param  la1  first <code>LdapAttribute</code> for the comparison
+     * @param  la2  second <code>LdapAttribute</code> for the comparison
+     *
+     * @return  a negative integer, zero, or a positive integer as the first
+     * argument is less than, equal to, or greater than the second.
+     */
+    public int compare(final LdapAttribute la1, final LdapAttribute la2)
+    {
+      return la1.getName().compareToIgnoreCase(la2.getName());
+    }
   }
 }

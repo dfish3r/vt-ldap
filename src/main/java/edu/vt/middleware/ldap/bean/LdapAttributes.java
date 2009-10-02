@@ -14,9 +14,12 @@
 package edu.vt.middleware.ldap.bean;
 
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.SortedSet;
+import java.util.TreeSet;
 import javax.naming.NamingEnumeration;
 import javax.naming.NamingException;
 import javax.naming.directory.Attribute;
@@ -93,6 +96,23 @@ public class LdapAttributes extends AbstractLdapBean
   public Collection<LdapAttribute> getAttributes()
   {
     return this.attributes.values();
+  }
+
+
+  /**
+   * This returns a <code>SortedSet</code> of <code>LdapAttribute</code> for
+   * this <code>LdapAttributes</code>.
+   *
+   * @param  comparator  to sort the set with
+   * @return  <code>SortedSet</code>
+   */
+  public SortedSet<LdapAttribute> getSortedAttributes(
+    final Comparator<LdapAttribute> comparator)
+  {
+    final SortedSet<LdapAttribute> sorted = new TreeSet<LdapAttribute>(
+      comparator);
+    sorted.addAll(this.attributes.values());
+    return sorted;
   }
 
 
