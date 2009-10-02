@@ -121,7 +121,7 @@ public class Ldif implements Serializable
    *
    * @param  result  <code>SearchResult</code> to convert
    *
-   * @return  <code>Document</code>
+   * @return  <code>String</code>
    *
    * @throws  NamingException  if an error occurs while reading the search
    * result

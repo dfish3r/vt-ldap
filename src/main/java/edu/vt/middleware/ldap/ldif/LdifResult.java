@@ -17,7 +17,7 @@ import edu.vt.middleware.ldap.bean.LdapEntry;
 import edu.vt.middleware.ldap.bean.LdapResult;
 
 /**
- * <code>LdifResult</code> represents a DSML search result.
+ * <code>LdifResult</code> represents a LDIF search result.
  *
  * @author  Middleware Services
  * @version  $Revision$ $Date$
