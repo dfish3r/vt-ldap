@@ -104,7 +104,8 @@ public class DsmlTest
       new SearchFilter(filter));
 
     final LdapResult result1 = new LdapResult(iter);
-    final String s = dsml.outputDsmlToString(result1.toSearchResults().iterator());
+    final String s = dsml.outputDsmlToString(
+      result1.toSearchResults().iterator());
     final LdapResult result2 = new LdapResult(
       dsml.createSearchResults(new StringReader(s)));
 
@@ -138,7 +139,8 @@ public class DsmlTest
       new SearchFilter(filter));
 
     final LdapResult result1 = new LdapResult(iter);
-    final String s = dsml.outputDsmlToString(result1.toSearchResults().iterator());
+    final String s = dsml.outputDsmlToString(
+      result1.toSearchResults().iterator());
     final LdapResult result2 = new LdapResult(
       dsml.createSearchResults(new StringReader(s)));
 
