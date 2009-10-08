@@ -22,6 +22,8 @@
              value="/edu/vt/middleware/ldap/createLdapEntry-9.ldif"/>
   <parameter name="createEntry10"
              value="/edu/vt/middleware/ldap/createLdapEntry-10.ldif"/>
+  <parameter name="createEntry11"
+             value="/edu/vt/middleware/ldap/createLdapEntry-11.ldif"/>
 
   <parameter name="createGroup2"
              value="/edu/vt/middleware/ldap/createGroupEntry-2.ldif"/>
@@ -50,6 +52,8 @@
              value="/edu/vt/middleware/ldap/searchResults-9.ldif"/>
   <parameter name="searchResults10"
              value="/edu/vt/middleware/ldap/searchResults-10.ldif"/>
+  <parameter name="searchResults11"
+             value="/edu/vt/middleware/ldap/searchResults-11.ldif"/>
 
   <parameter name="renameOldDn" value="uid=2,ou=test,dc=vt,dc=edu"/>
   <parameter name="renameNewDn" value="uid=1002,ou=test,dc=vt,dc=edu"/>
@@ -215,6 +219,9 @@
   <parameter name="sessionManagerUser" value="jdoe10@vt.edu"/>
   <parameter name="sessionManagerPassword" value="password10"/>
 
+  <parameter name="dsmlSearchDn" value="ou=test,dc=vt,dc=edu"/>
+  <parameter name="dsmlSearchFilter" value="(uid=11)"/>
+
   <parameter name="ldapHost" value="ed-dev"/>
   <parameter name="sleepTime" value="10000"/>
 
@@ -226,6 +233,7 @@
         <include name="beantest" />
         <include name="jaastest" />
         <include name="servlettest" />
+        <include name="dsmltest" />
       </run>
     </groups>
     <packages>
