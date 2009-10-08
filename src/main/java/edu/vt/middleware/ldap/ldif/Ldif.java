@@ -287,7 +287,7 @@ public class Ldif implements Serializable
    *
    * @throws  IOException  if an error occurs while writing to the output stream
    */
-  public void output(final String ldif, final OutputStream out)
+  protected void output(final String ldif, final OutputStream out)
     throws IOException
   {
     if (ldif != null && out != null) {

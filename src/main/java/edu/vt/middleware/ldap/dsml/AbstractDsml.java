@@ -13,14 +13,11 @@
 */
 package edu.vt.middleware.ldap.dsml;
 
-import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.Reader;
 import java.io.Serializable;
 import java.io.StringWriter;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -233,7 +230,7 @@ public abstract class AbstractDsml implements Serializable
    *
    * @throws  IOException  if an error occurs while writing to the output stream
    */
-  public void output(final Document doc, final OutputStream out)
+  protected void output(final Document doc, final OutputStream out)
     throws IOException
   {
     if (doc != null && out != null) {
@@ -266,7 +263,7 @@ public abstract class AbstractDsml implements Serializable
    *
    * @return  <code>String</code> of document contents
    */
-  public String outputToString(final Document doc)
+  protected String outputToString(final Document doc)
   {
     final StringWriter out = new StringWriter();
     if (doc != null) {
@@ -282,66 +279,6 @@ public abstract class AbstractDsml implements Serializable
       }
     }
     return out.toString();
-  }
-
-
-  /**
-   * This will take a URL to a DSML <code>Document</code> and convert it to an
-   * Iterator of LDAP search results.
-   *
-   * @param  url  <code>URL</code> to DSML content
-   *
-   * @return  <code>Iterator</code> - of LDAP search results
-   *
-   * @throws  DocumentException  if an error occurs building a document from the
-   * url
-   * @throws  IOException  if an I/O error occurs
-   */
-  public Iterator<SearchResult> createSearchResults(final URL url)
-    throws DocumentException, IOException
-  {
-    final Document dsml = new SAXReader().read(url);
-    return createSearchResults(dsml);
-  }
-
-
-  /**
-   * This will take a File containing a DSML <code>Document</code> and convert
-   * it to an Iterator of LDAP search results.
-   *
-   * @param  file  <code>File</code> containing DSML content
-   *
-   * @return  <code>Iterator</code> - of LDAP search results
-   *
-   * @throws  DocumentException  if an error occurs building a document from the
-   * file
-   * @throws  IOException  if an I/O error occurs
-   */
-  public Iterator<SearchResult> createSearchResults(final File file)
-    throws DocumentException, IOException
-  {
-    final Document dsml = new SAXReader().read(file);
-    return createSearchResults(dsml);
-  }
-
-
-  /**
-   * This will take an InputStream containing a DSML <code>Document</code> and
-   * convert it to an Iterator of LDAP search results.
-   *
-   * @param  is  <code>InputStream</code> containing DSML content
-   *
-   * @return  <code>Iterator</code> - of LDAP search results
-   *
-   * @throws  DocumentException  if an error occurs building a document from the
-   * inputstream
-   * @throws  IOException  if an I/O error occurs
-   */
-  public Iterator<SearchResult> createSearchResults(final InputStream is)
-    throws DocumentException, IOException
-  {
-    final Document dsml = new SAXReader().read(is);
-    return createSearchResults(dsml);
   }
 
 
