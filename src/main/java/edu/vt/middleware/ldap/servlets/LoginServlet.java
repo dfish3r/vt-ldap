@@ -19,6 +19,7 @@ import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import edu.vt.middleware.ldap.Authenticator;
 import edu.vt.middleware.ldap.props.LdapProperties;
 import org.apache.commons.logging.Log;
@@ -159,7 +160,13 @@ public final class LoginServlet extends CommonServlet
         LOG.debug("Authentication succeeded for user " + user);
       }
       try {
-        this.sessionManager.login(request.getSession(true), user);
+        // invalidate existing session
+        HttpSession session =  request.getSession(false);
+        if (session != null) {
+          session.invalidate();
+        }
+        session = request.getSession(true);
+        this.sessionManager.login(session, user);
         if (LOG.isDebugEnabled()) {
           LOG.debug("Initialized session for user " + user);
         }
