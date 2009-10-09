@@ -166,26 +166,8 @@ public class Ldif implements Serializable
                 .append(LINE_SEPARATOR);
             }
           } else {
-            // use URI.isAbsolute() to prevent exception handling
-            // for every value
-            // would like to use a regex pattern here if possible
-            boolean isUrl = false;
-            try {
-              final URI uri = new URI((String) attrValue);
-              if (uri.isAbsolute()) {
-                uri.toURL();
-                isUrl = true;
-              }
-            } catch (Exception e) {
-              isUrl = false;
-            }
-            if (isUrl) {
-              entry.append(attrName).append(":< ").append(attrValue).append(
-                LINE_SEPARATOR);
-            } else {
-              entry.append(attrName).append(": ").append(attrValue).append(
-                LINE_SEPARATOR);
-            }
+            entry.append(attrName).append(": ").append(attrValue).append(
+              LINE_SEPARATOR);
           }
         }
       }
