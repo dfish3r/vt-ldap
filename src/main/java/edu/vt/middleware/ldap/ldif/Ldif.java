@@ -14,13 +14,11 @@
 package edu.vt.middleware.ldap.ldif;
 
 import java.io.IOException;
-import java.io.OutputStream;
 import java.io.Serializable;
-import java.net.URI;
+import java.io.Writer;
 import java.util.Iterator;
 import javax.naming.NamingException;
 import javax.naming.directory.SearchResult;
-import edu.vt.middleware.ldap.LdapConstants;
 import edu.vt.middleware.ldap.LdapUtil;
 import edu.vt.middleware.ldap.bean.LdapAttribute;
 import edu.vt.middleware.ldap.bean.LdapEntry;
@@ -99,13 +97,13 @@ public class Ldif implements Serializable
    *
    * @return  <code>String</code>
    */
-  public String createLdif(final SearchResult result)
+  protected String createLdif(final SearchResult result)
   {
     // build string from results
     final StringBuffer ldif = new StringBuffer();
     if (result != null) {
       try {
-        ldif.append(createLdifEntry(result)).append(LINE_SEPARATOR);
+        ldif.append(createLdifEntry(result));
       } catch (NamingException e) {
         if (LOG.isErrorEnabled()) {
           LOG.error("Error creating String from SearchResult", e);
@@ -173,6 +171,9 @@ public class Ldif implements Serializable
       }
     }
 
+    if (entry.length() > 0) {
+      entry.append(LINE_SEPARATOR);
+    }
     return entry.toString();
   }
 
@@ -226,54 +227,20 @@ public class Ldif implements Serializable
 
 
   /**
-   * This will write the supplied LDAP search results to the supplied output
-   * stream in LDIF form.
+   * This will write the supplied LDAP search results to the supplied writer
+   * in LDIF form.
    *
    * @param  results  <code>Iterator</code> of LDAP search results
-   * @param  out  <code>OutputStream</code> to write to
+   * @param  writer  <code>Writer</code> to write to
    *
    * @throws  IOException  if an error occurs while writing to the output stream
    */
   public void outputLdif(
     final Iterator<SearchResult> results,
-    final OutputStream out)
+    final Writer writer)
     throws IOException
   {
-    output(createLdif(results), out);
-  }
-
-
-  /**
-   * This will write the supplied LDAP search result to the supplied output
-   * stream in LDIF form.
-   *
-   * @param  result  <code>SearchResult</code> to write
-   * @param  out  <code>OutputStream</code> to write to
-   *
-   * @throws  IOException  if an error occurs while writing to the output stream
-   * @throws  NamingException  if an error occurs while reading the search
-   * result
-   */
-  public void outputLdif(final SearchResult result, final OutputStream out)
-    throws IOException, NamingException
-  {
-    output(createLdif(result), out);
-  }
-
-
-  /**
-   * This will write the supplied LDIF to the supplied output stream.
-   *
-   * @param  ldif  <code>String</code> to write
-   * @param  out  <code>OutputStream</code> to write to
-   *
-   * @throws  IOException  if an error occurs while writing to the output stream
-   */
-  protected void output(final String ldif, final OutputStream out)
-    throws IOException
-  {
-    if (ldif != null && out != null) {
-      out.write(ldif.getBytes(LdapConstants.DEFAULT_CHARSET));
-    }
+    writer.write(createLdif(results));
+    writer.flush();
   }
 }

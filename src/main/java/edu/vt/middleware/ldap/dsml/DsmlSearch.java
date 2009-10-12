@@ -14,7 +14,7 @@
 package edu.vt.middleware.ldap.dsml;
 
 import java.io.IOException;
-import java.io.OutputStream;
+import java.io.Writer;
 import javax.naming.NamingException;
 import edu.vt.middleware.ldap.Ldap;
 import edu.vt.middleware.ldap.LdapSearch;
@@ -88,49 +88,26 @@ public class DsmlSearch extends LdapSearch
   /**
    * This will perform a LDAP search with the supplied query and return
    * attributes. The results will be written to the supplied <code>
-   * OutputStream</code>. The supplied version should be either '1' or '2',
-   * represeting the version of DSML you want returned.
+   * Writer</code>. Use {@link #version} to control which version of
+   * DSML is written.
    *
    * @param  query  <code>String</code> to search for
    * @param  attrs  <code>String[]</code> to return
-   * @param  out  <code>OutputStream</code> to write to
+   * @param  writer  <code>Writer</code> to write to
    *
    * @throws  NamingException  if an error occurs while searching
    * @throws  IOException  if an error occurs while writing search results
    */
-  public void searchToStream(
+  public void search(
     final String query,
     final String[] attrs,
-    final OutputStream out)
+    final Writer writer)
     throws NamingException, IOException
   {
     if (this.version == Version.TWO) {
-      this.dsmlv2.outputDsml(this.search(query, attrs), out);
+      this.dsmlv2.outputDsml(this.search(query, attrs), writer);
     } else {
-      this.dsmlv1.outputDsml(this.search(query, attrs), out);
-    }
-  }
-
-
-  /**
-   * This will perform a LDAP search with the supplied query and return
-   * attributes.
-   *
-   * @param  query  <code>String</code> to search for
-   * @param  attrs  <code>String[]</code> to return
-   *
-   * @return  <code>String</code> of DSML results
-   *
-   * @throws  NamingException  if an error occurs while searching
-   * @throws  IOException  if an error occurs while writing search results
-   */
-  public String searchToString(final String query, final String[] attrs)
-    throws NamingException, IOException
-  {
-    if (this.version == Version.TWO) {
-      return this.dsmlv2.outputDsmlToString(this.search(query, attrs));
-    } else {
-      return this.dsmlv1.outputDsmlToString(this.search(query, attrs));
+      this.dsmlv1.outputDsml(this.search(query, attrs), writer);
     }
   }
 }

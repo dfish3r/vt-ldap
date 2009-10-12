@@ -14,7 +14,9 @@
 package edu.vt.middleware.ldap;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.util.Iterator;
 import javax.naming.directory.SearchResult;
 import edu.vt.middleware.ldap.dsml.Dsmlv1;
@@ -149,11 +151,14 @@ public class LdapCli extends AbstractCli
         results = ldap.search(new SearchFilter(filter), attrs);
       }
       if (this.outputDsmlv1) {
-        (new Dsmlv1()).outputDsml(results, System.out);
+        (new Dsmlv1()).outputDsml(
+          results, new BufferedWriter(new OutputStreamWriter(System.out)));
       } else if (this.outputDsmlv2) {
-        (new Dsmlv2()).outputDsml(results, System.out);
+        (new Dsmlv2()).outputDsml(
+          results, new BufferedWriter(new OutputStreamWriter(System.out)));
       } else {
-        (new Ldif()).outputLdif(results, System.out);
+        (new Ldif()).outputLdif(
+          results, new BufferedWriter(new OutputStreamWriter(System.out)));
       }
     } finally {
       if (ldap != null) {

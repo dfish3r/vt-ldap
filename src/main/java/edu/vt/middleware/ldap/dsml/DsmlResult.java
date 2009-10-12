@@ -13,6 +13,8 @@
 */
 package edu.vt.middleware.ldap.dsml;
 
+import java.io.IOException;
+import java.io.StringWriter;
 import edu.vt.middleware.ldap.bean.LdapEntry;
 import edu.vt.middleware.ldap.bean.LdapResult;
 
@@ -68,7 +70,15 @@ public class DsmlResult extends LdapResult
    */
   public String toDsmlv1()
   {
-    return this.dsmlv1.outputDsmlToString(this.toSearchResults().iterator());
+    final StringWriter writer = new StringWriter();
+    try {
+      this.dsmlv1.outputDsml(this.toSearchResults().iterator(), writer);
+    } catch (IOException e) {
+      if (this.logger.isWarnEnabled()) {
+        this.logger.warn("Could not write dsml to StringWriter", e);
+      }
+    }
+    return writer.toString();
   }
 
 
@@ -79,6 +89,14 @@ public class DsmlResult extends LdapResult
    */
   public String toDsmlv2()
   {
-    return this.dsmlv2.outputDsmlToString(this.toSearchResults().iterator());
+    final StringWriter writer = new StringWriter();
+    try {
+      this.dsmlv2.outputDsml(this.toSearchResults().iterator(), writer);
+    } catch (IOException e) {
+      if (this.logger.isWarnEnabled()) {
+        this.logger.warn("Could not write dsml to StringWriter", e);
+      }
+    }
+    return writer.toString();
   }
 }

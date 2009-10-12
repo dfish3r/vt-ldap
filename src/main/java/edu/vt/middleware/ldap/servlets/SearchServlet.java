@@ -13,7 +13,9 @@
 */
 package edu.vt.middleware.ldap.servlets;
 
+import java.io.BufferedWriter;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -201,7 +203,8 @@ public final class SearchServlet extends HttpServlet
         this.ldifSearch.search(
           request.getParameter("query"),
           request.getParameterValues("attrs"),
-          response.getOutputStream());
+          new BufferedWriter(
+            new OutputStreamWriter(response.getOutputStream())));
       } else {
         final String content = request.getParameter("content-type");
         if (content != null && content.equalsIgnoreCase("text")) {
@@ -212,15 +215,17 @@ public final class SearchServlet extends HttpServlet
 
         final String dsmlVersion = request.getParameter("dsml-version");
         if (dsmlVersion != null && dsmlVersion.equals("2")) {
-          this.dsmlv2Search.searchToStream(
+          this.dsmlv2Search.search(
             request.getParameter("query"),
             request.getParameterValues("attrs"),
-            response.getOutputStream());
+            new BufferedWriter(
+              new OutputStreamWriter(response.getOutputStream())));
         } else {
-          this.dsmlv1Search.searchToStream(
+          this.dsmlv1Search.search(
             request.getParameter("query"),
             request.getParameterValues("attrs"),
-            response.getOutputStream());
+            new BufferedWriter(
+              new OutputStreamWriter(response.getOutputStream())));
         }
       }
     } catch (Exception e) {

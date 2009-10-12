@@ -14,10 +14,13 @@
 package edu.vt.middleware.ldap;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import javax.naming.directory.Attributes;
 import edu.vt.middleware.ldap.bean.LdapAttributes;
 import edu.vt.middleware.ldap.bean.LdapEntry;
+import edu.vt.middleware.ldap.bean.LdapResult;
 import edu.vt.middleware.ldap.dsml.Dsmlv1;
 import edu.vt.middleware.ldap.dsml.Dsmlv2;
 import edu.vt.middleware.ldap.ldif.Ldif;
@@ -148,14 +151,21 @@ public class AuthenticatorCli extends AbstractCli
       }
       if (results != null && results.size() > 0) {
         final LdapEntry entry = new LdapEntry();
+        final LdapResult result = new LdapResult(entry);
         entry.setDn(auth.getDn(config.getUser()));
         entry.setLdapAttributes(new LdapAttributes(results));
         if (this.outputDsmlv1) {
-          (new Dsmlv1()).outputDsml(entry.toSearchResult(), System.out);
+          (new Dsmlv1()).outputDsml(
+            result.toSearchResults().iterator(),
+            new BufferedWriter(new OutputStreamWriter(System.out)));
         } else if (this.outputDsmlv2) {
-          (new Dsmlv2()).outputDsml(entry.toSearchResult(), System.out);
+          (new Dsmlv2()).outputDsml(
+            result.toSearchResults().iterator(),
+            new BufferedWriter(new OutputStreamWriter(System.out)));
         } else {
-          (new Ldif()).outputLdif(entry.toSearchResult(), System.out);
+          (new Ldif()).outputLdif(
+            result.toSearchResults().iterator(),
+            new BufferedWriter(new OutputStreamWriter(System.out)));
         }
       }
     } finally {

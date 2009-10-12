@@ -13,11 +13,13 @@
 */
 package edu.vt.middleware.ldap.ldif;
 
+import java.io.IOException;
+import java.io.StringWriter;
 import edu.vt.middleware.ldap.bean.LdapEntry;
 import edu.vt.middleware.ldap.bean.LdapResult;
 
 /**
- * <code>LdifResult</code> represents a LDIF search result.
+ * <code>LdifResult</code> represents an LDIF search result.
  *
  * @author  Middleware Services
  * @version  $Revision$ $Date$
@@ -25,6 +27,9 @@ import edu.vt.middleware.ldap.bean.LdapResult;
 
 public class LdifResult extends LdapResult
 {
+
+  /** Class for outputting LDIF. */
+  private Ldif ldif = new Ldif();
 
 
   /** Default constructor. */
@@ -62,6 +67,14 @@ public class LdifResult extends LdapResult
    */
   public String toLdif()
   {
-    return (new Ldif()).createLdif(this.toSearchResults().iterator());
+    final StringWriter writer = new StringWriter();
+    try {
+      this.ldif.outputLdif(this.toSearchResults().iterator(), writer);
+    } catch (IOException e) {
+      if (this.logger.isWarnEnabled()) {
+        this.logger.warn("Could not write ldif to StringWriter", e);
+      }
+    }
+    return writer.toString();
   }
 }

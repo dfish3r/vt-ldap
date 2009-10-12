@@ -14,6 +14,7 @@
 package edu.vt.middleware.ldap.dsml;
 
 import java.io.StringReader;
+import java.io.StringWriter;
 import java.util.Iterator;
 import javax.naming.directory.SearchResult;
 import edu.vt.middleware.ldap.Ldap;
@@ -104,10 +105,12 @@ public class DsmlTest
       new SearchFilter(filter));
 
     final LdapResult result1 = new LdapResult(iter);
-    final String s = dsml.outputDsmlToString(
-      result1.toSearchResults().iterator());
+    final StringWriter writer = new StringWriter();
+    dsml.outputDsml(
+      result1.toSearchResults().iterator(), writer);
+    final StringReader reader = new StringReader(writer.toString());
     final LdapResult result2 = new LdapResult(
-      dsml.createSearchResults(new StringReader(s)));
+      dsml.createSearchResults(reader));
 
     AssertJUnit.assertEquals(result1, result2);
 
@@ -139,10 +142,12 @@ public class DsmlTest
       new SearchFilter(filter));
 
     final LdapResult result1 = new LdapResult(iter);
-    final String s = dsml.outputDsmlToString(
-      result1.toSearchResults().iterator());
+    final StringWriter writer = new StringWriter();
+    dsml.outputDsml(
+      result1.toSearchResults().iterator(), writer);
+    final StringReader reader = new StringReader(writer.toString());
     final LdapResult result2 = new LdapResult(
-      dsml.createSearchResults(new StringReader(s)));
+      dsml.createSearchResults(reader));
 
     AssertJUnit.assertEquals(result1, result2);
 

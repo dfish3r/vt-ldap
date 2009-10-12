@@ -14,11 +14,9 @@
 package edu.vt.middleware.ldap.dsml;
 
 import java.io.IOException;
-import java.io.OutputStream;
 import java.io.Reader;
 import java.io.Serializable;
-import java.io.StringWriter;
-import java.util.ArrayList;
+import java.io.Writer;
 import java.util.Iterator;
 import java.util.List;
 import javax.naming.NamingException;
@@ -69,22 +67,6 @@ public abstract class AbstractDsml implements Serializable
    * @return  <code>Document</code>
    */
   public abstract Document createDsml(final Iterator<SearchResult> results);
-
-
-  /**
-   * This will take the result of a prior LDAP query and convert it to a DSML
-   * <code>Document</code>.
-   *
-   * @param  result  <code>SearchResult</code> to convert
-   *
-   * @return  <code>Document</code>
-   */
-  public Document createDsml(final SearchResult result)
-  {
-    final List<SearchResult> l = new ArrayList<SearchResult>();
-    l.add(result);
-    return this.createDsml(l.iterator());
-  }
 
 
   /**
@@ -189,96 +171,24 @@ public abstract class AbstractDsml implements Serializable
 
 
   /**
-   * This will write the supplied LDAP search results to the supplied output
-   * stream in the form of DSML.
+   * This will write the supplied LDAP search results to the supplied writer
+   * in the form of DSML.
    *
    * @param  results  <code>Iterator</code> of LDAP search results
-   * @param  out  <code>OutputStream</code> to write to
+   * @param  writer  <code>Writer</code> to write to
    *
-   * @throws  IOException  if an error occurs while writing to the output stream
+   * @throws  IOException  if an error occurs while writing
    */
   public void outputDsml(
     final Iterator<SearchResult> results,
-    final OutputStream out)
+    final Writer writer)
     throws IOException
   {
-    output(createDsml(results), out);
-  }
-
-
-  /**
-   * This will write the supplied LDAP search result to the supplied output
-   * stream in the form of DSML.
-   *
-   * @param  result  <code>SearchResult</code> to convert
-   * @param  out  <code>OutputStream</code> to write to
-   *
-   * @throws  IOException  if an error occurs while writing to the output stream
-   */
-  public void outputDsml(final SearchResult result, final OutputStream out)
-    throws IOException
-  {
-    output(createDsml(result), out);
-  }
-
-
-  /**
-   * This will write the supplied document to the supplied output stream.
-   *
-   * @param  doc  <code>Document</code> to write
-   * @param  out  <code>OutputStream</code> to write to
-   *
-   * @throws  IOException  if an error occurs while writing to the output stream
-   */
-  protected void output(final Document doc, final OutputStream out)
-    throws IOException
-  {
-    if (doc != null && out != null) {
-      final XMLWriter writer = new XMLWriter(
-        out,
-        OutputFormat.createPrettyPrint());
-      writer.write(doc);
-    }
-  }
-
-
-  /**
-   * This will convert the supplied LDAP search results to a string in the form
-   * of DSML.
-   *
-   * @param  results  <code>Iterator</code> of LDAP search results
-   *
-   * @return  <code>String</code> of DSML
-   */
-  public String outputDsmlToString(final Iterator<SearchResult> results)
-  {
-    return outputToString(createDsml(results));
-  }
-
-
-  /**
-   * This will convert the supplied document to a string.
-   *
-   * @param  doc  <code>Document</code> to convert
-   *
-   * @return  <code>String</code> of document contents
-   */
-  protected String outputToString(final Document doc)
-  {
-    final StringWriter out = new StringWriter();
-    if (doc != null) {
-      final XMLWriter writer = new XMLWriter(
-        out,
-        OutputFormat.createPrettyPrint());
-      try {
-        writer.write(doc);
-      } catch (IOException e) {
-        if (LOG.isErrorEnabled()) {
-          LOG.error("Could not write XML to StringWriter", e);
-        }
-      }
-    }
-    return out.toString();
+    final XMLWriter xmlWriter = new XMLWriter(
+      writer,
+      OutputFormat.createPrettyPrint());
+    xmlWriter.write(createDsml(results));
+    writer.flush();
   }
 
 

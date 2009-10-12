@@ -14,7 +14,7 @@
 package edu.vt.middleware.ldap;
 
 import java.io.IOException;
-import java.io.OutputStream;
+import java.io.Writer;
 import java.util.Iterator;
 import javax.naming.NamingException;
 import javax.naming.directory.SearchResult;
@@ -94,43 +94,24 @@ public class LdapSearch
   /**
    * This will perform a LDAP search with the supplied query and return
    * attributes. The results will be written to the supplied <code>
-   * OutputStream</code>.
+   * Writer</code>.
    *
    * @param  query  <code>String</code> to search for
    * @param  attrs  <code>String[]</code> to return
-   * @param  out  <code>OutputStream</code> to write to
+   * @param  writer  <code>Writer</code> to write to
    *
    * @throws  NamingException  if an error occurs while searching
    * @throws  IOException  if an error occurs while writing search results
    */
-  public void searchToStream(
+  public void search(
     final String query,
     final String[] attrs,
-    final OutputStream out)
+    final Writer writer)
     throws NamingException, IOException
   {
     final LdapResult lr = new LdapResult(this.search(query, attrs));
-    out.write(lr.toString().getBytes());
-  }
-
-
-  /**
-   * This will perform a LDAP search with the supplied query and return
-   * attributes.
-   *
-   * @param  query  <code>String</code> to search for
-   * @param  attrs  <code>String[]</code> to return
-   *
-   * @return  <code>String</code> of formatted results
-   *
-   * @throws  NamingException  if an error occurs while searching
-   * @throws  IOException  if an error occurs while writing search results
-   */
-  public String searchToString(final String query, final String[] attrs)
-    throws NamingException, IOException
-  {
-    final LdapResult lr = new LdapResult(this.search(query, attrs));
-    return lr.toString();
+    writer.write(lr.toString());
+    writer.flush();
   }
 
 

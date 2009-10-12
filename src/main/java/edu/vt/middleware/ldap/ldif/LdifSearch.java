@@ -14,14 +14,14 @@
 package edu.vt.middleware.ldap.ldif;
 
 import java.io.IOException;
-import java.io.OutputStream;
+import java.io.Writer;
 import javax.naming.NamingException;
 import edu.vt.middleware.ldap.Ldap;
 import edu.vt.middleware.ldap.LdapSearch;
 import edu.vt.middleware.ldap.pool.LdapPool;
 
 /**
- * <code>LdifSearch</code> queries an LDAP and returns the result as a LDIF.
+ * <code>LdifSearch</code> queries an LDAP and returns the result as an LDIF.
  * Each instance of <code>LdifSearch</code> maintains it's own pool of LDAP
  * connections.
  *
@@ -31,6 +31,8 @@ import edu.vt.middleware.ldap.pool.LdapPool;
 
 public class LdifSearch extends LdapSearch
 {
+  /** Ldif object. */
+  private Ldif ldif = new Ldif();
 
 
   /**
@@ -47,11 +49,11 @@ public class LdifSearch extends LdapSearch
   /**
    * This will perform a LDAP search with the supplied query and return
    * attributes. The results will be written to the supplied <code>
-   * OutputStream</code>.
+   * Writer</code>.
    *
    * @param  query  <code>String</code> to search for
    * @param  attrs  <code>String[]</code> to return
-   * @param  out  <code>OutputStream</code> to write to
+   * @param  writer  <code>Writer</code> to write to
    *
    * @throws  NamingException  if an error occurs while searching
    * @throws  IOException  if an error occurs while writing search results
@@ -59,28 +61,9 @@ public class LdifSearch extends LdapSearch
   public void search(
     final String query,
     final String[] attrs,
-    final OutputStream out)
+    final Writer writer)
     throws NamingException, IOException
   {
-    (new Ldif()).outputLdif(this.search(query, attrs), out);
-  }
-
-
-  /**
-   * This will perform a LDAP search with the supplied query and return
-   * attributes.
-   *
-   * @param  query  <code>String</code> to search for
-   * @param  attrs  <code>String[]</code> to return
-   *
-   * @return  <code>String</code> of LDIF results
-   *
-   * @throws  NamingException  if an error occurs while searching
-   * @throws  IOException  if an error occurs while writing search results
-   */
-  public String searchToString(final String query, final String[] attrs)
-    throws NamingException, IOException
-  {
-    return (new Ldif()).createLdif(this.search(query, attrs));
+    this.ldif.outputLdif(this.search(query, attrs), writer);
   }
 }
