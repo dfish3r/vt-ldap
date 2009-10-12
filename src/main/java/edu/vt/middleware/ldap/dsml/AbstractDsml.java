@@ -20,10 +20,6 @@ import java.io.Writer;
 import java.util.Iterator;
 import java.util.List;
 import javax.naming.NamingException;
-import javax.naming.directory.Attribute;
-import javax.naming.directory.Attributes;
-import javax.naming.directory.BasicAttribute;
-import javax.naming.directory.BasicAttributes;
 import javax.naming.directory.SearchResult;
 import edu.vt.middleware.ldap.LdapUtil;
 import edu.vt.middleware.ldap.bean.LdapAttribute;
@@ -227,22 +223,22 @@ public abstract class AbstractDsml implements Serializable
 
   /**
    * This will take a DSML <code>Element</code> containing an entry of type
-   * <entry/> and convert it to an LDAP search result.
+   * <entry/> and convert it to an LDAP entry.
    *
    * @param  entryElement  <code>Element</code> of DSML content
    *
-   * @return  <code>SearchResult</code>
+   * @return  <code>LdapEntry</code>
    */
-  protected SearchResult createSearchResult(final Element entryElement)
+  protected LdapEntry createSearchResult(final Element entryElement)
   {
-    String name = "";
-    final Attributes entryAttributes = new BasicAttributes(true);
+    final LdapEntry ldapEntry = new LdapEntry();
+    ldapEntry.setDn("");
 
     if (entryElement != null) {
 
-      name = entryElement.attributeValue("dn");
-      if (name == null) {
-        name = "";
+      final String name = entryElement.attributeValue("dn");
+      if (name != null) {
+        ldapEntry.setDn(name);
       }
 
       if (entryElement.hasContent()) {
@@ -254,7 +250,7 @@ public abstract class AbstractDsml implements Serializable
           if (attrElement != null) {
             final String attrName = attrElement.attributeValue("name");
             if (attrName != null && attrElement.hasContent()) {
-              final Attribute entryAttribute = new BasicAttribute(attrName);
+              final LdapAttribute ldapAttribute = new LdapAttribute(attrName);
               final Iterator<?> valueIterator = attrElement.elementIterator(
                 "value");
               while (valueIterator.hasNext()) {
@@ -262,17 +258,24 @@ public abstract class AbstractDsml implements Serializable
                 if (valueElement != null) {
                   final String value = valueElement.getText();
                   if (value != null) {
-                    entryAttribute.add(value);
+                    final String encoding = valueElement.attributeValue(
+                      "encoding");
+                    if (encoding != null && encoding.equals("base64")) {
+                      ldapAttribute.getValues().add(
+                        LdapUtil.base64Decode(value));
+                    } else {
+                      ldapAttribute.getValues().add(value);
+                    }
                   }
                 }
               }
-              entryAttributes.put(entryAttribute);
+              ldapEntry.getLdapAttributes().addAttribute(ldapAttribute);
             }
           }
         }
       }
     }
 
-    return new SearchResult(name, null, entryAttributes);
+    return ldapEntry;
   }
 }

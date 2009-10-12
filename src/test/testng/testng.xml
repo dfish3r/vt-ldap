@@ -34,6 +34,11 @@
   <parameter name="createGroup5"
              value="/edu/vt/middleware/ldap/createGroupEntry-5.ldif"/>
 
+  <parameter name="dsmlv1Entry"
+             value="/edu/vt/middleware/ldap/dfisher.dsmlv1"/>
+  <parameter name="dsmlv2Entry"
+             value="/edu/vt/middleware/ldap/dfisher.dsmlv2"/>
+
   <parameter name="searchResults2"
              value="/edu/vt/middleware/ldap/searchResults-2.ldif"/>
   <parameter name="searchResults3"

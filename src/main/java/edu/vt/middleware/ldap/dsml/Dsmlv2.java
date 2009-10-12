@@ -25,6 +25,7 @@ import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
 import org.dom4j.Namespace;
 import org.dom4j.QName;
+import edu.vt.middleware.ldap.bean.LdapEntry;
 
 /**
  * <code>Dsmlv2</code> contains functions for converting LDAP search result sets
@@ -110,10 +111,10 @@ public final class Dsmlv2 extends AbstractDsml
         "/*[name()='searchResponse']" +
         "/*[name()='searchResultEntry']").iterator();
       while (entryIterator.hasNext()) {
-        final SearchResult result = this.createSearchResult(
+        final LdapEntry result = this.createSearchResult(
           (Element) entryIterator.next());
         if (result != null) {
-          results.add(result);
+          results.add(result.toSearchResult());
         }
       }
     }

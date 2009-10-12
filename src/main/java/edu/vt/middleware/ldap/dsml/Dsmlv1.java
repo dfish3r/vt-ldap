@@ -16,14 +16,11 @@ package edu.vt.middleware.ldap.dsml;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import javax.naming.NamingEnumeration;
 import javax.naming.NamingException;
-import javax.naming.directory.Attribute;
-import javax.naming.directory.Attributes;
-import javax.naming.directory.BasicAttribute;
-import javax.naming.directory.BasicAttributes;
 import javax.naming.directory.SearchResult;
 import edu.vt.middleware.ldap.LdapUtil;
+import edu.vt.middleware.ldap.bean.LdapAttribute;
+import edu.vt.middleware.ldap.bean.LdapEntry;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.dom4j.Document;
@@ -166,10 +163,10 @@ public final class Dsmlv1 extends AbstractDsml
       final Iterator<?> entryIterator = doc.selectNodes(
         "/dsml:dsml/dsml:directory-entries/dsml:entry").iterator();
       while (entryIterator.hasNext()) {
-        final SearchResult result = this.createSearchResult(
+        final LdapEntry result = this.createSearchResult(
           (Element) entryIterator.next());
         if (result != null) {
-          results.add(result);
+          results.add(result.toSearchResult());
         }
       }
     }
@@ -180,23 +177,22 @@ public final class Dsmlv1 extends AbstractDsml
 
   /**
    * This will take a DSML <code>Element</code> containing an entry of type
-   * <dsml:entry name="name"/> and convert it to an LDAP search result.
+   * <dsml:entry name="name"/> and convert it to an LDAP entry.
    *
    * @param  entryElement  <code>Element</code> of DSML content
    *
-   * @return  <code>SearchResult</code>
+   * @return  <code>LdapEntry</code>
    */
-  protected SearchResult createSearchResult(final Element entryElement)
+  protected LdapEntry createSearchResult(final Element entryElement)
   {
-    String name = "";
-    final Attributes entryAttributes = new BasicAttributes(true);
-    SearchResult attrResults = null;
+    final LdapEntry ldapEntry = new LdapEntry();
+    ldapEntry.setDn("");
 
     if (entryElement != null) {
 
-      name = entryElement.attributeValue("dn");
-      if (name == null) {
-        name = "";
+      final String name = entryElement.attributeValue("dn");
+      if (name != null) {
+        ldapEntry.setDn(name);
       }
 
       if (entryElement.hasContent()) {
@@ -207,7 +203,7 @@ public final class Dsmlv1 extends AbstractDsml
           final Element ocElement = (Element) ocIterator.next();
           if (ocElement != null && ocElement.hasContent()) {
             final String ocName = "objectClass";
-            final Attribute entryAttribute = new BasicAttribute(ocName);
+            final LdapAttribute ldapAttribute = new LdapAttribute(ocName);
             final Iterator<?> valueIterator = ocElement.elementIterator(
               "oc-value");
             while (valueIterator.hasNext()) {
@@ -215,35 +211,27 @@ public final class Dsmlv1 extends AbstractDsml
               if (valueElement != null) {
                 final String value = valueElement.getText();
                 if (value != null) {
-                  entryAttribute.add(value);
+                  final String encoding = valueElement.attributeValue(
+                    "encoding");
+                  if (encoding != null && encoding.equals("base64")) {
+                    ldapAttribute.getValues().add(
+                      LdapUtil.base64Decode(value));
+                  } else {
+                    ldapAttribute.getValues().add(value);
+                  }
                 }
               }
             }
-            entryAttributes.put(entryAttribute);
+            ldapEntry.getLdapAttributes().addAttribute(ldapAttribute);
           }
         }
 
-        attrResults = super.createSearchResult(entryElement);
+        ldapEntry.getLdapAttributes().addAttributes(
+          super.createSearchResult(
+            entryElement).getLdapAttributes().getAttributes());
       }
     }
 
-    if (attrResults != null) {
-      final Attributes attrs = attrResults.getAttributes();
-      if (attrs != null) {
-        final NamingEnumeration<? extends Attribute> ae = attrs.getAll();
-        if (ae != null) {
-          try {
-            while (ae.hasMore()) {
-              entryAttributes.put(ae.next());
-            }
-          } catch (NamingException e) {
-            if (LOG.isDebugEnabled()) {
-              LOG.debug("Could not read attribute in SearchResult from parent");
-            }
-          }
-        }
-      }
-    }
-    return new SearchResult(name, null, entryAttributes);
+    return ldapEntry;
   }
 }

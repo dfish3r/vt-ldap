@@ -90,22 +90,24 @@ public class DsmlTest
   @Parameters(
     {
       "dsmlSearchDn",
-      "dsmlSearchFilter"
+      "dsmlSearchFilter",
+      "dsmlv1Entry"
     }
   )
   @Test(groups = {"dsmltest"})
-  public void createDsmlv1(final String dn, final String filter)
+  public void createDsmlv1(
+    final String dn, final String filter, final String dsmlFile)
     throws Exception
   {
     final Ldap ldap = TestUtil.createLdap();
     final Dsmlv1 dsml = new Dsmlv1();
 
-    final Iterator<SearchResult> iter = ldap.search(
+    Iterator<SearchResult> iter = ldap.search(
       dn,
       new SearchFilter(filter));
 
     final LdapResult result1 = new LdapResult(iter);
-    final StringWriter writer = new StringWriter();
+    StringWriter writer = new StringWriter();
     dsml.outputDsml(
       result1.toSearchResults().iterator(), writer);
     final StringReader reader = new StringReader(writer.toString());
@@ -113,8 +115,14 @@ public class DsmlTest
       dsml.createSearchResults(reader));
 
     AssertJUnit.assertEquals(result1, result2);
-
     ldap.close();
+
+    final String dsmlString1 = TestUtil.readFileIntoString(dsmlFile);
+    iter = dsml.createSearchResults(new StringReader(dsmlString1));
+    writer = new StringWriter();
+    dsml.outputDsml(iter, writer);
+    final String dsmlString2 = writer.toString();
+    AssertJUnit.assertEquals(dsmlString1, dsmlString2);
   }
 
 
@@ -127,22 +135,24 @@ public class DsmlTest
   @Parameters(
     {
       "dsmlSearchDn",
-      "dsmlSearchFilter"
+      "dsmlSearchFilter",
+      "dsmlv2Entry"
     }
   )
   @Test(groups = {"dsmltest"})
-  public void createDsmlv2(final String dn, final String filter)
+  public void createDsmlv2(
+    final String dn, final String filter, final String dsmlFile)
     throws Exception
   {
     final Ldap ldap = TestUtil.createLdap();
     final Dsmlv2 dsml = new Dsmlv2();
 
-    final Iterator<SearchResult> iter = ldap.search(
+    Iterator<SearchResult> iter = ldap.search(
       dn,
       new SearchFilter(filter));
 
     final LdapResult result1 = new LdapResult(iter);
-    final StringWriter writer = new StringWriter();
+    StringWriter writer = new StringWriter();
     dsml.outputDsml(
       result1.toSearchResults().iterator(), writer);
     final StringReader reader = new StringReader(writer.toString());
@@ -150,7 +160,13 @@ public class DsmlTest
       dsml.createSearchResults(reader));
 
     AssertJUnit.assertEquals(result1, result2);
-
     ldap.close();
+
+    final String dsmlString1 = TestUtil.readFileIntoString(dsmlFile);
+    iter = dsml.createSearchResults(new StringReader(dsmlString1));
+    writer = new StringWriter();
+    dsml.outputDsml(iter, writer);
+    final String dsmlString2 = writer.toString();
+    AssertJUnit.assertEquals(dsmlString1, dsmlString2);
   }
 }
