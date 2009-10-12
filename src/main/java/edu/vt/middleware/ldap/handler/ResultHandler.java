@@ -31,7 +31,7 @@ public interface ResultHandler<R, O>
 
 
   /**
-   * Process the results from a ldap search.
+   * Process the results from an ldap search.
    *
    * @param  sc  <code>SearchCriteria</code> used to perform the search
    * @param  en  <code>NamingEnumeration</code> of search results
@@ -45,7 +45,7 @@ public interface ResultHandler<R, O>
 
 
   /**
-   * Process the results from a ldap search.
+   * Process the results from an ldap search.
    *
    * @param  sc  <code>SearchCriteria</code> used to perform the search
    * @param  en  <code>NamingEnumeration</code> of search results
@@ -64,7 +64,7 @@ public interface ResultHandler<R, O>
 
 
   /**
-   * Process the results from a ldap search.
+   * Process the results from an ldap search.
    *
    * @param  sc  <code>SearchCriteria</code> used to perform the search
    * @param  l  <code>List</code> of search results

@@ -272,7 +272,7 @@ public abstract class AbstractLdapPool<T extends BaseLdap>
 
 
   /**
-   * Remove a ldap object from the available pool.
+   * Remove an ldap object from the available pool.
    *
    * @param  t  ldap object that exists in the available pool
    */
@@ -303,7 +303,7 @@ public abstract class AbstractLdapPool<T extends BaseLdap>
 
 
   /**
-   * Remove a ldap object from the active pool.
+   * Remove an ldap object from the active pool.
    *
    * @param  t  ldap object that exists in the active pool
    */
@@ -334,7 +334,7 @@ public abstract class AbstractLdapPool<T extends BaseLdap>
 
 
   /**
-   * Remove a ldap object from both the available and active pools.
+   * Remove an ldap object from both the available and active pools.
    *
    * @param  t  ldap object that exists in the both the available and active
    * pools
@@ -374,8 +374,8 @@ public abstract class AbstractLdapPool<T extends BaseLdap>
 
 
   /**
-   * Attempts to activate and validate a ldap object. Performed before an object
-   * is returned from {@link LdapPool#checkOut()}.
+   * Attempts to activate and validate an ldap object. Performed before an
+   * object is returned from {@link LdapPool#checkOut()}.
    *
    * @param  t  ldap object
    *
@@ -406,7 +406,7 @@ public abstract class AbstractLdapPool<T extends BaseLdap>
 
 
   /**
-   * Attempts to validate and passivate a ldap object. Performed when an object
+   * Attempts to validate and passivate an ldap object. Performed when an object
    * is given to {@link LdapPool#checkIn}.
    *
    * @param  t  ldap object
@@ -566,9 +566,9 @@ public abstract class AbstractLdapPool<T extends BaseLdap>
 
 
   /**
-   * <code>PooledLdap</code> contains a ldap object that is participating in a
-   * pool. Used to track how long a ldap object has been in either the available
-   * or active queues.
+   * <code>PooledLdap</code> contains an ldap object that is participating in a
+   * pool. Used to track how long an ldap object has been in either
+   * the available or active queues.
    *
    * @param  <T>  type of ldap object
    */

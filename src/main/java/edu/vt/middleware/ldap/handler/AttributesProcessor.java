@@ -34,7 +34,7 @@ public final class AttributesProcessor
 
 
   /**
-   * Process the attributes of a ldap search search.
+   * Process the attributes of an ldap search search.
    *
    * @param  sc  <code>SearchCriteria</code> used to find search result
    * @param  attrs  <code>Attributes</code> to pass to the handler
@@ -55,7 +55,7 @@ public final class AttributesProcessor
 
 
   /**
-   * Process the attributes of a ldap search search.
+   * Process the attributes of an ldap search search.
    * Any exceptions passed into this method will be ignored and
    * results will be returned as if no exception occurred.
    *

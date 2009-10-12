@@ -35,7 +35,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 /**
- * <code>SearchServlet</code> is a servlet which queries a LDAP and returns the
+ * <code>SearchServlet</code> is a servlet which queries an LDAP and returns the
  * result as LDIF or DSML. The following init params can be set for this
  * servlet: edu.vt.middleware.ldap.servlets.propertiesFile - to load ldap
  * properties from edu.vt.middleware.ldap.servlets.outputFormat - type of output

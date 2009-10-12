@@ -189,7 +189,7 @@ public class BlockingLdapPool extends AbstractLdapPool<Ldap>
 
 
   /**
-   * This attempts to retrieve a ldap object from the available queue.
+   * This attempts to retrieve an ldap object from the available queue.
    *
    * @return  ldap object from the pool
    *
@@ -219,7 +219,7 @@ public class BlockingLdapPool extends AbstractLdapPool<Ldap>
 
 
   /**
-   * This blocks until a ldap object can be aquired.
+   * This blocks until an ldap object can be aquired.
    *
    * @return  ldap object from the pool
    *

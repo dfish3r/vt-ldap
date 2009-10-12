@@ -37,7 +37,7 @@ public interface LdapFactory<T extends BaseLdap>
 
 
   /**
-   * Destroy a ldap object.
+   * Destroy an ldap object.
    *
    * @param  t  ldap object
    */
@@ -65,7 +65,7 @@ public interface LdapFactory<T extends BaseLdap>
 
 
   /**
-   * Verify a ldap object is still viable for use in the pool.
+   * Verify an ldap object is still viable for use in the pool.
    *
    * @param  t  ldap object
    *

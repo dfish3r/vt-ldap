@@ -18,7 +18,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 /**
- * <code>CloseLdapPassivator</code> passivates a ldap object by attempting to
+ * <code>CloseLdapPassivator</code> passivates an ldap object by attempting to
  * close it's connection to the ldap.
  *
  * @author  Middleware Services

@@ -20,7 +20,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 /**
- * <code>CompareLdapValidator</code> validates a ldap connection is healthy by
+ * <code>CompareLdapValidator</code> validates an ldap connection is healthy by
  * performing a compare operation.
  *
  * @author  Middleware Services

@@ -19,7 +19,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 /**
- * <code>ConnectLdapActivator</code> activates a ldap object by attempting to
+ * <code>ConnectLdapActivator</code> activates an ldap object by attempting to
  * connect to the ldap.
  *
  * @author  Middleware Services

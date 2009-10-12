@@ -180,7 +180,7 @@ public final class Dsmlv1 extends AbstractDsml
 
   /**
    * This will take a DSML <code>Element</code> containing an entry of type
-   * <dsml:entry name="name"/> and convert it to a LDAP search result.
+   * <dsml:entry name="name"/> and convert it to an LDAP search result.
    *
    * @param  entryElement  <code>Element</code> of DSML content
    *

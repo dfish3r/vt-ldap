@@ -29,7 +29,7 @@ import edu.vt.middleware.ldap.handler.SearchCriteria;
 import edu.vt.middleware.ldap.handler.SearchResultHandler;
 
 /**
- * <code>Ldap</code> contains functions for basic interaction with a LDAP.
+ * <code>Ldap</code> contains functions for basic interaction with an LDAP.
  * Methods are provided for connecting, binding, querying and updating.
  *
  * @author  Middleware Services

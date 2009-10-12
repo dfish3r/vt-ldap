@@ -936,7 +936,7 @@ public abstract class AbstractLdap<T extends LdapConfig> implements BaseLdap
    * LdapConfig#setServiceUser(String)} and {@link
    * LdapConfig#setServiceCredential(Object)}. If these parameters have not been
    * set then an anonymous bind will be attempted. This connection must be
-   * closed using {@link #close}. Any method which requires a LDAP connection
+   * closed using {@link #close}. Any method which requires an LDAP connection
    * will call this method independently. This method should only be used if you
    * need to verify that you can connect to the LDAP.
    *

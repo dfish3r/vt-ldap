@@ -18,7 +18,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 /**
- * <code>AbstractLdapFactory</code> provides a basic implementation of a ldap
+ * <code>AbstractLdapFactory</code> provides a basic implementation of an ldap
  * factory.
  *
  * @param  <T>  type of ldap object

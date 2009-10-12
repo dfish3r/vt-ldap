@@ -72,7 +72,7 @@ public class CopySearchResultHandler extends CopyResultHandler<SearchResult>
 
 
   /**
-   * Process the dn of a ldap search result.
+   * Process the dn of an ldap search result.
    *
    * @param  sc  <code>SearchCriteria</code> used to find search result
    * @param  sr  <code>SearchResult</code> to extract the dn from
@@ -86,7 +86,7 @@ public class CopySearchResultHandler extends CopyResultHandler<SearchResult>
 
 
   /**
-   * Process the attributes of a ldap search search.
+   * Process the attributes of an ldap search search.
    *
    * @param  sc  <code>SearchCriteria</code> used to find search result
    * @param  sr  <code>SearchResult</code> to extract the attributes from

@@ -54,7 +54,7 @@ public interface LdapPool<T extends BaseLdap>
 
 
   /**
-   * Returns a ldap object from the pool.
+   * Returns an ldap object from the pool.
    *
    * @return  ldap object
    *
@@ -69,7 +69,7 @@ public interface LdapPool<T extends BaseLdap>
 
 
   /**
-   * Returns a ldap object to the pool.
+   * Returns an ldap object to the pool.
    *
    * @param  t  ldap object
    */

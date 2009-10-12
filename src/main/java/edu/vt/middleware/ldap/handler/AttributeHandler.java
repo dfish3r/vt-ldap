@@ -16,7 +16,7 @@ package edu.vt.middleware.ldap.handler;
 import javax.naming.directory.Attribute;
 
 /**
- * AttributeHandler provides post search processing of a ldap attribute.
+ * AttributeHandler provides post search processing of an ldap attribute.
  *
  * @author  Middleware Services
  * @version  $Revision$

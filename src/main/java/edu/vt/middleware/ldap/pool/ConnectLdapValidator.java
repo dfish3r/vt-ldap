@@ -19,7 +19,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 /**
- * <code>ConnectLdapValidator</code> validates a ldap connection is healthy by
+ * <code>ConnectLdapValidator</code> validates an ldap connection is healthy by
  * testing it is connected.
  *
  * @author  Middleware Services

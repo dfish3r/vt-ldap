@@ -53,7 +53,7 @@ public class LdapSearch
 
 
   /**
-   * This will perform a LDAP search with the supplied query and return
+   * This will perform an LDAP search with the supplied query and return
    * attributes.
    *
    * @param  query  <code>String</code> to search for
@@ -92,7 +92,7 @@ public class LdapSearch
 
 
   /**
-   * This will perform a LDAP search with the supplied query and return
+   * This will perform an LDAP search with the supplied query and return
    * attributes. The results will be written to the supplied <code>
    * Writer</code>.
    *

@@ -38,7 +38,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 /**
- * <code>AttributeServlet</code> is a servlet which queries a LDAP and returns
+ * <code>AttributeServlet</code> is a servlet which queries an LDAP and returns
  * the value of a single attribute. Example:
  * http://www.server.com/Attribute?query=uid=dfisher&attr=givenName If you need
  * to pass complex queries, such as (&(cn=daniel*)(surname=fisher)), then the

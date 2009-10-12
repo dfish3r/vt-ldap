@@ -183,7 +183,7 @@ public class LdapPoolConfig extends AbstractPropertyConfig
   /**
    * This returns the expiration time for the <code>LdapPoolConfig</code>.
    * Default value is {@link #DEFAULT_EXPIRATION_TIME}. The expiration time
-   * represents the max time a ldap object should be available before it is
+   * represents the max time an ldap object should be available before it is
    * considered stale. This value does not apply to objects in the pool if the
    * pool has only a minimum number of objects available.
    *

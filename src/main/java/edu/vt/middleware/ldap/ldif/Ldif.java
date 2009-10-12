@@ -115,7 +115,7 @@ public class Ldif implements Serializable
 
 
   /**
-   * This will take a LDAP search result and convert it to LDIF.
+   * This will take an LDAP search result and convert it to LDIF.
    *
    * @param  result  <code>SearchResult</code> to convert
    *

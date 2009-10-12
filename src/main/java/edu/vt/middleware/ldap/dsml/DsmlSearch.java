@@ -86,7 +86,7 @@ public class DsmlSearch extends LdapSearch
 
 
   /**
-   * This will perform a LDAP search with the supplied query and return
+   * This will perform an LDAP search with the supplied query and return
    * attributes. The results will be written to the supplied <code>
    * Writer</code>. Use {@link #version} to control which version of
    * DSML is written.

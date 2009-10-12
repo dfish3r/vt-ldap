@@ -26,7 +26,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 /**
- * <code>LoginServet</code> attempts to authenticate a user against a LDAP. The
+ * <code>LoginServet</code> attempts to authenticate a user against an LDAP. The
  * following init params can be set for this servlet:
  * edu.vt.middleware.ldap.servlets.propertiesFile - to load authenticator
  * properties from edu.vt.middleware.ldap.servlets.sessionId - to set the user
@@ -59,7 +59,7 @@ public final class LoginServlet extends CommonServlet
   /** Message to display if authentication fails. */
   private String errorMsg;
 
-  /** Used to authenticate against a LDAP. */
+  /** Used to authenticate against an LDAP. */
   private Authenticator auth;
 
 

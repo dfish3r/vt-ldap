@@ -31,7 +31,7 @@ import edu.vt.middleware.ldap.handler.AuthenticationResultHandler;
 
 /**
  * <code>Authenticator</code> contains functions for authenticating a user
- * against a LDAP.
+ * against an LDAP.
  *
  * @author  Middleware Services
  * @version  $Revision$ $Date$

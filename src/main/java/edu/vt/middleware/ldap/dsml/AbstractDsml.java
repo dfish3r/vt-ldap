@@ -70,7 +70,8 @@ public abstract class AbstractDsml implements Serializable
 
 
   /**
-   * This will take a LDAP search result and convert it to a DSML entry element.
+   * This will take an LDAP search result and convert it to a
+   * DSML entry element.
    *
    * @param  entryName  <code>QName</code> name of element to create
    * @param  result  <code>SearchResult</code> to convert
@@ -226,7 +227,7 @@ public abstract class AbstractDsml implements Serializable
 
   /**
    * This will take a DSML <code>Element</code> containing an entry of type
-   * <entry/> and convert it to a LDAP search result.
+   * <entry/> and convert it to an LDAP search result.
    *
    * @param  entryElement  <code>Element</code> of DSML content
    *

@@ -25,7 +25,7 @@ public interface AuthenticationResultHandler
 
 
   /**
-   * Process the results from a ldap authentication.
+   * Process the results from an ldap authentication.
    *
    * @param  ac  <code>AuthenticationCriteria</code> used to perform the
    * authentication

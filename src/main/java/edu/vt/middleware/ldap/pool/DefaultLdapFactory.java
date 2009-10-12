@@ -19,7 +19,7 @@ import edu.vt.middleware.ldap.Ldap;
 import edu.vt.middleware.ldap.LdapConfig;
 
 /**
- * <code>DefaultLdapFactory</code> provides a simple implementation of a ldap
+ * <code>DefaultLdapFactory</code> provides a simple implementation of an ldap
  * factory. Uses {@link ConnectLdapValidator} by default.
  *
  * @author  Middleware Services

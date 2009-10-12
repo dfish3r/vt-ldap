@@ -151,7 +151,7 @@ public class SharedLdapPool extends AbstractLdapPool<Ldap>
 
 
   /**
-   * This attempts to retrieve a ldap object from the available queue. This
+   * This attempts to retrieve an ldap object from the available queue. This
    * pooling implementation guarantees there is always an object available.
    *
    * @return  ldap object from the pool
