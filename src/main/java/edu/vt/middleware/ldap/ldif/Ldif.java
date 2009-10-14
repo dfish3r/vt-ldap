@@ -13,15 +13,19 @@
 */
 package edu.vt.middleware.ldap.ldif;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.Reader;
 import java.io.Serializable;
 import java.io.Writer;
+import java.net.URL;
 import java.util.Iterator;
 import javax.naming.NamingException;
 import javax.naming.directory.SearchResult;
 import edu.vt.middleware.ldap.LdapUtil;
 import edu.vt.middleware.ldap.bean.LdapAttribute;
 import edu.vt.middleware.ldap.bean.LdapEntry;
+import edu.vt.middleware.ldap.bean.LdapResult;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -242,5 +246,99 @@ public class Ldif implements Serializable
   {
     writer.write(createLdif(results));
     writer.flush();
+  }
+
+
+
+
+  /**
+   * This will take a Reader containing an LDIF and convert
+   * it to an Iterator of LDAP search results.
+   * Provides a loose implementation of RFC 2849. Should not be used
+   * to validate LDIF format as it does not enforce strictness.
+   *
+   * @param  reader  <code>Reader</code> containing LDIF content
+   *
+   * @return  <code>Iterator</code> - of LDAP search results
+   *
+   * @throws  IOException  if an I/O error occurs
+   */
+  public Iterator<SearchResult> importLdif(final Reader reader)
+    throws IOException
+  {
+    final LdapResult ldapResult = new LdapResult();
+    final BufferedReader br = new BufferedReader(reader);
+    String line = null;
+    int lineCount = 0;
+    LdapEntry ldapEntry = null;
+    StringBuffer lineValue = new StringBuffer();
+
+    while ((line = br.readLine()) != null) {
+      lineCount++;
+      if (line.startsWith("dn:")) {
+        lineValue.append(line);
+        ldapEntry = new LdapEntry();
+        break;
+      }
+    }
+
+    boolean read = true;
+    while (read) {
+      line = br.readLine();
+      if (line == null) {
+        read = false;
+        line = "";
+      }
+      if (!line.startsWith("#")) {
+        if (line.startsWith("dn:")) {
+          ldapResult.addEntry(ldapEntry);
+          ldapEntry = new LdapEntry();
+        }
+        if (line.startsWith(" ")) {
+          lineValue.append(line.substring(1));
+        } else {
+          final String s = lineValue.toString();
+          if (s.indexOf(":") != -1) {
+            boolean isBinary = false;
+            boolean isUrl = false;
+            final String[] parts = s.split(":", 2);
+            final String attrName = parts[0];
+            String attrValue = parts[1];
+            if (attrValue.startsWith(":")) {
+              isBinary = true;
+              attrValue = attrValue.substring(1);
+            } else if (attrValue.startsWith("<")) {
+              isUrl = true;
+              attrValue = attrValue.substring(1);
+            }
+            if (attrValue.startsWith(" ")) {
+              attrValue = attrValue.substring(1);
+            }
+            if (attrName.equals("dn")) {
+              ldapEntry.setDn(attrValue);
+            } else {
+              LdapAttribute ldapAttr =
+                ldapEntry.getLdapAttributes().getAttribute(attrName);
+              if (ldapAttr == null) {
+                ldapAttr = new LdapAttribute(attrName);
+                ldapEntry.getLdapAttributes().addAttribute(ldapAttr);
+              }
+              if (isBinary) {
+                ldapAttr.getValues().add(LdapUtil.base64Decode(attrValue));
+              } else if (isUrl) {
+                ldapAttr.getValues().add(LdapUtil.readURL(new URL(attrValue)));
+              } else {
+                ldapAttr.getValues().add(attrValue);
+              }
+            }
+          }
+          lineValue = new StringBuffer(line);
+        }
+      }
+    }
+    if (ldapEntry != null) {
+      ldapResult.addEntry(ldapEntry);
+    }
+    return ldapResult.toSearchResults().iterator();
   }
 }

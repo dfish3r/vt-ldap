@@ -201,7 +201,7 @@ public abstract class AbstractDsml implements Serializable
    * reader
    * @throws  IOException  if an I/O error occurs
    */
-  public Iterator<SearchResult> createSearchResults(final Reader reader)
+  public Iterator<SearchResult> importDsml(final Reader reader)
     throws DocumentException, IOException
   {
     final Document dsml = new SAXReader().read(reader);
@@ -217,7 +217,7 @@ public abstract class AbstractDsml implements Serializable
    *
    * @return  <code>Iterator</code> - of LDAP search results
    */
-  public abstract Iterator<SearchResult> createSearchResults(
+  protected abstract Iterator<SearchResult> createSearchResults(
     final Document doc);
 
 
@@ -247,30 +247,26 @@ public abstract class AbstractDsml implements Serializable
         final Iterator<?> attrIterator = entryElement.elementIterator("attr");
         while (attrIterator.hasNext()) {
           final Element attrElement = (Element) attrIterator.next();
-          if (attrElement != null) {
-            final String attrName = attrElement.attributeValue("name");
-            if (attrName != null && attrElement.hasContent()) {
-              final LdapAttribute ldapAttribute = new LdapAttribute(attrName);
-              final Iterator<?> valueIterator = attrElement.elementIterator(
-                "value");
-              while (valueIterator.hasNext()) {
-                final Element valueElement = (Element) valueIterator.next();
-                if (valueElement != null) {
-                  final String value = valueElement.getText();
-                  if (value != null) {
-                    final String encoding = valueElement.attributeValue(
-                      "encoding");
-                    if (encoding != null && encoding.equals("base64")) {
-                      ldapAttribute.getValues().add(
-                        LdapUtil.base64Decode(value));
-                    } else {
-                      ldapAttribute.getValues().add(value);
-                    }
-                  }
+          final String attrName = attrElement.attributeValue("name");
+          if (attrName != null && attrElement.hasContent()) {
+            final LdapAttribute ldapAttribute = new LdapAttribute(attrName);
+            final Iterator<?> valueIterator = attrElement.elementIterator(
+              "value");
+            while (valueIterator.hasNext()) {
+              final Element valueElement = (Element) valueIterator.next();
+              final String value = valueElement.getText();
+              if (value != null) {
+                final String encoding = valueElement.attributeValue(
+                  "encoding");
+                if (encoding != null && encoding.equals("base64")) {
+                  ldapAttribute.getValues().add(
+                    LdapUtil.base64Decode(value));
+                } else {
+                  ldapAttribute.getValues().add(value);
                 }
               }
-              ldapEntry.getLdapAttributes().addAttribute(ldapAttribute);
             }
+            ldapEntry.getLdapAttributes().addAttribute(ldapAttribute);
           }
         }
       }

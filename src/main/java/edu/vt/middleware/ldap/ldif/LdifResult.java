@@ -14,7 +14,9 @@
 package edu.vt.middleware.ldap.ldif;
 
 import java.io.IOException;
+import java.io.StringReader;
 import java.io.StringWriter;
+import javax.naming.NamingException;
 import edu.vt.middleware.ldap.bean.LdapEntry;
 import edu.vt.middleware.ldap.bean.LdapResult;
 
@@ -76,5 +78,28 @@ public class LdifResult extends LdapResult
       }
     }
     return writer.toString();
+  }
+
+
+  /**
+   * This reads any entries in the supplied LDIF into this
+   * <code>LdifResult</code>.
+   *
+   * @param  ldif  <code>String</code> to read
+   */
+  public void fromLdif(final String ldif)
+  {
+    try {
+      this.addEntries(
+        this.ldif.importLdif(new StringReader(ldif)));
+    } catch (IOException e) {
+      if (this.logger.isWarnEnabled()) {
+        this.logger.warn("Could not read ldif from StringReader", e);
+      }
+    } catch (NamingException e) {
+      if (this.logger.isErrorEnabled()) {
+        this.logger.error("Unexpected naming exception occurred", e);
+      }
+    }
   }
 }

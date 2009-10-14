@@ -14,9 +14,12 @@
 package edu.vt.middleware.ldap.dsml;
 
 import java.io.IOException;
+import java.io.StringReader;
 import java.io.StringWriter;
+import javax.naming.NamingException;
 import edu.vt.middleware.ldap.bean.LdapEntry;
 import edu.vt.middleware.ldap.bean.LdapResult;
+import org.dom4j.DocumentException;
 
 /**
  * <code>DsmlResult</code> represents a DSML search result.
@@ -83,6 +86,31 @@ public class DsmlResult extends LdapResult
 
 
   /**
+   * This reads any entries in the supplied DSML into this
+   * <code>DsmlResult</code>.
+   *
+   * @param  dsml  <code>String</code> to read
+   * @throws DocumentException if an error occurs reading the supplied DSML
+   */
+  public void fromDsmlv1(final String dsml)
+    throws DocumentException
+  {
+    try {
+      this.addEntries(
+        this.dsmlv1.importDsml(new StringReader(dsml)));
+    } catch (IOException e) {
+      if (this.logger.isWarnEnabled()) {
+        this.logger.warn("Could not read dsml from StringReader", e);
+      }
+    } catch (NamingException e) {
+      if (this.logger.isErrorEnabled()) {
+        this.logger.error("Unexpected naming exception occurred", e);
+      }
+    }
+  }
+
+
+  /**
    * This returns this <code>DsmlResult</code> as version 2 DSML.
    *
    * @return  <code>String</code>
@@ -98,5 +126,30 @@ public class DsmlResult extends LdapResult
       }
     }
     return writer.toString();
+  }
+
+
+  /**
+   * This reads any entries in the supplied DSML into this
+   * <code>DsmlResult</code>.
+   *
+   * @param  dsml  <code>String</code> to read
+   * @throws DocumentException if an error occurs reading the supplied DSML
+   */
+  public void fromDsmlv2(final String dsml)
+    throws DocumentException
+  {
+    try {
+      this.addEntries(
+        this.dsmlv2.importDsml(new StringReader(dsml)));
+    } catch (IOException e) {
+      if (this.logger.isWarnEnabled()) {
+        this.logger.warn("Could not read dsml from StringReader", e);
+      }
+    } catch (NamingException e) {
+      if (this.logger.isErrorEnabled()) {
+        this.logger.error("Unexpected naming exception occurred", e);
+      }
+    }
   }
 }

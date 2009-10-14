@@ -16,12 +16,13 @@ package edu.vt.middleware.ldap;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
-import edu.vt.middleware.ldap.bean.LdapAttribute;
 import edu.vt.middleware.ldap.bean.LdapAttributes;
 import edu.vt.middleware.ldap.bean.LdapEntry;
 import edu.vt.middleware.ldap.bean.LdapResult;
+import edu.vt.middleware.ldap.ldif.Ldif;
 import org.testng.annotations.DataProvider;
 
 /**
@@ -228,17 +229,12 @@ public final class TestUtil
    * @param  ldif  to convert.
    *
    * @return  LdapResult.
+   * @throws Exception if ldif cannot be read
    */
   public static LdapResult convertLdifToResult(final String ldif)
+    throws Exception
   {
-    final LdapResult result = new LdapResult();
-    final String[] entries = ldif.split(
-      System.getProperty("line.separator") +
-      System.getProperty("line.separator"));
-    for (int i = 0; i < entries.length; i++) {
-      result.addEntry(convertLdifToEntry(entries[i]));
-    }
-    return result;
+    return new LdapResult((new Ldif()).importLdif(new StringReader(ldif)));
   }
 
 
@@ -248,37 +244,13 @@ public final class TestUtil
    * @param  ldif  to convert.
    *
    * @return  LdapEntry.
+   * @throws Exception if ldif cannot be read
    */
   public static LdapEntry convertLdifToEntry(final String ldif)
+    throws Exception
   {
-    final LdapEntry entry = new LdapEntry();
-    final String[] lines = ldif.split(System.getProperty("line.separator"));
-    for (int i = 0; i < lines.length; i++) {
-      boolean isBinary = false;
-      if (lines[i].indexOf("::") != -1) {
-        isBinary = true;
-      }
-
-      final String[] parts = lines[i].trim().split(":* ", 2);
-      if (parts[0] != null && !parts[0].equals("")) {
-        if (parts[0].equalsIgnoreCase("dn")) {
-          entry.setDn(parts[1]);
-        } else {
-          LdapAttribute la = entry.getLdapAttributes().getAttribute(parts[0]);
-          if (la == null) {
-            la = new LdapAttribute();
-            la.setName(parts[0]);
-            entry.getLdapAttributes().addAttribute(la);
-          }
-          if (isBinary) {
-            la.getValues().add(LdapUtil.base64Decode(parts[1]));
-          } else {
-            la.getValues().add(parts[1]);
-          }
-        }
-      }
-    }
-    return entry;
+    return new LdapEntry(
+      (new Ldif()).importLdif(new StringReader(ldif)).next());
   }
 
 

@@ -24,6 +24,8 @@
              value="/edu/vt/middleware/ldap/createLdapEntry-10.ldif"/>
   <parameter name="createEntry11"
              value="/edu/vt/middleware/ldap/createLdapEntry-11.ldif"/>
+  <parameter name="createEntry12"
+             value="/edu/vt/middleware/ldap/createLdapEntry-12.ldif"/>
 
   <parameter name="createGroup2"
              value="/edu/vt/middleware/ldap/createGroupEntry-2.ldif"/>
@@ -33,6 +35,11 @@
              value="/edu/vt/middleware/ldap/createGroupEntry-4.ldif"/>
   <parameter name="createGroup5"
              value="/edu/vt/middleware/ldap/createGroupEntry-5.ldif"/>
+
+  <parameter name="multipleLdifResultsIn"
+             value="/edu/vt/middleware/ldap/multipleEntriesIn.ldif"/>
+  <parameter name="multipleLdifResultsOut"
+             value="/edu/vt/middleware/ldap/multipleEntriesOut.ldif"/>
 
   <parameter name="dsmlv1Entry"
              value="/edu/vt/middleware/ldap/dfisher.dsmlv1"/>
@@ -59,6 +66,8 @@
              value="/edu/vt/middleware/ldap/searchResults-10.ldif"/>
   <parameter name="searchResults11"
              value="/edu/vt/middleware/ldap/searchResults-11.ldif"/>
+  <parameter name="searchResults12"
+             value="/edu/vt/middleware/ldap/searchResults-12.ldif"/>
 
   <parameter name="renameOldDn" value="uid=2,ou=test,dc=vt,dc=edu"/>
   <parameter name="renameNewDn" value="uid=1002,ou=test,dc=vt,dc=edu"/>
@@ -227,6 +236,9 @@
   <parameter name="dsmlSearchDn" value="ou=test,dc=vt,dc=edu"/>
   <parameter name="dsmlSearchFilter" value="(uid=11)"/>
 
+  <parameter name="ldifSearchDn" value="ou=test,dc=vt,dc=edu"/>
+  <parameter name="ldifSearchFilter" value="(uid=12)"/>
+
   <parameter name="ldapHost" value="ed-dev"/>
   <parameter name="sleepTime" value="10000"/>
 
@@ -239,6 +251,7 @@
         <include name="jaastest" />
         <include name="servlettest" />
         <include name="dsmltest" />
+        <include name="ldiftest" />
       </run>
     </groups>
     <packages>

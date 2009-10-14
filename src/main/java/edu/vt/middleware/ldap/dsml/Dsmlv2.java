@@ -18,6 +18,7 @@ import java.util.Iterator;
 import java.util.List;
 import javax.naming.NamingException;
 import javax.naming.directory.SearchResult;
+import edu.vt.middleware.ldap.bean.LdapEntry;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.dom4j.Document;
@@ -25,7 +26,6 @@ import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
 import org.dom4j.Namespace;
 import org.dom4j.QName;
-import edu.vt.middleware.ldap.bean.LdapEntry;
 
 /**
  * <code>Dsmlv2</code> contains functions for converting LDAP search result sets

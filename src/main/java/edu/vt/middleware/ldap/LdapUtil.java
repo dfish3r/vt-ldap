@@ -13,7 +13,11 @@
 */
 package edu.vt.middleware.ldap;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
+import java.net.URL;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -30,6 +34,8 @@ public final class LdapUtil
   /** Log for this class. */
   private static final Log LOG = LogFactory.getLog(LdapUtil.class);
 
+  /** Size of buffer in bytes to use when reading files. */
+  private static final int READ_BUFFER_SIZE = 128;
 
   /** Default constructor. */
   private LdapUtil() {}
@@ -135,5 +141,31 @@ public final class LdapUtil
       decodedValue = Base64.decodeBase64(value.getBytes());
     }
     return decodedValue;
+  }
+
+
+  /**
+   * Reads the data at the supplied URL and returns it as a byte array.
+   *
+   * @param  url  <code>URL</code> to read
+   * @return  <code>byte[]</code>  read from URL
+   * @throws IOException if an error occurs reading data
+   */
+  public static byte[] readURL(final URL url)
+    throws IOException
+  {
+    final InputStream is = url.openStream();
+    final ByteArrayOutputStream data = new ByteArrayOutputStream();
+    try {
+      final byte[] buffer = new byte[READ_BUFFER_SIZE];
+      int length;
+      while ((length = is.read(buffer)) != -1) {
+        data.write(buffer, 0, length);
+      }
+    } finally {
+      is.close();
+      data.close();
+    }
+    return data.toByteArray();
   }
 }

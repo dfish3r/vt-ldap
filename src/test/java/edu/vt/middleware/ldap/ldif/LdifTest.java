@@ -11,7 +11,7 @@
   Version: $Revision$
   Updated: $Date$
 */
-package edu.vt.middleware.ldap.dsml;
+package edu.vt.middleware.ldap.ldif;
 
 import java.io.StringReader;
 import java.io.StringWriter;
@@ -29,12 +29,12 @@ import org.testng.annotations.Parameters;
 import org.testng.annotations.Test;
 
 /**
- * Unit test for {@link Dsmlv1} and {@link Dsmlv2}.
+ * Unit test for {@link Ldif}.
  *
  * @author  Middleware Services
  * @version  $Revision$
  */
-public class DsmlTest
+public class LdifTest
 {
 
   /** Entry created for ldap tests. */
@@ -46,8 +46,8 @@ public class DsmlTest
    *
    * @throws  Exception  On test failure.
    */
-  @Parameters({ "createEntry11" })
-  @BeforeClass(groups = {"dsmltest"})
+  @Parameters({ "createEntry12" })
+  @BeforeClass(groups = {"ldiftest"})
   public void createLdapEntry(final String ldifFile)
     throws Exception
   {
@@ -71,7 +71,7 @@ public class DsmlTest
 
 
   /** @throws  Exception  On test failure. */
-  @AfterClass(groups = {"dsmltest"})
+  @AfterClass(groups = {"ldiftest"})
   public void deleteLdapEntry()
     throws Exception
   {
@@ -84,91 +84,52 @@ public class DsmlTest
   /**
    * @param  dn  to search on.
    * @param  filter  to search with.
-   * @param  dsmlFile  to test with.
+   * @param  ldifFileIn  to create with
+   * @param  ldifFileOut to compare with
    *
    * @throws  Exception  On test failure.
    */
   @Parameters(
     {
-      "dsmlSearchDn",
-      "dsmlSearchFilter",
-      "dsmlv1Entry"
+      "ldifSearchDn",
+      "ldifSearchFilter",
+      "multipleLdifResultsIn",
+      "multipleLdifResultsOut"
     }
   )
-  @Test(groups = {"dsmltest"})
-  public void createDsmlv1(
-    final String dn, final String filter, final String dsmlFile)
+  @Test(groups = {"ldiftest"})
+  public void createLdif(
+    final String dn,
+    final String filter,
+    final String ldifFileIn,
+    final String ldifFileOut)
     throws Exception
   {
     final Ldap ldap = TestUtil.createLdap();
-    final Dsmlv1 dsml = new Dsmlv1();
+    final Ldif ldif = new Ldif();
 
     Iterator<SearchResult> iter = ldap.search(
       dn,
       new SearchFilter(filter));
 
     final LdapResult result1 = new LdapResult(iter);
-    StringWriter writer = new StringWriter();
-    dsml.outputDsml(
+    final StringWriter writer = new StringWriter();
+    ldif.outputLdif(
       result1.toSearchResults().iterator(), writer);
     final StringReader reader = new StringReader(writer.toString());
     final LdapResult result2 = new LdapResult(
-      dsml.importDsml(reader));
+      ldif.importLdif(reader));
 
     AssertJUnit.assertEquals(result1, result2);
     ldap.close();
 
-    final String dsmlString1 = TestUtil.readFileIntoString(dsmlFile);
-    iter = dsml.importDsml(new StringReader(dsmlString1));
-    writer = new StringWriter();
-    dsml.outputDsml(iter, writer);
-    final String dsmlString2 = writer.toString();
-    AssertJUnit.assertEquals(dsmlString1, dsmlString2);
-  }
+    final String ldifStringIn = TestUtil.readFileIntoString(ldifFileIn);
+    iter = ldif.importLdif(new StringReader(ldifStringIn));
+    final LdapResult ldif1 = new LdapResult(iter);
 
-
-  /**
-   * @param  dn  to search on.
-   * @param  filter  to search with.
-   * @param  dsmlFile  to test with.
-   *
-   * @throws  Exception  On test failure.
-   */
-  @Parameters(
-    {
-      "dsmlSearchDn",
-      "dsmlSearchFilter",
-      "dsmlv2Entry"
-    }
-  )
-  @Test(groups = {"dsmltest"})
-  public void createDsmlv2(
-    final String dn, final String filter, final String dsmlFile)
-    throws Exception
-  {
-    final Ldap ldap = TestUtil.createLdap();
-    final Dsmlv2 dsml = new Dsmlv2();
-
-    Iterator<SearchResult> iter = ldap.search(
-      dn,
-      new SearchFilter(filter));
-
-    final LdapResult result1 = new LdapResult(iter);
-    StringWriter writer = new StringWriter();
-    dsml.outputDsml(
-      result1.toSearchResults().iterator(), writer);
-    final StringReader reader = new StringReader(writer.toString());
-    final LdapResult result2 = new LdapResult(
-      dsml.importDsml(reader));
-
-    AssertJUnit.assertEquals(result1, result2);
-    ldap.close();
-
-    final String dsmlString1 = TestUtil.readFileIntoString(dsmlFile);
-    iter = dsml.importDsml(new StringReader(dsmlString1));
-    writer = new StringWriter();
-    dsml.outputDsml(iter, writer);
-    final String dsmlString2 = writer.toString();
-    AssertJUnit.assertEquals(dsmlString1, dsmlString2);
+    final String ldifStringOut = TestUtil.readFileIntoString(ldifFileOut);
+    iter = ldif.importLdif(new StringReader(ldifStringOut));
+    final LdapResult ldif2 = new LdapResult(iter);
+    AssertJUnit.assertEquals(ldif1, ldif2);
   }
 }
