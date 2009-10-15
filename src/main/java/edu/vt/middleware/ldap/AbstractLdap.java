@@ -178,6 +178,8 @@ public abstract class AbstractLdap<T extends LdapConfig> implements BaseLdap
    * results. If filterArgs is null, then no variable substitution will occur.
    * If retAttrs is null then all attributes will be returned. If retAttrs is an
    * empty array then no attributes will be returned.
+   * See {@link javax.naming.DirContext#search(
+   * String, String, Object[], SearchControls)}.
    *
    * @param  dn  <code>String</code> name to begin search at
    * @param  filter  <code>String</code> expression to use for the search
@@ -283,6 +285,7 @@ public abstract class AbstractLdap<T extends LdapConfig> implements BaseLdap
    * context are returned. If retAttrs is null then all attributes will be
    * returned. If retAttrs is an empty array then no attributes will be
    * returned.
+   * See {@link javax.naming.DirContext#search(String, Attributes, String[])}.
    *
    * @param  dn  <code>String</code> name to search in
    * @param  matchAttrs  <code>Attributes</code> attributes to match
@@ -373,6 +376,7 @@ public abstract class AbstractLdap<T extends LdapConfig> implements BaseLdap
    * This will enumerate the names bounds to the specified context, along with
    * the class names of objects bound to them. The resulting <code>
    * Iterator</code> is a deep copy of the original search results.
+   * See {@link javax.naming.Context#list(String)}.
    *
    * @param  dn  <code>String</code> LDAP context to list
    *
@@ -437,6 +441,7 @@ public abstract class AbstractLdap<T extends LdapConfig> implements BaseLdap
    * This will enumerate the names bounds to the specified context, along with
    * the objects bound to them. The resulting <code>Iterator</code> is a deep
    * copy of the original search results.
+   * See {@link javax.naming.Context#listBindings(String)}.
    *
    * @param  dn  <code>String</code> LDAP context to list
    *
@@ -501,6 +506,7 @@ public abstract class AbstractLdap<T extends LdapConfig> implements BaseLdap
    * This will return the matching attributes associated with the supplied dn.
    * If retAttrs is null then all attributes will be returned. If retAttrs is an
    * empty array then no attributes will be returned.
+   * See {@link javax.naming.DirContext#getAttributes(String, String[])}.
    *
    * @param  dn  <code>String</code> named object in the LDAP
    * @param  retAttrs  <code>String[]</code> attributes to return
@@ -575,6 +581,7 @@ public abstract class AbstractLdap<T extends LdapConfig> implements BaseLdap
    * This will return the LDAP schema associated with the supplied dn. The
    * resulting <code>Iterator</code> is a deep copy of the original search
    * results.
+   * See {@link javax.naming.DirContext#getSchema(String)}.
    *
    * @param  dn  <code>String</code> named object in the LDAP
    *
@@ -645,6 +652,8 @@ public abstract class AbstractLdap<T extends LdapConfig> implements BaseLdap
    * the modification operation. modOp must be one of: ADD_ATTRIBUTE,
    * REPLACE_ATTRIBUTE, REMOVE_ATTRIBUTE. The order of the modifications is not
    * specified. Where possible, the modifications are performed atomically.
+   * See {@link javax.naming.DirContext#modifyAttributes(
+   * String, int, Attributes)}.
    *
    * @param  dn  <code>String</code> named object in the LDAP
    * @param  modOp  <code>int</code> modification operation
@@ -701,6 +710,8 @@ public abstract class AbstractLdap<T extends LdapConfig> implements BaseLdap
    * The modifications are performed in the order specified. Each modification
    * specifies a modification operation code and an attribute on which to
    * operate. Where possible, the modifications are performed atomically.
+   * See {@link javax.naming.DirContext#modifyAttributes(String,
+   * ModificationItem[])}.
    *
    * @param  dn  <code>String</code> named object in the LDAP
    * @param  mods  <code>ModificationItem[]</code> modifications
@@ -752,6 +763,8 @@ public abstract class AbstractLdap<T extends LdapConfig> implements BaseLdap
   /**
    * This will create the supplied dn in the LDAP namespace with the supplied
    * attributes.
+   * See {@link javax.naming.DirContext#createSubcontext(String, Attributes)}.
+   * Note that the context created by this operation is immediately closed.
    *
    * @param  dn  <code>String</code> named object in the LDAP
    * @param  attrs  <code>Attributes</code> attributes to be added to this entry
@@ -799,6 +812,7 @@ public abstract class AbstractLdap<T extends LdapConfig> implements BaseLdap
 
   /**
    * This will rename the supplied dn in the LDAP namespace.
+   * See {@link javax.naming.Context#rename(String, String)}.
    *
    * @param  oldDn  <code>String</code> object to rename
    * @param  newDn  <code>String</code> new name
@@ -846,6 +860,9 @@ public abstract class AbstractLdap<T extends LdapConfig> implements BaseLdap
 
   /**
    * This will delete the supplied dn from the LDAP namespace.
+   * Note that this method does not throw NameNotFoundException if the
+   * supplied dn does not exist.
+   * See {@link javax.naming.Context#destroySubcontext(String)}.
    *
    * @param  dn  <code>String</code> named object in the LDAP
    *
