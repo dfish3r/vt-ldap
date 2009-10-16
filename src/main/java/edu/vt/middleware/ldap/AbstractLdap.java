@@ -105,7 +105,10 @@ public abstract class AbstractLdap<T extends LdapConfig> implements BaseLdap
 
   /**
    * This will perform an LDAP compare operation with the supplied filter and
-   * dn.
+   * dn. Note that to perform a <b>real</b> LDAP compare operation, your filter
+   * must be of the form '(name=value)'. Any other filter expression will result
+   * in a regular object level search operation. In either case the desired
+   * result is achieved, but the underlying LDAP invocation is different.
    *
    * @param  dn  <code>String</code> name to compare
    * @param  filter  <code>String</code> expression to use for compare
