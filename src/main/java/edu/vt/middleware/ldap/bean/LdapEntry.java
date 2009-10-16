@@ -172,12 +172,10 @@ public class LdapEntry extends AbstractLdapBean
    *
    * @return  <code>String</code>
    */
+  @Override
   public String toString()
   {
-    final StringBuffer sb = new StringBuffer();
-    sb.append("dn=>").append(this.dn);
-    sb.append(this.ldapAttributes.toString());
-    return sb.toString();
+    return String.format("dn=>%s%s", this.dn, this.ldapAttributes);
   }
 
 

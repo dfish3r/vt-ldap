@@ -1637,14 +1637,14 @@ public class LdapConfig extends AbstractPropertyConfig
   /**
    * Provides a descriptive string representation of this instance.
    *
-   * @return  String of the form $Classname@hashCode::config=$config.
+   * @return  String of the form $Classname@hashCode::env=$env.
    */
   @Override
   public String toString()
   {
     return
       String.format(
-        "%s@%d::%s",
+        "%s@%d::env=%s",
         this.getClass().getName(),
         this.hashCode(),
         this.getEnvironment());

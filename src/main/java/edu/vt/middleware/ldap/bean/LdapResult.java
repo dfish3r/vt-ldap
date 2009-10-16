@@ -267,9 +267,10 @@ public class LdapResult extends AbstractLdapBean
    *
    * @return  <code>String</code>
    */
+  @Override
   public String toString()
   {
-    return this.entries.values().toString();
+    return String.format("%s", this.entries.values());
   }
 
 

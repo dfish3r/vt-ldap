@@ -98,6 +98,7 @@ public class LdapDnPrincipal
    *
    * @return  <code>String</code>
    */
+  @Override
   public String toString()
   {
     return this.name;

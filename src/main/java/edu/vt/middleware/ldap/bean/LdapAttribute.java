@@ -210,11 +210,10 @@ public class LdapAttribute extends AbstractLdapBean
    *
    * @return  <code>String</code>
    */
+  @Override
   public String toString()
   {
-    final StringBuffer sb = new StringBuffer();
-    sb.append(this.name).append(this.values);
-    return sb.toString();
+    return String.format("%s%s", this.name, this.values);
   }
 
 

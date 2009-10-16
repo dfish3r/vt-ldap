@@ -96,6 +96,7 @@ public class LdapRole implements Principal, Serializable, Comparable<Principal>
    *
    * @return  <code>String</code>
    */
+  @Override
   public String toString()
   {
     return this.name;

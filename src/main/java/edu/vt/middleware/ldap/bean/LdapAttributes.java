@@ -303,9 +303,10 @@ public class LdapAttributes extends AbstractLdapBean
    *
    * @return  <code>String</code>
    */
+  @Override
   public String toString()
   {
-    return this.attributes.values().toString();
+    return String.format("%s", this.attributes.values());
   }
 
 
