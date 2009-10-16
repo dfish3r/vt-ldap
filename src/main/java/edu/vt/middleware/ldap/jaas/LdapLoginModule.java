@@ -127,8 +127,10 @@ public class LdapLoginModule extends AbstractLoginModule implements LoginModule
         }
       }
       if (!this.success) {
-        throw new LoginException(
-          "Authentication failed: " + authEx.getMessage());
+        if (this.logger.isDebugEnabled()) {
+          this.logger.debug("Authentication failed", authEx);
+        }
+        throw new LoginException(authEx.getMessage());
       } else {
         if (this.setLdapPrincipal) {
           this.principals.add(new LdapPrincipal(nameCb.getName()));
@@ -147,8 +149,11 @@ public class LdapLoginModule extends AbstractLoginModule implements LoginModule
         this.storeCredentials(nameCb, passCb, loginDn);
       }
     } catch (NamingException e) {
+      if (this.logger.isDebugEnabled()) {
+        this.logger.debug("Error occured attempting authentication", e);
+      }
       this.success = false;
-      throw new LoginException(e.toString());
+      throw new LoginException(e.getMessage());
     } finally {
       this.auth.close();
     }

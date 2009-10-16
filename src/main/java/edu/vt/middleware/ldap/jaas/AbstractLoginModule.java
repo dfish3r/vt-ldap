@@ -334,13 +334,13 @@ public abstract class AbstractLoginModule implements LoginModule
         this.logger.error("Error reading data from callback handler", e);
       }
       this.success = false;
-      throw new LoginException(e.toString());
+      throw new LoginException(e.getMessage());
     } catch (UnsupportedCallbackException e) {
       if (this.logger.isErrorEnabled()) {
         this.logger.error("Unsupported callback", e);
       }
       this.success = false;
-      throw new LoginException(e.toString());
+      throw new LoginException(e.getMessage());
     }
   }
 

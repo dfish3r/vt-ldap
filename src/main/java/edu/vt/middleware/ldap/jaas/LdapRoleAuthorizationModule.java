@@ -135,8 +135,11 @@ public class LdapRoleAuthorizationModule extends AbstractLoginModule
       }
       this.storeCredentials(nameCb, passCb, null);
     } catch (NamingException e) {
+      if (this.logger.isDebugEnabled()) {
+        this.logger.debug("Error occured attempting role lookup", e);
+      }
       this.success = false;
-      throw new LoginException(e.toString());
+      throw new LoginException(e.getMessage());
     } finally {
       this.ldap.close();
     }
