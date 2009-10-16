@@ -98,6 +98,7 @@ public class LdapLoginModule extends AbstractLoginModule implements LoginModule
         false);
       this.getCredentials(nameCb, passCb, false);
 
+      AuthenticationException authEx = null;
       final List<LdapRole> roles = new ArrayList<LdapRole>();
       try {
         final Attributes attrs = this.auth.authenticate(
@@ -117,14 +118,17 @@ public class LdapLoginModule extends AbstractLoginModule implements LoginModule
             roles.addAll(this.attributesToRoles(attrs));
             this.success = true;
           } catch (AuthenticationException e2) {
+            authEx = e;
             this.success = false;
           }
         } else {
+          authEx = e;
           this.success = false;
         }
       }
       if (!this.success) {
-        throw new LoginException("Authentication failed.");
+        throw new LoginException(
+          "Authentication failed: " + authEx.getMessage());
       } else {
         if (this.setLdapPrincipal) {
           this.principals.add(new LdapPrincipal(nameCb.getName()));
