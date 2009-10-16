@@ -22,9 +22,11 @@ timeout: amount of time in milliseconds that connect operations will block
 timeLimit:amount of time in milliseconds that search operations will block
 tls:whether to use tls (true|false)
 typesOnly:whether to return only attribute types (true|false)
+authenticationResultHandlers:comma delimited list of authentication result handlers to use
 authorizationFilter:ldap filter to authorize user with
 constructDn:whether to construct the user dn instead of looking it up (true|false)
 credential:password to bind with
 subtreeSearch:whether to lookup user dn with a subtree search (true|false)
 user:combined with userField to lookup user dn
 userField:combined with user to lookup user dn
+userFilter:ldap filter to lookup user dn
