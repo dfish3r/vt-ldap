@@ -22,6 +22,7 @@ import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLSocketFactory;
 import edu.vt.middleware.ldap.LdapConfig;
 import edu.vt.middleware.ldap.handler.AuthenticationResultHandler;
+import edu.vt.middleware.ldap.handler.AuthorizationHandler;
 import edu.vt.middleware.ldap.handler.SearchResultHandler;
 
 /**
@@ -137,6 +138,19 @@ public class PropertyInvoker
             newValue,
             i,
             instantiateType(AuthenticationResultHandler.class, classes[i]));
+        }
+      } else if (
+        AuthorizationHandler[].class.isAssignableFrom(
+            getter.getReturnType())) {
+        final String[] classes = value.split(",");
+        newValue = Array.newInstance(
+          AuthorizationHandler.class,
+          classes.length);
+        for (int i = 0; i < classes.length; i++) {
+          Array.set(
+            newValue,
+            i,
+            instantiateType(AuthorizationHandler.class, classes[i]));
         }
       } else if (
         Class[].class.isAssignableFrom(getter.getReturnType())) {

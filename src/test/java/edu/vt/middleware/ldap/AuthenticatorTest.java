@@ -18,7 +18,9 @@ import javax.naming.directory.Attributes;
 import edu.vt.middleware.ldap.bean.LdapAttributes;
 import edu.vt.middleware.ldap.bean.LdapEntry;
 import edu.vt.middleware.ldap.handler.AuthenticationResultHandler;
+import edu.vt.middleware.ldap.handler.AuthorizationHandler;
 import edu.vt.middleware.ldap.handler.TestAuthenticationResultHandler;
+import edu.vt.middleware.ldap.handler.TestAuthorizationHandler;
 import org.testng.AssertJUnit;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
@@ -49,6 +51,12 @@ public class AuthenticatorTest
   /** Ldap instance for concurrency testing. */
   private Authenticator singleSSLAuth;
 
+  /** Ldap instance for concurrency testing. */
+  private DnAuthenticator singleTLSDnAuth;
+
+  /** Ldap instance for concurrency testing. */
+  private DnAuthenticator singleSSLDnAuth;
+
 
   /**
    * Default constructor.
@@ -60,6 +68,8 @@ public class AuthenticatorTest
   {
     this.singleTLSAuth = TestUtil.createTLSAuthenticator();
     this.singleSSLAuth = TestUtil.createSSLAuthenticator();
+    this.singleTLSDnAuth = TestUtil.createTLSDnAuthenticator();
+    this.singleSSLDnAuth = TestUtil.createSSLDnAuthenticator();
   }
 
 
@@ -123,6 +133,23 @@ public class AuthenticatorTest
   /**
    * @param  createNew  whether to construct a new ldap instance.
    *
+   * @return  <code>DnAuthenticator</code>
+   *
+   * @throws  Exception  On ldap construction failure.
+   */
+  public DnAuthenticator createTLSDnAuthenticator(final boolean createNew)
+    throws Exception
+  {
+    if (createNew) {
+      return TestUtil.createTLSDnAuthenticator();
+    }
+    return singleTLSDnAuth;
+  }
+
+
+  /**
+   * @param  createNew  whether to construct a new ldap instance.
+   *
    * @return  <code>Authenticator</code>
    *
    * @throws  Exception  On ldap construction failure.
@@ -134,6 +161,23 @@ public class AuthenticatorTest
       return TestUtil.createSSLAuthenticator();
     }
     return singleSSLAuth;
+  }
+
+
+  /**
+   * @param  createNew  whether to construct a new ldap instance.
+   *
+   * @return  <code>DnAuthenticator</code>
+   *
+   * @throws  Exception  On ldap construction failure.
+   */
+  public DnAuthenticator createSSLDnAuthenticator(final boolean createNew)
+    throws Exception
+  {
+    if (createNew) {
+      return TestUtil.createSSLDnAuthenticator();
+    }
+    return singleSSLDnAuth;
   }
 
 
@@ -227,12 +271,12 @@ public class AuthenticatorTest
     throws Exception
   {
     // test plain auth
-    final Authenticator ldap = this.createTLSAuthenticator(false);
-    AssertJUnit.assertFalse(ldap.authenticateDn(dn, INVALID_PASSWD));
-    AssertJUnit.assertTrue(ldap.authenticateDn(dn, credential));
+    final DnAuthenticator ldap = this.createTLSDnAuthenticator(false);
+    AssertJUnit.assertFalse(ldap.authenticate(dn, INVALID_PASSWD));
+    AssertJUnit.assertTrue(ldap.authenticate(dn, credential));
 
     // test auth with return attributes
-    final Attributes attrs = ldap.authenticateDn(
+    final Attributes attrs = ldap.authenticate(
       dn,
       credential,
       returnAttrs.split("\\|"));
@@ -271,12 +315,12 @@ public class AuthenticatorTest
     throws Exception
   {
     // test plain auth
-    final Authenticator ldap = this.createSSLAuthenticator(false);
-    AssertJUnit.assertFalse(ldap.authenticateDn(dn, INVALID_PASSWD));
-    AssertJUnit.assertTrue(ldap.authenticateDn(dn, credential));
+    final DnAuthenticator ldap = this.createSSLDnAuthenticator(false);
+    AssertJUnit.assertFalse(ldap.authenticate(dn, INVALID_PASSWD));
+    AssertJUnit.assertTrue(ldap.authenticate(dn, credential));
 
     // test auth with return attributes
-    final Attributes attrs = ldap.authenticateDn(
+    final Attributes attrs = ldap.authenticate(
       dn,
       credential,
       returnAttrs.split("\\|"));
@@ -320,22 +364,22 @@ public class AuthenticatorTest
     final String results)
     throws Exception
   {
-    final Authenticator ldap = this.createTLSAuthenticator(false);
+    final DnAuthenticator ldap = this.createTLSDnAuthenticator(false);
 
     // test plain auth
     AssertJUnit.assertFalse(
-      ldap.authenticateDn(dn, INVALID_PASSWD, new SearchFilter(filter)));
+      ldap.authenticate(dn, INVALID_PASSWD, new SearchFilter(filter)));
     AssertJUnit.assertFalse(
-      ldap.authenticateDn(
+      ldap.authenticate(
         dn, credential, new SearchFilter(INVALID_FILTER)));
     AssertJUnit.assertTrue(
-      ldap.authenticateDn(
+      ldap.authenticate(
         dn,
         credential,
         new SearchFilter(filter, filterArgs.split("\\|"))));
 
     // test auth with return attributes
-    final Attributes attrs = ldap.authenticateDn(
+    final Attributes attrs = ldap.authenticate(
       dn,
       credential,
       new SearchFilter(filter, filterArgs.split("\\|")),
@@ -348,27 +392,58 @@ public class AuthenticatorTest
   /**
    * @param  dn  to authenticate.
    * @param  credential  to authenticate with.
+   * @param  filter  to authorize with.
+   * @param  filterArgs  to authorize with.
    *
    * @throws  Exception  On test failure.
    */
   @Parameters({
       "authenticateDn",
-      "authenticateDnCredential"
+      "authenticateDnCredential",
+      "authenticateDnFilter",
+      "authenticateDnFilterArgs"
     })
   @Test(groups = {"authtest"})
-  public void authenticateDnHandler(final String dn, final String credential)
+  public void authenticateDnHandler(
+      final String dn,
+      final String credential,
+      final String filter,
+      final String filterArgs)
     throws Exception
   {
     // test authenticator handler
-    final Authenticator ldap = this.createTLSAuthenticator(true);
-    final TestAuthenticationResultHandler ah =
+    final DnAuthenticator ldap = this.createTLSDnAuthenticator(true);
+    final TestAuthenticationResultHandler authHandler =
       new TestAuthenticationResultHandler();
     ldap.getAuthenticatorConfig().setAuthenticationResultHandlers(
-      new AuthenticationResultHandler[] {ah});
-    AssertJUnit.assertFalse(ldap.authenticateDn(dn, INVALID_PASSWD));
-    AssertJUnit.assertFalse(ah.getResults().get(dn).booleanValue());
-    AssertJUnit.assertTrue(ldap.authenticateDn(dn, credential));
-    AssertJUnit.assertTrue(ah.getResults().get(dn).booleanValue());
+      new AuthenticationResultHandler[] {authHandler});
+    final TestAuthorizationHandler authzHandler =
+      new TestAuthorizationHandler();
+    ldap.getAuthenticatorConfig().setAuthorizationHandlers(
+      new AuthorizationHandler[] {authzHandler});
+
+    AssertJUnit.assertFalse(ldap.authenticate(dn, INVALID_PASSWD));
+    AssertJUnit.assertFalse(authHandler.getResults().get(dn).booleanValue());
+    AssertJUnit.assertFalse(!authzHandler.getResults().isEmpty());
+
+    AssertJUnit.assertFalse(ldap.authenticate(dn, credential));
+    AssertJUnit.assertFalse(authHandler.getResults().get(dn).booleanValue());
+    AssertJUnit.assertFalse(!authzHandler.getResults().isEmpty());
+
+    authzHandler.setSucceed(true);
+
+    AssertJUnit.assertTrue(ldap.authenticate(dn, credential));
+    AssertJUnit.assertTrue(authHandler.getResults().get(dn).booleanValue());
+    AssertJUnit.assertTrue(authzHandler.getResults().get(0).equals(dn));
+
+    authHandler.getResults().clear();
+    authzHandler.getResults().clear();
+
+    AssertJUnit.assertTrue(
+      ldap.authenticate(
+        dn, credential, new SearchFilter(filter, filterArgs.split("\\|"))));
+    AssertJUnit.assertTrue(authHandler.getResults().get(dn).booleanValue());
+    AssertJUnit.assertTrue(authzHandler.getResults().get(0).equals(dn));
   }
 
 
@@ -383,9 +458,9 @@ public class AuthenticatorTest
   public void authenticateDigestMd5(final String user, final String credential)
     throws Exception
   {
-    final Authenticator ldap = TestUtil.createDigestMD5Authenticator();
-    AssertJUnit.assertFalse(ldap.authenticateDn(user, INVALID_PASSWD));
-    AssertJUnit.assertTrue(ldap.authenticateDn(user, credential));
+    final DnAuthenticator ldap = TestUtil.createDigestMD5Authenticator();
+    AssertJUnit.assertFalse(ldap.authenticate(user, INVALID_PASSWD));
+    AssertJUnit.assertTrue(ldap.authenticate(user, credential));
     ldap.close();
   }
 
@@ -401,9 +476,9 @@ public class AuthenticatorTest
   public void authenticateCramMd5(final String user, final String credential)
     throws Exception
   {
-    final Authenticator ldap = TestUtil.createCramMD5Authenticator();
-    AssertJUnit.assertFalse(ldap.authenticateDn(user, INVALID_PASSWD));
-    AssertJUnit.assertTrue(ldap.authenticateDn(user, credential));
+    final DnAuthenticator ldap = TestUtil.createCramMD5Authenticator();
+    AssertJUnit.assertFalse(ldap.authenticate(user, INVALID_PASSWD));
+    AssertJUnit.assertTrue(ldap.authenticate(user, credential));
     ldap.close();
   }
 

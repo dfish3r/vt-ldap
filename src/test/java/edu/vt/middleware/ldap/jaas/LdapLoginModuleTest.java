@@ -183,6 +183,38 @@ public class LdapLoginModuleTest
    *
    * @throws  Exception  On test failure.
    */
+  @Parameters({ "jaasDn", "jaasUser", "jaasUserRole", "jaasCredential" })
+  @Test(groups = {"jaastest"})
+  public void handlerContextTest(
+    final String dn,
+    final String user,
+    final String role,
+    final String credential)
+    throws Exception
+  {
+    final TestCallbackHandler callback = new TestCallbackHandler();
+    callback.setName(user);
+    callback.setPassword(credential);
+
+    final LoginContext lc = new LoginContext("vt-ldap-handler", callback);
+    try {
+      lc.login();
+      AssertJUnit.fail(
+        "Handler succeed set to false, login should have failed");
+    } catch (Exception e) {
+      AssertJUnit.assertEquals(e.getClass(), LoginException.class);
+    }
+  }
+
+
+  /**
+   * @param  dn  of this user
+   * @param  user  to authenticate.
+   * @param  role  to set for this user
+   * @param  credential  to authenticate with.
+   *
+   * @throws  Exception  On test failure.
+   */
   @Parameters({ "jaasDn", "jaasUser", "jaasRoleCombined", "jaasCredential" })
   @Test(
     groups = {"jaastest"},

@@ -16,6 +16,7 @@ package edu.vt.middleware.ldap;
 import java.io.InputStream;
 import java.util.Arrays;
 import edu.vt.middleware.ldap.handler.AuthenticationResultHandler;
+import edu.vt.middleware.ldap.handler.AuthorizationHandler;
 import edu.vt.middleware.ldap.props.LdapProperties;
 import edu.vt.middleware.ldap.props.PropertyInvoker;
 
@@ -65,6 +66,9 @@ public class AuthenticatorConfig extends LdapConfig
 
   /** Handlers to process authentications. */
   private AuthenticationResultHandler[] authenticationResultHandlers;
+
+  /** Handlers to process authorization. */
+  private AuthorizationHandler[] authorizationHandlers;
 
 
   /** Default constructor. */
@@ -197,6 +201,17 @@ public class AuthenticatorConfig extends LdapConfig
   public AuthenticationResultHandler[] getAuthenticationResultHandlers()
   {
     return this.authenticationResultHandlers;
+  }
+
+
+  /**
+   * This returns the handlers to use for processing authorization.
+   *
+   * @return  <code>AuthorizationHandler[]</code>
+   */
+  public AuthorizationHandler[] getAuthorizationHandlers()
+  {
+    return this.authorizationHandlers;
   }
 
 
@@ -374,6 +389,21 @@ public class AuthenticatorConfig extends LdapConfig
       this.logger.trace("setting authenticationResultHandlers: " + handlers);
     }
     this.authenticationResultHandlers = handlers;
+  }
+
+
+  /**
+   * This sets the handlers for processing authorization.
+   *
+   * @param  handlers  <code>AuthorizationHandler[]</code>
+   */
+  public void setAuthorizationHandlers(final AuthorizationHandler[] handlers)
+  {
+    checkImmutable();
+    if (this.logger.isTraceEnabled()) {
+      this.logger.trace("setting authorizationHandlers: " + handlers);
+    }
+    this.authorizationHandlers = handlers;
   }
 
 
