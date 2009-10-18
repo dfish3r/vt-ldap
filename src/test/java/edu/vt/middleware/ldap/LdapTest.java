@@ -20,6 +20,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import javax.naming.Binding;
+import javax.naming.Context;
 import javax.naming.LimitExceededException;
 import javax.naming.NameClassPair;
 import javax.naming.NameNotFoundException;
@@ -704,6 +705,9 @@ public class LdapTest
     final List<String> l = new ArrayList<String>();
     while (iter.hasNext()) {
       final Binding b = iter.next();
+      if (Context.class.isAssignableFrom(b.getObject().getClass())) {
+        ((Context) b.getObject()).close();
+      }
       l.add(b.getName());
     }
 
