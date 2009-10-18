@@ -50,7 +50,7 @@ public class LdapRoleAuthorizationModule extends AbstractLoginModule
   private String roleFilter;
 
   /** Role attribute to add to role data. */
-  private String[] roleAttribute;
+  private String[] roleAttribute = new String[0];
 
   /** Ldap to use for searching roles against the LDAP. */
   private Ldap ldap;
@@ -72,7 +72,11 @@ public class LdapRoleAuthorizationModule extends AbstractLoginModule
       if (key.equalsIgnoreCase("roleFilter")) {
         this.roleFilter = value;
       } else if (key.equalsIgnoreCase("roleAttribute")) {
-        this.roleAttribute = value.split(",");
+        if (value.equals("*")) {
+          this.roleAttribute = null;
+        } else {
+          this.roleAttribute = value.split(",");
+        }
       }
     }
 

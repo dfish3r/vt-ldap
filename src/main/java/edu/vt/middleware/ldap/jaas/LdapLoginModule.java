@@ -44,7 +44,7 @@ public class LdapLoginModule extends AbstractLoginModule implements LoginModule
 {
 
   /** User attribute to add to role data. */
-  private String[] userRoleAttribute;
+  private String[] userRoleAttribute = new String[0];
 
   /** Authenticator to use against the LDAP. */
   private Authenticator auth;
@@ -68,7 +68,11 @@ public class LdapLoginModule extends AbstractLoginModule implements LoginModule
       final String key = i.next();
       final String value = (String) options.get(key);
       if (key.equalsIgnoreCase("userRoleAttribute")) {
-        this.userRoleAttribute = value.split(",");
+        if (value.equals("*")) {
+          this.userRoleAttribute = null;
+        } else {
+          this.userRoleAttribute = value.split(",");
+        }
       }
     }
 
