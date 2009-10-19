@@ -103,9 +103,10 @@ public class LdapLoginModule extends AbstractLoginModule implements LoginModule
       this.getCredentials(nameCb, passCb, false);
 
       AuthenticationException authEx = null;
+      Attributes attrs = null;
       final List<LdapRole> roles = new ArrayList<LdapRole>();
       try {
-        final Attributes attrs = this.auth.authenticate(
+        attrs = this.auth.authenticate(
           nameCb.getName(),
           passCb.getPassword(),
           this.userRoleAttribute);
@@ -115,7 +116,7 @@ public class LdapLoginModule extends AbstractLoginModule implements LoginModule
         if (this.tryFirstPass) {
           this.getCredentials(nameCb, passCb, true);
           try {
-            final Attributes attrs = this.auth.authenticate(
+            attrs = this.auth.authenticate(
               nameCb.getName(),
               passCb.getPassword(),
               this.userRoleAttribute);
@@ -137,12 +138,20 @@ public class LdapLoginModule extends AbstractLoginModule implements LoginModule
         throw new LoginException(authEx.getMessage());
       } else {
         if (this.setLdapPrincipal) {
-          this.principals.add(new LdapPrincipal(nameCb.getName()));
+          final LdapPrincipal lp = new LdapPrincipal(nameCb.getName());
+          if (attrs != null) {
+            lp.getLdapAttributes().addAttributes(attrs);
+          }
+          this.principals.add(lp);
         }
 
         final String loginDn = this.auth.getDn(nameCb.getName());
         if (loginDn != null && this.setLdapDnPrincipal) {
-          this.principals.add(new LdapDnPrincipal(loginDn));
+          final LdapDnPrincipal lp = new LdapDnPrincipal(loginDn);
+          if (attrs != null) {
+            lp.getLdapAttributes().addAttributes(attrs);
+          }
+          this.principals.add(lp);
         }
         if (this.setLdapCredential) {
           this.credentials.add(new LdapCredential(passCb.getPassword()));
@@ -190,7 +199,7 @@ public class LdapLoginModule extends AbstractLoginModule implements LoginModule
     final Iterator<Principal> i = principals.iterator();
     while (i.hasNext()) {
       final Principal p = i.next();
-      System.out.println("  " + p.getName());
+      System.out.println("  " + p);
     }
     lc.logout();
   }
