@@ -157,7 +157,7 @@ public class LdapLoginModuleTest
    *
    * @throws  Exception  On test failure.
    */
-  @Parameters({ "jaasDn", "jaasUser", "jaasUserRole", "jaasCredential" })
+  @Parameters({ "jaasDn", "jaasUser", "jaasCredential" })
   @Test(
     groups = {"jaastest"},
     threadPoolSize = 10,
@@ -167,11 +167,10 @@ public class LdapLoginModuleTest
   public void filterContextTest(
     final String dn,
     final String user,
-    final String role,
     final String credential)
     throws Exception
   {
-    this.doContextTest("vt-ldap-filter", dn, user, role, credential);
+    this.doContextTest("vt-ldap-filter", dn, user, "", credential);
   }
 
 
@@ -350,7 +349,10 @@ public class LdapLoginModuleTest
     final Set<LdapRole> roles = lc.getSubject().getPrincipals(LdapRole.class);
 
     final Iterator<LdapRole> roleIter = roles.iterator();
-    final String[] checkRoles = role.split("\\|");
+    String[] checkRoles = role.split("\\|");
+    if (checkRoles.length == 1 && checkRoles[0].equals("")) {
+      checkRoles = new String[0];
+    }
     AssertJUnit.assertEquals(checkRoles.length, roles.size());
     while (roleIter.hasNext()) {
       final LdapRole r = roleIter.next();

@@ -283,7 +283,7 @@ public abstract class AbstractLoginModule implements LoginModule
       }
     }
     authProperties.configure();
-    return new Authenticator(authConfig);
+    return new JaasAuthenticator(authConfig);
   }
 
 
@@ -387,10 +387,12 @@ public abstract class AbstractLoginModule implements LoginModule
     throws NamingException
   {
     final List<LdapRole> roles = new ArrayList<LdapRole>();
-    final LdapAttributes ldapAttrs = new LdapAttributes(attributes);
-    for (LdapAttribute ldapAttr : ldapAttrs.getAttributes()) {
-      for (String attrValue : ldapAttr.getStringValues()) {
-        roles.add(new LdapRole(attrValue));
+    if (attributes != null) {
+      final LdapAttributes ldapAttrs = new LdapAttributes(attributes);
+      for (LdapAttribute ldapAttr : ldapAttrs.getAttributes()) {
+        for (String attrValue : ldapAttr.getStringValues()) {
+          roles.add(new LdapRole(attrValue));
+        }
       }
     }
     return roles;
