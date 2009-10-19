@@ -252,6 +252,7 @@
         <include name="servlettest" />
         <include name="dsmltest" />
         <include name="ldiftest" />
+        <include name="wikitest" />
       </run>
     </groups>
     <packages>
