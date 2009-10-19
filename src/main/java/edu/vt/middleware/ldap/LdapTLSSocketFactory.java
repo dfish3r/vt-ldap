@@ -67,9 +67,6 @@ public class LdapTLSSocketFactory extends SSLSocketFactory
   /** Default keystore type, value is {@value}. */
   public static final String DEFAULT_KEYSTORE_TYPE = "JKS";
 
-  /** Log for this class. */
-  private static final Log LOG = LogFactory.getLog(LdapTLSSocketFactory.class);
-
   /** Types of paths. */
   public enum PathType {
 
@@ -424,12 +421,14 @@ public class LdapTLSSocketFactory extends SSLSocketFactory
     try {
       sf.initialize();
     } catch (IOException e) {
-      if (LOG.isErrorEnabled()) {
-        LOG.error("Error loading keystore", e);
+      final Log logger = LogFactory.getLog(LdapTLSSocketFactory.class);
+      if (logger.isErrorEnabled()) {
+        logger.error("Error loading keystore", e);
       }
     } catch (GeneralSecurityException e) {
-      if (LOG.isErrorEnabled()) {
-        LOG.error("Error initializing socket factory", e);
+      final Log logger = LogFactory.getLog(LdapTLSSocketFactory.class);
+      if (logger.isErrorEnabled()) {
+        logger.error("Error initializing socket factory", e);
       }
     }
     return sf;
@@ -613,6 +612,7 @@ public class LdapTLSSocketFactory extends SSLSocketFactory
    */
   private InputStream getInputStream(final String filename, final PathType pt)
   {
+    final Log logger = LogFactory.getLog(LdapTLSSocketFactory.class);
     InputStream is = null;
     if (pt == PathType.CLASSPATH) {
       is = LdapTLSSocketFactory.class.getResourceAsStream(filename);
@@ -626,18 +626,18 @@ public class LdapTLSSocketFactory extends SSLSocketFactory
       try {
         is = new FileInputStream(file);
       } catch (IOException e) {
-        if (LOG.isWarnEnabled()) {
-          LOG.warn("Error loading keystore from " + filename, e);
+        if (logger.isWarnEnabled()) {
+          logger.warn("Error loading keystore from " + filename, e);
         }
       }
     }
     if (is != null) {
-      if (LOG.isDebugEnabled()) {
-        LOG.debug("Successfully loaded " + filename + " from " + pt);
+      if (logger.isDebugEnabled()) {
+        logger.debug("Successfully loaded " + filename + " from " + pt);
       }
     } else {
-      if (LOG.isDebugEnabled()) {
-        LOG.debug("Failed to load " + filename + " from " + pt);
+      if (logger.isDebugEnabled()) {
+        logger.debug("Failed to load " + filename + " from " + pt);
       }
     }
     return is;

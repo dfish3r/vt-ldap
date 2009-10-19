@@ -19,8 +19,6 @@ import java.util.List;
 import javax.naming.NamingException;
 import javax.naming.directory.SearchResult;
 import edu.vt.middleware.ldap.bean.LdapEntry;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.dom4j.Document;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
@@ -40,9 +38,6 @@ public final class Dsmlv2 extends AbstractDsml
 
   /** serial version uid. */
   private static final long serialVersionUID = 4052208816312309345L;
-
-  /** Log for this class. */
-  private static final Log LOG = LogFactory.getLog(Dsmlv2.class);
 
 
   /** Default constructor. */
@@ -77,8 +72,8 @@ public final class Dsmlv2 extends AbstractDsml
           entriesElement.add(entryElement);
         }
       } catch (NamingException e) {
-        if (LOG.isErrorEnabled()) {
-          LOG.error("Error creating Element from SearchResult", e);
+        if (this.logger.isErrorEnabled()) {
+          this.logger.error("Error creating Element from SearchResult", e);
         }
       }
     }

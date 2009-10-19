@@ -21,8 +21,6 @@ import javax.naming.directory.SearchResult;
 import edu.vt.middleware.ldap.LdapUtil;
 import edu.vt.middleware.ldap.bean.LdapAttribute;
 import edu.vt.middleware.ldap.bean.LdapEntry;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.dom4j.Document;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
@@ -42,9 +40,6 @@ public final class Dsmlv1 extends AbstractDsml
 
   /** serial version uid. */
   private static final long serialVersionUID = 7584496747917061037L;
-
-  /** Log for this class. */
-  private static final Log LOG = LogFactory.getLog(Dsmlv1.class);
 
 
   /** Default constructor. */
@@ -79,8 +74,8 @@ public final class Dsmlv1 extends AbstractDsml
           entriesElement.add(entryElement);
         }
       } catch (NamingException e) {
-        if (LOG.isErrorEnabled()) {
-          LOG.error("Error creating Element from SearchResult", e);
+        if (this.logger.isErrorEnabled()) {
+          this.logger.error("Error creating Element from SearchResult", e);
         }
       }
     }
@@ -122,8 +117,8 @@ public final class Dsmlv1 extends AbstractDsml
               value = LdapUtil.base64Encode((byte[]) rawValue);
               isBase64 = true;
             } else {
-              if (LOG.isWarnEnabled()) {
-                LOG.warn(
+              if (this.logger.isWarnEnabled()) {
+                this.logger.warn(
                   "Could not cast attribute value as a byte[]" +
                   " or a String");
               }

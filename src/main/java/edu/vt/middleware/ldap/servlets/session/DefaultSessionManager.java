@@ -15,8 +15,6 @@ package edu.vt.middleware.ldap.servlets.session;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpSession;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
 /**
  * <code>DefaultSessionManager</code> provides a base class for session
@@ -32,9 +30,6 @@ import org.apache.commons.logging.LogFactory;
 public class DefaultSessionManager extends SessionManager
 {
 
-  /** Log for this class. */
-  private static final Log LOG = LogFactory.getLog(DefaultSessionManager.class);
-
 
   /**
    * This performs any actions necessary to login the suppled user.
@@ -47,17 +42,18 @@ public class DefaultSessionManager extends SessionManager
   public void login(final HttpSession session, final String user)
     throws ServletException
   {
-    if (LOG.isDebugEnabled()) {
-      LOG.debug("Begin login method");
+    if (this.logger.isDebugEnabled()) {
+      this.logger.debug("Begin login method");
     }
     if (this.sessionId != null) {
       session.setAttribute(this.sessionId, user);
-      if (LOG.isDebugEnabled()) {
-        LOG.debug("Set session attribute " + this.sessionId + " to " + user);
+      if (this.logger.isDebugEnabled()) {
+        this.logger.debug("Set session attribute " + this.sessionId +
+                          " to " + user);
       }
     } else {
-      if (LOG.isDebugEnabled()) {
-        LOG.debug("Could not set session attribute, value is null");
+      if (this.logger.isDebugEnabled()) {
+        this.logger.debug("Could not set session attribute, value is null");
       }
     }
   }
@@ -73,29 +69,29 @@ public class DefaultSessionManager extends SessionManager
   public void logout(final HttpSession session)
     throws ServletException
   {
-    if (LOG.isDebugEnabled()) {
-      LOG.debug("Begin logout method");
+    if (this.logger.isDebugEnabled()) {
+      this.logger.debug("Begin logout method");
     }
     if (this.sessionId != null) {
       final String user = (String) session.getAttribute(this.sessionId);
       session.removeAttribute(this.sessionId);
-      if (LOG.isDebugEnabled()) {
-        LOG.debug(
+      if (this.logger.isDebugEnabled()) {
+        this.logger.debug(
           "Removed session attribute " + this.sessionId + " for " + user);
       }
     } else {
-      if (LOG.isDebugEnabled()) {
-        LOG.debug("Could not remove session attribute, value is null");
+      if (this.logger.isDebugEnabled()) {
+        this.logger.debug("Could not remove session attribute, value is null");
       }
     }
     if (this.invalidateSession) {
       session.invalidate();
-      if (LOG.isDebugEnabled()) {
-        LOG.debug("Session invalidated");
+      if (this.logger.isDebugEnabled()) {
+        this.logger.debug("Session invalidated");
       }
     } else {
-      if (LOG.isDebugEnabled()) {
-        LOG.debug("Session was not invalidated");
+      if (this.logger.isDebugEnabled()) {
+        this.logger.debug("Session was not invalidated");
       }
     }
   }

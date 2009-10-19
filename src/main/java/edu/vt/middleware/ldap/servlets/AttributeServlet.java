@@ -59,7 +59,7 @@ public final class AttributeServlet extends HttpServlet
   private static final long serialVersionUID = -5420737961961379785L;
 
   /** Log for this class. */
-  private static final Log LOG = LogFactory.getLog(AttributeServlet.class);
+  private final Log logger = LogFactory.getLog(AttributeServlet.class);
 
   /** Types of available pools. */
   private enum PoolType {
@@ -92,8 +92,9 @@ public final class AttributeServlet extends HttpServlet
 
     final String propertiesFile = getInitParameter(
       ServletConstants.PROPERTIES_FILE);
-    if (LOG.isDebugEnabled()) {
-      LOG.debug(ServletConstants.PROPERTIES_FILE + " = " + propertiesFile);
+    if (this.logger.isDebugEnabled()) {
+      this.logger.debug(ServletConstants.PROPERTIES_FILE + " = " +
+                        propertiesFile);
     }
 
     final LdapConfig ldapConfig = LdapConfig.createFromProperties(
@@ -101,8 +102,8 @@ public final class AttributeServlet extends HttpServlet
 
     final String poolPropertiesFile = getInitParameter(
       ServletConstants.POOL_PROPERTIES_FILE);
-    if (LOG.isDebugEnabled()) {
-      LOG.debug(
+    if (this.logger.isDebugEnabled()) {
+      this.logger.debug(
         ServletConstants.POOL_PROPERTIES_FILE + " = " + poolPropertiesFile);
     }
 
@@ -110,8 +111,8 @@ public final class AttributeServlet extends HttpServlet
       AttributeServlet.class.getResourceAsStream(poolPropertiesFile));
 
     final String poolType = getInitParameter(ServletConstants.POOL_TYPE);
-    if (LOG.isDebugEnabled()) {
-      LOG.debug(ServletConstants.POOL_TYPE + " = " + poolType);
+    if (this.logger.isDebugEnabled()) {
+      this.logger.debug(ServletConstants.POOL_TYPE + " = " + poolType);
     }
     if (PoolType.BLOCKING == PoolType.valueOf(poolType)) {
       this.pool = new BlockingLdapPool(
@@ -193,8 +194,8 @@ public final class AttributeServlet extends HttpServlet
       }
 
     } catch (Exception e) {
-      if (LOG.isErrorEnabled()) {
-        LOG.error("Error performing search", e);
+      if (this.logger.isErrorEnabled()) {
+        this.logger.error("Error performing search", e);
       }
       throw new ServletException(e.getMessage());
     }

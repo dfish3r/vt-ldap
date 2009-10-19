@@ -31,7 +31,7 @@ public abstract class SessionManager
 {
 
   /** Log for this class. */
-  private static final Log LOG = LogFactory.getLog(SessionManager.class);
+  protected final Log logger = LogFactory.getLog(this.getClass());
 
   /** Identifier to set in the session after valid authentication. */
   protected String sessionId;
@@ -49,8 +49,8 @@ public abstract class SessionManager
   public void setSessionId(final String id)
   {
     this.sessionId = id;
-    if (LOG.isDebugEnabled()) {
-      LOG.debug("Set session attribute to " + this.sessionId);
+    if (this.logger.isDebugEnabled()) {
+      this.logger.debug("Set session attribute to " + this.sessionId);
     }
   }
 
@@ -63,8 +63,8 @@ public abstract class SessionManager
   public void setInvalidateSession(final boolean invalidate)
   {
     this.invalidateSession = invalidate;
-    if (LOG.isDebugEnabled()) {
-      LOG.debug("Set invalidateSession to " + this.invalidateSession);
+    if (this.logger.isDebugEnabled()) {
+      this.logger.debug("Set invalidateSession to " + this.invalidateSession);
     }
   }
 

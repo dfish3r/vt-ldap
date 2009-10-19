@@ -70,7 +70,7 @@ public final class SearchServlet extends HttpServlet
   private static final long serialVersionUID = -507762004623806651L;
 
   /** Log for this class. */
-  private static final Log LOG = LogFactory.getLog(SearchServlet.class);
+  private final Log logger = LogFactory.getLog(SearchServlet.class);
 
   /** Types of available pools. */
   private enum PoolType {
@@ -122,8 +122,9 @@ public final class SearchServlet extends HttpServlet
 
     final String propertiesFile = getInitParameter(
       ServletConstants.PROPERTIES_FILE);
-    if (LOG.isDebugEnabled()) {
-      LOG.debug(ServletConstants.PROPERTIES_FILE + " = " + propertiesFile);
+    if (this.logger.isDebugEnabled()) {
+      this.logger.debug(ServletConstants.PROPERTIES_FILE + " = " +
+                        propertiesFile);
     }
 
     final LdapConfig ldapConfig = LdapConfig.createFromProperties(
@@ -131,8 +132,8 @@ public final class SearchServlet extends HttpServlet
 
     final String poolPropertiesFile = getInitParameter(
       ServletConstants.POOL_PROPERTIES_FILE);
-    if (LOG.isDebugEnabled()) {
-      LOG.debug(
+    if (this.logger.isDebugEnabled()) {
+      this.logger.debug(
         ServletConstants.POOL_PROPERTIES_FILE + " = " + poolPropertiesFile);
     }
 
@@ -141,8 +142,8 @@ public final class SearchServlet extends HttpServlet
 
     LdapPool<Ldap> ldapPool = null;
     final String poolType = getInitParameter(ServletConstants.POOL_TYPE);
-    if (LOG.isDebugEnabled()) {
-      LOG.debug(ServletConstants.POOL_TYPE + " = " + poolType);
+    if (this.logger.isDebugEnabled()) {
+      this.logger.debug(ServletConstants.POOL_TYPE + " = " + poolType);
     }
     if (PoolType.BLOCKING == PoolType.valueOf(poolType)) {
       ldapPool = new BlockingLdapPool(
@@ -171,8 +172,8 @@ public final class SearchServlet extends HttpServlet
     if (outputType == null) {
       outputType = ServletConstants.DEFAULT_OUTPUT_FORMAT;
     }
-    if (LOG.isDebugEnabled()) {
-      LOG.debug(ServletConstants.OUTPUT_FORMAT + " = " + outputType);
+    if (this.logger.isDebugEnabled()) {
+      this.logger.debug(ServletConstants.OUTPUT_FORMAT + " = " + outputType);
     }
     this.output = OutputType.valueOf(outputType);
   }
@@ -192,8 +193,8 @@ public final class SearchServlet extends HttpServlet
     final HttpServletResponse response)
     throws ServletException, IOException
   {
-    if (LOG.isInfoEnabled()) {
-      LOG.info(
+    if (this.logger.isInfoEnabled()) {
+      this.logger.info(
         "Performing search: " + request.getParameter("query") +
         " for attributes: " + request.getParameter("attrs"));
     }
@@ -229,8 +230,8 @@ public final class SearchServlet extends HttpServlet
         }
       }
     } catch (Exception e) {
-      if (LOG.isErrorEnabled()) {
-        LOG.error("Error performing search", e);
+      if (this.logger.isErrorEnabled()) {
+        this.logger.error("Error performing search", e);
       }
       throw new ServletException(e);
     }

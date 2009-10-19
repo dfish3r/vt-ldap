@@ -35,7 +35,7 @@ public final class LdapProperties
   public static final String PROPERTIES_FILE = "/ldap.properties";
 
   /** Log for this class. */
-  private static final Log LOG = LogFactory.getLog(LdapProperties.class);
+  private final Log logger = LogFactory.getLog(LdapProperties.class);
 
   /** Class with properties. */
   private PropertyConfig propertyConfig;
@@ -107,18 +107,18 @@ public final class LdapProperties
     if (is != null) {
       try {
         properties.load(is);
-        if (LOG.isDebugEnabled()) {
-          LOG.debug("Loaded ldap properties from input stream");
+        if (this.logger.isDebugEnabled()) {
+          this.logger.debug("Loaded ldap properties from input stream");
         }
         is.close();
       } catch (IOException e) {
-        if (LOG.isErrorEnabled()) {
-          LOG.error("Error using input stream", e);
+        if (this.logger.isErrorEnabled()) {
+          this.logger.error("Error using input stream", e);
         }
       }
     } else {
-      if (LOG.isDebugEnabled()) {
-        LOG.debug("Input stream was null, no properties loaded");
+      if (this.logger.isDebugEnabled()) {
+        this.logger.debug("Input stream was null, no properties loaded");
       }
     }
     return properties;

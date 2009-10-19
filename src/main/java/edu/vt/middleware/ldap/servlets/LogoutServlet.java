@@ -18,8 +18,6 @@ import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
 /**
  * <code>LogoutServet</code> removes the session id attribute set by the <code>
@@ -37,9 +35,6 @@ public final class LogoutServlet extends CommonServlet
 
   /** serial version uid. */
   private static final long serialVersionUID = -4267432471774601068L;
-
-  /** Log for this class. */
-  private static final Log LOG = LogFactory.getLog(LogoutServlet.class);
 
 
   /**
@@ -74,14 +69,14 @@ public final class LogoutServlet extends CommonServlet
     if (url == null) {
       url = "";
     }
-    if (LOG.isDebugEnabled()) {
-      LOG.debug("Received url param = " + url);
+    if (this.logger.isDebugEnabled()) {
+      this.logger.debug("Received url param = " + url);
     }
 
     this.sessionManager.logout(request.getSession(true));
     response.sendRedirect(url);
-    if (LOG.isDebugEnabled()) {
-      LOG.debug("Redirected user to " + url);
+    if (this.logger.isDebugEnabled()) {
+      this.logger.debug("Redirected user to " + url);
     }
   }
 

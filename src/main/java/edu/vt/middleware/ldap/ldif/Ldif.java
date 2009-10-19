@@ -64,12 +64,12 @@ public class Ldif implements Serializable
   /** serial version uid. */
   private static final long serialVersionUID = 4704446748426929544L;
 
-  /** Log for this class. */
-  private static final Log LOG = LogFactory.getLog(Ldif.class);
-
   /** Line separator. */
   private static final String LINE_SEPARATOR = System.getProperty(
     "line.separator");
+
+  /** Log for this class. */
+  protected final Log logger = LogFactory.getLog(this.getClass());
 
 
   /**
@@ -109,8 +109,8 @@ public class Ldif implements Serializable
       try {
         ldif.append(createLdifEntry(result));
       } catch (NamingException e) {
-        if (LOG.isErrorEnabled()) {
-          LOG.error("Error creating String from SearchResult", e);
+        if (this.logger.isErrorEnabled()) {
+          this.logger.error("Error creating String from SearchResult", e);
         }
       }
     }
@@ -157,8 +157,8 @@ public class Ldif implements Serializable
             } else if (attrValue instanceof byte[]) {
               encodedAttrValue = LdapUtil.base64Encode((byte[]) attrValue);
             } else {
-              if (LOG.isWarnEnabled()) {
-                LOG.warn(
+              if (this.logger.isWarnEnabled()) {
+                this.logger.warn(
                   "Could not cast attribute value as a byte[]" +
                   " or a String");
               }

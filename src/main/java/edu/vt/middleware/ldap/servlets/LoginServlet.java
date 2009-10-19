@@ -22,8 +22,6 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import edu.vt.middleware.ldap.Authenticator;
 import edu.vt.middleware.ldap.props.LdapProperties;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
 /**
  * <code>LoginServet</code> attempts to authenticate a user against an LDAP. The
@@ -50,9 +48,6 @@ public final class LoginServlet extends CommonServlet
   /** serial version uid. */
   private static final long serialVersionUID = -1987565072388102546L;
 
-  /** Log for this class. */
-  private static final Log LOG = LogFactory.getLog(LoginServlet.class);
-
   /** URL of the page that does collects user credentials. */
   private String loginUrl;
 
@@ -78,23 +73,24 @@ public final class LoginServlet extends CommonServlet
     if (this.loginUrl == null) {
       this.loginUrl = ServletConstants.DEFAULT_LOGIN_URL;
     }
-    if (LOG.isDebugEnabled()) {
-      LOG.debug(ServletConstants.LOGIN_URL + " = " + this.loginUrl);
+    if (this.logger.isDebugEnabled()) {
+      this.logger.debug(ServletConstants.LOGIN_URL + " = " + this.loginUrl);
     }
     this.errorMsg = getInitParameter(ServletConstants.ERROR_MSG);
     if (this.errorMsg == null) {
       this.errorMsg = ServletConstants.DEFAULT_ERROR_MSG;
     }
-    if (LOG.isDebugEnabled()) {
-      LOG.debug(ServletConstants.ERROR_MSG + " = " + this.errorMsg);
+    if (this.logger.isDebugEnabled()) {
+      this.logger.debug(ServletConstants.ERROR_MSG + " = " + this.errorMsg);
     }
 
     String propertiesFile = getInitParameter(ServletConstants.PROPERTIES_FILE);
     if (propertiesFile == null) {
       propertiesFile = LdapProperties.PROPERTIES_FILE;
     }
-    if (LOG.isDebugEnabled()) {
-      LOG.debug(ServletConstants.PROPERTIES_FILE + " = " + propertiesFile);
+    if (this.logger.isDebugEnabled()) {
+      this.logger.debug(ServletConstants.PROPERTIES_FILE + " = " +
+                        propertiesFile);
     }
     this.auth = new Authenticator();
     this.auth.loadFromProperties(
@@ -121,8 +117,8 @@ public final class LoginServlet extends CommonServlet
     if (user != null) {
       user = user.trim().toLowerCase();
     }
-    if (LOG.isDebugEnabled()) {
-      LOG.debug("Received user param = " + user);
+    if (this.logger.isDebugEnabled()) {
+      this.logger.debug("Received user param = " + user);
     }
 
     final String credential = request.getParameter(
@@ -131,8 +127,8 @@ public final class LoginServlet extends CommonServlet
     if (url == null) {
       url = "";
     }
-    if (LOG.isDebugEnabled()) {
-      LOG.debug("Received url param = " + url);
+    if (this.logger.isDebugEnabled()) {
+      this.logger.debug("Received url param = " + url);
     }
 
     final StringBuffer error = new StringBuffer(this.errorMsg);
@@ -142,8 +138,8 @@ public final class LoginServlet extends CommonServlet
         validCredentials = true;
       }
     } catch (Exception e) {
-      if (LOG.isErrorEnabled()) {
-        LOG.error("Error authenticating user " + user, e);
+      if (this.logger.isErrorEnabled()) {
+        this.logger.error("Error authenticating user " + user, e);
       }
       if (
         e.getCause() != null &&
@@ -156,8 +152,8 @@ public final class LoginServlet extends CommonServlet
     }
 
     if (validCredentials) {
-      if (LOG.isDebugEnabled()) {
-        LOG.debug("Authentication succeeded for user " + user);
+      if (this.logger.isDebugEnabled()) {
+        this.logger.debug("Authentication succeeded for user " + user);
       }
       try {
         // invalidate existing session
@@ -167,17 +163,17 @@ public final class LoginServlet extends CommonServlet
         }
         session = request.getSession(true);
         this.sessionManager.login(session, user);
-        if (LOG.isDebugEnabled()) {
-          LOG.debug("Initialized session for user " + user);
+        if (this.logger.isDebugEnabled()) {
+          this.logger.debug("Initialized session for user " + user);
         }
         response.sendRedirect(url);
-        if (LOG.isDebugEnabled()) {
-          LOG.debug("Redirected user to " + url);
+        if (this.logger.isDebugEnabled()) {
+          this.logger.debug("Redirected user to " + url);
         }
         return;
       } catch (Exception e) {
-        if (LOG.isErrorEnabled()) {
-          LOG.error("Error authorizing user " + user, e);
+        if (this.logger.isErrorEnabled()) {
+          this.logger.error("Error authorizing user " + user, e);
         }
         if (
           e.getCause() != null &&
@@ -202,8 +198,8 @@ public final class LoginServlet extends CommonServlet
       errorUrl.append("&url=").append(URLEncoder.encode(url, "UTF-8"));
     }
     response.sendRedirect(errorUrl.toString());
-    if (LOG.isDebugEnabled()) {
-      LOG.debug("Redirected user to " + errorUrl.toString());
+    if (this.logger.isDebugEnabled()) {
+      this.logger.debug("Redirected user to " + errorUrl.toString());
     }
   }
 

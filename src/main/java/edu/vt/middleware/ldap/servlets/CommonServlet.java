@@ -34,7 +34,7 @@ public class CommonServlet extends HttpServlet
   private static final long serialVersionUID = -9145103488979474729L;
 
   /** Log for this class. */
-  private static final Log LOG = LogFactory.getLog(CommonServlet.class);
+  protected final Log logger = LogFactory.getLog(this.getClass());
 
   /** Used to manage a session after login and logout. */
   protected SessionManager sessionManager;
@@ -57,25 +57,27 @@ public class CommonServlet extends HttpServlet
     if (sessionManagerClass == null) {
       sessionManagerClass = ServletConstants.DEFAULT_SESSION_MANAGER;
     }
-    if (LOG.isDebugEnabled()) {
-      LOG.debug(ServletConstants.SESSION_MANAGER + " = " + sessionManagerClass);
+    if (this.logger.isDebugEnabled()) {
+      this.logger.debug(ServletConstants.SESSION_MANAGER + " = " +
+                        sessionManagerClass);
     }
     try {
       this.sessionManager = (SessionManager) Class.forName(sessionManagerClass)
           .newInstance();
     } catch (ClassNotFoundException e) {
-      if (LOG.isErrorEnabled()) {
-        LOG.error("Could not find class " + sessionManagerClass, e);
+      if (this.logger.isErrorEnabled()) {
+        this.logger.error("Could not find class " + sessionManagerClass, e);
       }
       throw new ServletException(e);
     } catch (InstantiationException e) {
-      if (LOG.isErrorEnabled()) {
-        LOG.error("Could not instantiate class " + sessionManagerClass, e);
+      if (this.logger.isErrorEnabled()) {
+        this.logger.error(
+          "Could not instantiate class " + sessionManagerClass, e);
       }
       throw new ServletException(e);
     } catch (IllegalAccessException e) {
-      if (LOG.isErrorEnabled()) {
-        LOG.error("Could not access class " + sessionManagerClass, e);
+      if (this.logger.isErrorEnabled()) {
+        this.logger.error("Could not access class " + sessionManagerClass, e);
       }
       throw new ServletException(e);
     }
@@ -84,8 +86,8 @@ public class CommonServlet extends HttpServlet
     if (sessionId == null) {
       sessionId = ServletConstants.DEFAULT_SESSION_ID;
     }
-    if (LOG.isDebugEnabled()) {
-      LOG.debug(ServletConstants.SESSION_ID + " = " + sessionId);
+    if (this.logger.isDebugEnabled()) {
+      this.logger.debug(ServletConstants.SESSION_ID + " = " + sessionId);
     }
     this.sessionManager.setSessionId(sessionId);
 
@@ -95,8 +97,8 @@ public class CommonServlet extends HttpServlet
     if (invalidateSession == null) {
       invalidateSession = ServletConstants.DEFAULT_INVALIDATE_SESSION;
     }
-    if (LOG.isDebugEnabled()) {
-      LOG.debug(
+    if (this.logger.isDebugEnabled()) {
+      this.logger.debug(
         ServletConstants.INVALIDATE_SESSION + " = " + invalidateSession);
     }
     this.sessionManager.setInvalidateSession(

@@ -35,7 +35,7 @@ public class LdapSearch
 {
 
   /** Log for this class. */
-  private static final Log LOG = LogFactory.getLog(LdapSearch.class);
+  protected final Log logger = LogFactory.getLog(this.getClass());
 
   /** Ldap object to use for searching. */
   protected LdapPool<Ldap> pool;
@@ -74,16 +74,16 @@ public class LdapSearch
           ldap = this.pool.checkOut();
           queryResults = ldap.search(new SearchFilter(query), attrs);
         } catch (NamingException e) {
-          if (LOG.isErrorEnabled()) {
-            LOG.error("Error attempting LDAP search", e);
+          if (this.logger.isErrorEnabled()) {
+            this.logger.error("Error attempting LDAP search", e);
           }
           throw e;
         } finally {
           this.pool.checkIn(ldap);
         }
       } catch (Exception e) {
-        if (LOG.isErrorEnabled()) {
-          LOG.error("Error using LDAP pool", e);
+        if (this.logger.isErrorEnabled()) {
+          this.logger.error("Error using LDAP pool", e);
         }
       }
     }

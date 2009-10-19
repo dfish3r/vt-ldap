@@ -31,9 +31,6 @@ import org.apache.commons.logging.LogFactory;
 public final class LdapUtil
 {
 
-  /** Log for this class. */
-  private static final Log LOG = LogFactory.getLog(LdapUtil.class);
-
   /** Size of buffer in bytes to use when reading files. */
   private static final int READ_BUFFER_SIZE = 128;
 
@@ -91,8 +88,9 @@ public final class LdapUtil
           Base64.encodeBase64(value),
           LdapConstants.DEFAULT_CHARSET);
       } catch (UnsupportedEncodingException e) {
-        if (LOG.isErrorEnabled()) {
-          LOG.error(
+        final Log logger = LogFactory.getLog(LdapUtil.class);
+        if (logger.isErrorEnabled()) {
+          logger.error(
             "Could not encode value using " + LdapConstants.DEFAULT_CHARSET);
         }
       }
@@ -117,8 +115,9 @@ public final class LdapUtil
         encodedValue = base64Encode(
           value.getBytes(LdapConstants.DEFAULT_CHARSET));
       } catch (UnsupportedEncodingException e) {
-        if (LOG.isErrorEnabled()) {
-          LOG.error(
+        final Log logger = LogFactory.getLog(LdapUtil.class);
+        if (logger.isErrorEnabled()) {
+          logger.error(
             "Could not encode value using " + LdapConstants.DEFAULT_CHARSET);
         }
       }

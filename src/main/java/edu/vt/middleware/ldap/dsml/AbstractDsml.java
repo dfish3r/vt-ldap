@@ -51,7 +51,7 @@ public abstract class AbstractDsml implements Serializable
   private static final long serialVersionUID = 5951425968736507129L;
 
   /** Log for this class. */
-  private static final Log LOG = LogFactory.getLog(AbstractDsml.class);
+  protected final Log logger = LogFactory.getLog(this.getClass());
 
 
   /**
@@ -145,8 +145,8 @@ public abstract class AbstractDsml implements Serializable
             value = LdapUtil.base64Encode((byte[]) rawValue);
             isBase64 = true;
           } else {
-            if (LOG.isWarnEnabled()) {
-              LOG.warn(
+            if (this.logger.isWarnEnabled()) {
+              this.logger.warn(
                 "Could not cast attribute value as a byte[]" +
                 " or a String");
             }
