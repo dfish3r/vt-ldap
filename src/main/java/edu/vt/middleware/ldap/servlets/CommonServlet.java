@@ -31,7 +31,7 @@ public class CommonServlet extends HttpServlet
 {
 
   /** serial version uid. */
-  private static final long serialVersionUID = -9145103488979474729L;
+  private static final long serialVersionUID = -2580419817969949661L;
 
   /** Log for this class. */
   protected final Log logger = LogFactory.getLog(this.getClass());

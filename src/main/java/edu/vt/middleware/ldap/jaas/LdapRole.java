@@ -27,7 +27,7 @@ public class LdapRole implements Principal, Serializable, Comparable<Principal>
 {
 
   /** serial version uid. */
-  private static final long serialVersionUID = -1626824505627475228L;
+  private static final long serialVersionUID = 1427032827399935399L;
 
   /** LDAP role name. */
   private String name;

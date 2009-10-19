@@ -39,7 +39,7 @@ public class Ldap extends AbstractLdap<LdapConfig> implements Serializable
 {
 
   /** serial version uid. */
-  private static final long serialVersionUID = -3248718478821722604L;
+  private static final long serialVersionUID = -2715321533384426365L;
 
   /**
    * Enum to define the type of attribute modification. See {@link

@@ -46,7 +46,7 @@ public final class LoginServlet extends CommonServlet
 {
 
   /** serial version uid. */
-  private static final long serialVersionUID = -1987565072388102546L;
+  private static final long serialVersionUID = -3482852409544351134L;
 
   /** URL of the page that does collects user credentials. */
   private String loginUrl;

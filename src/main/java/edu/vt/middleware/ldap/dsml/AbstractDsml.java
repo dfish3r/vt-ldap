@@ -48,7 +48,7 @@ public abstract class AbstractDsml implements Serializable
 {
 
   /** serial version uid. */
-  private static final long serialVersionUID = 5951425968736507129L;
+  private static final long serialVersionUID = -5626050181955100494L;
 
   /** Log for this class. */
   protected final Log logger = LogFactory.getLog(this.getClass());

@@ -34,7 +34,7 @@ public final class LogoutServlet extends CommonServlet
 {
 
   /** serial version uid. */
-  private static final long serialVersionUID = -4267432471774601068L;
+  private static final long serialVersionUID = -6521700995773675507L;
 
 
   /**

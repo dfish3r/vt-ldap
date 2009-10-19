@@ -56,7 +56,7 @@ public final class AttributeServlet extends HttpServlet
 {
 
   /** serial version uid. */
-  private static final long serialVersionUID = -5420737961961379785L;
+  private static final long serialVersionUID = -5918353780927139315L;
 
   /** Log for this class. */
   private final Log logger = LogFactory.getLog(AttributeServlet.class);

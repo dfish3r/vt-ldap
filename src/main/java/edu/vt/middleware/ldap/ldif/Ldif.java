@@ -62,7 +62,7 @@ public class Ldif implements Serializable
   public static final int MAX_ASCII_CHAR = 127;
 
   /** serial version uid. */
-  private static final long serialVersionUID = 4704446748426929544L;
+  private static final long serialVersionUID = -3763879179455001975L;
 
   /** Line separator. */
   private static final String LINE_SEPARATOR = System.getProperty(

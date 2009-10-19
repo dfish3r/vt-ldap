@@ -67,7 +67,7 @@ public final class SearchServlet extends HttpServlet
 {
 
   /** serial version uid. */
-  private static final long serialVersionUID = -507762004623806651L;
+  private static final long serialVersionUID = 1731614499970954068L;
 
   /** Log for this class. */
   private final Log logger = LogFactory.getLog(SearchServlet.class);

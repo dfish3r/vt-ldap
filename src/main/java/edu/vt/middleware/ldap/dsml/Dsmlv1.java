@@ -39,7 +39,7 @@ public final class Dsmlv1 extends AbstractDsml
 {
 
   /** serial version uid. */
-  private static final long serialVersionUID = 7584496747917061037L;
+  private static final long serialVersionUID = 1047858330816575821L;
 
 
   /** Default constructor. */

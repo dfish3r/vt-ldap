@@ -32,7 +32,7 @@ public class LdapPrincipal
   protected static final int HASH_CODE_SEED = 79;
 
   /** serial version uid. */
-  private static final long serialVersionUID = 1575574310250098272L;
+  private static final long serialVersionUID = -1043578648596801523L;
 
   /** LDAP user name. */
   private String name;
