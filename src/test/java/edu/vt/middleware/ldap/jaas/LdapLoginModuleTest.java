@@ -152,7 +152,6 @@ public class LdapLoginModuleTest
   /**
    * @param  dn  of this user
    * @param  user  to authenticate.
-   * @param  role  to set for this user
    * @param  credential  to authenticate with.
    *
    * @throws  Exception  On test failure.
