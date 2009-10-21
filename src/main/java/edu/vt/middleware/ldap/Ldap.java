@@ -307,12 +307,21 @@ public class Ldap extends AbstractLdap<LdapConfig> implements Serializable
     final SearchResultHandler... handler)
     throws NamingException
   {
-    return super.search(
-      dn,
-      filter.getFilter(),
-      filter.getFilterArgs().toArray(),
-      retAttrs,
-      handler);
+    if (this.config.getPagedResultsSize() > 0) {
+      return super.pagedSearch(
+        dn,
+        filter.getFilter(),
+        filter.getFilterArgs().toArray(),
+        retAttrs,
+        handler);
+    } else {
+      return super.search(
+        dn,
+        filter.getFilter(),
+        filter.getFilterArgs().toArray(),
+        retAttrs,
+        handler);
+    }
   }
 
 

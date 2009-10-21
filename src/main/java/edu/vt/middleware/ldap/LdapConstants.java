@@ -276,6 +276,9 @@ public final class LdapConstants
    */
   public static final long DEFAULT_COUNT_LIMIT = 0;
 
+  /** Default paged results size. The value of this constant is {@value}. */
+  public static final int DEFAULT_PAGED_RESULTS_SIZE = 0;
+
   /**
    * Default batch size, -1 means use provider setting. The value of this
    * constant is {@value}.

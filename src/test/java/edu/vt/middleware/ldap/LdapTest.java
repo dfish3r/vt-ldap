@@ -386,6 +386,45 @@ public class LdapTest
   /**
    * @param  dn  to search on.
    * @param  filter  to search with.
+   * @param  ldifFile  to compare with
+   *
+   * @throws  Exception  On test failure.
+   */
+  @Parameters(
+    {
+      "pagedSearchDn",
+      "pagedSearchFilter",
+      "pagedSearchResults"
+    }
+  )
+  @Test(groups = {"ldaptest"})
+  public void pagedSearch(
+    final String dn,
+    final String filter,
+    final String ldifFile)
+    throws Exception
+  {
+    final Ldap ldap = this.createLdap(true);
+    ldap.getLdapConfig().setPagedResultsSize(1);
+
+    final String expected = TestUtil.readFileIntoString(ldifFile);
+    final LdapResult result = TestUtil.convertLdifToResult(expected);
+
+    // test searching
+    final Iterator<SearchResult> iter = ldap.search(
+      dn,
+      new SearchFilter(filter));
+    AssertJUnit.assertEquals(
+      result,
+      TestUtil.convertLdifToResult((new Ldif()).createLdif(iter)));
+
+    ldap.close();
+  }
+
+
+  /**
+   * @param  dn  to search on.
+   * @param  filter  to search with.
    * @param  filterArgs  to replace args in filter with.
    * @param  ldifFile  to compare with
    *

@@ -163,6 +163,9 @@ public class LdapConfig extends AbstractPropertyConfig
   /** Maximum number of entries that search operations will return. */
   private Long countLimit;
 
+  /** Size of result set when using paged searching. */
+  private Integer pagedResultsSize;
+
   /** Number of times to retry ldap operations on communication exception. */
   private Integer operationRetry;
 
@@ -688,6 +691,22 @@ public class LdapConfig extends AbstractPropertyConfig
       limit = this.countLimit.longValue();
     }
     return limit;
+  }
+
+
+  /**
+   * This returns the paged results size for the <code>LdapConfig</code>. This
+   * value is used whenever the PagedResultsControl in invoked.
+   *
+   * @return  <code>int</code> - page size
+   */
+  public int getPagedResultsSize()
+  {
+    int size = LdapConstants.DEFAULT_PAGED_RESULTS_SIZE;
+    if (this.pagedResultsSize != null) {
+      size = this.pagedResultsSize.intValue();
+    }
+    return size;
   }
 
 
@@ -1244,6 +1263,21 @@ public class LdapConfig extends AbstractPropertyConfig
 
 
   /**
+   * This sets the results size to use when the PagedResultsControl is invoked.
+   *
+   * @param  pageSize  <code>int</code>
+   */
+  public void setPagedResultsSize(final int pageSize)
+  {
+    checkImmutable();
+    if (this.logger.isTraceEnabled()) {
+      this.logger.trace("setting pagedResultsSize: " + pageSize);
+    }
+    this.pagedResultsSize = new Integer(pageSize);
+  }
+
+
+  /**
    * This sets the number of times that ldap operations will be retried if a
    * communication exception occurs.
    *
@@ -1420,7 +1454,7 @@ public class LdapConfig extends AbstractPropertyConfig
    *
    * @param  exceptions  <code>Class[]</code>
    */
-  public void setHandlerIgnoreExceptions(final Class[] exceptions)
+  public void setHandlerIgnoreExceptions(final Class<?>[] exceptions)
   {
     checkImmutable();
     if (this.logger.isTraceEnabled()) {

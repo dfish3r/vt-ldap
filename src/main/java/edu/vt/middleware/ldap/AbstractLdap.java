@@ -14,6 +14,7 @@
 package edu.vt.middleware.ldap;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Hashtable;
 import java.util.Iterator;
@@ -27,8 +28,11 @@ import javax.naming.directory.Attributes;
 import javax.naming.directory.DirContext;
 import javax.naming.directory.ModificationItem;
 import javax.naming.directory.SearchResult;
+import javax.naming.ldap.Control;
 import javax.naming.ldap.InitialLdapContext;
 import javax.naming.ldap.LdapContext;
+import javax.naming.ldap.PagedResultsControl;
+import javax.naming.ldap.PagedResultsResponseControl;
 import javax.naming.ldap.StartTlsRequest;
 import javax.naming.ldap.StartTlsResponse;
 import edu.vt.middleware.ldap.handler.AttributeHandler;
@@ -144,6 +148,11 @@ public abstract class AbstractLdap<T extends LdapConfig> implements BaseLdap
           ctx = this.getContext();
           en = ctx.search(
             dn, filter, filterArgs, LdapConfig.getCompareSearchControls());
+
+          if (en.hasMore()) {
+            success = true;
+          }
+
           break;
         } catch (CommunicationException e) {
           if (i == this.config.getOperationRetry()) {
@@ -156,10 +165,6 @@ public abstract class AbstractLdap<T extends LdapConfig> implements BaseLdap
           }
           this.reconnect();
         }
-      }
-
-      if (en.hasMore()) {
-        success = true;
       }
     } finally {
       if (en != null) {
@@ -232,6 +237,30 @@ public abstract class AbstractLdap<T extends LdapConfig> implements BaseLdap
             filter,
             filterArgs,
             this.config.getSearchControls(retAttrs));
+
+          if (handler != null && handler.length > 0) {
+            final SearchCriteria sc = new SearchCriteria();
+            if (ctx != null && !ctx.getNameInNamespace().equals("")) {
+              sc.setDn(ctx.getNameInNamespace());
+            } else {
+              sc.setDn(dn);
+            }
+            sc.setFilter(filter);
+            sc.setFilterArgs(filterArgs);
+            sc.setReturnAttrs(retAttrs);
+            for (int j = 0; j < handler.length; j++) {
+              if (j == 0) {
+                results = handler[j].process(
+                  sc, en, this.config.getHandlerIgnoreExceptions());
+              } else {
+                results = handler[j].process(sc, results);
+              }
+            }
+          } else {
+            results = SR_COPY_RESULT_HANDLER.process(
+              null, en, this.config.getHandlerIgnoreExceptions());
+          }
+
           break;
         } catch (CommunicationException e) {
           if (i == this.config.getOperationRetry()) {
@@ -245,28 +274,142 @@ public abstract class AbstractLdap<T extends LdapConfig> implements BaseLdap
           this.reconnect();
         }
       }
-
-      final SearchCriteria sc = new SearchCriteria();
-      if (ctx != null && !ctx.getNameInNamespace().equals("")) {
-        sc.setDn(ctx.getNameInNamespace());
-      } else {
-        sc.setDn(dn);
+    } finally {
+      if (en != null) {
+        en.close();
       }
-      sc.setFilter(filter);
-      sc.setFilterArgs(filterArgs);
-      sc.setReturnAttrs(retAttrs);
-      if (handler != null && handler.length > 0) {
-        for (int i = 0; i < handler.length; i++) {
-          if (i == 0) {
-            results = handler[i].process(
-              sc, en, this.config.getHandlerIgnoreExceptions());
-          } else {
-            results = handler[i].process(sc, results);
+      if (ctx != null) {
+        ctx.close();
+      }
+    }
+    return results.iterator();
+  }
+
+
+  /**
+   * This will query the LDAP with the supplied dn, filter, filter arguments,
+   * and return attributes. See {@link #search(String, String, Object[],
+   * String[], SearchResultHandler...))}. The PagedResultsControl is used in
+   * conjunction with {@link LdapConfig#getPagedResultsSize()} to produce the
+   * results.
+   *
+   * @param  dn  <code>String</code> name to begin search at
+   * @param  filter  <code>String</code> expression to use for the search
+   * @param  filterArgs  <code>Object[]</code> to substitute for variables in
+   * the filter
+   * @param  retAttrs  <code>String[]</code> attributes to return
+   * @param  handler  <code>SearchResultHandler[]</code> to post process results
+   *
+   * @return  <code>Iterator</code> - of LDAP search results
+   *
+   * @throws  NamingException  if the LDAP returns an error
+   */
+  protected Iterator<SearchResult> pagedSearch(
+    final String dn,
+    final String filter,
+    final Object[] filterArgs,
+    final String[] retAttrs,
+    final SearchResultHandler... handler)
+    throws NamingException
+  {
+    if (this.logger.isDebugEnabled()) {
+      this.logger.debug("Paginated search with the following parameters:");
+      this.logger.debug("  dn = " + dn);
+      this.logger.debug("  filter = " + filter);
+      this.logger.debug(
+        "  filterArgs = " +
+        (filterArgs == null ? "none" : Arrays.asList(filterArgs)));
+      this.logger.debug(
+        "  retAttrs = " +
+        (retAttrs == null ? "all attributes" : Arrays.asList(retAttrs)));
+      this.logger.debug(
+        "  handler = " + (handler == null ? "null" : Arrays.asList(handler)));
+      if (this.logger.isTraceEnabled()) {
+        this.logger.trace("  config = " + this.config.getEnvironment());
+      }
+    }
+
+    final List<SearchResult> results = new ArrayList<SearchResult>();
+    LdapContext ctx = null;
+    NamingEnumeration<SearchResult> en = null;
+    try {
+      for (int i = 0; i <= this.config.getOperationRetry(); i++) {
+        try {
+          byte[] cookie = null;
+          ctx = this.getContext();
+          ctx.setRequestControls(new Control[]{
+            new PagedResultsControl(
+              this.config.getPagedResultsSize(), Control.CRITICAL), });
+          do {
+            List<SearchResult> pagedResults = null;
+            en = ctx.search(
+              dn,
+              filter,
+              filterArgs,
+              this.config.getSearchControls(retAttrs));
+
+            if (handler != null && handler.length > 0) {
+              final SearchCriteria sc = new SearchCriteria();
+              if (ctx != null && !ctx.getNameInNamespace().equals("")) {
+                sc.setDn(ctx.getNameInNamespace());
+              } else {
+                sc.setDn(dn);
+              }
+              sc.setFilter(filter);
+              sc.setFilterArgs(filterArgs);
+              sc.setReturnAttrs(retAttrs);
+              for (int j = 0; j < handler.length; j++) {
+                if (j == 0) {
+                  pagedResults = handler[j].process(
+                    sc, en, this.config.getHandlerIgnoreExceptions());
+                } else {
+                  pagedResults = handler[j].process(sc, results);
+                }
+              }
+            } else {
+              pagedResults = SR_COPY_RESULT_HANDLER.process(
+                null, en, this.config.getHandlerIgnoreExceptions());
+            }
+
+            results.addAll(pagedResults);
+
+            final Control[] controls = ctx.getResponseControls();
+            if (controls != null) {
+              for (int j = 0; j < controls.length; j++) {
+                if (controls[j] instanceof PagedResultsResponseControl) {
+                  final PagedResultsResponseControl prrc =
+                    (PagedResultsResponseControl) controls[j];
+                  cookie = prrc.getCookie();
+                }
+              }
+            }
+
+            // Re-activate paged results
+            ctx.setRequestControls(new Control[]{
+              new PagedResultsControl(
+                this.config.getPagedResultsSize(),
+                cookie,
+                Control.CRITICAL), });
+
+          } while (cookie != null);
+
+          break;
+        } catch (CommunicationException e) {
+          if (i == this.config.getOperationRetry()) {
+            throw e;
           }
+          if (this.logger.isWarnEnabled()) {
+            this.logger.warn(
+              "Error while communicating with the LDAP, retrying",
+              e);
+          }
+          this.reconnect();
+        } catch (IOException e) {
+          if (this.logger.isErrorEnabled()) {
+            this.logger.error("Could not encode page size into control", e);
+          }
+          throw new NamingException(e.getMessage());
         }
-      } else {
-        results = SR_COPY_RESULT_HANDLER.process(
-          sc, en, this.config.getHandlerIgnoreExceptions());
       }
     } finally {
       if (en != null) {
@@ -328,6 +471,31 @@ public abstract class AbstractLdap<T extends LdapConfig> implements BaseLdap
         try {
           ctx = this.getContext();
           en = ctx.search(dn, matchAttrs, retAttrs);
+
+          if (handler != null && handler.length > 0) {
+            final SearchCriteria sc = new SearchCriteria();
+            if (ctx != null && !ctx.getNameInNamespace().equals("")) {
+              sc.setDn(ctx.getNameInNamespace());
+            } else {
+              sc.setDn(dn);
+            }
+            sc.setMatchAttrs(matchAttrs);
+            sc.setReturnAttrs(retAttrs);
+            if (handler != null && handler.length > 0) {
+              for (int j = 0; j < handler.length; j++) {
+                if (j == 0) {
+                  results = handler[j].process(
+                    sc, en, this.config.getHandlerIgnoreExceptions());
+                } else {
+                  results = handler[j].process(sc, results);
+                }
+              }
+            }
+          } else {
+            results = SR_COPY_RESULT_HANDLER.process(
+              null, en, this.config.getHandlerIgnoreExceptions());
+          }
+
           break;
         } catch (CommunicationException e) {
           if (i == this.config.getOperationRetry()) {
@@ -340,28 +508,6 @@ public abstract class AbstractLdap<T extends LdapConfig> implements BaseLdap
           }
           this.reconnect();
         }
-      }
-
-      final SearchCriteria sc = new SearchCriteria();
-      if (ctx != null && !ctx.getNameInNamespace().equals("")) {
-        sc.setDn(ctx.getNameInNamespace());
-      } else {
-        sc.setDn(dn);
-      }
-      sc.setMatchAttrs(matchAttrs);
-      sc.setReturnAttrs(retAttrs);
-      if (handler != null && handler.length > 0) {
-        for (int i = 0; i < handler.length; i++) {
-          if (i == 0) {
-            results = handler[i].process(
-              sc, en, this.config.getHandlerIgnoreExceptions());
-          } else {
-            results = handler[i].process(sc, results);
-          }
-        }
-      } else {
-        results = SR_COPY_RESULT_HANDLER.process(
-          sc, en, this.config.getHandlerIgnoreExceptions());
       }
     } finally {
       if (en != null) {
@@ -406,6 +552,10 @@ public abstract class AbstractLdap<T extends LdapConfig> implements BaseLdap
         try {
           ctx = this.getContext();
           en = ctx.list(dn);
+
+          results = NCP_COPY_RESULT_HANDLER.process(
+            null, en, this.config.getHandlerIgnoreExceptions());
+
           break;
         } catch (CommunicationException e) {
           if (i == this.config.getOperationRetry()) {
@@ -419,15 +569,6 @@ public abstract class AbstractLdap<T extends LdapConfig> implements BaseLdap
           this.reconnect();
         }
       }
-
-      final SearchCriteria sc = new SearchCriteria();
-      if (ctx != null && !ctx.getNameInNamespace().equals("")) {
-        sc.setDn(ctx.getNameInNamespace());
-      } else {
-        sc.setDn(dn);
-      }
-      results = NCP_COPY_RESULT_HANDLER.process(
-        sc, en, this.config.getHandlerIgnoreExceptions());
     } finally {
       if (en != null) {
         en.close();
@@ -471,6 +612,10 @@ public abstract class AbstractLdap<T extends LdapConfig> implements BaseLdap
         try {
           ctx = this.getContext();
           en = ctx.listBindings(dn);
+
+          results = BINDING_COPY_RESULT_HANDLER.process(
+            null, en, this.config.getHandlerIgnoreExceptions());
+
           break;
         } catch (CommunicationException e) {
           if (i == this.config.getOperationRetry()) {
@@ -484,15 +629,6 @@ public abstract class AbstractLdap<T extends LdapConfig> implements BaseLdap
           this.reconnect();
         }
       }
-
-      final SearchCriteria sc = new SearchCriteria();
-      if (ctx != null && !ctx.getNameInNamespace().equals("")) {
-        sc.setDn(ctx.getNameInNamespace());
-      } else {
-        sc.setDn(dn);
-      }
-      results = BINDING_COPY_RESULT_HANDLER.process(
-        sc, en, this.config.getHandlerIgnoreExceptions());
     } finally {
       if (en != null) {
         en.close();
@@ -545,6 +681,23 @@ public abstract class AbstractLdap<T extends LdapConfig> implements BaseLdap
         try {
           ctx = this.getContext();
           attrs = ctx.getAttributes(dn, retAttrs);
+
+          if (handler != null && handler.length > 0) {
+            final SearchCriteria sc = new SearchCriteria();
+            if (ctx != null && !ctx.getNameInNamespace().equals("")) {
+              sc.setDn(ctx.getNameInNamespace());
+            } else {
+              sc.setDn(dn);
+            }
+            for (int j = 0; j < handler.length; j++) {
+              attrs = AttributesProcessor.executeHandler(
+                sc,
+                attrs,
+                handler[j],
+                this.config.getHandlerIgnoreExceptions());
+            }
+          }
+
           break;
         } catch (CommunicationException e) {
           if (i == this.config.getOperationRetry()) {
@@ -556,19 +709,6 @@ public abstract class AbstractLdap<T extends LdapConfig> implements BaseLdap
               e);
           }
           this.reconnect();
-        }
-      }
-
-      if (handler != null && handler.length > 0) {
-        final SearchCriteria sc = new SearchCriteria();
-        if (ctx != null && !ctx.getNameInNamespace().equals("")) {
-          sc.setDn(ctx.getNameInNamespace());
-        } else {
-          sc.setDn(dn);
-        }
-        for (int i = 0; i < handler.length; i++) {
-          attrs = AttributesProcessor.executeHandler(
-            sc, attrs, handler[i], this.config.getHandlerIgnoreExceptions());
         }
       }
     } finally {
@@ -613,6 +753,10 @@ public abstract class AbstractLdap<T extends LdapConfig> implements BaseLdap
           ctx = this.getContext();
           schema = ctx.getSchema(dn);
           en = schema.search("", null);
+
+          results = SR_COPY_RESULT_HANDLER.process(
+            null, en, this.config.getHandlerIgnoreExceptions());
+
           break;
         } catch (CommunicationException e) {
           if (i == this.config.getOperationRetry()) {
@@ -626,15 +770,6 @@ public abstract class AbstractLdap<T extends LdapConfig> implements BaseLdap
           this.reconnect();
         }
       }
-
-      final SearchCriteria sc = new SearchCriteria();
-      if (ctx != null && !ctx.getNameInNamespace().equals("")) {
-        sc.setDn(ctx.getNameInNamespace());
-      } else {
-        sc.setDn(dn);
-      }
-      results = SR_COPY_RESULT_HANDLER.process(
-        sc, en, this.config.getHandlerIgnoreExceptions());
     } finally {
       if (schema != null) {
         schema.close();
