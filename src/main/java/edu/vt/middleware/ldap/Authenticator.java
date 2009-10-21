@@ -127,7 +127,7 @@ public class Authenticator extends AbstractAuthenticator implements Serializable
             this.config.getBase(),
             filter.getFilter(),
             filterArgs.toArray(),
-            new String[] {},
+            this.config.getSearchControls(new String[0]),
             this.config.getSearchResultHandlers());
           // return first match, otherwise user doesn't exist
           if (answer != null && answer.hasNext()) {

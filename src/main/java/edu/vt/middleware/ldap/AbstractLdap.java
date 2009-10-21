@@ -27,6 +27,7 @@ import javax.naming.NamingException;
 import javax.naming.directory.Attributes;
 import javax.naming.directory.DirContext;
 import javax.naming.directory.ModificationItem;
+import javax.naming.directory.SearchControls;
 import javax.naming.directory.SearchResult;
 import javax.naming.ldap.Control;
 import javax.naming.ldap.InitialLdapContext;
@@ -180,12 +181,10 @@ public abstract class AbstractLdap<T extends LdapConfig> implements BaseLdap
 
   /**
    * This will query the LDAP with the supplied dn, filter, filter arguments,
-   * and return attributes. This method will perform a search whose scope is
-   * defined in the <code>LdapConfig</code>, the default scope is subtree. The
-   * resulting <code>Iterator</code> is a deep copy of the original search
-   * results. If filterArgs is null, then no variable substitution will occur.
-   * If retAttrs is null then all attributes will be returned. If retAttrs is an
-   * empty array then no attributes will be returned.
+   * and search controls. This method will perform a search whose scope is
+   * defined in the search controls. The resulting <code>Iterator</code> is a
+   * deep copy of the original search results. If filterArgs is null, then no
+   * variable substitution will occur.
    * See {@link javax.naming.DirContext#search(
    * String, String, Object[], SearchControls)}.
    *
@@ -193,7 +192,7 @@ public abstract class AbstractLdap<T extends LdapConfig> implements BaseLdap
    * @param  filter  <code>String</code> expression to use for the search
    * @param  filterArgs  <code>Object[]</code> to substitute for variables in
    * the filter
-   * @param  retAttrs  <code>String[]</code> attributes to return
+   * @param  searchControls  <code>SearchControls</code> to perform search with
    * @param  handler  <code>SearchResultHandler[]</code> to post process results
    *
    * @return  <code>Iterator</code> - of LDAP search results
@@ -204,7 +203,7 @@ public abstract class AbstractLdap<T extends LdapConfig> implements BaseLdap
     final String dn,
     final String filter,
     final Object[] filterArgs,
-    final String[] retAttrs,
+    final SearchControls searchControls,
     final SearchResultHandler... handler)
     throws NamingException
   {
@@ -215,9 +214,7 @@ public abstract class AbstractLdap<T extends LdapConfig> implements BaseLdap
       this.logger.debug(
         "  filterArgs = " +
         (filterArgs == null ? "none" : Arrays.asList(filterArgs)));
-      this.logger.debug(
-        "  retAttrs = " +
-        (retAttrs == null ? "all attributes" : Arrays.asList(retAttrs)));
+      this.logger.debug("  searchControls = " + searchControls);
       this.logger.debug(
         "  handler = " + (handler == null ? "null" : Arrays.asList(handler)));
       if (this.logger.isTraceEnabled()) {
@@ -236,7 +233,7 @@ public abstract class AbstractLdap<T extends LdapConfig> implements BaseLdap
             dn,
             filter,
             filterArgs,
-            this.config.getSearchControls(retAttrs));
+            searchControls);
 
           if (handler != null && handler.length > 0) {
             final SearchCriteria sc = new SearchCriteria();
@@ -247,7 +244,9 @@ public abstract class AbstractLdap<T extends LdapConfig> implements BaseLdap
             }
             sc.setFilter(filter);
             sc.setFilterArgs(filterArgs);
-            sc.setReturnAttrs(retAttrs);
+            if (searchControls != null) {
+              sc.setReturnAttrs(searchControls.getReturningAttributes());
+            }
             for (int j = 0; j < handler.length; j++) {
               if (j == 0) {
                 results = handler[j].process(
@@ -288,16 +287,16 @@ public abstract class AbstractLdap<T extends LdapConfig> implements BaseLdap
 
   /**
    * This will query the LDAP with the supplied dn, filter, filter arguments,
-   * and return attributes. See {@link #search(String, String, Object[],
-   * String[], SearchResultHandler...))}. The PagedResultsControl is used in
-   * conjunction with {@link LdapConfig#getPagedResultsSize()} to produce the
+   * and search controls. See {@link #search(String, String, Object[],
+   * SearchControls, SearchResultHandler...)}. The PagedResultsControl is used
+   * in conjunction with {@link LdapConfig#getPagedResultsSize()} to produce the
    * results.
    *
    * @param  dn  <code>String</code> name to begin search at
    * @param  filter  <code>String</code> expression to use for the search
    * @param  filterArgs  <code>Object[]</code> to substitute for variables in
    * the filter
-   * @param  retAttrs  <code>String[]</code> attributes to return
+   * @param  searchControls  <code>SearchControls</code> to perform search with
    * @param  handler  <code>SearchResultHandler[]</code> to post process results
    *
    * @return  <code>Iterator</code> - of LDAP search results
@@ -308,7 +307,7 @@ public abstract class AbstractLdap<T extends LdapConfig> implements BaseLdap
     final String dn,
     final String filter,
     final Object[] filterArgs,
-    final String[] retAttrs,
+    final SearchControls searchControls,
     final SearchResultHandler... handler)
     throws NamingException
   {
@@ -319,9 +318,7 @@ public abstract class AbstractLdap<T extends LdapConfig> implements BaseLdap
       this.logger.debug(
         "  filterArgs = " +
         (filterArgs == null ? "none" : Arrays.asList(filterArgs)));
-      this.logger.debug(
-        "  retAttrs = " +
-        (retAttrs == null ? "all attributes" : Arrays.asList(retAttrs)));
+      this.logger.debug("  searchControls = " + searchControls);
       this.logger.debug(
         "  handler = " + (handler == null ? "null" : Arrays.asList(handler)));
       if (this.logger.isTraceEnabled()) {
@@ -346,7 +343,7 @@ public abstract class AbstractLdap<T extends LdapConfig> implements BaseLdap
               dn,
               filter,
               filterArgs,
-              this.config.getSearchControls(retAttrs));
+              searchControls);
 
             if (handler != null && handler.length > 0) {
               final SearchCriteria sc = new SearchCriteria();
@@ -357,7 +354,9 @@ public abstract class AbstractLdap<T extends LdapConfig> implements BaseLdap
               }
               sc.setFilter(filter);
               sc.setFilterArgs(filterArgs);
-              sc.setReturnAttrs(retAttrs);
+              if (searchControls != null) {
+                sc.setReturnAttrs(searchControls.getReturningAttributes());
+              }
               for (int j = 0; j < handler.length; j++) {
                 if (j == 0) {
                   pagedResults = handler[j].process(
@@ -384,7 +383,7 @@ public abstract class AbstractLdap<T extends LdapConfig> implements BaseLdap
               }
             }
 
-            // Re-activate paged results
+            // re-activate paged results
             ctx.setRequestControls(new Control[]{
               new PagedResultsControl(
                 this.config.getPagedResultsSize(),

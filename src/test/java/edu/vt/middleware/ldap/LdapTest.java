@@ -459,7 +459,7 @@ public class LdapTest
     final Iterator<SearchResult> iter = ldap.search(
       dn,
       new SearchFilter(filter, filterArgs.split("\\|")),
-      null,
+      (String[]) null,
       handler);
     AssertJUnit.assertEquals(
       entry,
@@ -499,7 +499,7 @@ public class LdapTest
     final Iterator<SearchResult> iter = ldap.search(
       dn,
       new SearchFilter(filter),
-      null,
+      (String[]) null,
       new FqdnSearchResultHandler(), handler);
     AssertJUnit.assertEquals(
       entry,
@@ -540,7 +540,7 @@ public class LdapTest
     final Iterator<SearchResult> iter = ldap.search(
       dn,
       new SearchFilter(filter),
-      null,
+      (String[]) null,
       new FqdnSearchResultHandler(), handler);
     AssertJUnit.assertEquals(
       entry,

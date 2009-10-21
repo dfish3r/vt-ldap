@@ -23,6 +23,7 @@ import javax.naming.directory.Attribute;
 import javax.naming.directory.Attributes;
 import javax.naming.directory.DirContext;
 import javax.naming.directory.ModificationItem;
+import javax.naming.directory.SearchControls;
 import javax.naming.directory.SearchResult;
 import edu.vt.middleware.ldap.handler.AttributeHandler;
 import edu.vt.middleware.ldap.handler.SearchCriteria;
@@ -202,7 +203,9 @@ public class Ldap extends AbstractLdap<LdapConfig> implements Serializable
   /**
    * This will query the LDAP with the supplied filter. All attributes will be
    * returned. {@link LdapConfig#getBase()} is used as the start point for
-   * searching. See {@link #search(String,SearchFilter,String[])}.
+   * searching. Search controls will be created from
+   * {@link LdapConfig#getSearchControls(String[])}.
+   * See {@link #search(String,SearchFilter,String[])}.
    *
    * @param  filter  <code>SearchFilter</code> expression to use for the search
    *
@@ -213,14 +216,17 @@ public class Ldap extends AbstractLdap<LdapConfig> implements Serializable
   public Iterator<SearchResult> search(final SearchFilter filter)
     throws NamingException
   {
-    return this.search(this.config.getBase(), filter, null);
+    return this.search(
+      this.config.getBase(), filter, this.config.getSearchControls(null));
   }
 
 
   /**
    * This will query the LDAP with the supplied filter and
    * return attributes. {@link LdapConfig#getBase()} is used as the start point
-   * for searching. See {@link #search(String,SearchFilter,String[])}.
+   * for searching. Search controls will be created from
+   * {@link LdapConfig#getSearchControls(String[])}.
+   * See {@link #search(String,SearchFilter,String[])}.
    *
    * @param  filter  <code>SearchFilter</code> expression to use for the search
    * @param  retAttrs  <code>String[]</code> attributes to return
@@ -233,13 +239,36 @@ public class Ldap extends AbstractLdap<LdapConfig> implements Serializable
     final SearchFilter filter, final String[] retAttrs)
     throws NamingException
   {
-    return this.search(this.config.getBase(), filter, retAttrs);
+    return this.search(
+      this.config.getBase(), filter, this.config.getSearchControls(retAttrs));
+  }
+
+
+  /**
+   * This will query the LDAP with the supplied filter and
+   * search controls. {@link LdapConfig#getBase()} is used as the start point
+   * for searching. See {@link #search(String,SearchFilter,SearchControls)}.
+   *
+   * @param  filter  <code>SearchFilter</code> expression to use for the search
+   * @param  searchControls  <code>SearchControls</code> to search with
+   *
+   * @return  <code>Iterator</code> - of LDAP search results
+   *
+   * @throws  NamingException  if the LDAP returns an error
+   */
+  public Iterator<SearchResult> search(
+    final SearchFilter filter, final SearchControls searchControls)
+    throws NamingException
+  {
+    return this.search(this.config.getBase(), filter, searchControls);
   }
 
 
   /**
    * This will query the LDAP with the supplied dn and filter. All attributes
-   * will be returned. See {@link #search(String,SearchFilter,String[])}.
+   * will be returned. Search controls will be created from
+   * {@link LdapConfig#getSearchControls(String[])}.
+   * See {@link #search(String,SearchFilter,String[])}.
    *
    * @param  dn  <code>String</code> name to begin search at
    * @param  filter  <code>SearchFilter</code> expression to use for the search
@@ -252,16 +281,15 @@ public class Ldap extends AbstractLdap<LdapConfig> implements Serializable
     final String dn, final SearchFilter filter)
     throws NamingException
   {
-    return this.search(dn, filter, null);
+    return this.search(dn, filter, this.config.getSearchControls(null));
   }
 
 
   /**
    * This will query the LDAP with the supplied dn, filter, and
-   * return attributes. See {@link
-   * #search(String,SearchFilter,String[],SearchResultHandler[])}. This
-   * method converts relative DNs to fully qualified DNs, no post processing is
-   * required.
+   * return attributes. Search controls will be created from
+   * {@link LdapConfig#getSearchControls(String[])}. See {@link
+   * #search(String,SearchFilter,SearchControls,SearchResultHandler[])}.
    *
    * @param  dn  <code>String</code> name to begin search at
    * @param  filter  <code>SearchFilter</code> expression to use for the search
@@ -281,15 +309,44 @@ public class Ldap extends AbstractLdap<LdapConfig> implements Serializable
       this.search(
         dn,
         filter,
-        retAttrs,
+        this.config.getSearchControls(retAttrs),
+        this.config.getSearchResultHandlers());
+  }
+
+
+  /**
+   * This will query the LDAP with the supplied dn, filter, and
+   * search controls. See {@link
+   * #search(String,SearchFilter,SearchControls,SearchResultHandler[])}.
+   *
+   * @param  dn  <code>String</code> name to begin search at
+   * @param  filter  <code>SearchFilter</code> expression to use for the search
+   * @param  searchControls  <code>SearchControls</code> to search with
+   *
+   * @return  <code>Iterator</code> - of LDAP search results
+   *
+   * @throws  NamingException  if the LDAP returns an error
+   */
+  public Iterator<SearchResult> search(
+    final String dn,
+    final SearchFilter filter,
+    final SearchControls searchControls)
+    throws NamingException
+  {
+    return
+      this.search(
+        dn,
+        filter,
+        searchControls,
         this.config.getSearchResultHandlers());
   }
 
 
   /**
    * This will query the LDAP with the supplied dn, filter, return attributes,
-   * and search result handler. See {@link AbstractLdap
-   * #search(String,String,Object[],String[],SearchResultHandler[])}.
+   * and search result handler. Search controls will be created from
+   * {@link LdapConfig#getSearchControls(String[])}. See {@link #search(
+   * String,SearchFilter,SearchControls,SearchResultHandler...)}.
    *
    * @param  dn  <code>String</code> name to begin search at
    * @param  filter  <code>SearchFilter</code> expression to use for the search
@@ -307,19 +364,47 @@ public class Ldap extends AbstractLdap<LdapConfig> implements Serializable
     final SearchResultHandler... handler)
     throws NamingException
   {
+    return this.search(
+      dn, filter, this.config.getSearchControls(retAttrs), handler);
+  }
+
+
+  /**
+   * This will query the LDAP with the supplied dn, filter, search controls,
+   * and search result handler. If {@link LdapConfig#getPagedResultsSize()}
+   * is greater than 0, the PagedResultsControl will be invoked.
+   * See {@link AbstractLdap
+   * #search(String,String,Object[],SearchControls,SearchResultHandler[])}.
+   *
+   * @param  dn  <code>String</code> name to begin search at
+   * @param  filter  <code>SearchFilter</code> expression to use for the search
+   * @param  searchControls  <code>SearchControls</code> to search with
+   * @param  handler  <code>SearchResultHandler[]</code> of handlers to execute
+   *
+   * @return  <code>Iterator</code> - of LDAP search results
+   *
+   * @throws  NamingException  if the LDAP returns an error
+   */
+  public Iterator<SearchResult> search(
+    final String dn,
+    final SearchFilter filter,
+    final SearchControls searchControls,
+    final SearchResultHandler... handler)
+    throws NamingException
+  {
     if (this.config.getPagedResultsSize() > 0) {
       return super.pagedSearch(
         dn,
         filter.getFilter(),
         filter.getFilterArgs().toArray(),
-        retAttrs,
+        searchControls,
         handler);
     } else {
       return super.search(
         dn,
         filter.getFilter(),
         filter.getFilterArgs().toArray(),
-        retAttrs,
+        searchControls,
         handler);
     }
   }
