@@ -362,7 +362,7 @@ public abstract class AbstractLdap<T extends LdapConfig> implements BaseLdap
                   pagedResults = handler[j].process(
                     sc, en, this.config.getHandlerIgnoreExceptions());
                 } else {
-                  pagedResults = handler[j].process(sc, results);
+                  pagedResults = handler[j].process(sc, pagedResults);
                 }
               }
             } else {
