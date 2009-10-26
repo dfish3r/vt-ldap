@@ -1,7 +1,7 @@
 /*
   $Id$
 
-  Copyright (C) 2003-2008 Virginia Tech.
+  Copyright (C) 2003-2009 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
@@ -32,14 +32,14 @@ public class CopySearchResultHandler extends CopyResultHandler<SearchResult>
   private AttributeHandler[] attributeHandler;
 
 
-  /** {@inheritDoc}. */
+  /** {@inheritDoc} */
   public AttributeHandler[] getAttributeHandler()
   {
     return this.attributeHandler;
   }
 
 
-  /** {@inheritDoc}. */
+  /** {@inheritDoc} */
   public void setAttributeHandler(final AttributeHandler[] ah)
   {
     this.attributeHandler = ah;

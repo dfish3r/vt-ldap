@@ -1,7 +1,7 @@
 /*
   $Id$
 
-  Copyright (C) 2003-2008 Virginia Tech.
+  Copyright (C) 2003-2009 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
@@ -329,14 +329,14 @@ public class LdapPoolConfig extends AbstractPropertyConfig
   }
 
 
-  /** {@inheritDoc}. */
+  /** {@inheritDoc} */
   public String getPropertiesDomain()
   {
     return PROPERTIES_DOMAIN;
   }
 
 
-  /** {@inheritDoc}. */
+  /** {@inheritDoc} */
   public void setEnvironmentProperties(final String name, final String value)
   {
     checkImmutable();
@@ -348,7 +348,7 @@ public class LdapPoolConfig extends AbstractPropertyConfig
   }
 
 
-  /** {@inheritDoc}. */
+  /** {@inheritDoc} */
   public boolean hasEnvironmentProperty(final String name)
   {
     return PROPERTIES.hasProperty(name);

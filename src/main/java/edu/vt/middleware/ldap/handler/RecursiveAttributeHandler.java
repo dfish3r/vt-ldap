@@ -1,7 +1,7 @@
 /*
   $Id$
 
-  Copyright (C) 2003-2008 Virginia Tech.
+  Copyright (C) 2003-2009 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
@@ -23,15 +23,16 @@ import javax.naming.directory.BasicAttribute;
 import edu.vt.middleware.ldap.Ldap;
 
 /**
- * <code>RecursiveAttributeHandler</code> will recursively search for
- * attributes of the same name and combine them into one attribute.
- * Attribute values must represent DNs in the LDAP.
+ * <code>RecursiveAttributeHandler</code> will recursively search for attributes
+ * of the same name and combine them into one attribute. Attribute values must
+ * represent DNs in the LDAP.
  *
  * @author  Middleware Services
  * @version  $Revision$ $Date$
  */
 public class RecursiveAttributeHandler extends CopyAttributeHandler
 {
+
   /** Ldap to use for searching. */
   private Ldap ldap;
 
@@ -40,8 +41,8 @@ public class RecursiveAttributeHandler extends CopyAttributeHandler
 
 
   /**
-   * Creates a new <code>RecursiveAttributeHandler</code> with the supplied
-   * ldap and attribute name.
+   * Creates a new <code>RecursiveAttributeHandler</code> with the supplied ldap
+   * and attribute name.
    *
    * @param  ldap  <code>Ldap</code>
    * @param  attrName  <code>String</code>
@@ -53,9 +54,10 @@ public class RecursiveAttributeHandler extends CopyAttributeHandler
   }
 
 
-  /** {@inheritDoc}. */
+  /** {@inheritDoc} */
   protected Attribute processResult(
-    final SearchCriteria sc, final Attribute attr)
+    final SearchCriteria sc,
+    final Attribute attr)
     throws NamingException
   {
     Attribute newAttr = null;
@@ -67,7 +69,8 @@ public class RecursiveAttributeHandler extends CopyAttributeHandler
           final Object rawValue = this.processValue(sc, en.next());
           if (rawValue instanceof String) {
             final List<String> recursiveValues = this.recursiveSearch(
-              (String) rawValue, new ArrayList<String>());
+              (String) rawValue,
+              new ArrayList<String>());
             for (String s : recursiveValues) {
               newAttr.add(this.processValue(sc, s));
             }
@@ -91,18 +94,23 @@ public class RecursiveAttributeHandler extends CopyAttributeHandler
    *
    * @param  dn  to get attribute for
    * @param  searchedDns  list of DNs that have been searched for
+   *
    * @return  list of attribute values found by recursively searching
-   * @throws NamingException if a search error occurs
+   *
+   * @throws  NamingException  if a search error occurs
    */
   private List<String> recursiveSearch(
-    final String dn, final List<String> searchedDns)
+    final String dn,
+    final List<String> searchedDns)
     throws NamingException
   {
     final List<String> results = new ArrayList<String>();
     if (!searchedDns.contains(dn)) {
       results.add(dn);
+
       final Attributes attrs = this.ldap.getAttributes(
-        dn, new String[]{this.attributeName});
+        dn,
+        new String[] {this.attributeName});
       searchedDns.add(dn);
       if (attrs != null) {
         final Attribute attr = attrs.get(this.attributeName);

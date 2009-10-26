@@ -1,7 +1,7 @@
 /*
   $Id$
 
-  Copyright (C) 2003-2008 Virginia Tech.
+  Copyright (C) 2003-2009 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
@@ -56,7 +56,7 @@ public class MergeSearchResultHandler extends CopySearchResultHandler
   }
 
 
-  /** {@inheritDoc}. */
+  /** {@inheritDoc} */
   public List<SearchResult> process(
     final SearchCriteria sc,
     final NamingEnumeration<? extends SearchResult> en,
@@ -67,7 +67,7 @@ public class MergeSearchResultHandler extends CopySearchResultHandler
   }
 
 
-  /** {@inheritDoc}. */
+  /** {@inheritDoc} */
   public List<SearchResult> process(
     final SearchCriteria sc,
     final List<? extends SearchResult> l)
@@ -82,7 +82,9 @@ public class MergeSearchResultHandler extends CopySearchResultHandler
    * This method always returns a list of size zero or one.
    *
    * @param  results  <code>List</code> of search results to merge
+   *
    * @return  <code>List</code> of merged search results
+   *
    * @throws  NamingException  if an error occurs reading attribute values
    */
   protected List<SearchResult> mergeResults(final List<SearchResult> results)
@@ -94,8 +96,8 @@ public class MergeSearchResultHandler extends CopySearchResultHandler
       if (mergedResult == null) {
         mergedResult = sr;
       } else {
-        final NamingEnumeration<? extends Attribute> en =
-          sr.getAttributes().getAll();
+        final NamingEnumeration<? extends Attribute> en = sr.getAttributes()
+            .getAll();
         while (en.hasMore()) {
           final Attribute newAttr = en.next();
           final Attribute oldAttr = mergedResult.getAttributes().get(

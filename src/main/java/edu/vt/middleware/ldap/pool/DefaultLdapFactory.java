@@ -1,7 +1,7 @@
 /*
   $Id$
 
-  Copyright (C) 2003-2008 Virginia Tech.
+  Copyright (C) 2003-2009 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
@@ -100,7 +100,7 @@ public class DefaultLdapFactory extends AbstractLdapFactory<Ldap>
   }
 
 
-  /** {@inheritDoc}. */
+  /** {@inheritDoc} */
   public Ldap create()
   {
     Ldap l = new Ldap(this.config);
@@ -118,7 +118,7 @@ public class DefaultLdapFactory extends AbstractLdapFactory<Ldap>
   }
 
 
-  /** {@inheritDoc}. */
+  /** {@inheritDoc} */
   public void destroy(final Ldap l)
   {
     l.close();

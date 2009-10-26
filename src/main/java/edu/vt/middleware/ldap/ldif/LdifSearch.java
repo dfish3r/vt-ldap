@@ -1,7 +1,7 @@
 /*
   $Id$
 
-  Copyright (C) 2003-2008 Virginia Tech.
+  Copyright (C) 2003-2009 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
@@ -31,6 +31,7 @@ import edu.vt.middleware.ldap.pool.LdapPool;
 
 public class LdifSearch extends LdapSearch
 {
+
   /** Ldif object. */
   private Ldif ldif = new Ldif();
 

@@ -1,7 +1,7 @@
 /*
   $Id$
 
-  Copyright (C) 2003-2008 Virginia Tech.
+  Copyright (C) 2003-2009 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
@@ -155,7 +155,7 @@ public class LdapEntry extends AbstractLdapBean
   }
 
 
-  /** {@inheritDoc}. */
+  /** {@inheritDoc} */
   public int hashCode()
   {
     int hc = HASH_CODE_SEED;
@@ -196,8 +196,8 @@ public class LdapEntry extends AbstractLdapBean
 
 
     /**
-     * Compares two <code>LdapEntry</code> objects by DN.
-     * Delegates to String.compareToIgnoreCase().
+     * Compares two <code>LdapEntry</code> objects by DN. Delegates to
+     * String.compareToIgnoreCase().
      *
      * @param  le1  first <code>LdapEntry</code> for the comparison
      * @param  le2  second <code>LdapEntry</code> for the comparison

@@ -1,7 +1,7 @@
 /*
   $Id$
 
-  Copyright (C) 2003-2008 Virginia Tech.
+  Copyright (C) 2003-2009 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
@@ -48,8 +48,8 @@ public class DefaultSessionManager extends SessionManager
     if (this.sessionId != null) {
       session.setAttribute(this.sessionId, user);
       if (this.logger.isDebugEnabled()) {
-        this.logger.debug("Set session attribute " + this.sessionId +
-                          " to " + user);
+        this.logger.debug(
+          "Set session attribute " + this.sessionId + " to " + user);
       }
     } else {
       if (this.logger.isDebugEnabled()) {

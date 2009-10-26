@@ -1,7 +1,7 @@
 /*
   $Id$
 
-  Copyright (C) 2003-2008 Virginia Tech.
+  Copyright (C) 2003-2009 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
@@ -58,17 +58,17 @@ public abstract class AbstractPropertyConfig implements PropertyConfig
   }
 
 
-  /** {@inheritDoc}. */
+  /** {@inheritDoc} */
   public abstract String getPropertiesDomain();
 
 
-  /** {@inheritDoc}. */
+  /** {@inheritDoc} */
   public abstract void setEnvironmentProperties(
     final String name,
     final String value);
 
 
-  /** {@inheritDoc}. */
+  /** {@inheritDoc} */
   public void setEnvironmentProperties(final Properties properties)
   {
     if (properties != null) {
@@ -116,7 +116,7 @@ public abstract class AbstractPropertyConfig implements PropertyConfig
   }
 
 
-  /** {@inheritDoc}. */
+  /** {@inheritDoc} */
   public abstract boolean hasEnvironmentProperty(final String name);
 
 

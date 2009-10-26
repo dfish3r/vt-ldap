@@ -1,7 +1,7 @@
 /*
   $Id$
 
-  Copyright (C) 2003-2008 Virginia Tech.
+  Copyright (C) 2003-2009 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
@@ -30,7 +30,7 @@ public class TestAuthenticationResultHandler
   private Map<String, Boolean> results = new HashMap<String, Boolean>();
 
 
-  /** {@inheritDoc}. */
+  /** {@inheritDoc} */
   public void process(final AuthenticationCriteria ac, final boolean success)
   {
     this.results.put(ac.getDn(), Boolean.valueOf(success));

@@ -1,7 +1,7 @@
 /*
   $Id$
 
-  Copyright (C) 2003-2008 Virginia Tech.
+  Copyright (C) 2003-2009 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
@@ -66,7 +66,7 @@ public class Ldap extends AbstractLdap<LdapConfig> implements Serializable
      * Creates a new <code>AttributeModification</code> with the supplied
      * integer.
      *
-     * @param i modification operation
+     * @param  i  modification operation
      */
     AttributeModification(final int i)
     {
@@ -123,7 +123,7 @@ public class Ldap extends AbstractLdap<LdapConfig> implements Serializable
   }
 
 
-  /** {@inheritDoc}. */
+  /** {@inheritDoc} */
   public void setLdapConfig(final LdapConfig ldapConfig)
   {
     super.setLdapConfig(ldapConfig);
@@ -182,8 +182,8 @@ public class Ldap extends AbstractLdap<LdapConfig> implements Serializable
 
 
   /**
-   * This will perform an LDAP compare operation with the supplied filter
-   * and dn.
+   * This will perform an LDAP compare operation with the supplied filter and
+   * dn.
    *
    * @param  dn  <code>String</code> name to compare
    * @param  filter  <code>SearchFilter</code> expression to use for compare
@@ -195,17 +195,17 @@ public class Ldap extends AbstractLdap<LdapConfig> implements Serializable
   public boolean compare(final String dn, final SearchFilter filter)
     throws NamingException
   {
-    return super.compare(
-      dn, filter.getFilter(), filter.getFilterArgs().toArray());
+    return
+      super.compare(dn, filter.getFilter(), filter.getFilterArgs().toArray());
   }
 
 
   /**
    * This will query the LDAP with the supplied filter. All attributes will be
    * returned. {@link LdapConfig#getBase()} is used as the start point for
-   * searching. Search controls will be created from
-   * {@link LdapConfig#getSearchControls(String[])}.
-   * See {@link #search(String,SearchFilter,String[])}.
+   * searching. Search controls will be created from {@link
+   * LdapConfig#getSearchControls(String[])}. See {@link
+   * #search(String,SearchFilter,String[])}.
    *
    * @param  filter  <code>SearchFilter</code> expression to use for the search
    *
@@ -216,17 +216,20 @@ public class Ldap extends AbstractLdap<LdapConfig> implements Serializable
   public Iterator<SearchResult> search(final SearchFilter filter)
     throws NamingException
   {
-    return this.search(
-      this.config.getBase(), filter, this.config.getSearchControls(null));
+    return
+      this.search(
+        this.config.getBase(),
+        filter,
+        this.config.getSearchControls(null));
   }
 
 
   /**
-   * This will query the LDAP with the supplied filter and
-   * return attributes. {@link LdapConfig#getBase()} is used as the start point
-   * for searching. Search controls will be created from
-   * {@link LdapConfig#getSearchControls(String[])}.
-   * See {@link #search(String,SearchFilter,String[])}.
+   * This will query the LDAP with the supplied filter and return attributes.
+   * {@link LdapConfig#getBase()} is used as the start point for searching.
+   * Search controls will be created from {@link
+   * LdapConfig#getSearchControls(String[])}. See {@link
+   * #search(String,SearchFilter,String[])}.
    *
    * @param  filter  <code>SearchFilter</code> expression to use for the search
    * @param  retAttrs  <code>String[]</code> attributes to return
@@ -236,18 +239,22 @@ public class Ldap extends AbstractLdap<LdapConfig> implements Serializable
    * @throws  NamingException  if the LDAP returns an error
    */
   public Iterator<SearchResult> search(
-    final SearchFilter filter, final String[] retAttrs)
+    final SearchFilter filter,
+    final String[] retAttrs)
     throws NamingException
   {
-    return this.search(
-      this.config.getBase(), filter, this.config.getSearchControls(retAttrs));
+    return
+      this.search(
+        this.config.getBase(),
+        filter,
+        this.config.getSearchControls(retAttrs));
   }
 
 
   /**
-   * This will query the LDAP with the supplied filter and
-   * search controls. {@link LdapConfig#getBase()} is used as the start point
-   * for searching. See {@link #search(String,SearchFilter,SearchControls)}.
+   * This will query the LDAP with the supplied filter and search controls.
+   * {@link LdapConfig#getBase()} is used as the start point for searching. See
+   * {@link #search(String,SearchFilter,SearchControls)}.
    *
    * @param  filter  <code>SearchFilter</code> expression to use for the search
    * @param  searchControls  <code>SearchControls</code> to search with
@@ -257,7 +264,8 @@ public class Ldap extends AbstractLdap<LdapConfig> implements Serializable
    * @throws  NamingException  if the LDAP returns an error
    */
   public Iterator<SearchResult> search(
-    final SearchFilter filter, final SearchControls searchControls)
+    final SearchFilter filter,
+    final SearchControls searchControls)
     throws NamingException
   {
     return this.search(this.config.getBase(), filter, searchControls);
@@ -266,9 +274,9 @@ public class Ldap extends AbstractLdap<LdapConfig> implements Serializable
 
   /**
    * This will query the LDAP with the supplied dn and filter. All attributes
-   * will be returned. Search controls will be created from
-   * {@link LdapConfig#getSearchControls(String[])}.
-   * See {@link #search(String,SearchFilter,String[])}.
+   * will be returned. Search controls will be created from {@link
+   * LdapConfig#getSearchControls(String[])}. See {@link
+   * #search(String,SearchFilter,String[])}.
    *
    * @param  dn  <code>String</code> name to begin search at
    * @param  filter  <code>SearchFilter</code> expression to use for the search
@@ -278,7 +286,8 @@ public class Ldap extends AbstractLdap<LdapConfig> implements Serializable
    * @throws  NamingException  if the LDAP returns an error
    */
   public Iterator<SearchResult> search(
-    final String dn, final SearchFilter filter)
+    final String dn,
+    final SearchFilter filter)
     throws NamingException
   {
     return this.search(dn, filter, this.config.getSearchControls(null));
@@ -286,9 +295,9 @@ public class Ldap extends AbstractLdap<LdapConfig> implements Serializable
 
 
   /**
-   * This will query the LDAP with the supplied dn, filter, and
-   * return attributes. Search controls will be created from
-   * {@link LdapConfig#getSearchControls(String[])}. See {@link
+   * This will query the LDAP with the supplied dn, filter, and return
+   * attributes. Search controls will be created from {@link
+   * LdapConfig#getSearchControls(String[])}. See {@link
    * #search(String,SearchFilter,SearchControls,SearchResultHandler[])}.
    *
    * @param  dn  <code>String</code> name to begin search at
@@ -315,8 +324,8 @@ public class Ldap extends AbstractLdap<LdapConfig> implements Serializable
 
 
   /**
-   * This will query the LDAP with the supplied dn, filter, and
-   * search controls. See {@link
+   * This will query the LDAP with the supplied dn, filter, and search controls.
+   * See {@link
    * #search(String,SearchFilter,SearchControls,SearchResultHandler[])}.
    *
    * @param  dn  <code>String</code> name to begin search at
@@ -344,8 +353,8 @@ public class Ldap extends AbstractLdap<LdapConfig> implements Serializable
 
   /**
    * This will query the LDAP with the supplied dn, filter, return attributes,
-   * and search result handler. Search controls will be created from
-   * {@link LdapConfig#getSearchControls(String[])}. See {@link #search(
+   * and search result handler. Search controls will be created from {@link
+   * LdapConfig#getSearchControls(String[])}. See {@link #search(
    * String,SearchFilter,SearchControls,SearchResultHandler...)}.
    *
    * @param  dn  <code>String</code> name to begin search at
@@ -364,16 +373,16 @@ public class Ldap extends AbstractLdap<LdapConfig> implements Serializable
     final SearchResultHandler... handler)
     throws NamingException
   {
-    return this.search(
-      dn, filter, this.config.getSearchControls(retAttrs), handler);
+    return
+      this.search(dn, filter, this.config.getSearchControls(retAttrs), handler);
   }
 
 
   /**
-   * This will query the LDAP with the supplied dn, filter, search controls,
-   * and search result handler. If {@link LdapConfig#getPagedResultsSize()}
-   * is greater than 0, the PagedResultsControl will be invoked.
-   * See {@link AbstractLdap
+   * This will query the LDAP with the supplied dn, filter, search controls, and
+   * search result handler. If {@link LdapConfig#getPagedResultsSize()} is
+   * greater than 0, the PagedResultsControl will be invoked. See {@link
+   * AbstractLdap
    * #search(String,String,Object[],SearchControls,SearchResultHandler[])}.
    *
    * @param  dn  <code>String</code> name to begin search at
@@ -393,19 +402,21 @@ public class Ldap extends AbstractLdap<LdapConfig> implements Serializable
     throws NamingException
   {
     if (this.config.getPagedResultsSize() > 0) {
-      return super.pagedSearch(
-        dn,
-        filter.getFilter(),
-        filter.getFilterArgs().toArray(),
-        searchControls,
-        handler);
+      return
+        super.pagedSearch(
+          dn,
+          filter.getFilter(),
+          filter.getFilterArgs().toArray(),
+          searchControls,
+          handler);
     } else {
-      return super.search(
-        dn,
-        filter.getFilter(),
-        filter.getFilterArgs().toArray(),
-        searchControls,
-        handler);
+      return
+        super.search(
+          dn,
+          filter.getFilter(),
+          filter.getFilterArgs().toArray(),
+          searchControls,
+          handler);
     }
   }
 
@@ -500,7 +511,7 @@ public class Ldap extends AbstractLdap<LdapConfig> implements Serializable
   }
 
 
-  /** {@inheritDoc}. */
+  /** {@inheritDoc} */
   public Iterator<SearchResult> searchAttributes(
     final String dn,
     final Attributes matchAttrs,
@@ -512,7 +523,7 @@ public class Ldap extends AbstractLdap<LdapConfig> implements Serializable
   }
 
 
-  /** {@inheritDoc}. */
+  /** {@inheritDoc} */
   public Iterator<NameClassPair> list(final String dn)
     throws NamingException
   {
@@ -520,7 +531,7 @@ public class Ldap extends AbstractLdap<LdapConfig> implements Serializable
   }
 
 
-  /** {@inheritDoc}. */
+  /** {@inheritDoc} */
   public Iterator<Binding> listBindings(final String dn)
     throws NamingException
   {
@@ -565,7 +576,7 @@ public class Ldap extends AbstractLdap<LdapConfig> implements Serializable
   }
 
 
-  /** {@inheritDoc}. */
+  /** {@inheritDoc} */
   public Attributes getAttributes(
     final String dn,
     final String[] retAttrs,
@@ -576,7 +587,7 @@ public class Ldap extends AbstractLdap<LdapConfig> implements Serializable
   }
 
 
-  /** {@inheritDoc}. */
+  /** {@inheritDoc} */
   public Iterator<SearchResult> getSchema(final String dn)
     throws NamingException
   {
@@ -597,14 +608,16 @@ public class Ldap extends AbstractLdap<LdapConfig> implements Serializable
    * @throws  NamingException  if the LDAP returns an error
    */
   public void modifyAttributes(
-    final String dn, final AttributeModification mod, final Attributes attrs)
+    final String dn,
+    final AttributeModification mod,
+    final Attributes attrs)
     throws NamingException
   {
     super.modifyAttributes(dn, mod.modOp(), attrs);
   }
 
 
-  /** {@inheritDoc}. */
+  /** {@inheritDoc} */
   public void modifyAttributes(final String dn, final ModificationItem[] mods)
     throws NamingException
   {
@@ -612,7 +625,7 @@ public class Ldap extends AbstractLdap<LdapConfig> implements Serializable
   }
 
 
-  /** {@inheritDoc}. */
+  /** {@inheritDoc} */
   public void create(final String dn, final Attributes attrs)
     throws NamingException
   {
@@ -620,7 +633,7 @@ public class Ldap extends AbstractLdap<LdapConfig> implements Serializable
   }
 
 
-  /** {@inheritDoc}. */
+  /** {@inheritDoc} */
   public void rename(final String oldDn, final String newDn)
     throws NamingException
   {
@@ -628,7 +641,7 @@ public class Ldap extends AbstractLdap<LdapConfig> implements Serializable
   }
 
 
-  /** {@inheritDoc}. */
+  /** {@inheritDoc} */
   public void delete(final String dn)
     throws NamingException
   {

@@ -1,7 +1,7 @@
 /*
   $Id$
 
-  Copyright (C) 2003-2008 Virginia Tech.
+  Copyright (C) 2003-2009 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
@@ -31,7 +31,7 @@ import edu.vt.middleware.ldap.handler.CompareAuthorizationHandler;
  * @version  $Revision$ $Date$
  */
 public class DnAuthenticator extends AbstractAuthenticator
-                             implements Serializable
+  implements Serializable
 {
 
   /** serial version uid. */
@@ -55,10 +55,10 @@ public class DnAuthenticator extends AbstractAuthenticator
 
 
   /**
-   * This will authenticate by binding to the LDAP with the supplied
-   * dn and credential. If {@link AuthenticatorConfig#setAuthorizationFilter}
-   * has been called, then it will be used to authorize the user by performing
-   * an ldap compare. See {@link #authenticate(String, Object, SearchFilter)}.
+   * This will authenticate by binding to the LDAP with the supplied dn and
+   * credential. If {@link AuthenticatorConfig#setAuthorizationFilter} has been
+   * called, then it will be used to authorize the user by performing an ldap
+   * compare. See {@link #authenticate(String, Object, SearchFilter)}.
    *
    * @param  dn  <code>String</code> dn for bind
    * @param  credential  <code>Object</code> credential for bind
@@ -82,15 +82,14 @@ public class DnAuthenticator extends AbstractAuthenticator
 
 
   /**
-   * This will authenticate by binding to the LDAP with the supplied
-   * dn and credential. If the supplied filter is not null
-   * it will be injected into a new instance of CompareAuthorizationHandler and
-   * set as the first AuthorizationHandler to execute. If
-   * {@link AuthenticatorConfig#setAuthenticationResultHandlers(
+   * This will authenticate by binding to the LDAP with the supplied dn and
+   * credential. If the supplied filter is not null it will be injected into a
+   * new instance of CompareAuthorizationHandler and set as the first
+   * AuthorizationHandler to execute. If {@link
+   * AuthenticatorConfig#setAuthenticationResultHandlers(
    * AuthenticationResultHandler[])} has been called, then it will be used to
-   * post process authentication results. See
-   * {@link #authenticate(String, Object, AuthenticationResultHandler[],
-   * AuthorizationHandler[])}
+   * post process authentication results. See {@link #authenticate(String,
+   * Object, AuthenticationResultHandler[], AuthorizationHandler[])}
    *
    * @param  dn  <code>String</code> dn for bind
    * @param  credential  <code>Object</code> credential for bind
@@ -149,17 +148,16 @@ public class DnAuthenticator extends AbstractAuthenticator
     final AuthorizationHandler[] authzHandler)
     throws NamingException
   {
-    return super.authenticateAndAuthorize(
-      dn, credential, authHandler, authzHandler);
+    return
+      super.authenticateAndAuthorize(dn, credential, authHandler, authzHandler);
   }
 
 
   /**
-   * This will authenticate by binding to the LDAP with the supplied
-   * dn and credential. If {@link AuthenticatorConfig#setAuthorizationFilter}
-   * has been called, then it will be used to authorize the user by performing
-   * an ldap compare. See {@link #authenticate(String, Object, SearchFilter,
-   * String[])}
+   * This will authenticate by binding to the LDAP with the supplied dn and
+   * credential. If {@link AuthenticatorConfig#setAuthorizationFilter} has been
+   * called, then it will be used to authorize the user by performing an ldap
+   * compare. See {@link #authenticate(String, Object, SearchFilter, String[])}
    *
    * @param  dn  <code>String</code> dn for bind
    * @param  credential  <code>Object</code> credential for bind
@@ -187,12 +185,11 @@ public class DnAuthenticator extends AbstractAuthenticator
 
 
   /**
-   * This will authenticate by binding to the LDAP with the supplied
-   * dn and credential. If the supplied filter is not null
-   * it will be injected into a new instance of CompareAuthorizationHandler and
-   * set as the first AuthorizationHandler to execute. See
-   * {@link #authenticate(String, Object, String[],
-   * AuthenticationResultHandler[], AuthorizationHandler[])}
+   * This will authenticate by binding to the LDAP with the supplied dn and
+   * credential. If the supplied filter is not null it will be injected into a
+   * new instance of CompareAuthorizationHandler and set as the first
+   * AuthorizationHandler to execute. See {@link #authenticate(String, Object,
+   * String[], AuthenticationResultHandler[], AuthorizationHandler[])}
    *
    * @param  dn  <code>String</code> dn for bind
    * @param  credential  <code>Object</code> credential for bind
@@ -230,9 +227,9 @@ public class DnAuthenticator extends AbstractAuthenticator
 
 
   /**
-   * This will authenticate by binding to the LDAP with the supplied
-   * dn and credential. See {@link #authenticateAndAuthorize(String, Object,
-   * boolean, String[], AuthenticationResultHandler[], AuthorizationHandler[])}.
+   * This will authenticate by binding to the LDAP with the supplied dn and
+   * credential. See {@link #authenticateAndAuthorize(String, Object, boolean,
+   * String[], AuthenticationResultHandler[], AuthorizationHandler[])}.
    *
    * @param  dn  <code>String</code> dn for bind
    * @param  credential  <code>Object</code> credential for bind

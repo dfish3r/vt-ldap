@@ -1,7 +1,7 @@
 /*
   $Id$
 
-  Copyright (C) 2003-2008 Virginia Tech.
+  Copyright (C) 2003-2009 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
@@ -55,9 +55,9 @@ public final class AttributesProcessor
 
 
   /**
-   * Process the attributes of an ldap search search.
-   * Any exceptions passed into this method will be ignored and
-   * results will be returned as if no exception occurred.
+   * Process the attributes of an ldap search search. Any exceptions passed into
+   * this method will be ignored and results will be returned as if no exception
+   * occurred.
    *
    * @param  sc  <code>SearchCriteria</code> used to find search result
    * @param  attrs  <code>Attributes</code> to pass to the handler

@@ -1,7 +1,7 @@
 /*
   $Id$
 
-  Copyright (C) 2003-2008 Virginia Tech.
+  Copyright (C) 2003-2009 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
@@ -56,7 +56,7 @@ public class LdapRoleAuthorizationModule extends AbstractLoginModule
   private Ldap ldap;
 
 
-  /** {@inheritDoc}. */
+  /** {@inheritDoc} */
   public void initialize(
     final Subject subject,
     final CallbackHandler callbackHandler,
@@ -95,7 +95,7 @@ public class LdapRoleAuthorizationModule extends AbstractLoginModule
   }
 
 
-  /** {@inheritDoc}. */
+  /** {@inheritDoc} */
   public boolean login()
     throws LoginException
   {

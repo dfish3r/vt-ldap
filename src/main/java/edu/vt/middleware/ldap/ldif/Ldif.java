@@ -1,7 +1,7 @@
 /*
   $Id$
 
-  Copyright (C) 2003-2008 Virginia Tech.
+  Copyright (C) 2003-2009 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
@@ -231,8 +231,8 @@ public class Ldif implements Serializable
 
 
   /**
-   * This will write the supplied LDAP search results to the supplied writer
-   * in LDIF form.
+   * This will write the supplied LDAP search results to the supplied writer in
+   * LDIF form.
    *
    * @param  results  <code>Iterator</code> of LDAP search results
    * @param  writer  <code>Writer</code> to write to
@@ -249,13 +249,10 @@ public class Ldif implements Serializable
   }
 
 
-
-
   /**
-   * This will take a Reader containing an LDIF and convert
-   * it to an Iterator of LDAP search results.
-   * Provides a loose implementation of RFC 2849. Should not be used
-   * to validate LDIF format as it does not enforce strictness.
+   * This will take a Reader containing an LDIF and convert it to an Iterator of
+   * LDAP search results. Provides a loose implementation of RFC 2849. Should
+   * not be used to validate LDIF format as it does not enforce strictness.
    *
    * @param  reader  <code>Reader</code> containing LDIF content
    *
@@ -317,8 +314,8 @@ public class Ldif implements Serializable
             if (attrName.equals("dn")) {
               ldapEntry.setDn(attrValue);
             } else {
-              LdapAttribute ldapAttr =
-                ldapEntry.getLdapAttributes().getAttribute(attrName);
+              LdapAttribute ldapAttr = ldapEntry.getLdapAttributes()
+                  .getAttribute(attrName);
               if (ldapAttr == null) {
                 ldapAttr = new LdapAttribute(attrName);
                 ldapEntry.getLdapAttributes().addAttribute(ldapAttr);

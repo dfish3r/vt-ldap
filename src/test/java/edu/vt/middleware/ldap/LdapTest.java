@@ -1,7 +1,7 @@
 /*
   $Id$
 
-  Copyright (C) 2003-2008 Virginia Tech.
+  Copyright (C) 2003-2009 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
@@ -70,9 +70,6 @@ public class LdapTest
   private static Map<String, LdapEntry[]> groupEntries =
     new HashMap<String, LdapEntry[]>();
 
-  /** Ldap instance for concurrency testing. */
-  private Ldap singleLdap;
-
   /**
    * Initialize the map of group entries.
    */
@@ -81,6 +78,9 @@ public class LdapTest
       groupEntries.put(String.valueOf(i), new LdapEntry[2]);
     }
   }
+
+  /** Ldap instance for concurrency testing. */
+  private Ldap singleLdap;
 
 
   /**
@@ -132,11 +132,14 @@ public class LdapTest
    *
    * @throws  Exception  On test failure.
    */
-  @Parameters({
-    "createGroup2",
-    "createGroup3",
-    "createGroup4",
-    "createGroup5" })
+  @Parameters(
+    {
+      "createGroup2",
+      "createGroup3",
+      "createGroup4",
+      "createGroup5"
+    }
+  )
   @BeforeClass(groups = {"ldaptest"})
   public void createGroupEntry(
     final String ldifFile2,
@@ -166,8 +169,8 @@ public class LdapTest
     for (Map.Entry<String, LdapEntry[]> e : groupEntries.entrySet()) {
       while (
         !ldap.compare(
-          e.getValue()[0].getDn(),
-          new SearchFilter(e.getValue()[0].getDn().split(",")[0]))) {
+            e.getValue()[0].getDn(),
+            new SearchFilter(e.getValue()[0].getDn().split(",")[0]))) {
         Thread.sleep(100);
       }
     }
@@ -177,15 +180,17 @@ public class LdapTest
       groupEntries.get("2")[0].getDn(),
       AttributeModification.ADD,
       AttributesFactory.createAttributes(
-        "member", "uugid=group3,ou=test,dc=vt,dc=edu"));
+        "member",
+        "uugid=group3,ou=test,dc=vt,dc=edu"));
     ldap.modifyAttributes(
       groupEntries.get("3")[0].getDn(),
       AttributeModification.ADD,
       AttributesFactory.createAttributes(
         "member",
-        new String[]{
+        new String[] {
           "uugid=group4,ou=test,dc=vt,dc=edu",
-          "uugid=group5,ou=test,dc=vt,dc=edu", }));
+          "uugid=group5,ou=test,dc=vt,dc=edu",
+        }));
     ldap.modifyAttributes(
       groupEntries.get("4")[0].getDn(),
       AttributeModification.ADD,
@@ -235,9 +240,11 @@ public class LdapTest
   }
 
 
-
   /** @throws  Exception  On test failure. */
-  @AfterClass(groups = {"ldaptest"}, dependsOnMethods = {"renameLdapEntry"})
+  @AfterClass(
+    groups = {"ldaptest"},
+    dependsOnMethods = {"renameLdapEntry"}
+  )
   public void deleteLdapEntry()
     throws Exception
   {
@@ -283,7 +290,9 @@ public class LdapTest
     timeOut = 60000
   )
   public void compare(
-    final String dn, final String filter, final String filterArgs)
+    final String dn,
+    final String filter,
+    final String filterArgs)
     throws Exception
   {
     final Ldap ldap = this.createLdap(false);
@@ -390,13 +399,11 @@ public class LdapTest
    *
    * @throws  Exception  On test failure.
    */
-  @Parameters(
-    {
+  @Parameters({
       "pagedSearchDn",
       "pagedSearchFilter",
       "pagedSearchResults"
-    }
-  )
+    })
   @Test(groups = {"ldaptest"})
   public void pagedSearch(
     final String dn,
@@ -454,7 +461,7 @@ public class LdapTest
     // test recursive searching
     final FqdnSearchResultHandler handler = new FqdnSearchResultHandler();
     handler.setAttributeHandler(
-      new AttributeHandler[]{new RecursiveAttributeHandler(ldap, "member")});
+      new AttributeHandler[] {new RecursiveAttributeHandler(ldap, "member")});
 
     final Iterator<SearchResult> iter = ldap.search(
       dn,
@@ -474,13 +481,11 @@ public class LdapTest
    *
    * @throws  Exception  On test failure.
    */
-  @Parameters(
-    {
+  @Parameters({
       "mergeSearchDn",
       "mergeSearchFilter",
       "mergeSearchResults"
-    }
-  )
+    })
   @Test(groups = {"ldaptest"})
   public void mergeSearch(
     final String dn,
@@ -500,7 +505,8 @@ public class LdapTest
       dn,
       new SearchFilter(filter),
       (String[]) null,
-      new FqdnSearchResultHandler(), handler);
+      new FqdnSearchResultHandler(),
+      handler);
     AssertJUnit.assertEquals(
       entry,
       TestUtil.convertLdifToEntry((new Ldif()).createLdif(iter)));
@@ -541,7 +547,8 @@ public class LdapTest
       dn,
       new SearchFilter(filter),
       (String[]) null,
-      new FqdnSearchResultHandler(), handler);
+      new FqdnSearchResultHandler(),
+      handler);
     AssertJUnit.assertEquals(
       entry,
       TestUtil.convertLdifToEntry((new Ldif()).createLdif(iter)));
@@ -578,7 +585,7 @@ public class LdapTest
     Iterator<SearchResult> iter = ldap.search(
       dn,
       new SearchFilter(filter),
-      new String[]{returnAttr},
+      new String[] {returnAttr},
       new FqdnSearchResultHandler());
     AssertJUnit.assertNotSame(
       base64Value,
@@ -587,8 +594,9 @@ public class LdapTest
     iter = ldap.search(
       dn,
       new SearchFilter(filter),
-      new String[]{returnAttr},
-      new FqdnSearchResultHandler(), new BinarySearchResultHandler());
+      new String[] {returnAttr},
+      new FqdnSearchResultHandler(),
+      new BinarySearchResultHandler());
     AssertJUnit.assertEquals(
       base64Value,
       iter.next().getAttributes().get(returnAttr).get());
@@ -630,7 +638,7 @@ public class LdapTest
     }
 
     ldap.getLdapConfig().setHandlerIgnoreExceptions(
-      new Class[]{TimeLimitExceededException.class});
+      new Class[] {TimeLimitExceededException.class});
     try {
       ldap.search(dn, new SearchFilter("(uugid=*)"));
       AssertJUnit.fail("Should have thrown SizeLimitExceededException");
@@ -639,9 +647,11 @@ public class LdapTest
     }
 
     ldap.getLdapConfig().setHandlerIgnoreExceptions(
-      new Class[]{LimitExceededException.class});
+      new Class[] {LimitExceededException.class});
+
     final Iterator<SearchResult> iter = ldap.search(
-      dn, new SearchFilter(filter));
+      dn,
+      new SearchFilter(filter));
     AssertJUnit.assertEquals(resultsSize, (new LdapResult(iter)).size());
 
     ldap.close();
@@ -888,7 +898,8 @@ public class LdapTest
       dn,
       AttributeModification.ADD,
       AttributesFactory.createAttributes(
-        expected.getName(), expected.getValues().toArray()));
+        expected.getName(),
+        expected.getValues().toArray()));
 
     final Attributes a = ldap.getAttributes(
       dn,
@@ -917,7 +928,8 @@ public class LdapTest
     int i = 0;
     for (LdapAttribute la : expected.getAttributes()) {
       mods[i] = new ModificationItem(
-        DirContext.ADD_ATTRIBUTE, la.toAttribute());
+        DirContext.ADD_ATTRIBUTE,
+        la.toAttribute());
       i++;
     }
     ldap.modifyAttributes(dn, mods);
@@ -949,7 +961,8 @@ public class LdapTest
       dn,
       AttributeModification.REPLACE,
       AttributesFactory.createAttributes(
-        expected.getName(), expected.getValues().toArray()));
+        expected.getName(),
+        expected.getValues().toArray()));
 
     final Attributes a = ldap.getAttributes(
       dn,
@@ -981,7 +994,8 @@ public class LdapTest
     int i = 0;
     for (LdapAttribute la : expected.getAttributes()) {
       mods[i] = new ModificationItem(
-        DirContext.REPLACE_ATTRIBUTE, la.toAttribute());
+        DirContext.REPLACE_ATTRIBUTE,
+        la.toAttribute());
       i++;
     }
     ldap.modifyAttributes(dn, mods);
@@ -1017,7 +1031,8 @@ public class LdapTest
       dn,
       AttributeModification.REMOVE,
       AttributesFactory.createAttributes(
-        remove.getName(), remove.getValues().toArray()));
+        remove.getName(),
+        remove.getValues().toArray()));
 
     final Attributes a = ldap.getAttributes(
       dn,
@@ -1055,7 +1070,8 @@ public class LdapTest
     int i = 0;
     for (LdapAttribute la : remove.getAttributes()) {
       mods[i] = new ModificationItem(
-        DirContext.REMOVE_ATTRIBUTE, la.toAttribute());
+        DirContext.REMOVE_ATTRIBUTE,
+        la.toAttribute());
       i++;
     }
     ldap.modifyAttributes(dn, mods);

@@ -1,7 +1,7 @@
 /*
   $Id$
 
-  Copyright (C) 2003-2008 Virginia Tech.
+  Copyright (C) 2003-2009 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
@@ -58,9 +58,6 @@ public final class AttributeServlet extends HttpServlet
   /** serial version uid. */
   private static final long serialVersionUID = -5918353780927139315L;
 
-  /** Log for this class. */
-  private final Log logger = LogFactory.getLog(AttributeServlet.class);
-
   /** Types of available pools. */
   private enum PoolType {
 
@@ -73,6 +70,9 @@ public final class AttributeServlet extends HttpServlet
     /** shared. */
     SHARED
   }
+
+  /** Log for this class. */
+  private final Log logger = LogFactory.getLog(AttributeServlet.class);
 
   /** Pool to use for searching. */
   private LdapPool<Ldap> pool;
@@ -93,8 +93,8 @@ public final class AttributeServlet extends HttpServlet
     final String propertiesFile = getInitParameter(
       ServletConstants.PROPERTIES_FILE);
     if (this.logger.isDebugEnabled()) {
-      this.logger.debug(ServletConstants.PROPERTIES_FILE + " = " +
-                        propertiesFile);
+      this.logger.debug(
+        ServletConstants.PROPERTIES_FILE + " = " + propertiesFile);
     }
 
     final LdapConfig ldapConfig = LdapConfig.createFromProperties(

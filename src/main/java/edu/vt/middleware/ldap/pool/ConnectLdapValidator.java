@@ -1,7 +1,7 @@
 /*
   $Id$
 
-  Copyright (C) 2003-2008 Virginia Tech.
+  Copyright (C) 2003-2009 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
@@ -32,7 +32,7 @@ public class ConnectLdapValidator implements LdapValidator<Ldap>
   protected final Log logger = LogFactory.getLog(this.getClass());
 
 
-  /** {@inheritDoc}. */
+  /** {@inheritDoc} */
   public boolean validate(final Ldap l)
   {
     boolean success = false;

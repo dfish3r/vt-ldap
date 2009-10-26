@@ -1,7 +1,7 @@
 /*
   $Id$
 
-  Copyright (C) 2003-2008 Virginia Tech.
+  Copyright (C) 2003-2009 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
@@ -56,8 +56,8 @@ public class LdapResultTest
     ldap = TestUtil.createLdap();
     while (
       !ldap.compare(
-        testLdapEntry.getDn(),
-        new SearchFilter(testLdapEntry.getDn().split(",")[0]))) {
+          testLdapEntry.getDn(),
+          new SearchFilter(testLdapEntry.getDn().split(",")[0]))) {
       Thread.sleep(100);
     }
     ldap.close();
@@ -102,8 +102,7 @@ public class LdapResultTest
     final Ldap ldap = TestUtil.createLdap();
 
     final LdapResult r = new LdapResult(
-      ldap.search(
-        dn, new SearchFilter(filter), returnAttrs.split("\\|")));
+      ldap.search(dn, new SearchFilter(filter), returnAttrs.split("\\|")));
     final String ldif = TestUtil.readFileIntoString(ldifFile);
     final LdapEntry entry = TestUtil.convertLdifToEntry(ldif);
     AssertJUnit.assertEquals(r, new LdapResult(entry));

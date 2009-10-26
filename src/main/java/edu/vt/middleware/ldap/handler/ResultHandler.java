@@ -1,7 +1,7 @@
 /*
   $Id$
 
-  Copyright (C) 2003-2008 Virginia Tech.
+  Copyright (C) 2003-2009 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
@@ -49,8 +49,7 @@ public interface ResultHandler<R, O>
    *
    * @param  sc  <code>SearchCriteria</code> used to perform the search
    * @param  en  <code>NamingEnumeration</code> of search results
-   * @param  ignore  <code>Class[]</code> of exception types to ignore
-   * results
+   * @param  ignore  <code>Class[]</code> of exception types to ignore results
    *
    * @return  <code>List</code> of result objects
    *

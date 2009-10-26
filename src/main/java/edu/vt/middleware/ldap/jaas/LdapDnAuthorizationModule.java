@@ -1,7 +1,7 @@
 /*
   $Id$
 
-  Copyright (C) 2003-2008 Virginia Tech.
+  Copyright (C) 2003-2009 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
@@ -44,7 +44,7 @@ public class LdapDnAuthorizationModule extends AbstractLoginModule
   private Authenticator auth;
 
 
-  /** {@inheritDoc}. */
+  /** {@inheritDoc} */
   public void initialize(
     final Subject subject,
     final CallbackHandler callbackHandler,
@@ -61,7 +61,7 @@ public class LdapDnAuthorizationModule extends AbstractLoginModule
   }
 
 
-  /** {@inheritDoc}. */
+  /** {@inheritDoc} */
   public boolean login()
     throws LoginException
   {

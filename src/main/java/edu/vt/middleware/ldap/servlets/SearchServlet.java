@@ -1,7 +1,7 @@
 /*
   $Id$
 
-  Copyright (C) 2003-2008 Virginia Tech.
+  Copyright (C) 2003-2009 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
@@ -69,9 +69,6 @@ public final class SearchServlet extends HttpServlet
   /** serial version uid. */
   private static final long serialVersionUID = 1731614499970954068L;
 
-  /** Log for this class. */
-  private final Log logger = LogFactory.getLog(SearchServlet.class);
-
   /** Types of available pools. */
   private enum PoolType {
 
@@ -94,6 +91,9 @@ public final class SearchServlet extends HttpServlet
     /** DSML output type. */
     DSML
   }
+
+  /** Log for this class. */
+  private final Log logger = LogFactory.getLog(SearchServlet.class);
 
   /** Type of output to produce. */
   private OutputType output;
@@ -123,8 +123,8 @@ public final class SearchServlet extends HttpServlet
     final String propertiesFile = getInitParameter(
       ServletConstants.PROPERTIES_FILE);
     if (this.logger.isDebugEnabled()) {
-      this.logger.debug(ServletConstants.PROPERTIES_FILE + " = " +
-                        propertiesFile);
+      this.logger.debug(
+        ServletConstants.PROPERTIES_FILE + " = " + propertiesFile);
     }
 
     final LdapConfig ldapConfig = LdapConfig.createFromProperties(

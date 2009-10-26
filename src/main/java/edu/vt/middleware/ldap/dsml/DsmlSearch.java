@@ -1,7 +1,7 @@
 /*
   $Id$
 
-  Copyright (C) 2003-2008 Virginia Tech.
+  Copyright (C) 2003-2009 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
@@ -88,8 +88,8 @@ public class DsmlSearch extends LdapSearch
   /**
    * This will perform an LDAP search with the supplied query and return
    * attributes. The results will be written to the supplied <code>
-   * Writer</code>. Use {@link #version} to control which version of
-   * DSML is written.
+   * Writer</code>. Use {@link #version} to control which version of DSML is
+   * written.
    *
    * @param  query  <code>String</code> to search for
    * @param  attrs  <code>String[]</code> to return

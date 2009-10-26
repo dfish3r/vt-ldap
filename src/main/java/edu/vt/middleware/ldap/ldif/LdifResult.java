@@ -1,7 +1,7 @@
 /*
   $Id$
 
-  Copyright (C) 2003-2008 Virginia Tech.
+  Copyright (C) 2003-2009 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
@@ -82,16 +82,15 @@ public class LdifResult extends LdapResult
 
 
   /**
-   * This reads any entries in the supplied LDIF into this
-   * <code>LdifResult</code>.
+   * This reads any entries in the supplied LDIF into this <code>
+   * LdifResult</code>.
    *
    * @param  ldif  <code>String</code> to read
    */
   public void fromLdif(final String ldif)
   {
     try {
-      this.addEntries(
-        this.ldif.importLdif(new StringReader(ldif)));
+      this.addEntries(this.ldif.importLdif(new StringReader(ldif)));
     } catch (IOException e) {
       if (this.logger.isWarnEnabled()) {
         this.logger.warn("Could not read ldif from StringReader", e);

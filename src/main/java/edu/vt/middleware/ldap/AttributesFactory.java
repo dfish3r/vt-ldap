@@ -1,7 +1,7 @@
 /*
   $Id$
 
-  Copyright (C) 2003-2008 Virginia Tech.
+  Copyright (C) 2003-2009 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
@@ -33,10 +33,11 @@ public final class AttributesFactory
 
 
   /**
-   * Creates a new <code>Attributes</code> with the supplied name.
-   * Attributes will be case-insensitive.
+   * Creates a new <code>Attributes</code> with the supplied name. Attributes
+   * will be case-insensitive.
    *
-   * @param  name of the attribute
+   * @param  name  of the attribute
+   *
    * @return  <code>Attributes</code>
    */
   public static Attributes createAttributes(final String name)
@@ -48,12 +49,14 @@ public final class AttributesFactory
   /**
    * Creates a new <code>Attributes</code> with the supplied name.
    *
-   * @param  name of the attribute
-   * @param  ignoreCase whether to ignore the case of attribute values
+   * @param  name  of the attribute
+   * @param  ignoreCase  whether to ignore the case of attribute values
+   *
    * @return  <code>Attributes</code>
    */
   public static Attributes createAttributes(
-    final String name, final boolean ignoreCase)
+    final String name,
+    final boolean ignoreCase)
   {
     return createAttributes(name, null, ignoreCase);
   }
@@ -63,12 +66,14 @@ public final class AttributesFactory
    * Creates a new <code>Attributes</code> with the supplied name and value.
    * Attributes will be case-insensitive.
    *
-   * @param  name of the attribute
-   * @param  value of the attribute
+   * @param  name  of the attribute
+   * @param  value  of the attribute
+   *
    * @return  <code>Attributes</code>
    */
   public static Attributes createAttributes(
-    final String name, final Object value)
+    final String name,
+    final Object value)
   {
     return createAttributes(name, value, LdapConstants.DEFAULT_IGNORE_CASE);
   }
@@ -77,13 +82,16 @@ public final class AttributesFactory
   /**
    * Creates a new <code>Attributes</code> with the supplied name and value.
    *
-   * @param  name of the attribute
-   * @param  value of the attribute
-   * @param  ignoreCase whether to ignore the case of attribute values
+   * @param  name  of the attribute
+   * @param  value  of the attribute
+   * @param  ignoreCase  whether to ignore the case of attribute values
+   *
    * @return  <code>Attributes</code>
    */
   public static Attributes createAttributes(
-    final String name, final Object value, final boolean ignoreCase)
+    final String name,
+    final Object value,
+    final boolean ignoreCase)
   {
     if (value == null) {
       return createAttributes(name, null, ignoreCase);
@@ -97,12 +105,14 @@ public final class AttributesFactory
    * Creates a new <code>Attributes</code> with the supplied name and values.
    * Attributes will be case-insensitive.
    *
-   * @param  name of the attribute
-   * @param  values of the attribute
+   * @param  name  of the attribute
+   * @param  values  of the attribute
+   *
    * @return  <code>Attributes</code>
    */
   public static Attributes createAttributes(
-    final String name, final Object[] values)
+    final String name,
+    final Object[] values)
   {
     return createAttributes(name, values, LdapConstants.DEFAULT_IGNORE_CASE);
   }
@@ -111,13 +121,16 @@ public final class AttributesFactory
   /**
    * Creates a new <code>Attributes</code> with the supplied name and values.
    *
-   * @param  name of the attribute
-   * @param  values of the attribute
-   * @param  ignoreCase whether to ignore the case of attribute values
+   * @param  name  of the attribute
+   * @param  values  of the attribute
+   * @param  ignoreCase  whether to ignore the case of attribute values
+   *
    * @return  <code>Attributes</code>
    */
   public static Attributes createAttributes(
-    final String name, final Object[] values, final boolean ignoreCase)
+    final String name,
+    final Object[] values,
+    final boolean ignoreCase)
   {
     final Attributes attrs = new BasicAttributes(ignoreCase);
     attrs.put(createAttribute(name, values));
@@ -128,7 +141,8 @@ public final class AttributesFactory
   /**
    * Creates a new <code>Attribute</code> with the supplied name.
    *
-   * @param  name of the attribute
+   * @param  name  of the attribute
+   *
    * @return  <code>Attribute</code>
    */
   public static Attribute createAttribute(final String name)
@@ -140,8 +154,9 @@ public final class AttributesFactory
   /**
    * Creates a new <code>Attribute</code> with the supplied name and value.
    *
-   * @param  name of the attribute
-   * @param  value of the attribute
+   * @param  name  of the attribute
+   * @param  value  of the attribute
+   *
    * @return  <code>Attribute</code>
    */
   public static Attribute createAttribute(final String name, final Object value)
@@ -157,12 +172,14 @@ public final class AttributesFactory
   /**
    * Creates a new <code>Attribute</code> with the supplied name and values.
    *
-   * @param  name of the attribute
-   * @param  values of the attribute
+   * @param  name  of the attribute
+   * @param  values  of the attribute
+   *
    * @return  <code>Attribute</code>
    */
   public static Attribute createAttribute(
-    final String name, final Object[] values)
+    final String name,
+    final Object[] values)
   {
     final Attribute attr = new BasicAttribute(name);
     if (values != null) {

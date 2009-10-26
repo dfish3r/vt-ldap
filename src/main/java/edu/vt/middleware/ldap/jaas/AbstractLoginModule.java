@@ -1,7 +1,7 @@
 /*
   $Id$
 
-  Copyright (C) 2003-2008 Virginia Tech.
+  Copyright (C) 2003-2009 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
@@ -113,7 +113,7 @@ public abstract class AbstractLoginModule implements LoginModule
   protected Set<LdapCredential> credentials;
 
 
-  /** {@inheritDoc}. */
+  /** {@inheritDoc} */
   public void initialize(
     final Subject subject,
     final CallbackHandler callbackHandler,
@@ -160,12 +160,12 @@ public abstract class AbstractLoginModule implements LoginModule
   }
 
 
-  /** {@inheritDoc}. */
+  /** {@inheritDoc} */
   public abstract boolean login()
     throws LoginException;
 
 
-  /** {@inheritDoc}. */
+  /** {@inheritDoc} */
   public boolean commit()
     throws LoginException
   {
@@ -189,7 +189,7 @@ public abstract class AbstractLoginModule implements LoginModule
   }
 
 
-  /** {@inheritDoc}. */
+  /** {@inheritDoc} */
   public boolean abort()
   {
     if (this.logger.isTraceEnabled()) {
@@ -201,7 +201,7 @@ public abstract class AbstractLoginModule implements LoginModule
   }
 
 
-  /** {@inheritDoc}. */
+  /** {@inheritDoc} */
   public boolean logout()
   {
     if (this.logger.isTraceEnabled()) {

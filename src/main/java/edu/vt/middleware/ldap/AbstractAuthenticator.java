@@ -1,7 +1,7 @@
 /*
   $Id$
 
-  Copyright (C) 2003-2008 Virginia Tech.
+  Copyright (C) 2003-2009 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
@@ -83,10 +83,9 @@ public abstract class AbstractAuthenticator
 
 
   /**
-   * This will authenticate by binding to the LDAP with the supplied
-   * dn and credential. See {@link #authenticateAndAuthorize(
-   * String, Object, boolean, String[], AuthenticationResultHandler[],
-   * AuthorizationHandler[])}.
+   * This will authenticate by binding to the LDAP with the supplied dn and
+   * credential. See {@link #authenticateAndAuthorize( String, Object, boolean,
+   * String[], AuthenticationResultHandler[], AuthorizationHandler[])}.
    *
    * @param  dn  <code>String</code> for bind
    * @param  credential  <code>Object</code> for bind
@@ -127,13 +126,13 @@ public abstract class AbstractAuthenticator
 
 
   /**
-   * This will authenticate by binding to the LDAP with the supplied
-   * dn and credential. Authentication will never succeed if {@link
+   * This will authenticate by binding to the LDAP with the supplied dn and
+   * credential. Authentication will never succeed if {@link
    * LdapConfig#getAuthtype()} is set to 'none'. If retAttrs is null and
    * searchAttrs is true then all user attributes will be returned. If retAttrs
    * is an empty array and searchAttrs is true then no attributes will be
-   * returned. This method throws AuthenticationException if
-   * authentication or authorization fails.
+   * returned. This method throws AuthenticationException if authentication or
+   * authorization fails.
    *
    * @param  dn  <code>String</code> for bind
    * @param  credential  <code>Object</code> for bind

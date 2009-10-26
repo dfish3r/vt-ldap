@@ -1,7 +1,7 @@
 /*
   $Id$
 
-  Copyright (C) 2003-2008 Virginia Tech.
+  Copyright (C) 2003-2009 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
@@ -209,8 +209,7 @@ public final class Dsmlv1 extends AbstractDsml
                   final String encoding = valueElement.attributeValue(
                     "encoding");
                   if (encoding != null && encoding.equals("base64")) {
-                    ldapAttribute.getValues().add(
-                      LdapUtil.base64Decode(value));
+                    ldapAttribute.getValues().add(LdapUtil.base64Decode(value));
                   } else {
                     ldapAttribute.getValues().add(value);
                   }
@@ -222,8 +221,8 @@ public final class Dsmlv1 extends AbstractDsml
         }
 
         ldapEntry.getLdapAttributes().addAttributes(
-          super.createSearchResult(
-            entryElement).getLdapAttributes().getAttributes());
+          super.createSearchResult(entryElement).getLdapAttributes()
+              .getAttributes());
       }
     }
 

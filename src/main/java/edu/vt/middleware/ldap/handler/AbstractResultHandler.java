@@ -1,7 +1,7 @@
 /*
   $Id$
 
-  Copyright (C) 2003-2008 Virginia Tech.
+  Copyright (C) 2003-2009 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
@@ -31,6 +31,7 @@ import org.apache.commons.logging.LogFactory;
  */
 public abstract class AbstractResultHandler<R, O> implements ResultHandler<R, O>
 {
+
   /** Log for this class. */
   protected final Log logger = LogFactory.getLog(this.getClass());
 
@@ -59,8 +60,8 @@ public abstract class AbstractResultHandler<R, O> implements ResultHandler<R, O>
   /**
    * This will enumerate through the supplied <code>NamingEnumeration</code> and
    * return a List of those results. The results are unaltered and the dn is
-   * ignored. Any exceptions passed into this method will be ignored and
-   * results will be returned as if no exception occurred.
+   * ignored. Any exceptions passed into this method will be ignored and results
+   * will be returned as if no exception occurred.
    *
    * @param  sc  <code>SearchCriteria</code> used to find enumeration
    * @param  en  <code>NamingEnumeration</code> LDAP results

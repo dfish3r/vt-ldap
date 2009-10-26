@@ -1,7 +1,7 @@
 /*
   $Id$
 
-  Copyright (C) 2003-2008 Virginia Tech.
+  Copyright (C) 2003-2009 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
@@ -86,18 +86,18 @@ public class DsmlResult extends LdapResult
 
 
   /**
-   * This reads any entries in the supplied DSML into this
-   * <code>DsmlResult</code>.
+   * This reads any entries in the supplied DSML into this <code>
+   * DsmlResult</code>.
    *
    * @param  dsml  <code>String</code> to read
-   * @throws DocumentException if an error occurs reading the supplied DSML
+   *
+   * @throws  DocumentException  if an error occurs reading the supplied DSML
    */
   public void fromDsmlv1(final String dsml)
     throws DocumentException
   {
     try {
-      this.addEntries(
-        this.dsmlv1.importDsml(new StringReader(dsml)));
+      this.addEntries(this.dsmlv1.importDsml(new StringReader(dsml)));
     } catch (IOException e) {
       if (this.logger.isWarnEnabled()) {
         this.logger.warn("Could not read dsml from StringReader", e);
@@ -130,18 +130,18 @@ public class DsmlResult extends LdapResult
 
 
   /**
-   * This reads any entries in the supplied DSML into this
-   * <code>DsmlResult</code>.
+   * This reads any entries in the supplied DSML into this <code>
+   * DsmlResult</code>.
    *
    * @param  dsml  <code>String</code> to read
-   * @throws DocumentException if an error occurs reading the supplied DSML
+   *
+   * @throws  DocumentException  if an error occurs reading the supplied DSML
    */
   public void fromDsmlv2(final String dsml)
     throws DocumentException
   {
     try {
-      this.addEntries(
-        this.dsmlv2.importDsml(new StringReader(dsml)));
+      this.addEntries(this.dsmlv2.importDsml(new StringReader(dsml)));
     } catch (IOException e) {
       if (this.logger.isWarnEnabled()) {
         this.logger.warn("Could not read dsml from StringReader", e);

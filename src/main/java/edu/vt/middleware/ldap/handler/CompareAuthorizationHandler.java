@@ -1,7 +1,7 @@
 /*
   $Id$
 
-  Copyright (C) 2003-2008 Virginia Tech.
+  Copyright (C) 2003-2009 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
@@ -26,9 +26,9 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 /**
- * CompareAuthorizationHandler performs a compare operation with a
- * custom filter. The DN of the authenticated user is automatically
- * provided as the {0} variable in the search filter arguments.
+ * CompareAuthorizationHandler performs a compare operation with a custom
+ * filter. The DN of the authenticated user is automatically provided as the {0}
+ * variable in the search filter arguments.
  *
  * @author  Middleware Services
  * @version  $Revision$
@@ -44,15 +44,13 @@ public class CompareAuthorizationHandler implements AuthorizationHandler
   private SearchFilter searchFilter;
 
 
-  /**
-   * Default constructor.
-   */
+  /** Default constructor. */
   public CompareAuthorizationHandler() {}
 
 
   /**
-   * Creates a new <code>CompareAuthorizationHandler</code> with the
-   * supplied search filter.
+   * Creates a new <code>CompareAuthorizationHandler</code> with the supplied
+   * search filter.
    *
    * @param  sf  <code>SearchFilter</code>
    */

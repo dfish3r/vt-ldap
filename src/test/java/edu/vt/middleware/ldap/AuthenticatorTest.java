@@ -1,7 +1,7 @@
 /*
   $Id$
 
-  Copyright (C) 2003-2008 Virginia Tech.
+  Copyright (C) 2003-2009 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
@@ -370,8 +370,7 @@ public class AuthenticatorTest
     AssertJUnit.assertFalse(
       ldap.authenticate(dn, INVALID_PASSWD, new SearchFilter(filter)));
     AssertJUnit.assertFalse(
-      ldap.authenticate(
-        dn, credential, new SearchFilter(INVALID_FILTER)));
+      ldap.authenticate(dn, credential, new SearchFilter(INVALID_FILTER)));
     AssertJUnit.assertTrue(
       ldap.authenticate(
         dn,
@@ -397,18 +396,20 @@ public class AuthenticatorTest
    *
    * @throws  Exception  On test failure.
    */
-  @Parameters({
+  @Parameters(
+    {
       "authenticateDn",
       "authenticateDnCredential",
       "authenticateDnFilter",
       "authenticateDnFilterArgs"
-    })
+    }
+  )
   @Test(groups = {"authtest"})
   public void authenticateDnHandler(
-      final String dn,
-      final String credential,
-      final String filter,
-      final String filterArgs)
+    final String dn,
+    final String credential,
+    final String filter,
+    final String filterArgs)
     throws Exception
   {
     // test authenticator handler
@@ -417,6 +418,7 @@ public class AuthenticatorTest
       new TestAuthenticationResultHandler();
     ldap.getAuthenticatorConfig().setAuthenticationResultHandlers(
       new AuthenticationResultHandler[] {authHandler});
+
     final TestAuthorizationHandler authzHandler =
       new TestAuthorizationHandler();
     ldap.getAuthenticatorConfig().setAuthorizationHandlers(
@@ -441,7 +443,9 @@ public class AuthenticatorTest
 
     AssertJUnit.assertTrue(
       ldap.authenticate(
-        dn, credential, new SearchFilter(filter, filterArgs.split("\\|"))));
+        dn,
+        credential,
+        new SearchFilter(filter, filterArgs.split("\\|"))));
     AssertJUnit.assertTrue(authHandler.getResults().get(dn).booleanValue());
     AssertJUnit.assertTrue(authzHandler.getResults().get(0).equals(dn));
   }
@@ -611,8 +615,7 @@ public class AuthenticatorTest
     AssertJUnit.assertFalse(
       ldap.authenticate(user, INVALID_PASSWD, new SearchFilter(filter)));
     AssertJUnit.assertFalse(
-      ldap.authenticate(
-        user, credential, new SearchFilter(INVALID_FILTER)));
+      ldap.authenticate(user, credential, new SearchFilter(INVALID_FILTER)));
     AssertJUnit.assertTrue(
       ldap.authenticate(user, credential, new SearchFilter(filter)));
 

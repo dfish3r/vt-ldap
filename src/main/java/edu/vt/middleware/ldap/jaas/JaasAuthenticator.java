@@ -1,7 +1,7 @@
 /*
   $Id$
 
-  Copyright (C) 2003-2008 Virginia Tech.
+  Copyright (C) 2003-2009 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
@@ -21,8 +21,8 @@ import edu.vt.middleware.ldap.handler.AuthenticationResultHandler;
 import edu.vt.middleware.ldap.handler.AuthorizationHandler;
 
 /**
- * <code>JaasAuthenticator</code> is the default implementation for
- * JAAS authentication.
+ * <code>JaasAuthenticator</code> is the default implementation for JAAS
+ * authentication.
  *
  * @author  Middleware Services
  * @version  $Revision$ $Date$
@@ -39,8 +39,8 @@ public class JaasAuthenticator extends Authenticator
 
 
   /**
-   * This will create a new <code>JaasAuthenticator</code> with the
-   * supplied <code>AuthenticatorConfig</code>.
+   * This will create a new <code>JaasAuthenticator</code> with the supplied
+   * <code>AuthenticatorConfig</code>.
    *
    * @param  authConfig  <code>AuthenticatorConfig</code>
    */

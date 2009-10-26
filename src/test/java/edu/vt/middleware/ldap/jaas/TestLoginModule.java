@@ -1,7 +1,7 @@
 /*
   $Id$
 
-  Copyright (C) 2003-2008 Virginia Tech.
+  Copyright (C) 2003-2009 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
@@ -47,7 +47,7 @@ public class TestLoginModule implements LoginModule
   protected boolean success;
 
 
-  /** {@inheritDoc}. */
+  /** {@inheritDoc} */
   public void initialize(
     final Subject subject,
     final CallbackHandler callbackHandler,
@@ -60,7 +60,7 @@ public class TestLoginModule implements LoginModule
   }
 
 
-  /** {@inheritDoc}. */
+  /** {@inheritDoc} */
   @SuppressWarnings("unchecked")
   public boolean login()
     throws LoginException
@@ -88,7 +88,7 @@ public class TestLoginModule implements LoginModule
   }
 
 
-  /** {@inheritDoc}. */
+  /** {@inheritDoc} */
   public boolean commit()
     throws LoginException
   {
@@ -96,7 +96,7 @@ public class TestLoginModule implements LoginModule
   }
 
 
-  /** {@inheritDoc}. */
+  /** {@inheritDoc} */
   public boolean abort()
   {
     this.success = false;
@@ -104,7 +104,7 @@ public class TestLoginModule implements LoginModule
   }
 
 
-  /** {@inheritDoc}. */
+  /** {@inheritDoc} */
   public boolean logout()
   {
     return true;

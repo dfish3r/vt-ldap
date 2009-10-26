@@ -1,7 +1,7 @@
 /*
   $Id$
 
-  Copyright (C) 2003-2008 Virginia Tech.
+  Copyright (C) 2003-2009 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
@@ -89,8 +89,8 @@ public final class LoginServlet extends CommonServlet
       propertiesFile = LdapProperties.PROPERTIES_FILE;
     }
     if (this.logger.isDebugEnabled()) {
-      this.logger.debug(ServletConstants.PROPERTIES_FILE + " = " +
-                        propertiesFile);
+      this.logger.debug(
+        ServletConstants.PROPERTIES_FILE + " = " + propertiesFile);
     }
     this.auth = new Authenticator();
     this.auth.loadFromProperties(
@@ -157,7 +157,7 @@ public final class LoginServlet extends CommonServlet
       }
       try {
         // invalidate existing session
-        HttpSession session =  request.getSession(false);
+        HttpSession session = request.getSession(false);
         if (session != null) {
           session.invalidate();
         }

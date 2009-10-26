@@ -1,7 +1,7 @@
 /*
   $Id$
 
-  Copyright (C) 2003-2008 Virginia Tech.
+  Copyright (C) 2003-2009 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
@@ -66,8 +66,8 @@ public abstract class AbstractDsml implements Serializable
 
 
   /**
-   * This will take an LDAP search result and convert it to a
-   * DSML entry element.
+   * This will take an LDAP search result and convert it to a DSML entry
+   * element.
    *
    * @param  entryName  <code>QName</code> name of element to create
    * @param  result  <code>SearchResult</code> to convert
@@ -168,8 +168,8 @@ public abstract class AbstractDsml implements Serializable
 
 
   /**
-   * This will write the supplied LDAP search results to the supplied writer
-   * in the form of DSML.
+   * This will write the supplied LDAP search results to the supplied writer in
+   * the form of DSML.
    *
    * @param  results  <code>Iterator</code> of LDAP search results
    * @param  writer  <code>Writer</code> to write to
@@ -256,11 +256,9 @@ public abstract class AbstractDsml implements Serializable
               final Element valueElement = (Element) valueIterator.next();
               final String value = valueElement.getText();
               if (value != null) {
-                final String encoding = valueElement.attributeValue(
-                  "encoding");
+                final String encoding = valueElement.attributeValue("encoding");
                 if (encoding != null && encoding.equals("base64")) {
-                  ldapAttribute.getValues().add(
-                    LdapUtil.base64Decode(value));
+                  ldapAttribute.getValues().add(LdapUtil.base64Decode(value));
                 } else {
                   ldapAttribute.getValues().add(value);
                 }

@@ -1,7 +1,7 @@
 /*
   $Id$
 
-  Copyright (C) 2003-2008 Virginia Tech.
+  Copyright (C) 2003-2009 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
@@ -51,7 +51,7 @@ public class AuthenticatorCli extends AbstractCli
   }
 
 
-  /** {@inheritDoc}. */
+  /** {@inheritDoc} */
   protected void initOptions()
   {
     super.initOptions(
@@ -109,7 +109,7 @@ public class AuthenticatorCli extends AbstractCli
   }
 
 
-  /** {@inheritDoc}. */
+  /** {@inheritDoc} */
   protected void dispatch(final CommandLine line)
     throws Exception
   {
@@ -176,7 +176,7 @@ public class AuthenticatorCli extends AbstractCli
   }
 
 
-  /** {@inheritDoc}. */
+  /** {@inheritDoc} */
   protected String getCommandName()
   {
     return COMMAND_NAME;

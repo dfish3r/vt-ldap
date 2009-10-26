@@ -1,7 +1,7 @@
 /*
   $Id$
 
-  Copyright (C) 2003-2008 Virginia Tech.
+  Copyright (C) 2003-2009 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
@@ -85,7 +85,7 @@ public class LdifTest
    * @param  dn  to search on.
    * @param  filter  to search with.
    * @param  ldifFileIn  to create with
-   * @param  ldifFileOut to compare with
+   * @param  ldifFileOut  to compare with
    *
    * @throws  Exception  On test failure.
    */
@@ -108,27 +108,26 @@ public class LdifTest
     final Ldap ldap = TestUtil.createLdap();
     final Ldif ldif = new Ldif();
 
-    Iterator<SearchResult> iter = ldap.search(
-      dn,
-      new SearchFilter(filter));
+    Iterator<SearchResult> iter = ldap.search(dn, new SearchFilter(filter));
 
     final LdapResult result1 = new LdapResult(iter);
     final StringWriter writer = new StringWriter();
-    ldif.outputLdif(
-      result1.toSearchResults().iterator(), writer);
+    ldif.outputLdif(result1.toSearchResults().iterator(), writer);
+
     final StringReader reader = new StringReader(writer.toString());
-    final LdapResult result2 = new LdapResult(
-      ldif.importLdif(reader));
+    final LdapResult result2 = new LdapResult(ldif.importLdif(reader));
 
     AssertJUnit.assertEquals(result1, result2);
     ldap.close();
 
     final String ldifStringIn = TestUtil.readFileIntoString(ldifFileIn);
     iter = ldif.importLdif(new StringReader(ldifStringIn));
+
     final LdapResult ldif1 = new LdapResult(iter);
 
     final String ldifStringOut = TestUtil.readFileIntoString(ldifFileOut);
     iter = ldif.importLdif(new StringReader(ldifStringOut));
+
     final LdapResult ldif2 = new LdapResult(iter);
     AssertJUnit.assertEquals(ldif1, ldif2);
   }

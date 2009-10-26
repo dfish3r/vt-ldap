@@ -1,7 +1,7 @@
 /*
   $Id$
 
-  Copyright (C) 2003-2008 Virginia Tech.
+  Copyright (C) 2003-2009 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
@@ -59,12 +59,11 @@ public class Authenticator extends AbstractAuthenticator implements Serializable
    * This will attempt to find the dn for the supplied user. If {@link
    * AuthenticatorConfig#setConstructDn(boolean)} has been set to true, then the
    * dn will be created by combining the userField and the base dn. Otherwise,
-   * {@link AuthenticatorConfig#getUserFilter()} or
-   * {@link AuthenticatorConfig#getUserField()} is used to look up the dn.
-   * If a filter is used, the user is provided as the {0} variable filter
-   * argument. If a field is used, the filter is built by ORing the fields
-   * together. If more than one entry matches the search, the first result is
-   * used.
+   * {@link AuthenticatorConfig#getUserFilter()} or {@link
+   * AuthenticatorConfig#getUserField()} is used to look up the dn. If a filter
+   * is used, the user is provided as the {0} variable filter argument. If a
+   * field is used, the filter is built by ORing the fields together. If more
+   * than one entry matches the search, the first result is used.
    *
    * @param  user  <code>String</code> to find dn for
    *
@@ -96,7 +95,8 @@ public class Authenticator extends AbstractAuthenticator implements Serializable
           if (this.logger.isDebugEnabled()) {
             this.logger.debug("Looking up DN using userField");
           }
-          if (this.config.getUserField() == null ||
+          if (
+            this.config.getUserField() == null ||
               this.config.getUserField().length == 0) {
             if (this.logger.isErrorEnabled()) {
               this.logger.error("Invalid userField, cannot be null or empty.");
@@ -123,6 +123,7 @@ public class Authenticator extends AbstractAuthenticator implements Serializable
           final List<Object> filterArgs = new ArrayList<Object>();
           filterArgs.add(user);
           filterArgs.addAll(filter.getFilterArgs());
+
           final Iterator<SearchResult> answer = this.search(
             this.config.getBase(),
             filter.getFilter(),
@@ -143,8 +144,8 @@ public class Authenticator extends AbstractAuthenticator implements Serializable
           } else {
             if (this.logger.isInfoEnabled()) {
               this.logger.info(
-                "Search for user: " + user +
-                " failed using filter: " + filter.getFilter());
+                "Search for user: " + user + " failed using filter: " +
+                filter.getFilter());
             }
           }
         } else {
@@ -164,10 +165,10 @@ public class Authenticator extends AbstractAuthenticator implements Serializable
 
 
   /**
-   * This will authenticate by binding to the LDAP using parameters
-   * given by {@link AuthenticatorConfig#setUser} and {@link
-   * AuthenticatorConfig#setCredential}. See
-   * {@link #authenticate(String, Object)}.
+   * This will authenticate by binding to the LDAP using parameters given by
+   * {@link AuthenticatorConfig#setUser} and {@link
+   * AuthenticatorConfig#setCredential}. See {@link #authenticate(String,
+   * Object)}.
    *
    * @return  <code>boolean</code> - whether the bind succeeded
    *
@@ -183,11 +184,10 @@ public class Authenticator extends AbstractAuthenticator implements Serializable
 
 
   /**
-   * This will authenticate by binding to the LDAP with the supplied
-   * user and credential. If {@link AuthenticatorConfig#setAuthorizationFilter}
-   * has been called, then it will be used to authorize the user by performing
-   * an ldap compare. See {@link #authenticate(String, Object,
-   * SearchFilter)}.
+   * This will authenticate by binding to the LDAP with the supplied user and
+   * credential. If {@link AuthenticatorConfig#setAuthorizationFilter} has been
+   * called, then it will be used to authorize the user by performing an ldap
+   * compare. See {@link #authenticate(String, Object, SearchFilter)}.
    *
    * @param  user  <code>String</code> username for bind
    * @param  credential  <code>Object</code> credential for bind
@@ -211,15 +211,14 @@ public class Authenticator extends AbstractAuthenticator implements Serializable
 
 
   /**
-   * This will authenticate by binding to the LDAP with the supplied
-   * user and credential. If the supplied filter is not null
-   * it will be injected into a new instance of CompareAuthorizationHandler and
-   * set as the first AuthorizationHandler to execute. If
-   * {@link AuthenticatorConfig#setAuthenticationResultHandlers(
+   * This will authenticate by binding to the LDAP with the supplied user and
+   * credential. If the supplied filter is not null it will be injected into a
+   * new instance of CompareAuthorizationHandler and set as the first
+   * AuthorizationHandler to execute. If {@link
+   * AuthenticatorConfig#setAuthenticationResultHandlers(
    * AuthenticationResultHandler[])} has been called, then it will be used to
-   * post process authentication results. See
-   * {@link #authenticate(String, Object,
-   * AuthenticationResultHandler[], AuthorizationHandler[])}.
+   * post process authentication results. See {@link #authenticate(String,
+   * Object, AuthenticationResultHandler[], AuthorizationHandler[])}.
    *
    * @param  user  <code>String</code> username for bind
    * @param  credential  <code>Object</code> credential for bind
@@ -255,11 +254,11 @@ public class Authenticator extends AbstractAuthenticator implements Serializable
 
 
   /**
-   * This will authenticate by binding to the LDAP with the supplied
-   * user and credential. The user's DN will be looked up before performing the
-   * bind by calling {@link #getDn(String)}. See
-   * {@link #authenticateAndAuthorize(String, Object,
-   * AuthenticationResultHandler[], AuthorizationHandler[])}.
+   * This will authenticate by binding to the LDAP with the supplied user and
+   * credential. The user's DN will be looked up before performing the bind by
+   * calling {@link #getDn(String)}. See {@link
+   * #authenticateAndAuthorize(String, Object, AuthenticationResultHandler[],
+   * AuthorizationHandler[])}.
    *
    * @param  user  <code>String</code> username for bind
    * @param  credential  <code>Object</code> credential for bind
@@ -290,8 +289,8 @@ public class Authenticator extends AbstractAuthenticator implements Serializable
 
 
   /**
-   * This will authenticate by binding to the LDAP using parameters
-   * given by {@link AuthenticatorConfig#setUser} and {@link
+   * This will authenticate by binding to the LDAP using parameters given by
+   * {@link AuthenticatorConfig#setUser} and {@link
    * AuthenticatorConfig#setCredential}. See {@link
    * #authenticate(String,Object,String[])}
    *
@@ -313,11 +312,10 @@ public class Authenticator extends AbstractAuthenticator implements Serializable
 
 
   /**
-   * This will authenticate by binding to the LDAP with the supplied
-   * user and credential. If {@link
-   * AuthenticatorConfig#setAuthorizationFilter} has been called, then it will
-   * be used to authorize the user by performing an ldap compare. See {@link
-   * #authenticate(String, Object, SearchFilter, String[])}
+   * This will authenticate by binding to the LDAP with the supplied user and
+   * credential. If {@link AuthenticatorConfig#setAuthorizationFilter} has been
+   * called, then it will be used to authorize the user by performing an ldap
+   * compare. See {@link #authenticate(String, Object, SearchFilter, String[])}
    *
    * @param  user  <code>String</code> username for bind
    * @param  credential  <code>Object</code> credential for bind
@@ -345,12 +343,11 @@ public class Authenticator extends AbstractAuthenticator implements Serializable
 
 
   /**
-   * This will authenticate by binding to the LDAP with the supplied
-   * user and credential. If the supplied filter is not null
-   * it will be injected into a new instance of CompareAuthorizationHandler and
-   * set as the first AuthorizationHandler to execute. See
-   * {@link #authenticate(String, Object, String[],
-   * AuthenticationResultHandler[], AuthorizationHandler[])}.
+   * This will authenticate by binding to the LDAP with the supplied user and
+   * credential. If the supplied filter is not null it will be injected into a
+   * new instance of CompareAuthorizationHandler and set as the first
+   * AuthorizationHandler to execute. See {@link #authenticate(String, Object,
+   * String[], AuthenticationResultHandler[], AuthorizationHandler[])}.
    *
    * @param  user  <code>String</code> username for bind
    * @param  credential  <code>Object</code> credential for bind
@@ -388,10 +385,10 @@ public class Authenticator extends AbstractAuthenticator implements Serializable
 
 
   /**
-   * This will authenticate by binding to the LDAP with the supplied
-   * user and credential. The user's DN will be looked up before performing the
-   * bind by calling {@link #getDn(String)}. See
-   * {@link #authenticateAndAuthorize(String, Object, boolean, String[],
+   * This will authenticate by binding to the LDAP with the supplied user and
+   * credential. The user's DN will be looked up before performing the bind by
+   * calling {@link #getDn(String)}. See {@link
+   * #authenticateAndAuthorize(String, Object, boolean, String[],
    * AuthenticationResultHandler[], AuthorizationHandler[])}.
    *
    * @param  user  <code>String</code> username for bind

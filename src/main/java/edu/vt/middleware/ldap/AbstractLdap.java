@@ -1,7 +1,7 @@
 /*
   $Id$
 
-  Copyright (C) 2003-2008 Virginia Tech.
+  Copyright (C) 2003-2009 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
@@ -125,7 +125,9 @@ public abstract class AbstractLdap<T extends LdapConfig> implements BaseLdap
    * @throws  NamingException  if the LDAP returns an error
    */
   protected boolean compare(
-    final String dn, final String filter, final Object[] filterArgs)
+    final String dn,
+    final String filter,
+    final Object[] filterArgs)
     throws NamingException
   {
     if (this.logger.isDebugEnabled()) {
@@ -148,7 +150,10 @@ public abstract class AbstractLdap<T extends LdapConfig> implements BaseLdap
         try {
           ctx = this.getContext();
           en = ctx.search(
-            dn, filter, filterArgs, LdapConfig.getCompareSearchControls());
+            dn,
+            filter,
+            filterArgs,
+            LdapConfig.getCompareSearchControls());
 
           if (en.hasMore()) {
             success = true;
@@ -184,9 +189,8 @@ public abstract class AbstractLdap<T extends LdapConfig> implements BaseLdap
    * and search controls. This method will perform a search whose scope is
    * defined in the search controls. The resulting <code>Iterator</code> is a
    * deep copy of the original search results. If filterArgs is null, then no
-   * variable substitution will occur.
-   * See {@link javax.naming.DirContext#search(
-   * String, String, Object[], SearchControls)}.
+   * variable substitution will occur. See {@link
+   * javax.naming.DirContext#search( String, String, Object[], SearchControls)}.
    *
    * @param  dn  <code>String</code> name to begin search at
    * @param  filter  <code>String</code> expression to use for the search
@@ -229,11 +233,7 @@ public abstract class AbstractLdap<T extends LdapConfig> implements BaseLdap
       for (int i = 0; i <= this.config.getOperationRetry(); i++) {
         try {
           ctx = this.getContext();
-          en = ctx.search(
-            dn,
-            filter,
-            filterArgs,
-            searchControls);
+          en = ctx.search(dn, filter, filterArgs, searchControls);
 
           if (handler != null && handler.length > 0) {
             final SearchCriteria sc = new SearchCriteria();
@@ -250,14 +250,18 @@ public abstract class AbstractLdap<T extends LdapConfig> implements BaseLdap
             for (int j = 0; j < handler.length; j++) {
               if (j == 0) {
                 results = handler[j].process(
-                  sc, en, this.config.getHandlerIgnoreExceptions());
+                  sc,
+                  en,
+                  this.config.getHandlerIgnoreExceptions());
               } else {
                 results = handler[j].process(sc, results);
               }
             }
           } else {
             results = SR_COPY_RESULT_HANDLER.process(
-              null, en, this.config.getHandlerIgnoreExceptions());
+              null,
+              en,
+              this.config.getHandlerIgnoreExceptions());
           }
 
           break;
@@ -334,16 +338,15 @@ public abstract class AbstractLdap<T extends LdapConfig> implements BaseLdap
         try {
           byte[] cookie = null;
           ctx = this.getContext();
-          ctx.setRequestControls(new Control[]{
-            new PagedResultsControl(
-              this.config.getPagedResultsSize(), Control.CRITICAL), });
+          ctx.setRequestControls(
+            new Control[] {
+              new PagedResultsControl(
+                this.config.getPagedResultsSize(),
+                Control.CRITICAL),
+            });
           do {
             List<SearchResult> pagedResults = null;
-            en = ctx.search(
-              dn,
-              filter,
-              filterArgs,
-              searchControls);
+            en = ctx.search(dn, filter, filterArgs, searchControls);
 
             if (handler != null && handler.length > 0) {
               final SearchCriteria sc = new SearchCriteria();
@@ -360,14 +363,18 @@ public abstract class AbstractLdap<T extends LdapConfig> implements BaseLdap
               for (int j = 0; j < handler.length; j++) {
                 if (j == 0) {
                   pagedResults = handler[j].process(
-                    sc, en, this.config.getHandlerIgnoreExceptions());
+                    sc,
+                    en,
+                    this.config.getHandlerIgnoreExceptions());
                 } else {
                   pagedResults = handler[j].process(sc, pagedResults);
                 }
               }
             } else {
               pagedResults = SR_COPY_RESULT_HANDLER.process(
-                null, en, this.config.getHandlerIgnoreExceptions());
+                null,
+                en,
+                this.config.getHandlerIgnoreExceptions());
             }
 
             results.addAll(pagedResults);
@@ -384,11 +391,13 @@ public abstract class AbstractLdap<T extends LdapConfig> implements BaseLdap
             }
 
             // re-activate paged results
-            ctx.setRequestControls(new Control[]{
-              new PagedResultsControl(
-                this.config.getPagedResultsSize(),
-                cookie,
-                Control.CRITICAL), });
+            ctx.setRequestControls(
+              new Control[] {
+                new PagedResultsControl(
+                  this.config.getPagedResultsSize(),
+                  cookie,
+                  Control.CRITICAL),
+              });
 
           } while (cookie != null);
 
@@ -429,8 +438,8 @@ public abstract class AbstractLdap<T extends LdapConfig> implements BaseLdap
    * results. If matchAttrs is empty or null then all objects in the target
    * context are returned. If retAttrs is null then all attributes will be
    * returned. If retAttrs is an empty array then no attributes will be
-   * returned.
-   * See {@link javax.naming.DirContext#search(String, Attributes, String[])}.
+   * returned. See {@link javax.naming.DirContext#search(String, Attributes,
+   * String[])}.
    *
    * @param  dn  <code>String</code> name to search in
    * @param  matchAttrs  <code>Attributes</code> attributes to match
@@ -484,7 +493,9 @@ public abstract class AbstractLdap<T extends LdapConfig> implements BaseLdap
               for (int j = 0; j < handler.length; j++) {
                 if (j == 0) {
                   results = handler[j].process(
-                    sc, en, this.config.getHandlerIgnoreExceptions());
+                    sc,
+                    en,
+                    this.config.getHandlerIgnoreExceptions());
                 } else {
                   results = handler[j].process(sc, results);
                 }
@@ -492,7 +503,9 @@ public abstract class AbstractLdap<T extends LdapConfig> implements BaseLdap
             }
           } else {
             results = SR_COPY_RESULT_HANDLER.process(
-              null, en, this.config.getHandlerIgnoreExceptions());
+              null,
+              en,
+              this.config.getHandlerIgnoreExceptions());
           }
 
           break;
@@ -523,8 +536,8 @@ public abstract class AbstractLdap<T extends LdapConfig> implements BaseLdap
   /**
    * This will enumerate the names bounds to the specified context, along with
    * the class names of objects bound to them. The resulting <code>
-   * Iterator</code> is a deep copy of the original search results.
-   * See {@link javax.naming.Context#list(String)}.
+   * Iterator</code> is a deep copy of the original search results. See {@link
+   * javax.naming.Context#list(String)}.
    *
    * @param  dn  <code>String</code> LDAP context to list
    *
@@ -553,7 +566,9 @@ public abstract class AbstractLdap<T extends LdapConfig> implements BaseLdap
           en = ctx.list(dn);
 
           results = NCP_COPY_RESULT_HANDLER.process(
-            null, en, this.config.getHandlerIgnoreExceptions());
+            null,
+            en,
+            this.config.getHandlerIgnoreExceptions());
 
           break;
         } catch (CommunicationException e) {
@@ -583,8 +598,8 @@ public abstract class AbstractLdap<T extends LdapConfig> implements BaseLdap
   /**
    * This will enumerate the names bounds to the specified context, along with
    * the objects bound to them. The resulting <code>Iterator</code> is a deep
-   * copy of the original search results.
-   * See {@link javax.naming.Context#listBindings(String)}.
+   * copy of the original search results. See {@link
+   * javax.naming.Context#listBindings(String)}.
    *
    * @param  dn  <code>String</code> LDAP context to list
    *
@@ -613,7 +628,9 @@ public abstract class AbstractLdap<T extends LdapConfig> implements BaseLdap
           en = ctx.listBindings(dn);
 
           results = BINDING_COPY_RESULT_HANDLER.process(
-            null, en, this.config.getHandlerIgnoreExceptions());
+            null,
+            en,
+            this.config.getHandlerIgnoreExceptions());
 
           break;
         } catch (CommunicationException e) {
@@ -643,8 +660,8 @@ public abstract class AbstractLdap<T extends LdapConfig> implements BaseLdap
   /**
    * This will return the matching attributes associated with the supplied dn.
    * If retAttrs is null then all attributes will be returned. If retAttrs is an
-   * empty array then no attributes will be returned.
-   * See {@link javax.naming.DirContext#getAttributes(String, String[])}.
+   * empty array then no attributes will be returned. See {@link
+   * javax.naming.DirContext#getAttributes(String, String[])}.
    *
    * @param  dn  <code>String</code> named object in the LDAP
    * @param  retAttrs  <code>String[]</code> attributes to return
@@ -722,8 +739,7 @@ public abstract class AbstractLdap<T extends LdapConfig> implements BaseLdap
   /**
    * This will return the LDAP schema associated with the supplied dn. The
    * resulting <code>Iterator</code> is a deep copy of the original search
-   * results.
-   * See {@link javax.naming.DirContext#getSchema(String)}.
+   * results. See {@link javax.naming.DirContext#getSchema(String)}.
    *
    * @param  dn  <code>String</code> named object in the LDAP
    *
@@ -754,7 +770,9 @@ public abstract class AbstractLdap<T extends LdapConfig> implements BaseLdap
           en = schema.search("", null);
 
           results = SR_COPY_RESULT_HANDLER.process(
-            null, en, this.config.getHandlerIgnoreExceptions());
+            null,
+            en,
+            this.config.getHandlerIgnoreExceptions());
 
           break;
         } catch (CommunicationException e) {
@@ -788,9 +806,8 @@ public abstract class AbstractLdap<T extends LdapConfig> implements BaseLdap
    * This will modify the supplied attributes for the supplied value given by
    * the modification operation. modOp must be one of: ADD_ATTRIBUTE,
    * REPLACE_ATTRIBUTE, REMOVE_ATTRIBUTE. The order of the modifications is not
-   * specified. Where possible, the modifications are performed atomically.
-   * See {@link javax.naming.DirContext#modifyAttributes(
-   * String, int, Attributes)}.
+   * specified. Where possible, the modifications are performed atomically. See
+   * {@link javax.naming.DirContext#modifyAttributes( String, int, Attributes)}.
    *
    * @param  dn  <code>String</code> named object in the LDAP
    * @param  modOp  <code>int</code> modification operation
@@ -843,11 +860,11 @@ public abstract class AbstractLdap<T extends LdapConfig> implements BaseLdap
 
 
   /**
-   * This will modify the supplied dn using the supplied modifications.
-   * The modifications are performed in the order specified. Each modification
+   * This will modify the supplied dn using the supplied modifications. The
+   * modifications are performed in the order specified. Each modification
    * specifies a modification operation code and an attribute on which to
-   * operate. Where possible, the modifications are performed atomically.
-   * See {@link javax.naming.DirContext#modifyAttributes(String,
+   * operate. Where possible, the modifications are performed atomically. See
+   * {@link javax.naming.DirContext#modifyAttributes(String,
    * ModificationItem[])}.
    *
    * @param  dn  <code>String</code> named object in the LDAP
@@ -899,9 +916,9 @@ public abstract class AbstractLdap<T extends LdapConfig> implements BaseLdap
 
   /**
    * This will create the supplied dn in the LDAP namespace with the supplied
-   * attributes.
-   * See {@link javax.naming.DirContext#createSubcontext(String, Attributes)}.
-   * Note that the context created by this operation is immediately closed.
+   * attributes. See {@link javax.naming.DirContext#createSubcontext(String,
+   * Attributes)}. Note that the context created by this operation is
+   * immediately closed.
    *
    * @param  dn  <code>String</code> named object in the LDAP
    * @param  attrs  <code>Attributes</code> attributes to be added to this entry
@@ -948,8 +965,8 @@ public abstract class AbstractLdap<T extends LdapConfig> implements BaseLdap
 
 
   /**
-   * This will rename the supplied dn in the LDAP namespace.
-   * See {@link javax.naming.Context#rename(String, String)}.
+   * This will rename the supplied dn in the LDAP namespace. See {@link
+   * javax.naming.Context#rename(String, String)}.
    *
    * @param  oldDn  <code>String</code> object to rename
    * @param  newDn  <code>String</code> new name
@@ -996,10 +1013,9 @@ public abstract class AbstractLdap<T extends LdapConfig> implements BaseLdap
 
 
   /**
-   * This will delete the supplied dn from the LDAP namespace.
-   * Note that this method does not throw NameNotFoundException if the
-   * supplied dn does not exist.
-   * See {@link javax.naming.Context#destroySubcontext(String)}.
+   * This will delete the supplied dn from the LDAP namespace. Note that this
+   * method does not throw NameNotFoundException if the supplied dn does not
+   * exist. See {@link javax.naming.Context#destroySubcontext(String)}.
    *
    * @param  dn  <code>String</code> named object in the LDAP
    *

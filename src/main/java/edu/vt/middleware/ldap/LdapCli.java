@@ -1,7 +1,7 @@
 /*
   $Id$
 
-  Copyright (C) 2003-2008 Virginia Tech.
+  Copyright (C) 2003-2009 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
@@ -61,7 +61,7 @@ public class LdapCli extends AbstractCli
   }
 
 
-  /** {@inheritDoc}. */
+  /** {@inheritDoc} */
   protected void initOptions()
   {
     super.initOptions(
@@ -103,7 +103,7 @@ public class LdapCli extends AbstractCli
   }
 
 
-  /** {@inheritDoc}. */
+  /** {@inheritDoc} */
   protected void dispatch(final CommandLine line)
     throws Exception
   {
@@ -152,13 +152,16 @@ public class LdapCli extends AbstractCli
       }
       if (this.outputDsmlv1) {
         (new Dsmlv1()).outputDsml(
-          results, new BufferedWriter(new OutputStreamWriter(System.out)));
+          results,
+          new BufferedWriter(new OutputStreamWriter(System.out)));
       } else if (this.outputDsmlv2) {
         (new Dsmlv2()).outputDsml(
-          results, new BufferedWriter(new OutputStreamWriter(System.out)));
+          results,
+          new BufferedWriter(new OutputStreamWriter(System.out)));
       } else {
         (new Ldif()).outputLdif(
-          results, new BufferedWriter(new OutputStreamWriter(System.out)));
+          results,
+          new BufferedWriter(new OutputStreamWriter(System.out)));
       }
     } finally {
       if (ldap != null) {
@@ -168,7 +171,7 @@ public class LdapCli extends AbstractCli
   }
 
 
-  /** {@inheritDoc}. */
+  /** {@inheritDoc} */
   protected String getCommandName()
   {
     return COMMAND_NAME;

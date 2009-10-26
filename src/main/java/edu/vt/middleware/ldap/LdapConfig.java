@@ -1,7 +1,7 @@
 /*
   $Id$
 
-  Copyright (C) 2003-2008 Virginia Tech.
+  Copyright (C) 2003-2009 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
@@ -70,10 +70,9 @@ public class LdapConfig extends AbstractPropertyConfig
 
 
     /**
-     * Creates a new <code>SearchScope</code> with the supplied
-     * integer.
+     * Creates a new <code>SearchScope</code> with the supplied integer.
      *
-     * @param i search scope
+     * @param  i  search scope
      */
     SearchScope(final int i)
     {
@@ -90,7 +89,6 @@ public class LdapConfig extends AbstractPropertyConfig
     {
       return this.scope;
     }
-
 
 
     /**
@@ -195,8 +193,9 @@ public class LdapConfig extends AbstractPropertyConfig
     new SearchResultHandler[] {new FqdnSearchResultHandler()};
 
   /** Exception types to ignore when handling results. */
-  private Class<?>[] handlerIgnoreExceptions =
-    new Class[] {LimitExceededException.class};
+  private Class<?>[] handlerIgnoreExceptions = new Class[] {
+    LimitExceededException.class,
+  };
 
   /** SASL authorization ID. */
   private String saslAuthorizationId;
@@ -1514,14 +1513,14 @@ public class LdapConfig extends AbstractPropertyConfig
   }
 
 
-  /** {@inheritDoc}. */
+  /** {@inheritDoc} */
   public String getPropertiesDomain()
   {
     return PROPERTIES_DOMAIN;
   }
 
 
-  /** {@inheritDoc}. */
+  /** {@inheritDoc} */
   public void setEnvironmentProperties(final String name, final String value)
   {
     checkImmutable();
@@ -1538,7 +1537,7 @@ public class LdapConfig extends AbstractPropertyConfig
   }
 
 
-  /** {@inheritDoc}. */
+  /** {@inheritDoc} */
   public boolean hasEnvironmentProperty(final String name)
   {
     return PROPERTIES.hasProperty(name);

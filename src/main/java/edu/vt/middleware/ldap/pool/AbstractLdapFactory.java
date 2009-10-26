@@ -1,7 +1,7 @@
 /*
   $Id$
 
-  Copyright (C) 2003-2008 Virginia Tech.
+  Copyright (C) 2003-2009 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
@@ -109,15 +109,15 @@ public abstract class AbstractLdapFactory<T extends BaseLdap>
   }
 
 
-  /** {@inheritDoc}. */
+  /** {@inheritDoc} */
   public abstract T create();
 
 
-  /** {@inheritDoc}. */
+  /** {@inheritDoc} */
   public abstract void destroy(final T t);
 
 
-  /** {@inheritDoc}. */
+  /** {@inheritDoc} */
   public boolean activate(final T t)
   {
     boolean success = false;
@@ -136,7 +136,7 @@ public abstract class AbstractLdapFactory<T extends BaseLdap>
   }
 
 
-  /** {@inheritDoc}. */
+  /** {@inheritDoc} */
   public boolean passivate(final T t)
   {
     boolean success = false;
@@ -155,7 +155,7 @@ public abstract class AbstractLdapFactory<T extends BaseLdap>
   }
 
 
-  /** {@inheritDoc}. */
+  /** {@inheritDoc} */
   public boolean validate(final T t)
   {
     boolean success = false;

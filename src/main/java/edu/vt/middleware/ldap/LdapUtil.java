@@ -1,7 +1,7 @@
 /*
   $Id$
 
-  Copyright (C) 2003-2008 Virginia Tech.
+  Copyright (C) 2003-2009 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
@@ -147,8 +147,10 @@ public final class LdapUtil
    * Reads the data at the supplied URL and returns it as a byte array.
    *
    * @param  url  <code>URL</code> to read
-   * @return  <code>byte[]</code>  read from URL
-   * @throws IOException if an error occurs reading data
+   *
+   * @return  <code>byte[]</code> read from URL
+   *
+   * @throws  IOException  if an error occurs reading data
    */
   public static byte[] readURL(final URL url)
     throws IOException

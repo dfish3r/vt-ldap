@@ -1,7 +1,7 @@
 /*
   $Id$
 
-  Copyright (C) 2003-2008 Virginia Tech.
+  Copyright (C) 2003-2009 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
@@ -260,8 +260,7 @@ public class AuthenticatorConfig extends LdapConfig
     if (this.logger.isTraceEnabled()) {
       this.logger.trace(
         "setting userFilterArgs: " +
-        (userFilterArgs == null ?
-          "null" : Arrays.asList(userFilterArgs)));
+        (userFilterArgs == null ? "null" : Arrays.asList(userFilterArgs)));
     }
     this.userFilterArgs = userFilterArgs;
   }
@@ -329,8 +328,8 @@ public class AuthenticatorConfig extends LdapConfig
     if (this.logger.isTraceEnabled()) {
       this.logger.trace(
         "setting authorizationFilterArgs: " +
-        (authorizationFilterArgs == null ?
-          "null" : Arrays.asList(authorizationFilterArgs)));
+        (authorizationFilterArgs == null
+          ? "null" : Arrays.asList(authorizationFilterArgs)));
     }
     this.authorizationFilterArgs = authorizationFilterArgs;
   }
@@ -407,14 +406,14 @@ public class AuthenticatorConfig extends LdapConfig
   }
 
 
-  /** {@inheritDoc}. */
+  /** {@inheritDoc} */
   public String getPropertiesDomain()
   {
     return PROPERTIES_DOMAIN;
   }
 
 
-  /** {@inheritDoc}. */
+  /** {@inheritDoc} */
   public void setEnvironmentProperties(final String name, final String value)
   {
     checkImmutable();
@@ -428,7 +427,7 @@ public class AuthenticatorConfig extends LdapConfig
   }
 
 
-  /** {@inheritDoc}. */
+  /** {@inheritDoc} */
   public boolean hasEnvironmentProperty(final String name)
   {
     return PROPERTIES.hasProperty(name);

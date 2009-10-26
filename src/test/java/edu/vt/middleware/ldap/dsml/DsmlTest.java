@@ -1,7 +1,7 @@
 /*
   $Id$
 
-  Copyright (C) 2003-2008 Virginia Tech.
+  Copyright (C) 2003-2009 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
@@ -88,32 +88,29 @@ public class DsmlTest
    *
    * @throws  Exception  On test failure.
    */
-  @Parameters(
-    {
+  @Parameters({
       "dsmlSearchDn",
       "dsmlSearchFilter",
       "dsmlv1Entry"
-    }
-  )
+    })
   @Test(groups = {"dsmltest"})
   public void createDsmlv1(
-    final String dn, final String filter, final String dsmlFile)
+    final String dn,
+    final String filter,
+    final String dsmlFile)
     throws Exception
   {
     final Ldap ldap = TestUtil.createLdap();
     final Dsmlv1 dsml = new Dsmlv1();
 
-    Iterator<SearchResult> iter = ldap.search(
-      dn,
-      new SearchFilter(filter));
+    Iterator<SearchResult> iter = ldap.search(dn, new SearchFilter(filter));
 
     final LdapResult result1 = new LdapResult(iter);
     StringWriter writer = new StringWriter();
-    dsml.outputDsml(
-      result1.toSearchResults().iterator(), writer);
+    dsml.outputDsml(result1.toSearchResults().iterator(), writer);
+
     final StringReader reader = new StringReader(writer.toString());
-    final LdapResult result2 = new LdapResult(
-      dsml.importDsml(reader));
+    final LdapResult result2 = new LdapResult(dsml.importDsml(reader));
 
     AssertJUnit.assertEquals(result1, result2);
     ldap.close();
@@ -122,6 +119,7 @@ public class DsmlTest
     iter = dsml.importDsml(new StringReader(dsmlString1));
     writer = new StringWriter();
     dsml.outputDsml(iter, writer);
+
     final String dsmlString2 = writer.toString();
     AssertJUnit.assertEquals(dsmlString1, dsmlString2);
   }
@@ -134,32 +132,29 @@ public class DsmlTest
    *
    * @throws  Exception  On test failure.
    */
-  @Parameters(
-    {
+  @Parameters({
       "dsmlSearchDn",
       "dsmlSearchFilter",
       "dsmlv2Entry"
-    }
-  )
+    })
   @Test(groups = {"dsmltest"})
   public void createDsmlv2(
-    final String dn, final String filter, final String dsmlFile)
+    final String dn,
+    final String filter,
+    final String dsmlFile)
     throws Exception
   {
     final Ldap ldap = TestUtil.createLdap();
     final Dsmlv2 dsml = new Dsmlv2();
 
-    Iterator<SearchResult> iter = ldap.search(
-      dn,
-      new SearchFilter(filter));
+    Iterator<SearchResult> iter = ldap.search(dn, new SearchFilter(filter));
 
     final LdapResult result1 = new LdapResult(iter);
     StringWriter writer = new StringWriter();
-    dsml.outputDsml(
-      result1.toSearchResults().iterator(), writer);
+    dsml.outputDsml(result1.toSearchResults().iterator(), writer);
+
     final StringReader reader = new StringReader(writer.toString());
-    final LdapResult result2 = new LdapResult(
-      dsml.importDsml(reader));
+    final LdapResult result2 = new LdapResult(dsml.importDsml(reader));
 
     AssertJUnit.assertEquals(result1, result2);
     ldap.close();
@@ -168,6 +163,7 @@ public class DsmlTest
     iter = dsml.importDsml(new StringReader(dsmlString1));
     writer = new StringWriter();
     dsml.outputDsml(iter, writer);
+
     final String dsmlString2 = writer.toString();
     AssertJUnit.assertEquals(dsmlString1, dsmlString2);
   }

@@ -1,7 +1,7 @@
 /*
   $Id$
 
-  Copyright (C) 2003-2008 Virginia Tech.
+  Copyright (C) 2003-2009 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
@@ -104,6 +104,7 @@ public class LdapAttributes extends AbstractLdapBean
    * this <code>LdapAttributes</code>.
    *
    * @param  comparator  to sort the set with
+   *
    * @return  <code>SortedSet</code>
    */
   public SortedSet<LdapAttribute> getSortedAttributes(
@@ -285,7 +286,7 @@ public class LdapAttributes extends AbstractLdapBean
   }
 
 
-  /** {@inheritDoc}. */
+  /** {@inheritDoc} */
   public int hashCode()
   {
     int hc = HASH_CODE_SEED;
@@ -326,7 +327,8 @@ public class LdapAttributes extends AbstractLdapBean
    * This returns an <code>Attributes</code> that represents this entry.
    * Attributes will be case-insensitive.
    *
-   * @param  ignoreCase whether to ignore attribute case
+   * @param  ignoreCase  whether to ignore attribute case
+   *
    * @return  <code>Attributes</code>
    */
   public Attributes toAttributes(final boolean ignoreCase)

@@ -1,7 +1,7 @@
 /*
   $Id$
 
-  Copyright (C) 2003-2008 Virginia Tech.
+  Copyright (C) 2003-2009 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
@@ -26,7 +26,7 @@ public class AnyHostnameVerifier implements HostnameVerifier
 {
 
 
-  /** {@inheritDoc}. */
+  /** {@inheritDoc} */
   public boolean verify(final String hostname, final SSLSession seession)
   {
     return true;

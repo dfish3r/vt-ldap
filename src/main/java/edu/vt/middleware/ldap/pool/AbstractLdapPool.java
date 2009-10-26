@@ -1,7 +1,7 @@
 /*
   $Id$
 
-  Copyright (C) 2003-2008 Virginia Tech.
+  Copyright (C) 2003-2009 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
@@ -88,21 +88,21 @@ public abstract class AbstractLdapPool<T extends BaseLdap>
   }
 
 
-  /** {@inheritDoc}. */
+  /** {@inheritDoc} */
   public LdapPoolConfig getLdapPoolConfig()
   {
     return this.poolConfig;
   }
 
 
-  /** {@inheritDoc}. */
+  /** {@inheritDoc} */
   public void setPoolTimer(final Timer t)
   {
     this.poolTimer = t;
   }
 
 
-  /** {@inheritDoc}. */
+  /** {@inheritDoc} */
   public void initialize()
   {
     if (this.logger.isDebugEnabled()) {
@@ -170,7 +170,7 @@ public abstract class AbstractLdapPool<T extends BaseLdap>
   }
 
 
-  /** {@inheritDoc}. */
+  /** {@inheritDoc} */
   public void close()
   {
     this.poolLock.lock();
@@ -437,7 +437,7 @@ public abstract class AbstractLdapPool<T extends BaseLdap>
   }
 
 
-  /** {@inheritDoc}. */
+  /** {@inheritDoc} */
   public void prune()
   {
     if (this.logger.isTraceEnabled()) {
@@ -478,7 +478,7 @@ public abstract class AbstractLdapPool<T extends BaseLdap>
   }
 
 
-  /** {@inheritDoc}. */
+  /** {@inheritDoc} */
   public void validate()
   {
     this.poolLock.lock();
@@ -534,14 +534,14 @@ public abstract class AbstractLdapPool<T extends BaseLdap>
   }
 
 
-  /** {@inheritDoc}. */
+  /** {@inheritDoc} */
   public int availableCount()
   {
     return this.available.size();
   }
 
 
-  /** {@inheritDoc}. */
+  /** {@inheritDoc} */
   public int activeCount()
   {
     return this.active.size();
@@ -567,8 +567,8 @@ public abstract class AbstractLdapPool<T extends BaseLdap>
 
   /**
    * <code>PooledLdap</code> contains an ldap object that is participating in a
-   * pool. Used to track how long an ldap object has been in either
-   * the available or active queues.
+   * pool. Used to track how long an ldap object has been in either the
+   * available or active queues.
    *
    * @param  <T>  type of ldap object
    */

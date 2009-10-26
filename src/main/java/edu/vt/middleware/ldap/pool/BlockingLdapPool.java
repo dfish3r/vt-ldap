@@ -1,7 +1,7 @@
 /*
   $Id$
 
-  Copyright (C) 2003-2008 Virginia Tech.
+  Copyright (C) 2003-2009 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
@@ -93,7 +93,7 @@ public class BlockingLdapPool extends AbstractLdapPool<Ldap>
   }
 
 
-  /** {@inheritDoc}. */
+  /** {@inheritDoc} */
   public Ldap checkOut()
     throws LdapPoolException
   {
@@ -281,7 +281,7 @@ public class BlockingLdapPool extends AbstractLdapPool<Ldap>
   }
 
 
-  /** {@inheritDoc}. */
+  /** {@inheritDoc} */
   public void checkIn(final Ldap l)
   {
     final boolean valid = this.validateAndPassivate(l);

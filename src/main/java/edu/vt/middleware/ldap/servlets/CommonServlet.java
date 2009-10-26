@@ -1,7 +1,7 @@
 /*
   $Id$
 
-  Copyright (C) 2003-2008 Virginia Tech.
+  Copyright (C) 2003-2009 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
@@ -58,8 +58,8 @@ public class CommonServlet extends HttpServlet
       sessionManagerClass = ServletConstants.DEFAULT_SESSION_MANAGER;
     }
     if (this.logger.isDebugEnabled()) {
-      this.logger.debug(ServletConstants.SESSION_MANAGER + " = " +
-                        sessionManagerClass);
+      this.logger.debug(
+        ServletConstants.SESSION_MANAGER + " = " + sessionManagerClass);
     }
     try {
       this.sessionManager = (SessionManager) Class.forName(sessionManagerClass)
@@ -72,7 +72,8 @@ public class CommonServlet extends HttpServlet
     } catch (InstantiationException e) {
       if (this.logger.isErrorEnabled()) {
         this.logger.error(
-          "Could not instantiate class " + sessionManagerClass, e);
+          "Could not instantiate class " + sessionManagerClass,
+          e);
       }
       throw new ServletException(e);
     } catch (IllegalAccessException e) {

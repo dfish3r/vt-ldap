@@ -1,7 +1,7 @@
 /*
   $Id$
 
-  Copyright (C) 2003-2008 Virginia Tech.
+  Copyright (C) 2003-2009 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
@@ -133,6 +133,7 @@ public class LdapResult extends AbstractLdapBean
    * <code>LdapResult</code>.
    *
    * @param  comparator  to sort the set with
+   *
    * @return  <code>SortedSet</code>
    */
   public SortedSet<LdapEntry> getSortedEntries(
@@ -249,7 +250,7 @@ public class LdapResult extends AbstractLdapBean
   }
 
 
-  /** {@inheritDoc}. */
+  /** {@inheritDoc} */
   public int hashCode()
   {
     int hc = HASH_CODE_SEED;

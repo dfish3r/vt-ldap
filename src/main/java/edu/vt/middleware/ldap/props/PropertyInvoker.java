@@ -1,7 +1,7 @@
 /*
   $Id$
 
-  Copyright (C) 2003-2008 Virginia Tech.
+  Copyright (C) 2003-2009 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
@@ -140,8 +140,7 @@ public class PropertyInvoker
             instantiateType(AuthenticationResultHandler.class, classes[i]));
         }
       } else if (
-        AuthorizationHandler[].class.isAssignableFrom(
-            getter.getReturnType())) {
+        AuthorizationHandler[].class.isAssignableFrom(getter.getReturnType())) {
         final String[] classes = value.split(",");
         newValue = Array.newInstance(
           AuthorizationHandler.class,
@@ -152,8 +151,7 @@ public class PropertyInvoker
             i,
             instantiateType(AuthorizationHandler.class, classes[i]));
         }
-      } else if (
-        Class[].class.isAssignableFrom(getter.getReturnType())) {
+      } else if (Class[].class.isAssignableFrom(getter.getReturnType())) {
         final String[] classes = value.split(",");
         newValue = Array.newInstance(Class.class, classes.length);
         for (int i = 0; i < classes.length; i++) {
@@ -245,8 +243,8 @@ public class PropertyInvoker
    *
    * @return  class
    *
-   * @throws  IllegalArgumentException  if the supplied class name cannot
-   * be created
+   * @throws  IllegalArgumentException  if the supplied class name cannot be
+   * created
    */
   private static Class<?> createClass(final String className)
   {
