@@ -14,6 +14,7 @@
 package edu.vt.middleware.ldap;
 
 import javax.naming.AuthenticationException;
+import javax.naming.NamingException;
 import javax.naming.directory.Attributes;
 import edu.vt.middleware.ldap.bean.LdapAttributes;
 import edu.vt.middleware.ldap.bean.LdapEntry;
@@ -200,12 +201,14 @@ public class AuthenticatorTest
   /**
    * @param  uid  to get dn for.
    * @param  user  to get dn for.
+   * @param  duplicateFilter  for user lookups
    *
    * @throws  Exception  On test failure.
    */
-  @Parameters({ "getDnUid", "getDnUser" })
+  @Parameters({ "getDnUid", "getDnUser", "getDnDuplicateFilter" })
   @Test(groups = {"authtest"})
-  public void getDn(final String uid, final String user)
+  public void getDn(
+    final String uid, final String user, final String duplicateFilter)
     throws Exception
   {
     final Authenticator ldap = this.createTLSAuthenticator(true);
@@ -237,6 +240,19 @@ public class AuthenticatorTest
 
     // test one level searching
     AssertJUnit.assertEquals(ldap.getDn(user), testLdapEntry.getDn());
+
+    // test duplicate DNs
+    ldap.getAuthenticatorConfig().setUserFilter(duplicateFilter);
+    try {
+      ldap.getDn(user);
+      AssertJUnit.fail("Should have thrown NamingException");
+    } catch (Exception e) {
+      AssertJUnit.assertEquals(e.getClass(), NamingException.class);
+    }
+
+    ldap.getAuthenticatorConfig().setAllowMultipleDns(true);
+    ldap.getDn(user);
+
     ldap.close();
   }
 
@@ -655,18 +671,21 @@ public class AuthenticatorTest
 
     try {
       ldap.authenticate(user, new Object(), returnAttrs.split("\\|"));
+      AssertJUnit.fail("Should have thrown AuthenticationException");
     } catch (Exception e) {
       AssertJUnit.assertEquals(e.getClass(), AuthenticationException.class);
     }
 
     try {
       ldap.authenticate(null, credential, returnAttrs.split("\\|"));
+      AssertJUnit.fail("Should have thrown AuthenticationException");
     } catch (Exception e) {
       AssertJUnit.assertEquals(e.getClass(), AuthenticationException.class);
     }
 
     try {
       ldap.authenticate("", credential, returnAttrs.split("\\|"));
+      AssertJUnit.fail("Should have thrown AuthenticationException");
     } catch (Exception e) {
       AssertJUnit.assertEquals(e.getClass(), AuthenticationException.class);
     }
@@ -676,6 +695,7 @@ public class AuthenticatorTest
     ldap.getAuthenticatorConfig().setAuthtype(LdapConstants.NONE_AUTHTYPE);
     try {
       ldap.authenticate(user, credential, returnAttrs.split("\\|"));
+      AssertJUnit.fail("Should have thrown AuthenticationException");
     } catch (Exception e) {
       AssertJUnit.assertEquals(e.getClass(), AuthenticationException.class);
     }

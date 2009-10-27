@@ -63,7 +63,8 @@ public class Authenticator extends AbstractAuthenticator implements Serializable
    * AuthenticatorConfig#getUserField()} is used to look up the dn. If a filter
    * is used, the user is provided as the {0} variable filter argument. If a
    * field is used, the filter is built by ORing the fields together. If more
-   * than one entry matches the search, the first result is used.
+   * than one entry matches the search, the result is controlled by
+   * {@link AuthenticatorConfig#setAllowMultipleDns(boolean)}.
    *
    * @param  user  <code>String</code> to find dn for
    *
@@ -135,10 +136,14 @@ public class Authenticator extends AbstractAuthenticator implements Serializable
             final SearchResult sr = answer.next();
             dn = sr.getName();
             if (answer.hasNext()) {
-              if (this.logger.isWarnEnabled()) {
-                this.logger.warn(
+              if (this.logger.isDebugEnabled()) {
+                this.logger.debug(
                   "Multiple results found for user: " + user +
-                  "using filter: " + filter);
+                  " using filter: " + filter);
+              }
+              if (!this.config.getAllowMultipleDns()) {
+                throw new NamingException(
+                  "Found more than (1) DN for: " + user);
               }
             }
           } else {

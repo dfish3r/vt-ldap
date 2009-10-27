@@ -64,6 +64,9 @@ public class AuthenticatorConfig extends LdapConfig
   /** Whether to construct the DN when authenticating. */
   private boolean constructDn = LdapConstants.DEFAULT_CONSTRUCT_DN;
 
+  /** Whether to throw an exception if multiple DNs are found. */
+  private boolean allowMultipleDns = LdapConstants.DEFAULT_ALLOW_MULTIPLE_DNS;
+
   /** Handlers to process authentications. */
   private AuthenticationResultHandler[] authenticationResultHandlers;
 
@@ -178,6 +181,18 @@ public class AuthenticatorConfig extends LdapConfig
   public boolean getConstructDn()
   {
     return this.constructDn;
+  }
+
+
+  /**
+   * This returns the allowMultipleDns of the <code>Authenticator</code>.
+   *
+   * @return  <code>boolean</code> - whether an exception will be thrown if
+   * multiple DNs are found
+   */
+  public boolean getAllowMultipleDns()
+  {
+    return this.allowMultipleDns;
   }
 
 
@@ -350,6 +365,24 @@ public class AuthenticatorConfig extends LdapConfig
       this.logger.trace("setting constructDn: " + constructDn);
     }
     this.constructDn = constructDn;
+  }
+
+
+  /**
+   * This sets the allowMultipleDns for the <code>Authentication</code>. If
+   * false an exception will be thrown if {@link Authenticator#getDn(String)}
+   * finds more than one DN matching it's filter. Otherwise the first DN found
+   * is returned.
+   *
+   * @param  allowMultipleDns  <code>boolean</code>
+   */
+  public void setAllowMultipleDns(final boolean allowMultipleDns)
+  {
+    checkImmutable();
+    if (this.logger.isTraceEnabled()) {
+      this.logger.trace("setting allowMultipleDns: " + allowMultipleDns);
+    }
+    this.allowMultipleDns = allowMultipleDns;
   }
 
 

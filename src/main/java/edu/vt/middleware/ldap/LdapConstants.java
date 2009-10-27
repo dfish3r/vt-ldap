@@ -325,6 +325,13 @@ public final class LdapConstants
   public static final boolean DEFAULT_CONSTRUCT_DN = false;
 
   /**
+   * Whether Authenticator should throw an exception if multiple DNs are found
+   * by {@link Authenticator#getDn(String)}. The value of this constant is
+   * {@value}.
+   */
+  public static final boolean DEFAULT_ALLOW_MULTIPLE_DNS = false;
+
+  /**
    * Default character set for creating strings. The value of this constant is
    * {@value}.
    */

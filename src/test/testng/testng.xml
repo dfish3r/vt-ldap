@@ -178,6 +178,7 @@
 
   <parameter name="getDnUid" value="3"/>
   <parameter name="getDnUser" value="jdoe3@vt.edu"/>
+  <parameter name="getDnDuplicateFilter" value="mail=jdoe*"/>
 
   <parameter name="authenticateDn" value="uid=3,ou=test,dc=vt,dc=edu"/>
   <parameter name="authenticateDnCredential" value="password3"/>
