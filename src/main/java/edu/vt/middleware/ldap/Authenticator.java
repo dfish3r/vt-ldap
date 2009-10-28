@@ -63,8 +63,8 @@ public class Authenticator extends AbstractAuthenticator implements Serializable
    * AuthenticatorConfig#getUserField()} is used to look up the dn. If a filter
    * is used, the user is provided as the {0} variable filter argument. If a
    * field is used, the filter is built by ORing the fields together. If more
-   * than one entry matches the search, the result is controlled by
-   * {@link AuthenticatorConfig#setAllowMultipleDns(boolean)}.
+   * than one entry matches the search, the result is controlled by {@link
+   * AuthenticatorConfig#setAllowMultipleDns(boolean)}.
    *
    * @param  user  <code>String</code> to find dn for
    *

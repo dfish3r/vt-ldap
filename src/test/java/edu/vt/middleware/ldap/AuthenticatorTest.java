@@ -208,7 +208,9 @@ public class AuthenticatorTest
   @Parameters({ "getDnUid", "getDnUser", "getDnDuplicateFilter" })
   @Test(groups = {"authtest"})
   public void getDn(
-    final String uid, final String user, final String duplicateFilter)
+    final String uid,
+    final String user,
+    final String duplicateFilter)
     throws Exception
   {
     final Authenticator ldap = this.createTLSAuthenticator(true);

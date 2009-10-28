@@ -114,7 +114,8 @@ public class RecursiveAttributeHandler extends CopyAttributeHandler
       } catch (NamingException e) {
         if (this.logger.isWarnEnabled()) {
           this.logger.warn(
-            "Error retreiving attribute: " + this.attributeName, e);
+            "Error retreiving attribute: " + this.attributeName,
+            e);
         }
       }
       searchedDns.add(dn);
