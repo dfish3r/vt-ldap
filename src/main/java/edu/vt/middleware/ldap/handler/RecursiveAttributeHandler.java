@@ -106,11 +106,17 @@ public class RecursiveAttributeHandler extends CopyAttributeHandler
   {
     final List<String> results = new ArrayList<String>();
     if (!searchedDns.contains(dn)) {
-      results.add(dn);
 
-      final Attributes attrs = this.ldap.getAttributes(
-        dn,
-        new String[] {this.attributeName});
+      Attributes attrs = null;
+      try {
+        attrs = this.ldap.getAttributes(dn, new String[] {this.attributeName});
+        results.add(dn);
+      } catch (NamingException e) {
+        if (this.logger.isWarnEnabled()) {
+          this.logger.warn(
+            "Error retreiving attribute: " + this.attributeName, e);
+        }
+      }
       searchedDns.add(dn);
       if (attrs != null) {
         final Attribute attr = attrs.get(this.attributeName);
