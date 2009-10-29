@@ -6,7 +6,7 @@
   <groupId>edu.vt.middleware</groupId>
   <artifactId>vt-ldap</artifactId>
   <packaging>jar</packaging>
-  <version>3.2-SNAPSHOT</version>
+  <version>3.2</version>
   <name>VT LDAP Libraries</name>
   <url>http://code.google.com/p/vt-middleware/wiki/vtldap</url>
   <licenses>
@@ -206,7 +206,6 @@
         <configuration>
           <forkMode>pertest</forkMode>
           <argLine>-Xms256m -Xmx512m</argLine>
-          <testFailureIgnore>false</testFailureIgnore>
           <!-- tests are currently host specific and require authorization -->
           <skipTests>true</skipTests>
           <suiteXmlFiles>
