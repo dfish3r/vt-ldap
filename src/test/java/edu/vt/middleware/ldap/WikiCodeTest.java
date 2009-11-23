@@ -226,9 +226,8 @@ public class WikiCodeTest
 
     final Iterator<SearchResult> iter = ldap.search(
       "ou=People,dc=vt,dc=edu",
-      "sn=Fisher",
-      null,
-      null,
+      new SearchFilter("sn=Fisher"),
+      (String[]) null,
       handler);
 
     AssertJUnit.assertTrue(iter.hasNext());
