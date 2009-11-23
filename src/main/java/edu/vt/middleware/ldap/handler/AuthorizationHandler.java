@@ -30,7 +30,7 @@ public interface AuthorizationHandler
   /**
    * Process an authorization after an ldap authentication. The supplied
    * LdapContext should <b>not</b> be closed in this method. Implementations
-   * should throw <code>AuthenticationExceptione</code> to indicate an
+   * should throw <code>AuthenticationException</code> to indicate an
    * authorization failure.
    *
    * @param  ac  <code>AuthenticationCriteria</code> used to perform the
