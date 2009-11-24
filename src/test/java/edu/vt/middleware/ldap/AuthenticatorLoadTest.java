@@ -189,7 +189,7 @@ public class AuthenticatorLoadTest
         {
           "jdoe2@vt.edu",
           "password2",
-          "departmentNumber={0}",
+          "departmentNumber={1}",
           "0822",
           "givenName|sn",
           "givenName=John|sn=Doe",
@@ -197,7 +197,7 @@ public class AuthenticatorLoadTest
         {
           "jdoe3@vt.edu",
           "password3",
-          "departmentNumber={0}",
+          "departmentNumber={1}",
           "0823",
           "givenName|sn",
           "givenName=Joho|sn=Dof",
@@ -205,7 +205,7 @@ public class AuthenticatorLoadTest
         {
           "jdoe4@vt.edu",
           "password4",
-          "departmentNumber={0}",
+          "departmentNumber={1}",
           "0824",
           "givenName|sn",
           "givenName=Johp|sn=Dog",
@@ -213,7 +213,7 @@ public class AuthenticatorLoadTest
         {
           "jdoe5@vt.edu",
           "password5",
-          "departmentNumber={0}",
+          "departmentNumber={1}",
           "0825",
           "givenName|sn",
           "givenName=Johq|sn=Doh",
@@ -221,7 +221,7 @@ public class AuthenticatorLoadTest
         {
           "jdoe6@vt.edu",
           "password6",
-          "departmentNumber={0}",
+          "departmentNumber={1}",
           "0826",
           "givenName|sn",
           "givenName=Johr|sn=Doi",
@@ -229,7 +229,7 @@ public class AuthenticatorLoadTest
         {
           "jdoe7@vt.edu",
           "password7",
-          "departmentNumber={0}",
+          "departmentNumber={1}",
           "0827",
           "givenName|sn",
           "givenName=Johs|sn=Doj",
@@ -237,7 +237,7 @@ public class AuthenticatorLoadTest
         {
           "jdoe8@vt.edu",
           "password8",
-          "departmentNumber={0}",
+          "departmentNumber={1}",
           "0828",
           "givenName|sn",
           "givenName=Joht|sn=Dok",
@@ -245,7 +245,7 @@ public class AuthenticatorLoadTest
         {
           "jdoe9@vt.edu",
           "password9",
-          "departmentNumber={0}",
+          "departmentNumber={1}",
           "0829",
           "givenName|sn",
           "givenName=Johu|sn=Dol",
@@ -253,7 +253,7 @@ public class AuthenticatorLoadTest
         {
           "jdoe10@vt.edu",
           "password10",
-          "departmentNumber={0}",
+          "departmentNumber={1}",
           "0830",
           "givenName|sn",
           "givenName=Johv|sn=Dom",
