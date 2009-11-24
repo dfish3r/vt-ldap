@@ -112,50 +112,75 @@ public class PropertyInvoker
     Object newValue = value;
     if (getter.getReturnType() != String.class) {
       if (SSLSocketFactory.class.isAssignableFrom(getter.getReturnType())) {
-        newValue = instantiateType(SSLSocketFactory.class, value);
+        if (value.equals("null")) {
+          newValue = null;
+        } else {
+          newValue = instantiateType(SSLSocketFactory.class, value);
+        }
       } else if (
         HostnameVerifier.class.isAssignableFrom(getter.getReturnType())) {
-        newValue = instantiateType(HostnameVerifier.class, value);
+        if (value.equals("null")) {
+          newValue = null;
+        } else {
+          newValue = instantiateType(HostnameVerifier.class, value);
+        }
       } else if (
         SearchResultHandler[].class.isAssignableFrom(getter.getReturnType())) {
-        final String[] classes = value.split(",");
-        newValue = Array.newInstance(SearchResultHandler.class, classes.length);
-        for (int i = 0; i < classes.length; i++) {
-          Array.set(
-            newValue,
-            i,
-            instantiateType(SearchResultHandler.class, classes[i]));
+        if (value.equals("null")) {
+          newValue = null;
+        } else {
+          final String[] classes = value.split(",");
+          newValue = Array.newInstance(
+            SearchResultHandler.class, classes.length);
+          for (int i = 0; i < classes.length; i++) {
+            Array.set(
+              newValue,
+              i,
+              instantiateType(SearchResultHandler.class, classes[i]));
+          }
         }
       } else if (
         AuthenticationResultHandler[].class.isAssignableFrom(
             getter.getReturnType())) {
-        final String[] classes = value.split(",");
-        newValue = Array.newInstance(
-          AuthenticationResultHandler.class,
-          classes.length);
-        for (int i = 0; i < classes.length; i++) {
-          Array.set(
-            newValue,
-            i,
-            instantiateType(AuthenticationResultHandler.class, classes[i]));
+        if (value.equals("null")) {
+          newValue = null;
+        } else {
+          final String[] classes = value.split(",");
+          newValue = Array.newInstance(
+            AuthenticationResultHandler.class,
+            classes.length);
+          for (int i = 0; i < classes.length; i++) {
+            Array.set(
+              newValue,
+              i,
+              instantiateType(AuthenticationResultHandler.class, classes[i]));
+          }
         }
       } else if (
         AuthorizationHandler[].class.isAssignableFrom(getter.getReturnType())) {
-        final String[] classes = value.split(",");
-        newValue = Array.newInstance(
-          AuthorizationHandler.class,
-          classes.length);
-        for (int i = 0; i < classes.length; i++) {
-          Array.set(
-            newValue,
-            i,
-            instantiateType(AuthorizationHandler.class, classes[i]));
+        if (value.equals("null")) {
+          newValue = null;
+        } else {
+          final String[] classes = value.split(",");
+          newValue = Array.newInstance(
+            AuthorizationHandler.class,
+            classes.length);
+          for (int i = 0; i < classes.length; i++) {
+            Array.set(
+              newValue,
+              i,
+              instantiateType(AuthorizationHandler.class, classes[i]));
+          }
         }
       } else if (Class[].class.isAssignableFrom(getter.getReturnType())) {
-        final String[] classes = value.split(",");
-        newValue = Array.newInstance(Class.class, classes.length);
-        for (int i = 0; i < classes.length; i++) {
-          Array.set(newValue, i, createClass(classes[i]));
+        if (value.equals("null")) {
+          newValue = null;
+        } else {
+          final String[] classes = value.split(",");
+          newValue = Array.newInstance(Class.class, classes.length);
+          for (int i = 0; i < classes.length; i++) {
+            Array.set(newValue, i, createClass(classes[i]));
+          }
         }
       } else if (getter.getReturnType().isEnum()) {
         if (LdapConfig.SearchScope.class == getter.getReturnType()) {
