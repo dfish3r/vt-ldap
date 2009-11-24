@@ -20,7 +20,9 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
+import javax.naming.CommunicationException;
 import javax.naming.LimitExceededException;
+import javax.naming.ServiceUnavailableException;
 import javax.naming.directory.SearchControls;
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLSocketFactory;
@@ -166,6 +168,15 @@ public class LdapConfig extends AbstractPropertyConfig
 
   /** Number of times to retry ldap operations on communication exception. */
   private Integer operationRetry;
+
+  /** Exception types to retry operations on. */
+  private Class<?>[] operationRetryExceptions = new Class[] {
+    CommunicationException.class,
+    ServiceUnavailableException.class,
+  };
+
+  /** Amount of time in milliseconds to wait before retrying. */
+  private Long operationRetryWait;
 
   /** Whether link dereferencing should be performed during the search. */
   private boolean derefLinkFlag;
@@ -717,11 +728,37 @@ public class LdapConfig extends AbstractPropertyConfig
    */
   public int getOperationRetry()
   {
-    int retry = LdapConstants.OPERATION_RETRY;
+    int retry = LdapConstants.DEFAULT_OPERATION_RETRY;
     if (this.operationRetry != null) {
       retry = this.operationRetry.intValue();
     }
     return retry;
+  }
+
+
+  /**
+   * This returns the exception types to ertry operations on.
+   *
+   * @return  <code>Class[]</code>
+   */
+  public Class<?>[] getOperationRetryExceptions()
+  {
+    return this.operationRetryExceptions;
+  }
+
+
+  /**
+   * This returns the operation retry wait time for the <code>LdapConfig</code>.
+   *
+   * @return  <code>int</code> - time limit
+   */
+  public long getOperationRetryWait()
+  {
+    long wait = LdapConstants.DEFAULT_OPERATION_RETRY_WAIT;
+    if (this.operationRetryWait != null) {
+      wait = this.operationRetryWait.intValue();
+    }
+    return wait;
   }
 
 
@@ -1289,6 +1326,39 @@ public class LdapConfig extends AbstractPropertyConfig
       this.logger.trace("setting operationRetry: " + operationRetry);
     }
     this.operationRetry = new Integer(operationRetry);
+  }
+
+
+  /**
+   * This sets the exception types to retry operations on.
+   *
+   * @param  exceptions  <code>Class[]</code>
+   */
+  public void setOperationRetryExceptions(final Class<?>[] exceptions)
+  {
+    checkImmutable();
+    if (this.logger.isTraceEnabled()) {
+      this.logger.trace(
+        "setting operationRetryExceptions: " +
+        (exceptions == null ? "null" : Arrays.asList(exceptions)));
+    }
+    this.operationRetryExceptions = exceptions;
+  }
+
+
+  /**
+   * This sets the amount of time in milliseconds that operations should wait
+   * before retrying.
+   *
+   * @param  wait  <code>long</code>
+   */
+  public void setOperationRetryWait(final long wait)
+  {
+    checkImmutable();
+    if (this.logger.isTraceEnabled()) {
+      this.logger.trace("setting operationRetryWait: " + wait);
+    }
+    this.operationRetryWait = new Long(wait);
   }
 
 

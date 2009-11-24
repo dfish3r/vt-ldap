@@ -160,16 +160,8 @@ public abstract class AbstractLdap<T extends LdapConfig> implements BaseLdap
           }
 
           break;
-        } catch (CommunicationException e) {
-          if (i == this.config.getOperationRetry()) {
-            throw e;
-          }
-          if (this.logger.isWarnEnabled()) {
-            this.logger.warn(
-              "Error while communicating with the LDAP, retrying",
-              e);
-          }
-          this.reconnect();
+        } catch (NamingException e) {
+          this.operationRetry(ctx, e, i);
         }
       }
     } finally {
@@ -265,16 +257,8 @@ public abstract class AbstractLdap<T extends LdapConfig> implements BaseLdap
           }
 
           break;
-        } catch (CommunicationException e) {
-          if (i == this.config.getOperationRetry()) {
-            throw e;
-          }
-          if (this.logger.isWarnEnabled()) {
-            this.logger.warn(
-              "Error while communicating with the LDAP, retrying",
-              e);
-          }
-          this.reconnect();
+        } catch (NamingException e) {
+          this.operationRetry(ctx, e, i);
         }
       }
     } finally {
@@ -402,16 +386,8 @@ public abstract class AbstractLdap<T extends LdapConfig> implements BaseLdap
           } while (cookie != null);
 
           break;
-        } catch (CommunicationException e) {
-          if (i == this.config.getOperationRetry()) {
-            throw e;
-          }
-          if (this.logger.isWarnEnabled()) {
-            this.logger.warn(
-              "Error while communicating with the LDAP, retrying",
-              e);
-          }
-          this.reconnect();
+        } catch (NamingException e) {
+          this.operationRetry(ctx, e, i);
         } catch (IOException e) {
           if (this.logger.isErrorEnabled()) {
             this.logger.error("Could not encode page size into control", e);
@@ -509,16 +485,8 @@ public abstract class AbstractLdap<T extends LdapConfig> implements BaseLdap
           }
 
           break;
-        } catch (CommunicationException e) {
-          if (i == this.config.getOperationRetry()) {
-            throw e;
-          }
-          if (this.logger.isWarnEnabled()) {
-            this.logger.warn(
-              "Error while communicating with the LDAP, retrying",
-              e);
-          }
-          this.reconnect();
+        } catch (NamingException e) {
+          this.operationRetry(ctx, e, i);
         }
       }
     } finally {
@@ -571,16 +539,8 @@ public abstract class AbstractLdap<T extends LdapConfig> implements BaseLdap
             this.config.getHandlerIgnoreExceptions());
 
           break;
-        } catch (CommunicationException e) {
-          if (i == this.config.getOperationRetry()) {
-            throw e;
-          }
-          if (this.logger.isWarnEnabled()) {
-            this.logger.warn(
-              "Error while communicating with the LDAP, retrying",
-              e);
-          }
-          this.reconnect();
+        } catch (NamingException e) {
+          this.operationRetry(ctx, e, i);
         }
       }
     } finally {
@@ -633,16 +593,8 @@ public abstract class AbstractLdap<T extends LdapConfig> implements BaseLdap
             this.config.getHandlerIgnoreExceptions());
 
           break;
-        } catch (CommunicationException e) {
-          if (i == this.config.getOperationRetry()) {
-            throw e;
-          }
-          if (this.logger.isWarnEnabled()) {
-            this.logger.warn(
-              "Error while communicating with the LDAP, retrying",
-              e);
-          }
-          this.reconnect();
+        } catch (NamingException e) {
+          this.operationRetry(ctx, e, i);
         }
       }
     } finally {
@@ -715,16 +667,8 @@ public abstract class AbstractLdap<T extends LdapConfig> implements BaseLdap
           }
 
           break;
-        } catch (CommunicationException e) {
-          if (i == this.config.getOperationRetry()) {
-            throw e;
-          }
-          if (this.logger.isWarnEnabled()) {
-            this.logger.warn(
-              "Error while communicating with the LDAP, retrying",
-              e);
-          }
-          this.reconnect();
+        } catch (NamingException e) {
+          this.operationRetry(ctx, e, i);
         }
       }
     } finally {
@@ -775,16 +719,8 @@ public abstract class AbstractLdap<T extends LdapConfig> implements BaseLdap
             this.config.getHandlerIgnoreExceptions());
 
           break;
-        } catch (CommunicationException e) {
-          if (i == this.config.getOperationRetry()) {
-            throw e;
-          }
-          if (this.logger.isWarnEnabled()) {
-            this.logger.warn(
-              "Error while communicating with the LDAP, retrying",
-              e);
-          }
-          this.reconnect();
+        } catch (NamingException e) {
+          this.operationRetry(ctx, e, i);
         }
       }
     } finally {
@@ -839,16 +775,8 @@ public abstract class AbstractLdap<T extends LdapConfig> implements BaseLdap
           ctx = this.getContext();
           ctx.modifyAttributes(dn, modOp, attrs);
           break;
-        } catch (CommunicationException e) {
-          if (i == this.config.getOperationRetry()) {
-            throw e;
-          }
-          if (this.logger.isWarnEnabled()) {
-            this.logger.warn(
-              "Error while communicating with the LDAP, retrying",
-              e);
-          }
-          this.reconnect();
+        } catch (NamingException e) {
+          this.operationRetry(ctx, e, i);
         }
       }
     } finally {
@@ -894,16 +822,8 @@ public abstract class AbstractLdap<T extends LdapConfig> implements BaseLdap
           ctx = this.getContext();
           ctx.modifyAttributes(dn, mods);
           break;
-        } catch (CommunicationException e) {
-          if (i == this.config.getOperationRetry()) {
-            throw e;
-          }
-          if (this.logger.isWarnEnabled()) {
-            this.logger.warn(
-              "Error while communicating with the LDAP, retrying",
-              e);
-          }
-          this.reconnect();
+        } catch (NamingException e) {
+          this.operationRetry(ctx, e, i);
         }
       }
     } finally {
@@ -944,16 +864,8 @@ public abstract class AbstractLdap<T extends LdapConfig> implements BaseLdap
           ctx = this.getContext();
           ctx.createSubcontext(dn, attrs).close();
           break;
-        } catch (CommunicationException e) {
-          if (i == this.config.getOperationRetry()) {
-            throw e;
-          }
-          if (this.logger.isWarnEnabled()) {
-            this.logger.warn(
-              "Error while communicating with the LDAP, retrying",
-              e);
-          }
-          this.reconnect();
+        } catch (NamingException e) {
+          this.operationRetry(ctx, e, i);
         }
       }
     } finally {
@@ -992,16 +904,8 @@ public abstract class AbstractLdap<T extends LdapConfig> implements BaseLdap
           ctx = this.getContext();
           ctx.rename(oldDn, newDn);
           break;
-        } catch (CommunicationException e) {
-          if (i == this.config.getOperationRetry()) {
-            throw e;
-          }
-          if (this.logger.isWarnEnabled()) {
-            this.logger.warn(
-              "Error while communicating with the LDAP, retrying",
-              e);
-          }
-          this.reconnect();
+        } catch (NamingException e) {
+          this.operationRetry(ctx, e, i);
         }
       }
     } finally {
@@ -1039,16 +943,8 @@ public abstract class AbstractLdap<T extends LdapConfig> implements BaseLdap
           ctx = this.getContext();
           ctx.destroySubcontext(dn);
           break;
-        } catch (CommunicationException e) {
-          if (i == this.config.getOperationRetry()) {
-            throw e;
-          }
-          if (this.logger.isWarnEnabled()) {
-            this.logger.warn(
-              "Error while communicating with the LDAP, retrying",
-              e);
-          }
-          this.reconnect();
+        } catch (NamingException e) {
+          this.operationRetry(ctx, e, i);
         }
       }
     } finally {
@@ -1325,16 +1221,8 @@ public abstract class AbstractLdap<T extends LdapConfig> implements BaseLdap
             tls.negotiate();
           }
           break;
-        } catch (CommunicationException e) {
-          if (i == this.config.getOperationRetry()) {
-            throw e;
-          }
-          if (this.logger.isWarnEnabled()) {
-            this.logger.warn(
-              "Error while communicating with the LDAP, retrying",
-              e);
-          }
-          this.reconnect();
+        } catch (NamingException e) {
+          this.operationRetry(null, e, i);
         }
       }
     } catch (IOException e) {
@@ -1368,6 +1256,54 @@ public abstract class AbstractLdap<T extends LdapConfig> implements BaseLdap
         }
         throw new CommunicationException(e.getMessage());
       }
+    }
+  }
+
+
+  /**
+   * Confirms whether the supplied exception matches an exception from
+   * {@link LdapConfig#getOperationRetryExceptions()} and the supplied count
+   * is less than {@link LdapConfig#getOperationRetry()}. Calls
+   * {@link #reconnect()} if no exception is thrown.
+   *
+   * @param  ctx  <code>LdapContext</code> that performed the operation
+   * @param  e  <code>NamingException</code> that was thrown
+   * @param  count  <code>int</code> operation attempts
+   * @throws  NamingException  if the operation should won't be retried
+   */
+  protected void operationRetry(
+    final LdapContext ctx, final NamingException e, final int count)
+    throws NamingException
+  {
+    boolean ignoreException = false;
+    final Class<?>[] ignore = this.config.getOperationRetryExceptions();
+    if (ignore != null && ignore.length > 0) {
+      for (Class<?> ne : ignore) {
+        if (ne.isInstance(e)) {
+          ignoreException = true;
+          break;
+        }
+      }
+    }
+    if (ignoreException && count < this.config.getOperationRetry()) {
+      if (this.logger.isWarnEnabled()) {
+        this.logger.warn("Error performing LDAP operation, retrying", e);
+      }
+      if (this.config.getOperationRetryWait() > 0) {
+        try {
+          Thread.sleep(this.config.getOperationRetryWait());
+        } catch (InterruptedException ie) {
+          if (this.logger.isDebugEnabled()) {
+            this.logger.debug("Operation retry wait interrupted", e);
+          }
+        }
+      }
+      if (ctx != null) {
+        ctx.close();
+      }
+      this.reconnect();
+    } else {
+      throw e;
     }
   }
 

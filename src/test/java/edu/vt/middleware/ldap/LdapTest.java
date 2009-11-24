@@ -29,6 +29,7 @@ import javax.naming.SizeLimitExceededException;
 import javax.naming.TimeLimitExceededException;
 import javax.naming.directory.Attributes;
 import javax.naming.directory.DirContext;
+import javax.naming.directory.InvalidSearchFilterException;
 import javax.naming.directory.ModificationItem;
 import javax.naming.directory.SearchResult;
 import edu.vt.middleware.ldap.Ldap.AttributeModification;
@@ -653,6 +654,32 @@ public class LdapTest
       dn,
       new SearchFilter(filter));
     AssertJUnit.assertEquals(resultsSize, (new LdapResult(iter)).size());
+
+    ldap.close();
+  }
+
+
+  /**
+   * @throws  Exception  On test failure.
+   */
+  @Test(groups = {"ldaptest"})
+  public void searchWithRetry()
+    throws Exception
+  {
+    final Ldap ldap = this.createLdap(true);
+
+    // test retry searching
+    ldap.getLdapConfig().setOperationRetry(3);
+    ldap.getLdapConfig().setOperationRetryExceptions(
+      new Class[] {InvalidSearchFilterException.class});
+    ldap.getLdapConfig().setOperationRetryWait(1000);
+
+    try {
+      ldap.search(new SearchFilter("(("));
+    } catch (InvalidSearchFilterException e) {
+      AssertJUnit.assertEquals(
+        InvalidSearchFilterException.class, e.getClass());
+    }
 
     ldap.close();
   }

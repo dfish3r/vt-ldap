@@ -338,10 +338,16 @@ public final class LdapConstants
   public static final String DEFAULT_CHARSET = "UTF-8";
 
   /**
-   * Number of times to retry an operation on CommunicationException. The value
+   * Default number of times to retry an operation on failure. The value
    * of this constant is {@value}.
    */
-  public static final int OPERATION_RETRY = 1;
+  public static final int DEFAULT_OPERATION_RETRY = 1;
+
+  /**
+   * Default amount of time to wait between operation retries. The value
+   * of this constant is {@value}.
+   */
+  public static final long DEFAULT_OPERATION_RETRY_WAIT = 0;
 
 
   /** Default constructor. */
