@@ -204,8 +204,7 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
         <configuration>
-          <forkMode>pertest</forkMode>
-          <argLine>-Xms256m -Xmx512m</argLine>
+          <argLine>-Xms1536m -Xmx1536m -XX:PermSize=512m -XX:MaxPermSize=512m</argLine>
           <!-- tests are currently host specific and require authorization -->
           <skipTests>true</skipTests>
           <suiteXmlFiles>
