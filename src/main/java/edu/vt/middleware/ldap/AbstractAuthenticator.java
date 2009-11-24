@@ -16,7 +16,6 @@ package edu.vt.middleware.ldap;
 import java.io.InputStream;
 import java.util.Arrays;
 import javax.naming.AuthenticationException;
-import javax.naming.CommunicationException;
 import javax.naming.NamingException;
 import javax.naming.directory.Attributes;
 import javax.naming.ldap.LdapContext;
@@ -182,7 +181,7 @@ public abstract class AbstractAuthenticator
     // attempt to bind as this dn
     final StartTlsResponse tls = null;
     LdapContext ctx = null;
-    for (int i = 0; i <= LdapConstants.OPERATION_RETRY; i++) {
+    for (int i = 0; i <= this.config.getOperationRetry(); i++) {
       try {
         final AuthenticationCriteria ac = new AuthenticationCriteria(dn);
         ac.setCredential(credential);
@@ -242,15 +241,8 @@ public abstract class AbstractAuthenticator
           }
         }
         break;
-      } catch (CommunicationException e) {
-        if (i == LdapConstants.OPERATION_RETRY) {
-          throw e;
-        }
-        if (this.logger.isWarnEnabled()) {
-          this.logger.warn(
-            "Error while communicating with the LDAP, retrying",
-            e);
-        }
+      } catch (NamingException e) {
+        this.operationRetry(ctx, e, i);
       } finally {
         this.stopTls(tls);
         if (ctx != null) {
