@@ -113,7 +113,6 @@ public class WikiCodeTest
     config.setUserField(new String[] {"uid", "mail"});
 
     final Authenticator auth = new Authenticator(config);
-    auth.useTls(true);
     if (auth.authenticate("user", "credential")) {
       System.out.println("Authentication succeeded");
     } else {
@@ -135,7 +134,6 @@ public class WikiCodeTest
     config.setUserField(new String[] {"uid", "mail"});
 
     final Authenticator auth = new Authenticator(config);
-    auth.useTls(true);
     if (
       auth.authenticate(
           "user",
