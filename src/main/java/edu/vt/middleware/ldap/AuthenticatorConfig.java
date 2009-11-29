@@ -15,8 +15,10 @@ package edu.vt.middleware.ldap;
 
 import java.io.InputStream;
 import java.util.Arrays;
+import edu.vt.middleware.ldap.handler.AuthenticationHandler;
 import edu.vt.middleware.ldap.handler.AuthenticationResultHandler;
 import edu.vt.middleware.ldap.handler.AuthorizationHandler;
+import edu.vt.middleware.ldap.handler.BindAuthenticationHandler;
 import edu.vt.middleware.ldap.props.LdapProperties;
 import edu.vt.middleware.ldap.props.PropertyInvoker;
 
@@ -61,11 +63,15 @@ public class AuthenticatorConfig extends LdapConfig
   /** Filter arguments for authorizing user. */
   private Object[] authorizationFilterArgs;
 
-  /** Whether to construct the DN when authenticating. */
-  private boolean constructDn = LdapConstants.DEFAULT_CONSTRUCT_DN;
-
   /** Whether to throw an exception if multiple DNs are found. */
   private boolean allowMultipleDns = LdapConstants.DEFAULT_ALLOW_MULTIPLE_DNS;
+
+  /** For finding LDAP DNs. */
+  private DnResolver dnResolver = new SearchDnResolver(this);
+
+  /** Handler to process authentication. */
+  private AuthenticationHandler authenticationHandler =
+    new BindAuthenticationHandler(this);
 
   /** Handlers to process authentications. */
   private AuthenticationResultHandler[] authenticationResultHandlers;
@@ -180,7 +186,9 @@ public class AuthenticatorConfig extends LdapConfig
    */
   public boolean getConstructDn()
   {
-    return this.constructDn;
+    return this.dnResolver != null &&
+      this.dnResolver.getClass().isAssignableFrom(
+        ConstructDnResolver.class);
   }
 
 
@@ -205,6 +213,28 @@ public class AuthenticatorConfig extends LdapConfig
   public boolean getSubtreeSearch()
   {
     return SearchScope.SUBTREE == this.getSearchScope();
+  }
+
+
+  /**
+   * This returns the DN resolver.
+   *
+   * @return  <code>DnResolver</code>
+   */
+  public DnResolver getDnResolver()
+  {
+    return this.dnResolver;
+  }
+
+
+  /**
+   * This returns the authentication handler.
+   *
+   * @return  <code>AuthenticationHandler</code>
+   */
+  public AuthenticationHandler getAuthenticationHandler()
+  {
+    return this.authenticationHandler;
   }
 
 
@@ -352,19 +382,18 @@ public class AuthenticatorConfig extends LdapConfig
 
   /**
    * This sets the constructDn for the <code>Authenticator</code>. If true, the
-   * DN used for authenticating will be constructed using the {@link #userField}
-   * and {@link LdapConfig#getBase()}. In the form: dn =
-   * userField+'='+user+','+base Otherwise the DN will be looked up in the LDAP.
+   * {@link #dnResolver} is set to {@link ConstructDnResolver}. If false, the
+   * {@link #dnResolver} is set to {@link SearchDnResolver}.
    *
    * @param  constructDn  <code>boolean</code>
    */
   public void setConstructDn(final boolean constructDn)
   {
-    checkImmutable();
-    if (this.logger.isTraceEnabled()) {
-      this.logger.trace("setting constructDn: " + constructDn);
+    if (constructDn) {
+      this.setDnResolver(new ConstructDnResolver());
+    } else {
+      this.setDnResolver(new SearchDnResolver());
     }
-    this.constructDn = constructDn;
   }
 
 
@@ -404,6 +433,43 @@ public class AuthenticatorConfig extends LdapConfig
       this.setSearchScope(SearchScope.SUBTREE);
     } else {
       this.setSearchScope(SearchScope.ONELEVEL);
+    }
+  }
+
+
+  /**
+   * This sets the DN resolver.
+   *
+   * @param  resolver  <code>DnResolver</code>
+   */
+  public void setDnResolver(final DnResolver resolver)
+  {
+
+    checkImmutable();
+    if (this.logger.isTraceEnabled()) {
+      this.logger.trace("setting dnResolver: " + resolver);
+    }
+    this.dnResolver = resolver;
+    if (this.dnResolver != null) {
+      this.dnResolver.setAuthenticatorConfig(this);
+    }
+  }
+
+
+  /**
+   * This sets the authentication handler.
+   *
+   * @param  handler  <code>AuthenticationHandler</code>
+   */
+  public void setAuthenticationHandler(final AuthenticationHandler handler)
+  {
+    checkImmutable();
+    if (this.logger.isTraceEnabled()) {
+      this.logger.trace("setting authenticationHandler: " + handler);
+    }
+    this.authenticationHandler = handler;
+    if (this.authenticationHandler != null) {
+      this.authenticationHandler.setAuthenticatorConfig(this);
     }
   }
 

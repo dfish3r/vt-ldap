@@ -18,8 +18,8 @@ import java.util.Arrays;
 import javax.naming.AuthenticationException;
 import javax.naming.NamingException;
 import javax.naming.directory.Attributes;
-import javax.naming.ldap.LdapContext;
 import edu.vt.middleware.ldap.handler.AuthenticationCriteria;
+import edu.vt.middleware.ldap.handler.AuthenticationHandler;
 import edu.vt.middleware.ldap.handler.AuthenticationResultHandler;
 import edu.vt.middleware.ldap.handler.AuthorizationHandler;
 import edu.vt.middleware.ldap.handler.ConnectionHandler;
@@ -88,7 +88,8 @@ public abstract class AbstractAuthenticator
    *
    * @param  dn  <code>String</code> for bind
    * @param  credential  <code>Object</code> for bind
-   * @param  authHandler  <code>AuthenticationResultHandler[]</code> to post
+   * @param  authResultHandler  <code>AuthenticationResultHandler[]</code>
+   * to post
    * process authentication results
    * @param  authzHandler  <code>AuthorizationHandler[]</code> to process
    * authorization after authentication
@@ -101,7 +102,7 @@ public abstract class AbstractAuthenticator
   protected boolean authenticateAndAuthorize(
     final String dn,
     final Object credential,
-    final AuthenticationResultHandler[] authHandler,
+    final AuthenticationResultHandler[] authResultHandler,
     final AuthorizationHandler[] authzHandler)
     throws NamingException
   {
@@ -112,7 +113,7 @@ public abstract class AbstractAuthenticator
         credential,
         false,
         null,
-        authHandler,
+        authResultHandler,
         authzHandler);
       success = true;
     } catch (AuthenticationException e) {
@@ -138,8 +139,8 @@ public abstract class AbstractAuthenticator
    * @param  searchAttrs  <code>boolean</code> whether to perform attribute
    * search
    * @param  retAttrs  <code>String[]</code> user attributes to return
-   * @param  authHandler  <code>AuthenticationResultHandler[]</code> to post
-   * process authentication results
+   * @param  authResultHandler  <code>AuthenticationResultHandler[]</code> to
+   * post process authentication results
    * @param  authzHandler  <code>AuthorizationHandler[]</code> to process
    * authorization after authentication
    *
@@ -154,7 +155,7 @@ public abstract class AbstractAuthenticator
     final Object credential,
     final boolean searchAttrs,
     final String[] retAttrs,
-    final AuthenticationResultHandler[] authHandler,
+    final AuthenticationResultHandler[] authResultHandler,
     final AuthorizationHandler[] authzHandler)
     throws NamingException
   {
@@ -181,15 +182,15 @@ public abstract class AbstractAuthenticator
     // attempt to bind as this dn
     final ConnectionHandler ch =
       this.config.getConnectionHandler().newInstance();
-    LdapContext ctx = null;
     try {
       for (int i = 0; i <= this.config.getOperationRetry(); i++) {
         try {
           final AuthenticationCriteria ac = new AuthenticationCriteria(dn);
           ac.setCredential(credential);
           try {
-            ch.connect(ac.getDn(), ac.getCredential());
-            ctx = ch.getLdapContext();
+            final AuthenticationHandler authHandler =
+              this.config.getAuthenticationHandler().newInstance();
+            authHandler.authenticate(ch, ac);
             if (this.logger.isInfoEnabled()) {
               this.logger.info("Authentication succeeded for dn: " + dn);
             }
@@ -197,8 +198,8 @@ public abstract class AbstractAuthenticator
             if (this.logger.isInfoEnabled()) {
               this.logger.info("Authentication failed for dn: " + dn);
             }
-            if (authHandler != null && authHandler.length > 0) {
-              for (AuthenticationResultHandler ah : authHandler) {
+            if (authResultHandler != null && authResultHandler.length > 0) {
+              for (AuthenticationResultHandler ah : authResultHandler) {
                 ah.process(ac, false);
               }
             }
@@ -220,8 +221,8 @@ public abstract class AbstractAuthenticator
                     "Authorization failed for dn: " + dn +
                     " with handler: " +azh);
                 }
-                if (authHandler != null && authHandler.length > 0) {
-                  for (AuthenticationResultHandler ah : authHandler) {
+                if (authResultHandler != null && authResultHandler.length > 0) {
+                  for (AuthenticationResultHandler ah : authResultHandler) {
                     ah.process(ac, false);
                   }
                 }
@@ -239,8 +240,8 @@ public abstract class AbstractAuthenticator
             }
             userAttributes = ch.getLdapContext().getAttributes(dn, retAttrs);
           }
-          if (authHandler != null && authHandler.length > 0) {
-            for (AuthenticationResultHandler ah : authHandler) {
+          if (authResultHandler != null && authResultHandler.length > 0) {
+            for (AuthenticationResultHandler ah : authResultHandler) {
               ah.process(ac, true);
             }
           }
@@ -254,5 +255,15 @@ public abstract class AbstractAuthenticator
     }
 
     return userAttributes;
+  }
+
+
+  /** {@inheritDoc} */
+  public synchronized void close()
+  {
+    if (this.config.getDnResolver() != null) {
+      this.config.getDnResolver().close();
+    }
+    super.close();
   }
 }

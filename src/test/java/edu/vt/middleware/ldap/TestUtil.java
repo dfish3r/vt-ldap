@@ -131,12 +131,13 @@ public final class TestUtil
    * @throws  Exception  On test data generation failure.
    */
   @DataProvider(name = "ssl-dn-auth")
-  public static DnAuthenticator createSSLDnAuthenticator()
+  public static Authenticator createSSLDnAuthenticator()
     throws Exception
   {
-    final DnAuthenticator a = new DnAuthenticator();
+    final Authenticator a = new Authenticator();
     a.loadFromProperties(
       TestUtil.class.getResourceAsStream("/ldap.ssl.properties"));
+    a.getAuthenticatorConfig().setDnResolver(new NoopDnResolver());
     return a;
   }
 
@@ -169,12 +170,13 @@ public final class TestUtil
    * @throws  Exception  On test data generation failure.
    */
   @DataProvider(name = "tls-dn-auth")
-  public static DnAuthenticator createTLSDnAuthenticator()
+  public static Authenticator createTLSDnAuthenticator()
     throws Exception
   {
-    final DnAuthenticator a = new DnAuthenticator();
+    final Authenticator a = new Authenticator();
     a.loadFromProperties(
       TestUtil.class.getResourceAsStream("/ldap.tls.properties"));
+    a.getAuthenticatorConfig().setDnResolver(new NoopDnResolver());
 
     final LdapTLSSocketFactory sf = new LdapTLSSocketFactory();
     sf.setTrustStoreName("/ed.truststore");
@@ -191,12 +193,13 @@ public final class TestUtil
    * @throws  Exception  On test data generation failure.
    */
   @DataProvider(name = "digest-md5-auth")
-  public static DnAuthenticator createDigestMD5Authenticator()
+  public static Authenticator createDigestMD5Authenticator()
     throws Exception
   {
-    final DnAuthenticator a = new DnAuthenticator();
+    final Authenticator a = new Authenticator();
     a.loadFromProperties(
       TestUtil.class.getResourceAsStream("/ldap.digest-md5.properties"));
+    a.getAuthenticatorConfig().setDnResolver(new NoopDnResolver());
     return a;
   }
 
@@ -207,12 +210,13 @@ public final class TestUtil
    * @throws  Exception  On test data generation failure.
    */
   @DataProvider(name = "cram-md5-auth")
-  public static DnAuthenticator createCramMD5Authenticator()
+  public static Authenticator createCramMD5Authenticator()
     throws Exception
   {
-    final DnAuthenticator a = new DnAuthenticator();
+    final Authenticator a = new Authenticator();
     a.loadFromProperties(
       TestUtil.class.getResourceAsStream("/ldap.cram-md5.properties"));
+    a.getAuthenticatorConfig().setDnResolver(new NoopDnResolver());
     return a;
   }
 

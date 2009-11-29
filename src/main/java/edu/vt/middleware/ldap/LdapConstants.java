@@ -316,12 +316,6 @@ public final class LdapConstants
   public static final String DEFAULT_USER_FIELD = "uid";
 
   /**
-   * Whether Authenticator should construct DNs by default. The value of this
-   * constant is {@value}.
-   */
-  public static final boolean DEFAULT_CONSTRUCT_DN = false;
-
-  /**
    * Whether Authenticator should throw an exception if multiple DNs are found
    * by {@link Authenticator#getDn(String)}. The value of this constant is
    * {@value}.
