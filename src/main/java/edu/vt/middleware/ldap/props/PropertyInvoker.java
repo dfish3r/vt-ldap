@@ -20,9 +20,12 @@ import java.util.HashMap;
 import java.util.Map;
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLSocketFactory;
+import edu.vt.middleware.ldap.DnResolver;
 import edu.vt.middleware.ldap.LdapConfig;
+import edu.vt.middleware.ldap.handler.AuthenticationHandler;
 import edu.vt.middleware.ldap.handler.AuthenticationResultHandler;
 import edu.vt.middleware.ldap.handler.AuthorizationHandler;
+import edu.vt.middleware.ldap.handler.ConnectionHandler;
 import edu.vt.middleware.ldap.handler.SearchResultHandler;
 
 /**
@@ -123,6 +126,27 @@ public class PropertyInvoker
           newValue = null;
         } else {
           newValue = instantiateType(HostnameVerifier.class, value);
+        }
+      } else if (
+        ConnectionHandler.class.isAssignableFrom(getter.getReturnType())) {
+        if (value.equals("null")) {
+          newValue = null;
+        } else {
+          newValue = instantiateType(ConnectionHandler.class, value);
+        }
+      } else if (
+        AuthenticationHandler.class.isAssignableFrom(getter.getReturnType())) {
+        if (value.equals("null")) {
+          newValue = null;
+        } else {
+          newValue = instantiateType(AuthenticationHandler.class, value);
+        }
+      } else if (
+        DnResolver.class.isAssignableFrom(getter.getReturnType())) {
+        if (value.equals("null")) {
+          newValue = null;
+        } else {
+          newValue = instantiateType(DnResolver.class, value);
         }
       } else if (
         SearchResultHandler[].class.isAssignableFrom(getter.getReturnType())) {
