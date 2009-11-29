@@ -19,10 +19,10 @@ import javax.naming.AuthenticationException;
 import javax.naming.NamingException;
 import javax.naming.directory.Attributes;
 import javax.naming.ldap.LdapContext;
-import javax.naming.ldap.StartTlsResponse;
 import edu.vt.middleware.ldap.handler.AuthenticationCriteria;
 import edu.vt.middleware.ldap.handler.AuthenticationResultHandler;
 import edu.vt.middleware.ldap.handler.AuthorizationHandler;
+import edu.vt.middleware.ldap.handler.ConnectionHandler;
 
 /**
  * <code>AbstractAuthenticator</code> provides basic functionality for
@@ -179,76 +179,78 @@ public abstract class AbstractAuthenticator
     Attributes userAttributes = null;
 
     // attempt to bind as this dn
-    final StartTlsResponse tls = null;
+    final ConnectionHandler ch =
+      this.config.getConnectionHandler().newInstance();
     LdapContext ctx = null;
-    for (int i = 0; i <= this.config.getOperationRetry(); i++) {
-      try {
-        final AuthenticationCriteria ac = new AuthenticationCriteria(dn);
-        ac.setCredential(credential);
+    try {
+      for (int i = 0; i <= this.config.getOperationRetry(); i++) {
         try {
-          ctx = this.bind(dn, credential, tls);
-          if (this.logger.isInfoEnabled()) {
-            this.logger.info("Authentication succeeded for dn: " + dn);
+          final AuthenticationCriteria ac = new AuthenticationCriteria(dn);
+          ac.setCredential(credential);
+          try {
+            ch.connect(ac.getDn(), ac.getCredential());
+            ctx = ch.getLdapContext();
+            if (this.logger.isInfoEnabled()) {
+              this.logger.info("Authentication succeeded for dn: " + dn);
+            }
+          } catch (AuthenticationException e) {
+            if (this.logger.isInfoEnabled()) {
+              this.logger.info("Authentication failed for dn: " + dn);
+            }
+            if (authHandler != null && authHandler.length > 0) {
+              for (AuthenticationResultHandler ah : authHandler) {
+                ah.process(ac, false);
+              }
+            }
+            throw e;
           }
-        } catch (AuthenticationException e) {
-          if (this.logger.isInfoEnabled()) {
-            this.logger.info("Authentication failed for dn: " + dn);
+          // authentication succeeded, perform authorization if supplied
+          if (authzHandler != null && authzHandler.length > 0) {
+            for (AuthorizationHandler azh : authzHandler) {
+              try {
+                azh.process(ac, ch.getLdapContext());
+                if (this.logger.isInfoEnabled()) {
+                  this.logger.info(
+                    "Authorization succeeded for dn: " + dn +
+                    " with handler: " + azh);
+                }
+              } catch (AuthenticationException e) {
+                if (this.logger.isInfoEnabled()) {
+                  this.logger.info(
+                    "Authorization failed for dn: " + dn +
+                    " with handler: " +azh);
+                }
+                if (authHandler != null && authHandler.length > 0) {
+                  for (AuthenticationResultHandler ah : authHandler) {
+                    ah.process(ac, false);
+                  }
+                }
+                throw e;
+              }
+            }
+          }
+          if (searchAttrs) {
+            if (this.logger.isDebugEnabled()) {
+              this.logger.debug("Returning attributes: ");
+              this.logger.debug(
+                "    " +
+                (retAttrs == null ?
+                  "all attributes" : Arrays.asList(retAttrs)));
+            }
+            userAttributes = ch.getLdapContext().getAttributes(dn, retAttrs);
           }
           if (authHandler != null && authHandler.length > 0) {
             for (AuthenticationResultHandler ah : authHandler) {
-              ah.process(ac, false);
+              ah.process(ac, true);
             }
           }
-          throw e;
-        }
-        // authentication succeeded, perform authorization if supplied
-        if (authzHandler != null && authzHandler.length > 0) {
-          for (AuthorizationHandler azh : authzHandler) {
-            try {
-              azh.process(ac, ctx);
-              if (this.logger.isInfoEnabled()) {
-                this.logger.info(
-                  "Authorization succeeded for dn: " + dn + " with handler: " +
-                  azh);
-              }
-            } catch (AuthenticationException e) {
-              if (this.logger.isInfoEnabled()) {
-                this.logger.info(
-                  "Authorization failed for dn: " + dn + " with handler: " +
-                  azh);
-              }
-              if (authHandler != null && authHandler.length > 0) {
-                for (AuthenticationResultHandler ah : authHandler) {
-                  ah.process(ac, false);
-                }
-              }
-              throw e;
-            }
-          }
-        }
-        if (searchAttrs) {
-          if (this.logger.isDebugEnabled()) {
-            this.logger.debug("Returning attributes: ");
-            this.logger.debug(
-              "    " +
-              (retAttrs == null ? "all attributes" : Arrays.asList(retAttrs)));
-          }
-          userAttributes = ctx.getAttributes(dn, retAttrs);
-        }
-        if (authHandler != null && authHandler.length > 0) {
-          for (AuthenticationResultHandler ah : authHandler) {
-            ah.process(ac, true);
-          }
-        }
-        break;
-      } catch (NamingException e) {
-        this.operationRetry(ctx, e, i);
-      } finally {
-        this.stopTls(tls);
-        if (ctx != null) {
-          ctx.close();
+          break;
+        } catch (NamingException e) {
+          this.operationRetry(ch.getLdapContext(), e, i);
         }
       }
+    } finally {
+      ch.close();
     }
 
     return userAttributes;

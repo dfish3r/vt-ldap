@@ -26,8 +26,11 @@ import javax.naming.ServiceUnavailableException;
 import javax.naming.directory.SearchControls;
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLSocketFactory;
+import edu.vt.middleware.ldap.handler.ConnectionHandler;
+import edu.vt.middleware.ldap.handler.DefaultConnectionHandler;
 import edu.vt.middleware.ldap.handler.FqdnSearchResultHandler;
 import edu.vt.middleware.ldap.handler.SearchResultHandler;
+import edu.vt.middleware.ldap.handler.TlsConnectionHandler;
 import edu.vt.middleware.ldap.props.AbstractPropertyConfig;
 import edu.vt.middleware.ldap.props.LdapProperties;
 import edu.vt.middleware.ldap.props.PropertyInvoker;
@@ -117,6 +120,10 @@ public class LdapConfig extends AbstractPropertyConfig
 
   /** Default context factory. */
   private String contextFactory = LdapConstants.DEFAULT_CONTEXT_FACTORY;
+
+  /** Default connection handler. */
+  private ConnectionHandler connectionHandler =
+    new DefaultConnectionHandler(this);
 
   /** Default ldap socket factory used for SSL and TLS. */
   private SSLSocketFactory sslSocketFactory;
@@ -226,9 +233,6 @@ public class LdapConfig extends AbstractPropertyConfig
 
   /** Connect to LDAP using SSL protocol. */
   private boolean ssl = LdapConstants.DEFAULT_USE_SSL;
-
-  /** Connect to LDAP using TLS protocol. */
-  private boolean tls = LdapConstants.DEFAULT_USE_TLS;
 
   /** Stream to print LDAP ASN.1 BER packets. */
   private PrintStream tracePackets;
@@ -352,6 +356,17 @@ public class LdapConfig extends AbstractPropertyConfig
   public String getContextFactory()
   {
     return this.contextFactory;
+  }
+
+
+  /**
+   * This returns the connection handler of the <code>LdapConfig</code>.
+   *
+   * @return  <code>ConnectionHandler</code> - connection handler
+   */
+  public ConnectionHandler getConnectionHandler()
+  {
+    return this.connectionHandler;
   }
 
 
@@ -995,7 +1010,9 @@ public class LdapConfig extends AbstractPropertyConfig
    */
   public boolean isTlsEnabled()
   {
-    return this.tls;
+    return this.connectionHandler != null &&
+      this.connectionHandler.getClass().isAssignableFrom(
+        TlsConnectionHandler.class);
   }
 
 
@@ -1012,6 +1029,25 @@ public class LdapConfig extends AbstractPropertyConfig
       this.logger.trace("setting contextFactory: " + contextFactory);
     }
     this.contextFactory = contextFactory;
+  }
+
+
+  /**
+   * This sets the connection handler of the <code>LdapConfig</code>.
+   *
+   * @param  connectionHandler  <code>ConnectionHandler</code>
+   * connection handler
+   */
+  public void setConnectionHandler(final ConnectionHandler connectionHandler)
+  {
+    checkImmutable();
+    if (this.logger.isTraceEnabled()) {
+      this.logger.trace("setting connectionHandler: " + connectionHandler);
+    }
+    this.connectionHandler = connectionHandler;
+    if (this.connectionHandler != null) {
+      this.connectionHandler.setLdapConfig(this);
+    }
   }
 
 
@@ -1655,9 +1691,7 @@ public class LdapConfig extends AbstractPropertyConfig
 
   /**
    * This sets this <code>LdapConfig</code> to use the SSL protocol for
-   * connections. The port is automatically changed to the default of 636. If
-   * you need to use a different port then you must call {@link #setPort} after
-   * calling this method.
+   * connections.
    *
    * @param  ssl  <code>boolean</code>
    */
@@ -1673,18 +1707,18 @@ public class LdapConfig extends AbstractPropertyConfig
 
   /**
    * This sets this <code>LdapConfig</code> to use the TLS protocol for
-   * connections. For fine control over starting and stopping TLS you must use
-   * the {@link Ldap#useTls(boolean)} method.
+   * connections. Specifically it sets the connection handler to use
+   * {@link TlsConnectionHandler}.
    *
    * @param  tls  <code>boolean</code>
    */
   public void setTls(final boolean tls)
   {
-    checkImmutable();
-    if (this.logger.isTraceEnabled()) {
-      this.logger.trace("setting tls: " + tls);
+    if (tls) {
+      this.setConnectionHandler(new TlsConnectionHandler());
+    } else {
+      this.setConnectionHandler(new DefaultConnectionHandler());
     }
-    this.tls = tls;
   }
 
 

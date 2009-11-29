@@ -16,11 +16,9 @@ package edu.vt.middleware.ldap;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 import javax.naming.Binding;
-import javax.naming.CommunicationException;
 import javax.naming.NameClassPair;
 import javax.naming.NamingEnumeration;
 import javax.naming.NamingException;
@@ -30,14 +28,12 @@ import javax.naming.directory.ModificationItem;
 import javax.naming.directory.SearchControls;
 import javax.naming.directory.SearchResult;
 import javax.naming.ldap.Control;
-import javax.naming.ldap.InitialLdapContext;
 import javax.naming.ldap.LdapContext;
 import javax.naming.ldap.PagedResultsControl;
 import javax.naming.ldap.PagedResultsResponseControl;
-import javax.naming.ldap.StartTlsRequest;
-import javax.naming.ldap.StartTlsResponse;
 import edu.vt.middleware.ldap.handler.AttributeHandler;
 import edu.vt.middleware.ldap.handler.AttributesProcessor;
+import edu.vt.middleware.ldap.handler.ConnectionHandler;
 import edu.vt.middleware.ldap.handler.CopyResultHandler;
 import edu.vt.middleware.ldap.handler.SearchCriteria;
 import edu.vt.middleware.ldap.handler.SearchResultHandler;
@@ -75,11 +71,8 @@ public abstract class AbstractLdap<T extends LdapConfig> implements BaseLdap
   /** Log for this class. */
   protected final Log logger = LogFactory.getLog(this.getClass());
 
-  /** LDAP interface for directory operations. */
-  protected LdapContext context;
-
-  /** TLS Session. */
-  protected StartTlsResponse tlsResponse;
+  /** LDAP connection handler. */
+  protected ConnectionHandler connectionHandler;
 
   /** LDAP configuration environment. */
   protected T config;
@@ -96,15 +89,6 @@ public abstract class AbstractLdap<T extends LdapConfig> implements BaseLdap
       this.config.checkImmutable();
     }
     this.config = ldapConfig;
-    if (this.config.isTlsEnabled()) {
-      try {
-        this.useTls(true);
-      } catch (NamingException e) {
-        if (this.logger.isErrorEnabled()) {
-          this.logger.error("Error using TLS", e);
-        }
-      }
-    }
   }
 
 
@@ -956,47 +940,6 @@ public abstract class AbstractLdap<T extends LdapConfig> implements BaseLdap
 
 
   /**
-   * This returns whether the <code>Ldap</code> is using the TLS protocol for
-   * connections.
-   *
-   * @return  <code>boolean</code> - whether the TLS protocol is being used
-   */
-  public boolean isTlsEnabled()
-  {
-    return this.config.isTlsEnabled();
-  }
-
-
-  /**
-   * This sets this <code>Ldap</code> to use the TLS protocol for connections.
-   * If tls is true this method will upgrade the existing connection if it has
-   * already been established. If tls is false this method will downgrade the
-   * existing connection if it has already been established. If no connection
-   * has been established, then the next connection made will take this setting
-   * into effect.
-   *
-   * @param  tls  <code>boolean</code> - whether LDAP connections should use the
-   * TLS protocol
-   *
-   * @throws  NamingException  if an error occurs while requesting an extended
-   * operation
-   */
-  public void useTls(final boolean tls)
-    throws NamingException
-  {
-    if (this.context != null) {
-      if (tls) {
-        if (this.tlsResponse == null) {
-          this.tlsResponse = this.startTls(this.context);
-        }
-      } else {
-        this.stopTls(this.tlsResponse);
-      }
-    }
-  }
-
-
-  /**
    * This will establish a connection if one does not already exist by binding
    * to the LDAP using parameters given by {@link
    * LdapConfig#setServiceUser(String)} and {@link
@@ -1006,7 +949,7 @@ public abstract class AbstractLdap<T extends LdapConfig> implements BaseLdap
    * will call this method independently. This method should only be used if you
    * need to verify that you can connect to the LDAP.
    *
-   * @return  <code>boolean</code> - whether the connection was successfull
+   * @return  <code>boolean</code> - whether the connection was successful
    *
    * @throws  NamingException  if the LDAP cannot be reached
    */
@@ -1014,13 +957,14 @@ public abstract class AbstractLdap<T extends LdapConfig> implements BaseLdap
     throws NamingException
   {
     boolean success = false;
-    if (this.context != null) {
+    if (this.connectionHandler == null) {
+      this.connectionHandler = this.config.getConnectionHandler().newInstance();
+    }
+    if (this.connectionHandler.isConnected()) {
       success = true;
     } else {
-      this.context = this.bind(
-        this.config.getServiceUser(),
-        this.config.getServiceCredential(),
-        this.tlsResponse);
+      this.connectionHandler.connect(
+        this.config.getServiceUser(), this.config.getServiceCredential());
       success = true;
     }
     return success;
@@ -1031,7 +975,7 @@ public abstract class AbstractLdap<T extends LdapConfig> implements BaseLdap
    * This will close the current connection to the LDAP and establish a new
    * connection to the LDAP using {@link #connect}.
    *
-   * @return  <code>boolean</code> - whether the connection was successfull
+   * @return  <code>boolean</code> - whether the connection was successful
    *
    * @throws  NamingException  if the LDAP cannot be reached
    */
@@ -1044,24 +988,17 @@ public abstract class AbstractLdap<T extends LdapConfig> implements BaseLdap
 
 
   /** This will close the connection to the LDAP. */
-  public void close()
+  public synchronized void close()
   {
-    try {
-      this.stopTls(this.tlsResponse);
-    } catch (NamingException e) {
-      if (this.logger.isErrorEnabled()) {
-        this.logger.error("Error stopping TLS", e);
-      }
-    } finally {
+    if (this.connectionHandler != null) {
       try {
-        if (this.context != null) {
-          this.context.close();
-          this.context = null;
-        }
+        this.connectionHandler.close();
       } catch (NamingException e) {
         if (this.logger.isErrorEnabled()) {
           this.logger.error("Error closing connection with the LDAP", e);
         }
+      } finally {
+        this.connectionHandler = null;
       }
     }
   }
@@ -1078,184 +1015,11 @@ public abstract class AbstractLdap<T extends LdapConfig> implements BaseLdap
     throws NamingException
   {
     this.connect();
-    return this.context.newInstance(null);
-  }
-
-
-  /**
-   * This initiates a new connection to the LDAP. If {@link
-   * LdapConfig#getAuthtype()} is 'none', then anonymous auth is attempted. If
-   * dn or credential is null, then anonymous auth is attempted. tls can be null
-   * unless {@link #useTls(boolean)} has been set to true.
-   *
-   * @param  dn  <code>String</code> to attempt bind with
-   * @param  credential  <code>Object</code> to attempt bind with
-   * @param  tls  <code>StartTlsResponse</code> to control TLS
-   *
-   * @return  <code>boolean</code> - whether the connection succeeded
-   *
-   * @throws  NamingException  if an error occurs while creating the Context or
-   * requesting an extended operation
-   */
-  protected LdapContext bind(
-    final String dn,
-    final Object credential,
-    StartTlsResponse tls)
-    throws NamingException
-  {
-    if (this.logger.isDebugEnabled()) {
-      this.logger.debug("Bind with the following parameters:");
-      this.logger.debug("  dn = " + dn);
-      if (this.config.getLogCredentials()) {
-        if (this.logger.isDebugEnabled()) {
-          this.logger.debug("  credential = " + credential);
-        }
-      } else {
-        if (this.logger.isDebugEnabled()) {
-          this.logger.debug("  credential = <suppressed>");
-        }
-      }
-      if (this.logger.isTraceEnabled()) {
-        this.logger.trace("  config = " + this.config.getEnvironment());
-      }
-    }
-
-    final Hashtable<String, Object> environment = new Hashtable<String, Object>(
-      this.config.getEnvironment());
-    String authtype = this.config.getAuthtype();
-
-    // set authtype to none if no credentials and not using SASL
-    if (!this.config.isSaslAuth() && (dn == null || credential == null)) {
-      if (this.logger.isTraceEnabled()) {
-        this.logger.trace(
-          "dn or credential is null, authtype set to " +
-          LdapConstants.NONE_AUTHTYPE);
-      }
-      authtype = LdapConstants.NONE_AUTHTYPE;
-    }
-
-    // if using TLS, then credentials must be added after connection is made
-    if (this.config.isTlsEnabled()) {
-      environment.put(LdapConstants.VERSION, LdapConstants.VERSION_THREE);
+    if (this.connectionHandler != null &&
+        this.connectionHandler.isConnected()) {
+      return this.connectionHandler.getLdapContext().newInstance(null);
     } else {
-      if (this.logger.isTraceEnabled()) {
-        this.logger.trace("TLS not used");
-        this.logger.trace("authtype is " + authtype);
-      }
-      environment.put(LdapConstants.AUTHENTICATION, authtype);
-      // do not set credentials if authtype is none, sasl external, or gssapi
-      if (
-        !this.config.isExternalAuth() &&
-          !this.config.isGSSAPIAuth() &&
-          !authtype.equals(LdapConstants.NONE_AUTHTYPE)) {
-        environment.put(LdapConstants.PRINCIPAL, dn);
-        environment.put(LdapConstants.CREDENTIALS, credential);
-      }
-    }
-
-    LdapContext context = null;
-    try {
-      context = new InitialLdapContext(environment, null);
-
-      if (this.config.isTlsEnabled()) {
-        if (this.logger.isTraceEnabled()) {
-          this.logger.trace("TLS will be used");
-          this.logger.trace("authtype is " + authtype);
-        }
-        tls = this.startTls(context);
-        context.addToEnvironment(LdapConstants.AUTHENTICATION, authtype);
-        // do not set credentials if authtype is none, sasl external, or gssapi
-        if (
-          !this.config.isExternalAuth() &&
-            !this.config.isGSSAPIAuth() &&
-            !authtype.equals(LdapConstants.NONE_AUTHTYPE)) {
-          context.addToEnvironment(LdapConstants.PRINCIPAL, dn);
-          context.addToEnvironment(LdapConstants.CREDENTIALS, credential);
-        }
-        context.reconnect(null);
-      }
-    } catch (NamingException e) {
-      if (context != null) {
-        context.close();
-      }
-      throw e;
-    }
-
-    return context;
-  }
-
-
-  /**
-   * This will attempt to StartTLS with the supplied <code>LdapContext</code>.
-   *
-   * @param  context  <code>LdapContext</code>
-   *
-   * @return  <code>StartTlsResponse</code>
-   *
-   * @throws  NamingException  if an error occurs while requesting an extended
-   * operation
-   */
-  protected StartTlsResponse startTls(final LdapContext context)
-    throws NamingException
-  {
-    StartTlsResponse tls = null;
-    try {
-      for (int i = 0; i <= this.config.getOperationRetry(); i++) {
-        try {
-          tls = (StartTlsResponse) context.extendedOperation(
-            new StartTlsRequest());
-          if (this.config.useHostnameVerifier()) {
-            if (this.logger.isTraceEnabled()) {
-              this.logger.trace(
-                "TLS hostnameVerifier = " + this.config.getHostnameVerifier());
-            }
-            tls.setHostnameVerifier(this.config.getHostnameVerifier());
-          }
-          if (this.config.useSslSocketFactory()) {
-            if (this.logger.isTraceEnabled()) {
-              this.logger.trace(
-                "TLS sslSocketFactory = " + this.config.getSslSocketFactory());
-            }
-            tls.negotiate(this.config.getSslSocketFactory());
-          } else {
-            tls.negotiate();
-          }
-          break;
-        } catch (NamingException e) {
-          this.operationRetry(null, e, i);
-        }
-      }
-    } catch (IOException e) {
-      if (this.logger.isErrorEnabled()) {
-        this.logger.error("Could not negotiate TLS connection", e);
-      }
-      throw new CommunicationException(e.getMessage());
-    }
-    return tls;
-  }
-
-
-  /**
-   * This will attempt to StopTLS with the supplied <code>
-   * StartTlsResponse</code>.
-   *
-   * @param  tls  <code>StartTlsResponse</code>
-   *
-   * @throws  NamingException  if an error occurs while closing the TLS
-   * connection
-   */
-  protected void stopTls(final StartTlsResponse tls)
-    throws NamingException
-  {
-    if (tls != null) {
-      try {
-        tls.close();
-      } catch (IOException e) {
-        if (this.logger.isErrorEnabled()) {
-          this.logger.error("Could not close TLS connection", e);
-        }
-        throw new CommunicationException(e.getMessage());
-      }
+      return null;
     }
   }
 

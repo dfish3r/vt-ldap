@@ -303,9 +303,6 @@ public final class LdapConstants
   /** Whether to use SSL by default, the value of this constant is {@value}. */
   public static final boolean DEFAULT_USE_SSL = false;
 
-  /** Whether to use TLS by default, the value of this constant is {@value}. */
-  public static final boolean DEFAULT_USE_TLS = false;
-
   /**
    * Whether to log authentication credentials. The value of this constant is
    * {@value}.
