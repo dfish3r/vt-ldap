@@ -13,7 +13,6 @@
 */
 package edu.vt.middleware.ldap;
 
-import java.io.InputStream;
 import java.util.Arrays;
 import javax.naming.AuthenticationException;
 import javax.naming.NamingException;
@@ -23,17 +22,25 @@ import edu.vt.middleware.ldap.handler.AuthenticationHandler;
 import edu.vt.middleware.ldap.handler.AuthenticationResultHandler;
 import edu.vt.middleware.ldap.handler.AuthorizationHandler;
 import edu.vt.middleware.ldap.handler.ConnectionHandler;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 /**
  * <code>AbstractAuthenticator</code> provides basic functionality for
  * authenticating against an LDAP.
  *
+ * @param  <T>  type of AuthenticatorConfig
+ *
  * @author  Middleware Services
  * @version  $Revision$ $Date$
  */
-public abstract class AbstractAuthenticator
-  extends AbstractLdap<AuthenticatorConfig>
+public abstract class AbstractAuthenticator<T extends AuthenticatorConfig>
 {
+  /** Log for this class. */
+  protected final Log logger = LogFactory.getLog(this.getClass());
+
+  /** Authenticator configuration environment. */
+  protected T config;
 
 
   /**
@@ -41,43 +48,12 @@ public abstract class AbstractAuthenticator
    *
    * @param  authConfig  <code>AuthenticatorConfig</code>
    */
-  public void setAuthenticatorConfig(final AuthenticatorConfig authConfig)
+  public void setAuthenticatorConfig(final T authConfig)
   {
-    super.setLdapConfig(authConfig);
-  }
-
-
-  /**
-   * This returns the <code>AuthenticatorConfig</code> of the <code>
-   * Authenticator</code>.
-   *
-   * @return  <code>AuthenticatorConfig</code>
-   */
-  public AuthenticatorConfig getAuthenticatorConfig()
-  {
-    return this.config;
-  }
-
-
-  /**
-   * This will set the config parameters of this <code>Authenticator</code>
-   * using the default properties file, which must be located in your classpath.
-   */
-  public void loadFromProperties()
-  {
-    this.setAuthenticatorConfig(AuthenticatorConfig.createFromProperties(null));
-  }
-
-
-  /**
-   * This will set the config parameters of this <code>Authenticator</code>
-   * using the supplied input stream.
-   *
-   * @param  is  <code>InputStream</code>
-   */
-  public void loadFromProperties(final InputStream is)
-  {
-    this.setAuthenticatorConfig(AuthenticatorConfig.createFromProperties(is));
+    if (this.config != null) {
+      this.config.checkImmutable();
+    }
+    this.config = authConfig;
   }
 
 
@@ -183,20 +159,41 @@ public abstract class AbstractAuthenticator
     final ConnectionHandler ch =
       this.config.getConnectionHandler().newInstance();
     try {
-      for (int i = 0; i <= this.config.getOperationRetry(); i++) {
-        try {
-          final AuthenticationCriteria ac = new AuthenticationCriteria(dn);
-          ac.setCredential(credential);
+      final AuthenticationCriteria ac = new AuthenticationCriteria(dn);
+      ac.setCredential(credential);
+      try {
+        final AuthenticationHandler authHandler =
+          this.config.getAuthenticationHandler().newInstance();
+        authHandler.authenticate(ch, ac);
+        if (this.logger.isInfoEnabled()) {
+          this.logger.info("Authentication succeeded for dn: " + dn);
+        }
+      } catch (AuthenticationException e) {
+        if (this.logger.isInfoEnabled()) {
+          this.logger.info("Authentication failed for dn: " + dn);
+        }
+        if (authResultHandler != null && authResultHandler.length > 0) {
+          for (AuthenticationResultHandler ah : authResultHandler) {
+            ah.process(ac, false);
+          }
+        }
+        throw e;
+      }
+      // authentication succeeded, perform authorization if supplied
+      if (authzHandler != null && authzHandler.length > 0) {
+        for (AuthorizationHandler azh : authzHandler) {
           try {
-            final AuthenticationHandler authHandler =
-              this.config.getAuthenticationHandler().newInstance();
-            authHandler.authenticate(ch, ac);
+            azh.process(ac, ch.getLdapContext());
             if (this.logger.isInfoEnabled()) {
-              this.logger.info("Authentication succeeded for dn: " + dn);
+              this.logger.info(
+                "Authorization succeeded for dn: " + dn +
+                " with handler: " + azh);
             }
           } catch (AuthenticationException e) {
             if (this.logger.isInfoEnabled()) {
-              this.logger.info("Authentication failed for dn: " + dn);
+              this.logger.info(
+                "Authorization failed for dn: " + dn +
+                " with handler: " +azh);
             }
             if (authResultHandler != null && authResultHandler.length > 0) {
               for (AuthenticationResultHandler ah : authResultHandler) {
@@ -205,49 +202,21 @@ public abstract class AbstractAuthenticator
             }
             throw e;
           }
-          // authentication succeeded, perform authorization if supplied
-          if (authzHandler != null && authzHandler.length > 0) {
-            for (AuthorizationHandler azh : authzHandler) {
-              try {
-                azh.process(ac, ch.getLdapContext());
-                if (this.logger.isInfoEnabled()) {
-                  this.logger.info(
-                    "Authorization succeeded for dn: " + dn +
-                    " with handler: " + azh);
-                }
-              } catch (AuthenticationException e) {
-                if (this.logger.isInfoEnabled()) {
-                  this.logger.info(
-                    "Authorization failed for dn: " + dn +
-                    " with handler: " +azh);
-                }
-                if (authResultHandler != null && authResultHandler.length > 0) {
-                  for (AuthenticationResultHandler ah : authResultHandler) {
-                    ah.process(ac, false);
-                  }
-                }
-                throw e;
-              }
-            }
-          }
-          if (searchAttrs) {
-            if (this.logger.isDebugEnabled()) {
-              this.logger.debug("Returning attributes: ");
-              this.logger.debug(
-                "    " +
-                (retAttrs == null ?
-                  "all attributes" : Arrays.asList(retAttrs)));
-            }
-            userAttributes = ch.getLdapContext().getAttributes(dn, retAttrs);
-          }
-          if (authResultHandler != null && authResultHandler.length > 0) {
-            for (AuthenticationResultHandler ah : authResultHandler) {
-              ah.process(ac, true);
-            }
-          }
-          break;
-        } catch (NamingException e) {
-          this.operationRetry(ch.getLdapContext(), e, i);
+        }
+      }
+      if (searchAttrs) {
+        if (this.logger.isDebugEnabled()) {
+          this.logger.debug("Returning attributes: ");
+          this.logger.debug(
+            "    " +
+            (retAttrs == null ?
+              "all attributes" : Arrays.asList(retAttrs)));
+        }
+        userAttributes = ch.getLdapContext().getAttributes(dn, retAttrs);
+      }
+      if (authResultHandler != null && authResultHandler.length > 0) {
+        for (AuthenticationResultHandler ah : authResultHandler) {
+          ah.process(ac, true);
         }
       }
     } finally {
@@ -264,6 +233,5 @@ public abstract class AbstractAuthenticator
     if (this.config.getDnResolver() != null) {
       this.config.getDnResolver().close();
     }
-    super.close();
   }
 }

@@ -13,6 +13,7 @@
 */
 package edu.vt.middleware.ldap;
 
+import java.io.InputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -30,7 +31,8 @@ import edu.vt.middleware.ldap.handler.CompareAuthorizationHandler;
  * @author  Middleware Services
  * @version  $Revision$ $Date$
  */
-public class Authenticator extends AbstractAuthenticator implements Serializable
+public class Authenticator extends AbstractAuthenticator<AuthenticatorConfig>
+  implements Serializable
 {
 
   /** serial version uid. */
@@ -50,6 +52,40 @@ public class Authenticator extends AbstractAuthenticator implements Serializable
   public Authenticator(final AuthenticatorConfig authConfig)
   {
     this.setAuthenticatorConfig(authConfig);
+  }
+
+
+  /**
+   * This returns the <code>AuthenticatorConfig</code> of the <code>
+   * Authenticator</code>.
+   *
+   * @return  <code>AuthenticatorConfig</code>
+   */
+  public AuthenticatorConfig getAuthenticatorConfig()
+  {
+    return this.config;
+  }
+
+
+  /**
+   * This will set the config parameters of this <code>Authenticator</code>
+   * using the default properties file, which must be located in your classpath.
+   */
+  public void loadFromProperties()
+  {
+    this.setAuthenticatorConfig(AuthenticatorConfig.createFromProperties(null));
+  }
+
+
+  /**
+   * This will set the config parameters of this <code>Authenticator</code>
+   * using the supplied input stream.
+   *
+   * @param  is  <code>InputStream</code>
+   */
+  public void loadFromProperties(final InputStream is)
+  {
+    this.setAuthenticatorConfig(AuthenticatorConfig.createFromProperties(is));
   }
 
 
