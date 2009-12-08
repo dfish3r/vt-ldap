@@ -11,14 +11,16 @@
   Version: $Revision$
   Updated: $Date$
 */
-package edu.vt.middleware.ldap;
+package edu.vt.middleware.ldap.auth;
 
 import java.io.InputStream;
 import java.util.Arrays;
-import edu.vt.middleware.ldap.handler.AuthenticationHandler;
-import edu.vt.middleware.ldap.handler.AuthenticationResultHandler;
-import edu.vt.middleware.ldap.handler.AuthorizationHandler;
-import edu.vt.middleware.ldap.handler.BindAuthenticationHandler;
+import edu.vt.middleware.ldap.LdapConfig;
+import edu.vt.middleware.ldap.LdapConstants;
+import edu.vt.middleware.ldap.auth.handler.AuthenticationHandler;
+import edu.vt.middleware.ldap.auth.handler.AuthenticationResultHandler;
+import edu.vt.middleware.ldap.auth.handler.AuthorizationHandler;
+import edu.vt.middleware.ldap.auth.handler.BindAuthenticationHandler;
 import edu.vt.middleware.ldap.props.LdapProperties;
 import edu.vt.middleware.ldap.props.PropertyInvoker;
 

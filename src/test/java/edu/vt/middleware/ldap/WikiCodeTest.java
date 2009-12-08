@@ -18,6 +18,8 @@ import java.io.OutputStreamWriter;
 import java.util.Iterator;
 import javax.naming.directory.Attributes;
 import javax.naming.directory.SearchResult;
+import edu.vt.middleware.ldap.auth.Authenticator;
+import edu.vt.middleware.ldap.auth.AuthenticatorConfig;
 import edu.vt.middleware.ldap.dsml.Dsmlv1;
 import edu.vt.middleware.ldap.handler.AttributeHandler;
 import edu.vt.middleware.ldap.handler.BinaryAttributeHandler;

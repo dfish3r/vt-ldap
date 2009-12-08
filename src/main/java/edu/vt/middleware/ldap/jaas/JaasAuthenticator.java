@@ -15,10 +15,10 @@ package edu.vt.middleware.ldap.jaas;
 
 import javax.naming.NamingException;
 import javax.naming.directory.Attributes;
-import edu.vt.middleware.ldap.Authenticator;
-import edu.vt.middleware.ldap.AuthenticatorConfig;
-import edu.vt.middleware.ldap.handler.AuthenticationResultHandler;
-import edu.vt.middleware.ldap.handler.AuthorizationHandler;
+import edu.vt.middleware.ldap.auth.Authenticator;
+import edu.vt.middleware.ldap.auth.AuthenticatorConfig;
+import edu.vt.middleware.ldap.auth.handler.AuthenticationResultHandler;
+import edu.vt.middleware.ldap.auth.handler.AuthorizationHandler;
 
 /**
  * <code>JaasAuthenticator</code> is the default implementation for JAAS

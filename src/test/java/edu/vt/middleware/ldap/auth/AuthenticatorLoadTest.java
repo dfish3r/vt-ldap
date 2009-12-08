@@ -11,11 +11,15 @@
   Version: $Revision$
   Updated: $Date$
 */
-package edu.vt.middleware.ldap;
+package edu.vt.middleware.ldap.auth;
 
 import java.util.HashMap;
 import java.util.Map;
 import javax.naming.directory.Attributes;
+import edu.vt.middleware.ldap.Ldap;
+import edu.vt.middleware.ldap.LdapTLSSocketFactory;
+import edu.vt.middleware.ldap.SearchFilter;
+import edu.vt.middleware.ldap.TestUtil;
 import edu.vt.middleware.ldap.bean.LdapAttributes;
 import edu.vt.middleware.ldap.bean.LdapEntry;
 import org.testng.AssertJUnit;

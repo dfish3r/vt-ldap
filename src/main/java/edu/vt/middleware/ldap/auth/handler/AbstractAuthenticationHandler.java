@@ -11,10 +11,11 @@
   Version: $Revision$
   Updated: $Date$
 */
-package edu.vt.middleware.ldap.handler;
+package edu.vt.middleware.ldap.auth.handler;
 
 import javax.naming.NamingException;
-import edu.vt.middleware.ldap.AuthenticatorConfig;
+import edu.vt.middleware.ldap.auth.AuthenticatorConfig;
+import edu.vt.middleware.ldap.handler.ConnectionHandler;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 

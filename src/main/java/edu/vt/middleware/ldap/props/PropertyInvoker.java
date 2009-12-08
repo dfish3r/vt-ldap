@@ -20,11 +20,11 @@ import java.util.HashMap;
 import java.util.Map;
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLSocketFactory;
-import edu.vt.middleware.ldap.DnResolver;
 import edu.vt.middleware.ldap.LdapConfig;
-import edu.vt.middleware.ldap.handler.AuthenticationHandler;
-import edu.vt.middleware.ldap.handler.AuthenticationResultHandler;
-import edu.vt.middleware.ldap.handler.AuthorizationHandler;
+import edu.vt.middleware.ldap.auth.DnResolver;
+import edu.vt.middleware.ldap.auth.handler.AuthenticationHandler;
+import edu.vt.middleware.ldap.auth.handler.AuthenticationResultHandler;
+import edu.vt.middleware.ldap.auth.handler.AuthorizationHandler;
 import edu.vt.middleware.ldap.handler.ConnectionHandler;
 import edu.vt.middleware.ldap.handler.SearchResultHandler;
 

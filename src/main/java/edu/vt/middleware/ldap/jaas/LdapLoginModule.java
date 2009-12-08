@@ -31,7 +31,7 @@ import javax.security.auth.login.LoginContext;
 import javax.security.auth.login.LoginException;
 import javax.security.auth.spi.LoginModule;
 import com.sun.security.auth.callback.TextCallbackHandler;
-import edu.vt.middleware.ldap.Authenticator;
+import edu.vt.middleware.ldap.auth.Authenticator;
 
 /**
  * <code>LdapLoginModule</code> provides a JAAS authentication hook into LDAP

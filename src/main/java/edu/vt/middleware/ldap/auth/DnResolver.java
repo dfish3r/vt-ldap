@@ -11,7 +11,7 @@
   Version: $Revision$
   Updated: $Date$
 */
-package edu.vt.middleware.ldap;
+package edu.vt.middleware.ldap.auth;
 
 import javax.naming.NamingException;
 

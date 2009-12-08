@@ -11,18 +11,22 @@
   Version: $Revision$
   Updated: $Date$
 */
-package edu.vt.middleware.ldap;
+package edu.vt.middleware.ldap.auth;
 
 import javax.naming.AuthenticationException;
 import javax.naming.NamingException;
 import javax.naming.directory.Attributes;
+import edu.vt.middleware.ldap.Ldap;
+import edu.vt.middleware.ldap.LdapConstants;
+import edu.vt.middleware.ldap.SearchFilter;
+import edu.vt.middleware.ldap.TestUtil;
+import edu.vt.middleware.ldap.auth.handler.AuthenticationResultHandler;
+import edu.vt.middleware.ldap.auth.handler.AuthorizationHandler;
+import edu.vt.middleware.ldap.auth.handler.CompareAuthenticationHandler;
+import edu.vt.middleware.ldap.auth.handler.TestAuthenticationResultHandler;
+import edu.vt.middleware.ldap.auth.handler.TestAuthorizationHandler;
 import edu.vt.middleware.ldap.bean.LdapAttributes;
 import edu.vt.middleware.ldap.bean.LdapEntry;
-import edu.vt.middleware.ldap.handler.AuthenticationResultHandler;
-import edu.vt.middleware.ldap.handler.AuthorizationHandler;
-import edu.vt.middleware.ldap.handler.CompareAuthenticationHandler;
-import edu.vt.middleware.ldap.handler.TestAuthenticationResultHandler;
-import edu.vt.middleware.ldap.handler.TestAuthorizationHandler;
 import org.testng.AssertJUnit;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;

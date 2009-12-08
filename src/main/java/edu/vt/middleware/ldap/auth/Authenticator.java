@@ -11,7 +11,7 @@
   Version: $Revision$
   Updated: $Date$
 */
-package edu.vt.middleware.ldap;
+package edu.vt.middleware.ldap.auth;
 
 import java.io.InputStream;
 import java.io.Serializable;
@@ -20,9 +20,10 @@ import java.util.Arrays;
 import java.util.List;
 import javax.naming.NamingException;
 import javax.naming.directory.Attributes;
-import edu.vt.middleware.ldap.handler.AuthenticationResultHandler;
-import edu.vt.middleware.ldap.handler.AuthorizationHandler;
-import edu.vt.middleware.ldap.handler.CompareAuthorizationHandler;
+import edu.vt.middleware.ldap.SearchFilter;
+import edu.vt.middleware.ldap.auth.handler.AuthenticationResultHandler;
+import edu.vt.middleware.ldap.auth.handler.AuthorizationHandler;
+import edu.vt.middleware.ldap.auth.handler.CompareAuthorizationHandler;
 
 /**
  * <code>Authenticator</code> contains functions for authenticating a user

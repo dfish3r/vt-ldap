@@ -20,7 +20,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import edu.vt.middleware.ldap.Authenticator;
+import edu.vt.middleware.ldap.auth.Authenticator;
 import edu.vt.middleware.ldap.props.LdapProperties;
 
 /**

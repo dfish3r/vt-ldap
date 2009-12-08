@@ -11,10 +11,13 @@
   Version: $Revision$
   Updated: $Date$
 */
-package edu.vt.middleware.ldap;
+package edu.vt.middleware.ldap.auth;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
+import edu.vt.middleware.ldap.Ldap;
+import edu.vt.middleware.ldap.SearchFilter;
+import edu.vt.middleware.ldap.TestUtil;
 import edu.vt.middleware.ldap.bean.LdapEntry;
 import org.testng.AssertJUnit;
 import org.testng.annotations.AfterClass;

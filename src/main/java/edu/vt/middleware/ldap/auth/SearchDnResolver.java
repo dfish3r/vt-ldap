@@ -11,7 +11,7 @@
   Version: $Revision$
   Updated: $Date$
 */
-package edu.vt.middleware.ldap;
+package edu.vt.middleware.ldap.auth;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -19,6 +19,8 @@ import java.util.Iterator;
 import java.util.List;
 import javax.naming.NamingException;
 import javax.naming.directory.SearchResult;
+import edu.vt.middleware.ldap.AbstractLdap;
+import edu.vt.middleware.ldap.SearchFilter;
 
 /**
  * <code>SearchDnResolver</code> looks up a user's DN using an LDAP search.

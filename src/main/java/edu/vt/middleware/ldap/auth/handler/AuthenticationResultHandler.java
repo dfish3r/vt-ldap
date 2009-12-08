@@ -11,7 +11,7 @@
   Version: $Revision$
   Updated: $Date$
 */
-package edu.vt.middleware.ldap.handler;
+package edu.vt.middleware.ldap.auth.handler;
 
 /**
  * AuthenticationResultHandler provides post processing of authentication

@@ -19,6 +19,8 @@ import java.io.InputStreamReader;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
+import edu.vt.middleware.ldap.auth.Authenticator;
+import edu.vt.middleware.ldap.auth.NoopDnResolver;
 import edu.vt.middleware.ldap.bean.LdapAttributes;
 import edu.vt.middleware.ldap.bean.LdapEntry;
 import edu.vt.middleware.ldap.bean.LdapResult;

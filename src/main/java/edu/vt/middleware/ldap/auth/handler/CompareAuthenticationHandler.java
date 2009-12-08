@@ -11,7 +11,7 @@
   Version: $Revision$
   Updated: $Date$
 */
-package edu.vt.middleware.ldap.handler;
+package edu.vt.middleware.ldap.auth.handler;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -19,9 +19,10 @@ import javax.naming.AuthenticationException;
 import javax.naming.NamingEnumeration;
 import javax.naming.NamingException;
 import javax.naming.directory.SearchResult;
-import edu.vt.middleware.ldap.AuthenticatorConfig;
 import edu.vt.middleware.ldap.LdapConfig;
 import edu.vt.middleware.ldap.LdapUtil;
+import edu.vt.middleware.ldap.auth.AuthenticatorConfig;
+import edu.vt.middleware.ldap.handler.ConnectionHandler;
 
 /**
  * <code>CompareAuthenticationHandler</code> provides an LDAP authentication

@@ -11,16 +11,18 @@
   Version: $Revision$
   Updated: $Date$
 */
-package edu.vt.middleware.ldap;
+package edu.vt.middleware.ldap.auth;
 
 import java.util.Arrays;
 import javax.naming.AuthenticationException;
 import javax.naming.NamingException;
 import javax.naming.directory.Attributes;
-import edu.vt.middleware.ldap.handler.AuthenticationCriteria;
-import edu.vt.middleware.ldap.handler.AuthenticationHandler;
-import edu.vt.middleware.ldap.handler.AuthenticationResultHandler;
-import edu.vt.middleware.ldap.handler.AuthorizationHandler;
+import edu.vt.middleware.ldap.LdapConstants;
+import edu.vt.middleware.ldap.LdapUtil;
+import edu.vt.middleware.ldap.auth.handler.AuthenticationCriteria;
+import edu.vt.middleware.ldap.auth.handler.AuthenticationHandler;
+import edu.vt.middleware.ldap.auth.handler.AuthenticationResultHandler;
+import edu.vt.middleware.ldap.auth.handler.AuthorizationHandler;
 import edu.vt.middleware.ldap.handler.ConnectionHandler;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
