@@ -98,6 +98,10 @@ public abstract class AbstractAuthenticator<T extends AuthenticatorConfig>
       if (this.logger.isDebugEnabled()) {
         this.logger.debug("Authentication failed for dn: " + dn, e);
       }
+    } catch (AuthorizationException e) {
+      if (this.logger.isDebugEnabled()) {
+        this.logger.debug("Authorization failed for dn: " + dn, e);
+      }
     }
     return success;
   }
@@ -109,8 +113,8 @@ public abstract class AbstractAuthenticator<T extends AuthenticatorConfig>
    * LdapConfig#getAuthtype()} is set to 'none'. If retAttrs is null and
    * searchAttrs is true then all user attributes will be returned. If retAttrs
    * is an empty array and searchAttrs is true then no attributes will be
-   * returned. This method throws AuthenticationException if authentication or
-   * authorization fails.
+   * returned. This method throws AuthenticationException if authentication
+   * fails and AuthorizationException if authorization fails.
    *
    * @param  dn  <code>String</code> for bind
    * @param  credential  <code>Object</code> for bind
@@ -126,7 +130,8 @@ public abstract class AbstractAuthenticator<T extends AuthenticatorConfig>
    * null if searchAttrs is false
    *
    * @throws  NamingException  if any of the ldap operations fail
-   * @throws  AuthenticationException  if authentication or authorization fails
+   * @throws  AuthenticationException  if authentication fails
+   * @throws  AuthorizationException  if authorization fails
    */
   protected Attributes authenticateAndAuthorize(
     final String dn,

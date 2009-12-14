@@ -20,6 +20,7 @@ import edu.vt.middleware.ldap.Ldap;
 import edu.vt.middleware.ldap.LdapConstants;
 import edu.vt.middleware.ldap.SearchFilter;
 import edu.vt.middleware.ldap.TestUtil;
+import edu.vt.middleware.ldap.auth.AuthorizationException;
 import edu.vt.middleware.ldap.auth.handler.AuthenticationResultHandler;
 import edu.vt.middleware.ldap.auth.handler.AuthorizationHandler;
 import edu.vt.middleware.ldap.auth.handler.CompareAuthenticationHandler;
@@ -761,6 +762,19 @@ public class AuthenticatorTest
     } catch (Exception e) {
       AssertJUnit.assertEquals(e.getClass(), AuthenticationException.class);
     }
+
+    ldap.getAuthenticatorConfig().setAuthtype(LdapConstants.SIMPLE_AUTHTYPE);
+    try {
+      ldap.authenticate(
+        user,
+        credential,
+        new SearchFilter(INVALID_FILTER),
+        returnAttrs.split("\\|"));
+      AssertJUnit.fail("Should have thrown AuthorizationException");
+    } catch (Exception e) {
+      AssertJUnit.assertEquals(e.getClass(), AuthorizationException.class);
+    }
+
     ldap.close();
   }
 }

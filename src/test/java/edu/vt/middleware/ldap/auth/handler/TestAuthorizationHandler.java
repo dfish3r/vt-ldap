@@ -18,6 +18,7 @@ import java.util.List;
 import javax.naming.AuthenticationException;
 import javax.naming.NamingException;
 import javax.naming.ldap.LdapContext;
+import edu.vt.middleware.ldap.auth.AuthorizationException;
 
 /**
  * <code>TestAuthenticationResultHandler</code>.
@@ -40,7 +41,7 @@ public class TestAuthorizationHandler implements AuthorizationHandler
     throws NamingException
   {
     if (!succeed) {
-      throw new AuthenticationException("Succeed is false");
+      throw new AuthorizationException("Succeed is false");
     }
     this.results.add(ac.getDn());
   }

@@ -22,6 +22,7 @@ import javax.naming.directory.SearchResult;
 import javax.naming.ldap.LdapContext;
 import edu.vt.middleware.ldap.LdapConfig;
 import edu.vt.middleware.ldap.SearchFilter;
+import edu.vt.middleware.ldap.auth.AuthorizationException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -100,7 +101,7 @@ public class CompareAuthorizationHandler implements AuthorizationHandler
         filterArgs.toArray(),
         LdapConfig.getCompareSearchControls());
       if (!results.hasMore()) {
-        throw new AuthenticationException("Compare failed");
+        throw new AuthorizationException("Compare failed");
       }
     } finally {
       if (results != null) {
