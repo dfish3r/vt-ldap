@@ -15,7 +15,6 @@ package edu.vt.middleware.ldap.auth.handler;
 
 import java.util.ArrayList;
 import java.util.List;
-import javax.naming.AuthenticationException;
 import javax.naming.NamingException;
 import javax.naming.ldap.LdapContext;
 import edu.vt.middleware.ldap.auth.AuthorizationException;
