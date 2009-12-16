@@ -185,6 +185,9 @@ public class LdapConfig extends AbstractPropertyConfig
   /** Amount of time in milliseconds to wait before retrying. */
   private Long operationRetryWait;
 
+  /** Factor to multiply operation retry wait by. */
+  private Integer operationRetryBackoff;
+
   /** Whether link dereferencing should be performed during the search. */
   private boolean derefLinkFlag;
 
@@ -774,6 +777,24 @@ public class LdapConfig extends AbstractPropertyConfig
       wait = this.operationRetryWait.intValue();
     }
     return wait;
+  }
+
+
+  /**
+   * This returns the factor by which to multiply the operation retry wait
+   * time. This allows clients to progressively delay each retry. The formula
+   * for backoff is (wait * backoff * attempt). So a wait time of 2s with a
+   * backoff of 3 will delay by 6s, then 12s, then 18s, and so forth.
+   *
+   * @return  <code>int</code> - backoff factor
+   */
+  public int getOperationRetryBackoff()
+  {
+    int backoff = LdapConstants.DEFAULT_OPERATION_RETRY_BACKOFF;
+    if (this.operationRetryBackoff != null) {
+      backoff = this.operationRetryBackoff.intValue();
+    }
+    return backoff;
   }
 
 
@@ -1395,6 +1416,24 @@ public class LdapConfig extends AbstractPropertyConfig
       this.logger.trace("setting operationRetryWait: " + wait);
     }
     this.operationRetryWait = new Long(wait);
+  }
+
+
+  /**
+   * This sets the factor by which to multiply the operation retry wait
+   * time. This allows clients to progressively delay each retry.  The formula
+   * for backoff is (wait * backoff * attempt). So a wait time of 2s with a
+   * backoff of 3 will delay by 6s, then 12s, then 18s, and so forth.
+   *
+   * @param  backoff  <code>int</code>
+   */
+  public void setOperationRetryBackoff(final int backoff)
+  {
+    checkImmutable();
+    if (this.logger.isTraceEnabled()) {
+      this.logger.trace("setting operationRetryBackoff: " + backoff);
+    }
+    this.operationRetryBackoff = new Integer(backoff);
   }
 
 

@@ -317,8 +317,8 @@ public final class LdapConstants
 
   /**
    * Whether Authenticator should throw an exception if multiple DNs are found
-   * by {@link Authenticator#getDn(String)}. The value of this constant is
-   * {@value}.
+   * by {@link edu.vt.middleware.ldap.auth.Authenticator#getDn(String)}.
+   * The value of this constant is {@value}.
    */
   public static final boolean DEFAULT_ALLOW_MULTIPLE_DNS = false;
 
@@ -339,6 +339,12 @@ public final class LdapConstants
    * of this constant is {@value}.
    */
   public static final long DEFAULT_OPERATION_RETRY_WAIT = 0;
+
+  /**
+   * Default factor to multiply the operation retry wait by.
+   * The value of this constant is {@value}.
+   */
+  public static final int DEFAULT_OPERATION_RETRY_BACKOFF = 0;
 
 
   /** Default constructor. */

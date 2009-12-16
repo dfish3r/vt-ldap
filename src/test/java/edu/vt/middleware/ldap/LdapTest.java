@@ -666,13 +666,24 @@ public class LdapTest
   public void searchWithRetry()
     throws Exception
   {
-    final Ldap ldap = this.createLdap(true);
-
-    // test retry searching
-    ldap.getLdapConfig().setOperationRetry(3);
+    final RetryLdap ldap = new RetryLdap();
+    ldap.setLdapConfig(this.createLdap(true).getLdapConfig());
     ldap.getLdapConfig().setOperationRetryExceptions(
       new Class[] {InvalidSearchFilterException.class});
-    ldap.getLdapConfig().setOperationRetryWait(1000);
+
+    // test defaults
+    try {
+      ldap.search(new SearchFilter("(("));
+    } catch (InvalidSearchFilterException e) {
+      AssertJUnit.assertEquals(
+        InvalidSearchFilterException.class, e.getClass());
+    }
+    AssertJUnit.assertEquals(1, ldap.getRetryCount());
+    AssertJUnit.assertTrue(ldap.getRunTime() < 50);
+
+    // test no retry
+    ldap.reset();
+    ldap.getLdapConfig().setOperationRetry(0);
 
     try {
       ldap.search(new SearchFilter("(("));
@@ -680,6 +691,63 @@ public class LdapTest
       AssertJUnit.assertEquals(
         InvalidSearchFilterException.class, e.getClass());
     }
+    AssertJUnit.assertEquals(0, ldap.getRetryCount());
+    AssertJUnit.assertEquals(0, ldap.getRunTime());
+
+    // test no exception
+    ldap.reset();
+    ldap.getLdapConfig().setOperationRetry(1);
+    ldap.getLdapConfig().setOperationRetryExceptions(null);
+
+    try {
+      ldap.search(new SearchFilter("(("));
+    } catch (InvalidSearchFilterException e) {
+      AssertJUnit.assertEquals(
+        InvalidSearchFilterException.class, e.getClass());
+    }
+    AssertJUnit.assertEquals(0, ldap.getRetryCount());
+    AssertJUnit.assertEquals(0, ldap.getRunTime());
+
+    // test retry count and wait time
+    ldap.reset();
+    ldap.getLdapConfig().setOperationRetry(3);
+    ldap.getLdapConfig().setOperationRetryWait(1000);
+    ldap.getLdapConfig().setOperationRetryExceptions(
+      new Class[] {InvalidSearchFilterException.class});
+
+    try {
+      ldap.search(new SearchFilter("(("));
+    } catch (InvalidSearchFilterException e) {
+      AssertJUnit.assertEquals(
+        InvalidSearchFilterException.class, e.getClass());
+    }
+    AssertJUnit.assertEquals(3, ldap.getRetryCount());
+    AssertJUnit.assertTrue(ldap.getRunTime() % 3000 < 30);
+
+    // test backoff interval
+    ldap.reset();
+    ldap.getLdapConfig().setOperationRetryBackoff(2);
+    try {
+      ldap.search(new SearchFilter("(("));
+    } catch (InvalidSearchFilterException e) {
+      AssertJUnit.assertEquals(
+        InvalidSearchFilterException.class, e.getClass());
+    }
+    AssertJUnit.assertEquals(3, ldap.getRetryCount());
+    AssertJUnit.assertTrue(ldap.getRunTime() % 7000 < 70);
+
+    // test infinite retries
+    ldap.reset();
+    ldap.setStopCount(10);
+    ldap.getLdapConfig().setOperationRetry(-1);
+    try {
+      ldap.search(new SearchFilter("(("));
+    } catch (InvalidSearchFilterException e) {
+      AssertJUnit.assertEquals(
+        InvalidSearchFilterException.class, e.getClass());
+    }
+    AssertJUnit.assertEquals(10, ldap.getRetryCount());
+    AssertJUnit.assertTrue(ldap.getRunTime() % 111000 < 111);
 
     ldap.close();
   }
