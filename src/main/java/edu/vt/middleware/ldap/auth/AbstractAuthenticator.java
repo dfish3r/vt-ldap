@@ -110,10 +110,10 @@ public abstract class AbstractAuthenticator<T extends AuthenticatorConfig>
   /**
    * This will authenticate by binding to the LDAP with the supplied dn and
    * credential. Authentication will never succeed if {@link
-   * LdapConfig#getAuthtype()} is set to 'none'. If retAttrs is null and
-   * searchAttrs is true then all user attributes will be returned. If retAttrs
-   * is an empty array and searchAttrs is true then no attributes will be
-   * returned. This method throws AuthenticationException if authentication
+   * AuthenticatorConfig#getAuthtype()} is set to 'none'. If retAttrs is null
+   * and searchAttrs is true then all user attributes will be returned. If
+   * retAttrs is an empty array and searchAttrs is true then no attributes will
+   * be returned. This method throws AuthenticationException if authentication
    * fails and AuthorizationException if authorization fails.
    *
    * @param  dn  <code>String</code> for bind
@@ -234,7 +234,7 @@ public abstract class AbstractAuthenticator<T extends AuthenticatorConfig>
   }
 
 
-  /** {@inheritDoc} */
+  /** This will close the connection on the underlyng DN resolver. */
   public synchronized void close()
   {
     if (this.config.getDnResolver() != null) {
