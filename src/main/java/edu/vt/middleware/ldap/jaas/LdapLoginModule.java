@@ -43,6 +43,9 @@ import edu.vt.middleware.ldap.auth.Authenticator;
 public class LdapLoginModule extends AbstractLoginModule implements LoginModule
 {
 
+  /** Default roles. */
+  private List<LdapRole> defaultRole = new ArrayList<LdapRole>();
+
   /** User attribute to add to role data. */
   private String[] userRoleAttribute = new String[0];
 
@@ -67,7 +70,11 @@ public class LdapLoginModule extends AbstractLoginModule implements LoginModule
     while (i.hasNext()) {
       final String key = i.next();
       final String value = (String) options.get(key);
-      if (key.equalsIgnoreCase("userRoleAttribute")) {
+      if (key.equalsIgnoreCase("defaultRole")) {
+        for (String s : value.split(",")) {
+          this.defaultRole.add(new LdapRole(s));
+        }
+      } else if (key.equalsIgnoreCase("userRoleAttribute")) {
         if (value.equals("*")) {
           this.userRoleAttribute = null;
         } else {
@@ -111,6 +118,9 @@ public class LdapLoginModule extends AbstractLoginModule implements LoginModule
           passCb.getPassword(),
           this.userRoleAttribute);
         roles.addAll(this.attributesToRoles(attrs));
+        if (this.defaultRole != null && !this.defaultRole.isEmpty()) {
+          roles.addAll(this.defaultRole);
+        }
         this.success = true;
       } catch (AuthenticationException e) {
         if (this.tryFirstPass) {
@@ -121,6 +131,9 @@ public class LdapLoginModule extends AbstractLoginModule implements LoginModule
               passCb.getPassword(),
               this.userRoleAttribute);
             roles.addAll(this.attributesToRoles(attrs));
+            if (this.defaultRole != null && !this.defaultRole.isEmpty()) {
+              roles.addAll(this.defaultRole);
+            }
             this.success = true;
           } catch (AuthenticationException e2) {
             authEx = e;

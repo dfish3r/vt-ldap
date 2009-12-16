@@ -239,7 +239,7 @@ public class LdapLoginModuleTest
    *
    * @throws  Exception  On test failure.
    */
-  @Parameters({ "jaasDn", "jaasUser", "jaasUserRole", "jaasCredential" })
+  @Parameters({ "jaasDn", "jaasUser", "jaasUserRoleDefault", "jaasCredential" })
   @Test(groups = {"jaastest"})
   public void useFirstContextTest(
     final String dn,
