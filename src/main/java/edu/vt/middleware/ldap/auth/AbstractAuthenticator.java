@@ -217,7 +217,7 @@ public abstract class AbstractAuthenticator<T extends AuthenticatorConfig>
           this.logger.debug(
             "    " +
             (retAttrs == null ?
-              "all attributes" : Arrays.asList(retAttrs)));
+              "all attributes" : Arrays.toString(retAttrs)));
         }
         userAttributes = ch.getLdapContext().getAttributes(dn, retAttrs);
       }

@@ -272,9 +272,7 @@ public class AuthenticatorConfig extends LdapConfig
   {
     checkImmutable();
     if (this.logger.isTraceEnabled()) {
-      this.logger.trace(
-        "setting userField: " +
-        (userField == null ? "null" : Arrays.asList(userField)));
+      this.logger.trace("setting userField: " + Arrays.toString(userField));
     }
     this.userField = userField;
   }
@@ -306,8 +304,7 @@ public class AuthenticatorConfig extends LdapConfig
     checkImmutable();
     if (this.logger.isTraceEnabled()) {
       this.logger.trace(
-        "setting userFilterArgs: " +
-        (userFilterArgs == null ? "null" : Arrays.asList(userFilterArgs)));
+        "setting userFilterArgs: " + Arrays.toString(userFilterArgs));
     }
     this.userFilterArgs = userFilterArgs;
   }
@@ -375,8 +372,7 @@ public class AuthenticatorConfig extends LdapConfig
     if (this.logger.isTraceEnabled()) {
       this.logger.trace(
         "setting authorizationFilterArgs: " +
-        (authorizationFilterArgs == null
-          ? "null" : Arrays.asList(authorizationFilterArgs)));
+        Arrays.toString(authorizationFilterArgs));
     }
     this.authorizationFilterArgs = authorizationFilterArgs;
   }

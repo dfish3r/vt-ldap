@@ -189,7 +189,7 @@ public class RecursiveSearchResultHandler extends CopySearchResultHandler
       } catch (NamingException e) {
         if (this.logger.isWarnEnabled()) {
           this.logger.warn(
-            "Error retreiving attribute(s): " + Arrays.asList(this.retAttrs),
+            "Error retreiving attribute(s): " + Arrays.toString(this.retAttrs),
             e);
         }
       }

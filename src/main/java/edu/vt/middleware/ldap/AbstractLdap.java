@@ -118,9 +118,7 @@ public abstract class AbstractLdap<T extends LdapConfig> implements BaseLdap
       this.logger.debug("Compare with the following parameters:");
       this.logger.debug("  dn = " + dn);
       this.logger.debug("  filter = " + filter);
-      this.logger.debug(
-        "  filterArgs = " +
-        (filterArgs == null ? "none" : Arrays.asList(filterArgs)));
+      this.logger.debug("  filterArgs = " + Arrays.toString(filterArgs));
       if (this.logger.isTraceEnabled()) {
         this.logger.trace("  config = " + this.config.getEnvironment());
       }
@@ -193,12 +191,9 @@ public abstract class AbstractLdap<T extends LdapConfig> implements BaseLdap
       this.logger.debug("Search with the following parameters:");
       this.logger.debug("  dn = " + dn);
       this.logger.debug("  filter = " + filter);
-      this.logger.debug(
-        "  filterArgs = " +
-        (filterArgs == null ? "none" : Arrays.asList(filterArgs)));
+      this.logger.debug("  filterArgs = " + Arrays.toString(filterArgs));
       this.logger.debug("  searchControls = " + searchControls);
-      this.logger.debug(
-        "  handler = " + (handler == null ? "null" : Arrays.asList(handler)));
+      this.logger.debug("  handler = " + Arrays.toString(handler));
       if (this.logger.isTraceEnabled()) {
         this.logger.trace("  config = " + this.config.getEnvironment());
       }
@@ -291,12 +286,9 @@ public abstract class AbstractLdap<T extends LdapConfig> implements BaseLdap
       this.logger.debug("Paginated search with the following parameters:");
       this.logger.debug("  dn = " + dn);
       this.logger.debug("  filter = " + filter);
-      this.logger.debug(
-        "  filterArgs = " +
-        (filterArgs == null ? "none" : Arrays.asList(filterArgs)));
+      this.logger.debug("  filterArgs = " + Arrays.toString(filterArgs));
       this.logger.debug("  searchControls = " + searchControls);
-      this.logger.debug(
-        "  handler = " + (handler == null ? "null" : Arrays.asList(handler)));
+      this.logger.debug("  handler = " + Arrays.toString(handler));
       if (this.logger.isTraceEnabled()) {
         this.logger.trace("  config = " + this.config.getEnvironment());
       }
@@ -429,9 +421,8 @@ public abstract class AbstractLdap<T extends LdapConfig> implements BaseLdap
       this.logger.debug("  matchAttrs = " + matchAttrs);
       this.logger.debug(
         "  retAttrs = " +
-        (retAttrs == null ? "all attributes" : Arrays.asList(retAttrs)));
-      this.logger.debug(
-        "  handler = " + (handler == null ? "null" : Arrays.asList(handler)));
+        (retAttrs == null ? "all attributes" : Arrays.toString(retAttrs)));
+      this.logger.debug("  handler = " + Arrays.toString(handler));
       if (this.logger.isTraceEnabled()) {
         this.logger.trace("  config = " + this.config.getEnvironment());
       }
@@ -630,9 +621,8 @@ public abstract class AbstractLdap<T extends LdapConfig> implements BaseLdap
       this.logger.debug("  dn = " + dn);
       this.logger.debug(
         "  retAttrs = " +
-        (retAttrs == null ? "all attributes" : Arrays.asList(retAttrs)));
-      this.logger.debug(
-        "  handler = " + (handler == null ? "null" : Arrays.asList(handler)));
+        (retAttrs == null ? "all attributes" : Arrays.toString(retAttrs)));
+      this.logger.debug("  handler = " + Arrays.toString(handler));
       if (this.logger.isTraceEnabled()) {
         this.logger.trace("  config = " + this.config.getEnvironment());
       }
@@ -810,8 +800,7 @@ public abstract class AbstractLdap<T extends LdapConfig> implements BaseLdap
     if (this.logger.isDebugEnabled()) {
       this.logger.debug("Modifiy attributes with the following parameters:");
       this.logger.debug("  dn = " + dn);
-      this.logger.debug(
-        "  mods = " + (mods == null ? "null" : Arrays.asList(mods)));
+      this.logger.debug("  mods = " + Arrays.toString(mods));
       if (this.logger.isTraceEnabled()) {
         this.logger.trace("  config = " + this.config.getEnvironment());
       }

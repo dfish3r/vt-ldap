@@ -85,9 +85,7 @@ public class LdapLoginModule extends AbstractLoginModule implements LoginModule
 
     if (this.logger.isDebugEnabled()) {
       this.logger.debug(
-        "userRoleAttribute = " +
-        (this.userRoleAttribute == null
-          ? "null" : Arrays.asList(this.userRoleAttribute)));
+        "userRoleAttribute = " + Arrays.toString(this.userRoleAttribute));
     }
 
     this.auth = createAuthenticator(options);

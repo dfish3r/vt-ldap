@@ -1396,8 +1396,7 @@ public class LdapConfig extends AbstractPropertyConfig
     checkImmutable();
     if (this.logger.isTraceEnabled()) {
       this.logger.trace(
-        "setting operationRetryExceptions: " +
-        (exceptions == null ? "null" : Arrays.asList(exceptions)));
+        "setting operationRetryExceptions: " + Arrays.toString(exceptions));
     }
     this.operationRetryExceptions = exceptions;
   }
@@ -1586,8 +1585,7 @@ public class LdapConfig extends AbstractPropertyConfig
     checkImmutable();
     if (this.logger.isTraceEnabled()) {
       this.logger.trace(
-        "setting searchResultsHandlers: " +
-        (handlers == null ? "null" : Arrays.asList(handlers)));
+        "setting searchResultsHandlers: " + Arrays.toString(handlers));
     }
     this.searchResultHandlers = handlers;
   }
@@ -1603,8 +1601,7 @@ public class LdapConfig extends AbstractPropertyConfig
     checkImmutable();
     if (this.logger.isTraceEnabled()) {
       this.logger.trace(
-        "setting handlerIgnoreExceptions: " +
-        (exceptions == null ? "null" : Arrays.asList(exceptions)));
+        "setting handlerIgnoreExceptions: " + Arrays.toString(exceptions));
     }
     this.handlerIgnoreExceptions = exceptions;
   }

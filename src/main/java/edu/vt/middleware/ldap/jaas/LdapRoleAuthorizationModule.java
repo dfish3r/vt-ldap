@@ -90,9 +90,7 @@ public class LdapRoleAuthorizationModule extends AbstractLoginModule
     if (this.logger.isDebugEnabled()) {
       this.logger.debug("roleFilter = " + this.roleFilter);
       this.logger.debug(
-        "roleAttribute = " +
-        (this.roleAttribute == null ? "null"
-                                    : Arrays.asList(this.roleAttribute)));
+        "roleAttribute = " + Arrays.toString(this.roleAttribute));
       this.logger.debug("recursionAttribute = " + this.recursionAttribute);
     }
 
