@@ -957,8 +957,8 @@ public abstract class AbstractLdap<T extends LdapConfig> implements BaseLdap
   /**
    * This will establish a connection if one does not already exist by binding
    * to the LDAP using parameters given by {@link
-   * LdapConfig#setServiceUser(String)} and {@link
-   * LdapConfig#setServiceCredential(Object)}. If these parameters have not been
+   * LdapConfig#getBindDn()} and {@link
+   * LdapConfig#getBindCredential()}. If these parameters have not been
    * set then an anonymous bind will be attempted. This connection must be
    * closed using {@link #close}. Any method which requires an LDAP connection
    * will call this method independently. This method should only be used if you
@@ -979,7 +979,7 @@ public abstract class AbstractLdap<T extends LdapConfig> implements BaseLdap
       success = true;
     } else {
       this.connectionHandler.connect(
-        this.config.getServiceUser(), this.config.getServiceCredential());
+        this.config.getBindDn(), this.config.getBindCredential());
       success = true;
     }
     return success;

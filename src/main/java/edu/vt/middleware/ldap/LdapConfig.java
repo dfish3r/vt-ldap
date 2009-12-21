@@ -143,11 +143,11 @@ public class LdapConfig extends AbstractPropertyConfig
   /** Amount of time in milliseconds that connect operations will block. */
   private Integer timeout;
 
-  /** Username for a service user, this must be a fully qualified DN. */
-  private String serviceUser;
+  /** DN to bind as before performing operations. */
+  private String bindDn;
 
-  /** Credential for a service user. */
-  private Object serviceCredential;
+  /** Credential for the bind DN. */
+  private Object bindCredential;
 
   /** Base dn for LDAP searching. */
   private String base = LdapConstants.DEFAULT_BASE_DN;
@@ -475,13 +475,38 @@ public class LdapConfig extends AbstractPropertyConfig
 
 
   /**
+   * This returns the bind DN.
+   *
+   * @return  <code>String</code> - DN to bind as
+   */
+  public String getBindDn()
+  {
+    return this.bindDn;
+  }
+
+
+  /**
    * This returns the username of the service user.
    *
    * @return  <code>String</code> - username
+   *
+   * @deprecated  use {@link #getBindDn()} instead
    */
+  @Deprecated
   public String getServiceUser()
   {
-    return this.serviceUser;
+    return this.getBindDn();
+  }
+
+
+  /**
+   * This returns the credential used with the bind DN.
+   *
+   * @return  <code>Object</code> - bind DN credential
+   */
+  public Object getBindCredential()
+  {
+    return this.bindCredential;
   }
 
 
@@ -489,10 +514,13 @@ public class LdapConfig extends AbstractPropertyConfig
    * This returns the credential of the service user.
    *
    * @return  <code>Object</code> - credential
+   *
+   * @deprecated  use {@link #getBindCredential()} instead
    */
+  @Deprecated
   public Object getServiceCredential()
   {
-    return this.serviceCredential;
+    return this.getBindCredential();
   }
 
 
@@ -1211,19 +1239,52 @@ public class LdapConfig extends AbstractPropertyConfig
 
 
   /**
+   * This sets the bind DN to authenticate as before performing operations.
+   *
+   * @param  dn  <code>String</code> bind DN
+   */
+  public void setBindDn(final String dn)
+  {
+    checkImmutable();
+    checkStringInput(dn, true);
+    if (this.logger.isTraceEnabled()) {
+      this.logger.trace("setting bindDn: " + dn);
+    }
+    this.bindDn = dn;
+  }
+
+
+  /**
    * This sets the username of the service user. user must be a fully qualified
    * DN.
    *
    * @param  user  <code>String</code> username
+   *
+   * @deprecated  use {@link #setBindDn(String)} instead
    */
+  @Deprecated
   public void setServiceUser(final String user)
   {
+    this.setBindDn(user);
+  }
+
+
+  /**
+   * This sets the credential of the bind DN.
+   *
+   * @param  credential  <code>Object</code>
+   */
+  public void setBindCredential(final Object credential)
+  {
     checkImmutable();
-    checkStringInput(user, true);
     if (this.logger.isTraceEnabled()) {
-      this.logger.trace("setting serviceUser: " + user);
+      if (this.getLogCredentials()) {
+        this.logger.trace("setting bindCredential: " + credential);
+      } else {
+        this.logger.trace("setting bindCredential: <suppressed>");
+      }
     }
-    this.serviceUser = user;
+    this.bindCredential = credential;
   }
 
 
@@ -1231,18 +1292,13 @@ public class LdapConfig extends AbstractPropertyConfig
    * This sets the credential of the service user.
    *
    * @param  credential  <code>Object</code>
+   *
+   * @deprecated  use {@link #setBindCredential(Object)} instead
    */
+  @Deprecated
   public void setServiceCredential(final Object credential)
   {
-    checkImmutable();
-    if (this.logger.isTraceEnabled()) {
-      if (this.getLogCredentials()) {
-        this.logger.trace("setting serviceCredential: " + credential);
-      } else {
-        this.logger.trace("setting serviceCredential: <suppressed>");
-      }
-    }
-    this.serviceCredential = credential;
+    this.setBindCredential(credential);
   }
 
 
@@ -1252,13 +1308,15 @@ public class LdapConfig extends AbstractPropertyConfig
    *
    * @param  user  <code>String</code> service user dn
    * @param  credential  <code>Object</code>
+   *
+   * @deprecated  use {@link #setBindDn(String)} and
+   * {@link #setBindCredential(Object)} instead
    */
+  @Deprecated
   public void setService(final String user, final Object credential)
   {
-    checkImmutable();
-    checkStringInput(user, true);
-    this.setServiceUser(user);
-    this.setServiceCredential(credential);
+    this.setBindDn(user);
+    this.setBindCredential(credential);
   }
 
 

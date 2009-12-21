@@ -3,6 +3,8 @@ authtype:type of authentication (none|simple|strong)
 base:base dn
 batchSize:result batch size
 binaryAttributes:space delimited list of binary attributes
+bindCredential:password for the bindDn
+bindDn:fully qualified dn to bind as
 countLimit:maximum number of entries to return
 derefAliases:how to handle aliases (always|never|finding|searching)
 derefLinkFlag:whether to force dereferencing (true|false)
@@ -14,8 +16,6 @@ ldapUrl:URL that identifies the LDAP server to search
 referral:how to handle referrals (throw|ignore|follow)
 searchResultHandlers:comma delimited list of search result handlers to use
 searchScope:scope of the search (0:object|1:one level|2: subtree)
-serviceCredential:password for the serviceUser
-serviceUser:fully qualified dn to bind as
 ssl:whether to use ssl (true|false)
 sslSocketFactory:fully qualified class name which implements SSLSocketFactory
 timeout: amount of time in milliseconds that connect operations will block

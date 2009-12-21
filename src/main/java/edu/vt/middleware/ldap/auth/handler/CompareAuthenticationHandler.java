@@ -97,7 +97,7 @@ public class CompareAuthenticationHandler extends AbstractAuthenticationHandler
     }
 
     ch.connect(
-      this.config.getServiceUser(), this.config.getServiceCredential());
+      this.config.getBindDn(), this.config.getBindCredential());
     NamingEnumeration<SearchResult> en = null;
     try {
       en = ch.getLdapContext().search(

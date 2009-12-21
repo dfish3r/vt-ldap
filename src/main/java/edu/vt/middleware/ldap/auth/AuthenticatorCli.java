@@ -80,15 +80,15 @@ public class AuthenticatorCli extends AbstractCli
       config.setTracePackets(System.out);
     }
     if (
-      config.getServiceUser() != null &&
-        config.getServiceCredential() == null) {
+      config.getBindDn() != null &&
+        config.getBindCredential() == null) {
       // prompt the user to enter a password
       System.out.print(
-        "Enter password for service user " + config.getServiceUser() + ": ");
+        "Enter password for service user " + config.getBindDn() + ": ");
 
       final String pass = (new BufferedReader(new InputStreamReader(System.in)))
           .readLine();
-      config.setServiceCredential(pass);
+      config.setBindCredential(pass);
     }
     if (config.getUser() == null) {
       // prompt for a user name
