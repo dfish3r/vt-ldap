@@ -44,6 +44,7 @@ import edu.vt.middleware.ldap.handler.EntryDnSearchResultHandler;
 import edu.vt.middleware.ldap.handler.FqdnSearchResultHandler;
 import edu.vt.middleware.ldap.handler.MergeSearchResultHandler;
 import edu.vt.middleware.ldap.handler.RecursiveAttributeHandler;
+import edu.vt.middleware.ldap.handler.RecursiveSearchResultHandler;
 import edu.vt.middleware.ldap.handler.SearchResultHandler;
 import edu.vt.middleware.ldap.ldif.Ldif;
 import org.testng.AssertJUnit;
@@ -443,11 +444,11 @@ public class LdapTest
       "recursiveSearchDn",
       "recursiveSearchFilter",
       "recursiveSearchFilterArgs",
-      "recursiveSearchResults"
+      "recursiveAttributeHandlerResults"
     }
   )
   @Test(groups = {"ldaptest"})
-  public void recursiveSearch(
+  public void recursiveAttributeHandlerSearch(
     final String dn,
     final String filter,
     final String filterArgs,
@@ -469,6 +470,51 @@ public class LdapTest
       new SearchFilter(filter, filterArgs.split("\\|")),
       (String[]) null,
       handler);
+    AssertJUnit.assertEquals(
+      entry,
+      TestUtil.convertLdifToEntry((new Ldif()).createLdif(iter)));
+  }
+
+
+  /**
+   * @param  dn  to search on.
+   * @param  filter  to search with.
+   * @param  filterArgs  to replace args in filter with.
+   * @param  ldifFile  to compare with
+   *
+   * @throws  Exception  On test failure.
+   */
+  @Parameters(
+    {
+      "recursiveSearchDn",
+      "recursiveSearchFilter",
+      "recursiveSearchFilterArgs",
+      "recursiveSearchResultHandlerResults"
+    }
+  )
+  @Test(groups = {"ldaptest"})
+  public void recursiveSearchResultHandlerSearch(
+    final String dn,
+    final String filter,
+    final String filterArgs,
+    final String ldifFile)
+    throws Exception
+  {
+    final Ldap ldap = this.createLdap(false);
+
+    final String expected = TestUtil.readFileIntoString(ldifFile);
+    final LdapEntry entry = TestUtil.convertLdifToEntry(expected);
+
+    // test recursive searching
+    final FqdnSearchResultHandler fsrh = new FqdnSearchResultHandler();
+    final RecursiveSearchResultHandler rsrh = new RecursiveSearchResultHandler(
+      ldap, "member", new String[]{"uugid", "uid"});
+
+    final Iterator<SearchResult> iter = ldap.search(
+      dn,
+      new SearchFilter(filter, filterArgs.split("\\|")),
+      (String[]) null,
+      fsrh, rsrh);
     AssertJUnit.assertEquals(
       entry,
       TestUtil.convertLdifToEntry((new Ldif()).createLdif(iter)));

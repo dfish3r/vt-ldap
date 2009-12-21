@@ -13,11 +13,15 @@
 */
 package edu.vt.middleware.ldap.jaas;
 
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Set;
 import javax.security.auth.login.LoginContext;
 import javax.security.auth.login.LoginException;
+import edu.vt.middleware.ldap.AttributesFactory;
 import edu.vt.middleware.ldap.Ldap;
+import edu.vt.middleware.ldap.Ldap.AttributeModification;
 import edu.vt.middleware.ldap.SearchFilter;
 import edu.vt.middleware.ldap.TestUtil;
 import edu.vt.middleware.ldap.bean.LdapEntry;
@@ -41,6 +45,19 @@ public class LdapLoginModuleTest
 
   /** Entry created for auth tests. */
   private static LdapEntry testLdapEntry;
+
+  /** Entries for group tests. */
+  private static Map<String, LdapEntry[]> groupEntries =
+    new HashMap<String, LdapEntry[]>();
+
+  /**
+   * Initialize the map of group entries.
+   */
+  static {
+    for (int i = 6; i <= 9; i++) {
+      groupEntries.put(String.valueOf(i), new LdapEntry[2]);
+    }
+  }
 
 
   /**
@@ -81,6 +98,86 @@ public class LdapLoginModuleTest
   }
 
 
+  /**
+   * @param  ldifFile6  to create.
+   * @param  ldifFile7  to create.
+   * @param  ldifFile8  to create.
+   * @param  ldifFile9  to create.
+   *
+   * @throws  Exception  On test failure.
+   */
+  @Parameters(
+    {
+      "createGroup6",
+      "createGroup7",
+      "createGroup8",
+      "createGroup9"
+    }
+  )
+  @BeforeClass(groups = {"jaastest"})
+  public void createGroupEntry(
+    final String ldifFile6,
+    final String ldifFile7,
+    final String ldifFile8,
+    final String ldifFile9)
+    throws Exception
+  {
+    groupEntries.get("6")[0] = TestUtil.convertLdifToEntry(
+      TestUtil.readFileIntoString(ldifFile6));
+    groupEntries.get("7")[0] = TestUtil.convertLdifToEntry(
+      TestUtil.readFileIntoString(ldifFile7));
+    groupEntries.get("8")[0] = TestUtil.convertLdifToEntry(
+      TestUtil.readFileIntoString(ldifFile8));
+    groupEntries.get("9")[0] = TestUtil.convertLdifToEntry(
+      TestUtil.readFileIntoString(ldifFile9));
+
+    Ldap ldap = TestUtil.createSetupLdap();
+    for (Map.Entry<String, LdapEntry[]> e : groupEntries.entrySet()) {
+      ldap.create(
+        e.getValue()[0].getDn(),
+        e.getValue()[0].getLdapAttributes().toAttributes());
+    }
+    ldap.close();
+
+    ldap = TestUtil.createLdap();
+    for (Map.Entry<String, LdapEntry[]> e : groupEntries.entrySet()) {
+      while (
+        !ldap.compare(
+            e.getValue()[0].getDn(),
+            new SearchFilter(e.getValue()[0].getDn().split(",")[0]))) {
+        Thread.sleep(100);
+      }
+    }
+
+    // setup group relationships
+    ldap.modifyAttributes(
+      groupEntries.get("6")[0].getDn(),
+      AttributeModification.ADD,
+      AttributesFactory.createAttributes(
+        "member",
+        new String[] {
+          "uid=7,ou=test,dc=vt,dc=edu",
+          "uugid=group7,ou=test,dc=vt,dc=edu",
+        }));
+    ldap.modifyAttributes(
+      groupEntries.get("7")[0].getDn(),
+      AttributeModification.ADD,
+      AttributesFactory.createAttributes(
+        "member",
+        new String[] {
+          "uugid=group8,ou=test,dc=vt,dc=edu",
+          "uugid=group9,ou=test,dc=vt,dc=edu",
+        }));
+    ldap.modifyAttributes(
+      groupEntries.get("8")[0].getDn(),
+      AttributeModification.ADD,
+      AttributesFactory.createAttributes(
+        "member",
+        "uugid=group7,ou=test,dc=vt,dc=edu"));
+    ldap.close();
+  }
+
+
   /** @throws  Exception  On test failure. */
   @AfterClass(groups = {"jaastest"})
   public void deleteAuthEntry()
@@ -93,6 +190,10 @@ public class LdapLoginModuleTest
 
     final Ldap ldap = TestUtil.createSetupLdap();
     ldap.delete(testLdapEntry.getDn());
+    ldap.delete(groupEntries.get("6")[0].getDn());
+    ldap.delete(groupEntries.get("7")[0].getDn());
+    ldap.delete(groupEntries.get("8")[0].getDn());
+    ldap.delete(groupEntries.get("9")[0].getDn());
     ldap.close();
   }
 
@@ -228,6 +329,28 @@ public class LdapLoginModuleTest
     throws Exception
   {
     this.doContextTest("vt-ldap-roles", dn, user, role, credential);
+  }
+
+
+  /**
+   * @param  dn  of this user
+   * @param  user  to authenticate.
+   * @param  role  to set for this user
+   * @param  credential  to authenticate with.
+   *
+   * @throws  Exception  On test failure.
+   */
+  @Parameters({
+    "jaasDn", "jaasUser", "jaasRoleCombinedRecursive", "jaasCredential" })
+  @Test(groups = {"jaastest"})
+  public void rolesRecursiveContextTest(
+    final String dn,
+    final String user,
+    final String role,
+    final String credential)
+    throws Exception
+  {
+    this.doContextTest("vt-ldap-roles-recursive", dn, user, role, credential);
   }
 
 

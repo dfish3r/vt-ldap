@@ -35,6 +35,14 @@
              value="/edu/vt/middleware/ldap/createGroupEntry-4.ldif"/>
   <parameter name="createGroup5"
              value="/edu/vt/middleware/ldap/createGroupEntry-5.ldif"/>
+  <parameter name="createGroup6"
+             value="/edu/vt/middleware/ldap/createGroupEntry-6.ldif"/>
+  <parameter name="createGroup7"
+             value="/edu/vt/middleware/ldap/createGroupEntry-7.ldif"/>
+  <parameter name="createGroup8"
+             value="/edu/vt/middleware/ldap/createGroupEntry-8.ldif"/>
+  <parameter name="createGroup9"
+             value="/edu/vt/middleware/ldap/createGroupEntry-9.ldif"/>
 
   <parameter name="multipleLdifResultsIn"
              value="/edu/vt/middleware/ldap/multipleEntriesIn.ldif"/>
@@ -97,8 +105,10 @@
   <parameter name="recursiveSearchDn" value="ou=test,dc=vt,dc=edu"/>
   <parameter name="recursiveSearchFilter" value="(uugid={0})"/>
   <parameter name="recursiveSearchFilterArgs" value="group2"/>
-  <parameter name="recursiveSearchResults"
-             value="/edu/vt/middleware/ldap/recursiveResults.ldif"/>
+  <parameter name="recursiveAttributeHandlerResults"
+             value="/edu/vt/middleware/ldap/recursiveAttributeHandlerResults.ldif"/>
+  <parameter name="recursiveSearchResultHandlerResults"
+             value="/edu/vt/middleware/ldap/recursiveSearchResultHandlerResults.ldif"/>
 
   <parameter name="mergeSearchDn" value="ou=test,dc=vt,dc=edu"/>
   <parameter name="mergeSearchFilter" value="(|(uugid=group3)(uugid=group4)(uugid=group5))"/>
@@ -219,8 +229,9 @@
   <parameter name="jaasUser" value="jdoe7@vt.edu"/>
   <parameter name="jaasUserRole" value="0827"/>
   <parameter name="jaasUserRoleDefault" value="0827|test-role1|test-role2"/>
-  <parameter name="jaasRole" value="inetOrgPerson|organizationalPerson|person|top"/>
-  <parameter name="jaasRoleCombined" value="0827|inetOrgPerson|organizationalPerson|person|top"/>
+  <parameter name="jaasRole" value="inetOrgPerson|organizationalPerson|person|top|virginiaTechPerson"/>
+  <parameter name="jaasRoleCombined" value="0827|inetOrgPerson|organizationalPerson|person|top|virginiaTechPerson"/>
+  <parameter name="jaasRoleCombinedRecursive" value="0827|group6|group7|group8|group9"/>
   <parameter name="jaasCredential" value="password7"/>
 
   <parameter name="webXml" value="src/test/resources/web.xml"/>

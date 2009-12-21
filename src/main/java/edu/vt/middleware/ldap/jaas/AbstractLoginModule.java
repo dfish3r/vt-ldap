@@ -67,7 +67,7 @@ public abstract class AbstractLoginModule implements LoginModule
   private static final String IGNORE_LDAP_REGEX =
     "useFirstPass|tryFirstPass|storePass|setLdapPrincipal|" +
     "setLdapDnPrincipal|setLdapCredential|userRoleAttribute|" +
-    "roleFilter|roleAttribute";
+    "roleFilter|roleAttribute|recursionAttribute";
 
   /** Log for this class. */
   protected final Log logger = LogFactory.getLog(this.getClass());
