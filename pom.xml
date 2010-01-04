@@ -9,6 +9,25 @@
   <version>3.3-SNAPSHOT</version>
   <name>VT LDAP Libraries</name>
   <url>http://code.google.com/p/vt-middleware/wiki/vtldap</url>
+  <issueManagement>
+    <system>Google Code</system>
+    <url>http://code.google.com/p/vt-middleware/issues/list</url>
+  </issueManagement>
+  <mailingLists>
+    <mailingList>
+      <name>vt-middleware-users</name>
+      <subscribe>vt-middleware-users+subscribe@googlegroups.com</subscribe>
+      <unsubscribe>vt-middleware-users+unsubscribe@googlegroups.com</unsubscribe>
+      <post>vt-middleware-users@googlegroups.com</post>
+      <archive>http://groups.google.com/group/vt-middleware-users</archive>
+    </mailingList>
+    <mailingList>
+      <name>vt-middleware-dev</name>
+      <subscribe>vt-middleware-dev+subscribe@googlegroups.com</subscribe>
+      <unsubscribe>vt-middleware-dev+unsubscribe@googlegroups.com</unsubscribe>      <post>vt-middleware-dev@googlegroups.com</post>
+      <archive>http://groups.google.com/group/vt-middleware-dev</archive>
+    </mailingList>
+  </mailingLists>
   <licenses>
     <license>
       <name>Apache 2</name>
@@ -107,10 +126,10 @@
   <build>
     <testResources>
       <testResource>
-        <directory>src/test/resources</directory> 
+        <directory>src/test/resources</directory>
         <filtering>true</filtering>
       </testResource>
-    </testResources> 
+    </testResources>
     <plugins>
       <plugin>
         <artifactId>maven-resources-plugin</artifactId>
