@@ -23,6 +23,8 @@ import edu.vt.middleware.ldap.SearchFilter;
 import edu.vt.middleware.ldap.TestUtil;
 import edu.vt.middleware.ldap.bean.LdapEntry;
 import edu.vt.middleware.ldap.ldif.Ldif;
+import edu.vt.middleware.ldap.pool.commons.CommonsLdapPool;
+import edu.vt.middleware.ldap.pool.commons.DefaultLdapPoolableObjectFactory;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.testng.AssertJUnit;
@@ -69,6 +71,12 @@ public class LdapPoolTest
   /** LdapPool instance for concurrency testing. */
   private SharedLdapPool sharedPool;
 
+  /** LdapPool instance for concurrency testing. */
+  private BlockingLdapPool vtComparisonPool;
+
+  /** Commons LdapPool for comparison testing. */
+  private CommonsLdapPool commonsComparisonPool;
+
   /** Time in millis it takes the pool test to run. */
   private long softLimitRuntime;
 
@@ -80,6 +88,12 @@ public class LdapPoolTest
 
   /** Time in millis it takes the pool test to run. */
   private long sharedRuntime;
+
+  /** Time in millis it takes the pool test to run. */
+  private long vtPoolRuntime;
+
+  /** Time in millis it takes the pool test to run. */
+  private long commonsPoolRuntime;
 
 
   /**
@@ -133,6 +147,21 @@ public class LdapPoolTest
     sharedLpc.setExpirationTime(1000L);
     sharedLpc.setValidateTimerPeriod(5000L);
     this.sharedPool = new SharedLdapPool(sharedLpc, factory);
+
+    // configure comparison pools
+    final LdapPoolConfig vtComparisonLpc = new LdapPoolConfig();
+    vtComparisonLpc.setValidateOnCheckIn(true);
+    vtComparisonLpc.setValidateOnCheckOut(true);
+    this.vtComparisonPool = new BlockingLdapPool(vtComparisonLpc, factory);
+
+    final DefaultLdapPoolableObjectFactory commonsFactory =
+      new DefaultLdapPoolableObjectFactory();
+    commonsFactory.setLdapValidator(
+      new CompareLdapValidator(
+        "ou=test,dc=vt,dc=edu", new SearchFilter("ou=test")));
+    this.commonsComparisonPool = new CommonsLdapPool(commonsFactory);
+    this.commonsComparisonPool.setTestOnReturn(true);
+    this.commonsComparisonPool.setTestOnBorrow(true);
   }
 
 
@@ -167,7 +196,8 @@ public class LdapPoolTest
       "queuepooltest",
       "softlimitpooltest",
       "blockingpooltest",
-      "sharedpooltest"
+      "sharedpooltest",
+      "comparisonpooltest"
     }
   )
   public void createPoolEntry(
@@ -258,7 +288,8 @@ public class LdapPoolTest
       "queuepooltest",
       "softlimitpooltest",
       "blockingpooltest",
-      "sharedpooltest"
+      "sharedpooltest",
+      "comparisonpooltest"
     }
   )
   public void loadPoolSearchResults(
@@ -300,7 +331,8 @@ public class LdapPoolTest
       "queuepooltest",
       "softlimitpooltest",
       "blockingpooltest",
-      "sharedpooltest"
+      "sharedpooltest",
+      "comparisonpooltest"
     }
   )
   public void deletePoolEntry()
@@ -330,6 +362,17 @@ public class LdapPoolTest
     this.sharedPool.close();
     AssertJUnit.assertEquals(this.sharedPool.availableCount(), 0);
     AssertJUnit.assertEquals(this.sharedPool.activeCount(), 0);
+    this.vtComparisonPool.close();
+    AssertJUnit.assertEquals(this.vtComparisonPool.availableCount(), 0);
+    AssertJUnit.assertEquals(this.vtComparisonPool.activeCount(), 0);
+    this.commonsComparisonPool.clear();
+    this.commonsComparisonPool.close();
+    AssertJUnit.assertEquals(this.commonsComparisonPool.getNumActive(), 0);
+    AssertJUnit.assertEquals(this.commonsComparisonPool.getNumIdle(), 0);
+    // vt pool should be minimally faster
+    AssertJUnit.assertEquals(
+      this.vtPoolRuntime,
+      Math.min(this.vtPoolRuntime, this.commonsPoolRuntime));
   }
 
 
@@ -713,7 +756,7 @@ public class LdapPoolTest
     timeOut = 60000,
     dependsOnMethods = {"blockingTimeoutMediumSearch"}
   )
-  public void blockingoTimeoutLargeSearch(
+  public void blockingTimeoutLargeSearch(
     final SearchFilter filter,
     final String returnAttrs,
     final LdapEntry results)
@@ -924,5 +967,93 @@ public class LdapPoolTest
       results,
       TestUtil.convertLdifToEntry((new Ldif()).createLdif(iter)));
     return System.currentTimeMillis() - startTime;
+  }
+
+
+  /**
+   * @param  filter  to search with.
+   * @param  returnAttrs  to search for.
+   * @param  results  to expect from the search.
+   *
+   * @throws  Exception  On test failure.
+   */
+  @Test(
+    groups = {"comparisonpooltest"},
+    dataProvider = "pool-data",
+    threadPoolSize = 50,
+    invocationCount = 1000,
+    timeOut = 60000
+  )
+  public void vtPoolComparison(
+    final SearchFilter filter,
+    final String returnAttrs,
+    final LdapEntry results)
+    throws Exception
+  {
+    final long startTime = System.currentTimeMillis();
+    Ldap ldap = null;
+    try {
+      if (this.logger.isTraceEnabled()) {
+        this.logger.trace("waiting for pool checkout");
+      }
+      ldap = this.vtComparisonPool.checkOut();
+      if (this.logger.isTraceEnabled()) {
+        this.logger.trace("performing search");
+      }
+      ldap.search(filter, returnAttrs.split("\\|"));
+      if (this.logger.isTraceEnabled()) {
+        this.logger.trace("search completed");
+      }
+    } finally {
+      if (this.logger.isTraceEnabled()) {
+        this.logger.trace("returning ldap to pool");
+      }
+      this.vtComparisonPool.checkIn(ldap);
+    }
+    this.vtPoolRuntime += System.currentTimeMillis() - startTime;
+  }
+
+
+  /**
+   * @param  filter  to search with.
+   * @param  returnAttrs  to search for.
+   * @param  results  to expect from the search.
+   *
+   * @throws  Exception  On test failure.
+   */
+  @Test(
+    groups = {"comparisonpooltest"},
+    dataProvider = "pool-data",
+    threadPoolSize = 50,
+    invocationCount = 1000,
+    timeOut = 60000
+  )
+  public void commonsPoolComparison(
+    final SearchFilter filter,
+    final String returnAttrs,
+    final LdapEntry results)
+    throws Exception
+  {
+    final long startTime = System.currentTimeMillis();
+    Ldap ldap = null;
+    try {
+      if (this.logger.isTraceEnabled()) {
+        this.logger.trace("waiting for pool checkout");
+      }
+      ldap = (Ldap) this.commonsComparisonPool.borrowObject();
+      if (this.logger.isTraceEnabled()) {
+        this.logger.trace("performing search");
+      }
+      ldap.search(filter, returnAttrs.split("\\|"));
+      if (this.logger.isTraceEnabled()) {
+        this.logger.trace("search completed");
+      }
+    } finally {
+      if (this.logger.isTraceEnabled()) {
+        this.logger.trace("returning ldap to pool");
+      }
+      this.commonsComparisonPool.returnObject(ldap);
+    }
+    this.commonsPoolRuntime += System.currentTimeMillis() - startTime;
   }
 }
