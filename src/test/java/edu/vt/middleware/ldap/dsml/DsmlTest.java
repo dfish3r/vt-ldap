@@ -22,6 +22,7 @@ import edu.vt.middleware.ldap.SearchFilter;
 import edu.vt.middleware.ldap.TestUtil;
 import edu.vt.middleware.ldap.bean.LdapEntry;
 import edu.vt.middleware.ldap.bean.LdapResult;
+import edu.vt.middleware.ldap.bean.SortedLdapBeanFactory;
 import org.testng.AssertJUnit;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
@@ -84,87 +85,117 @@ public class DsmlTest
   /**
    * @param  dn  to search on.
    * @param  filter  to search with.
-   * @param  dsmlFile  to test with.
    *
    * @throws  Exception  On test failure.
    */
   @Parameters({
       "dsmlSearchDn",
-      "dsmlSearchFilter",
-      "dsmlv1Entry"
+      "dsmlSearchFilter"
     })
   @Test(groups = {"dsmltest"})
-  public void createDsmlv1(
-    final String dn,
-    final String filter,
-    final String dsmlFile)
+  public void searchAndCompareDsmlv1(final String dn, final String filter)
     throws Exception
   {
     final Ldap ldap = TestUtil.createLdap();
     final Dsmlv1 dsml = new Dsmlv1();
 
-    Iterator<SearchResult> iter = ldap.search(dn, new SearchFilter(filter));
+    final Iterator<SearchResult> iter =
+      ldap.search(dn, new SearchFilter(filter));
 
-    final LdapResult result1 = new LdapResult(iter);
-    StringWriter writer = new StringWriter();
+    final LdapResult result1 = TestUtil.newLdapResult(iter);
+    final StringWriter writer = new StringWriter();
     dsml.outputDsml(result1.toSearchResults().iterator(), writer);
 
     final StringReader reader = new StringReader(writer.toString());
-    final LdapResult result2 = new LdapResult(dsml.importDsml(reader));
+    final LdapResult result2 = dsml.importDsmlToLdapResult(reader);
 
     AssertJUnit.assertEquals(result1, result2);
     ldap.close();
+  }
 
-    final String dsmlString1 = TestUtil.readFileIntoString(dsmlFile);
-    iter = dsml.importDsml(new StringReader(dsmlString1));
-    writer = new StringWriter();
+
+  /**
+   * @param  dsmlFile  to test with.
+   * @param  dsmlSortedFile  to test with.
+   *
+   * @throws  Exception  On test failure.
+   */
+  @Parameters({
+      "dsmlv1Entry",
+      "dsmlv1SortedEntry"
+    })
+  @Test(groups = {"dsmltest"})
+  public void readAndCompareDsmlv1(
+    final String dsmlFile, final String dsmlSortedFile)
+    throws Exception
+  {
+    final Dsmlv1 dsml = new Dsmlv1();
+    dsml.setLdapBeanFactory(new SortedLdapBeanFactory());
+    final String dsmlStringSorted = TestUtil.readFileIntoString(dsmlSortedFile);
+    final Iterator<SearchResult> iter = dsml.importDsml(
+      new StringReader(TestUtil.readFileIntoString(dsmlFile)));
+    final StringWriter writer = new StringWriter();
     dsml.outputDsml(iter, writer);
 
-    final String dsmlString2 = writer.toString();
-    AssertJUnit.assertEquals(dsmlString1, dsmlString2);
+    AssertJUnit.assertEquals(dsmlStringSorted, writer.toString());
   }
 
 
   /**
    * @param  dn  to search on.
    * @param  filter  to search with.
-   * @param  dsmlFile  to test with.
    *
    * @throws  Exception  On test failure.
    */
   @Parameters({
       "dsmlSearchDn",
-      "dsmlSearchFilter",
-      "dsmlv2Entry"
+      "dsmlSearchFilter"
     })
   @Test(groups = {"dsmltest"})
-  public void createDsmlv2(
-    final String dn,
-    final String filter,
-    final String dsmlFile)
+  public void searchAndCompareDsmlv2(final String dn, final String filter)
     throws Exception
   {
     final Ldap ldap = TestUtil.createLdap();
     final Dsmlv2 dsml = new Dsmlv2();
 
-    Iterator<SearchResult> iter = ldap.search(dn, new SearchFilter(filter));
+    final Iterator<SearchResult> iter =
+      ldap.search(dn, new SearchFilter(filter));
 
-    final LdapResult result1 = new LdapResult(iter);
-    StringWriter writer = new StringWriter();
+    final LdapResult result1 = TestUtil.newLdapResult(iter);
+    final StringWriter writer = new StringWriter();
     dsml.outputDsml(result1.toSearchResults().iterator(), writer);
 
     final StringReader reader = new StringReader(writer.toString());
-    final LdapResult result2 = new LdapResult(dsml.importDsml(reader));
+    final LdapResult result2 = dsml.importDsmlToLdapResult(reader);
 
     AssertJUnit.assertEquals(result1, result2);
     ldap.close();
+  }
 
-    final String dsmlString1 = TestUtil.readFileIntoString(dsmlFile);
-    iter = dsml.importDsml(new StringReader(dsmlString1));
-    writer = new StringWriter();
+
+  /**
+   * @param  dsmlFile  to test with.
+   * @param  dsmlSortedFile  to test with.
+   *
+   * @throws  Exception  On test failure.
+   */
+  @Parameters({
+      "dsmlv2Entry",
+      "dsmlv2SortedEntry"
+    })
+  @Test(groups = {"dsmltest"})
+  public void readAndCompareDsmlv2(
+    final String dsmlFile, final String dsmlSortedFile)
+    throws Exception
+  {
+    final Dsmlv2 dsml = new Dsmlv2();
+    dsml.setLdapBeanFactory(new SortedLdapBeanFactory());
+    final String dsmlStringSorted = TestUtil.readFileIntoString(dsmlSortedFile);
+    final Iterator<SearchResult> iter = dsml.importDsml(
+      new StringReader(TestUtil.readFileIntoString(dsmlFile)));
+    final StringWriter writer = new StringWriter();
     dsml.outputDsml(iter, writer);
 
-    final String dsmlString2 = writer.toString();
-    AssertJUnit.assertEquals(dsmlString1, dsmlString2);
+    AssertJUnit.assertEquals(dsmlStringSorted, writer.toString());
   }
 }

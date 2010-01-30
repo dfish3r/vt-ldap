@@ -24,6 +24,8 @@ import javax.naming.NamingException;
 import javax.naming.directory.SearchResult;
 import edu.vt.middleware.ldap.LdapUtil;
 import edu.vt.middleware.ldap.bean.LdapAttribute;
+import edu.vt.middleware.ldap.bean.LdapBeanFactory;
+import edu.vt.middleware.ldap.bean.LdapBeanProvider;
 import edu.vt.middleware.ldap.bean.LdapEntry;
 import edu.vt.middleware.ldap.bean.LdapResult;
 import org.apache.commons.logging.Log;
@@ -36,7 +38,6 @@ import org.apache.commons.logging.LogFactory;
  * @author  Middleware Services
  * @version  $Revision$ $Date$
  */
-
 public class Ldif implements Serializable
 {
 
@@ -71,6 +72,33 @@ public class Ldif implements Serializable
   /** Log for this class. */
   protected final Log logger = LogFactory.getLog(this.getClass());
 
+  /** Ldap bean factory. */
+  protected LdapBeanFactory beanFactory = LdapBeanProvider.getLdapBeanFactory();
+
+
+  /**
+   * Returns the factory for creating ldap beans.
+   *
+   * @return  <code>LdapBeanFactory</code>
+   */
+  public LdapBeanFactory getLdapBeanFactory()
+  {
+    return this.beanFactory;
+  }
+
+
+  /**
+   * Sets the factory for creating ldap beans.
+   *
+   * @param  lbf  <code>LdapBeanFactory</code>
+   */
+  public void setLdapBeanFactory(final LdapBeanFactory lbf)
+  {
+    if (lbf != null) {
+      this.beanFactory = lbf;
+    }
+  }
+
 
   /**
    * This will take the results of a prior LDAP query and convert it to LDIF.
@@ -81,60 +109,53 @@ public class Ldif implements Serializable
    */
   public String createLdif(final Iterator<SearchResult> results)
   {
-    // build string from results
-    final StringBuffer ldif = new StringBuffer();
-    if (results != null) {
-      while (results.hasNext()) {
-        final SearchResult sr = results.next();
-        ldif.append(createLdif(sr));
+    String ldif = "";
+    try {
+      final LdapResult lr = this.beanFactory.newLdapResult();
+      lr.addEntries(results);
+      ldif = this.createLdif(lr);
+    } catch (NamingException e) {
+      if (this.logger.isErrorEnabled()) {
+        this.logger.error("Error creating String from SearchResults", e);
       }
     }
-
-    return ldif.toString();
+    return ldif;
   }
 
 
   /**
-   * This will take the result of a prior LDAP query and convert it to LDIF.
+   * This will take the results of a prior LDAP query and convert it to LDIF.
    *
-   * @param  result  <code>SearchResult</code> to convert
+   * @param  result  <code>LdapResult</code>
    *
    * @return  <code>String</code>
    */
-  protected String createLdif(final SearchResult result)
+  public String createLdif(final LdapResult result)
   {
     // build string from results
     final StringBuffer ldif = new StringBuffer();
     if (result != null) {
-      try {
-        ldif.append(createLdifEntry(result));
-      } catch (NamingException e) {
-        if (this.logger.isErrorEnabled()) {
-          this.logger.error("Error creating String from SearchResult", e);
-        }
+      for (LdapEntry le : result.getEntries()) {
+        ldif.append(createLdifEntry(le));
       }
     }
+
     return ldif.toString();
   }
 
 
   /**
-   * This will take an LDAP search result and convert it to LDIF.
+   * This will take an LDAP entry and convert it to LDIF.
    *
-   * @param  result  <code>SearchResult</code> to convert
+   * @param  ldapEntry  <code>LdapEntry</code> to convert
    *
    * @return  <code>String</code>
-   *
-   * @throws  NamingException  if an error occurs while reading the search
-   * result
    */
-  protected String createLdifEntry(final SearchResult result)
-    throws NamingException
+  protected String createLdifEntry(final LdapEntry ldapEntry)
   {
     final StringBuffer entry = new StringBuffer();
-    if (result != null) {
+    if (ldapEntry != null) {
 
-      final LdapEntry ldapEntry = new LdapEntry(result);
       final String dn = ldapEntry.getDn();
       if (dn != null) {
         if (encodeData(dn)) {
@@ -250,6 +271,25 @@ public class Ldif implements Serializable
 
 
   /**
+   * This will write the supplied LDAP search results to the supplied writer in
+   * LDIF form.
+   *
+   * @param  result  <code>LdapResult</code>
+   * @param  writer  <code>Writer</code> to write to
+   *
+   * @throws  IOException  if an error occurs while writing to the output stream
+   */
+  public void outputLdif(
+    final LdapResult result,
+    final Writer writer)
+    throws IOException
+  {
+    writer.write(createLdif(result));
+    writer.flush();
+  }
+
+
+  /**
    * This will take a Reader containing an LDIF and convert it to an Iterator of
    * LDAP search results. Provides a loose implementation of RFC 2849. Should
    * not be used to validate LDIF format as it does not enforce strictness.
@@ -263,7 +303,25 @@ public class Ldif implements Serializable
   public Iterator<SearchResult> importLdif(final Reader reader)
     throws IOException
   {
-    final LdapResult ldapResult = new LdapResult();
+    return this.importLdifToLdapResult(reader).toSearchResults().iterator();
+  }
+
+
+  /**
+   * This will take a Reader containing an LDIF and convert it to an <code>
+   * LdapResult</code>. Provides a loose implementation of RFC 2849. Should
+   * not be used to validate LDIF format as it does not enforce strictness.
+   *
+   * @param  reader  <code>Reader</code> containing LDIF content
+   *
+   * @return  <code>LdapResult</code> - LDAP search results
+   *
+   * @throws  IOException  if an I/O error occurs
+   */
+  public LdapResult importLdifToLdapResult(final Reader reader)
+    throws IOException
+  {
+    final LdapResult ldapResult = this.beanFactory.newLdapResult();
     final BufferedReader br = new BufferedReader(reader);
     String line = null;
     int lineCount = 0;
@@ -274,7 +332,7 @@ public class Ldif implements Serializable
       lineCount++;
       if (line.startsWith("dn:")) {
         lineValue.append(line);
-        ldapEntry = new LdapEntry();
+        ldapEntry = this.beanFactory.newLdapEntry();
         break;
       }
     }
@@ -289,7 +347,7 @@ public class Ldif implements Serializable
       if (!line.startsWith("#")) {
         if (line.startsWith("dn:")) {
           ldapResult.addEntry(ldapEntry);
-          ldapEntry = new LdapEntry();
+          ldapEntry = this.beanFactory.newLdapEntry();
         }
         if (line.startsWith(" ")) {
           lineValue.append(line.substring(1));
@@ -317,7 +375,8 @@ public class Ldif implements Serializable
               LdapAttribute ldapAttr = ldapEntry.getLdapAttributes()
                   .getAttribute(attrName);
               if (ldapAttr == null) {
-                ldapAttr = new LdapAttribute(attrName);
+                ldapAttr = this.beanFactory.newLdapAttribute();
+                ldapAttr.setName(attrName);
                 ldapEntry.getLdapAttributes().addAttribute(ldapAttr);
               }
               if (isBinary) {
@@ -336,6 +395,6 @@ public class Ldif implements Serializable
     if (ldapEntry != null) {
       ldapResult.addEntry(ldapEntry);
     }
-    return ldapResult.toSearchResults().iterator();
+    return ldapResult;
   }
 }

@@ -14,17 +14,9 @@
 package edu.vt.middleware.ldap.bean;
 
 import java.util.Collection;
-import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.SortedSet;
-import java.util.TreeSet;
-import javax.naming.NamingEnumeration;
 import javax.naming.NamingException;
-import javax.naming.directory.Attribute;
 import javax.naming.directory.Attributes;
-import javax.naming.directory.BasicAttributes;
 
 /**
  * <code>LdapAttributes</code> represents a collection of ldap attribute.
@@ -32,59 +24,8 @@ import javax.naming.directory.BasicAttributes;
  * @author  Middleware Services
  * @version  $Revision$ $Date$
  */
-
-public class LdapAttributes extends AbstractLdapBean
+public interface LdapAttributes
 {
-
-  /** hash code seed. */
-  protected static final int HASH_CODE_SEED = 42;
-
-  /** Attributes contained in this bean. */
-  private Map<String, LdapAttribute> attributes =
-    new HashMap<String, LdapAttribute>();
-
-
-  /** Default constructor. */
-  public LdapAttributes() {}
-
-
-  /**
-   * This creates a new <code>LdapAttributes</code> with the supplied <code>
-   * LdapAttributes</code>.
-   *
-   * @param  la  <code>LdapAttributes</code>
-   */
-  public LdapAttributes(final LdapAttributes la)
-  {
-    this.addAttributes(la.getAttributes());
-  }
-
-
-  /**
-   * This creates a new <code>LdapAttributes</code> with the supplied <code>
-   * LdapAttribute</code>.
-   *
-   * @param  la  <code>LdapAttribute</code>
-   */
-  public LdapAttributes(final LdapAttribute la)
-  {
-    this.addAttribute(la);
-  }
-
-
-  /**
-   * This creates a new <code>LdapAttributes</code> with the supplied
-   * attributes.
-   *
-   * @param  a  <code>Attributes</code>
-   *
-   * @throws  NamingException  if the attributes cannot be read
-   */
-  public LdapAttributes(final Attributes a)
-    throws NamingException
-  {
-    this.addAttributes(a);
-  }
 
 
   /**
@@ -93,28 +34,7 @@ public class LdapAttributes extends AbstractLdapBean
    *
    * @return  <code>List</code>
    */
-  public Collection<LdapAttribute> getAttributes()
-  {
-    return this.attributes.values();
-  }
-
-
-  /**
-   * This returns a <code>SortedSet</code> of <code>LdapAttribute</code> for
-   * this <code>LdapAttributes</code>.
-   *
-   * @param  comparator  to sort the set with
-   *
-   * @return  <code>SortedSet</code>
-   */
-  public SortedSet<LdapAttribute> getSortedAttributes(
-    final Comparator<LdapAttribute> comparator)
-  {
-    final SortedSet<LdapAttribute> sorted = new TreeSet<LdapAttribute>(
-      comparator);
-    sorted.addAll(this.attributes.values());
-    return sorted;
-  }
+  Collection<LdapAttribute> getAttributes();
 
 
   /**
@@ -125,10 +45,7 @@ public class LdapAttributes extends AbstractLdapBean
    *
    * @return  <code>LdapAttribute</code>
    */
-  public LdapAttribute getAttribute(final String name)
-  {
-    return this.attributes.get(name);
-  }
+  LdapAttribute getAttribute(final String name);
 
 
   /**
@@ -137,10 +54,7 @@ public class LdapAttributes extends AbstractLdapBean
    *
    * @return  <code>String[]</code>
    */
-  public String[] getAttributeNames()
-  {
-    return (String[]) this.attributes.keySet().toArray(new String[0]);
-  }
+  String[] getAttributeNames();
 
 
   /**
@@ -148,10 +62,7 @@ public class LdapAttributes extends AbstractLdapBean
    *
    * @param  a  <code>LdapAttribute</code>
    */
-  public void addAttribute(final LdapAttribute a)
-  {
-    this.attributes.put(a.getName(), a);
-  }
+  void addAttribute(final LdapAttribute a);
 
 
   /**
@@ -161,10 +72,7 @@ public class LdapAttributes extends AbstractLdapBean
    * @param  name  <code>String</code>
    * @param  value  <code>Object</code>
    */
-  public void addAttribute(final String name, final Object value)
-  {
-    this.addAttribute(new LdapAttribute(name, value));
-  }
+  void addAttribute(final String name, final Object value);
 
 
   /**
@@ -174,10 +82,7 @@ public class LdapAttributes extends AbstractLdapBean
    * @param  name  <code>String</code>
    * @param  values  <code>List</code>
    */
-  public void addAttribute(final String name, final List<?> values)
-  {
-    this.addAttribute(new LdapAttribute(name, values));
-  }
+  void addAttribute(final String name, final List<?> values);
 
 
   /**
@@ -187,12 +92,7 @@ public class LdapAttributes extends AbstractLdapBean
    *
    * @param  c  <code>Collection</code>
    */
-  public void addAttributes(final Collection<LdapAttribute> c)
-  {
-    for (LdapAttribute la : c) {
-      this.addAttribute(la);
-    }
-  }
+  void addAttributes(final Collection<LdapAttribute> c);
 
 
   /**
@@ -203,14 +103,8 @@ public class LdapAttributes extends AbstractLdapBean
    *
    * @throws  NamingException  if the attributes cannot be read
    */
-  public void addAttributes(final Attributes a)
-    throws NamingException
-  {
-    final NamingEnumeration<? extends Attribute> ne = a.getAll();
-    while (ne.hasMore()) {
-      this.addAttribute(new LdapAttribute(ne.next()));
-    }
-  }
+  void addAttributes(final Attributes a)
+    throws NamingException;
 
 
   /**
@@ -218,10 +112,7 @@ public class LdapAttributes extends AbstractLdapBean
    *
    * @param  a  <code>LdapAttribute</code>
    */
-  public void removeAttribute(final LdapAttribute a)
-  {
-    this.attributes.remove(a.getName());
-  }
+  void removeAttribute(final LdapAttribute a);
 
 
   /**
@@ -229,10 +120,7 @@ public class LdapAttributes extends AbstractLdapBean
    *
    * @param  name  <code>String</code>
    */
-  public void removeAttribute(final String name)
-  {
-    this.attributes.remove(name);
-  }
+  void removeAttribute(final String name);
 
 
   /**
@@ -242,12 +130,7 @@ public class LdapAttributes extends AbstractLdapBean
    *
    * @param  c  <code>Collection</code>
    */
-  public void removeAttributes(final Collection<LdapAttribute> c)
-  {
-    for (LdapAttribute la : c) {
-      this.removeAttribute(la);
-    }
-  }
+  void removeAttributes(final Collection<LdapAttribute> c);
 
 
   /**
@@ -258,14 +141,8 @@ public class LdapAttributes extends AbstractLdapBean
    *
    * @throws  NamingException  if the attributes cannot be read
    */
-  public void removeAttributes(final Attributes a)
-    throws NamingException
-  {
-    final NamingEnumeration<? extends Attribute> ne = a.getAll();
-    while (ne.hasMore()) {
-      this.removeAttribute(new LdapAttribute(ne.next()));
-    }
-  }
+  void removeAttributes(final Attributes a)
+    throws NamingException;
 
 
   /**
@@ -273,70 +150,17 @@ public class LdapAttributes extends AbstractLdapBean
    *
    * @return  <code>int</code>
    */
-  public int size()
-  {
-    return this.attributes.size();
-  }
+  int size();
 
 
   /** This removes all attributes from this <code>LdapAttributes</code>. */
-  public void clear()
-  {
-    this.attributes.clear();
-  }
-
-
-  /** {@inheritDoc} */
-  public int hashCode()
-  {
-    int hc = HASH_CODE_SEED;
-    for (LdapAttribute a : this.attributes.values()) {
-      if (a != null) {
-        hc += a.hashCode();
-      }
-    }
-    return hc;
-  }
-
-
-  /**
-   * This returns a string representation of this object.
-   *
-   * @return  <code>String</code>
-   */
-  @Override
-  public String toString()
-  {
-    return String.format("%s", this.attributes.values());
-  }
+  void clear();
 
 
   /**
    * This returns an <code>Attributes</code> that represents this entry.
-   * Attributes will be case-insensitive.
    *
    * @return  <code>Attributes</code>
    */
-  public Attributes toAttributes()
-  {
-    return this.toAttributes(true);
-  }
-
-
-  /**
-   * This returns an <code>Attributes</code> that represents this entry.
-   * Attributes will be case-insensitive.
-   *
-   * @param  ignoreCase  whether to ignore attribute case
-   *
-   * @return  <code>Attributes</code>
-   */
-  public Attributes toAttributes(final boolean ignoreCase)
-  {
-    final Attributes attributes = new BasicAttributes(ignoreCase);
-    for (LdapAttribute a : this.attributes.values()) {
-      attributes.put(a.toAttribute());
-    }
-    return attributes;
-  }
+  Attributes toAttributes();
 }

@@ -13,103 +13,20 @@
 */
 package edu.vt.middleware.ldap.bean;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import javax.naming.NamingEnumeration;
+import java.util.Set;
 import javax.naming.NamingException;
 import javax.naming.directory.Attribute;
-import javax.naming.directory.BasicAttribute;
-import edu.vt.middleware.ldap.LdapUtil;
 
 /**
- * <code>LdapAttribute</code> represents a single ldap attribute.
+ * <code>LdapAttribute</code> represents a single ldap attribute. Ldap attribute
+ * values must be unique per http://tools.ietf.org/html/rfc4512#section-2.3.
+ * For any given attribute, the values must all be of the same type.
  *
  * @author  Middleware Services
  * @version  $Revision$ $Date$
  */
-
-public class LdapAttribute extends AbstractLdapBean
+public interface LdapAttribute
 {
-
-  /** hash code seed. */
-  protected static final int HASH_CODE_SEED = 41;
-
-  /** Name for this attribute. */
-  private String name;
-
-  /** Values for this attrbute. */
-  private List<Object> values = new ArrayList<Object>();
-
-
-  /** Default constructor. */
-  public LdapAttribute() {}
-
-
-  /**
-   * This creates a new <code>LdapAttribute</code> with the supplied name.
-   *
-   * @param  name  <code>String</code>
-   */
-  public LdapAttribute(final String name)
-  {
-    this.setName(name);
-  }
-
-
-  /**
-   * This creates a new <code>LdapAttribute</code> with the supplied <code>
-   * LdapAttribute</code>.
-   *
-   * @param  la  <code>LdapAttribute</code>
-   */
-  public LdapAttribute(final LdapAttribute la)
-  {
-    this.setName(la.getName());
-    this.values.addAll(la.getValues());
-  }
-
-
-  /**
-   * This creates a new <code>LdapAttribute</code> with the supplied name and
-   * value.
-   *
-   * @param  name  <code>String</code>
-   * @param  value  <code>Object</code>
-   */
-  public LdapAttribute(final String name, final Object value)
-  {
-    this.setName(name);
-    this.values.add(value);
-  }
-
-
-  /**
-   * This creates a new <code>LdapAttribute</code> with the supplied name and
-   * values.
-   *
-   * @param  name  <code>String</code>
-   * @param  values  <code>List</code>
-   */
-  public LdapAttribute(final String name, final List<?> values)
-  {
-    this.setName(name);
-    this.values.addAll(values);
-  }
-
-
-  /**
-   * This creates a new <code>LdapAttribute</code> with the supplied attribute.
-   *
-   * @param  attribute  <code>Attribute</code>
-   *
-   * @throws  NamingException  if the attribute values cannot be read
-   */
-  public LdapAttribute(final Attribute attribute)
-    throws NamingException
-  {
-    this.setAttribute(attribute);
-  }
 
 
   /**
@@ -117,46 +34,25 @@ public class LdapAttribute extends AbstractLdapBean
    *
    * @return  <code>String</code>
    */
-  public String getName()
-  {
-    return this.name;
-  }
+  String getName();
 
 
   /**
    * This returns the value(s) of this <code>LdapAttribute</code>.
    *
-   * @return  <code>List</code>
+   * @return  <code>Set</code>
    */
-  public List<Object> getValues()
-  {
-    return this.values;
-  }
+  Set<Object> getValues();
 
 
   /**
    * This returns the value(s) of this <code>LdapAttribute</code> Values are
    * encoded in base64 format if the underlying value is of type byte[].
+   * The returned set is unmodifiable.
    *
-   * @return  <code>List</code>
+   * @return  unmodifiable <code>Set</code>
    */
-  public List<String> getStringValues()
-  {
-    final List<String> stringValues = new ArrayList<String>();
-    for (Object o : this.values) {
-      if (o != null) {
-        if (o instanceof String) {
-          stringValues.add((String) o);
-        } else if (o instanceof byte[]) {
-          final String encodedValue = LdapUtil.base64Encode((byte[]) o);
-          if (encodedValue != null) {
-            stringValues.add(encodedValue);
-          }
-        }
-      }
-    }
-    return stringValues;
-  }
+  Set<String> getStringValues();
 
 
   /**
@@ -166,16 +62,8 @@ public class LdapAttribute extends AbstractLdapBean
    *
    * @throws  NamingException  if the attribute values cannot be read
    */
-  public void setAttribute(final Attribute attribute)
-    throws NamingException
-  {
-    this.setName(attribute.getID());
-
-    final NamingEnumeration<?> ne = attribute.getAll();
-    while (ne.hasMore()) {
-      this.values.add(ne.next());
-    }
-  }
+  void setAttribute(final Attribute attribute)
+    throws NamingException;
 
 
   /**
@@ -183,38 +71,7 @@ public class LdapAttribute extends AbstractLdapBean
    *
    * @param  name  <code>String</code>
    */
-  public void setName(final String name)
-  {
-    this.name = name;
-  }
-
-
-  /** {@inheritDoc} */
-  public int hashCode()
-  {
-    int hc = HASH_CODE_SEED;
-    if (this.name != null) {
-      hc += this.name.hashCode();
-    }
-    for (String s : this.getStringValues()) {
-      if (s != null) {
-        hc += s.hashCode();
-      }
-    }
-    return hc;
-  }
-
-
-  /**
-   * This returns a string representation of this object.
-   *
-   * @return  <code>String</code>
-   */
-  @Override
-  public String toString()
-  {
-    return String.format("%s%s", this.name, this.values);
-  }
+  void setName(final String name);
 
 
   /**
@@ -223,35 +80,5 @@ public class LdapAttribute extends AbstractLdapBean
    *
    * @return  <code>Attribute</code>
    */
-  public Attribute toAttribute()
-  {
-    final Attribute attribute = new BasicAttribute(this.name);
-    for (Object o : this.values) {
-      attribute.add(o);
-    }
-    return attribute;
-  }
-
-
-  /** Inner class to compare <code>LdapAttribute</code>'s by name. */
-  public static final class LdapAttributeComparator
-    implements Comparator<LdapAttribute>
-  {
-
-
-    /**
-     * Compares two <code>LdapAttribute</code> objects by name. Delegates to
-     * String.compareToIgnoreCase().
-     *
-     * @param  la1  first <code>LdapAttribute</code> for the comparison
-     * @param  la2  second <code>LdapAttribute</code> for the comparison
-     *
-     * @return  a negative integer, zero, or a positive integer as the first
-     * argument is less than, equal to, or greater than the second.
-     */
-    public int compare(final LdapAttribute la1, final LdapAttribute la2)
-    {
-      return la1.getName().compareToIgnoreCase(la2.getName());
-    }
-  }
+  Attribute toAttribute();
 }

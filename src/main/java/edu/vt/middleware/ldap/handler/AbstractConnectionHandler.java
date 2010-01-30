@@ -22,7 +22,7 @@ import org.apache.commons.logging.LogFactory;
 /**
  * <code>AbstractConnectionHandler</code> provides a basic implementation for
  * other connection handlers to inherit.
-
+ *
  * @author  Middleware Services
  * @version  $Revision$
  */

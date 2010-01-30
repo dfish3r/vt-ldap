@@ -26,6 +26,8 @@ import edu.vt.middleware.ldap.Ldap;
 import edu.vt.middleware.ldap.LdapConfig;
 import edu.vt.middleware.ldap.SearchFilter;
 import edu.vt.middleware.ldap.bean.LdapAttribute;
+import edu.vt.middleware.ldap.bean.LdapBeanFactory;
+import edu.vt.middleware.ldap.bean.LdapBeanProvider;
 import edu.vt.middleware.ldap.bean.LdapEntry;
 import edu.vt.middleware.ldap.bean.LdapResult;
 import edu.vt.middleware.ldap.pool.BlockingLdapPool;
@@ -51,7 +53,6 @@ import org.apache.commons.logging.LogFactory;
  * @author  Middleware Services
  * @version  $Revision$ $Date$
  */
-
 public final class AttributeServlet extends HttpServlet
 {
 
@@ -73,6 +74,9 @@ public final class AttributeServlet extends HttpServlet
 
   /** Log for this class. */
   private final Log logger = LogFactory.getLog(AttributeServlet.class);
+
+  /** Ldap bean factory. */
+  private LdapBeanFactory beanFactory = LdapBeanProvider.getLdapBeanFactory();
 
   /** Pool to use for searching. */
   private LdapPool<Ldap> pool;
@@ -130,6 +134,24 @@ public final class AttributeServlet extends HttpServlet
       throw new ServletException("Unknown pool type: " + poolType);
     }
     this.pool.initialize();
+
+    final String beanFactoryClass =
+      getInitParameter(ServletConstants.BEAN_FACTORY);
+    if (this.logger.isDebugEnabled()) {
+      this.logger.debug(ServletConstants.BEAN_FACTORY + " = " + beanFactory);
+    }
+    if (beanFactoryClass != null) {
+      try {
+        this.beanFactory = (LdapBeanFactory) Class.forName(
+            beanFactoryClass).newInstance();
+      } catch (ClassNotFoundException e) {
+        throw new ServletException(e);
+      } catch (InstantiationException e) {
+        throw new ServletException(e);
+      } catch (IllegalAccessException e) {
+        throw new ServletException(e);
+      }
+    }
   }
 
 
@@ -169,11 +191,12 @@ public final class AttributeServlet extends HttpServlet
           new SearchFilter(request.getParameter("query")),
           request.getParameterValues("attr"));
 
-        final LdapResult r = new LdapResult(i);
+        final LdapResult r = this.beanFactory.newLdapResult();
+        r.addEntries(i);
         for (LdapEntry e : r.getEntries()) {
           final LdapAttribute a = e.getLdapAttributes().getAttribute(attribute);
           if (a != null && a.getValues().size() > 0) {
-            final Object rawValue = a.getValues().get(0);
+            final Object rawValue = a.getValues().iterator().next();
             if (rawValue instanceof String) {
               final String stringValue = (String) rawValue;
               value = stringValue.getBytes();

@@ -20,6 +20,9 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 /**
+ * AbstractAuthenticationHandler provides a base implementation for
+ * authentication handlers.
+ *
  * @author  Middleware Services
  * @version  $Revision$
  */

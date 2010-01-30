@@ -44,6 +44,9 @@ public final class ServletConstants
   /** Type of pool used, value is {@value}. */
   public static final String POOL_TYPE = PROPERTIES_DOMAIN + "poolType";
 
+  /** Type of ldap bean factory, value is {@value}. */
+  public static final String BEAN_FACTORY = PROPERTIES_DOMAIN + "beanFactory";
+
   /**
    * Identifier to set in the session after valid authentication, value is
    * {@value}.

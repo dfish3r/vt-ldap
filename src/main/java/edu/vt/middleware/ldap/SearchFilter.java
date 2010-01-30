@@ -23,7 +23,6 @@ import java.util.List;
  * @author  Middleware Services
  * @version  $Revision$ $Date$
  */
-
 public class SearchFilter
 {
 

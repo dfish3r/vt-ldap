@@ -302,7 +302,7 @@ public class AuthenticatorTest
       credential,
       returnAttrs.split("\\|"));
     final LdapAttributes expected = TestUtil.convertStringToAttributes(results);
-    AssertJUnit.assertEquals(expected, new LdapAttributes(attrs));
+    AssertJUnit.assertEquals(expected, TestUtil.newLdapAttributes(attrs));
   }
 
 
@@ -346,7 +346,7 @@ public class AuthenticatorTest
       credential,
       returnAttrs.split("\\|"));
     final LdapAttributes expected = TestUtil.convertStringToAttributes(results);
-    AssertJUnit.assertEquals(expected, new LdapAttributes(attrs));
+    AssertJUnit.assertEquals(expected, TestUtil.newLdapAttributes(attrs));
   }
 
 
@@ -405,7 +405,7 @@ public class AuthenticatorTest
       new SearchFilter(filter, filterArgs.split("\\|")),
       returnAttrs.split("\\|"));
     final LdapAttributes expected = TestUtil.convertStringToAttributes(results);
-    AssertJUnit.assertEquals(expected, new LdapAttributes(attrs));
+    AssertJUnit.assertEquals(expected, TestUtil.newLdapAttributes(attrs));
   }
 
 
@@ -549,7 +549,7 @@ public class AuthenticatorTest
       credential,
       returnAttrs.split("\\|"));
     final LdapAttributes expected = TestUtil.convertStringToAttributes(results);
-    AssertJUnit.assertEquals(expected, new LdapAttributes(attrs));
+    AssertJUnit.assertEquals(expected, TestUtil.newLdapAttributes(attrs));
   }
 
 
@@ -594,7 +594,7 @@ public class AuthenticatorTest
       credential,
       returnAttrs.split("\\|"));
     final LdapAttributes expected = TestUtil.convertStringToAttributes(results);
-    AssertJUnit.assertEquals(expected, new LdapAttributes(attrs));
+    AssertJUnit.assertEquals(expected, TestUtil.newLdapAttributes(attrs));
   }
 
 
@@ -647,7 +647,7 @@ public class AuthenticatorTest
       new SearchFilter(filter),
       returnAttrs.split("\\|"));
     final LdapAttributes expected = TestUtil.convertStringToAttributes(results);
-    AssertJUnit.assertEquals(expected, new LdapAttributes(attrs));
+    AssertJUnit.assertEquals(expected, TestUtil.newLdapAttributes(attrs));
   }
 
 
@@ -702,7 +702,7 @@ public class AuthenticatorTest
       new SearchFilter(filter),
       returnAttrs.split("\\|"));
     final LdapAttributes expected = TestUtil.convertStringToAttributes(results);
-    AssertJUnit.assertEquals(expected, new LdapAttributes(attrs));
+    AssertJUnit.assertEquals(expected, TestUtil.newLdapAttributes(attrs));
 
     ldap.close();
   }

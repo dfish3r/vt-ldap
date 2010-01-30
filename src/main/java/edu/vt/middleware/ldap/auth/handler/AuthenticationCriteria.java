@@ -20,7 +20,6 @@ package edu.vt.middleware.ldap.auth.handler;
  * @author  Middleware Services
  * @version  $Revision$ $Date$
  */
-
 public class AuthenticationCriteria
 {
 

@@ -62,7 +62,6 @@ import org.apache.commons.logging.LogFactory;
  * @author  Middleware Services
  * @version  $Revision$ $Date$
  */
-
 public final class SearchServlet extends HttpServlet
 {
 

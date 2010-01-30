@@ -18,6 +18,8 @@ import java.io.Writer;
 import java.util.Iterator;
 import javax.naming.NamingException;
 import javax.naming.directory.SearchResult;
+import edu.vt.middleware.ldap.bean.LdapBeanFactory;
+import edu.vt.middleware.ldap.bean.LdapBeanProvider;
 import edu.vt.middleware.ldap.bean.LdapResult;
 import edu.vt.middleware.ldap.pool.LdapPool;
 import org.apache.commons.logging.Log;
@@ -30,7 +32,6 @@ import org.apache.commons.logging.LogFactory;
  * @author  Middleware Services
  * @version  $Revision$ $Date$
  */
-
 public class LdapSearch
 {
 
@@ -39,6 +40,9 @@ public class LdapSearch
 
   /** Ldap object to use for searching. */
   protected LdapPool<Ldap> pool;
+
+  /** Ldap bean factory. */
+  protected LdapBeanFactory beanFactory = LdapBeanProvider.getLdapBeanFactory();
 
 
   /**
@@ -49,6 +53,30 @@ public class LdapSearch
   public LdapSearch(final LdapPool<Ldap> pool)
   {
     this.pool = pool;
+  }
+
+
+  /**
+   * Returns the factory for creating ldap beans.
+   *
+   * @return  <code>LdapBeanFactory</code>
+   */
+  public LdapBeanFactory getLdapBeanFactory()
+  {
+    return this.beanFactory;
+  }
+
+
+  /**
+   * Sets the factory for creating ldap beans.
+   *
+   * @param  lbf  <code>LdapBeanFactory</code>
+   */
+  public void setLdapBeanFactory(final LdapBeanFactory lbf)
+  {
+    if (lbf != null) {
+      this.beanFactory = lbf;
+    }
   }
 
 
@@ -109,7 +137,8 @@ public class LdapSearch
     final Writer writer)
     throws NamingException, IOException
   {
-    final LdapResult lr = new LdapResult(this.search(query, attrs));
+    final LdapResult lr = this.beanFactory.newLdapResult();
+    lr.addEntries(this.search(query, attrs));
     writer.write(lr.toString());
     writer.flush();
   }

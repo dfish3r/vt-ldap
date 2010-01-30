@@ -16,11 +16,14 @@ package edu.vt.middleware.ldap.dsml;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 import javax.naming.NamingException;
 import javax.naming.directory.SearchResult;
 import edu.vt.middleware.ldap.LdapUtil;
 import edu.vt.middleware.ldap.bean.LdapAttribute;
+import edu.vt.middleware.ldap.bean.LdapAttributes;
 import edu.vt.middleware.ldap.bean.LdapEntry;
+import edu.vt.middleware.ldap.bean.LdapResult;
 import org.dom4j.Document;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
@@ -34,7 +37,6 @@ import org.dom4j.QName;
  * @author  Middleware Services
  * @version  $Revision$ $Date$
  */
-
 public final class Dsmlv1 extends AbstractDsml
 {
 
@@ -56,27 +58,44 @@ public final class Dsmlv1 extends AbstractDsml
    */
   public Document createDsml(final Iterator<SearchResult> results)
   {
+    Document dsml = null;
+    try {
+      final LdapResult lr = this.beanFactory.newLdapResult();
+      lr.addEntries(results);
+      dsml = this.createDsml(lr);
+    } catch (NamingException e) {
+      if (this.logger.isErrorEnabled()) {
+        this.logger.error("Error creating Element from SearchResult", e);
+      }
+    }
+    return dsml;
+  }
+
+
+  /**
+   * This will take the results of a prior LDAP query and convert it to a DSML
+   * <code>Document</code>.
+   *
+   * @param  result  <code>LdapResult</code>
+   *
+   * @return  <code>Document</code>
+   */
+  public Document createDsml(final LdapResult result)
+  {
     final Namespace ns = new Namespace("dsml", "http://www.dsml.org/DSML");
     final Document doc = DocumentHelper.createDocument();
     final Element dsmlElement = doc.addElement(new QName("dsml", ns));
     final Element entriesElement = dsmlElement.addElement(
       new QName("directory-entries", ns));
 
-    // build document object from results
-    if (results != null) {
-      try {
-        while (results.hasNext()) {
-          final SearchResult sr = results.next();
-          final Element entryElement = this.createDsmlEntry(
-            new QName("entry", ns),
-            sr,
-            ns);
-          entriesElement.add(entryElement);
-        }
-      } catch (NamingException e) {
-        if (this.logger.isErrorEnabled()) {
-          this.logger.error("Error creating Element from SearchResult", e);
-        }
+    // build document object from result
+    if (result != null) {
+      for (LdapEntry le : result.getEntries()) {
+        final Element entryElement = this.createDsmlEntry(
+          new QName("entry", ns),
+          le,
+          ns);
+        entriesElement.add(entryElement);
       }
     }
 
@@ -84,61 +103,40 @@ public final class Dsmlv1 extends AbstractDsml
   }
 
 
-  /**
-   * This will take an attribute name and it's values and return a DSML
-   * attribute element.
-   *
-   * @param  attrName  <code>String</code>
-   * @param  attrValues  <code>List</code>
-   * @param  ns  <code>Namespace</code> of DSML
-   *
-   * @return  <code>Element</code>
-   */
-  protected Element createDsmlAttribute(
-    final String attrName,
-    final List<?> attrValues,
-    final Namespace ns)
+  /** {@inheritDoc} */
+  protected List<Element> createDsmlAttributes(
+    final LdapAttributes ldapAttributes, final Namespace ns)
   {
-    Element attrElement = DocumentHelper.createElement("");
-
-    if (attrName != null) {
+    final List<Element> attrElements = new ArrayList<Element>();
+    for (LdapAttribute attr : ldapAttributes.getAttributes()) {
+      final String attrName = attr.getName();
+      final Set<?> attrValues = attr.getValues();
+      Element attrElement = null;
       if (attrName.equalsIgnoreCase("objectclass")) {
-
-        attrElement.setQName(new QName("objectclass", ns));
-        if (attrValues != null) {
-          final Iterator<?> i = attrValues.iterator();
-          while (i.hasNext()) {
-            final Object rawValue = i.next();
-            String value = null;
-            boolean isBase64 = false;
-            if (rawValue instanceof String) {
-              value = (String) rawValue;
-            } else if (rawValue instanceof byte[]) {
-              value = LdapUtil.base64Encode((byte[]) rawValue);
-              isBase64 = true;
-            } else {
-              if (this.logger.isWarnEnabled()) {
-                this.logger.warn(
-                  "Could not cast attribute value as a byte[]" +
-                  " or a String");
-              }
-            }
-            if (value != null) {
-              final Element ocValueElement = attrElement.addElement(
-                new QName("oc-value", ns));
-              ocValueElement.addText(value);
-              if (isBase64) {
-                ocValueElement.addAttribute("encoding", "base64");
-              }
-            }
-          }
+        attrElement = createDsmlAttribute(
+          attrName,
+          attrValues,
+          ns,
+          "objectclass",
+          null,
+          "oc-value");
+        if (attrElement.hasContent()) {
+          attrElements.add(0, attrElement);
         }
       } else {
-        attrElement = super.createDsmlAttribute(attrName, attrValues, ns);
+        attrElement = createDsmlAttribute(
+          attrName,
+          attrValues,
+          ns,
+          "attr",
+          "name",
+          "value");
+        if (attrElement.hasContent()) {
+          attrElements.add(attrElement);
+        }
       }
     }
-
-    return attrElement;
+    return attrElements;
   }
 
 
@@ -152,21 +150,35 @@ public final class Dsmlv1 extends AbstractDsml
    */
   public Iterator<SearchResult> createSearchResults(final Document doc)
   {
-    final List<SearchResult> results = new ArrayList<SearchResult>();
+    return this.createLdapResult(doc).toSearchResults().iterator();
+  }
+
+
+  /**
+   * This will take a DSML <code>Document</code> and convert it to an <code>
+   * LdapResult</code>.
+   *
+   * @param  doc  <code>Document</code> of DSML
+   *
+   * @return  <code>LdapResult</code>
+   */
+  public LdapResult createLdapResult(final Document doc)
+  {
+    final LdapResult result = this.beanFactory.newLdapResult();
 
     if (doc != null && doc.hasContent()) {
       final Iterator<?> entryIterator = doc.selectNodes(
         "/dsml:dsml/dsml:directory-entries/dsml:entry").iterator();
       while (entryIterator.hasNext()) {
-        final LdapEntry result = this.createSearchResult(
+        final LdapEntry le = this.createLdapEntry(
           (Element) entryIterator.next());
         if (result != null) {
-          results.add(result.toSearchResult());
+          result.addEntry(le);
         }
       }
     }
 
-    return results.iterator();
+    return result;
   }
 
 
@@ -178,9 +190,9 @@ public final class Dsmlv1 extends AbstractDsml
    *
    * @return  <code>LdapEntry</code>
    */
-  protected LdapEntry createSearchResult(final Element entryElement)
+  protected LdapEntry createLdapEntry(final Element entryElement)
   {
-    final LdapEntry ldapEntry = new LdapEntry();
+    final LdapEntry ldapEntry = this.beanFactory.newLdapEntry();
     ldapEntry.setDn("");
 
     if (entryElement != null) {
@@ -198,7 +210,9 @@ public final class Dsmlv1 extends AbstractDsml
           final Element ocElement = (Element) ocIterator.next();
           if (ocElement != null && ocElement.hasContent()) {
             final String ocName = "objectClass";
-            final LdapAttribute ldapAttribute = new LdapAttribute(ocName);
+            final LdapAttribute ldapAttribute =
+              this.beanFactory.newLdapAttribute();
+            ldapAttribute.setName(ocName);
             final Iterator<?> valueIterator = ocElement.elementIterator(
               "oc-value");
             while (valueIterator.hasNext()) {
@@ -221,7 +235,7 @@ public final class Dsmlv1 extends AbstractDsml
         }
 
         ldapEntry.getLdapAttributes().addAttributes(
-          super.createSearchResult(entryElement).getLdapAttributes()
+          super.createLdapEntry(entryElement).getLdapAttributes()
               .getAttributes());
       }
     }

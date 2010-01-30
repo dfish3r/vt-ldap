@@ -20,7 +20,6 @@ package edu.vt.middleware.ldap.pool;
  * @author  Middleware Services
  * @version  $Revision$
  */
-
 public class LdapPoolExhaustedException extends LdapPoolException
 {
 

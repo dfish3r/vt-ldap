@@ -48,11 +48,19 @@
              value="/edu/vt/middleware/ldap/multipleEntriesIn.ldif"/>
   <parameter name="multipleLdifResultsOut"
              value="/edu/vt/middleware/ldap/multipleEntriesOut.ldif"/>
+  <parameter name="ldifEntry"
+             value="/edu/vt/middleware/ldap/dfisher.ldif"/>
+  <parameter name="ldifSortedEntry"
+             value="/edu/vt/middleware/ldap/dfisher.sorted.ldif"/>
 
   <parameter name="dsmlv1Entry"
              value="/edu/vt/middleware/ldap/dfisher.dsmlv1"/>
+  <parameter name="dsmlv1SortedEntry"
+             value="/edu/vt/middleware/ldap/dfisher.sorted.dsmlv1"/>
   <parameter name="dsmlv2Entry"
              value="/edu/vt/middleware/ldap/dfisher.dsmlv2"/>
+  <parameter name="dsmlv2SortedEntry"
+             value="/edu/vt/middleware/ldap/dfisher.sorted.dsmlv2"/>
 
   <parameter name="searchResults2"
              value="/edu/vt/middleware/ldap/searchResults-2.ldif"/>

@@ -22,6 +22,7 @@ import edu.vt.middleware.ldap.SearchFilter;
 import edu.vt.middleware.ldap.TestUtil;
 import edu.vt.middleware.ldap.bean.LdapEntry;
 import edu.vt.middleware.ldap.bean.LdapResult;
+import edu.vt.middleware.ldap.bean.SortedLdapBeanFactory;
 import org.testng.AssertJUnit;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
@@ -84,6 +85,67 @@ public class LdifTest
   /**
    * @param  dn  to search on.
    * @param  filter  to search with.
+   *
+   * @throws  Exception  On test failure.
+   */
+  @Parameters(
+    {
+      "ldifSearchDn",
+      "ldifSearchFilter"
+    }
+  )
+  @Test(groups = {"ldiftest"})
+  public void searchAndCompareLdif(final String dn, final String filter)
+    throws Exception
+  {
+    final Ldap ldap = TestUtil.createLdap();
+    final Ldif ldif = new Ldif();
+
+    final Iterator<SearchResult> iter =
+      ldap.search(dn, new SearchFilter(filter));
+
+    final LdapResult result1 = TestUtil.newLdapResult(iter);
+    final StringWriter writer = new StringWriter();
+    ldif.outputLdif(result1.toSearchResults().iterator(), writer);
+
+    final StringReader reader = new StringReader(writer.toString());
+    final LdapResult result2 = TestUtil.newLdapResult(ldif.importLdif(reader));
+
+    AssertJUnit.assertEquals(result1, result2);
+    ldap.close();
+  }
+
+
+  /**
+   * @param  ldifFile  to create with
+   * @param  ldifSortedFile  to compare with
+   *
+   * @throws  Exception  On test failure.
+   */
+  @Parameters(
+    {
+      "ldifEntry",
+      "ldifSortedEntry"
+    }
+  )
+  @Test(groups = {"ldiftest"})
+  public void readAndCompareSortedLdif(
+    final String ldifFile, final String ldifSortedFile)
+    throws Exception
+  {
+    final Ldif ldif = new Ldif();
+    ldif.setLdapBeanFactory(new SortedLdapBeanFactory());
+    final String ldifStringSorted = TestUtil.readFileIntoString(ldifSortedFile);
+    final Iterator<SearchResult> iter = ldif.importLdif(
+      new StringReader(TestUtil.readFileIntoString(ldifFile)));
+    final StringWriter writer = new StringWriter();
+    ldif.outputLdif(iter, writer);
+
+    AssertJUnit.assertEquals(ldifStringSorted, writer.toString());
+  }
+
+
+  /**
    * @param  ldifFileIn  to create with
    * @param  ldifFileOut  to compare with
    *
@@ -91,44 +153,26 @@ public class LdifTest
    */
   @Parameters(
     {
-      "ldifSearchDn",
-      "ldifSearchFilter",
       "multipleLdifResultsIn",
       "multipleLdifResultsOut"
     }
   )
   @Test(groups = {"ldiftest"})
-  public void createLdif(
-    final String dn,
-    final String filter,
-    final String ldifFileIn,
-    final String ldifFileOut)
+  public void readAndCompareMultipleLdif(
+    final String ldifFileIn, final String ldifFileOut)
     throws Exception
   {
-    final Ldap ldap = TestUtil.createLdap();
     final Ldif ldif = new Ldif();
-
-    Iterator<SearchResult> iter = ldap.search(dn, new SearchFilter(filter));
-
-    final LdapResult result1 = new LdapResult(iter);
-    final StringWriter writer = new StringWriter();
-    ldif.outputLdif(result1.toSearchResults().iterator(), writer);
-
-    final StringReader reader = new StringReader(writer.toString());
-    final LdapResult result2 = new LdapResult(ldif.importLdif(reader));
-
-    AssertJUnit.assertEquals(result1, result2);
-    ldap.close();
-
     final String ldifStringIn = TestUtil.readFileIntoString(ldifFileIn);
-    iter = ldif.importLdif(new StringReader(ldifStringIn));
+    Iterator<SearchResult> iter =
+      ldif.importLdif(new StringReader(ldifStringIn));
 
-    final LdapResult ldif1 = new LdapResult(iter);
+    final LdapResult ldif1 = TestUtil.newLdapResult(iter);
 
     final String ldifStringOut = TestUtil.readFileIntoString(ldifFileOut);
     iter = ldif.importLdif(new StringReader(ldifStringOut));
 
-    final LdapResult ldif2 = new LdapResult(iter);
+    final LdapResult ldif2 = TestUtil.newLdapResult(iter);
     AssertJUnit.assertEquals(ldif1, ldif2);
   }
 }

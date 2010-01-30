@@ -26,7 +26,6 @@ import javax.servlet.http.HttpSession;
  * @author  Middleware Services
  * @version  $Revision$ $Date$
  */
-
 public class DefaultSessionManager extends SessionManager
 {
 

@@ -38,6 +38,7 @@ import edu.vt.middleware.ldap.auth.Authenticator;
 import edu.vt.middleware.ldap.auth.AuthenticatorConfig;
 import edu.vt.middleware.ldap.bean.LdapAttribute;
 import edu.vt.middleware.ldap.bean.LdapAttributes;
+import edu.vt.middleware.ldap.bean.LdapBeanProvider;
 import edu.vt.middleware.ldap.props.LdapProperties;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -388,7 +389,9 @@ public abstract class AbstractLoginModule implements LoginModule
   {
     final List<LdapRole> roles = new ArrayList<LdapRole>();
     if (attributes != null) {
-      final LdapAttributes ldapAttrs = new LdapAttributes(attributes);
+      final LdapAttributes ldapAttrs =
+        LdapBeanProvider.getLdapBeanFactory().newLdapAttributes();
+      ldapAttrs.addAttributes(attributes);
       for (LdapAttribute ldapAttr : ldapAttrs.getAttributes()) {
         for (String attrValue : ldapAttr.getStringValues()) {
           roles.add(new LdapRole(attrValue));

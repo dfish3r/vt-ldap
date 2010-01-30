@@ -101,11 +101,11 @@ public class LdapResultTest
   {
     final Ldap ldap = TestUtil.createLdap();
 
-    final LdapResult r = new LdapResult(
+    final LdapResult found = TestUtil.newLdapResult(
       ldap.search(dn, new SearchFilter(filter), returnAttrs.split("\\|")));
     final String ldif = TestUtil.readFileIntoString(ldifFile);
-    final LdapEntry entry = TestUtil.convertLdifToEntry(ldif);
-    AssertJUnit.assertEquals(r, new LdapResult(entry));
+    final LdapResult expected = TestUtil.convertLdifToResult(ldif);
+    AssertJUnit.assertEquals(expected, found);
     ldap.close();
   }
 }

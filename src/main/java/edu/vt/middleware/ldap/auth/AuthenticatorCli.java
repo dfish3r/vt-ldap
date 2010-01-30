@@ -20,6 +20,7 @@ import java.io.OutputStreamWriter;
 import javax.naming.directory.Attributes;
 import edu.vt.middleware.ldap.AbstractCli;
 import edu.vt.middleware.ldap.bean.LdapAttributes;
+import edu.vt.middleware.ldap.bean.LdapBeanProvider;
 import edu.vt.middleware.ldap.bean.LdapEntry;
 import edu.vt.middleware.ldap.bean.LdapResult;
 import edu.vt.middleware.ldap.dsml.Dsmlv1;
@@ -151,10 +152,16 @@ public class AuthenticatorCli extends AbstractCli
         results = auth.authenticate(attrs);
       }
       if (results != null && results.size() > 0) {
-        final LdapEntry entry = new LdapEntry();
-        final LdapResult result = new LdapResult(entry);
+        final LdapEntry entry =
+          LdapBeanProvider.getLdapBeanFactory().newLdapEntry();
+        final LdapResult result =
+          LdapBeanProvider.getLdapBeanFactory().newLdapResult();
+        result.addEntry(entry);
         entry.setDn(auth.getDn(config.getUser()));
-        entry.setLdapAttributes(new LdapAttributes(results));
+        final LdapAttributes la =
+          LdapBeanProvider.getLdapBeanFactory().newLdapAttributes();
+        la.addAttributes(results);
+        entry.setLdapAttributes(la);
         if (this.outputDsmlv1) {
           (new Dsmlv1()).outputDsml(
             result.toSearchResults().iterator(),

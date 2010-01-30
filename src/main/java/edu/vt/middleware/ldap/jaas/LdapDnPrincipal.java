@@ -16,6 +16,7 @@ package edu.vt.middleware.ldap.jaas;
 import java.io.Serializable;
 import java.security.Principal;
 import edu.vt.middleware.ldap.bean.LdapAttributes;
+import edu.vt.middleware.ldap.bean.LdapBeanProvider;
 
 /**
  * <code>LdapPrincipal</code> provides a custom implementation for adding LDAP
@@ -38,7 +39,8 @@ public class LdapDnPrincipal
   private String name;
 
   /** User attributes. */
-  private LdapAttributes attributes = new LdapAttributes();
+  private LdapAttributes attributes =
+    LdapBeanProvider.getLdapBeanFactory().newLdapAttributes();
 
 
   /**

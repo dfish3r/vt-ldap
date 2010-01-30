@@ -18,10 +18,14 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.StringReader;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import javax.naming.directory.Attributes;
+import javax.naming.directory.SearchResult;
 import edu.vt.middleware.ldap.auth.Authenticator;
 import edu.vt.middleware.ldap.auth.NoopDnResolver;
 import edu.vt.middleware.ldap.bean.LdapAttributes;
+import edu.vt.middleware.ldap.bean.LdapBeanProvider;
 import edu.vt.middleware.ldap.bean.LdapEntry;
 import edu.vt.middleware.ldap.bean.LdapResult;
 import edu.vt.middleware.ldap.ldif.Ldif;
@@ -268,6 +272,24 @@ public final class TestUtil
 
 
   /**
+   * Creates a new <code>LdapResult</code> with the supplied
+   * <code>Iterator</code> of search results.
+   *
+   * @param  i  <code>Iterator</code> of search results
+   * @return  <code>LdapResult</code>
+   * @throws  Exception  if search results cannot be read
+   */
+  public static LdapResult newLdapResult(final Iterator<SearchResult> iter)
+    throws Exception
+  {
+    final LdapResult lr =
+      LdapBeanProvider.getLdapBeanFactory().newLdapResult();
+    lr.addEntries(iter);
+    return lr;
+  }
+
+
+  /**
    * Converts a ldif to a <code>LdapResult</code>.
    *
    * @param  ldif  to convert.
@@ -279,7 +301,25 @@ public final class TestUtil
   public static LdapResult convertLdifToResult(final String ldif)
     throws Exception
   {
-    return new LdapResult((new Ldif()).importLdif(new StringReader(ldif)));
+    return (new Ldif()).importLdifToLdapResult(new StringReader(ldif));
+  }
+
+
+  /**
+   * Creates a new <code>LdapEntry</code> with the supplied
+   * <code>SearchResult</code>.
+   *
+   * @param  sr  <code>SearchResult</code>
+   * @return  <code>LdapEntry</code>
+   * @throws  Exception  if search result cannot be read
+   */
+  public static LdapEntry newLdapEntry(final SearchResult sr)
+    throws Exception
+  {
+    final LdapEntry le =
+      LdapBeanProvider.getLdapBeanFactory().newLdapEntry();
+    le.setEntry(sr);
+    return le;
   }
 
 
@@ -295,8 +335,26 @@ public final class TestUtil
   public static LdapEntry convertLdifToEntry(final String ldif)
     throws Exception
   {
-    return
-      new LdapEntry((new Ldif()).importLdif(new StringReader(ldif)).next());
+    return (new Ldif()).importLdifToLdapResult(
+      new StringReader(ldif)).getEntries().iterator().next();
+  }
+
+
+  /**
+   * Creates a new <code>LdapAttributes</code> with the supplied
+   * <code>Attributes</code>.
+   *
+   * @param  attrs  <code>Attributes</code>
+   * @return  <code>LdapAttributes</code>
+   * @throws  Exception  if attributes cannot be read
+   */
+  public static LdapAttributes newLdapAttributes(final Attributes attrs)
+    throws Exception
+  {
+    final LdapAttributes la =
+      LdapBeanProvider.getLdapBeanFactory().newLdapAttributes();
+    la.addAttributes(attrs);
+    return la;
   }
 
 
@@ -310,7 +368,8 @@ public final class TestUtil
    */
   public static LdapAttributes convertStringToAttributes(final String attrs)
   {
-    final LdapAttributes la = new LdapAttributes();
+    final LdapAttributes la =
+      LdapBeanProvider.getLdapBeanFactory().newLdapAttributes();
     final String[] s = attrs.split("\\|");
     for (int i = 0; i < s.length; i++) {
       final String[] nameValuePairs = s[i].trim().split("=", 2);

@@ -299,6 +299,6 @@ public class AuthenticatorLoadTest
       new SearchFilter(filter, filterArgs.split("\\|")),
       returnAttrs.split("\\|"));
     final LdapAttributes expected = TestUtil.convertStringToAttributes(results);
-    AssertJUnit.assertEquals(expected, new LdapAttributes(attrs));
+    AssertJUnit.assertEquals(expected, TestUtil.newLdapAttributes(attrs));
   }
 }

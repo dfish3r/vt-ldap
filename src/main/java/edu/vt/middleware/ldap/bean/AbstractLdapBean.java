@@ -23,12 +23,26 @@ import org.apache.commons.logging.LogFactory;
  * @author  Middleware Services
  * @version  $Revision$ $Date$
  */
-
 public abstract class AbstractLdapBean
 {
 
   /** Log for this class. */
   protected final Log logger = LogFactory.getLog(getClass());
+
+  /** Factory for creating ldap beans. */
+  protected final LdapBeanFactory beanFactory;
+
+
+  /**
+   * Creates a new <code>AbstractLdapBean</code> with the supplied ldap bean
+   * factory.
+   *
+   * @param  lbf  <code>LdapBeanFactory</code>
+   */
+  public AbstractLdapBean(final LdapBeanFactory lbf)
+  {
+    this.beanFactory = lbf;
+  }
 
 
   /**

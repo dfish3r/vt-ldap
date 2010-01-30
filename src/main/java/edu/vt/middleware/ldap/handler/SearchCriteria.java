@@ -22,7 +22,6 @@ import javax.naming.directory.Attributes;
  * @author  Middleware Services
  * @version  $Revision$ $Date$
  */
-
 public class SearchCriteria
 {
 

@@ -23,7 +23,8 @@ import edu.vt.middleware.ldap.Ldap;
 import edu.vt.middleware.ldap.SearchFilter;
 import edu.vt.middleware.ldap.TestUtil;
 import edu.vt.middleware.ldap.bean.LdapEntry;
-import edu.vt.middleware.ldap.dsml.DsmlResult;
+import edu.vt.middleware.ldap.bean.LdapResult;
+import edu.vt.middleware.ldap.dsml.DsmlResultConverter;
 import org.testng.AssertJUnit;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
@@ -154,8 +155,9 @@ public class SearchServletTest
     final String ldifFile)
     throws Exception
   {
+    final DsmlResultConverter converter = new DsmlResultConverter();
     final String ldif = TestUtil.readFileIntoString(ldifFile);
-    final DsmlResult entry = new DsmlResult(TestUtil.convertLdifToEntry(ldif));
+    final LdapResult result = TestUtil.convertLdifToResult(ldif);
 
     final ServletUnitClient sc = this.dsmlServletRunner.newClient();
     // test basic dsml query
@@ -168,7 +170,7 @@ public class SearchServletTest
 
     AssertJUnit.assertNotNull(response);
     AssertJUnit.assertEquals("text/xml", response.getContentType());
-    AssertJUnit.assertEquals(entry.toDsmlv1(), response.getText());
+    AssertJUnit.assertEquals(converter.toDsmlv1(result), response.getText());
 
     // test plain text
     request = new PostMethodWebRequest(
@@ -180,7 +182,7 @@ public class SearchServletTest
 
     AssertJUnit.assertNotNull(response);
     AssertJUnit.assertEquals("text/plain", response.getContentType());
-    AssertJUnit.assertEquals(entry.toDsmlv1(), response.getText());
+    AssertJUnit.assertEquals(converter.toDsmlv1(result), response.getText());
 
     // test dsmlv2
     request = new PostMethodWebRequest(
@@ -192,7 +194,7 @@ public class SearchServletTest
 
     AssertJUnit.assertNotNull(response);
     AssertJUnit.assertEquals("text/xml", response.getContentType());
-    AssertJUnit.assertEquals(entry.toDsmlv2(), response.getText());
+    AssertJUnit.assertEquals(converter.toDsmlv2(result), response.getText());
   }
 
 

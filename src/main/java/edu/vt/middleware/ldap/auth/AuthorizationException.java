@@ -22,7 +22,6 @@ import javax.naming.NamingException;
  * @author  Middleware Services
  * @version  $Revision$
  */
-
 public class AuthorizationException extends NamingException
 {
 

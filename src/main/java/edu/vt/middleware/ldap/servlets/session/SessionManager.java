@@ -26,7 +26,6 @@ import org.apache.commons.logging.LogFactory;
  * @author  Middleware Services
  * @version  $Revision$ $Date$
  */
-
 public abstract class SessionManager
 {
 

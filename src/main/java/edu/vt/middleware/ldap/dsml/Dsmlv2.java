@@ -13,12 +13,11 @@
 */
 package edu.vt.middleware.ldap.dsml;
 
-import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.List;
 import javax.naming.NamingException;
 import javax.naming.directory.SearchResult;
 import edu.vt.middleware.ldap.bean.LdapEntry;
+import edu.vt.middleware.ldap.bean.LdapResult;
 import org.dom4j.Document;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
@@ -32,7 +31,6 @@ import org.dom4j.QName;
  * @author  Middleware Services
  * @version  $Revision$ $Date$
  */
-
 public final class Dsmlv2 extends AbstractDsml
 {
 
@@ -54,6 +52,30 @@ public final class Dsmlv2 extends AbstractDsml
    */
   public Document createDsml(final Iterator<SearchResult> results)
   {
+    Document dsml = null;
+    try {
+      final LdapResult lr = this.beanFactory.newLdapResult();
+      lr.addEntries(results);
+      dsml = this.createDsml(lr);
+    } catch (NamingException e) {
+      if (this.logger.isErrorEnabled()) {
+        this.logger.error("Error creating Element from SearchResult", e);
+      }
+    }
+    return dsml;
+  }
+
+
+  /**
+   * This will take the results of a prior LDAP query and convert it to a DSML
+   * <code>Document</code>.
+   *
+   * @param  result  <code>LdapResult</code>
+   *
+   * @return  <code>Document</code>
+   */
+  public Document createDsml(final LdapResult result)
+  {
     final Namespace ns = new Namespace("", "urn:oasis:names:tc:DSML:2:0:core");
     final Document doc = DocumentHelper.createDocument();
     final Element dsmlElement = doc.addElement(new QName("batchResponse", ns));
@@ -61,20 +83,13 @@ public final class Dsmlv2 extends AbstractDsml
       new QName("searchResponse", ns));
 
     // build document object from results
-    if (results != null) {
-      try {
-        while (results.hasNext()) {
-          final SearchResult sr = results.next();
-          final Element entryElement = this.createDsmlEntry(
+    if (result != null) {
+      for (LdapEntry le : result.getEntries()) {
+        final Element entryElement = this.createDsmlEntry(
             new QName("searchResultEntry", ns),
-            sr,
+            le,
             ns);
-          entriesElement.add(entryElement);
-        }
-      } catch (NamingException e) {
-        if (this.logger.isErrorEnabled()) {
-          this.logger.error("Error creating Element from SearchResult", e);
-        }
+        entriesElement.add(entryElement);
       }
     }
 
@@ -98,7 +113,21 @@ public final class Dsmlv2 extends AbstractDsml
    */
   public Iterator<SearchResult> createSearchResults(final Document doc)
   {
-    final List<SearchResult> results = new ArrayList<SearchResult>();
+    return this.createLdapResult(doc).toSearchResults().iterator();
+  }
+
+
+  /**
+   * This will take a DSML <code>Document</code> and convert it to a <code>
+   * LdapResult</code>.
+   *
+   * @param  doc  <code>Document</code> of DSML
+   *
+   * @return  <code>LdapResult</code>
+   */
+  public LdapResult createLdapResult(final Document doc)
+  {
+    final LdapResult result = this.beanFactory.newLdapResult();
 
     if (doc != null && doc.hasContent()) {
       final Iterator<?> entryIterator = doc.selectNodes(
@@ -106,14 +135,14 @@ public final class Dsmlv2 extends AbstractDsml
         "/*[name()='searchResponse']" +
         "/*[name()='searchResultEntry']").iterator();
       while (entryIterator.hasNext()) {
-        final LdapEntry result = this.createSearchResult(
+        final LdapEntry le = this.createLdapEntry(
           (Element) entryIterator.next());
-        if (result != null) {
-          results.add(result.toSearchResult());
+        if (le != null) {
+          result.addEntry(le);
         }
       }
     }
 
-    return results.iterator();
+    return result;
   }
 }

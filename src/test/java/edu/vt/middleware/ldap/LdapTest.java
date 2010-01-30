@@ -699,7 +699,7 @@ public class LdapTest
     final Iterator<SearchResult> iter = ldap.search(
       dn,
       new SearchFilter(filter));
-    AssertJUnit.assertEquals(resultsSize, (new LdapResult(iter)).size());
+    AssertJUnit.assertEquals(resultsSize, TestUtil.newLdapResult(iter).size());
 
     ldap.close();
   }
@@ -936,7 +936,7 @@ public class LdapTest
     final Ldap ldap = this.createLdap(false);
     final Attributes attrs = ldap.getAttributes(dn, returnAttrs.split("\\|"));
     final LdapAttributes expected = TestUtil.convertStringToAttributes(results);
-    AssertJUnit.assertEquals(expected, new LdapAttributes(attrs));
+    AssertJUnit.assertEquals(expected, TestUtil.newLdapAttributes(attrs));
   }
 
 
@@ -967,7 +967,7 @@ public class LdapTest
       returnAttrs.split("\\|"),
       new BinaryAttributeHandler());
     final LdapAttributes expected = TestUtil.convertStringToAttributes(results);
-    AssertJUnit.assertEquals(expected, new LdapAttributes(attrs));
+    AssertJUnit.assertEquals(expected, TestUtil.newLdapAttributes(attrs));
     ldap.close();
   }
 
@@ -1047,7 +1047,7 @@ public class LdapTest
       new String[] {expected.getName()});
     AssertJUnit.assertEquals(
       expected,
-      new LdapAttribute(a.get(expected.getName())));
+      TestUtil.newLdapAttributes(a).getAttribute(expected.getName()));
     ldap.close();
   }
 
@@ -1076,7 +1076,7 @@ public class LdapTest
     ldap.modifyAttributes(dn, mods);
 
     final Attributes a = ldap.getAttributes(dn, expected.getAttributeNames());
-    AssertJUnit.assertEquals(expected, new LdapAttributes(a));
+    AssertJUnit.assertEquals(expected, TestUtil.newLdapAttributes(a));
     ldap.close();
   }
 
@@ -1110,7 +1110,7 @@ public class LdapTest
       new String[] {expected.getName()});
     AssertJUnit.assertEquals(
       expected,
-      new LdapAttribute(a.get(expected.getName())));
+      TestUtil.newLdapAttributes(a).getAttribute(expected.getName()));
     ldap.close();
   }
 
@@ -1142,7 +1142,7 @@ public class LdapTest
     ldap.modifyAttributes(dn, mods);
 
     final Attributes a = ldap.getAttributes(dn, expected.getAttributeNames());
-    AssertJUnit.assertEquals(expected, new LdapAttributes(a));
+    AssertJUnit.assertEquals(expected, TestUtil.newLdapAttributes(a));
     ldap.close();
   }
 
@@ -1163,9 +1163,10 @@ public class LdapTest
   {
     final LdapAttribute expected = TestUtil.convertStringToAttributes(attrs)
         .getAttributes().iterator().next();
-    final LdapAttribute remove = new LdapAttribute(expected);
-    remove.getValues().remove(0);
-    expected.getValues().remove(1);
+    final LdapAttribute remove = TestUtil.convertStringToAttributes(attrs)
+        .getAttributes().iterator().next();
+    remove.getValues().remove("Unit Test User");
+    expected.getValues().remove("Best Test User");
 
     final Ldap ldap = this.createLdap(true);
     ldap.modifyAttributes(
@@ -1180,7 +1181,7 @@ public class LdapTest
       new String[] {expected.getName()});
     AssertJUnit.assertEquals(
       expected,
-      new LdapAttribute(a.get(expected.getName())));
+      TestUtil.newLdapAttributes(a).getAttribute(expected.getName()));
     ldap.close();
   }
 
@@ -1200,7 +1201,7 @@ public class LdapTest
     throws Exception
   {
     final LdapAttributes expected = TestUtil.convertStringToAttributes(attrs);
-    final LdapAttributes remove = new LdapAttributes(expected);
+    final LdapAttributes remove = TestUtil.convertStringToAttributes(attrs);
 
     final String[] attrsName = remove.getAttributeNames();
     remove.getAttributes().remove(remove.getAttribute(attrsName[0]));
@@ -1218,7 +1219,7 @@ public class LdapTest
     ldap.modifyAttributes(dn, mods);
 
     final Attributes a = ldap.getAttributes(dn, expected.getAttributeNames());
-    AssertJUnit.assertEquals(expected, new LdapAttributes(a));
+    AssertJUnit.assertEquals(expected, TestUtil.newLdapAttributes(a));
     ldap.close();
   }
 

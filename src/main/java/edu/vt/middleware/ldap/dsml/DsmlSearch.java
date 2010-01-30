@@ -28,7 +28,6 @@ import edu.vt.middleware.ldap.pool.LdapPool;
  * @author  Middleware Services
  * @version  $Revision$ $Date$
  */
-
 public class DsmlSearch extends LdapSearch
 {
 
