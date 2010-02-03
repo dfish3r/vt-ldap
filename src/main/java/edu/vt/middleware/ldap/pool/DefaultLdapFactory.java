@@ -20,7 +20,7 @@ import edu.vt.middleware.ldap.LdapConfig;
 
 /**
  * <code>DefaultLdapFactory</code> provides a simple implementation of an ldap
- * factory. Uses {@link ConnectLdapValidator} by default.
+ * factory.
  *
  * @author  Middleware Services
  * @version  $Revision$ $Date$
@@ -43,7 +43,6 @@ public class DefaultLdapFactory extends AbstractLdapFactory<Ldap>
   {
     this.config = LdapConfig.createFromProperties(null);
     this.config.makeImmutable();
-    this.validator = new ConnectLdapValidator();
   }
 
 
@@ -57,7 +56,6 @@ public class DefaultLdapFactory extends AbstractLdapFactory<Ldap>
   {
     this.config = LdapConfig.createFromProperties(is);
     this.config.makeImmutable();
-    this.validator = new ConnectLdapValidator();
   }
 
 
@@ -72,7 +70,6 @@ public class DefaultLdapFactory extends AbstractLdapFactory<Ldap>
   {
     this.config = lc;
     this.config.makeImmutable();
-    this.validator = new ConnectLdapValidator();
   }
 
 
