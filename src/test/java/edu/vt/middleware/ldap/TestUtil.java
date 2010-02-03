@@ -275,7 +275,7 @@ public final class TestUtil
    * Creates a new <code>LdapResult</code> with the supplied
    * <code>Iterator</code> of search results.
    *
-   * @param  i  <code>Iterator</code> of search results
+   * @param  iter  <code>Iterator</code> of search results
    * @return  <code>LdapResult</code>
    * @throws  Exception  if search results cannot be read
    */

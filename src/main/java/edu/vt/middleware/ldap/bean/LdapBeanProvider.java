@@ -13,10 +13,8 @@
 */
 package edu.vt.middleware.ldap.bean;
 
-import javax.servlet.ServletException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import edu.vt.middleware.ldap.servlets.AttributeServlet;
 
 /**
  * <code>LdapBeanProvider</code> provides a single source for ldap bean

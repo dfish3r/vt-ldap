@@ -17,11 +17,11 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
 import javax.naming.NamingException;
+import edu.vt.middleware.ldap.bean.LdapBeanFactory;
+import edu.vt.middleware.ldap.bean.LdapBeanProvider;
+import edu.vt.middleware.ldap.bean.LdapResult;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import edu.vt.middleware.ldap.bean.LdapBeanFactory;
-import edu.vt.middleware.ldap.bean.LdapResult;
-import edu.vt.middleware.ldap.bean.LdapBeanProvider;
 
 /**
  * <code>LdifResultConverter</code> provides utility methods for converting
