@@ -32,15 +32,21 @@ public class CompareLdapValidator implements LdapValidator<Ldap>
   /** Log for this class. */
   protected final Log logger = LogFactory.getLog(this.getClass());
 
-  /** DN for validating connections. */
-  private String validateDn;
+  /** DN for validating connections. Default value is {@value}. */
+  private String validateDn = "";
 
-  /** Filter for validating connections. */
-  private SearchFilter validateFilter;
+  /** Filter for validating connections. Default value is {@value}. */
+  private SearchFilter validateFilter = new SearchFilter("(objectClass=*)");
 
 
   /**
-   * Creates a new <code>CompareLdapValiadtor</code> with the supplied compare
+   * Default constructor.
+   */
+  public CompareLdapValidator() {}
+
+
+  /**
+   * Creates a new <code>CompareLdapValidator</code> with the supplied compare
    * dn and filter.
    *
    * @param  dn  to use for compares
@@ -49,6 +55,50 @@ public class CompareLdapValidator implements LdapValidator<Ldap>
   public CompareLdapValidator(final String dn, final SearchFilter filter)
   {
     this.validateDn = dn;
+    this.validateFilter = filter;
+  }
+
+
+  /**
+   * Returns the validate DN.
+   *
+   * @return  validate DN
+   */
+  public String getValidateDn()
+  {
+    return this.validateDn;
+  }
+
+
+  /**
+   * Returns the validate filter.
+   *
+   * @return  validate filter
+   */
+  public SearchFilter getValidateFilter()
+  {
+    return this.validateFilter;
+  }
+
+
+  /**
+   * Sets the validate DN.
+   *
+   * @param  s  DN
+   */
+  public void setValidateDn(final String s)
+  {
+    this.validateDn = s;
+  }
+
+
+  /**
+   * Sets the validate filter.
+   *
+   * @param  filter  to compare with
+   */
+  public void setValidateFilter(final SearchFilter filter)
+  {
     this.validateFilter = filter;
   }
 
