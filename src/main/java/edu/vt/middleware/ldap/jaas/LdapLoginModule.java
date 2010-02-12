@@ -61,7 +61,6 @@ public class LdapLoginModule extends AbstractLoginModule implements LoginModule
     final Map<String, ?> options)
   {
     this.setLdapPrincipal = true;
-    this.setLdapDnPrincipal = true;
     this.setLdapCredential = true;
 
     super.initialize(subject, callbackHandler, sharedState, options);

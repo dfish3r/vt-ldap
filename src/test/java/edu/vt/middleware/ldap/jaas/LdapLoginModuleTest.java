@@ -220,7 +220,7 @@ public class LdapLoginModuleTest
     final String credential)
     throws Exception
   {
-    this.doContextTest("vt-ldap", dn, user, role, credential);
+    this.doContextTest("vt-ldap", dn, user, role, credential, false);
   }
 
 
@@ -246,7 +246,7 @@ public class LdapLoginModuleTest
     final String credential)
     throws Exception
   {
-    this.doContextTest("vt-ldap-authz", dn, user, role, credential);
+    this.doContextTest("vt-ldap-authz", dn, user, role, credential, true);
   }
 
 
@@ -270,7 +270,7 @@ public class LdapLoginModuleTest
     final String credential)
     throws Exception
   {
-    this.doContextTest("vt-ldap-filter", dn, user, "", credential);
+    this.doContextTest("vt-ldap-filter", dn, user, "", credential, false);
   }
 
 
@@ -328,7 +328,7 @@ public class LdapLoginModuleTest
     final String credential)
     throws Exception
   {
-    this.doContextTest("vt-ldap-roles", dn, user, role, credential);
+    this.doContextTest("vt-ldap-roles", dn, user, role, credential, false);
   }
 
 
@@ -350,7 +350,8 @@ public class LdapLoginModuleTest
     final String credential)
     throws Exception
   {
-    this.doContextTest("vt-ldap-roles-recursive", dn, user, role, credential);
+    this.doContextTest(
+      "vt-ldap-roles-recursive", dn, user, role, credential, false);
   }
 
 
@@ -371,7 +372,7 @@ public class LdapLoginModuleTest
     final String credential)
     throws Exception
   {
-    this.doContextTest("vt-ldap-use-first", dn, user, role, credential);
+    this.doContextTest("vt-ldap-use-first", dn, user, role, credential, false);
   }
 
 
@@ -392,7 +393,7 @@ public class LdapLoginModuleTest
     final String credential)
     throws Exception
   {
-    this.doContextTest("vt-ldap-try-first", dn, user, role, credential);
+    this.doContextTest("vt-ldap-try-first", dn, user, role, credential, false);
   }
 
 
@@ -413,7 +414,7 @@ public class LdapLoginModuleTest
     final String credential)
     throws Exception
   {
-    this.doContextTest("vt-ldap-deprecated", dn, user, role, credential);
+    this.doContextTest("vt-ldap-deprecated", dn, user, role, credential, false);
   }
 
 
@@ -423,6 +424,7 @@ public class LdapLoginModuleTest
    * @param  user  to authenticate.
    * @param  role  to set for this user
    * @param  credential  to authenticate with.
+   * @param  checkLdapDn  whether to check the LdapDnPrincipal
    *
    * @throws  Exception  On test failure.
    */
@@ -431,7 +433,8 @@ public class LdapLoginModuleTest
     final String dn,
     final String user,
     final String role,
-    final String credential)
+    final String credential,
+    final boolean checkLdapDn)
     throws Exception
   {
     final TestCallbackHandler callback = new TestCallbackHandler();
@@ -466,12 +469,15 @@ public class LdapLoginModuleTest
 
     final Set<LdapDnPrincipal> dnPrincipals = lc.getSubject().getPrincipals(
       LdapDnPrincipal.class);
-    AssertJUnit.assertEquals(1, dnPrincipals.size());
-
-    final LdapDnPrincipal dnP = dnPrincipals.iterator().next();
-    AssertJUnit.assertEquals(dnP.getName(), dn);
-    if (!role.equals("")) {
-      AssertJUnit.assertTrue(dnP.getLdapAttributes().size() > 0);
+    if (checkLdapDn) {
+      AssertJUnit.assertEquals(1, dnPrincipals.size());
+      final LdapDnPrincipal dnP = dnPrincipals.iterator().next();
+      AssertJUnit.assertEquals(dnP.getName(), dn);
+      if (!role.equals("")) {
+        AssertJUnit.assertTrue(dnP.getLdapAttributes().size() > 0);
+      }
+    } else {
+      AssertJUnit.assertEquals(0, dnPrincipals.size());
     }
 
     final Set<LdapRole> roles = lc.getSubject().getPrincipals(LdapRole.class);
