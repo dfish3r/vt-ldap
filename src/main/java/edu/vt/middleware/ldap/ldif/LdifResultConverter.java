@@ -63,6 +63,7 @@ public class LdifResultConverter
   {
     if (lbf != null) {
       this.beanFactory = lbf;
+      this.ldif.setLdapBeanFactory(lbf);
     }
   }
 

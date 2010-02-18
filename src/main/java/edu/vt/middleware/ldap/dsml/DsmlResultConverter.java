@@ -67,6 +67,8 @@ public class DsmlResultConverter
   {
     if (lbf != null) {
       this.beanFactory = lbf;
+      this.dsmlv1.setLdapBeanFactory(lbf);
+      this.dsmlv2.setLdapBeanFactory(lbf);
     }
   }
 
