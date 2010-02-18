@@ -246,6 +246,18 @@ public class LdapConfig extends AbstractPropertyConfig
 
 
   /**
+   * This will create a new <code>LdapConfig</code> with the supplied ldap url.
+   *
+   * @param  ldapUrl  <code>String</code> LDAP URL
+   */
+  public LdapConfig(final String ldapUrl)
+  {
+    this();
+    this.setLdapUrl(ldapUrl);
+  }
+
+
+  /**
    * This will create a new <code>LdapConfig</code> with the supplied ldap url
    * and base Strings.
    *
