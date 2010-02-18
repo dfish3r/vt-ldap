@@ -25,6 +25,9 @@ import javax.naming.ldap.LdapContext;
  */
 public class RetryLdap extends Ldap
 {
+  /** serial version uid. */
+  private static final long serialVersionUID = 4247614583961731974L;
+
   /** retry counter. */
   private int retryCount;
 
