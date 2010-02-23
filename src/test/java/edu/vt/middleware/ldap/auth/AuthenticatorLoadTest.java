@@ -17,11 +17,12 @@ import java.util.HashMap;
 import java.util.Map;
 import javax.naming.directory.Attributes;
 import edu.vt.middleware.ldap.Ldap;
-import edu.vt.middleware.ldap.LdapTLSSocketFactory;
 import edu.vt.middleware.ldap.SearchFilter;
 import edu.vt.middleware.ldap.TestUtil;
 import edu.vt.middleware.ldap.bean.LdapAttributes;
 import edu.vt.middleware.ldap.bean.LdapEntry;
+import edu.vt.middleware.ldap.ssl.KeyStorePathTypeReader;
+import edu.vt.middleware.ldap.ssl.TLSSocketFactory;
 import org.testng.AssertJUnit;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
@@ -74,9 +75,11 @@ public class AuthenticatorLoadTest
       AuthenticatorLoadTest.class.getResourceAsStream(
         "/ldap.tls.load.properties"));
 
-    final LdapTLSSocketFactory sf = new LdapTLSSocketFactory();
-    sf.setTrustStoreName("/ed.truststore");
-    sf.setTrustStoreType("BKS");
+    final KeyStorePathTypeReader reader = new KeyStorePathTypeReader();
+    reader.setTrustStore("/ed.truststore");
+    reader.setTrustStoreType("BKS");
+    final TLSSocketFactory sf = new TLSSocketFactory();
+    sf.setSSLContextInitializer(reader.createSSLContextInitializer());
     sf.initialize();
     this.singleTLSAuth.getAuthenticatorConfig().setSslSocketFactory(sf);
   }

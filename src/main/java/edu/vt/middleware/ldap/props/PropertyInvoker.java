@@ -27,6 +27,9 @@ import edu.vt.middleware.ldap.auth.handler.AuthenticationResultHandler;
 import edu.vt.middleware.ldap.auth.handler.AuthorizationHandler;
 import edu.vt.middleware.ldap.handler.ConnectionHandler;
 import edu.vt.middleware.ldap.handler.SearchResultHandler;
+import edu.vt.middleware.ldap.ssl.PathTypeReader;
+import edu.vt.middleware.ldap.ssl.PathTypeReaderConfig;
+import edu.vt.middleware.ldap.ssl.SSLContextInitializer;
 
 /**
  * <code>PropertyInvoker</code> stores setter methods for a class to make method
@@ -118,7 +121,46 @@ public class PropertyInvoker
         if (value.equals("null")) {
           newValue = null;
         } else {
-          newValue = instantiateType(SSLSocketFactory.class, value);
+          // use a path type reader to configure key/trust material
+          if (PathTypeReaderConfig.isPathTypeReaderConfig(value)) {
+            final PathTypeReaderConfig readerConfig = new PathTypeReaderConfig(
+              value);
+            newValue = instantiateType(
+              SSLSocketFactory.class,
+              readerConfig.getSslSocketFactoryClassName());
+            final Class<?> readerClass = createClass(
+              readerConfig.getPathTypeReaderClassName());
+            final PropertyInvoker readerInvoker = new PropertyInvoker(
+              readerClass, "");
+            final Object reader = instantiateType(
+              readerClass, readerConfig.getPathTypeReaderClassName());
+            for (Map.Entry<String, String> entry :
+                 readerConfig.getProperties().entrySet()) {
+              readerInvoker.setProperty(
+                reader, entry.getKey(), entry.getValue());
+            }
+            try {
+              // set the SSL context initializer based using the path type
+              // reader, then initialize the TLS socket factory.
+              invokeMethod(
+                newValue.getClass().getMethod(
+                  "setSSLContextInitializer", SSLContextInitializer.class),
+                newValue,
+                invokeMethod(
+                  readerClass.getMethod(
+                    "createSSLContextInitializer", new Class<?>[0]),
+                  reader,
+                  null));
+              invokeMethod(
+                newValue.getClass().getMethod("initialize", new Class<?>[0]),
+                newValue,
+                null);
+            } catch (NoSuchMethodException e) {
+              throw new IllegalArgumentException(e);
+            }
+          } else {
+            newValue = instantiateType(SSLSocketFactory.class, value);
+          }
         }
       } else if (
         HostnameVerifier.class.isAssignableFrom(getter.getReturnType())) {
@@ -209,6 +251,8 @@ public class PropertyInvoker
       } else if (getter.getReturnType().isEnum()) {
         if (LdapConfig.SearchScope.class == getter.getReturnType()) {
           newValue = Enum.valueOf(LdapConfig.SearchScope.class, value);
+        } else if (PathTypeReader.PathType.class == getter.getReturnType()) {
+          newValue = Enum.valueOf(PathTypeReader.PathType.class, value);
         }
       } else if (String[].class == getter.getReturnType()) {
         newValue = value.split(",");
@@ -226,13 +270,7 @@ public class PropertyInvoker
         newValue = Boolean.valueOf(value);
       }
     }
-    try {
-      setter.invoke(object, new Object[] {newValue});
-    } catch (InvocationTargetException e) {
-      throw new IllegalArgumentException(e);
-    } catch (IllegalAccessException e) {
-      throw new IllegalArgumentException(e);
-    }
+    invokeMethod(setter, object, newValue);
   }
 
 
@@ -300,6 +338,33 @@ public class PropertyInvoker
     try {
       return Class.forName(className);
     } catch (ClassNotFoundException e) {
+      throw new IllegalArgumentException(e);
+    }
+  }
+
+
+  /**
+   * Invokes the supplied method on the supplied object with the supplied
+   * argument.
+   *
+   * @param  method  <code>Method</code> to invoke
+   * @param  object  <code>Object</code> to invoke method on
+   * @param  arg  <code>Object</code>  to invoke method with
+   * @return  <code>Object</code> produced by the invocation
+   * @throws  IllegalArgumentException  if an error occurs invoking the method
+   */
+  private static Object invokeMethod(
+    final Method method, final Object object, final Object arg)
+  {
+    try {
+      if (arg == null) {
+        return method.invoke(object, (Object[]) null);
+      } else {
+        return method.invoke(object, new Object[] {arg});
+      }
+    } catch (InvocationTargetException e) {
+      throw new IllegalArgumentException(e);
+    } catch (IllegalAccessException e) {
       throw new IllegalArgumentException(e);
     }
   }

@@ -155,7 +155,22 @@ public final class LdapUtil
   public static byte[] readURL(final URL url)
     throws IOException
   {
-    final InputStream is = url.openStream();
+    return readInputStream(url.openStream());
+  }
+
+
+  /**
+   * Reads the data in the supplied stream and returns it as a byte array.
+   *
+   * @param  is  <code>InputStream</code> to read
+   *
+   * @return  <code>byte[]</code> read from the stream
+   *
+   * @throws  IOException  if an error occurs reading data
+   */
+  public static byte[] readInputStream(final InputStream is)
+    throws IOException
+  {
     final ByteArrayOutputStream data = new ByteArrayOutputStream();
     try {
       final byte[] buffer = new byte[READ_BUFFER_SIZE];
