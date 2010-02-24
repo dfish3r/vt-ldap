@@ -61,7 +61,7 @@ public class UnorderedLdapBeanFactory implements LdapBeanFactory
    * <code>UnorderedLdapResult</code> represents a collection of ldap entries
    * that are unordered.
    */
-  public class UnorderedLdapResult
+  protected class UnorderedLdapResult
     extends AbstractLdapResult<HashMap<String, LdapEntry>>
   {
 
@@ -78,7 +78,7 @@ public class UnorderedLdapBeanFactory implements LdapBeanFactory
   /**
    * <code>UnorderedLdapEntry</code> represents a single ldap entry.
    */
-  public class UnorderedLdapEntry extends AbstractLdapEntry
+  protected class UnorderedLdapEntry extends AbstractLdapEntry
   {
 
 
@@ -95,7 +95,7 @@ public class UnorderedLdapBeanFactory implements LdapBeanFactory
    * <code>UnorderedLdapAttributes</code> represents a collection of ldap
    * attribute that are unordered.
    */
-  public class UnorderedLdapAttributes
+  protected class UnorderedLdapAttributes
     extends AbstractLdapAttributes<HashMap<String, LdapAttribute>>
   {
 
@@ -113,7 +113,7 @@ public class UnorderedLdapBeanFactory implements LdapBeanFactory
    * <code>UnorderedLdapAttribute</code> represents a single ldap attribute
    * whose values are unordered.
    */
-  public class UnorderedLdapAttribute
+  protected class UnorderedLdapAttribute
     extends AbstractLdapAttribute<HashSet<Object>>
   {
 

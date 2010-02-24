@@ -61,7 +61,7 @@ public class SortedLdapBeanFactory implements LdapBeanFactory
    * <code>SortedLdapResult</code> represents a collection of ldap entries
    * that are sorted by their DN.
    */
-  public class SortedLdapResult
+  protected class SortedLdapResult
     extends AbstractLdapResult<TreeMap<String, LdapEntry>>
   {
 
@@ -79,7 +79,7 @@ public class SortedLdapBeanFactory implements LdapBeanFactory
   /**
    * <code>SortedLdapEntry</code> represents a single ldap entry.
    */
-  public class SortedLdapEntry extends AbstractLdapEntry
+  protected class SortedLdapEntry extends AbstractLdapEntry
   {
 
 
@@ -96,7 +96,7 @@ public class SortedLdapBeanFactory implements LdapBeanFactory
    * <code>SortedLdapAttributes</code> represents a collection of ldap attribute
    * that are sorted by their name.
    */
-  public class SortedLdapAttributes
+  protected class SortedLdapAttributes
     extends AbstractLdapAttributes<TreeMap<String, LdapAttribute>>
   {
 
@@ -115,7 +115,7 @@ public class SortedLdapBeanFactory implements LdapBeanFactory
    * <code>SortedLdapAttribute</code> represents a single ldap attribute whose
    * values are sorted.
    */
-  public class SortedLdapAttribute
+  protected class SortedLdapAttribute
     extends AbstractLdapAttribute<TreeSet<Object>>
   {
 

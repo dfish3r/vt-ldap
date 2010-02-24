@@ -61,7 +61,7 @@ public class OrderedLdapBeanFactory implements LdapBeanFactory
    * <code>OrderedLdapResult</code> represents a collection of ldap entries
    * that are ordered by insertion.
    */
-  public class OrderedLdapResult
+  protected class OrderedLdapResult
     extends AbstractLdapResult<LinkedHashMap<String, LdapEntry>>
   {
 
@@ -78,7 +78,7 @@ public class OrderedLdapBeanFactory implements LdapBeanFactory
   /**
    * <code>OrderedLdapEntry</code> represents a single ldap entry.
    */
-  public class OrderedLdapEntry extends AbstractLdapEntry
+  protected class OrderedLdapEntry extends AbstractLdapEntry
   {
 
 
@@ -95,7 +95,7 @@ public class OrderedLdapBeanFactory implements LdapBeanFactory
    * <code>OrderedLdapAttributes</code> represents a collection of ldap
    * attribute that are ordered by insertion.
    */
-  public class OrderedLdapAttributes
+  protected class OrderedLdapAttributes
     extends AbstractLdapAttributes<LinkedHashMap<String, LdapAttribute>>
   {
 
@@ -113,7 +113,7 @@ public class OrderedLdapBeanFactory implements LdapBeanFactory
    * <code>OrderedLdapAttribute</code> represents a single ldap attribute whose
    * values are ordered by insertion.
    */
-  public class OrderedLdapAttribute
+  protected class OrderedLdapAttribute
     extends AbstractLdapAttribute<LinkedHashSet<Object>>
   {
 
