@@ -357,11 +357,11 @@ public class PropertyInvoker
     final Method method, final Object object, final Object arg)
   {
     try {
-      if (arg == null) {
-        return method.invoke(object, (Object[]) null);
-      } else {
-        return method.invoke(object, new Object[] {arg});
+      Object[] params = new Object[] {arg};
+      if (arg == null && method.getParameterTypes().length == 0) {
+        params = (Object[]) null;
       }
+      return method.invoke(object, params);
     } catch (InvocationTargetException e) {
       throw new IllegalArgumentException(e);
     } catch (IllegalAccessException e) {
