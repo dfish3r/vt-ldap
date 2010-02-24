@@ -32,7 +32,8 @@ public class TLSSocketFactory extends AbstractTLSSocketFactory
 {
 
   /** SSLContextInitializer used for initializing SSL contexts. */
-  protected SSLContextInitializer contextInitializer;
+  protected SSLContextInitializer contextInitializer =
+    new DefaultSSLContextInitializer();
 
 
   /**
