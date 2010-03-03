@@ -27,8 +27,7 @@ import edu.vt.middleware.ldap.auth.handler.AuthenticationResultHandler;
 import edu.vt.middleware.ldap.auth.handler.AuthorizationHandler;
 import edu.vt.middleware.ldap.handler.ConnectionHandler;
 import edu.vt.middleware.ldap.handler.SearchResultHandler;
-import edu.vt.middleware.ldap.ssl.PathTypeReader;
-import edu.vt.middleware.ldap.ssl.PathTypeReaderConfig;
+import edu.vt.middleware.ldap.ssl.CredentialConfigParser;
 import edu.vt.middleware.ldap.ssl.SSLContextInitializer;
 
 /**
@@ -122,20 +121,20 @@ public class PropertyInvoker
           newValue = null;
         } else {
           // use a path type reader to configure key/trust material
-          if (PathTypeReaderConfig.isPathTypeReaderConfig(value)) {
-            final PathTypeReaderConfig readerConfig = new PathTypeReaderConfig(
-              value);
+          if (CredentialConfigParser.isCredentialConfig(value)) {
+            final CredentialConfigParser configParser =
+              new CredentialConfigParser(value);
             newValue = instantiateType(
               SSLSocketFactory.class,
-              readerConfig.getSslSocketFactoryClassName());
-            final Class<?> readerClass = createClass(
-              readerConfig.getPathTypeReaderClassName());
+              configParser.getSslSocketFactoryClassName());
+            final Class<?> configClass = createClass(
+              configParser.getCredentialConfigClassName());
             final PropertyInvoker readerInvoker = new PropertyInvoker(
-              readerClass, "");
+              configClass, "");
             final Object reader = instantiateType(
-              readerClass, readerConfig.getPathTypeReaderClassName());
+              configClass, configParser.getCredentialConfigClassName());
             for (Map.Entry<String, String> entry :
-                 readerConfig.getProperties().entrySet()) {
+                 configParser.getProperties().entrySet()) {
               readerInvoker.setProperty(
                 reader, entry.getKey(), entry.getValue());
             }
@@ -147,7 +146,7 @@ public class PropertyInvoker
                   "setSSLContextInitializer", SSLContextInitializer.class),
                 newValue,
                 invokeMethod(
-                  readerClass.getMethod(
+                  configClass.getMethod(
                     "createSSLContextInitializer", new Class<?>[0]),
                   reader,
                   null));
@@ -251,8 +250,6 @@ public class PropertyInvoker
       } else if (getter.getReturnType().isEnum()) {
         if (LdapConfig.SearchScope.class == getter.getReturnType()) {
           newValue = Enum.valueOf(LdapConfig.SearchScope.class, value);
-        } else if (PathTypeReader.PathType.class == getter.getReturnType()) {
-          newValue = Enum.valueOf(PathTypeReader.PathType.class, value);
         }
       } else if (String[].class == getter.getReturnType()) {
         newValue = value.split(",");

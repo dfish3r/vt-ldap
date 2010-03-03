@@ -16,29 +16,22 @@ package edu.vt.middleware.ldap.ssl;
 import java.security.GeneralSecurityException;
 
 /**
- * <code>PathTypeReader</code> provides a base interface for all path type
- * readers.
+ * <code>CredentialConfig</code> provides a base interface for all
+ * credential configurations. Since credential configs are invoked via
+ * reflection by the PropertyInvoker their method signatures are not important.
+ * They only need to be able to create an SSL context initializer once their
+ * properties have been set.
  *
  * @author  Middleware Services
  * @version  $Revision: 1106 $ $Date: 2010-01-29 23:34:13 -0500 (Fri, 29 Jan 2010) $
  */
-public interface PathTypeReader
+public interface CredentialConfig
 {
-
-  /** Types of paths. */
-  public enum PathType {
-
-    /** File path location. */
-    FILEPATH,
-
-    /** Classpath location. */
-    CLASSPATH
-  }
 
 
   /**
    * Creates an <code>SSLContextInitializer</code> using the configured trust
-   * and authentication material in this reader.
+   * and authentication material in this config.
    *
    * @return  <code>SSLContextInitializer</code>
    * @throws  GeneralSecurityException  if the ssl context initializer cannot be

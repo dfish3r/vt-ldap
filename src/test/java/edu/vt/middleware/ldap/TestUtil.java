@@ -29,8 +29,6 @@ import edu.vt.middleware.ldap.bean.LdapBeanProvider;
 import edu.vt.middleware.ldap.bean.LdapEntry;
 import edu.vt.middleware.ldap.bean.LdapResult;
 import edu.vt.middleware.ldap.ldif.Ldif;
-import edu.vt.middleware.ldap.ssl.KeyStorePathTypeReader;
-import edu.vt.middleware.ldap.ssl.TLSSocketFactory;
 import org.testng.annotations.DataProvider;
 
 /**
@@ -89,16 +87,6 @@ public final class TestUtil
     final Ldap l = new Ldap();
     l.loadFromProperties(
       TestUtil.class.getResourceAsStream("/ldap.sasl.properties"));
-
-    final KeyStorePathTypeReader reader = new KeyStorePathTypeReader();
-    reader.setTrustStore("/ed.truststore");
-    reader.setTrustStoreType("BKS");
-    reader.setKeyStore("/ed.keystore");
-    reader.setKeyStoreType("BKS");
-    final TLSSocketFactory sf = new TLSSocketFactory();
-    sf.setSSLContextInitializer(reader.createSSLContextInitializer());
-    sf.initialize();
-    l.getLdapConfig().setSslSocketFactory(sf);
     return l;
   }
 
@@ -164,14 +152,6 @@ public final class TestUtil
     final Authenticator a = new Authenticator();
     a.loadFromProperties(
       TestUtil.class.getResourceAsStream("/ldap.tls.properties"));
-
-    final KeyStorePathTypeReader reader = new KeyStorePathTypeReader();
-    reader.setTrustStore("/ed.truststore");
-    reader.setTrustStoreType("BKS");
-    final TLSSocketFactory sf = new TLSSocketFactory();
-    sf.setSSLContextInitializer(reader.createSSLContextInitializer());
-    sf.initialize();
-    a.getAuthenticatorConfig().setSslSocketFactory(sf);
     return a;
   }
 
@@ -189,14 +169,6 @@ public final class TestUtil
     a.loadFromProperties(
       TestUtil.class.getResourceAsStream("/ldap.tls.properties"));
     a.getAuthenticatorConfig().setDnResolver(new NoopDnResolver());
-
-    final KeyStorePathTypeReader reader = new KeyStorePathTypeReader();
-    reader.setTrustStore("/ed.truststore");
-    reader.setTrustStoreType("BKS");
-    final TLSSocketFactory sf = new TLSSocketFactory();
-    sf.setSSLContextInitializer(reader.createSSLContextInitializer());
-    sf.initialize();
-    a.getAuthenticatorConfig().setSslSocketFactory(sf);
     return a;
   }
 

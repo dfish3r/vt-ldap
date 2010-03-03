@@ -19,51 +19,51 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * Parses the configuration data associated with path type readers and ssl
+ * Parses the configuration data associated with credential configs and ssl
  * socket factories.
  * The format of the property string should be like:
  * MySSLSocketFactory
- *   {KeyStorePathTypeReader
- *     {trustStore=/tmp/my.truststore, trustStorePathType=FILEPATH}}
+ *   {KeyStoreCredentialConfig
+ *     {trustStore=/tmp/my.truststore, trustStoreType=JKS}}
  *
  * @author  Middleware Services
  * @version  $Revision: 930 $ $Date: 2009-10-26 16:44:26 -0400 (Mon, 26 Oct 2009) $
  */
-public class PathTypeReaderConfig
+public class CredentialConfigParser
 {
-  /** Property string for configuring a path type reader. */
+  /** Property string for configuring a credential config. */
   private static final Pattern FULL_CONFIG_PATTERN = Pattern.compile(
     "(.*)\\s*\\{(.*)\\{(.*)\\}\\s*\\}\\s*");
 
-  /** Property string for configuring a path type reader. */
+  /** Property string for configuring a credential config. */
   private static final Pattern BRIEF_CONFIG_PATTERN = Pattern.compile(
     "(.*)\\s*\\{(.*)\\}\\s*");
 
   /** SSL socket factory class found in the config. */
   private String sslSocketFactoryClassName;
 
-  /** Path type reader class found in the config. */
-  private String pathTypeReaderClassName =
-    "edu.vt.middleware.ldap.ssl.DefaultX509PathTypeReader";
+  /** Credential config class found in the config. */
+  private String credentialConfigClassName =
+    "edu.vt.middleware.ldap.ssl.X509CredentialConfig";
 
-  /** Properties found in the config to set on the path type reader. */
+  /** Properties found in the config to set on the credential config. */
   private Map<String, String> properties = new HashMap<String, String>();
 
 
   /**
-   * Creates a new <code>PathTypeReaderConfig</code> with the supplied
+   * Creates a new <code>CredentialConfigParser</code> with the supplied
    * configuration string.
    *
    * @param  config  <code>String</code>
    */
-  public PathTypeReaderConfig(final String config)
+  public CredentialConfigParser(final String config)
   {
     final Matcher fullMatcher = FULL_CONFIG_PATTERN.matcher(config);
     final Matcher briefMatcher = BRIEF_CONFIG_PATTERN.matcher(config);
     if (fullMatcher.matches()) {
       int i = 1;
       this.sslSocketFactoryClassName = fullMatcher.group(i++).trim();
-      this.pathTypeReaderClassName = fullMatcher.group(i++).trim();
+      this.credentialConfigClassName = fullMatcher.group(i++).trim();
       if (!fullMatcher.group(i).trim().equals("")) {
         for (String input : fullMatcher.group(i).trim().split(",")) {
           final String[] s = input.split("=");
@@ -95,13 +95,13 @@ public class PathTypeReaderConfig
 
 
   /**
-   * Returns the path type reader class name from the configuration.
+   * Returns the credential config class name from the configuration.
    *
    * @return  <code>String</code>  class name
    */
-  public String getPathTypeReaderClassName()
+  public String getCredentialConfigClassName()
   {
-    return this.pathTypeReaderClassName;
+    return this.credentialConfigClassName;
   }
 
 
@@ -117,13 +117,13 @@ public class PathTypeReaderConfig
 
 
   /**
-   * Returns whether the supplied configuration data contains a path type
-   * reader.
+   * Returns whether the supplied configuration data contains a credential
+   * config.
    *
    * @param  config  <code>String</code>
    * @return  <code>boolean</code>
    */
-  public static boolean isPathTypeReaderConfig(final String config)
+  public static boolean isCredentialConfig(final String config)
   {
     return FULL_CONFIG_PATTERN.matcher(config).matches() ||
            BRIEF_CONFIG_PATTERN.matcher(config).matches();

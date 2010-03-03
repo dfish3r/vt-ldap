@@ -90,11 +90,6 @@ public class LdapLoginModuleTest
     System.setProperty(
       "java.security.auth.login.config",
       "src/test/resources/ldap_jaas.config");
-    System.setProperty(
-      "javax.net.ssl.trustStore",
-      "src/test/resources/ed.truststore");
-    System.setProperty("javax.net.ssl.trustStoreType", "BKS");
-    System.setProperty("javax.net.ssl.trustStorePassword", "changeit");
   }
 
 
@@ -184,9 +179,6 @@ public class LdapLoginModuleTest
     throws Exception
   {
     System.clearProperty("java.security.auth.login.config");
-    System.clearProperty("javax.net.ssl.trustStore");
-    System.clearProperty("javax.net.ssl.trustStoreType");
-    System.clearProperty("javax.net.ssl.trustStorePassword");
 
     final Ldap ldap = TestUtil.createSetupLdap();
     ldap.delete(testLdapEntry.getDn());
