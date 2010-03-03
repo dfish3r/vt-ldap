@@ -98,7 +98,7 @@ public class CredentialConfigParser
         }
       }
     } else if (paramsOnlyMatcher.matches()) {
-      int i = 1;
+      final int i = 1;
       if (!paramsOnlyMatcher.group(i).trim().equals("")) {
         for (String input : paramsOnlyMatcher.group(i).trim().split(",")) {
           final String[] s = input.split("=");
