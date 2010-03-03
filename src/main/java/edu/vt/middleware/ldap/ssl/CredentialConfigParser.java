@@ -22,9 +22,19 @@ import java.util.regex.Pattern;
  * Parses the configuration data associated with credential configs and ssl
  * socket factories.
  * The format of the property string should be like:
+ * <pre>
  * MySSLSocketFactory
  *   {KeyStoreCredentialConfig
  *     {trustStore=/tmp/my.truststore, trustStoreType=JKS}}
+ * </pre>
+ * or
+ * <pre>
+ * {KeyStoreCredentialConfig{trustStore=/tmp/my.truststore, trustStoreType=JKS}}
+ * </pre>
+ * or
+ * <pre>
+ * {trustCertificates=/tmp/my.crt}
+ * </pre>
  *
  * @author  Middleware Services
  * @version  $Revision: 930 $ $Date: 2009-10-26 16:44:26 -0400 (Mon, 26 Oct 2009) $
@@ -33,14 +43,19 @@ public class CredentialConfigParser
 {
   /** Property string for configuring a credential config. */
   private static final Pattern FULL_CONFIG_PATTERN = Pattern.compile(
-    "(.*)\\s*\\{(.*)\\{(.*)\\}\\s*\\}\\s*");
+    "(.+)\\s*\\{(.+)\\s*\\{(.*)\\}\\s*\\}\\s*");
 
   /** Property string for configuring a credential config. */
-  private static final Pattern BRIEF_CONFIG_PATTERN = Pattern.compile(
-    "(.*)\\s*\\{(.*)\\}\\s*");
+  private static final Pattern CREDENTIAL_ONLY_CONFIG_PATTERN = Pattern.compile(
+    "\\s*\\{(.+)\\s*\\{(.*)\\}\\s*\\}\\s*");
+
+  /** Property string for configuring a credential config. */
+  private static final Pattern PARAMS_ONLY_CONFIG_PATTERN = Pattern.compile(
+    "\\s*\\{(.*)\\}\\s*");
 
   /** SSL socket factory class found in the config. */
-  private String sslSocketFactoryClassName;
+  private String sslSocketFactoryClassName =
+    "edu.vt.middleware.ldap.ssl.TLSSocketFactory";
 
   /** Credential config class found in the config. */
   private String credentialConfigClassName =
@@ -59,7 +74,10 @@ public class CredentialConfigParser
   public CredentialConfigParser(final String config)
   {
     final Matcher fullMatcher = FULL_CONFIG_PATTERN.matcher(config);
-    final Matcher briefMatcher = BRIEF_CONFIG_PATTERN.matcher(config);
+    final Matcher credentialOnlyMatcher =
+      CREDENTIAL_ONLY_CONFIG_PATTERN.matcher(config);
+    final Matcher paramsOnlyMatcher = PARAMS_ONLY_CONFIG_PATTERN.matcher(
+      config);
     if (fullMatcher.matches()) {
       int i = 1;
       this.sslSocketFactoryClassName = fullMatcher.group(i++).trim();
@@ -70,11 +88,19 @@ public class CredentialConfigParser
           this.properties.put(s[0].trim(), s[1].trim());
         }
       }
-    } else if (briefMatcher.matches()) {
+    } else if (credentialOnlyMatcher.matches()) {
       int i = 1;
-      this.sslSocketFactoryClassName = briefMatcher.group(i++).trim();
-      if (!briefMatcher.group(i).trim().equals("")) {
-        for (String input : briefMatcher.group(i).trim().split(",")) {
+      this.credentialConfigClassName = credentialOnlyMatcher.group(i++).trim();
+      if (!credentialOnlyMatcher.group(i).trim().equals("")) {
+        for (String input : credentialOnlyMatcher.group(i).trim().split(",")) {
+          final String[] s = input.split("=");
+          this.properties.put(s[0].trim(), s[1].trim());
+        }
+      }
+    } else if (paramsOnlyMatcher.matches()) {
+      int i = 1;
+      if (!paramsOnlyMatcher.group(i).trim().equals("")) {
+        for (String input : paramsOnlyMatcher.group(i).trim().split(",")) {
           final String[] s = input.split("=");
           this.properties.put(s[0].trim(), s[1].trim());
         }
@@ -126,6 +152,7 @@ public class CredentialConfigParser
   public static boolean isCredentialConfig(final String config)
   {
     return FULL_CONFIG_PATTERN.matcher(config).matches() ||
-           BRIEF_CONFIG_PATTERN.matcher(config).matches();
+           CREDENTIAL_ONLY_CONFIG_PATTERN.matcher(config).matches() ||
+           PARAMS_ONLY_CONFIG_PATTERN.matcher(config).matches();
   }
 }
