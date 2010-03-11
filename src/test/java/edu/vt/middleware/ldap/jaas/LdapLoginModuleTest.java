@@ -13,6 +13,9 @@
 */
 package edu.vt.middleware.ldap.jaas;
 
+import java.security.Principal;
+import java.security.acl.Group;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -598,6 +601,48 @@ public class LdapLoginModuleTest
         }
       }
       AssertJUnit.assertTrue(match);
+    }
+
+    final Set<Group> roleGroups = lc.getSubject().getPrincipals(
+      Group.class);
+    AssertJUnit.assertTrue(roleGroups.size() == 2);
+    for (Group g : roleGroups) {
+      if (g.getName().equals("Roles")) {
+        final Enumeration<? extends Principal> members = g.members();
+        int count = 0;
+        while (members.hasMoreElements()) {
+          final Principal p = members.nextElement();
+          boolean match = false;
+          for (LdapRole lr : lc.getSubject().getPrincipals(LdapRole.class)) {
+            if (lr.getName().equals(p.getName())) {
+              match = true;
+            }
+          }
+          AssertJUnit.assertTrue(match);
+          count++;
+        }
+        AssertJUnit.assertEquals(
+          count, lc.getSubject().getPrincipals(LdapRole.class).size());
+      } else if (g.getName().equals("Principals")) {
+        final Enumeration<? extends Principal> members = g.members();
+        int count = 0;
+        while (members.hasMoreElements()) {
+          final Principal p = members.nextElement();
+          boolean match = false;
+          for (LdapPrincipal lp :
+               lc.getSubject().getPrincipals(LdapPrincipal.class)) {
+            if (lp.getName().equals(p.getName())) {
+              match = true;
+            }
+          }
+          AssertJUnit.assertTrue(match);
+          count++;
+        }
+        AssertJUnit.assertEquals(
+          count, lc.getSubject().getPrincipals(LdapPrincipal.class).size());
+      } else {
+        AssertJUnit.fail("Found invalid group");
+      }
     }
 
     final Set<?> credentials = lc.getSubject().getPrivateCredentials();

@@ -66,9 +66,10 @@ public abstract class AbstractLoginModule implements LoginModule
 
   /** Regular expression for ldap properties to ignore. */
   private static final String IGNORE_LDAP_REGEX =
-    "useFirstPass|tryFirstPass|storePass|setLdapPrincipal|" +
-    "setLdapDnPrincipal|setLdapCredential|userRoleAttribute|" +
-    "roleFilter|roleAttribute|recursionAttribute";
+    "useFirstPass|tryFirstPass|storePass|" +
+    "setLdapPrincipal|setLdapDnPrincipal|setLdapCredential|" +
+    "principalGroupName|roleGroupName|" +
+    "userRoleAttribute|roleFilter|roleAttribute|recursionAttribute";
 
   /** Log for this class. */
   protected final Log logger = LogFactory.getLog(this.getClass());
@@ -104,6 +105,12 @@ public abstract class AbstractLoginModule implements LoginModule
   /** Whether ldap credential data should be set. */
   protected boolean setLdapCredential;
 
+  /** Name of group to add all principals to. */
+  protected String principalGroupName;
+
+  /** Name of group to add all roles to. */
+  protected String roleGroupName;
+
   /** Whether authentication was successful. */
   protected boolean success;
 
@@ -112,6 +119,9 @@ public abstract class AbstractLoginModule implements LoginModule
 
   /** Credentials to add to the subject. */
   protected Set<LdapCredential> credentials;
+
+  /** Roles to add to the subject. */
+  protected Set<Principal> roles;
 
 
   /** {@inheritDoc} */
@@ -144,6 +154,10 @@ public abstract class AbstractLoginModule implements LoginModule
         this.setLdapDnPrincipal = Boolean.valueOf(value);
       } else if (key.equalsIgnoreCase("setLdapCredential")) {
         this.setLdapCredential = Boolean.valueOf(value);
+      } else if (key.equalsIgnoreCase("principalGroupName")) {
+        this.principalGroupName = value;
+      } else if (key.equalsIgnoreCase("roleGroupName")) {
+        this.roleGroupName = value;
       }
     }
 
@@ -154,10 +168,13 @@ public abstract class AbstractLoginModule implements LoginModule
       this.logger.debug("setLdapPrincipal = " + this.setLdapPrincipal);
       this.logger.debug("setLdapDnPrincipal = " + this.setLdapDnPrincipal);
       this.logger.debug("setLdapCredential = " + this.setLdapCredential);
+      this.logger.debug("principalGroupName = " + this.principalGroupName);
+      this.logger.debug("roleGroupName = " + this.roleGroupName);
     }
 
     this.principals = new TreeSet<Principal>();
     this.credentials = new HashSet<LdapCredential>();
+    this.roles = new TreeSet<Principal>();
   }
 
 
@@ -183,9 +200,37 @@ public abstract class AbstractLoginModule implements LoginModule
           "Committed the following principals: " + this.principals);
       }
       this.subject.getPrivateCredentials().addAll(this.credentials);
+      this.subject.getPrincipals().addAll(this.roles);
+      if (this.logger.isDebugEnabled()) {
+        this.logger.debug(
+          "Committed the following roles: " + this.roles);
+      }
+      if (this.principalGroupName != null) {
+        final LdapGroup group = new LdapGroup(this.principalGroupName);
+        for (Principal principal : this.principals) {
+          group.addMember(principal);
+        }
+        subject.getPrincipals().add(group);
+        if (this.logger.isDebugEnabled()) {
+          this.logger.debug(
+            "Committed the following principal group: " + group);
+        }
+      }
+      if (this.roleGroupName != null) {
+        final LdapGroup group = new LdapGroup(this.roleGroupName);
+        for (Principal role : this.roles) {
+          group.addMember(role);
+        }
+        subject.getPrincipals().add(group);
+        if (this.logger.isDebugEnabled()) {
+          this.logger.debug(
+            "Committed the following role group: " + group);
+        }
+      }
     }
     this.principals.clear();
     this.credentials.clear();
+    this.roles.clear();
     return true;
   }
 
@@ -210,6 +255,7 @@ public abstract class AbstractLoginModule implements LoginModule
     }
     this.principals.clear();
     this.credentials.clear();
+    this.roles.clear();
 
     final Iterator<LdapPrincipal> prinIter = this.subject.getPrincipals(
       LdapPrincipal.class).iterator();
@@ -227,6 +273,12 @@ public abstract class AbstractLoginModule implements LoginModule
       LdapRole.class).iterator();
     while (roleIter.hasNext()) {
       this.subject.getPrincipals().remove(roleIter.next());
+    }
+
+    final Iterator<LdapGroup> groupIter = this.subject.getPrincipals(
+      LdapGroup.class).iterator();
+    while (groupIter.hasNext()) {
+      this.subject.getPrincipals().remove(groupIter.next());
     }
 
     final Iterator<LdapCredential> credIter = this.subject

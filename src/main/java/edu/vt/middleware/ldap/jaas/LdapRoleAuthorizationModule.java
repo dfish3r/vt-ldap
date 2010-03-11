@@ -137,7 +137,6 @@ public class LdapRoleAuthorizationModule extends AbstractLoginModule
         this.success = true;
       }
 
-      final List<LdapRole> roles = new ArrayList<LdapRole>();
       if (this.roleFilter != null) {
         final Object[] filterArgs = new Object[] {loginDn, loginName, };
         final Iterator<SearchResult> results = this.ldap.search(
@@ -145,11 +144,10 @@ public class LdapRoleAuthorizationModule extends AbstractLoginModule
           this.roleAttribute);
         while (results.hasNext()) {
           final SearchResult sr = results.next();
-          roles.addAll(this.attributesToRoles(sr.getAttributes()));
+          this.roles.addAll(this.attributesToRoles(sr.getAttributes()));
         }
       }
-      if (!roles.isEmpty()) {
-        this.principals.addAll(roles);
+      if (!this.roles.isEmpty()) {
         this.success = true;
       }
       this.storeCredentials(nameCb, passCb, null);

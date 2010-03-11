@@ -108,15 +108,14 @@ public class LdapLoginModule extends AbstractLoginModule implements LoginModule
 
       AuthenticationException authEx = null;
       Attributes attrs = null;
-      final List<LdapRole> roles = new ArrayList<LdapRole>();
       try {
         attrs = this.auth.authenticate(
           nameCb.getName(),
           passCb.getPassword(),
           this.userRoleAttribute);
-        roles.addAll(this.attributesToRoles(attrs));
+        this.roles.addAll(this.attributesToRoles(attrs));
         if (this.defaultRole != null && !this.defaultRole.isEmpty()) {
-          roles.addAll(this.defaultRole);
+          this.roles.addAll(this.defaultRole);
         }
         this.success = true;
       } catch (AuthenticationException e) {
@@ -127,9 +126,9 @@ public class LdapLoginModule extends AbstractLoginModule implements LoginModule
               nameCb.getName(),
               passCb.getPassword(),
               this.userRoleAttribute);
-            roles.addAll(this.attributesToRoles(attrs));
+            this.roles.addAll(this.attributesToRoles(attrs));
             if (this.defaultRole != null && !this.defaultRole.isEmpty()) {
-              roles.addAll(this.defaultRole);
+              this.roles.addAll(this.defaultRole);
             }
             this.success = true;
           } catch (AuthenticationException e2) {
@@ -166,9 +165,6 @@ public class LdapLoginModule extends AbstractLoginModule implements LoginModule
         }
         if (this.setLdapCredential) {
           this.credentials.add(new LdapCredential(passCb.getPassword()));
-        }
-        if (!roles.isEmpty()) {
-          this.principals.addAll(roles);
         }
         this.storeCredentials(nameCb, passCb, loginDn);
       }
