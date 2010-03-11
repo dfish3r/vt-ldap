@@ -463,7 +463,7 @@ public class LdapTest
     // test recursive searching
     final FqdnSearchResultHandler handler = new FqdnSearchResultHandler();
     handler.setAttributeHandler(
-      new AttributeHandler[] {new RecursiveAttributeHandler(ldap, "member")});
+      new AttributeHandler[] {new RecursiveAttributeHandler("member")});
 
     final Iterator<SearchResult> iter = ldap.search(
       dn,
@@ -508,7 +508,7 @@ public class LdapTest
     // test recursive searching
     final FqdnSearchResultHandler fsrh = new FqdnSearchResultHandler();
     final RecursiveSearchResultHandler rsrh = new RecursiveSearchResultHandler(
-      ldap, "member", new String[]{"uugid", "uid"});
+      "member", new String[]{"uugid", "uid"});
 
     final Iterator<SearchResult> iter = ldap.search(
       dn,

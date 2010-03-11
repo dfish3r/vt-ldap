@@ -52,6 +52,7 @@ import edu.vt.middleware.ldap.Ldap;
  * @version  $Revision$ $Date$
  */
 public class RecursiveSearchResultHandler extends CopySearchResultHandler
+  implements ExtendedSearchResultHandler
 {
   /** Ldap to use for searching. */
   private Ldap ldap;
@@ -68,16 +69,30 @@ public class RecursiveSearchResultHandler extends CopySearchResultHandler
 
   /**
    * Creates a new <code>RecursiveAttributeHandler</code> with the supplied
-   * ldap, search attribute, and merge attributes.
+   * search attribute and merge attributes.
    *
-   * @param  ldap  <code>Ldap</code>
    * @param  searchAttr  <code>String</code>
    * @param  mergeAttrs  <code>String[]</code>
    */
   public RecursiveSearchResultHandler(
-    final Ldap ldap, final String searchAttr, final String[] mergeAttrs)
+    final String searchAttr, final String[] mergeAttrs)
   {
-    this.ldap = ldap;
+    this(null, searchAttr, mergeAttrs);
+  }
+
+
+  /**
+   * Creates a new <code>RecursiveAttributeHandler</code> with the supplied
+   * ldap, search attribute, and merge attributes.
+   *
+   * @param  l  <code>Ldap</code>
+   * @param  searchAttr  <code>String</code>
+   * @param  mergeAttrs  <code>String[]</code>
+   */
+  public RecursiveSearchResultHandler(
+    final Ldap l, final String searchAttr, final String[] mergeAttrs)
+  {
+    this.ldap = l;
     this.searchAttribute = searchAttr;
     this.mergeAttributes = mergeAttrs;
 
@@ -86,6 +101,64 @@ public class RecursiveSearchResultHandler extends CopySearchResultHandler
     System.arraycopy(
       this.mergeAttributes, 0, this.retAttrs, 0, this.mergeAttributes.length);
     this.retAttrs[this.retAttrs.length - 1] = this.searchAttribute;
+  }
+
+
+  /** {@inheritDoc} */
+  public Ldap getSearchResultLdap()
+  {
+    return this.ldap;
+  }
+
+
+  /** {@inheritDoc} */
+  public void setSearchResultLdap(final Ldap l)
+  {
+    this.ldap = l;
+  }
+
+
+  /**
+   * Returns the attribute name that will be recursively searched on.
+   *
+   * @return  <code>String</code> attribute name
+   */
+  public String getSearchAttribute()
+  {
+    return this.searchAttribute;
+  }
+
+
+  /**
+   * Sets the attribute name that will be recursively searched on.
+   *
+   * @param  s <code>String</code>
+   */
+  public void setSearchAttribute(final String s)
+  {
+    this.searchAttribute = s;
+  }
+
+
+  /**
+   * Returns the attribute names that will be merged by the recursive search.
+   *
+   * @return  <code>String[]</code> attribute names
+   */
+  public String[] getMergeAttributes()
+  {
+    return this.mergeAttributes;
+  }
+
+
+  /**
+   * Sets the attribute name that will be merged by the recursive search.
+   *
+   * @param  s <code>String[]</code>
+   */
+  public void setMergeAttributes(final String[] s)
+  {
+    this.mergeAttributes = s;
   }
 
 

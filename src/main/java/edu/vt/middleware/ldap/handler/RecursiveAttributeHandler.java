@@ -31,6 +31,7 @@ import edu.vt.middleware.ldap.Ldap;
  * @version  $Revision$ $Date$
  */
 public class RecursiveAttributeHandler extends CopyAttributeHandler
+  implements ExtendedAttributeHandler
 {
 
   /** Ldap to use for searching. */
@@ -41,16 +42,64 @@ public class RecursiveAttributeHandler extends CopyAttributeHandler
 
 
   /**
+   * Creates a new <code>RecursiveAttributeHandler</code> with the supplied
+   * attribute name.
+   *
+   * @param  attrName  <code>String</code>
+   */
+  public RecursiveAttributeHandler(final String attrName)
+  {
+    this(null, attrName);
+  }
+
+
+  /**
    * Creates a new <code>RecursiveAttributeHandler</code> with the supplied ldap
    * and attribute name.
    *
-   * @param  ldap  <code>Ldap</code>
+   * @param  l  <code>Ldap</code>
    * @param  attrName  <code>String</code>
    */
-  public RecursiveAttributeHandler(final Ldap ldap, final String attrName)
+  public RecursiveAttributeHandler(final Ldap l, final String attrName)
   {
-    this.ldap = ldap;
+    this.ldap = l;
     this.attributeName = attrName;
+  }
+
+
+  /** {@inheritDoc} */
+  public Ldap getSearchResultLdap()
+  {
+    return this.ldap;
+  }
+
+
+  /** {@inheritDoc} */
+  public void setSearchResultLdap(final Ldap l)
+  {
+    this.ldap = l;
+  }
+
+
+  /**
+   * Returns the attribute name that will be recursively searched on.
+   *
+   * @return  <code>String</code> attribute name
+   */
+  public String getAttributeName()
+  {
+    return this.attributeName;
+  }
+
+
+  /**
+   * Sets the attribute name that will be recursively searched on.
+   *
+   * @param  s <code>String</code>
+   */
+  public void setAttributeName(final String s)
+  {
+    this.attributeName = s;
   }
 
 

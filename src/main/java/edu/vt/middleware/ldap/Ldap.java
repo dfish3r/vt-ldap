@@ -26,6 +26,8 @@ import javax.naming.directory.ModificationItem;
 import javax.naming.directory.SearchControls;
 import javax.naming.directory.SearchResult;
 import edu.vt.middleware.ldap.handler.AttributeHandler;
+import edu.vt.middleware.ldap.handler.ExtendedAttributeHandler;
+import edu.vt.middleware.ldap.handler.ExtendedSearchResultHandler;
 import edu.vt.middleware.ldap.handler.SearchCriteria;
 import edu.vt.middleware.ldap.handler.SearchResultHandler;
 
@@ -401,6 +403,21 @@ public class Ldap extends AbstractLdap<LdapConfig> implements Serializable
     final SearchResultHandler... handler)
     throws NamingException
   {
+    if (handler != null && handler.length > 0) {
+      for (SearchResultHandler h : handler) {
+        if (ExtendedSearchResultHandler.class.isInstance(h)) {
+          ((ExtendedSearchResultHandler) h).setSearchResultLdap(this);
+        }
+        final AttributeHandler[] attrHandler = h.getAttributeHandler();
+        if (attrHandler != null && attrHandler.length > 0) {
+          for (AttributeHandler ah : attrHandler) {
+            if (ExtendedAttributeHandler.class.isInstance(ah)) {
+              ((ExtendedAttributeHandler) ah).setSearchResultLdap(this);
+            }
+          }
+        }
+      }
+    }
     if (this.config.getPagedResultsSize() > 0) {
       return
         super.pagedSearch(
@@ -519,6 +536,21 @@ public class Ldap extends AbstractLdap<LdapConfig> implements Serializable
     final SearchResultHandler... handler)
     throws NamingException
   {
+    if (handler != null && handler.length > 0) {
+      for (SearchResultHandler h : handler) {
+        if (ExtendedSearchResultHandler.class.isInstance(h)) {
+          ((ExtendedSearchResultHandler) h).setSearchResultLdap(this);
+        }
+        final AttributeHandler[] attrHandler = h.getAttributeHandler();
+        if (attrHandler != null && attrHandler.length > 0) {
+          for (AttributeHandler ah : attrHandler) {
+            if (ExtendedAttributeHandler.class.isInstance(ah)) {
+              ((ExtendedAttributeHandler) ah).setSearchResultLdap(this);
+            }
+          }
+        }
+      }
+    }
     return super.searchAttributes(dn, matchAttrs, retAttrs, handler);
   }
 
@@ -583,6 +615,13 @@ public class Ldap extends AbstractLdap<LdapConfig> implements Serializable
     final AttributeHandler... handler)
     throws NamingException
   {
+    if (handler != null && handler.length > 0) {
+      for (AttributeHandler h : handler) {
+        if (ExtendedAttributeHandler.class.isInstance(h)) {
+          ((ExtendedAttributeHandler) h).setSearchResultLdap(this);
+        }
+      }
+    }
     return super.getAttributes(dn, retAttrs, handler);
   }
 

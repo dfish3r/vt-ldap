@@ -100,7 +100,7 @@ public class LdapRoleAuthorizationModule extends AbstractLoginModule
         Arrays.asList(this.ldap.getLdapConfig().getSearchResultHandlers()));
       srh.add(
         new RecursiveSearchResultHandler(
-          this.ldap, this.recursionAttribute, this.roleAttribute));
+          this.recursionAttribute, this.roleAttribute));
       this.ldap.getLdapConfig().setSearchResultHandlers(
         srh.toArray(new SearchResultHandler[0]));
     }
