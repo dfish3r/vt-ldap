@@ -43,15 +43,15 @@ public class CredentialConfigParser
 {
   /** Property string for configuring a credential config. */
   private static final Pattern FULL_CONFIG_PATTERN = Pattern.compile(
-    "(.+)\\s*\\{(.+)\\s*\\{(.*)\\}\\s*\\}\\s*");
+    "(.+)\\s*\\{\\s*(.+)\\s*\\{\\s*(.*)\\}\\s*\\}\\s*");
 
   /** Property string for configuring a credential config. */
   private static final Pattern CREDENTIAL_ONLY_CONFIG_PATTERN = Pattern.compile(
-    "\\s*\\{(.+)\\s*\\{(.*)\\}\\s*\\}\\s*");
+    "\\s*\\{\\s*(.+)\\s*\\{\\s*(.*)\\}\\s*\\}\\s*");
 
   /** Property string for configuring a credential config. */
   private static final Pattern PARAMS_ONLY_CONFIG_PATTERN = Pattern.compile(
-    "\\s*\\{(.*)\\}\\s*");
+    "\\s*\\{\\s*(.*)\\s*\\}\\s*");
 
   /** SSL socket factory class found in the config. */
   private String sslSocketFactoryClassName =
