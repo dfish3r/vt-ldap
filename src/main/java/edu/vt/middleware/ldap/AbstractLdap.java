@@ -749,7 +749,7 @@ public abstract class AbstractLdap<T extends LdapConfig> implements BaseLdap
     throws NamingException
   {
     if (this.logger.isDebugEnabled()) {
-      this.logger.debug("Modifiy attributes with the following parameters:");
+      this.logger.debug("Modify attributes with the following parameters:");
       this.logger.debug("  dn = " + dn);
       this.logger.debug("  modOp = " + modOp);
       this.logger.debug("  attrs = " + attrs);
@@ -798,7 +798,7 @@ public abstract class AbstractLdap<T extends LdapConfig> implements BaseLdap
     throws NamingException
   {
     if (this.logger.isDebugEnabled()) {
-      this.logger.debug("Modifiy attributes with the following parameters:");
+      this.logger.debug("Modify attributes with the following parameters:");
       this.logger.debug("  dn = " + dn);
       this.logger.debug("  mods = " + Arrays.toString(mods));
       if (this.logger.isTraceEnabled()) {
