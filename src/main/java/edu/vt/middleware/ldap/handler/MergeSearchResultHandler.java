@@ -39,7 +39,7 @@ public class MergeSearchResultHandler extends CopySearchResultHandler
    *
    * @return  <code>boolean</code>
    */
-  public boolean isAllowDuplicates()
+  public boolean getAllowDuplicates()
   {
     return this.allowDuplicates;
   }
