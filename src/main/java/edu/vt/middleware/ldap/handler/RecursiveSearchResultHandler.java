@@ -68,6 +68,12 @@ public class RecursiveSearchResultHandler extends CopySearchResultHandler
 
 
   /**
+   * Default constructor.
+   */
+  public RecursiveSearchResultHandler() {}
+
+
+  /**
    * Creates a new <code>RecursiveAttributeHandler</code> with the supplied
    * search attribute and merge attributes.
    *
