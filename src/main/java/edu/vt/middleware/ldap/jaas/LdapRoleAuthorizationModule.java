@@ -14,10 +14,8 @@
 package edu.vt.middleware.ldap.jaas;
 
 import java.security.Principal;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import javax.naming.NamingException;
@@ -32,8 +30,6 @@ import javax.security.auth.spi.LoginModule;
 import com.sun.security.auth.callback.TextCallbackHandler;
 import edu.vt.middleware.ldap.Ldap;
 import edu.vt.middleware.ldap.SearchFilter;
-import edu.vt.middleware.ldap.handler.RecursiveSearchResultHandler;
-import edu.vt.middleware.ldap.handler.SearchResultHandler;
 
 /**
  * <code>LdapRoleAuthorizationModule</code> provides a JAAS authentication hook
@@ -54,8 +50,8 @@ public class LdapRoleAuthorizationModule extends AbstractLoginModule
   /** Role attribute to add to role data. */
   private String[] roleAttribute = new String[0];
 
-  /** Attribute to perform recursive searches on. */
-  private String recursionAttribute;
+  /** Whether failing to find any roles should raise an exception. */
+  private boolean noResultsIsError;
 
   /** Ldap to use for searching roles against the LDAP. */
   private Ldap ldap;
@@ -82,8 +78,8 @@ public class LdapRoleAuthorizationModule extends AbstractLoginModule
         } else {
           this.roleAttribute = value.split(",");
         }
-      } else if (key.equalsIgnoreCase("recursionAttribute")) {
-        this.recursionAttribute = value;
+      } else if (key.equalsIgnoreCase("noResultsIsError")) {
+        this.noResultsIsError = Boolean.valueOf(value);
       }
     }
 
@@ -91,19 +87,10 @@ public class LdapRoleAuthorizationModule extends AbstractLoginModule
       this.logger.debug("roleFilter = " + this.roleFilter);
       this.logger.debug(
         "roleAttribute = " + Arrays.toString(this.roleAttribute));
-      this.logger.debug("recursionAttribute = " + this.recursionAttribute);
+      this.logger.debug("noResultsIsError = " + this.noResultsIsError);
     }
 
     this.ldap = createLdap(options);
-    if (this.recursionAttribute != null) {
-      final List<SearchResultHandler> srh = new ArrayList<SearchResultHandler>(
-        Arrays.asList(this.ldap.getLdapConfig().getSearchResultHandlers()));
-      srh.add(
-        new RecursiveSearchResultHandler(
-          this.recursionAttribute, this.roleAttribute));
-      this.ldap.getLdapConfig().setSearchResultHandlers(
-        srh.toArray(new SearchResultHandler[0]));
-    }
     if (this.logger.isDebugEnabled()) {
       this.logger.debug("Created ldap: " + this.ldap.getLdapConfig());
     }
@@ -142,6 +129,11 @@ public class LdapRoleAuthorizationModule extends AbstractLoginModule
         final Iterator<SearchResult> results = this.ldap.search(
           new SearchFilter(this.roleFilter, filterArgs),
           this.roleAttribute);
+        if (!results.hasNext() && this.noResultsIsError) {
+          this.success = false;
+          throw new LoginException(
+            "Could not find roles using " + this.roleFilter);
+        }
         while (results.hasNext()) {
           final SearchResult sr = results.next();
           this.roles.addAll(this.attributesToRoles(sr.getAttributes()));

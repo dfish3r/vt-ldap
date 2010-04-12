@@ -40,6 +40,9 @@ public class LdapDnAuthorizationModule extends AbstractLoginModule
   implements LoginModule
 {
 
+  /** Whether failing to find a DN should raise an exception. */
+  private boolean noResultsIsError;
+
   /** Authenticator to use against the LDAP. */
   private Authenticator auth;
 
@@ -52,6 +55,19 @@ public class LdapDnAuthorizationModule extends AbstractLoginModule
     final Map<String, ?> options)
   {
     super.initialize(subject, callbackHandler, sharedState, options);
+
+    final Iterator<String> i = options.keySet().iterator();
+    while (i.hasNext()) {
+      final String key = i.next();
+      final String value = (String) options.get(key);
+      if (key.equalsIgnoreCase("noResultsIsError")) {
+        this.noResultsIsError = Boolean.valueOf(value);
+      }
+    }
+
+    if (this.logger.isDebugEnabled()) {
+      this.logger.debug("noResultsIsError = " + this.noResultsIsError);
+    }
 
     this.auth = createAuthenticator(options);
     if (this.logger.isDebugEnabled()) {
@@ -83,6 +99,10 @@ public class LdapDnAuthorizationModule extends AbstractLoginModule
       }
 
       final String loginDn = this.auth.getDn(nameCb.getName());
+      if (loginDn == null && this.noResultsIsError) {
+        this.success = false;
+        throw new LoginException("Could not find DN for " + nameCb.getName());
+      }
       if (loginDn != null && this.setLdapDnPrincipal) {
         this.principals.add(new LdapDnPrincipal(loginDn));
         this.success = true;

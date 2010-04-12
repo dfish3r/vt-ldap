@@ -69,7 +69,7 @@ public abstract class AbstractLoginModule implements LoginModule
     "useFirstPass|tryFirstPass|storePass|" +
     "setLdapPrincipal|setLdapDnPrincipal|setLdapCredential|" +
     "defaultRole|principalGroupName|roleGroupName|" +
-    "userRoleAttribute|roleFilter|roleAttribute|recursionAttribute";
+    "userRoleAttribute|roleFilter|roleAttribute|noResultsIsError";
 
   /** Log for this class. */
   protected final Log logger = LogFactory.getLog(this.getClass());
