@@ -31,4 +31,44 @@ public class AnyHostnameVerifier implements HostnameVerifier
   {
     return true;
   }
+
+
+  /**
+   * Dummy getter method.
+   *
+   * @return  'foo'
+   */
+  public String getFoo()
+  {
+    return "foo";
+  }
+
+
+
+  /**
+   * Dummy setter method. Noop.
+   *
+   * @param  s  <code>String</code>
+   */
+  public void setFoo(final String s) {}
+
+
+  /**
+   * Dummy getter method.
+   *
+   * @return  true
+   */
+  public boolean getBar()
+  {
+    return true;
+  }
+
+
+
+  /**
+   * Dummy setter method. Noop.
+   *
+   * @param  b  <code>boolean</code>
+   */
+  public void setBar(final boolean b) {}
 }

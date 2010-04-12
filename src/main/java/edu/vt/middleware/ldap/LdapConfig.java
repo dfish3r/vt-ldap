@@ -32,8 +32,8 @@ import edu.vt.middleware.ldap.handler.FqdnSearchResultHandler;
 import edu.vt.middleware.ldap.handler.SearchResultHandler;
 import edu.vt.middleware.ldap.handler.TlsConnectionHandler;
 import edu.vt.middleware.ldap.props.AbstractPropertyConfig;
+import edu.vt.middleware.ldap.props.LdapConfigPropertyInvoker;
 import edu.vt.middleware.ldap.props.LdapProperties;
-import edu.vt.middleware.ldap.props.PropertyInvoker;
 
 /**
  * <code>LdapConfig</code> contains all the configuration data that the <code>
@@ -50,9 +50,8 @@ public class LdapConfig extends AbstractPropertyConfig
   public static final String PROPERTIES_DOMAIN = "edu.vt.middleware.ldap.";
 
   /** Invoker for ldap properties. */
-  private static final PropertyInvoker PROPERTIES = new PropertyInvoker(
-    LdapConfig.class,
-    PROPERTIES_DOMAIN);
+  private static final LdapConfigPropertyInvoker PROPERTIES =
+    new LdapConfigPropertyInvoker(LdapConfig.class, PROPERTIES_DOMAIN);
 
 
   /**

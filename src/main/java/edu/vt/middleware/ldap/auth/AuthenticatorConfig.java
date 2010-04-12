@@ -21,8 +21,8 @@ import edu.vt.middleware.ldap.auth.handler.AuthenticationHandler;
 import edu.vt.middleware.ldap.auth.handler.AuthenticationResultHandler;
 import edu.vt.middleware.ldap.auth.handler.AuthorizationHandler;
 import edu.vt.middleware.ldap.auth.handler.BindAuthenticationHandler;
+import edu.vt.middleware.ldap.props.LdapConfigPropertyInvoker;
 import edu.vt.middleware.ldap.props.LdapProperties;
-import edu.vt.middleware.ldap.props.PropertyInvoker;
 
 /**
  * <code>AuthenticatorConfig</code> contains all the configuration data that the
@@ -38,9 +38,8 @@ public class AuthenticatorConfig extends LdapConfig
   public static final String PROPERTIES_DOMAIN = "edu.vt.middleware.ldap.auth.";
 
   /** Invoker for ldap properties. */
-  private static final PropertyInvoker PROPERTIES = new PropertyInvoker(
-    AuthenticatorConfig.class,
-    PROPERTIES_DOMAIN);
+  private static final LdapConfigPropertyInvoker PROPERTIES =
+    new LdapConfigPropertyInvoker(AuthenticatorConfig.class, PROPERTIES_DOMAIN);
 
   /** Directory user field. */
   private String[] userField = new String[] {

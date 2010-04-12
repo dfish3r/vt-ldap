@@ -21,9 +21,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import edu.vt.middleware.ldap.props.LdapConfigPropertyInvoker;
 import edu.vt.middleware.ldap.props.LdapProperties;
 import edu.vt.middleware.ldap.props.PropertyConfig;
-import edu.vt.middleware.ldap.props.PropertyInvoker;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.GnuParser;
@@ -127,7 +127,7 @@ public abstract class AbstractCli
    *
    * @param  invoker  <code>PropertyInvoker</code>
    */
-  protected void initOptions(final PropertyInvoker invoker)
+  protected void initOptions(final LdapConfigPropertyInvoker invoker)
   {
     final Map<String, String> args = this.getArgs();
     for (String s : invoker.getProperties()) {

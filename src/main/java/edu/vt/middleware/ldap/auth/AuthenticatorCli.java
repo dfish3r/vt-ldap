@@ -26,7 +26,7 @@ import edu.vt.middleware.ldap.bean.LdapResult;
 import edu.vt.middleware.ldap.dsml.Dsmlv1;
 import edu.vt.middleware.ldap.dsml.Dsmlv2;
 import edu.vt.middleware.ldap.ldif.Ldif;
-import edu.vt.middleware.ldap.props.PropertyInvoker;
+import edu.vt.middleware.ldap.props.LdapConfigPropertyInvoker;
 import org.apache.commons.cli.CommandLine;
 
 /**
@@ -57,7 +57,7 @@ public class AuthenticatorCli extends AbstractCli
   protected void initOptions()
   {
     super.initOptions(
-      new PropertyInvoker(
+      new LdapConfigPropertyInvoker(
         AuthenticatorConfig.class,
         AuthenticatorConfig.PROPERTIES_DOMAIN));
   }

@@ -22,7 +22,7 @@ import javax.naming.directory.SearchResult;
 import edu.vt.middleware.ldap.dsml.Dsmlv1;
 import edu.vt.middleware.ldap.dsml.Dsmlv2;
 import edu.vt.middleware.ldap.ldif.Ldif;
-import edu.vt.middleware.ldap.props.PropertyInvoker;
+import edu.vt.middleware.ldap.props.LdapConfigPropertyInvoker;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
 
@@ -65,7 +65,8 @@ public class LdapCli extends AbstractCli
   protected void initOptions()
   {
     super.initOptions(
-      new PropertyInvoker(LdapConfig.class, LdapConfig.PROPERTIES_DOMAIN));
+      new LdapConfigPropertyInvoker(
+        LdapConfig.class, LdapConfig.PROPERTIES_DOMAIN));
 
     options.addOption(new Option(OPT_QUERY, true, ""));
   }

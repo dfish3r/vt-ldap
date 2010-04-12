@@ -15,8 +15,8 @@ package edu.vt.middleware.ldap.pool;
 
 import java.io.InputStream;
 import edu.vt.middleware.ldap.props.AbstractPropertyConfig;
+import edu.vt.middleware.ldap.props.LdapConfigPropertyInvoker;
 import edu.vt.middleware.ldap.props.LdapProperties;
-import edu.vt.middleware.ldap.props.PropertyInvoker;
 
 /**
  * <code>LdapPoolConfig</code> contains all the configuration data that the
@@ -56,9 +56,8 @@ public class LdapPoolConfig extends AbstractPropertyConfig
   public static final long DEFAULT_EXPIRATION_TIME = 600000;
 
   /** Invoker for ldap properties. */
-  private static final PropertyInvoker PROPERTIES = new PropertyInvoker(
-    LdapPoolConfig.class,
-    PROPERTIES_DOMAIN);
+  private static final LdapConfigPropertyInvoker PROPERTIES =
+    new LdapConfigPropertyInvoker(LdapPoolConfig.class, PROPERTIES_DOMAIN);
 
   /** Min pool size. */
   private int minPoolSize = DEFAULT_MIN_POOL_SIZE;
