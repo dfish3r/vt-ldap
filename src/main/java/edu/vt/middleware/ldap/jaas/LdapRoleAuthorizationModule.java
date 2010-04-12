@@ -147,6 +147,9 @@ public class LdapRoleAuthorizationModule extends AbstractLoginModule
           this.roles.addAll(this.attributesToRoles(sr.getAttributes()));
         }
       }
+      if (this.defaultRole != null && !this.defaultRole.isEmpty()) {
+        this.roles.addAll(this.defaultRole);
+      }
       if (!this.roles.isEmpty()) {
         this.success = true;
       }

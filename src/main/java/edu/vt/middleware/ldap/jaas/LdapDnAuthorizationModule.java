@@ -87,6 +87,10 @@ public class LdapDnAuthorizationModule extends AbstractLoginModule
         this.principals.add(new LdapDnPrincipal(loginDn));
         this.success = true;
       }
+      if (this.defaultRole != null && !this.defaultRole.isEmpty()) {
+        this.roles.addAll(this.defaultRole);
+        this.success = true;
+      }
       this.storeCredentials(nameCb, passCb, loginDn);
     } catch (NamingException e) {
       if (this.logger.isDebugEnabled()) {

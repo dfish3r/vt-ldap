@@ -68,7 +68,7 @@ public abstract class AbstractLoginModule implements LoginModule
   private static final String IGNORE_LDAP_REGEX =
     "useFirstPass|tryFirstPass|storePass|" +
     "setLdapPrincipal|setLdapDnPrincipal|setLdapCredential|" +
-    "principalGroupName|roleGroupName|" +
+    "defaultRole|principalGroupName|roleGroupName|" +
     "userRoleAttribute|roleFilter|roleAttribute|recursionAttribute";
 
   /** Log for this class. */
@@ -104,6 +104,9 @@ public abstract class AbstractLoginModule implements LoginModule
 
   /** Whether ldap credential data should be set. */
   protected boolean setLdapCredential;
+
+  /** Default roles. */
+  protected List<LdapRole> defaultRole = new ArrayList<LdapRole>();
 
   /** Name of group to add all principals to. */
   protected String principalGroupName;
@@ -154,6 +157,10 @@ public abstract class AbstractLoginModule implements LoginModule
         this.setLdapDnPrincipal = Boolean.valueOf(value);
       } else if (key.equalsIgnoreCase("setLdapCredential")) {
         this.setLdapCredential = Boolean.valueOf(value);
+      } else if (key.equalsIgnoreCase("defaultRole")) {
+        for (String s : value.split(",")) {
+          this.defaultRole.add(new LdapRole(s.trim()));
+        }
       } else if (key.equalsIgnoreCase("principalGroupName")) {
         this.principalGroupName = value;
       } else if (key.equalsIgnoreCase("roleGroupName")) {
@@ -168,6 +175,7 @@ public abstract class AbstractLoginModule implements LoginModule
       this.logger.debug("setLdapPrincipal = " + this.setLdapPrincipal);
       this.logger.debug("setLdapDnPrincipal = " + this.setLdapDnPrincipal);
       this.logger.debug("setLdapCredential = " + this.setLdapCredential);
+      this.logger.debug("defaultRole = " + this.defaultRole);
       this.logger.debug("principalGroupName = " + this.principalGroupName);
       this.logger.debug("roleGroupName = " + this.roleGroupName);
     }

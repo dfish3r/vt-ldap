@@ -14,10 +14,8 @@
 package edu.vt.middleware.ldap.jaas;
 
 import java.security.Principal;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import javax.naming.AuthenticationException;
@@ -43,9 +41,6 @@ import edu.vt.middleware.ldap.auth.Authenticator;
 public class LdapLoginModule extends AbstractLoginModule implements LoginModule
 {
 
-  /** Default roles. */
-  private List<LdapRole> defaultRole = new ArrayList<LdapRole>();
-
   /** User attribute to add to role data. */
   private String[] userRoleAttribute = new String[0];
 
@@ -69,11 +64,7 @@ public class LdapLoginModule extends AbstractLoginModule implements LoginModule
     while (i.hasNext()) {
       final String key = i.next();
       final String value = (String) options.get(key);
-      if (key.equalsIgnoreCase("defaultRole")) {
-        for (String s : value.split(",")) {
-          this.defaultRole.add(new LdapRole(s));
-        }
-      } else if (key.equalsIgnoreCase("userRoleAttribute")) {
+      if (key.equalsIgnoreCase("userRoleAttribute")) {
         if (value.equals("*")) {
           this.userRoleAttribute = null;
         } else {
