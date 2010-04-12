@@ -101,12 +101,7 @@ public class RecursiveSearchResultHandler extends CopySearchResultHandler
     this.ldap = l;
     this.searchAttribute = searchAttr;
     this.mergeAttributes = mergeAttrs;
-
-    // return attributes must include the search attribute
-    this.retAttrs = new String[this.mergeAttributes.length + 1];
-    System.arraycopy(
-      this.mergeAttributes, 0, this.retAttrs, 0, this.mergeAttributes.length);
-    this.retAttrs[this.retAttrs.length - 1] = this.searchAttribute;
+    this.initalizeReturnAttributes();
   }
 
 
@@ -143,6 +138,7 @@ public class RecursiveSearchResultHandler extends CopySearchResultHandler
   public void setSearchAttribute(final String s)
   {
     this.searchAttribute = s;
+    this.initalizeReturnAttributes();
   }
 
 
@@ -165,6 +161,23 @@ public class RecursiveSearchResultHandler extends CopySearchResultHandler
   public void setMergeAttributes(final String[] s)
   {
     this.mergeAttributes = s;
+    this.initalizeReturnAttributes();
+  }
+
+
+  /**
+   * Initializes the return attributes array. Must be called after both
+   * searchAttribute and mergeAttributes have been set.
+   */
+  protected void initalizeReturnAttributes()
+  {
+    if (this.mergeAttributes != null && this.searchAttribute != null) {
+      // return attributes must include the search attribute
+      this.retAttrs = new String[this.mergeAttributes.length + 1];
+      System.arraycopy(
+        this.mergeAttributes, 0, this.retAttrs, 0, this.mergeAttributes.length);
+      this.retAttrs[this.retAttrs.length - 1] = this.searchAttribute;
+    }
   }
 
 
