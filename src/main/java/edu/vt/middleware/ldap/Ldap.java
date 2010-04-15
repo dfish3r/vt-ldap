@@ -179,7 +179,7 @@ public class Ldap extends AbstractLdap<LdapConfig> implements Serializable
   public boolean compare(final SearchFilter filter)
     throws NamingException
   {
-    return this.compare(this.config.getBase(), filter);
+    return this.compare(this.config.getBaseDn(), filter);
   }
 
 
@@ -220,7 +220,7 @@ public class Ldap extends AbstractLdap<LdapConfig> implements Serializable
   {
     return
       this.search(
-        this.config.getBase(),
+        this.config.getBaseDn(),
         filter,
         this.config.getSearchControls(null));
   }
@@ -247,7 +247,7 @@ public class Ldap extends AbstractLdap<LdapConfig> implements Serializable
   {
     return
       this.search(
-        this.config.getBase(),
+        this.config.getBaseDn(),
         filter,
         this.config.getSearchControls(retAttrs));
   }
@@ -270,7 +270,7 @@ public class Ldap extends AbstractLdap<LdapConfig> implements Serializable
     final SearchControls searchControls)
     throws NamingException
   {
-    return this.search(this.config.getBase(), filter, searchControls);
+    return this.search(this.config.getBaseDn(), filter, searchControls);
   }
 
 
@@ -453,7 +453,7 @@ public class Ldap extends AbstractLdap<LdapConfig> implements Serializable
   public Iterator<SearchResult> searchAttributes(final Attributes matchAttrs)
     throws NamingException
   {
-    return this.searchAttributes(this.config.getBase(), matchAttrs, null);
+    return this.searchAttributes(this.config.getBaseDn(), matchAttrs, null);
   }
 
 
@@ -474,7 +474,7 @@ public class Ldap extends AbstractLdap<LdapConfig> implements Serializable
     final String[] retAttrs)
     throws NamingException
   {
-    return this.searchAttributes(this.config.getBase(), matchAttrs, retAttrs);
+    return this.searchAttributes(this.config.getBaseDn(), matchAttrs, retAttrs);
   }
 
 

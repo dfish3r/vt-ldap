@@ -1,16 +1,16 @@
 - Search a ldap directory returning the mail attribute in ldif format
 
-   ldapsearch -ldapUrl ldap://directory.vt.edu -base ou=People,dc=vt,dc=edu \
+   ldapsearch -ldapUrl ldap://directory.vt.edu -baseDn ou=People,dc=vt,dc=edu \
               -query uupid=dfisher mail
 
 - Search a ldap directory returning all attributes in dsmlv1 format
 
-   ldapsearch -ldapUrl ldap://directory.vt.edu -base ou=People,dc=vt,dc=edu \
+   ldapsearch -ldapUrl ldap://directory.vt.edu -baseDn ou=People,dc=vt,dc=edu \
               -dsmlv1 -query uupid=dfisher
 
 - Search a ldap directory as an authenticated user returning all attributes in dsmlv2 format
 
-   ldapsearch -ldapUrl ldap://directory.vt.edu -base ou=People,dc=vt,dc=edu \
+   ldapsearch -ldapUrl ldap://directory.vt.edu -baseDn ou=People,dc=vt,dc=edu \
               -bindDn uid=818037,ou=People,dc=vt,dc=edu -tls true \
               -dsmlv2 -query uupid=dfisher
 

@@ -1,6 +1,6 @@
 authoritative:whether to require an authoritative source (true|false)
 authtype:type of authentication (none|simple|strong)
-base:base dn
+baseDn:base dn
 batchSize:result batch size
 binaryAttributes:space delimited list of binary attributes
 bindCredential:password for the bindDn

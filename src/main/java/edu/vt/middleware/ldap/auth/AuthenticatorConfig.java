@@ -93,13 +93,13 @@ public class AuthenticatorConfig extends LdapConfig
    * ldap url and base Strings.
    *
    * @param  ldapUrl  <code>String</code> LDAP URL
-   * @param  base  <code>String</code> LDAP base DN
+   * @param  baseDn  <code>String</code> LDAP base DN
    */
-  public AuthenticatorConfig(final String ldapUrl, final String base)
+  public AuthenticatorConfig(final String ldapUrl, final String baseDn)
   {
     this();
     this.setLdapUrl(ldapUrl);
-    this.setBase(base);
+    this.setBaseDn(baseDn);
   }
 
 

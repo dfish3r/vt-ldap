@@ -137,7 +137,7 @@ public class SearchDnResolver extends AbstractLdap<AuthenticatorConfig>
         filterArgs.addAll(filter.getFilterArgs());
 
         final Iterator<SearchResult> answer = this.search(
-          this.config.getBase(),
+          this.config.getBaseDn(),
           filter.getFilter(),
           filterArgs.toArray(),
           this.config.getSearchControls(new String[0]),

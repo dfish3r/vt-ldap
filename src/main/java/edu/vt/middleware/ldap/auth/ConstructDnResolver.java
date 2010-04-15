@@ -96,7 +96,8 @@ public class ConstructDnResolver implements DnResolver, Serializable
         this.logger.debug("Constructing DN from first userfield and base");
       }
       dn = String.format(
-        "%s=%s,%s", this.config.getUserField()[0], user, this.config.getBase());
+        "%s=%s,%s",
+        this.config.getUserField()[0], user, this.config.getBaseDn());
     } else {
       if (this.logger.isDebugEnabled()) {
         this.logger.debug("User input was empty or null");

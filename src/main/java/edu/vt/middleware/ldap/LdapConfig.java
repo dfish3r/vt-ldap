@@ -149,7 +149,7 @@ public class LdapConfig extends AbstractPropertyConfig
   private Object bindCredential;
 
   /** Base dn for LDAP searching. */
-  private String base = LdapConstants.DEFAULT_BASE_DN;
+  private String baseDn = LdapConstants.DEFAULT_BASE_DN;
 
   /** Type of search scope to use, default is subtree. */
   private SearchScope searchScope = SearchScope.SUBTREE;
@@ -261,13 +261,13 @@ public class LdapConfig extends AbstractPropertyConfig
    * and base Strings.
    *
    * @param  ldapUrl  <code>String</code> LDAP URL
-   * @param  base  <code>String</code> LDAP base DN
+   * @param  baseDn  <code>String</code> LDAP base DN
    */
-  public LdapConfig(final String ldapUrl, final String base)
+  public LdapConfig(final String ldapUrl, final String baseDn)
   {
     this();
     this.setLdapUrl(ldapUrl);
-    this.setBase(base);
+    this.setBaseDn(baseDn);
   }
 
 
@@ -539,10 +539,23 @@ public class LdapConfig extends AbstractPropertyConfig
    * This returns the base dn for the <code>LdapConfig</code>.
    *
    * @return  <code>String</code> - base dn
+   *
+   * @deprecated  use {@link #getBaseDn()} instead
    */
   public String getBase()
   {
-    return this.base;
+    return this.getBaseDn();
+  }
+
+
+  /**
+   * This returns the base dn for the <code>LdapConfig</code>.
+   *
+   * @return  <code>String</code> - base dn
+   */
+  public String getBaseDn()
+  {
+    return this.baseDn;
   }
 
 
@@ -1335,14 +1348,27 @@ public class LdapConfig extends AbstractPropertyConfig
    * This sets the base dn for the <code>LdapConfig</code>.
    *
    * @param  base  <code>String</code> base dn
+   *
+   * @deprecated  use {@link #setBaseDn(String)}
    */
   public void setBase(final String base)
   {
+    this.setBaseDn(base);
+  }
+
+
+  /**
+   * This sets the base dn for the <code>LdapConfig</code>.
+   *
+   * @param  baseDn  <code>String</code> base dn
+   */
+  public void setBaseDn(final String baseDn)
+  {
     checkImmutable();
     if (this.logger.isTraceEnabled()) {
-      this.logger.trace("setting base: " + base);
+      this.logger.trace("setting baseDn: " + baseDn);
     }
-    this.base = base;
+    this.baseDn = baseDn;
   }
 
 

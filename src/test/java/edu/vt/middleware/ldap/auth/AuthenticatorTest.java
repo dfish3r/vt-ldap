@@ -191,15 +191,15 @@ public class AuthenticatorTest
    * @param  ldapUrl  to check
    * @param  base  to check
    */
-  @Parameters({ "loadPropertiesUrl", "loadPropertiesBase" })
+  @Parameters({ "loadPropertiesUrl", "loadPropertiesBaseDn" })
   @Test(groups = {"authtest"})
-  public void loadProperties(final String ldapUrl, final String base)
+  public void loadProperties(final String ldapUrl, final String baseDn)
   {
     final Authenticator a = new Authenticator();
     a.loadFromProperties(
       TestUtil.class.getResourceAsStream("/ldap.tls.properties"));
     AssertJUnit.assertEquals(ldapUrl, a.getAuthenticatorConfig().getLdapUrl());
-    AssertJUnit.assertEquals(base, a.getAuthenticatorConfig().getBase());
+    AssertJUnit.assertEquals(baseDn, a.getAuthenticatorConfig().getBaseDn());
   }
 
 
@@ -236,11 +236,11 @@ public class AuthenticatorTest
     // test subtree searching
     ldap.getAuthenticatorConfig().setSubtreeSearch(true);
 
-    final String base = ldap.getAuthenticatorConfig().getBase();
-    ldap.getAuthenticatorConfig().setBase(
-      base.substring(base.indexOf(",") + 1));
+    final String baseDn = ldap.getAuthenticatorConfig().getBaseDn();
+    ldap.getAuthenticatorConfig().setBaseDn(
+      baseDn.substring(baseDn.indexOf(",") + 1));
     AssertJUnit.assertEquals(ldap.getDn(user), testLdapEntry.getDn());
-    ldap.getAuthenticatorConfig().setBase(base);
+    ldap.getAuthenticatorConfig().setBaseDn(baseDn);
     ldap.getAuthenticatorConfig().setSubtreeSearch(false);
 
     // test one level searching
