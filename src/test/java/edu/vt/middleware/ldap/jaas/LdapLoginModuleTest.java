@@ -458,7 +458,7 @@ public class LdapLoginModuleTest
 
     final LdapPrincipal p = principals.iterator().next();
     AssertJUnit.assertEquals(p.getName(), user);
-    if (!role.equals("")) {
+    if (!"".equals(role)) {
       AssertJUnit.assertTrue(p.getLdapAttributes().size() > 0);
     }
 
@@ -468,7 +468,7 @@ public class LdapLoginModuleTest
       AssertJUnit.assertEquals(1, dnPrincipals.size());
       final LdapDnPrincipal dnP = dnPrincipals.iterator().next();
       AssertJUnit.assertEquals(dnP.getName(), dn);
-      if (!role.equals("")) {
+      if (!"".equals(role)) {
         AssertJUnit.assertTrue(dnP.getLdapAttributes().size() > 0);
       }
     } else {
@@ -479,7 +479,7 @@ public class LdapLoginModuleTest
 
     final Iterator<LdapRole> roleIter = roles.iterator();
     String[] checkRoles = role.split("\\|");
-    if (checkRoles.length == 1 && checkRoles[0].equals("")) {
+    if (checkRoles.length == 1 && "".equals(checkRoles[0])) {
       checkRoles = new String[0];
     }
     AssertJUnit.assertEquals(checkRoles.length, roles.size());
@@ -607,7 +607,7 @@ public class LdapLoginModuleTest
       Group.class);
     AssertJUnit.assertTrue(roleGroups.size() == 2);
     for (Group g : roleGroups) {
-      if (g.getName().equals("Roles")) {
+      if ("Roles".equals(g.getName())) {
         final Enumeration<? extends Principal> members = g.members();
         int count = 0;
         while (members.hasMoreElements()) {
@@ -623,7 +623,7 @@ public class LdapLoginModuleTest
         }
         AssertJUnit.assertEquals(
           count, lc.getSubject().getPrincipals(LdapRole.class).size());
-      } else if (g.getName().equals("Principals")) {
+      } else if ("Principals".equals(g.getName())) {
         final Enumeration<? extends Principal> members = g.members();
         int count = 0;
         while (members.hasMoreElements()) {

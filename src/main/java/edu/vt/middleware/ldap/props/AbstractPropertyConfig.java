@@ -131,11 +131,11 @@ public abstract class AbstractPropertyConfig implements PropertyConfig
   protected void checkStringInput(final String s, final boolean allowNull)
   {
     if (allowNull) {
-      if (s != null && s.equals("")) {
+      if (s != null && "".equals(s)) {
         throw new IllegalArgumentException("Input cannot be empty");
       }
     } else {
-      if (s == null || s.equals("")) {
+      if (s == null || "".equals(s)) {
         throw new IllegalArgumentException("Input cannot be null or empty");
       }
     }

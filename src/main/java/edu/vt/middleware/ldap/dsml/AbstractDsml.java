@@ -367,7 +367,7 @@ public abstract class AbstractDsml implements Serializable
               final String value = valueElement.getText();
               if (value != null) {
                 final String encoding = valueElement.attributeValue("encoding");
-                if (encoding != null && encoding.equals("base64")) {
+                if (encoding != null && "base64".equals(encoding)) {
                   ldapAttribute.getValues().add(LdapUtil.base64Decode(value));
                 } else {
                   ldapAttribute.getValues().add(value);

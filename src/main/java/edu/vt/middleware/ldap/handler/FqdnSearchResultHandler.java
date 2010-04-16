@@ -64,7 +64,7 @@ public class FqdnSearchResultHandler extends CopySearchResultHandler
       StringBuffer fqName = null;
       if (sr.isRelative()) {
         if (sc.getDn() != null) {
-          if (!resultName.equals("")) {
+          if (!"".equals(resultName)) {
             fqName = new StringBuffer(resultName).append(",").append(
               sc.getDn());
           } else {

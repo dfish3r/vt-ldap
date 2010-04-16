@@ -144,9 +144,9 @@ public final class LoginServlet extends CommonServlet
       if (
         e.getCause() != null &&
           e.getCause().getMessage() != null &&
-          !e.getCause().getMessage().equals("null")) {
+          !"null".equals(e.getCause().getMessage())) {
         error.append(": ").append(e.getCause().getMessage());
-      } else if (e.getMessage() != null && !e.getMessage().equals("null")) {
+      } else if (e.getMessage() != null && !"null".equals(e.getMessage())) {
         error.append(": ").append(e.getMessage());
       }
     }
@@ -178,9 +178,9 @@ public final class LoginServlet extends CommonServlet
         if (
           e.getCause() != null &&
             e.getCause().getMessage() != null &&
-            !e.getCause().getMessage().equals("null")) {
+            !"null".equals(e.getCause().getMessage())) {
           error.append(": ").append(e.getCause().getMessage());
-        } else if (e.getMessage() != null && !e.getMessage().equals("null")) {
+        } else if (e.getMessage() != null && !"null".equals(e.getMessage())) {
           error.append(": ").append(e.getMessage());
         }
       }

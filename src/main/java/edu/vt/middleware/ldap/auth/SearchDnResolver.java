@@ -94,7 +94,7 @@ public class SearchDnResolver extends AbstractLdap<AuthenticatorConfig>
     throws NamingException
   {
     String dn = null;
-    if (user != null && !user.equals("")) {
+    if (user != null && !"".equals(user)) {
       // create the search filter
       final SearchFilter filter = new SearchFilter();
       if (this.config.getUserFilter() != null) {

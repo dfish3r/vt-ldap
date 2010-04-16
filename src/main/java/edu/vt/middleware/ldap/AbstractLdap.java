@@ -212,7 +212,7 @@ public abstract class AbstractLdap<T extends LdapConfig> implements BaseLdap
 
           if (handler != null && handler.length > 0) {
             final SearchCriteria sc = new SearchCriteria();
-            if (ctx != null && !ctx.getNameInNamespace().equals("")) {
+            if (ctx != null && !"".equals(ctx.getNameInNamespace())) {
               sc.setDn(ctx.getNameInNamespace());
             } else {
               sc.setDn(dn);
@@ -316,7 +316,7 @@ public abstract class AbstractLdap<T extends LdapConfig> implements BaseLdap
 
             if (handler != null && handler.length > 0) {
               final SearchCriteria sc = new SearchCriteria();
-              if (ctx != null && !ctx.getNameInNamespace().equals("")) {
+              if (ctx != null && !"".equals(ctx.getNameInNamespace())) {
                 sc.setDn(ctx.getNameInNamespace());
               } else {
                 sc.setDn(dn);
@@ -441,7 +441,7 @@ public abstract class AbstractLdap<T extends LdapConfig> implements BaseLdap
 
           if (handler != null && handler.length > 0) {
             final SearchCriteria sc = new SearchCriteria();
-            if (ctx != null && !ctx.getNameInNamespace().equals("")) {
+            if (ctx != null && !"".equals(ctx.getNameInNamespace())) {
               sc.setDn(ctx.getNameInNamespace());
             } else {
               sc.setDn(dn);
@@ -640,7 +640,7 @@ public abstract class AbstractLdap<T extends LdapConfig> implements BaseLdap
 
           if (handler != null && handler.length > 0) {
             final SearchCriteria sc = new SearchCriteria();
-            if (ctx != null && !ctx.getNameInNamespace().equals("")) {
+            if (ctx != null && !"".equals(ctx.getNameInNamespace())) {
               sc.setDn(ctx.getNameInNamespace());
             } else {
               sc.setDn(dn);

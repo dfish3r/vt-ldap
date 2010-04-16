@@ -61,7 +61,7 @@ public class ConfigParser
       final Matcher m = PROPERTY_PATTERN.matcher(props);
       while (m.find()) {
         final String input = m.group().trim();
-        if (input != null && !input.equals("")) {
+        if (input != null && !"".equals(input)) {
           final String[] s = input.split("=");
           this.properties.put(s[0].trim(), s[1].trim());
         }

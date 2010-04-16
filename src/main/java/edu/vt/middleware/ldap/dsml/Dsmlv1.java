@@ -222,7 +222,7 @@ public final class Dsmlv1 extends AbstractDsml
                 if (value != null) {
                   final String encoding = valueElement.attributeValue(
                     "encoding");
-                  if (encoding != null && encoding.equals("base64")) {
+                  if (encoding != null && "base64".equals(encoding)) {
                     ldapAttribute.getValues().add(LdapUtil.base64Decode(value));
                   } else {
                     ldapAttribute.getValues().add(value);

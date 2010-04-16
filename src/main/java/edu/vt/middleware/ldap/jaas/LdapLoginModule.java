@@ -65,7 +65,7 @@ public class LdapLoginModule extends AbstractLoginModule implements LoginModule
       final String key = i.next();
       final String value = (String) options.get(key);
       if (key.equalsIgnoreCase("userRoleAttribute")) {
-        if (value.equals("*")) {
+        if ("*".equals(value)) {
           this.userRoleAttribute = null;
         } else {
           this.userRoleAttribute = value.split(",");

@@ -91,7 +91,7 @@ public class ConstructDnResolver implements DnResolver, Serializable
     throws NamingException
   {
     String dn = null;
-    if (user != null && !user.equals("")) {
+    if (user != null && !"".equals(user)) {
       if (this.logger.isDebugEnabled()) {
         this.logger.debug("Constructing DN from first userfield and base");
       }

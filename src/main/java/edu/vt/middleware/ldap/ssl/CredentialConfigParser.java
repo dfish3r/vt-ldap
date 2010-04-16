@@ -30,7 +30,8 @@ import edu.vt.middleware.ldap.props.SimplePropertyInvoker;
  * </pre>
  * or
  * <pre>
- * {KeyStoreCredentialConfig{{trustStore=/tmp/my.truststore}{trustStoreType=JKS}}}
+ * {KeyStoreCredentialConfig
+ *   {{trustStore=/tmp/my.truststore}{trustStoreType=JKS}}}
  * </pre>
  * or
  * <pre>
@@ -88,25 +89,25 @@ public class CredentialConfigParser
       int i = 1;
       this.sslSocketFactoryClassName = fullMatcher.group(i++).trim();
       this.credentialConfigClassName = fullMatcher.group(i++).trim();
-      if (!fullMatcher.group(i).trim().equals("")) {
+      if (!"".equals(fullMatcher.group(i).trim())) {
         m = PROPERTY_PATTERN.matcher(fullMatcher.group(i).trim());
       }
     } else if (credentialOnlyMatcher.matches()) {
       int i = 1;
       this.credentialConfigClassName = credentialOnlyMatcher.group(i++).trim();
-      if (!credentialOnlyMatcher.group(i).trim().equals("")) {
+      if (!"".equals(credentialOnlyMatcher.group(i).trim())) {
         m = PROPERTY_PATTERN.matcher(credentialOnlyMatcher.group(i).trim());
       }
     } else if (paramsOnlyMatcher.matches()) {
       final int i = 1;
-      if (!paramsOnlyMatcher.group(i).trim().equals("")) {
+      if (!"".equals(paramsOnlyMatcher.group(i).trim())) {
         m = PROPERTY_PATTERN.matcher(paramsOnlyMatcher.group(i).trim());
       }
     }
     if (m != null) {
       while (m.find()) {
         final String input = m.group().trim();
-        if (input != null && !input.equals("")) {
+        if (input != null && !"".equals(input)) {
           final String[] s = input.split("=");
           this.properties.put(s[0].trim(), s[1].trim());
         }

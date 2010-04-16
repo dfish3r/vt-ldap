@@ -189,7 +189,7 @@ public class AuthenticatorTest
 
   /**
    * @param  ldapUrl  to check
-   * @param  base  to check
+   * @param  baseDn  to check
    */
   @Parameters({ "loadPropertiesUrl", "loadPropertiesBaseDn" })
   @Test(groups = {"authtest"})

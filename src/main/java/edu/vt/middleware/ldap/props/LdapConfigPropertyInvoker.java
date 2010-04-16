@@ -57,7 +57,7 @@ public class LdapConfigPropertyInvoker extends AbstractPropertyInvoker
     Object newValue = value;
     if (type != String.class) {
       if (SSLSocketFactory.class.isAssignableFrom(type)) {
-        if (value.equals("null")) {
+        if ("null".equals(value)) {
           newValue = null;
         } else {
           // use a credential reader to configure key/trust material
@@ -154,7 +154,7 @@ public class LdapConfigPropertyInvoker extends AbstractPropertyInvoker
   protected Object createTypeFromPropertyValue(final Class<?> c, final String s)
   {
     Object newObject = null;
-    if (s.equals("null")) {
+    if ("null".equals(s)) {
       newObject = null;
     } else {
       if (ConfigParser.isConfig(s)) {
@@ -184,7 +184,7 @@ public class LdapConfigPropertyInvoker extends AbstractPropertyInvoker
     final Class<?> c, final String s)
   {
     Object newObject = null;
-    if (s.equals("null")) {
+    if ("null".equals(s)) {
       newObject = null;
     } else {
       if (s.indexOf("},") != -1) {

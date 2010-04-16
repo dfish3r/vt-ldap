@@ -73,7 +73,7 @@ public class LdapRoleAuthorizationModule extends AbstractLoginModule
       if (key.equalsIgnoreCase("roleFilter")) {
         this.roleFilter = value;
       } else if (key.equalsIgnoreCase("roleAttribute")) {
-        if (value.equals("*")) {
+        if ("*".equals(value)) {
           this.roleAttribute = null;
         } else {
           this.roleAttribute = value.split(",");

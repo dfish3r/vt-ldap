@@ -52,7 +52,7 @@ public final class LdapUtil
     if (credential != null) {
       if (credential instanceof String) {
         final String string = (String) credential;
-        if (!string.equals("")) {
+        if (!"".equals(string)) {
           answer = true;
         }
       } else if (credential instanceof char[]) {

@@ -14,13 +14,13 @@
 package edu.vt.middleware.ldap;
 
 import java.util.Arrays;
-import org.testng.AssertJUnit;
-import org.testng.annotations.Test;
 import edu.vt.middleware.ldap.handler.BinarySearchResultHandler;
 import edu.vt.middleware.ldap.handler.EntryDnSearchResultHandler;
 import edu.vt.middleware.ldap.handler.MergeSearchResultHandler;
 import edu.vt.middleware.ldap.handler.RecursiveSearchResultHandler;
 import edu.vt.middleware.ldap.handler.SearchResultHandler;
+import org.testng.AssertJUnit;
+import org.testng.annotations.Test;
 
 /**
  * Unit test for {@link LdapConfig}.

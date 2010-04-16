@@ -214,7 +214,7 @@ public final class SearchServlet extends HttpServlet
         }
 
         final String dsmlVersion = request.getParameter("dsml-version");
-        if (dsmlVersion != null && dsmlVersion.equals("2")) {
+        if ("2".equals(dsmlVersion)) {
           this.dsmlv2Search.search(
             request.getParameter("query"),
             request.getParameterValues("attrs"),

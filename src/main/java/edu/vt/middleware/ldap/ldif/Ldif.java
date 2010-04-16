@@ -369,7 +369,7 @@ public class Ldif implements Serializable
             if (attrValue.startsWith(" ")) {
               attrValue = attrValue.substring(1);
             }
-            if (attrName.equals("dn")) {
+            if ("dn".equals(attrName)) {
               ldapEntry.setDn(attrValue);
             } else {
               LdapAttribute ldapAttr = ldapEntry.getLdapAttributes()

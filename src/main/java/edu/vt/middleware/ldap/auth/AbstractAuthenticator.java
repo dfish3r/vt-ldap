@@ -156,7 +156,7 @@ public abstract class AbstractAuthenticator<T extends AuthenticatorConfig>
     }
 
     // check the dn
-    if (dn == null || dn.equals("")) {
+    if (dn == null || "".equals(dn)) {
       throw new AuthenticationException("Cannot authenticate dn, invalid dn");
     }
 
