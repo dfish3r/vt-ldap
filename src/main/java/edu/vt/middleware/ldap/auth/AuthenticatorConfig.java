@@ -415,8 +415,8 @@ public class AuthenticatorConfig extends LdapConfig
   /**
    * This sets the subtreeSearch for the <code>Authenticator</code>. If true,
    * the DN used for authenticating will be searched for over the entire {@link
-   * LdapConfig#getBase()}. Otherwise the DN will be search for in the {@link
-   * LdapConfig#getBase()} context.
+   * LdapConfig#getBaseDn()}. Otherwise the DN will be search for in the {@link
+   * LdapConfig#getBaseDn()} context.
    *
    * @param  subtreeSearch  <code>boolean</code>
    */

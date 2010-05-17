@@ -167,7 +167,7 @@ public class Ldap extends AbstractLdap<LdapConfig> implements Serializable
 
   /**
    * This will perform an LDAP compare operation with the supplied filter.
-   * {@link LdapConfig#getBase()} is used as the dn to compare. See {@link
+   * {@link LdapConfig#getBaseDn()} is used as the dn to compare. See {@link
    * #compare(String, SearchFilter)}.
    *
    * @param  filter  <code>SearchFilter</code> expression to use for compare
@@ -204,7 +204,7 @@ public class Ldap extends AbstractLdap<LdapConfig> implements Serializable
 
   /**
    * This will query the LDAP with the supplied filter. All attributes will be
-   * returned. {@link LdapConfig#getBase()} is used as the start point for
+   * returned. {@link LdapConfig#getBaseDn()} is used as the start point for
    * searching. Search controls will be created from {@link
    * LdapConfig#getSearchControls(String[])}. See {@link
    * #search(String,SearchFilter,String[])}.
@@ -228,7 +228,7 @@ public class Ldap extends AbstractLdap<LdapConfig> implements Serializable
 
   /**
    * This will query the LDAP with the supplied filter and return attributes.
-   * {@link LdapConfig#getBase()} is used as the start point for searching.
+   * {@link LdapConfig#getBaseDn()} is used as the start point for searching.
    * Search controls will be created from {@link
    * LdapConfig#getSearchControls(String[])}. See {@link
    * #search(String,SearchFilter,String[])}.
@@ -255,8 +255,8 @@ public class Ldap extends AbstractLdap<LdapConfig> implements Serializable
 
   /**
    * This will query the LDAP with the supplied filter and search controls.
-   * {@link LdapConfig#getBase()} is used as the start point for searching. See
-   * {@link #search(String,SearchFilter,SearchControls)}.
+   * {@link LdapConfig#getBaseDn()} is used as the start point for searching.
+   * See {@link #search(String,SearchFilter,SearchControls)}.
    *
    * @param  filter  <code>SearchFilter</code> expression to use for the search
    * @param  searchControls  <code>SearchControls</code> to search with
@@ -440,7 +440,7 @@ public class Ldap extends AbstractLdap<LdapConfig> implements Serializable
 
   /**
    * This will query the LDAP for the supplied matching attributes. All
-   * attributes will be returned. {@link LdapConfig#getBase()} is used as the
+   * attributes will be returned. {@link LdapConfig#getBaseDn()} is used as the
    * name to search.
    * See {@link #searchAttributes(String, Attributes, String[])}.
    *
@@ -459,8 +459,8 @@ public class Ldap extends AbstractLdap<LdapConfig> implements Serializable
 
   /**
    * This will query the LDAP for the supplied matching attributes and return
-   * attributes. {@link LdapConfig#getBase()} is used as the name to search. See
-   * {@link #searchAttributes(String, Attributes, String[])}.
+   * attributes. {@link LdapConfig#getBaseDn()} is used as the name to search.
+   * See {@link #searchAttributes(String, Attributes, String[])}.
    *
    * @param  matchAttrs  <code>Attributes</code> attributes to match
    * @param  retAttrs  <code>String[]</code> attributes to return
