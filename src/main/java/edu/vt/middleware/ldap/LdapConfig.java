@@ -807,7 +807,7 @@ public class LdapConfig extends AbstractPropertyConfig
 
 
   /**
-   * This returns the exception types to ertry operations on.
+   * This returns the exception types to retry operations on.
    *
    * @return  <code>Class[]</code>
    */
