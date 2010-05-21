@@ -54,7 +54,7 @@
     <dependency>
       <groupId>commons-codec</groupId>
       <artifactId>commons-codec</artifactId>
-      <version>1.3</version>
+      <version>1.4</version>
     </dependency>
     <dependency>
       <groupId>commons-cli</groupId>
@@ -98,14 +98,14 @@
     <dependency>
       <groupId>org.testng</groupId>
       <artifactId>testng</artifactId>
-      <version>5.8</version>
+      <version>5.9</version>
       <scope>test</scope>
       <classifier>jdk15</classifier>
     </dependency>
     <dependency>
       <groupId>log4j</groupId>
       <artifactId>log4j</artifactId>
-      <version>1.2.15</version>
+      <version>1.2.16</version>
       <scope>test</scope>
       <exclusions>
         <exclusion>
@@ -242,6 +242,9 @@
           <suiteXmlFiles>
             <suiteXmlFile>${testng.dir}/testng.xml</suiteXmlFile>
           </suiteXmlFiles>
+          <!-- sometimes useful if testng runs out of memory
+          <disableXmlReport>true</disableXmlReport>
+          -->
           <systemProperties>
             <property>
               <name>log4j.configuration</name>
