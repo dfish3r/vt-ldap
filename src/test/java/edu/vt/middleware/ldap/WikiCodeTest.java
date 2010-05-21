@@ -78,7 +78,7 @@ public class WikiCodeTest
     throws Exception
   {
     final Ldap ldap = new Ldap(
-      new LdapConfig("ldap://directory.vt.edu:389", "ou=People,dc=vt,dc=edu"));
+      new LdapConfig("ldap://directory.vt.edu/dc=vt,dc=edu"));
     (new Ldif()).outputLdif(
       ldap.search(new SearchFilter("sn=Fisher")),
       new BufferedWriter(new OutputStreamWriter(System.out)));
@@ -92,7 +92,7 @@ public class WikiCodeTest
     throws Exception
   {
     final Ldap ldap = new Ldap(
-      new LdapConfig("ldap://directory.vt.edu:389", "ou=People,dc=vt,dc=edu"));
+      new LdapConfig("ldap://directory.vt.edu", "ou=People,dc=vt,dc=edu"));
     (new Dsmlv1()).outputDsml(
       ldap.searchAttributes(
         AttributesFactory.createAttributes("mail", "dfisher@vt.edu"),
@@ -133,7 +133,7 @@ public class WikiCodeTest
       "ou=People,dc=vt,dc=edu");
     config.setTls(true);
     // attribute to search for user with
-    config.setUserField(new String[] {"uid", "mail"});
+    config.setUserFilter("(|(uid={0})(mail={0}))");
 
     final Authenticator auth = new Authenticator(config);
     if (
@@ -154,7 +154,7 @@ public class WikiCodeTest
     throws Exception
   {
     final DefaultLdapFactory factory = new DefaultLdapFactory(
-      new LdapConfig("ldap://directory.vt.edu:389", "ou=People,dc=vt,dc=edu"));
+      new LdapConfig("ldap://directory.vt.edu/ou=People,dc=vt,dc=edu"));
     final SoftLimitLdapPool pool = new SoftLimitLdapPool(factory);
     pool.initialize();
 
