@@ -1,7 +1,7 @@
 /*
   $Id$
 
-  Copyright (C) 2003-2009 Virginia Tech.
+  Copyright (C) 2003-2010 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
@@ -66,7 +66,8 @@ public class LdapCli extends AbstractCli
   {
     super.initOptions(
       new LdapConfigPropertyInvoker(
-        LdapConfig.class, LdapConfig.PROPERTIES_DOMAIN));
+        LdapConfig.class,
+        LdapConfig.PROPERTIES_DOMAIN));
 
     options.addOption(new Option(OPT_QUERY, true, ""));
   }
@@ -89,9 +90,7 @@ public class LdapCli extends AbstractCli
     if (line.hasOption(OPT_TRACE)) {
       config.setTracePackets(System.out);
     }
-    if (
-      config.getBindDn() != null &&
-        config.getBindCredential() == null) {
+    if (config.getBindDn() != null && config.getBindCredential() == null) {
       // prompt the user to enter a password
       System.out.print(
         "Enter password for service user " + config.getBindDn() + ": ");

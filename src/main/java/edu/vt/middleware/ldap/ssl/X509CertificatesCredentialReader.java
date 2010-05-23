@@ -1,12 +1,12 @@
 /*
   $Id$
 
-  Copyright (C) 2008-2009 Virginia Tech.
+  Copyright (C) 2003-2010 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
 
-  Author:  Middleware
+  Author:  Middleware Services
   Email:   middleware@vt.edu
   Version: $Revision$
   Updated: $Date$
@@ -22,27 +22,26 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Loads X.509 certificate credentials from a classpath, filepath,
- * or stream resource. Supported certificate formats include:
- * PEM, DER, and PKCS7.
+ * Loads X.509 certificate credentials from a classpath, filepath, or stream
+ * resource. Supported certificate formats include: PEM, DER, and PKCS7.
  *
  * @author  Middleware Services
- * @version $Revision$
+ * @version  $Revision$
  */
 public class X509CertificatesCredentialReader
   extends AbstractCredentialReader<X509Certificate[]>
 {
 
   /** {@inheritDoc} */
-  public X509Certificate[] read(final InputStream is, final String ... params)
+  public X509Certificate[] read(final InputStream is, final String... params)
     throws IOException, GeneralSecurityException
   {
     final CertificateFactory cf = CertificateFactory.getInstance("X.509");
     final List<X509Certificate> certList = new ArrayList<X509Certificate>();
     final InputStream bufIs = this.getBufferedInputStream(is);
     while (bufIs.available() > 0) {
-      final X509Certificate cert =
-        (X509Certificate) cf.generateCertificate(bufIs);
+      final X509Certificate cert = (X509Certificate) cf.generateCertificate(
+        bufIs);
       if (cert != null) {
         certList.add(cert);
       }

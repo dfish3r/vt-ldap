@@ -1,7 +1,7 @@
 /*
   $Id$
 
-  Copyright (C) 2003-2009 Virginia Tech.
+  Copyright (C) 2003-2010 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
@@ -23,9 +23,9 @@ import javax.naming.directory.Attributes;
 import javax.naming.directory.BasicAttributes;
 
 /**
- * <code>AbstractLdapAttributes</code> provides a base implementation of
- * <code>LdapAttributes</code> where the underlying attributes are backed by a
- * <code>Map</code>.
+ * <code>AbstractLdapAttributes</code> provides a base implementation of <code>
+ * LdapAttributes</code> where the underlying attributes are backed by a <code>
+ * Map</code>.
  *
  * @param  <T>  type of backing map
  *

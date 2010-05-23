@@ -1,7 +1,7 @@
 /*
   $Id$
 
-  Copyright (C) 2003-2009 Virginia Tech.
+  Copyright (C) 2003-2010 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
@@ -508,13 +508,15 @@ public class LdapTest
     // test recursive searching
     final FqdnSearchResultHandler fsrh = new FqdnSearchResultHandler();
     final RecursiveSearchResultHandler rsrh = new RecursiveSearchResultHandler(
-      "member", new String[]{"uugid", "uid"});
+      "member",
+      new String[] {"uugid", "uid"});
 
     final Iterator<SearchResult> iter = ldap.search(
       dn,
       new SearchFilter(filter, filterArgs.split("\\|")),
       (String[]) null,
-      fsrh, rsrh);
+      fsrh,
+      rsrh);
     AssertJUnit.assertEquals(
       entry,
       TestUtil.convertLdifToEntry((new Ldif()).createLdif(iter)));
@@ -705,9 +707,7 @@ public class LdapTest
   }
 
 
-  /**
-   * @throws  Exception  On test failure.
-   */
+  /** @throws  Exception  On test failure. */
   @Test(groups = {"ldaptest"})
   public void searchWithRetry()
     throws Exception
@@ -722,7 +722,8 @@ public class LdapTest
       ldap.search(new SearchFilter("(("));
     } catch (InvalidSearchFilterException e) {
       AssertJUnit.assertEquals(
-        InvalidSearchFilterException.class, e.getClass());
+        InvalidSearchFilterException.class,
+        e.getClass());
     }
     AssertJUnit.assertEquals(1, ldap.getRetryCount());
     AssertJUnit.assertTrue(ldap.getRunTime() < 50);
@@ -735,7 +736,8 @@ public class LdapTest
       ldap.search(new SearchFilter("(("));
     } catch (InvalidSearchFilterException e) {
       AssertJUnit.assertEquals(
-        InvalidSearchFilterException.class, e.getClass());
+        InvalidSearchFilterException.class,
+        e.getClass());
     }
     AssertJUnit.assertEquals(0, ldap.getRetryCount());
     AssertJUnit.assertEquals(0, ldap.getRunTime());
@@ -749,7 +751,8 @@ public class LdapTest
       ldap.search(new SearchFilter("(("));
     } catch (InvalidSearchFilterException e) {
       AssertJUnit.assertEquals(
-        InvalidSearchFilterException.class, e.getClass());
+        InvalidSearchFilterException.class,
+        e.getClass());
     }
     AssertJUnit.assertEquals(0, ldap.getRetryCount());
     AssertJUnit.assertEquals(0, ldap.getRunTime());
@@ -765,7 +768,8 @@ public class LdapTest
       ldap.search(new SearchFilter("(("));
     } catch (InvalidSearchFilterException e) {
       AssertJUnit.assertEquals(
-        InvalidSearchFilterException.class, e.getClass());
+        InvalidSearchFilterException.class,
+        e.getClass());
     }
     AssertJUnit.assertEquals(3, ldap.getRetryCount());
     AssertJUnit.assertTrue(ldap.getRunTime() % 3000 < 30);
@@ -777,7 +781,8 @@ public class LdapTest
       ldap.search(new SearchFilter("(("));
     } catch (InvalidSearchFilterException e) {
       AssertJUnit.assertEquals(
-        InvalidSearchFilterException.class, e.getClass());
+        InvalidSearchFilterException.class,
+        e.getClass());
     }
     AssertJUnit.assertEquals(3, ldap.getRetryCount());
     AssertJUnit.assertTrue(ldap.getRunTime() % 7000 < 70);
@@ -790,7 +795,8 @@ public class LdapTest
       ldap.search(new SearchFilter("(("));
     } catch (InvalidSearchFilterException e) {
       AssertJUnit.assertEquals(
-        InvalidSearchFilterException.class, e.getClass());
+        InvalidSearchFilterException.class,
+        e.getClass());
     }
     AssertJUnit.assertEquals(10, ldap.getRetryCount());
     AssertJUnit.assertTrue(ldap.getRunTime() % 111000 < 111);

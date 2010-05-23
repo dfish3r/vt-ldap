@@ -1,7 +1,7 @@
 /*
   $Id$
 
-  Copyright (C) 2003-2009 Virginia Tech.
+  Copyright (C) 2003-2010 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
@@ -121,8 +121,8 @@ public class LdapConfig extends AbstractPropertyConfig
   private String contextFactory = LdapConstants.DEFAULT_CONTEXT_FACTORY;
 
   /** Default connection handler. */
-  private ConnectionHandler connectionHandler =
-    new DefaultConnectionHandler(this);
+  private ConnectionHandler connectionHandler = new DefaultConnectionHandler(
+    this);
 
   /** Default ldap socket factory used for SSL and TLS. */
   private SSLSocketFactory sslSocketFactory;
@@ -833,10 +833,10 @@ public class LdapConfig extends AbstractPropertyConfig
 
 
   /**
-   * This returns the factor by which to multiply the operation retry wait
-   * time. This allows clients to progressively delay each retry. The formula
-   * for backoff is (wait * backoff * attempt). So a wait time of 2s with a
-   * backoff of 3 will delay by 6s, then 12s, then 18s, and so forth.
+   * This returns the factor by which to multiply the operation retry wait time.
+   * This allows clients to progressively delay each retry. The formula for
+   * backoff is (wait * backoff * attempt). So a wait time of 2s with a backoff
+   * of 3 will delay by 6s, then 12s, then 18s, and so forth.
    *
    * @return  <code>int</code> - backoff factor
    */
@@ -1083,9 +1083,10 @@ public class LdapConfig extends AbstractPropertyConfig
    */
   public boolean isTlsEnabled()
   {
-    return this.connectionHandler != null &&
-      this.connectionHandler.getClass().isAssignableFrom(
-        TlsConnectionHandler.class);
+    return
+      this.connectionHandler != null &&
+        this.connectionHandler.getClass().isAssignableFrom(
+          TlsConnectionHandler.class);
   }
 
 
@@ -1108,8 +1109,8 @@ public class LdapConfig extends AbstractPropertyConfig
   /**
    * This sets the connection handler of the <code>LdapConfig</code>.
    *
-   * @param  connectionHandler  <code>ConnectionHandler</code>
-   * connection handler
+   * @param  connectionHandler  <code>ConnectionHandler</code> connection
+   * handler
    */
   public void setConnectionHandler(final ConnectionHandler connectionHandler)
   {
@@ -1333,8 +1334,8 @@ public class LdapConfig extends AbstractPropertyConfig
    * @param  user  <code>String</code> service user dn
    * @param  credential  <code>Object</code>
    *
-   * @deprecated  use {@link #setBindDn(String)} and
-   * {@link #setBindCredential(Object)} instead
+   * @deprecated  use {@link #setBindDn(String)} and {@link
+   * #setBindCredential(Object)} instead
    */
   @Deprecated
   public void setService(final String user, final Object credential)
@@ -1514,10 +1515,10 @@ public class LdapConfig extends AbstractPropertyConfig
 
 
   /**
-   * This sets the factor by which to multiply the operation retry wait
-   * time. This allows clients to progressively delay each retry.  The formula
-   * for backoff is (wait * backoff * attempt). So a wait time of 2s with a
-   * backoff of 3 will delay by 6s, then 12s, then 18s, and so forth.
+   * This sets the factor by which to multiply the operation retry wait time.
+   * This allows clients to progressively delay each retry. The formula for
+   * backoff is (wait * backoff * attempt). So a wait time of 2s with a backoff
+   * of 3 will delay by 6s, then 12s, then 18s, and so forth.
    *
    * @param  backoff  <code>int</code>
    */
@@ -1838,8 +1839,8 @@ public class LdapConfig extends AbstractPropertyConfig
 
   /**
    * This sets this <code>LdapConfig</code> to use the TLS protocol for
-   * connections. Specifically it sets the connection handler to use
-   * {@link TlsConnectionHandler}.
+   * connections. Specifically it sets the connection handler to use {@link
+   * TlsConnectionHandler}.
    *
    * @param  tls  <code>boolean</code>
    */

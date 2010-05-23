@@ -1,7 +1,7 @@
 /*
   $Id$
 
-  Copyright (C) 2003-2009 Virginia Tech.
+  Copyright (C) 2003-2010 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
@@ -20,10 +20,10 @@ import java.util.regex.Pattern;
 
 /**
  * Parses the configuration data associated with classes that contain setter
- * properties.
- * The format of the property string should be like:
+ * properties. The format of the property string should be like:
+ *
  * <pre>
- * MyClass{{propertyOne=foo}{propertyTwo=bar}}
+   MyClass{{propertyOne=foo}{propertyTwo=bar}}
  * </pre>
  *
  * @author  Middleware Services
@@ -31,6 +31,7 @@ import java.util.regex.Pattern;
  */
 public class ConfigParser
 {
+
   /** Property string containing configuration. */
   private static final Pattern CONFIG_PATTERN = Pattern.compile(
     "([^\\{]+)\\s*\\{(.*)\\}\\s*");
@@ -47,8 +48,8 @@ public class ConfigParser
 
 
   /**
-   * Creates a new <code>ConfigParser</code> with the supplied
-   * configuration string.
+   * Creates a new <code>ConfigParser</code> with the supplied configuration
+   * string.
    *
    * @param  config  <code>String</code>
    */
@@ -57,6 +58,7 @@ public class ConfigParser
     final Matcher matcher = CONFIG_PATTERN.matcher(config);
     if (matcher.matches()) {
       this.className = matcher.group(1).trim();
+
       final String props = matcher.group(2).trim();
       final Matcher m = PROPERTY_PATTERN.matcher(props);
       while (m.find()) {
@@ -73,7 +75,7 @@ public class ConfigParser
   /**
    * Returns the class name from the configuration.
    *
-   * @return  <code>String</code>  class name
+   * @return  <code>String</code> class name
    */
   public String getClassName()
   {
@@ -84,7 +86,7 @@ public class ConfigParser
   /**
    * Returns the properties from the configuration.
    *
-   * @return  <code>Map</code>  of property name to value
+   * @return  <code>Map</code> of property name to value
    */
   public Map<String, String> getProperties()
   {
@@ -96,6 +98,7 @@ public class ConfigParser
    * Returns whether the supplied configuration data contains a config.
    *
    * @param  config  <code>String</code>
+   *
    * @return  <code>boolean</code>
    */
   public static boolean isConfig(final String config)
@@ -105,8 +108,8 @@ public class ConfigParser
 
 
   /**
-   * Initialize an instance of the class type with the properties contained
-   * in this config.
+   * Initialize an instance of the class type with the properties contained in
+   * this config.
    *
    * @return  <code>Object</code> of the type the config parsed
    */
@@ -114,7 +117,8 @@ public class ConfigParser
   {
     final Class<?> c = SimplePropertyInvoker.createClass(this.getClassName());
     final Object o = SimplePropertyInvoker.instantiateType(
-      c, this.getClassName());
+      c,
+      this.getClassName());
     this.setProperties(c, o);
     return o;
   }
@@ -123,7 +127,7 @@ public class ConfigParser
   /**
    * Sets the properties on the supplied object.
    *
-   * @param  c  <code>Class</code>  type of the supplied object
+   * @param  c  <code>Class</code> type of the supplied object
    * @param  o  <code>Object</code> to invoke properties on
    */
   protected void setProperties(final Class<?> c, final Object o)

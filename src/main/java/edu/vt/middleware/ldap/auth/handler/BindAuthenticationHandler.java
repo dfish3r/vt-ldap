@@ -1,7 +1,7 @@
 /*
   $Id$
 
-  Copyright (C) 2003-2009 Virginia Tech.
+  Copyright (C) 2003-2010 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
@@ -28,9 +28,7 @@ public class BindAuthenticationHandler extends AbstractAuthenticationHandler
 {
 
 
-  /**
-   * Default constructor.
-   */
+  /** Default constructor. */
   public BindAuthenticationHandler() {}
 
 
@@ -48,7 +46,8 @@ public class BindAuthenticationHandler extends AbstractAuthenticationHandler
 
   /** {@inheritDoc} */
   public void authenticate(
-    final ConnectionHandler ch, final AuthenticationCriteria ac)
+    final ConnectionHandler ch,
+    final AuthenticationCriteria ac)
     throws NamingException
   {
     ch.connect(ac.getDn(), ac.getCredential());

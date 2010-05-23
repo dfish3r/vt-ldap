@@ -1,7 +1,7 @@
 /*
   $Id$
 
-  Copyright (C) 2003-2009 Virginia Tech.
+  Copyright (C) 2003-2010 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
@@ -279,9 +279,7 @@ public class Ldif implements Serializable
    *
    * @throws  IOException  if an error occurs while writing to the output stream
    */
-  public void outputLdif(
-    final LdapResult result,
-    final Writer writer)
+  public void outputLdif(final LdapResult result, final Writer writer)
     throws IOException
   {
     writer.write(createLdif(result));
@@ -309,8 +307,8 @@ public class Ldif implements Serializable
 
   /**
    * This will take a Reader containing an LDIF and convert it to an <code>
-   * LdapResult</code>. Provides a loose implementation of RFC 2849. Should
-   * not be used to validate LDIF format as it does not enforce strictness.
+   * LdapResult</code>. Provides a loose implementation of RFC 2849. Should not
+   * be used to validate LDIF format as it does not enforce strictness.
    *
    * @param  reader  <code>Reader</code> containing LDIF content
    *

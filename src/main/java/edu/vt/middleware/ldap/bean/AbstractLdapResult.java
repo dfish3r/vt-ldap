@@ -1,7 +1,7 @@
 /*
   $Id$
 
-  Copyright (C) 2003-2009 Virginia Tech.
+  Copyright (C) 2003-2010 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
@@ -23,9 +23,9 @@ import javax.naming.NamingException;
 import javax.naming.directory.SearchResult;
 
 /**
- * <code>AbstractLdapResult</code> provides a base implementation of
- * <code>LdapResult</code> where the underlying entries are backed by a
- * <code>Map</code>.
+ * <code>AbstractLdapResult</code> provides a base implementation of <code>
+ * LdapResult</code> where the underlying entries are backed by a <code>
+ * Map</code>.
  *
  * @param  <T>  type of backing map
  *

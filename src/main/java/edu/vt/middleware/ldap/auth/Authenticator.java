@@ -1,7 +1,7 @@
 /*
   $Id$
 
-  Copyright (C) 2003-2009 Virginia Tech.
+  Copyright (C) 2003-2010 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
@@ -91,9 +91,8 @@ public class Authenticator extends AbstractAuthenticator<AuthenticatorConfig>
 
 
   /**
-   * This will attempt to find the LDAP DN for the supplied user.
-   * {@link AuthenticatorConfig#dnResolver} is invoked to perform this
-   * operation.
+   * This will attempt to find the LDAP DN for the supplied user. {@link
+   * AuthenticatorConfig#dnResolver} is invoked to perform this operation.
    *
    * @param  user  <code>String</code> to find dn for
    *

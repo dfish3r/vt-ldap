@@ -1,7 +1,7 @@
 /*
   $Id$
 
-  Copyright (C) 2003-2009 Virginia Tech.
+  Copyright (C) 2003-2010 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
@@ -42,9 +42,7 @@ public class CompareAuthenticationHandler extends AbstractAuthenticationHandler
   private String passwordScheme = "SHA";
 
 
-  /**
-   * Default constructor.
-   */
+  /** Default constructor. */
   public CompareAuthenticationHandler() {}
 
 
@@ -84,7 +82,8 @@ public class CompareAuthenticationHandler extends AbstractAuthenticationHandler
 
   /** {@inheritDoc} */
   public void authenticate(
-    final ConnectionHandler ch, final AuthenticationCriteria ac)
+    final ConnectionHandler ch,
+    final AuthenticationCriteria ac)
     throws NamingException
   {
     byte[] hash = new byte[DIGEST_SIZE];
@@ -96,8 +95,8 @@ public class CompareAuthenticationHandler extends AbstractAuthenticationHandler
       throw new NamingException(e.getMessage());
     }
 
-    ch.connect(
-      this.config.getBindDn(), this.config.getBindCredential());
+    ch.connect(this.config.getBindDn(), this.config.getBindCredential());
+
     NamingEnumeration<SearchResult> en = null;
     try {
       en = ch.getLdapContext().search(
@@ -107,7 +106,8 @@ public class CompareAuthenticationHandler extends AbstractAuthenticationHandler
           String.format(
             "{%s}%s",
             this.passwordScheme,
-            LdapUtil.base64Encode(hash)).getBytes(), },
+            LdapUtil.base64Encode(hash)).getBytes(),
+        },
         LdapConfig.getCompareSearchControls());
       if (!en.hasMore()) {
         throw new AuthenticationException("Compare authentication failed.");

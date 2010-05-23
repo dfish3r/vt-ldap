@@ -1,7 +1,7 @@
 /*
   $Id$
 
-  Copyright (C) 2003-2009 Virginia Tech.
+  Copyright (C) 2003-2010 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
@@ -317,8 +317,8 @@ public final class LdapConstants
 
   /**
    * Whether Authenticator should throw an exception if multiple DNs are found
-   * by {@link edu.vt.middleware.ldap.auth.Authenticator#getDn(String)}.
-   * The value of this constant is {@value}.
+   * by {@link edu.vt.middleware.ldap.auth.Authenticator#getDn(String)}. The
+   * value of this constant is {@value}.
    */
   public static final boolean DEFAULT_ALLOW_MULTIPLE_DNS = false;
 
@@ -329,20 +329,20 @@ public final class LdapConstants
   public static final String DEFAULT_CHARSET = "UTF-8";
 
   /**
-   * Default number of times to retry an operation on failure. The value
-   * of this constant is {@value}.
+   * Default number of times to retry an operation on failure. The value of this
+   * constant is {@value}.
    */
   public static final int DEFAULT_OPERATION_RETRY = 1;
 
   /**
-   * Default amount of time to wait between operation retries. The value
-   * of this constant is {@value}.
+   * Default amount of time to wait between operation retries. The value of this
+   * constant is {@value}.
    */
   public static final long DEFAULT_OPERATION_RETRY_WAIT = 0;
 
   /**
-   * Default factor to multiply the operation retry wait by.
-   * The value of this constant is {@value}.
+   * Default factor to multiply the operation retry wait by. The value of this
+   * constant is {@value}.
    */
   public static final int DEFAULT_OPERATION_RETRY_BACKOFF = 0;
 

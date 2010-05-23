@@ -1,7 +1,7 @@
 /*
   $Id$
 
-  Copyright (C) 2003-2009 Virginia Tech.
+  Copyright (C) 2003-2010 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
@@ -72,6 +72,7 @@ public class LdifResultConverter
    * This returns this <code>LdifResult</code> as LDIF.
    *
    * @param  result  <code>LdapResult</code> to convert
+   *
    * @return  <code>String</code>
    */
   public String toLdif(final LdapResult result)
@@ -93,6 +94,7 @@ public class LdifResultConverter
    * LdifResult</code>.
    *
    * @param  ldif  <code>String</code> to read
+   *
    * @return  <code>LdapResult</code>
    */
   public LdapResult fromLdif(final String ldif)

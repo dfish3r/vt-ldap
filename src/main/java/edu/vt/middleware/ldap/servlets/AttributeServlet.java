@@ -1,7 +1,7 @@
 /*
   $Id$
 
-  Copyright (C) 2003-2009 Virginia Tech.
+  Copyright (C) 2003-2010 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
@@ -135,15 +135,15 @@ public final class AttributeServlet extends HttpServlet
     }
     this.pool.initialize();
 
-    final String beanFactoryClass =
-      getInitParameter(ServletConstants.BEAN_FACTORY);
+    final String beanFactoryClass = getInitParameter(
+      ServletConstants.BEAN_FACTORY);
     if (this.logger.isDebugEnabled()) {
       this.logger.debug(ServletConstants.BEAN_FACTORY + " = " + beanFactory);
     }
     if (beanFactoryClass != null) {
       try {
-        this.beanFactory = (LdapBeanFactory) Class.forName(
-            beanFactoryClass).newInstance();
+        this.beanFactory = (LdapBeanFactory) Class.forName(beanFactoryClass)
+            .newInstance();
       } catch (ClassNotFoundException e) {
         throw new ServletException(e);
       } catch (InstantiationException e) {

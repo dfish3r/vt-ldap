@@ -1,7 +1,7 @@
 /*
   $Id$
 
-  Copyright (C) 2003-2009 Virginia Tech.
+  Copyright (C) 2003-2010 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
@@ -18,9 +18,9 @@ import javax.net.ssl.KeyManager;
 import javax.net.ssl.TrustManager;
 
 /**
- * Provides a default implementation of <code>SSLContextInitializer</code>
- * which allows the setting of trust and key managers in order to create an
- * SSL context.
+ * Provides a default implementation of <code>SSLContextInitializer</code> which
+ * allows the setting of trust and key managers in order to create an SSL
+ * context.
  *
  * @author  Middleware Services
  * @version  $Revision$ $Date$

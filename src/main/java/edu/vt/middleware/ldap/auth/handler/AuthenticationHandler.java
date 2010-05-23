@@ -1,7 +1,7 @@
 /*
   $Id$
 
-  Copyright (C) 2003-2009 Virginia Tech.
+  Copyright (C) 2003-2010 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
@@ -37,10 +37,10 @@ public interface AuthenticationHandler
 
 
   /**
-   * Perform an ldap authentication. Implementations should throw
-   * <code>AuthenticationException</code> to indicate an authentication failure.
-   * The resulting <code>LdapContext</code> can be retrieved from the
-   * connection handler if it is needed.
+   * Perform an ldap authentication. Implementations should throw <code>
+   * AuthenticationException</code> to indicate an authentication failure. The
+   * resulting <code>LdapContext</code> can be retrieved from the connection
+   * handler if it is needed.
    *
    * @param  ch  <code>ConnectionHandler</code> to communicate with the LDAP
    * @param  ac  <code>AuthenticationCriteria</code> to perform the

@@ -1,12 +1,12 @@
 /*
   $Id$
 
-  Copyright (C) 2008-2009 Virginia Tech.
+  Copyright (C) 2003-2010 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
 
-  Author:  Middleware
+  Author:  Middleware Services
   Email:   middleware@vt.edu
   Version: $Revision$
   Updated: $Date$
@@ -26,8 +26,7 @@ import edu.vt.middleware.ldap.LdapUtil;
  * Supported private key formats include: PKCS7.
  *
  * @author  Middleware Services
- * @version $Revision$
- *
+ * @version  $Revision$
  */
 public class PrivateKeyCredentialReader
   extends AbstractCredentialReader<PrivateKey>
@@ -46,13 +45,14 @@ public class PrivateKeyCredentialReader
    * @throws  IOException  On IO errors.
    * @throws  GeneralSecurityException  On errors with the credential data.
    */
-  public PrivateKey read(final InputStream is, final String ... params)
+  public PrivateKey read(final InputStream is, final String... params)
     throws IOException, GeneralSecurityException
   {
     String algorithm = "RSA";
     if (params.length > 0 && params[0] != null) {
       algorithm = params[0];
     }
+
     final KeyFactory kf = KeyFactory.getInstance(algorithm);
     final PKCS8EncodedKeySpec spec = new PKCS8EncodedKeySpec(
       LdapUtil.readInputStream(this.getBufferedInputStream(is)));

@@ -1,7 +1,7 @@
 /*
   $Id$
 
-  Copyright (C) 2003-2009 Virginia Tech.
+  Copyright (C) 2003-2010 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
@@ -33,7 +33,8 @@ public interface DnResolver
    *
    * @throws  NamingException  if an LDAP error occurs
    */
-  String resolve(String user) throws NamingException;
+  String resolve(String user)
+    throws NamingException;
 
 
   /**

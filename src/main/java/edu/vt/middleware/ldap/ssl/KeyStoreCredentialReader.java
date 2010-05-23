@@ -1,12 +1,12 @@
 /*
   $Id$
 
-  Copyright (C) 2008-2009 Virginia Tech.
+  Copyright (C) 2003-2010 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
 
-  Author:  Middleware
+  Author:  Middleware Services
   Email:   middleware@vt.edu
   Version: $Revision$
   Updated: $Date$
@@ -23,7 +23,7 @@ import java.util.Arrays;
  * Reads keystore credentials from a classpath, filepath, or stream resource.
  *
  * @author  Middleware Services
- * @version $Revision$
+ * @version  $Revision$
  */
 public class KeyStoreCredentialReader extends AbstractCredentialReader<KeyStore>
 {
@@ -34,11 +34,15 @@ public class KeyStoreCredentialReader extends AbstractCredentialReader<KeyStore>
    *
    * @param  is  Input stream from which to read keystore.
    * @param  params  Two optional parameters are supported:
+   *
    * <ul>
-   * <li>KeyStore password</li>
-   * <li>KeyStore type; defaults to JVM default keystore format if omitted</li>
+   *   <li>KeyStore password</li>
+   *   <li>KeyStore type; defaults to JVM default keystore format if
+   *     omitted</li>
    * </ul>
-   * If only a single parameter is supplied, it is assumed to be the password.
+   *
+   * <p>If only a single parameter is supplied, it is assumed to be the
+   * password.</p>
    *
    * @return  KeyStore read from data in stream.
    *
@@ -52,10 +56,12 @@ public class KeyStoreCredentialReader extends AbstractCredentialReader<KeyStore>
     if (params.length > 0 && params[0] != null) {
       password = params[0].toCharArray();
     }
+
     String type = KeyStore.getDefaultType();
     if (params.length > 1 && params[1] != null) {
       type = params[1];
     }
+
     final KeyStore keystore = KeyStore.getInstance(type);
     if (is != null) {
       keystore.load(this.getBufferedInputStream(is), password);

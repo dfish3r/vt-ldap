@@ -1,7 +1,7 @@
 /*
   $Id$
 
-  Copyright (C) 2003-2009 Virginia Tech.
+  Copyright (C) 2003-2010 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
@@ -335,8 +335,11 @@ public class LdapLoginModuleTest
    *
    * @throws  Exception  On test failure.
    */
-  @Parameters({
-    "jaasDn", "jaasUser", "jaasRoleCombinedRecursive", "jaasCredential" })
+  @Parameters(
+    {
+      "jaasDn", "jaasUser", "jaasRoleCombinedRecursive", "jaasCredential"
+    }
+  )
   @Test(groups = {"jaastest"})
   public void rolesRecursiveContextTest(
     final String dn,
@@ -346,7 +349,12 @@ public class LdapLoginModuleTest
     throws Exception
   {
     this.doContextTest(
-      "vt-ldap-roles-recursive", dn, user, role, credential, false);
+      "vt-ldap-roles-recursive",
+      dn,
+      user,
+      role,
+      credential,
+      false);
   }
 
 
@@ -466,6 +474,7 @@ public class LdapLoginModuleTest
       LdapDnPrincipal.class);
     if (checkLdapDn) {
       AssertJUnit.assertEquals(1, dnPrincipals.size());
+
       final LdapDnPrincipal dnP = dnPrincipals.iterator().next();
       AssertJUnit.assertEquals(dnP.getName(), dn);
       if (!"".equals(role)) {
@@ -603,8 +612,7 @@ public class LdapLoginModuleTest
       AssertJUnit.assertTrue(match);
     }
 
-    final Set<Group> roleGroups = lc.getSubject().getPrincipals(
-      Group.class);
+    final Set<Group> roleGroups = lc.getSubject().getPrincipals(Group.class);
     AssertJUnit.assertTrue(roleGroups.size() == 2);
     for (Group g : roleGroups) {
       if ("Roles".equals(g.getName())) {
@@ -622,15 +630,17 @@ public class LdapLoginModuleTest
           count++;
         }
         AssertJUnit.assertEquals(
-          count, lc.getSubject().getPrincipals(LdapRole.class).size());
+          count,
+          lc.getSubject().getPrincipals(LdapRole.class).size());
       } else if ("Principals".equals(g.getName())) {
         final Enumeration<? extends Principal> members = g.members();
         int count = 0;
         while (members.hasMoreElements()) {
           final Principal p = members.nextElement();
           boolean match = false;
-          for (LdapPrincipal lp :
-               lc.getSubject().getPrincipals(LdapPrincipal.class)) {
+          for (
+            LdapPrincipal lp :
+              lc.getSubject().getPrincipals(LdapPrincipal.class)) {
             if (lp.getName().equals(p.getName())) {
               match = true;
             }
@@ -639,7 +649,8 @@ public class LdapLoginModuleTest
           count++;
         }
         AssertJUnit.assertEquals(
-          count, lc.getSubject().getPrincipals(LdapPrincipal.class).size());
+          count,
+          lc.getSubject().getPrincipals(LdapPrincipal.class).size());
       } else {
         AssertJUnit.fail("Found invalid group");
       }

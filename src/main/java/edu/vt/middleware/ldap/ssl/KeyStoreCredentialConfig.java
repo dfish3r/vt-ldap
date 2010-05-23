@@ -1,15 +1,15 @@
 /*
-  $Id: LdapTLSSocketFactory.java 1106 2010-01-30 04:34:13Z dfisher $
+  $Id$
 
-  Copyright (C) 2003-2009 Virginia Tech.
+  Copyright (C) 2003-2010 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
 
   Author:  Middleware Services
   Email:   middleware@vt.edu
-  Version: $Revision: 1106 $
-  Updated: $Date: 2010-01-29 23:34:13 -0500 (Fri, 29 Jan 2010) $
+  Version: $Revision$
+  Updated: $Date$
 */
 package edu.vt.middleware.ldap.ssl;
 
@@ -25,7 +25,8 @@ import java.security.GeneralSecurityException;
  */
 public class KeyStoreCredentialConfig implements CredentialConfig
 {
-  /** Handles loading keystores */
+
+  /** Handles loading keystores. */
   protected KeyStoreCredentialReader keyStoreReader =
     new KeyStoreCredentialReader();
 
@@ -189,16 +190,20 @@ public class KeyStoreCredentialConfig implements CredentialConfig
     try {
       if (this.trustStore != null) {
         sslInit.setTrustKeystore(
-            this.keyStoreReader.read(
-              this.trustStore, this.trustStorePassword, this.trustStoreType));
+          this.keyStoreReader.read(
+            this.trustStore,
+            this.trustStorePassword,
+            this.trustStoreType));
       }
       if (this.keyStore != null) {
         sslInit.setAuthenticationKeystore(
-            this.keyStoreReader.read(
-              this.keyStore, this.keyStorePassword, this.keyStoreType));
+          this.keyStoreReader.read(
+            this.keyStore,
+            this.keyStorePassword,
+            this.keyStoreType));
         sslInit.setAuthenticationPassword(
-            this.keyStorePassword != null ?
-              this.keyStorePassword.toCharArray() : null);
+          this.keyStorePassword != null ? this.keyStorePassword.toCharArray()
+                                        : null);
       }
     } catch (IOException e) {
       throw new GeneralSecurityException(e);

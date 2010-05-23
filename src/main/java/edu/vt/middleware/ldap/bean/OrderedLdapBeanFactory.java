@@ -1,7 +1,7 @@
 /*
   $Id$
 
-  Copyright (C) 2003-2009 Virginia Tech.
+  Copyright (C) 2003-2010 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
@@ -58,8 +58,8 @@ public class OrderedLdapBeanFactory implements LdapBeanFactory
 
 
   /**
-   * <code>OrderedLdapResult</code> represents a collection of ldap entries
-   * that are ordered by insertion.
+   * <code>OrderedLdapResult</code> represents a collection of ldap entries that
+   * are ordered by insertion.
    */
   protected class OrderedLdapResult
     extends AbstractLdapResult<LinkedHashMap<String, LdapEntry>>
@@ -75,9 +75,7 @@ public class OrderedLdapBeanFactory implements LdapBeanFactory
   }
 
 
-  /**
-   * <code>OrderedLdapEntry</code> represents a single ldap entry.
-   */
+  /** <code>OrderedLdapEntry</code> represents a single ldap entry. */
   protected class OrderedLdapEntry extends AbstractLdapEntry
   {
 

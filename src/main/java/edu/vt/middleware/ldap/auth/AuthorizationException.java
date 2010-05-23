@@ -1,7 +1,7 @@
 /*
   $Id$
 
-  Copyright (C) 2003-2009 Virginia Tech.
+  Copyright (C) 2003-2010 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
@@ -16,8 +16,8 @@ package edu.vt.middleware.ldap.auth;
 import javax.naming.NamingException;
 
 /**
- * <code>AuthorizationException</code> is thrown when an attempt to authorize
- * a user fails.
+ * <code>AuthorizationException</code> is thrown when an attempt to authorize a
+ * user fails.
  *
  * @author  Middleware Services
  * @version  $Revision$
@@ -29,9 +29,7 @@ public class AuthorizationException extends NamingException
   private static final long serialVersionUID = -6290236661997869406L;
 
 
-  /**
-   * Default constructor.
-   */
+  /** Default constructor. */
   public AuthorizationException()
   {
     super();

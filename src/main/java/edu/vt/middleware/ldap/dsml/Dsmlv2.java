@@ -1,7 +1,7 @@
 /*
   $Id$
 
-  Copyright (C) 2003-2009 Virginia Tech.
+  Copyright (C) 2003-2010 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
@@ -86,9 +86,9 @@ public final class Dsmlv2 extends AbstractDsml
     if (result != null) {
       for (LdapEntry le : result.getEntries()) {
         final Element entryElement = this.createDsmlEntry(
-            new QName("searchResultEntry", ns),
-            le,
-            ns);
+          new QName("searchResultEntry", ns),
+          le,
+          ns);
         entriesElement.add(entryElement);
       }
     }

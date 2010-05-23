@@ -1,7 +1,7 @@
 /*
   $Id$
 
-  Copyright (C) 2003-2009 Virginia Tech.
+  Copyright (C) 2003-2010 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
@@ -252,18 +252,19 @@ public final class TestUtil
 
 
   /**
-   * Creates a new <code>LdapResult</code> with the supplied
-   * <code>Iterator</code> of search results.
+   * Creates a new <code>LdapResult</code> with the supplied <code>
+   * Iterator</code> of search results.
    *
    * @param  iter  <code>Iterator</code> of search results
+   *
    * @return  <code>LdapResult</code>
+   *
    * @throws  Exception  if search results cannot be read
    */
   public static LdapResult newLdapResult(final Iterator<SearchResult> iter)
     throws Exception
   {
-    final LdapResult lr =
-      LdapBeanProvider.getLdapBeanFactory().newLdapResult();
+    final LdapResult lr = LdapBeanProvider.getLdapBeanFactory().newLdapResult();
     lr.addEntries(iter);
     return lr;
   }
@@ -286,18 +287,19 @@ public final class TestUtil
 
 
   /**
-   * Creates a new <code>LdapEntry</code> with the supplied
-   * <code>SearchResult</code>.
+   * Creates a new <code>LdapEntry</code> with the supplied <code>
+   * SearchResult</code>.
    *
    * @param  sr  <code>SearchResult</code>
+   *
    * @return  <code>LdapEntry</code>
+   *
    * @throws  Exception  if search result cannot be read
    */
   public static LdapEntry newLdapEntry(final SearchResult sr)
     throws Exception
   {
-    final LdapEntry le =
-      LdapBeanProvider.getLdapBeanFactory().newLdapEntry();
+    final LdapEntry le = LdapBeanProvider.getLdapBeanFactory().newLdapEntry();
     le.setEntry(sr);
     return le;
   }
@@ -315,24 +317,27 @@ public final class TestUtil
   public static LdapEntry convertLdifToEntry(final String ldif)
     throws Exception
   {
-    return (new Ldif()).importLdifToLdapResult(
-      new StringReader(ldif)).getEntries().iterator().next();
+    return
+      (new Ldif()).importLdifToLdapResult(new StringReader(ldif)).getEntries()
+        .iterator().next();
   }
 
 
   /**
-   * Creates a new <code>LdapAttributes</code> with the supplied
-   * <code>Attributes</code>.
+   * Creates a new <code>LdapAttributes</code> with the supplied <code>
+   * Attributes</code>.
    *
    * @param  attrs  <code>Attributes</code>
+   *
    * @return  <code>LdapAttributes</code>
+   *
    * @throws  Exception  if attributes cannot be read
    */
   public static LdapAttributes newLdapAttributes(final Attributes attrs)
     throws Exception
   {
-    final LdapAttributes la =
-      LdapBeanProvider.getLdapBeanFactory().newLdapAttributes();
+    final LdapAttributes la = LdapBeanProvider.getLdapBeanFactory()
+        .newLdapAttributes();
     la.addAttributes(attrs);
     return la;
   }
@@ -348,8 +353,8 @@ public final class TestUtil
    */
   public static LdapAttributes convertStringToAttributes(final String attrs)
   {
-    final LdapAttributes la =
-      LdapBeanProvider.getLdapBeanFactory().newLdapAttributes();
+    final LdapAttributes la = LdapBeanProvider.getLdapBeanFactory()
+        .newLdapAttributes();
     final String[] s = attrs.split("\\|");
     for (int i = 0; i < s.length; i++) {
       final String[] nameValuePairs = s[i].trim().split("=", 2);

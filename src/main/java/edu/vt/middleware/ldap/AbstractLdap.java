@@ -1,7 +1,7 @@
 /*
   $Id$
 
-  Copyright (C) 2003-2009 Virginia Tech.
+  Copyright (C) 2003-2010 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
@@ -128,9 +128,11 @@ public abstract class AbstractLdap<T extends LdapConfig> implements BaseLdap
     LdapContext ctx = null;
     NamingEnumeration<SearchResult> en = null;
     try {
-      for (int i = 0;
-           i <= this.config.getOperationRetry() ||
-             this.config.getOperationRetry() == -1; i++) {
+      for (
+        int i = 0;
+          i <= this.config.getOperationRetry() ||
+          this.config.getOperationRetry() == -1;
+          i++) {
         try {
           ctx = this.getContext();
           en = ctx.search(
@@ -203,9 +205,11 @@ public abstract class AbstractLdap<T extends LdapConfig> implements BaseLdap
     LdapContext ctx = null;
     NamingEnumeration<SearchResult> en = null;
     try {
-      for (int i = 0;
-           i <= this.config.getOperationRetry() ||
-             this.config.getOperationRetry() == -1; i++) {
+      for (
+        int i = 0;
+          i <= this.config.getOperationRetry() ||
+          this.config.getOperationRetry() == -1;
+          i++) {
         try {
           ctx = this.getContext();
           en = ctx.search(dn, filter, filterArgs, searchControls);
@@ -298,9 +302,11 @@ public abstract class AbstractLdap<T extends LdapConfig> implements BaseLdap
     LdapContext ctx = null;
     NamingEnumeration<SearchResult> en = null;
     try {
-      for (int i = 0;
-           i <= this.config.getOperationRetry() ||
-             this.config.getOperationRetry() == -1; i++) {
+      for (
+        int i = 0;
+          i <= this.config.getOperationRetry() ||
+          this.config.getOperationRetry() == -1;
+          i++) {
         try {
           byte[] cookie = null;
           ctx = this.getContext();
@@ -432,9 +438,11 @@ public abstract class AbstractLdap<T extends LdapConfig> implements BaseLdap
     LdapContext ctx = null;
     NamingEnumeration<SearchResult> en = null;
     try {
-      for (int i = 0;
-           i <= this.config.getOperationRetry() ||
-             this.config.getOperationRetry() == -1; i++) {
+      for (
+        int i = 0;
+          i <= this.config.getOperationRetry() ||
+          this.config.getOperationRetry() == -1;
+          i++) {
         try {
           ctx = this.getContext();
           en = ctx.search(dn, matchAttrs, retAttrs);
@@ -511,9 +519,11 @@ public abstract class AbstractLdap<T extends LdapConfig> implements BaseLdap
     LdapContext ctx = null;
     NamingEnumeration<NameClassPair> en = null;
     try {
-      for (int i = 0;
-           i <= this.config.getOperationRetry() ||
-             this.config.getOperationRetry() == -1; i++) {
+      for (
+        int i = 0;
+          i <= this.config.getOperationRetry() ||
+          this.config.getOperationRetry() == -1;
+          i++) {
         try {
           ctx = this.getContext();
           en = ctx.list(dn);
@@ -567,9 +577,11 @@ public abstract class AbstractLdap<T extends LdapConfig> implements BaseLdap
     LdapContext ctx = null;
     NamingEnumeration<Binding> en = null;
     try {
-      for (int i = 0;
-           i <= this.config.getOperationRetry() ||
-             this.config.getOperationRetry() == -1; i++) {
+      for (
+        int i = 0;
+          i <= this.config.getOperationRetry() ||
+          this.config.getOperationRetry() == -1;
+          i++) {
         try {
           ctx = this.getContext();
           en = ctx.listBindings(dn);
@@ -631,9 +643,11 @@ public abstract class AbstractLdap<T extends LdapConfig> implements BaseLdap
     LdapContext ctx = null;
     Attributes attrs = null;
     try {
-      for (int i = 0;
-           i <= this.config.getOperationRetry() ||
-             this.config.getOperationRetry() == -1; i++) {
+      for (
+        int i = 0;
+          i <= this.config.getOperationRetry() ||
+          this.config.getOperationRetry() == -1;
+          i++) {
         try {
           ctx = this.getContext();
           attrs = ctx.getAttributes(dn, retAttrs);
@@ -695,9 +709,11 @@ public abstract class AbstractLdap<T extends LdapConfig> implements BaseLdap
     DirContext schema = null;
     NamingEnumeration<SearchResult> en = null;
     try {
-      for (int i = 0;
-           i <= this.config.getOperationRetry() ||
-             this.config.getOperationRetry() == -1; i++) {
+      for (
+        int i = 0;
+          i <= this.config.getOperationRetry() ||
+          this.config.getOperationRetry() == -1;
+          i++) {
         try {
           ctx = this.getContext();
           schema = ctx.getSchema(dn);
@@ -760,9 +776,11 @@ public abstract class AbstractLdap<T extends LdapConfig> implements BaseLdap
 
     LdapContext ctx = null;
     try {
-      for (int i = 0;
-           i <= this.config.getOperationRetry() ||
-             this.config.getOperationRetry() == -1; i++) {
+      for (
+        int i = 0;
+          i <= this.config.getOperationRetry() ||
+          this.config.getOperationRetry() == -1;
+          i++) {
         try {
           ctx = this.getContext();
           ctx.modifyAttributes(dn, modOp, attrs);
@@ -808,9 +826,11 @@ public abstract class AbstractLdap<T extends LdapConfig> implements BaseLdap
 
     LdapContext ctx = null;
     try {
-      for (int i = 0;
-           i <= this.config.getOperationRetry() ||
-             this.config.getOperationRetry() == -1; i++) {
+      for (
+        int i = 0;
+          i <= this.config.getOperationRetry() ||
+          this.config.getOperationRetry() == -1;
+          i++) {
         try {
           ctx = this.getContext();
           ctx.modifyAttributes(dn, mods);
@@ -852,9 +872,11 @@ public abstract class AbstractLdap<T extends LdapConfig> implements BaseLdap
 
     LdapContext ctx = null;
     try {
-      for (int i = 0;
-           i <= this.config.getOperationRetry() ||
-             this.config.getOperationRetry() == -1; i++) {
+      for (
+        int i = 0;
+          i <= this.config.getOperationRetry() ||
+          this.config.getOperationRetry() == -1;
+          i++) {
         try {
           ctx = this.getContext();
           ctx.createSubcontext(dn, attrs).close();
@@ -894,9 +916,11 @@ public abstract class AbstractLdap<T extends LdapConfig> implements BaseLdap
 
     LdapContext ctx = null;
     try {
-      for (int i = 0;
-           i <= this.config.getOperationRetry() ||
-             this.config.getOperationRetry() == -1; i++) {
+      for (
+        int i = 0;
+          i <= this.config.getOperationRetry() ||
+          this.config.getOperationRetry() == -1;
+          i++) {
         try {
           ctx = this.getContext();
           ctx.rename(oldDn, newDn);
@@ -935,9 +959,11 @@ public abstract class AbstractLdap<T extends LdapConfig> implements BaseLdap
 
     LdapContext ctx = null;
     try {
-      for (int i = 0;
-           i <= this.config.getOperationRetry() ||
-             this.config.getOperationRetry() == -1; i++) {
+      for (
+        int i = 0;
+          i <= this.config.getOperationRetry() ||
+          this.config.getOperationRetry() == -1;
+          i++) {
         try {
           ctx = this.getContext();
           ctx.destroySubcontext(dn);
@@ -956,9 +982,8 @@ public abstract class AbstractLdap<T extends LdapConfig> implements BaseLdap
 
   /**
    * This will establish a connection if one does not already exist by binding
-   * to the LDAP using parameters given by {@link
-   * LdapConfig#getBindDn()} and {@link
-   * LdapConfig#getBindCredential()}. If these parameters have not been
+   * to the LDAP using parameters given by {@link LdapConfig#getBindDn()} and
+   * {@link LdapConfig#getBindCredential()}. If these parameters have not been
    * set then an anonymous bind will be attempted. This connection must be
    * closed using {@link #close}. Any method which requires an LDAP connection
    * will call this method independently. This method should only be used if you
@@ -979,7 +1004,8 @@ public abstract class AbstractLdap<T extends LdapConfig> implements BaseLdap
       success = true;
     } else {
       this.connectionHandler.connect(
-        this.config.getBindDn(), this.config.getBindCredential());
+        this.config.getBindDn(),
+        this.config.getBindCredential());
       success = true;
     }
     return success;
@@ -1030,7 +1056,8 @@ public abstract class AbstractLdap<T extends LdapConfig> implements BaseLdap
     throws NamingException
   {
     this.connect();
-    if (this.connectionHandler != null &&
+    if (
+      this.connectionHandler != null &&
         this.connectionHandler.isConnected()) {
       return this.connectionHandler.getLdapContext().newInstance(null);
     } else {
@@ -1040,21 +1067,24 @@ public abstract class AbstractLdap<T extends LdapConfig> implements BaseLdap
 
 
   /**
-   * Confirms whether the supplied exception matches an exception from
-   * {@link LdapConfig#getOperationRetryExceptions()} and the supplied count
-   * is less than {@link LdapConfig#getOperationRetry()}.
-   * {@link LdapConfig#getOperationRetryWait()} is used in conjunction with
-   * {@link LdapConfig#getOperationRetryBackoff()} to delay retries. Calls
-   * {@link #close()} if no exception is thrown, which allows the client to
-   * reconnect when the operation is performed again.
+   * Confirms whether the supplied exception matches an exception from {@link
+   * LdapConfig#getOperationRetryExceptions()} and the supplied count is less
+   * than {@link LdapConfig#getOperationRetry()}. {@link
+   * LdapConfig#getOperationRetryWait()} is used in conjunction with {@link
+   * LdapConfig#getOperationRetryBackoff()} to delay retries. Calls {@link
+   * #close()} if no exception is thrown, which allows the client to reconnect
+   * when the operation is performed again.
    *
    * @param  ctx  <code>LdapContext</code> that performed the operation
    * @param  e  <code>NamingException</code> that was thrown
    * @param  count  <code>int</code> operation attempts
+   *
    * @throws  NamingException  if the operation won't be retried
    */
   protected void operationRetry(
-    final LdapContext ctx, final NamingException e, final int count)
+    final LdapContext ctx,
+    final NamingException e,
+    final int count)
     throws NamingException
   {
     boolean ignoreException = false;
@@ -1067,12 +1097,15 @@ public abstract class AbstractLdap<T extends LdapConfig> implements BaseLdap
         }
       }
     }
-    if (ignoreException &&
+    if (
+      ignoreException &&
         (count < this.config.getOperationRetry() ||
-         this.config.getOperationRetry() == -1)) {
+          this.config.getOperationRetry() == -1)) {
       if (this.logger.isWarnEnabled()) {
-        this.logger.warn("Error performing LDAP operation, "+
-                         "retrying (attempt "+count+")", e);
+        this.logger.warn(
+          "Error performing LDAP operation, " +
+          "retrying (attempt " + count + ")",
+          e);
       }
       if (ctx != null) {
         ctx.close();
@@ -1081,8 +1114,8 @@ public abstract class AbstractLdap<T extends LdapConfig> implements BaseLdap
       if (this.config.getOperationRetryWait() > 0) {
         long sleepTime = this.config.getOperationRetryWait();
         if (this.config.getOperationRetryBackoff() > 0 && count > 0) {
-          sleepTime =
-            sleepTime * this.config.getOperationRetryBackoff() * count;
+          sleepTime = sleepTime * this.config.getOperationRetryBackoff() *
+              count;
         }
         try {
           Thread.sleep(sleepTime);

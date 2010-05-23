@@ -1,7 +1,7 @@
 /*
   $Id$
 
-  Copyright (C) 2003-2009 Virginia Tech.
+  Copyright (C) 2003-2010 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
@@ -21,8 +21,8 @@ import edu.vt.middleware.ldap.LdapConstants;
 
 /**
  * <code>DefaultConnectionHandler</code> creates a new <code>LdapContext</code>
- * using environment properties obtained from
- * {@link LdapConfig#getEnvironment()}.
+ * using environment properties obtained from {@link
+ * LdapConfig#getEnvironment()}.
  *
  * @author  Middleware Services
  * @version  $Revision$
@@ -31,15 +31,13 @@ public class DefaultConnectionHandler extends AbstractConnectionHandler
 {
 
 
-  /**
-   * Default constructor.
-   */
+  /** Default constructor. */
   public DefaultConnectionHandler() {}
 
 
   /**
-   * Creates a new <code>DefaultConnectionHandler</code> with the supplied
-   * ldap config.
+   * Creates a new <code>DefaultConnectionHandler</code> with the supplied ldap
+   * config.
    *
    * @param  lc  ldap config
    */

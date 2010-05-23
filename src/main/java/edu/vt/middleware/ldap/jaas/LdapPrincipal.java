@@ -1,7 +1,7 @@
 /*
   $Id$
 
-  Copyright (C) 2003-2009 Virginia Tech.
+  Copyright (C) 2003-2010 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
@@ -39,8 +39,8 @@ public class LdapPrincipal
   private String name;
 
   /** User attributes. */
-  private LdapAttributes attributes =
-    LdapBeanProvider.getLdapBeanFactory().newLdapAttributes();
+  private LdapAttributes attributes = LdapBeanProvider.getLdapBeanFactory()
+      .newLdapAttributes();
 
 
   /**

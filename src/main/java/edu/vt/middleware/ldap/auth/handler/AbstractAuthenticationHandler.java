@@ -1,7 +1,7 @@
 /*
   $Id$
 
-  Copyright (C) 2003-2009 Virginia Tech.
+  Copyright (C) 2003-2010 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
@@ -46,7 +46,8 @@ public abstract class AbstractAuthenticationHandler
 
   /** {@inheritDoc} */
   public abstract void authenticate(
-    final ConnectionHandler ch, final AuthenticationCriteria ac)
+    final ConnectionHandler ch,
+    final AuthenticationCriteria ac)
     throws NamingException;
 
 

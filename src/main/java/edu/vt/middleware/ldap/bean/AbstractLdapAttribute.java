@@ -1,7 +1,7 @@
 /*
   $Id$
 
-  Copyright (C) 2003-2009 Virginia Tech.
+  Copyright (C) 2003-2010 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
@@ -21,9 +21,9 @@ import javax.naming.directory.BasicAttribute;
 import edu.vt.middleware.ldap.LdapUtil;
 
 /**
- * <code>AbstractLdapAttribute</code> provides a base implementation of
- * <code>LdapAttribute</code> where the underlying values are backed by a
- * <code>Set</code>.
+ * <code>AbstractLdapAttribute</code> provides a base implementation of <code>
+ * LdapAttribute</code> where the underlying values are backed by a <code>
+ * Set</code>.
  *
  * @param  <T>  type of backing set
  *
@@ -79,6 +79,7 @@ public abstract class AbstractLdapAttribute<T extends Set<Object>>
     throws NamingException
   {
     this.setName(attribute.getID());
+
     final NamingEnumeration<?> ne = attribute.getAll();
     while (ne.hasMore()) {
       this.values.add(ne.next());
@@ -133,9 +134,9 @@ public abstract class AbstractLdapAttribute<T extends Set<Object>>
 
 
   /**
-   * Converts the underlying set of objects to a set of strings.
-   * Objects of type byte[] are base64 encoded. Objects which are not of type
-   * String or byte[] are converted using Object.toString().
+   * Converts the underlying set of objects to a set of strings. Objects of type
+   * byte[] are base64 encoded. Objects which are not of type String or byte[]
+   * are converted using Object.toString().
    *
    * @param  stringValues  <code>Set</code> to populate with strings
    */

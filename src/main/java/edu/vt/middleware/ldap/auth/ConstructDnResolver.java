@@ -1,7 +1,7 @@
 /*
   $Id$
 
-  Copyright (C) 2003-2009 Virginia Tech.
+  Copyright (C) 2003-2010 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
@@ -20,7 +20,7 @@ import org.apache.commons.logging.LogFactory;
 
 /**
  * <code>ConstructDnResolver</code> creates an LDAP DN using known information
- * about the LDAP. Specifically it concatonates the first user field  with the
+ * about the LDAP. Specifically it concatonates the first user field with the
  * base DN.
  *
  * @author  Middleware Services
@@ -97,7 +97,9 @@ public class ConstructDnResolver implements DnResolver, Serializable
       }
       dn = String.format(
         "%s=%s,%s",
-        this.config.getUserField()[0], user, this.config.getBaseDn());
+        this.config.getUserField()[0],
+        user,
+        this.config.getBaseDn());
     } else {
       if (this.logger.isDebugEnabled()) {
         this.logger.debug("User input was empty or null");

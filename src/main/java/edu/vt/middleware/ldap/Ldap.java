@@ -1,7 +1,7 @@
 /*
   $Id$
 
-  Copyright (C) 2003-2009 Virginia Tech.
+  Copyright (C) 2003-2010 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
@@ -408,6 +408,7 @@ public class Ldap extends AbstractLdap<LdapConfig> implements Serializable
         if (ExtendedSearchResultHandler.class.isInstance(h)) {
           ((ExtendedSearchResultHandler) h).setSearchResultLdap(this);
         }
+
         final AttributeHandler[] attrHandler = h.getAttributeHandler();
         if (attrHandler != null && attrHandler.length > 0) {
           for (AttributeHandler ah : attrHandler) {
@@ -541,6 +542,7 @@ public class Ldap extends AbstractLdap<LdapConfig> implements Serializable
         if (ExtendedSearchResultHandler.class.isInstance(h)) {
           ((ExtendedSearchResultHandler) h).setSearchResultLdap(this);
         }
+
         final AttributeHandler[] attrHandler = h.getAttributeHandler();
         if (attrHandler != null && attrHandler.length > 0) {
           for (AttributeHandler ah : attrHandler) {

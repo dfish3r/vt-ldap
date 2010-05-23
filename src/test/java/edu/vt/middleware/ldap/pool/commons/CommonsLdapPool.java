@@ -1,7 +1,7 @@
 /*
   $Id$
 
-  Copyright (C) 2003-2009 Virginia Tech.
+  Copyright (C) 2003-2010 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
@@ -17,8 +17,8 @@ import org.apache.commons.pool.PoolableObjectFactory;
 import org.apache.commons.pool.impl.GenericObjectPool;
 
 /**
- * <code>CommonsLdapPool</code> provides a implementation of a
- * commons pooling <code>GenericObjectPool</code> for testing.
+ * <code>CommonsLdapPool</code> provides a implementation of a commons pooling
+ * <code>GenericObjectPool</code> for testing.
  *
  * @author  Middleware Services
  * @version  $Revision$ $Date$
@@ -34,7 +34,8 @@ public class CommonsLdapPool extends GenericObjectPool
   }
 
 
-  /** Creates a new ldap pool using the supplied poolable object factory.
+  /**
+   * Creates a new ldap pool using the supplied poolable object factory.
    *
    * @param  poolableObjectFactory  to create Ldap objects with
    */

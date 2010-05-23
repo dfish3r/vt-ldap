@@ -1,7 +1,7 @@
 /*
   $Id$
 
-  Copyright (C) 2003-2009 Virginia Tech.
+  Copyright (C) 2003-2010 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
@@ -143,8 +143,8 @@ public abstract class AbstractDsml implements Serializable
 
 
   /**
-   * This will return a list of DSML attribute elements from the supplied
-   * <code>LdapAttributes</code>.
+   * This will return a list of DSML attribute elements from the supplied <code>
+   * LdapAttributes</code>.
    *
    * @param  ldapAttributes  <code>LdapAttributes</code>
    * @param  ns  <code>Namespace</code> of DSML
@@ -152,7 +152,8 @@ public abstract class AbstractDsml implements Serializable
    * @return  <code>List</code> of elements
    */
   protected List<Element> createDsmlAttributes(
-    final LdapAttributes ldapAttributes, final Namespace ns)
+    final LdapAttributes ldapAttributes,
+    final Namespace ns)
   {
     final List<Element> attrElements = new ArrayList<Element>();
     for (LdapAttribute attr : ldapAttributes.getAttributes()) {
@@ -259,8 +260,8 @@ public abstract class AbstractDsml implements Serializable
 
 
   /**
-   * This will write the supplied LDAP result to the supplied writer in
-   * the form of DSML.
+   * This will write the supplied LDAP result to the supplied writer in the form
+   * of DSML.
    *
    * @param  result  <code>LdapResult</code>
    * @param  writer  <code>Writer</code> to write to
@@ -357,9 +358,10 @@ public abstract class AbstractDsml implements Serializable
           final Element attrElement = (Element) attrIterator.next();
           final String attrName = attrElement.attributeValue("name");
           if (attrName != null && attrElement.hasContent()) {
-            final LdapAttribute ldapAttribute =
-              this.beanFactory.newLdapAttribute();
+            final LdapAttribute ldapAttribute = this.beanFactory
+                .newLdapAttribute();
             ldapAttribute.setName(attrName);
+
             final Iterator<?> valueIterator = attrElement.elementIterator(
               "value");
             while (valueIterator.hasNext()) {

@@ -1,7 +1,7 @@
 /*
   $Id$
 
-  Copyright (C) 2003-2009 Virginia Tech.
+  Copyright (C) 2003-2010 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
@@ -99,8 +99,9 @@ public class DsmlTest
     final Ldap ldap = TestUtil.createLdap();
     final Dsmlv1 dsml = new Dsmlv1();
 
-    final Iterator<SearchResult> iter =
-      ldap.search(dn, new SearchFilter(filter));
+    final Iterator<SearchResult> iter = ldap.search(
+      dn,
+      new SearchFilter(filter));
 
     final LdapResult result1 = TestUtil.newLdapResult(iter);
     final StringWriter writer = new StringWriter();
@@ -126,11 +127,13 @@ public class DsmlTest
     })
   @Test(groups = {"dsmltest"})
   public void readAndCompareDsmlv1(
-    final String dsmlFile, final String dsmlSortedFile)
+    final String dsmlFile,
+    final String dsmlSortedFile)
     throws Exception
   {
     final Dsmlv1 dsml = new Dsmlv1();
     dsml.setLdapBeanFactory(new SortedLdapBeanFactory());
+
     final String dsmlStringSorted = TestUtil.readFileIntoString(dsmlSortedFile);
     final Iterator<SearchResult> iter = dsml.importDsml(
       new StringReader(TestUtil.readFileIntoString(dsmlFile)));
@@ -158,8 +161,9 @@ public class DsmlTest
     final Ldap ldap = TestUtil.createLdap();
     final Dsmlv2 dsml = new Dsmlv2();
 
-    final Iterator<SearchResult> iter =
-      ldap.search(dn, new SearchFilter(filter));
+    final Iterator<SearchResult> iter = ldap.search(
+      dn,
+      new SearchFilter(filter));
 
     final LdapResult result1 = TestUtil.newLdapResult(iter);
     final StringWriter writer = new StringWriter();
@@ -185,11 +189,13 @@ public class DsmlTest
     })
   @Test(groups = {"dsmltest"})
   public void readAndCompareDsmlv2(
-    final String dsmlFile, final String dsmlSortedFile)
+    final String dsmlFile,
+    final String dsmlSortedFile)
     throws Exception
   {
     final Dsmlv2 dsml = new Dsmlv2();
     dsml.setLdapBeanFactory(new SortedLdapBeanFactory());
+
     final String dsmlStringSorted = TestUtil.readFileIntoString(dsmlSortedFile);
     final Iterator<SearchResult> iter = dsml.importDsml(
       new StringReader(TestUtil.readFileIntoString(dsmlFile)));

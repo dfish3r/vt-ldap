@@ -1,15 +1,15 @@
 /*
-  $Id: LdapTLSSocketFactory.java 1106 2010-01-30 04:34:13Z dfisher $
+  $Id$
 
-  Copyright (C) 2003-2009 Virginia Tech.
+  Copyright (C) 2003-2010 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
 
   Author:  Middleware Services
   Email:   middleware@vt.edu
-  Version: $Revision: 1106 $
-  Updated: $Date: 2010-01-29 23:34:13 -0500 (Fri, 29 Jan 2010) $
+  Version: $Revision$
+  Updated: $Date$
 */
 package edu.vt.middleware.ldap.ssl;
 

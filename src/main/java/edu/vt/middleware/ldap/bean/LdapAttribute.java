@@ -1,7 +1,7 @@
 /*
   $Id$
 
-  Copyright (C) 2003-2009 Virginia Tech.
+  Copyright (C) 2003-2010 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
@@ -19,8 +19,8 @@ import javax.naming.directory.Attribute;
 
 /**
  * <code>LdapAttribute</code> represents a single ldap attribute. Ldap attribute
- * values must be unique per http://tools.ietf.org/html/rfc4512#section-2.3.
- * For any given attribute, the values must all be of the same type.
+ * values must be unique per http://tools.ietf.org/html/rfc4512#section-2.3. For
+ * any given attribute, the values must all be of the same type.
  *
  * @author  Middleware Services
  * @version  $Revision$ $Date$
@@ -47,8 +47,8 @@ public interface LdapAttribute
 
   /**
    * This returns the value(s) of this <code>LdapAttribute</code> Values are
-   * encoded in base64 format if the underlying value is of type byte[].
-   * The returned set is unmodifiable.
+   * encoded in base64 format if the underlying value is of type byte[]. The
+   * returned set is unmodifiable.
    *
    * @return  unmodifiable <code>Set</code>
    */

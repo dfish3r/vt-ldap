@@ -1,7 +1,7 @@
 /*
   $Id$
 
-  Copyright (C) 2003-2009 Virginia Tech.
+  Copyright (C) 2003-2010 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
@@ -80,9 +80,7 @@ public class AuthenticatorCli extends AbstractCli
     if (line.hasOption(OPT_TRACE)) {
       config.setTracePackets(System.out);
     }
-    if (
-      config.getBindDn() != null &&
-        config.getBindCredential() == null) {
+    if (config.getBindDn() != null && config.getBindCredential() == null) {
       // prompt the user to enter a password
       System.out.print(
         "Enter password for service user " + config.getBindDn() + ": ");
@@ -152,14 +150,15 @@ public class AuthenticatorCli extends AbstractCli
         results = auth.authenticate(attrs);
       }
       if (results != null && results.size() > 0) {
-        final LdapEntry entry =
-          LdapBeanProvider.getLdapBeanFactory().newLdapEntry();
-        final LdapResult result =
-          LdapBeanProvider.getLdapBeanFactory().newLdapResult();
+        final LdapEntry entry = LdapBeanProvider.getLdapBeanFactory()
+            .newLdapEntry();
+        final LdapResult result = LdapBeanProvider.getLdapBeanFactory()
+            .newLdapResult();
         result.addEntry(entry);
         entry.setDn(auth.getDn(config.getUser()));
-        final LdapAttributes la =
-          LdapBeanProvider.getLdapBeanFactory().newLdapAttributes();
+
+        final LdapAttributes la = LdapBeanProvider.getLdapBeanFactory()
+            .newLdapAttributes();
         la.addAttributes(results);
         entry.setLdapAttributes(la);
         if (this.outputDsmlv1) {

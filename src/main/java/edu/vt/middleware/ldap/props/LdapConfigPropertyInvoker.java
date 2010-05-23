@@ -1,7 +1,7 @@
 /*
   $Id$
 
-  Copyright (C) 2003-2009 Virginia Tech.
+  Copyright (C) 2003-2010 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
@@ -45,7 +45,8 @@ public class LdapConfigPropertyInvoker extends AbstractPropertyInvoker
    * name
    */
   public LdapConfigPropertyInvoker(
-    final Class<?> c, final String propertiesDomain)
+    final Class<?> c,
+    final String propertiesDomain)
   {
     this.initialize(c, propertiesDomain);
   }
@@ -67,17 +68,20 @@ public class LdapConfigPropertyInvoker extends AbstractPropertyInvoker
             newValue = instantiateType(
               SSLSocketFactory.class,
               configParser.getSslSocketFactoryClassName());
+
             final Object credentialConfig = configParser.initializeType();
             try {
               // set the SSL context initializer based using the credential
               // config, then initialize the TLS socket factory.
               invokeMethod(
                 newValue.getClass().getMethod(
-                  "setSSLContextInitializer", SSLContextInitializer.class),
+                  "setSSLContextInitializer",
+                  SSLContextInitializer.class),
                 newValue,
                 invokeMethod(
                   credentialConfig.getClass().getMethod(
-                    "createSSLContextInitializer", new Class<?>[0]),
+                    "createSSLContextInitializer",
+                    new Class<?>[0]),
                   credentialConfig,
                   null));
               invokeMethod(
@@ -87,7 +91,7 @@ public class LdapConfigPropertyInvoker extends AbstractPropertyInvoker
             } catch (NoSuchMethodException e) {
               throw new IllegalArgumentException(e);
             }
-          // use a standard config to initialize the socket factory
+            // use a standard config to initialize the socket factory
           } else if (ConfigParser.isConfig(value)) {
             final ConfigParser configParser = new ConfigParser(value);
             newValue = configParser.initializeType();
@@ -97,24 +101,30 @@ public class LdapConfigPropertyInvoker extends AbstractPropertyInvoker
         }
       } else if (HostnameVerifier.class.isAssignableFrom(type)) {
         newValue = this.createTypeFromPropertyValue(
-          HostnameVerifier.class, value);
+          HostnameVerifier.class,
+          value);
       } else if (ConnectionHandler.class.isAssignableFrom(type)) {
         newValue = this.createTypeFromPropertyValue(
-          ConnectionHandler.class, value);
+          ConnectionHandler.class,
+          value);
       } else if (AuthenticationHandler.class.isAssignableFrom(type)) {
         newValue = this.createTypeFromPropertyValue(
-          AuthenticationHandler.class, value);
+          AuthenticationHandler.class,
+          value);
       } else if (DnResolver.class.isAssignableFrom(type)) {
         newValue = this.createTypeFromPropertyValue(DnResolver.class, value);
       } else if (SearchResultHandler[].class.isAssignableFrom(type)) {
         newValue = this.createArrayTypeFromPropertyValue(
-          SearchResultHandler.class, value);
+          SearchResultHandler.class,
+          value);
       } else if (AuthenticationResultHandler[].class.isAssignableFrom(type)) {
         newValue = this.createArrayTypeFromPropertyValue(
-          AuthenticationResultHandler.class, value);
+          AuthenticationResultHandler.class,
+          value);
       } else if (AuthorizationHandler[].class.isAssignableFrom(type)) {
         newValue = this.createArrayTypeFromPropertyValue(
-          AuthorizationHandler.class, value);
+          AuthorizationHandler.class,
+          value);
       } else if (Class[].class.isAssignableFrom(type)) {
         newValue = this.createArrayTypeFromPropertyValue(Class.class, value);
       } else if (type.isEnum()) {
@@ -149,6 +159,7 @@ public class LdapConfigPropertyInvoker extends AbstractPropertyInvoker
    *
    * @param  c  <code>Class</code> type to instantiate
    * @param  s  <code>String</code> to parse
+   *
    * @return  <code>Object</code> of the supplied type or null
    */
   protected Object createTypeFromPropertyValue(final Class<?> c, final String s)
@@ -178,10 +189,12 @@ public class LdapConfigPropertyInvoker extends AbstractPropertyInvoker
    *
    * @param  c  <code>Class</code> type to instantiate
    * @param  s  <code>String</code> to parse
+   *
    * @return  <code>Object</code> that is an array or null
    */
   protected Object createArrayTypeFromPropertyValue(
-    final Class<?> c, final String s)
+    final Class<?> c,
+    final String s)
   {
     Object newObject = null;
     if ("null".equals(s)) {

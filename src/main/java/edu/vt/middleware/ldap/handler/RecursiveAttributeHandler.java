@@ -1,7 +1,7 @@
 /*
   $Id$
 
-  Copyright (C) 2003-2009 Virginia Tech.
+  Copyright (C) 2003-2010 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
@@ -95,7 +95,7 @@ public class RecursiveAttributeHandler extends CopyAttributeHandler
   /**
    * Sets the attribute name that will be recursively searched on.
    *
-   * @param  s <code>String</code>
+   * @param  s  <code>String</code>
    */
   public void setAttributeName(final String s)
   {

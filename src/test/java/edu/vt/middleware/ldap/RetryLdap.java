@@ -1,7 +1,7 @@
 /*
   $Id$
 
-  Copyright (C) 2003-2009 Virginia Tech.
+  Copyright (C) 2003-2010 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
@@ -17,14 +17,15 @@ import javax.naming.NamingException;
 import javax.naming.ldap.LdapContext;
 
 /**
- * <code>RetyLdap</code> provides a wrapper class for testing
- * {@link #operationRetry()}.
+ * <code>RetyLdap</code> provides a wrapper class for testing {@link
+ * #operationRetry()}.
  *
  * @author  Middleware Services
  * @version  $Revision$ $Date$
  */
 public class RetryLdap extends Ldap
 {
+
   /** serial version uid. */
   private static final long serialVersionUID = 4247614583961731974L;
 
@@ -71,9 +72,7 @@ public class RetryLdap extends Ldap
   }
 
 
-  /**
-   * Resets all the counters.
-   */
+  /** Resets all the counters. */
   public void reset()
   {
     this.retryCount = 0;
@@ -84,10 +83,13 @@ public class RetryLdap extends Ldap
 
   /** {@inheritDoc} */
   protected void operationRetry(
-    final LdapContext ctx, final NamingException e, final int count)
+    final LdapContext ctx,
+    final NamingException e,
+    final int count)
     throws NamingException
   {
     this.retryCount = count;
+
     final long t = System.currentTimeMillis();
     super.operationRetry(ctx, e, count);
     this.runTime += System.currentTimeMillis() - t;

@@ -1,7 +1,7 @@
 /*
   $Id$
 
-  Copyright (C) 2003-2009 Virginia Tech.
+  Copyright (C) 2003-2010 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
@@ -44,7 +44,6 @@ public class AnyHostnameVerifier implements HostnameVerifier
   }
 
 
-
   /**
    * Dummy setter method. Noop.
    *
@@ -62,7 +61,6 @@ public class AnyHostnameVerifier implements HostnameVerifier
   {
     return true;
   }
-
 
 
   /**

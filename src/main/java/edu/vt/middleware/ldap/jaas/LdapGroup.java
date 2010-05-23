@@ -1,7 +1,7 @@
 /*
   $Id$
 
-  Copyright (C) 2003-2009 Virginia Tech.
+  Copyright (C) 2003-2010 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
@@ -30,6 +30,7 @@ import java.util.Set;
  */
 public class LdapGroup implements Group, Serializable
 {
+
   /** serial version uid. */
   private static final long serialVersionUID = -342760961669842632L;
 

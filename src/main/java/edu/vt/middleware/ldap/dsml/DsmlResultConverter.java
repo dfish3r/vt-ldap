@@ -1,7 +1,7 @@
 /*
   $Id$
 
-  Copyright (C) 2003-2009 Virginia Tech.
+  Copyright (C) 2003-2010 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
@@ -77,6 +77,7 @@ public class DsmlResultConverter
    * This returns this <code>DsmlResult</code> as version 1 DSML.
    *
    * @param  result  <code>LdapResult</code> to convert
+   *
    * @return  <code>String</code>
    */
   public String toDsmlv1(final LdapResult result)
@@ -98,6 +99,7 @@ public class DsmlResultConverter
    * DsmlResult</code>.
    *
    * @param  dsml  <code>String</code> to read
+   *
    * @return  <code>LdapResult</code>
    *
    * @throws  DocumentException  if an error occurs reading the supplied DSML
@@ -125,6 +127,7 @@ public class DsmlResultConverter
    * This returns this <code>DsmlResult</code> as version 2 DSML.
    *
    * @param  result  <code>LdapResult</code> to convert
+   *
    * @return  <code>String</code>
    */
   public String toDsmlv2(final LdapResult result)
@@ -146,6 +149,7 @@ public class DsmlResultConverter
    * DsmlResult</code>.
    *
    * @param  dsml  <code>String</code> to read
+   *
    * @return  <code>LdapResult</code>
    *
    * @throws  DocumentException  if an error occurs reading the supplied DSML

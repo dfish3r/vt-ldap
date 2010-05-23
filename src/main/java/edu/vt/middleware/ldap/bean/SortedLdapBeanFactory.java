@@ -1,7 +1,7 @@
 /*
   $Id$
 
-  Copyright (C) 2003-2009 Virginia Tech.
+  Copyright (C) 2003-2010 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
@@ -58,8 +58,8 @@ public class SortedLdapBeanFactory implements LdapBeanFactory
 
 
   /**
-   * <code>SortedLdapResult</code> represents a collection of ldap entries
-   * that are sorted by their DN.
+   * <code>SortedLdapResult</code> represents a collection of ldap entries that
+   * are sorted by their DN.
    */
   protected class SortedLdapResult
     extends AbstractLdapResult<TreeMap<String, LdapEntry>>
@@ -76,9 +76,7 @@ public class SortedLdapBeanFactory implements LdapBeanFactory
   }
 
 
-  /**
-   * <code>SortedLdapEntry</code> represents a single ldap entry.
-   */
+  /** <code>SortedLdapEntry</code> represents a single ldap entry. */
   protected class SortedLdapEntry extends AbstractLdapEntry
   {
 

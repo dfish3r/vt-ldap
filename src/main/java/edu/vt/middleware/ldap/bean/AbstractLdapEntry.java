@@ -1,7 +1,7 @@
 /*
   $Id$
 
-  Copyright (C) 2003-2009 Virginia Tech.
+  Copyright (C) 2003-2010 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
@@ -17,8 +17,8 @@ import javax.naming.NamingException;
 import javax.naming.directory.SearchResult;
 
 /**
- * <code>AbstractLdapEntry</code> provides a base implementation of
- * <code>LdapEntry</code>.
+ * <code>AbstractLdapEntry</code> provides a base implementation of <code>
+ * LdapEntry</code>.
  *
  * @author  Middleware Services
  * @version  $Revision$ $Date$
@@ -68,6 +68,7 @@ public abstract class AbstractLdapEntry extends AbstractLdapBean
     throws NamingException
   {
     this.setDn(sr.getName());
+
     final LdapAttributes la = this.beanFactory.newLdapAttributes();
     la.addAttributes(sr.getAttributes());
     this.setLdapAttributes(la);

@@ -1,7 +1,7 @@
 /*
   $Id$
 
-  Copyright (C) 2003-2009 Virginia Tech.
+  Copyright (C) 2003-2010 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
@@ -25,27 +25,32 @@ import edu.vt.middleware.ldap.Ldap;
 
 /**
  * <code>RecursiveSearchResultHandler</code> recursively searches based on a
- * supplied attribute and merges those results into the original result set.
- * For the following LDIF:
+ * supplied attribute and merges those results into the original result set. For
+ * the following LDIF:
+ *
  * <pre>
- * dn: uugid=group1,ou=groups,dc=vt,dc=edu
- * uugid: group1
- * member: uugid=group2,ou=groups,dc=vt,dc=edu
+   dn: uugid=group1,ou=groups,dc=vt,dc=edu
+   uugid: group1
+   member: uugid=group2,ou=groups,dc=vt,dc=edu
 
- * dn: uugid=group2,ou=groups,dc=vt,dc=edu
- * uugid: group2
+   dn: uugid=group2,ou=groups,dc=vt,dc=edu
+   uugid: group2
  * </pre>
- * With the following code:
+ *
+ * <p>With the following code:</p>
+ *
  * <pre>
- * RecursiveSearchResultHandler rsh = new RecurseSearchResultHandler(
- *   ldap, "member", new String[]{"uugid"});
+   RecursiveSearchResultHandler rsh = new RecurseSearchResultHandler(
+     ldap, "member", new String[]{"uugid"});
  * </pre>
- * Will produce this result for the query (uugid=group1):
+ *
+ * <p>Will produce this result for the query (uugid=group1):</p>
+ *
  * <pre>
- * dn: uugid=group1,ou=groups,dc=vt,dc=edu
- * uugid: group1
- * uugid: group2
- * member: uugid=group2,ou=groups,dc=vt,dc=edu
+   dn: uugid=group1,ou=groups,dc=vt,dc=edu
+   uugid: group1
+   uugid: group2
+   member: uugid=group2,ou=groups,dc=vt,dc=edu
  * </pre>
  *
  * @author  Middleware Services
@@ -54,6 +59,7 @@ import edu.vt.middleware.ldap.Ldap;
 public class RecursiveSearchResultHandler extends CopySearchResultHandler
   implements ExtendedSearchResultHandler
 {
+
   /** Ldap to use for searching. */
   private Ldap ldap;
 
@@ -67,9 +73,7 @@ public class RecursiveSearchResultHandler extends CopySearchResultHandler
   private String[] retAttrs;
 
 
-  /**
-   * Default constructor.
-   */
+  /** Default constructor. */
   public RecursiveSearchResultHandler() {}
 
 
@@ -81,7 +85,8 @@ public class RecursiveSearchResultHandler extends CopySearchResultHandler
    * @param  mergeAttrs  <code>String[]</code>
    */
   public RecursiveSearchResultHandler(
-    final String searchAttr, final String[] mergeAttrs)
+    final String searchAttr,
+    final String[] mergeAttrs)
   {
     this(null, searchAttr, mergeAttrs);
   }
@@ -96,7 +101,9 @@ public class RecursiveSearchResultHandler extends CopySearchResultHandler
    * @param  mergeAttrs  <code>String[]</code>
    */
   public RecursiveSearchResultHandler(
-    final Ldap l, final String searchAttr, final String[] mergeAttrs)
+    final Ldap l,
+    final String searchAttr,
+    final String[] mergeAttrs)
   {
     this.ldap = l;
     this.searchAttribute = searchAttr;
@@ -133,7 +140,7 @@ public class RecursiveSearchResultHandler extends CopySearchResultHandler
   /**
    * Sets the attribute name that will be recursively searched on.
    *
-   * @param  s <code>String</code>
+   * @param  s  <code>String</code>
    */
   public void setSearchAttribute(final String s)
   {
@@ -156,7 +163,7 @@ public class RecursiveSearchResultHandler extends CopySearchResultHandler
   /**
    * Sets the attribute name that will be merged by the recursive search.
    *
-   * @param  s <code>String[]</code>
+   * @param  s  <code>String[]</code>
    */
   public void setMergeAttributes(final String[] s)
   {
@@ -175,7 +182,11 @@ public class RecursiveSearchResultHandler extends CopySearchResultHandler
       // return attributes must include the search attribute
       this.retAttrs = new String[this.mergeAttributes.length + 1];
       System.arraycopy(
-        this.mergeAttributes, 0, this.retAttrs, 0, this.mergeAttributes.length);
+        this.mergeAttributes,
+        0,
+        this.retAttrs,
+        0,
+        this.mergeAttributes.length);
       this.retAttrs[this.retAttrs.length - 1] = this.searchAttribute;
     }
   }
@@ -203,8 +214,8 @@ public class RecursiveSearchResultHandler extends CopySearchResultHandler
 
 
   /**
-   * Recursively searches a list of attributes and merges those results with
-   * the existing search result set.
+   * Recursively searches a list of attributes and merges those results with the
+   * existing search result set.
    *
    * @param  results  <code>List</code> of search results to merge with
    *
@@ -221,8 +232,7 @@ public class RecursiveSearchResultHandler extends CopySearchResultHandler
         searchedDns.add(sr.getName());
         this.readSearchAttribute(sr.getAttributes(), searchedDns);
       } else {
-        this.recursiveSearch(
-          sr.getName(), sr.getAttributes(), searchedDns);
+        this.recursiveSearch(sr.getName(), sr.getAttributes(), searchedDns);
       }
     }
     return results;
@@ -239,7 +249,8 @@ public class RecursiveSearchResultHandler extends CopySearchResultHandler
    * @throws  NamingException  if a search error occurs
    */
   private void readSearchAttribute(
-    final Attributes attrs, final List<String> searchedDns)
+    final Attributes attrs,
+    final List<String> searchedDns)
     throws NamingException
   {
     if (attrs != null) {

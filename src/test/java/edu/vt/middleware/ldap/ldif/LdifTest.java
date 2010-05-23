@@ -1,7 +1,7 @@
 /*
   $Id$
 
-  Copyright (C) 2003-2009 Virginia Tech.
+  Copyright (C) 2003-2010 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
@@ -88,12 +88,10 @@ public class LdifTest
    *
    * @throws  Exception  On test failure.
    */
-  @Parameters(
-    {
+  @Parameters({
       "ldifSearchDn",
       "ldifSearchFilter"
-    }
-  )
+    })
   @Test(groups = {"ldiftest"})
   public void searchAndCompareLdif(final String dn, final String filter)
     throws Exception
@@ -101,8 +99,9 @@ public class LdifTest
     final Ldap ldap = TestUtil.createLdap();
     final Ldif ldif = new Ldif();
 
-    final Iterator<SearchResult> iter =
-      ldap.search(dn, new SearchFilter(filter));
+    final Iterator<SearchResult> iter = ldap.search(
+      dn,
+      new SearchFilter(filter));
 
     final LdapResult result1 = TestUtil.newLdapResult(iter);
     final StringWriter writer = new StringWriter();
@@ -122,19 +121,19 @@ public class LdifTest
    *
    * @throws  Exception  On test failure.
    */
-  @Parameters(
-    {
+  @Parameters({
       "ldifEntry",
       "ldifSortedEntry"
-    }
-  )
+    })
   @Test(groups = {"ldiftest"})
   public void readAndCompareSortedLdif(
-    final String ldifFile, final String ldifSortedFile)
+    final String ldifFile,
+    final String ldifSortedFile)
     throws Exception
   {
     final Ldif ldif = new Ldif();
     ldif.setLdapBeanFactory(new SortedLdapBeanFactory());
+
     final String ldifStringSorted = TestUtil.readFileIntoString(ldifSortedFile);
     final Iterator<SearchResult> iter = ldif.importLdif(
       new StringReader(TestUtil.readFileIntoString(ldifFile)));
@@ -151,21 +150,20 @@ public class LdifTest
    *
    * @throws  Exception  On test failure.
    */
-  @Parameters(
-    {
+  @Parameters({
       "multipleLdifResultsIn",
       "multipleLdifResultsOut"
-    }
-  )
+    })
   @Test(groups = {"ldiftest"})
   public void readAndCompareMultipleLdif(
-    final String ldifFileIn, final String ldifFileOut)
+    final String ldifFileIn,
+    final String ldifFileOut)
     throws Exception
   {
     final Ldif ldif = new Ldif();
     final String ldifStringIn = TestUtil.readFileIntoString(ldifFileIn);
-    Iterator<SearchResult> iter =
-      ldif.importLdif(new StringReader(ldifStringIn));
+    Iterator<SearchResult> iter = ldif.importLdif(
+      new StringReader(ldifStringIn));
 
     final LdapResult ldif1 = TestUtil.newLdapResult(iter);
 

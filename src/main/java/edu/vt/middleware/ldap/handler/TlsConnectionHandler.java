@@ -1,7 +1,7 @@
 /*
   $Id$
 
-  Copyright (C) 2003-2009 Virginia Tech.
+  Copyright (C) 2003-2010 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
@@ -26,11 +26,11 @@ import edu.vt.middleware.ldap.LdapConstants;
 
 /**
  * <code>TlsConnectionHandler</code> creates a new <code>LdapContext</code>
- * using environment properties obtained from
- * {@link LdapConfig#getEnvironment()} and then invokes the startTLS extended
- * operation on the context. <code>SSLSocketFactory</code> and
- * <code>HostnameVerifier</code> properties are used from the
- * <code>LdapContext</code>.
+ * using environment properties obtained from {@link
+ * LdapConfig#getEnvironment()} and then invokes the startTLS extended operation
+ * on the context. <code>SSLSocketFactory</code> and <code>
+ * HostnameVerifier</code> properties are used from the <code>
+ * LdapContext</code>.
  *
  * @author  Middleware Services
  * @version  $Revision$
@@ -42,15 +42,13 @@ public class TlsConnectionHandler extends DefaultConnectionHandler
   private StartTlsResponse startTlsResponse;
 
 
-  /**
-   * Default constructor.
-   */
+  /** Default constructor. */
   public TlsConnectionHandler() {}
 
 
   /**
-   * Creates a new <code>TlsConnectionHandler</code> with the supplied
-   * ldap config.
+   * Creates a new <code>TlsConnectionHandler</code> with the supplied ldap
+   * config.
    *
    * @param  lc  ldap config
    */
@@ -61,8 +59,8 @@ public class TlsConnectionHandler extends DefaultConnectionHandler
 
 
   /**
-   * This returns the startTLS response created by a call to
-   * {@link #connect(String, Object)}.
+   * This returns the startTLS response created by a call to {@link
+   * #connect(String, Object)}.
    *
    * @return  start tls response
    */
@@ -104,7 +102,8 @@ public class TlsConnectionHandler extends DefaultConnectionHandler
       // if the credential is null the provider will automatically revert the
       // authentication to none
       this.context.addToEnvironment(
-        LdapConstants.AUTHENTICATION, this.config.getAuthtype());
+        LdapConstants.AUTHENTICATION,
+        this.config.getAuthtype());
       if (dn != null) {
         this.context.addToEnvironment(LdapConstants.PRINCIPAL, dn);
         if (credential != null) {

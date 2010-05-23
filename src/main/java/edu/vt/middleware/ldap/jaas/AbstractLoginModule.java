@@ -1,7 +1,7 @@
 /*
   $Id$
 
-  Copyright (C) 2003-2009 Virginia Tech.
+  Copyright (C) 2003-2010 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
@@ -210,8 +210,7 @@ public abstract class AbstractLoginModule implements LoginModule
       this.subject.getPrivateCredentials().addAll(this.credentials);
       this.subject.getPrincipals().addAll(this.roles);
       if (this.logger.isDebugEnabled()) {
-        this.logger.debug(
-          "Committed the following roles: " + this.roles);
+        this.logger.debug("Committed the following roles: " + this.roles);
       }
       if (this.principalGroupName != null) {
         final LdapGroup group = new LdapGroup(this.principalGroupName);
@@ -231,8 +230,7 @@ public abstract class AbstractLoginModule implements LoginModule
         }
         subject.getPrincipals().add(group);
         if (this.logger.isDebugEnabled()) {
-          this.logger.debug(
-            "Committed the following role group: " + group);
+          this.logger.debug("Committed the following role group: " + group);
         }
       }
     }
@@ -449,8 +447,8 @@ public abstract class AbstractLoginModule implements LoginModule
   {
     final List<LdapRole> roles = new ArrayList<LdapRole>();
     if (attributes != null) {
-      final LdapAttributes ldapAttrs =
-        LdapBeanProvider.getLdapBeanFactory().newLdapAttributes();
+      final LdapAttributes ldapAttrs = LdapBeanProvider.getLdapBeanFactory()
+          .newLdapAttributes();
       ldapAttrs.addAttributes(attributes);
       for (LdapAttribute ldapAttr : ldapAttrs.getAttributes()) {
         for (String attrValue : ldapAttr.getStringValues()) {

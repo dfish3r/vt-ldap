@@ -1,7 +1,7 @@
 /*
   $Id$
 
-  Copyright (C) 2003-2009 Virginia Tech.
+  Copyright (C) 2003-2010 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
@@ -38,6 +38,7 @@ import org.apache.commons.logging.LogFactory;
  */
 public abstract class AbstractAuthenticator<T extends AuthenticatorConfig>
 {
+
   /** Log for this class. */
   protected final Log logger = LogFactory.getLog(this.getClass());
 
@@ -66,9 +67,8 @@ public abstract class AbstractAuthenticator<T extends AuthenticatorConfig>
    *
    * @param  dn  <code>String</code> for bind
    * @param  credential  <code>Object</code> for bind
-   * @param  authResultHandler  <code>AuthenticationResultHandler[]</code>
-   * to post
-   * process authentication results
+   * @param  authResultHandler  <code>AuthenticationResultHandler[]</code> to
+   * post process authentication results
    * @param  authzHandler  <code>AuthorizationHandler[]</code> to process
    * authorization after authentication
    *
@@ -163,14 +163,14 @@ public abstract class AbstractAuthenticator<T extends AuthenticatorConfig>
     Attributes userAttributes = null;
 
     // attempt to bind as this dn
-    final ConnectionHandler ch =
-      this.config.getConnectionHandler().newInstance();
+    final ConnectionHandler ch = this.config.getConnectionHandler()
+        .newInstance();
     try {
       final AuthenticationCriteria ac = new AuthenticationCriteria(dn);
       ac.setCredential(credential);
       try {
-        final AuthenticationHandler authHandler =
-          this.config.getAuthenticationHandler().newInstance();
+        final AuthenticationHandler authHandler = this.config
+            .getAuthenticationHandler().newInstance();
         authHandler.authenticate(ch, ac);
         if (this.logger.isInfoEnabled()) {
           this.logger.info("Authentication succeeded for dn: " + dn);
@@ -193,14 +193,13 @@ public abstract class AbstractAuthenticator<T extends AuthenticatorConfig>
             azh.process(ac, ch.getLdapContext());
             if (this.logger.isInfoEnabled()) {
               this.logger.info(
-                "Authorization succeeded for dn: " + dn +
-                " with handler: " + azh);
+                "Authorization succeeded for dn: " + dn + " with handler: " +
+                azh);
             }
           } catch (AuthenticationException e) {
             if (this.logger.isInfoEnabled()) {
               this.logger.info(
-                "Authorization failed for dn: " + dn +
-                " with handler: " +azh);
+                "Authorization failed for dn: " + dn + " with handler: " + azh);
             }
             if (authResultHandler != null && authResultHandler.length > 0) {
               for (AuthenticationResultHandler ah : authResultHandler) {
@@ -216,8 +215,7 @@ public abstract class AbstractAuthenticator<T extends AuthenticatorConfig>
           this.logger.debug("Returning attributes: ");
           this.logger.debug(
             "    " +
-            (retAttrs == null ?
-              "all attributes" : Arrays.toString(retAttrs)));
+            (retAttrs == null ? "all attributes" : Arrays.toString(retAttrs)));
         }
         userAttributes = ch.getLdapContext().getAttributes(dn, retAttrs);
       }

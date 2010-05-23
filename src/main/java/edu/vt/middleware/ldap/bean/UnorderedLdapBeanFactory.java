@@ -1,7 +1,7 @@
 /*
   $Id$
 
-  Copyright (C) 2003-2009 Virginia Tech.
+  Copyright (C) 2003-2010 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
@@ -75,9 +75,7 @@ public class UnorderedLdapBeanFactory implements LdapBeanFactory
   }
 
 
-  /**
-   * <code>UnorderedLdapEntry</code> represents a single ldap entry.
-   */
+  /** <code>UnorderedLdapEntry</code> represents a single ldap entry. */
   protected class UnorderedLdapEntry extends AbstractLdapEntry
   {
 

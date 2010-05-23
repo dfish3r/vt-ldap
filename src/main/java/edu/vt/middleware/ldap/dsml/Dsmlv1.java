@@ -1,7 +1,7 @@
 /*
   $Id$
 
-  Copyright (C) 2003-2009 Virginia Tech.
+  Copyright (C) 2003-2010 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
@@ -105,7 +105,8 @@ public final class Dsmlv1 extends AbstractDsml
 
   /** {@inheritDoc} */
   protected List<Element> createDsmlAttributes(
-    final LdapAttributes ldapAttributes, final Namespace ns)
+    final LdapAttributes ldapAttributes,
+    final Namespace ns)
   {
     final List<Element> attrElements = new ArrayList<Element>();
     for (LdapAttribute attr : ldapAttributes.getAttributes()) {
@@ -210,9 +211,10 @@ public final class Dsmlv1 extends AbstractDsml
           final Element ocElement = (Element) ocIterator.next();
           if (ocElement != null && ocElement.hasContent()) {
             final String ocName = "objectClass";
-            final LdapAttribute ldapAttribute =
-              this.beanFactory.newLdapAttribute();
+            final LdapAttribute ldapAttribute = this.beanFactory
+                .newLdapAttribute();
             ldapAttribute.setName(ocName);
+
             final Iterator<?> valueIterator = ocElement.elementIterator(
               "oc-value");
             while (valueIterator.hasNext()) {

@@ -1,7 +1,7 @@
 /*
   $Id$
 
-  Copyright (C) 2003-2009 Virginia Tech.
+  Copyright (C) 2003-2010 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
@@ -18,8 +18,8 @@ import javax.naming.ldap.LdapContext;
 import edu.vt.middleware.ldap.LdapConfig;
 
 /**
- * ConnectionHandler provides an interface for creating and closing
- * LDAP connections.
+ * ConnectionHandler provides an interface for creating and closing LDAP
+ * connections.
  *
  * @author  Middleware Services
  * @version  $Revision$
@@ -44,7 +44,8 @@ public interface ConnectionHandler
    *
    * @throws  NamingException  if an LDAP error occurs
    */
-  void connect(String dn, Object credential) throws NamingException;
+  void connect(String dn, Object credential)
+    throws NamingException;
 
 
   /**
@@ -56,14 +57,15 @@ public interface ConnectionHandler
 
 
   /**
-   * Returns an ldap context to use for ldap operations.
-   * {@link #connect(String, Object)} must be called prior to invoking this.
+   * Returns an ldap context to use for ldap operations. {@link #connect(String,
+   * Object)} must be called prior to invoking this.
    *
    * @return  ldap context
    *
    * @throws  NamingException  if an LDAP error occurs
    */
-  LdapContext getLdapContext() throws NamingException;
+  LdapContext getLdapContext()
+    throws NamingException;
 
 
   /**
@@ -71,7 +73,8 @@ public interface ConnectionHandler
    *
    * @throws  NamingException  if an LDAP error occurs
    */
-  void close() throws NamingException;
+  void close()
+    throws NamingException;
 
 
   /**

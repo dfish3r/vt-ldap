@@ -1,12 +1,12 @@
 /*
   $Id$
 
-  Copyright (C) 2008-2009 Virginia Tech.
+  Copyright (C) 2003-2010 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
 
-  Author:  Middleware
+  Author:  Middleware Services
   Email:   middleware@vt.edu
   Version: $Revision$
   Updated: $Date$
@@ -23,19 +23,20 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 /**
- * Base class for all credential readers.  It provides support for loading
- * files from resources on the classpath or a filepath.  If a path is prefixed
- * with the string "classpath:" it is interpreted as a classpath specification.
- * If a path is prefixed with the string "file:" it is interpreted as a file
- * path. Any other input throws IllegalArgumentException.
+ * Base class for all credential readers. It provides support for loading files
+ * from resources on the classpath or a filepath. If a path is prefixed with the
+ * string "classpath:" it is interpreted as a classpath specification. If a path
+ * is prefixed with the string "file:" it is interpreted as a file path. Any
+ * other input throws IllegalArgumentException.
  *
  * @param  <T>  Type of credential read by this instance.
  *
  * @author  Middleware Services
- * @version $Revision$
+ * @version  $Revision$
  */
 public abstract class AbstractCredentialReader<T> implements CredentialReader<T>
 {
+
   /** Prefix used to indicate a classpath resource. */
   public static final String CLASSPATH_PREFIX = "classpath:";
 
@@ -53,7 +54,7 @@ public abstract class AbstractCredentialReader<T> implements CredentialReader<T>
 
 
   /** {@inheritDoc} */
-  public T read(final String path, final String ... params)
+  public T read(final String path, final String... params)
     throws IOException, GeneralSecurityException
   {
     InputStream is = null;
@@ -64,8 +65,8 @@ public abstract class AbstractCredentialReader<T> implements CredentialReader<T>
       is = new FileInputStream(new File(path.substring(FILE_START_INDEX)));
     } else {
       throw new IllegalArgumentException(
-        "path must start with either " + CLASSPATH_PREFIX +
-        " or " + FILE_PREFIX);
+        "path must start with either " + CLASSPATH_PREFIX + " or " +
+        FILE_PREFIX);
     }
     if (is != null) {
       try {
@@ -86,18 +87,18 @@ public abstract class AbstractCredentialReader<T> implements CredentialReader<T>
 
 
   /** {@inheritDoc} */
-  public abstract T read(InputStream is, String ... params)
+  public abstract T read(InputStream is, String... params)
     throws IOException, GeneralSecurityException;
 
 
   /**
-   * Gets a buffered input stream from the given input stream.  If the given
+   * Gets a buffered input stream from the given input stream. If the given
    * instance is already buffered, it is simply returned.
    *
    * @param  is  Input stream from which to create buffered instance.
    *
-   * @return  Buffered input stream. If the given instance is already
-   * buffered, it is simply returned.
+   * @return  Buffered input stream. If the given instance is already buffered,
+   * it is simply returned.
    */
   protected InputStream getBufferedInputStream(final InputStream is)
   {

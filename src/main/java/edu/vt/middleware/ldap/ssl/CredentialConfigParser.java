@@ -1,15 +1,15 @@
 /*
-  $Id: LdapUtil.java 930 2009-10-26 20:44:26Z dfisher $
+  $Id$
 
-  Copyright (C) 2003-2009 Virginia Tech.
+  Copyright (C) 2003-2010 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
 
   Author:  Middleware Services
   Email:   middleware@vt.edu
-  Version: $Revision: 930 $
-  Updated: $Date: 2009-10-26 16:44:26 -0400 (Mon, 26 Oct 2009) $
+  Version: $Revision$
+  Updated: $Date$
 */
 package edu.vt.middleware.ldap.ssl;
 
@@ -21,21 +21,25 @@ import edu.vt.middleware.ldap.props.SimplePropertyInvoker;
 
 /**
  * Parses the configuration data associated with credential configs and ssl
- * socket factories.
- * The format of the property string should be like:
+ * socket factories. The format of the property string should be like:
+ *
  * <pre>
- * MySSLSocketFactory
- *   {KeyStoreCredentialConfig
- *     {{trustStore=/tmp/my.truststore}{trustStoreType=JKS}}}
+   MySSLSocketFactory
+     {KeyStoreCredentialConfig
+       {{trustStore=/tmp/my.truststore}{trustStoreType=JKS}}}
  * </pre>
- * or
+ *
+ * <p>or</p>
+ *
  * <pre>
- * {KeyStoreCredentialConfig
- *   {{trustStore=/tmp/my.truststore}{trustStoreType=JKS}}}
+   {KeyStoreCredentialConfig
+     {{trustStore=/tmp/my.truststore}{trustStoreType=JKS}}}
  * </pre>
- * or
+ *
+ * <p>or</p>
+ *
  * <pre>
- * {{trustCertificates=/tmp/my.crt}}
+   {{trustCertificates=/tmp/my.crt}}
  * </pre>
  *
  * @author  Middleware Services
@@ -43,6 +47,7 @@ import edu.vt.middleware.ldap.props.SimplePropertyInvoker;
  */
 public class CredentialConfigParser
 {
+
   /** Property string for configuring a credential config. */
   private static final Pattern FULL_CONFIG_PATTERN = Pattern.compile(
     "([^\\{]+)\\s*\\{\\s*([^\\{]+)\\s*\\{\\s*(.*)\\}\\s*\\}\\s*");
@@ -80,8 +85,8 @@ public class CredentialConfigParser
   public CredentialConfigParser(final String config)
   {
     final Matcher fullMatcher = FULL_CONFIG_PATTERN.matcher(config);
-    final Matcher credentialOnlyMatcher =
-      CREDENTIAL_ONLY_CONFIG_PATTERN.matcher(config);
+    final Matcher credentialOnlyMatcher = CREDENTIAL_ONLY_CONFIG_PATTERN
+        .matcher(config);
     final Matcher paramsOnlyMatcher = PARAMS_ONLY_CONFIG_PATTERN.matcher(
       config);
     Matcher m = null;
@@ -119,7 +124,7 @@ public class CredentialConfigParser
   /**
    * Returns the SSL socket factory class name from the configuration.
    *
-   * @return  <code>String</code>  class name
+   * @return  <code>String</code> class name
    */
   public String getSslSocketFactoryClassName()
   {
@@ -130,7 +135,7 @@ public class CredentialConfigParser
   /**
    * Returns the credential config class name from the configuration.
    *
-   * @return  <code>String</code>  class name
+   * @return  <code>String</code> class name
    */
   public String getCredentialConfigClassName()
   {
@@ -141,7 +146,7 @@ public class CredentialConfigParser
   /**
    * Returns the properties from the configuration.
    *
-   * @return  <code>Map</code>  of property name to value
+   * @return  <code>Map</code> of property name to value
    */
   public Map<String, String> getProperties()
   {
@@ -154,13 +159,15 @@ public class CredentialConfigParser
    * config.
    *
    * @param  config  <code>String</code>
+   *
    * @return  <code>boolean</code>
    */
   public static boolean isCredentialConfig(final String config)
   {
-    return FULL_CONFIG_PATTERN.matcher(config).matches() ||
-           CREDENTIAL_ONLY_CONFIG_PATTERN.matcher(config).matches() ||
-           PARAMS_ONLY_CONFIG_PATTERN.matcher(config).matches();
+    return
+      FULL_CONFIG_PATTERN.matcher(config).matches() ||
+        CREDENTIAL_ONLY_CONFIG_PATTERN.matcher(config).matches() ||
+        PARAMS_ONLY_CONFIG_PATTERN.matcher(config).matches();
   }
 
 
@@ -175,7 +182,8 @@ public class CredentialConfigParser
     final Class<?> c = SimplePropertyInvoker.createClass(
       this.getCredentialConfigClassName());
     final Object o = SimplePropertyInvoker.instantiateType(
-      c, this.getCredentialConfigClassName());
+      c,
+      this.getCredentialConfigClassName());
     this.setProperties(c, o);
     return o;
   }
@@ -184,7 +192,7 @@ public class CredentialConfigParser
   /**
    * Sets the properties on the supplied object.
    *
-   * @param  c  <code>Class</code>  type of the supplied object
+   * @param  c  <code>Class</code> type of the supplied object
    * @param  o  <code>Object</code> to invoke properties on
    */
   protected void setProperties(final Class<?> c, final Object o)

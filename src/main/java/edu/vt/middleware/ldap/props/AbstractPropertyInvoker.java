@@ -1,7 +1,7 @@
 /*
   $Id$
 
-  Copyright (C) 2003-2009 Virginia Tech.
+  Copyright (C) 2003-2010 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
@@ -29,6 +29,7 @@ import org.apache.commons.logging.LogFactory;
  */
 public abstract class AbstractPropertyInvoker
 {
+
   /** Log for this class. */
   protected final Log logger = LogFactory.getLog(this.getClass());
 
@@ -91,16 +92,16 @@ public abstract class AbstractPropertyInvoker
         " on object of type " + object.getClass().getName());
     }
 
-    final Method getter =
-      this.properties.get(name) != null ? this.properties.get(name)[0] : null;
+    final Method getter = this.properties.get(name) != null
+      ? this.properties.get(name)[0] : null;
     if (getter == null) {
       throw new IllegalArgumentException(
         "No getter method found for " + name + " on object " +
         this.clazz.getName());
     }
 
-    final Method setter =
-      this.properties.get(name) != null ? this.properties.get(name)[1] : null;
+    final Method setter = this.properties.get(name) != null
+      ? this.properties.get(name)[1] : null;
     if (setter == null) {
       throw new IllegalArgumentException(
         "No setter method found for " + name + " on object " +
@@ -108,7 +109,9 @@ public abstract class AbstractPropertyInvoker
     }
 
     invokeMethod(
-      setter, object, this.convertValue(getter.getReturnType(), value));
+      setter,
+      object,
+      this.convertValue(getter.getReturnType(), value));
   }
 
 
@@ -118,10 +121,12 @@ public abstract class AbstractPropertyInvoker
    *
    * @param  type  of object to convert value into
    * @param  value  to parse
+   *
    * @return  object of the supplied type
    */
   protected abstract Object convertValue(
-    final Class<?> type, final String value);
+    final Class<?> type,
+    final String value);
 
 
   /**
@@ -189,7 +194,8 @@ public abstract class AbstractPropertyInvoker
       return Class.forName(className);
     } catch (ClassNotFoundException e) {
       throw new IllegalArgumentException(
-        "Could not find class '" + className + "'", e);
+        "Could not find class '" + className + "'",
+        e);
     }
   }
 
@@ -200,12 +206,16 @@ public abstract class AbstractPropertyInvoker
    *
    * @param  method  <code>Method</code> to invoke
    * @param  object  <code>Object</code> to invoke method on
-   * @param  arg  <code>Object</code>  to invoke method with
+   * @param  arg  <code>Object</code> to invoke method with
+   *
    * @return  <code>Object</code> produced by the invocation
+   *
    * @throws  IllegalArgumentException  if an error occurs invoking the method
    */
   public static Object invokeMethod(
-    final Method method, final Object object, final Object arg)
+    final Method method,
+    final Object object,
+    final Object arg)
   {
     try {
       Object[] params = new Object[] {arg};

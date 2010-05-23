@@ -1,7 +1,7 @@
 /*
   $Id$
 
-  Copyright (C) 2003-2009 Virginia Tech.
+  Copyright (C) 2003-2010 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
@@ -32,9 +32,7 @@ public class LdapConfigTest
 {
 
 
-  /**
-   * @throws  Exception  On test failure.
-   */
+  /** @throws  Exception  On test failure. */
   @Test(groups = {"ldaptest"})
   public void nullProperties()
     throws Exception
@@ -51,9 +49,7 @@ public class LdapConfigTest
   }
 
 
-  /**
-   * @throws  Exception  On test failure.
-   */
+  /** @throws  Exception  On test failure. */
   @Test(groups = {"ldaptest"})
   public void parserProperties()
     throws Exception
@@ -65,11 +61,11 @@ public class LdapConfigTest
     for (SearchResultHandler srh :
          l.getLdapConfig().getSearchResultHandlers()) {
       if (RecursiveSearchResultHandler.class.isInstance(srh)) {
-        final RecursiveSearchResultHandler h =
-          (RecursiveSearchResultHandler) srh;
+        final RecursiveSearchResultHandler h = (RecursiveSearchResultHandler)
+          srh;
         AssertJUnit.assertEquals("member", h.getSearchAttribute());
         AssertJUnit.assertEquals(
-          Arrays.asList(new String[]{"mail", "department"}),
+          Arrays.asList(new String[] {"mail", "department"}),
           Arrays.asList(h.getMergeAttributes()));
       } else if (MergeSearchResultHandler.class.isInstance(srh)) {
         final MergeSearchResultHandler h = (MergeSearchResultHandler) srh;

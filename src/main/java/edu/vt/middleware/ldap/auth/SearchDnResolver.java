@@ -1,7 +1,7 @@
 /*
   $Id$
 
-  Copyright (C) 2003-2009 Virginia Tech.
+  Copyright (C) 2003-2010 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
@@ -76,13 +76,13 @@ public class SearchDnResolver extends AbstractLdap<AuthenticatorConfig>
 
 
   /**
-   * This will attempt to find the dn for the supplied user.
-   * {@link AuthenticatorConfig#getUserFilter()} or {@link
+   * This will attempt to find the dn for the supplied user. {@link
+   * AuthenticatorConfig#getUserFilter()} or {@link
    * AuthenticatorConfig#getUserField()} is used to look up the dn. If a filter
    * is used, the user is provided as the {0} variable filter argument. If a
    * field is used, the filter is built by ORing the fields together. If more
-   * than one entry matches the search, the result is controlled by
-   * {@link AuthenticatorConfig#setAllowMultipleDns(boolean)}.
+   * than one entry matches the search, the result is controlled by {@link
+   * AuthenticatorConfig#setAllowMultipleDns(boolean)}.
    *
    * @param  user  <code>String</code> to find dn for
    *
@@ -149,12 +149,11 @@ public class SearchDnResolver extends AbstractLdap<AuthenticatorConfig>
           if (answer.hasNext()) {
             if (this.logger.isDebugEnabled()) {
               this.logger.debug(
-                "Multiple results found for user: " + user +
-                " using filter: " + filter);
+                "Multiple results found for user: " + user + " using filter: " +
+                filter);
             }
             if (!this.config.getAllowMultipleDns()) {
-              throw new NamingException(
-                "Found more than (1) DN for: " + user);
+              throw new NamingException("Found more than (1) DN for: " + user);
             }
           }
         } else {
@@ -166,8 +165,7 @@ public class SearchDnResolver extends AbstractLdap<AuthenticatorConfig>
         }
       } else {
         if (this.logger.isErrorEnabled()) {
-          this.logger.error(
-            "DN search filter not found, no search performed");
+          this.logger.error("DN search filter not found, no search performed");
         }
       }
     } else {

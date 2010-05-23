@@ -1,7 +1,7 @@
 /*
   $Id$
 
-  Copyright (C) 2003-2009 Virginia Tech.
+  Copyright (C) 2003-2010 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
@@ -158,7 +158,8 @@ public class LdapPoolTest
       new DefaultLdapPoolableObjectFactory();
     commonsFactory.setLdapValidator(
       new CompareLdapValidator(
-        "ou=test,dc=vt,dc=edu", new SearchFilter("ou=test")));
+        "ou=test,dc=vt,dc=edu",
+        new SearchFilter("ou=test")));
     this.commonsComparisonPool = new CommonsLdapPool(commonsFactory);
     this.commonsComparisonPool.setTestOnReturn(true);
     this.commonsComparisonPool.setTestOnBorrow(true);

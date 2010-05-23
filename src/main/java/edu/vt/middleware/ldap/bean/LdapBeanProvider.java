@@ -1,7 +1,7 @@
 /*
   $Id$
 
-  Copyright (C) 2003-2009 Virginia Tech.
+  Copyright (C) 2003-2010 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
@@ -17,8 +17,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 /**
- * <code>LdapBeanProvider</code> provides a single source for ldap bean
- * types and configuration.
+ * <code>LdapBeanProvider</code> provides a single source for ldap bean types
+ * and configuration.
  *
  * @author  Middleware Services
  * @version  $Revision$ $Date$
@@ -46,8 +46,8 @@ public final class LdapBeanProvider
     final String beanFactoryClass = System.getProperty(BEAN_FACTORY);
     if (beanFactoryClass != null) {
       try {
-        beanFactory = (LdapBeanFactory) Class.forName(
-          beanFactoryClass).newInstance();
+        beanFactory = (LdapBeanFactory) Class.forName(beanFactoryClass)
+            .newInstance();
         if (LOG.isInfoEnabled()) {
           LOG.info("Set provider bean factory to " + beanFactoryClass);
         }
