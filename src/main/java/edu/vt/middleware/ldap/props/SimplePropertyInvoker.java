@@ -40,7 +40,14 @@ public class SimplePropertyInvoker extends AbstractPropertyInvoker
   {
     Object newValue = value;
     if (type != String.class) {
-      if (String[].class == type) {
+      if (type.isEnum()) {
+        for (Object o : type.getEnumConstants()) {
+          final Enum<?> e = (Enum<?>) o;
+          if (e.name().equals(value)) {
+            newValue = o;
+          }
+        }
+      } else if (String[].class == type) {
         newValue = value.split(",");
       } else if (Object[].class == type) {
         newValue = value.split(",");

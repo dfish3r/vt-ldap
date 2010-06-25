@@ -16,7 +16,6 @@ package edu.vt.middleware.ldap.props;
 import java.lang.reflect.Array;
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLSocketFactory;
-import edu.vt.middleware.ldap.LdapConfig;
 import edu.vt.middleware.ldap.auth.DnResolver;
 import edu.vt.middleware.ldap.auth.handler.AuthenticationHandler;
 import edu.vt.middleware.ldap.auth.handler.AuthenticationResultHandler;
@@ -128,8 +127,11 @@ public class LdapConfigPropertyInvoker extends AbstractPropertyInvoker
       } else if (Class[].class.isAssignableFrom(type)) {
         newValue = this.createArrayTypeFromPropertyValue(Class.class, value);
       } else if (type.isEnum()) {
-        if (LdapConfig.SearchScope.class == type) {
-          newValue = Enum.valueOf(LdapConfig.SearchScope.class, value);
+        for (Object o : type.getEnumConstants()) {
+          final Enum<?> e = (Enum<?>) o;
+          if (e.name().equals(value)) {
+            newValue = o;
+          }
         }
       } else if (String[].class == type) {
         newValue = value.split(",");
