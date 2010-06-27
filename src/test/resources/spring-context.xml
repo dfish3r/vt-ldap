@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:p="http://www.springframework.org/schema/p"
+  xmlns:util="http://www.springframework.org/schema/util"
+  xsi:schemaLocation="
+http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
+
+  <bean id="ldap"
+    class="edu.vt.middleware.ldap.Ldap"
+    p:ldapConfig-ref="ldapConfig"
+  />
+  
+  <bean id="ldapConfig"
+    class="edu.vt.middleware.ldap.LdapConfig"
+    p:ldapUrl="ldap://ed-dev.middleware.vt.edu:14389"
+    p:tls="true"
+    p:authtype="EXTERNAL"
+    p:searchScope="SUBTREE">
+    <property name="sslSocketFactory">
+      <bean class="edu.vt.middleware.ldap.ssl.TLSSocketFactory"
+        init-method="initialize">
+        <property name="SSLContextInitializer">
+          <bean
+            factory-bean="sslContextInitializerFactory"
+            factory-method="createSSLContextInitializer" />
+        </property>
+      </bean>
+    </property>
+  </bean>
+  
+  <bean id="sslContextInitializerFactory"
+    class="edu.vt.middleware.ldap.ssl.KeyStoreCredentialConfig"
+    p:keyStore="classpath:/ed.keystore"
+    p:keyStoreType="BKS"
+    p:keyStorePassword="changeit"
+    p:trustStore="classpath:/ed.truststore"
+    p:trustStoreType="BKS"
+    p:trustStorePassword="changeit"
+  />
+  
+</beans>
