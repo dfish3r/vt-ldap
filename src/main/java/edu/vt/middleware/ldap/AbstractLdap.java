@@ -1035,8 +1035,8 @@ public abstract class AbstractLdap<T extends LdapConfig> implements BaseLdap
       try {
         this.connectionHandler.close();
       } catch (NamingException e) {
-        if (this.logger.isErrorEnabled()) {
-          this.logger.error("Error closing connection with the LDAP", e);
+        if (this.logger.isWarnEnabled()) {
+          this.logger.warn("Error closing connection with the LDAP", e);
         }
       } finally {
         this.connectionHandler = null;
