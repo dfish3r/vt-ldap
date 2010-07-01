@@ -27,6 +27,64 @@ import edu.vt.middleware.ldap.LdapConfig;
 public interface ConnectionHandler
 {
 
+  /**
+   * Enum to define the type of connection strategy.
+   */
+  public enum ConnectionStrategy {
+
+    /** default strategy. */
+    DEFAULT,
+
+    /** active-passive strategy. */
+    ACTIVE_PASSIVE,
+
+    /** round robin strategy. */
+    ROUND_ROBIN,
+
+    /** random strategy. */
+    RANDOM,
+  }
+
+
+  /**
+   * Returns the connection strategy.
+   *
+   * @return  strategy for making connections
+   */
+  ConnectionStrategy getConnectionStrategy();
+
+
+  /**
+   * Sets the connection strategy.
+   *
+   * @param  strategy  for making connections
+   */
+  void setConnectionStrategy(ConnectionStrategy strategy);
+
+
+  /**
+   * This returns the exception types to retry connections on.
+   *
+   * @return  <code>Class[]</code>
+   */
+  Class<?>[] getConnectionRetryExceptions();
+
+
+  /**
+   * This sets the exception types to retry connections on.
+   *
+   * @param  exceptions  <code>Class[]</code>
+   */
+  void setConnectionRetryExceptions(Class<?>[] exceptions);
+
+
+  /**
+   * Returns the ldap configuration.
+   *
+   * @return  ldap config
+   */
+  LdapConfig getLdapConfig();
+
 
   /**
    * Sets the ldap configuration.

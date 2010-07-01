@@ -22,6 +22,7 @@ import edu.vt.middleware.ldap.LdapConfig;
 import edu.vt.middleware.ldap.SearchFilter;
 import edu.vt.middleware.ldap.TestUtil;
 import edu.vt.middleware.ldap.bean.LdapEntry;
+import edu.vt.middleware.ldap.handler.ConnectionHandler;
 import edu.vt.middleware.ldap.ldif.Ldif;
 import edu.vt.middleware.ldap.pool.commons.CommonsLdapPool;
 import edu.vt.middleware.ldap.pool.commons.DefaultLdapPoolableObjectFactory;
@@ -70,6 +71,9 @@ public class LdapPoolTest
 
   /** LdapPool instance for concurrency testing. */
   private SharedLdapPool sharedPool;
+
+  /** LdapPool instance for concurrency testing. */
+  private BlockingLdapPool connStrategyPool;
 
   /** LdapPool instance for concurrency testing. */
   private BlockingLdapPool vtComparisonPool;
@@ -148,6 +152,16 @@ public class LdapPoolTest
     sharedLpc.setValidateTimerPeriod(5000L);
     this.sharedPool = new SharedLdapPool(sharedLpc, factory);
 
+    final LdapConfig connStrategyLc = TestUtil.createLdap().getLdapConfig();
+    connStrategyLc.setLdapUrl(
+      "ldap://ed-dev.middleware.vt.edu:14389 ldap://ed-dne.middleware.vt.edu");
+    connStrategyLc.getConnectionHandler().setConnectionStrategy(
+      ConnectionHandler.ConnectionStrategy.ROUND_ROBIN);
+    final DefaultLdapFactory connStrategyFactory = new DefaultLdapFactory(
+      connStrategyLc);
+    this.connStrategyPool = new BlockingLdapPool(
+      new LdapPoolConfig(), connStrategyFactory);
+
     // configure comparison pools
     final LdapPoolConfig vtComparisonLpc = new LdapPoolConfig();
     vtComparisonLpc.setValidateOnCheckIn(true);
@@ -198,6 +212,7 @@ public class LdapPoolTest
       "softlimitpooltest",
       "blockingpooltest",
       "sharedpooltest",
+      "connstrategypooltest",
       "comparisonpooltest"
     }
   )
@@ -255,6 +270,7 @@ public class LdapPoolTest
     this.blockingPool.initialize();
     this.blockingTimeoutPool.initialize();
     this.sharedPool.initialize();
+    this.connStrategyPool.initialize();
   }
 
 
@@ -290,6 +306,7 @@ public class LdapPoolTest
       "softlimitpooltest",
       "blockingpooltest",
       "sharedpooltest",
+      "connstrategypooltest",
       "comparisonpooltest"
     }
   )
@@ -333,6 +350,7 @@ public class LdapPoolTest
       "softlimitpooltest",
       "blockingpooltest",
       "sharedpooltest",
+      "connstrategypooltest",
       "comparisonpooltest"
     }
   )
@@ -363,6 +381,9 @@ public class LdapPoolTest
     this.sharedPool.close();
     AssertJUnit.assertEquals(this.sharedPool.availableCount(), 0);
     AssertJUnit.assertEquals(this.sharedPool.activeCount(), 0);
+    this.connStrategyPool.close();
+    AssertJUnit.assertEquals(this.connStrategyPool.availableCount(), 0);
+    AssertJUnit.assertEquals(this.connStrategyPool.activeCount(), 0);
     this.vtComparisonPool.close();
     AssertJUnit.assertEquals(this.vtComparisonPool.availableCount(), 0);
     AssertJUnit.assertEquals(this.vtComparisonPool.activeCount(), 0);
@@ -793,7 +814,7 @@ public class LdapPoolTest
 
   /** @throws  Exception  On test failure. */
   @Test(groups = {"sharedpooltest"})
-  public void checkShredPoolImmutable()
+  public void checkSharedPoolImmutable()
     throws Exception
   {
     try {
@@ -923,6 +944,30 @@ public class LdapPoolTest
     AssertJUnit.assertEquals(
       LdapPoolConfig.DEFAULT_MIN_POOL_SIZE,
       this.sharedPool.availableCount());
+  }
+
+
+  /**
+   * @param  filter  to search with.
+   * @param  returnAttrs  to search for.
+   * @param  results  to expect from the search.
+   *
+   * @throws  Exception  On test failure.
+   */
+  @Test(
+    groups = {"queuepooltest", "connstrategypooltest"},
+    dataProvider = "pool-data",
+    threadPoolSize = 10,
+    invocationCount = 100,
+    timeOut = 60000
+  )
+  public void connStrategySearch(
+    final SearchFilter filter,
+    final String returnAttrs,
+    final LdapEntry results)
+    throws Exception
+  {
+    this.search(this.connStrategyPool, filter, returnAttrs, results);
   }
 
 

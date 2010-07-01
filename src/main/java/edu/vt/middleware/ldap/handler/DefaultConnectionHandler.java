@@ -47,12 +47,31 @@ public class DefaultConnectionHandler extends AbstractConnectionHandler
   }
 
 
+  /**
+   * Copy constructor for <code>DefaultConnectionHandler</code>.
+   *
+   * @param  ch  to copy properties from
+   */
+  public DefaultConnectionHandler(final DefaultConnectionHandler ch)
+  {
+    this.setLdapConfig(ch.getLdapConfig());
+    this.setConnectionStrategy(ch.getConnectionStrategy());
+    this.setConnectionRetryExceptions(ch.getConnectionRetryExceptions());
+    this.setConnectionCount(ch.getConnectionCount());
+  }
+
+
   /** {@inheritDoc} */
-  public void connect(final String dn, final Object credential)
+  protected void connectInternal(
+    final String authtype,
+    final String dn,
+    final Object credential,
+    final Hashtable<String, Object> env)
     throws NamingException
   {
     if (this.logger.isDebugEnabled()) {
       this.logger.debug("Bind with the following parameters:");
+      this.logger.debug("  authtype = " + authtype);
       this.logger.debug("  dn = " + dn);
       if (this.config.getLogCredentials()) {
         if (this.logger.isDebugEnabled()) {
@@ -64,25 +83,23 @@ public class DefaultConnectionHandler extends AbstractConnectionHandler
         }
       }
       if (this.logger.isTraceEnabled()) {
-        this.logger.trace("  config = " + this.config.getEnvironment());
+        this.logger.trace("  env = " + env);
       }
     }
 
-    final Hashtable<String, Object> environment = new Hashtable<String, Object>(
-      this.config.getEnvironment());
     // note that when using simple authentication (the default),
     // if the credential is null the provider will automatically revert the
     // authentication to none
-    environment.put(LdapConstants.AUTHENTICATION, this.config.getAuthtype());
+    env.put(LdapConstants.AUTHENTICATION, authtype);
     if (dn != null) {
-      environment.put(LdapConstants.PRINCIPAL, dn);
+      env.put(LdapConstants.PRINCIPAL, dn);
       if (credential != null) {
-        environment.put(LdapConstants.CREDENTIALS, credential);
+        env.put(LdapConstants.CREDENTIALS, credential);
       }
     }
 
     try {
-      this.context = new InitialLdapContext(environment, null);
+      this.context = new InitialLdapContext(env, null);
     } catch (NamingException e) {
       if (this.context != null) {
         try {
@@ -99,6 +116,6 @@ public class DefaultConnectionHandler extends AbstractConnectionHandler
   /** {@inheritDoc} */
   public DefaultConnectionHandler newInstance()
   {
-    return new DefaultConnectionHandler(this.config);
+    return new DefaultConnectionHandler(this);
   }
 }

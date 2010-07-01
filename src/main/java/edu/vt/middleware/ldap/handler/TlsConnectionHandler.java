@@ -54,11 +54,25 @@ public class TlsConnectionHandler extends DefaultConnectionHandler
    */
   public TlsConnectionHandler(final LdapConfig lc)
   {
-    this.config = lc;
+    super(lc);
   }
 
 
   /**
+   * Copy constructor for <code>TlsConnectionHandler</code>.
+   *
+   * @param  ch  to copy properties from
+   */
+  public TlsConnectionHandler(final TlsConnectionHandler ch)
+  {
+    this.setLdapConfig(ch.getLdapConfig());
+    this.setConnectionStrategy(ch.getConnectionStrategy());
+    this.setConnectionRetryExceptions(ch.getConnectionRetryExceptions());
+    this.setConnectionCount(ch.getConnectionCount());
+  }
+
+
+/**
    * This returns the startTLS response created by a call to {@link
    * #connect(String, Object)}.
    *
@@ -71,11 +85,16 @@ public class TlsConnectionHandler extends DefaultConnectionHandler
 
 
   /** {@inheritDoc} */
-  public void connect(final String dn, final Object credential)
+  protected void connectInternal(
+    final String authtype,
+    final String dn,
+    final Object credential,
+    final Hashtable<String, Object> env)
     throws NamingException
   {
     if (this.logger.isDebugEnabled()) {
       this.logger.debug("Bind with the following parameters:");
+      this.logger.debug("  authtype = " + authtype);
       this.logger.debug("  dn = " + dn);
       if (this.config.getLogCredentials()) {
         if (this.logger.isDebugEnabled()) {
@@ -87,23 +106,18 @@ public class TlsConnectionHandler extends DefaultConnectionHandler
         }
       }
       if (this.logger.isTraceEnabled()) {
-        this.logger.trace("  config = " + this.config.getEnvironment());
+        this.logger.trace("  env = " + env);
       }
     }
 
-    final Hashtable<String, Object> environment = new Hashtable<String, Object>(
-      this.config.getEnvironment());
-    environment.put(LdapConstants.VERSION, LdapConstants.VERSION_THREE);
-
+    env.put(LdapConstants.VERSION, LdapConstants.VERSION_THREE);
     try {
-      this.context = new InitialLdapContext(environment, null);
+      this.context = new InitialLdapContext(env, null);
       this.startTlsResponse = this.startTls(this.context);
       // note that when using simple authentication (the default),
       // if the credential is null the provider will automatically revert the
       // authentication to none
-      this.context.addToEnvironment(
-        LdapConstants.AUTHENTICATION,
-        this.config.getAuthtype());
+      this.context.addToEnvironment(LdapConstants.AUTHENTICATION, authtype);
       if (dn != null) {
         this.context.addToEnvironment(LdapConstants.PRINCIPAL, dn);
         if (credential != null) {
@@ -211,6 +225,6 @@ public class TlsConnectionHandler extends DefaultConnectionHandler
   /** {@inheritDoc} */
   public TlsConnectionHandler newInstance()
   {
-    return new TlsConnectionHandler(this.config);
+    return new TlsConnectionHandler(this);
   }
 }

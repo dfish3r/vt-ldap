@@ -248,6 +248,32 @@ public class LdapLoginModuleTest
   /**
    * @param  dn  of this user
    * @param  user  to authenticate.
+   * @param  role  to set for this user
+   * @param  credential  to authenticate with.
+   *
+   * @throws  Exception  On test failure.
+   */
+  @Parameters({ "jaasDn", "jaasUser", "jaasUserRole", "jaasCredential" })
+  @Test(
+    groups = {"jaastest"},
+    threadPoolSize = 10,
+    invocationCount = 100,
+    timeOut = 60000
+  )
+  public void randomContextTest(
+    final String dn,
+    final String user,
+    final String role,
+    final String credential)
+    throws Exception
+  {
+    this.doContextTest("vt-ldap-random", dn, user, role, credential, true);
+  }
+
+
+  /**
+   * @param  dn  of this user
+   * @param  user  to authenticate.
    * @param  credential  to authenticate with.
    *
    * @throws  Exception  On test failure.

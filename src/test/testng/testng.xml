@@ -324,6 +324,7 @@
         <include name="blockingpooltest" />
         <include name="blockingtimeoutpooltest" />
         <include name="sharedpooltest" />
+        <include name="connstrategypooltest" />
         <include name="comparisonpooltest" />
       </run>
     </groups>
