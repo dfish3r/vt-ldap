@@ -124,6 +124,8 @@ public class LdapConfigPropertyInvoker extends AbstractPropertyInvoker
         newValue = this.createArrayTypeFromPropertyValue(
           AuthorizationHandler.class,
           value);
+      } else if (Class.class.isAssignableFrom(type)) {
+        newValue = this.createTypeFromPropertyValue(Class.class, value);
       } else if (Class[].class.isAssignableFrom(type)) {
         newValue = this.createArrayTypeFromPropertyValue(Class.class, value);
       } else if (type.isEnum()) {
