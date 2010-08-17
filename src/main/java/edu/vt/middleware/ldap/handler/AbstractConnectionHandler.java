@@ -162,8 +162,8 @@ public abstract class AbstractConnectionHandler implements ConnectionHandler
         break;
       } catch (NamingException e) {
         lastThrown = e;
-        if (this.logger.isWarnEnabled()) {
-          this.logger.warn("Error connectiong to LDAP URL: " + url, e);
+        if (this.logger.isDebugEnabled()) {
+          this.logger.debug("Error connectiong to LDAP URL: " + url, e);
         }
         boolean ignoreException = false;
         if (this.connectionRetryExceptions != null &&
