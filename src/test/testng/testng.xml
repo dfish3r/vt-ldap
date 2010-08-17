@@ -278,6 +278,7 @@
         <include name="servlettest" />
         <include name="dsmltest" />
         <include name="ldiftest" />
+        <include name="ssltest" />
         <include name="wikitest" />
       </run>
     </groups>

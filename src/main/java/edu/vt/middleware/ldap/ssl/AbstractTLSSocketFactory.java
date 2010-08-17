@@ -17,6 +17,7 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.security.GeneralSecurityException;
+import javax.net.ssl.SSLSocket;
 import javax.net.ssl.SSLSocketFactory;
 
 /**
@@ -33,6 +34,12 @@ public abstract class AbstractTLSSocketFactory extends SSLSocketFactory
 
   /** SSLSocketFactory used for creating SSL sockets. */
   protected SSLSocketFactory factory;
+
+  /** Enabled cipher suites. */
+  protected String[] cipherSuites;
+
+  /** Enabled protocol versions. */
+  protected String[] protocols;
 
 
   /**
@@ -58,6 +65,77 @@ public abstract class AbstractTLSSocketFactory extends SSLSocketFactory
 
 
   /**
+   * This returns the names of the SSL cipher suites which are currently enabled
+   * for use on sockets created by this factory. A null value indicates that no
+   * specific cipher suites have been enabled and that the default suites are in
+   * use.
+   *
+   * @return  <code>String[]</code> of cipher suites
+   */
+  public String[] getEnabledCipherSuites()
+  {
+    return this.cipherSuites;
+  }
+
+
+  /**
+   * This returns the names of the protocol versions which are currently enabled
+   * for use on sockets created by this factory. A null value indicates that no
+   * specific protocols have been enabled and that the default protocols are in
+   * use.
+   *
+   * @return  <code>String[]</code> of protocols
+   */
+  public String[] getEnabledProtocols()
+  {
+    return this.protocols;
+  }
+
+
+  /**
+   * Sets the cipher suites enabled for use on sockets created by this factory.
+   * See {@link javax.net.ssl.SSLSocket#setEnabledCipherSuites(String[])}.
+   *
+   * @param  s  <code>String[]</code> of cipher suites
+   */
+  public void setEnabledCipherSuites(final String[] s)
+  {
+    this.cipherSuites = s;
+  }
+
+
+  /**
+   * Sets the protocol versions enabled for use on sockets created by this
+   * factory. See
+   * {@link javax.net.ssl.SSLSocket#setEnabledProtocols(String[])}.
+   *
+   * @param  s  <code>String[]</code> of cipher suites
+   */
+  public void setEnabledProtocols(final String[] s)
+  {
+    this.protocols = s;
+  }
+
+
+  /**
+   * Initializes the supplied socket for use.
+   *
+   * @param  s  <code>SSLSocket</code> to initialize
+   * @return  <code>SSLSocket</code>
+   */
+  protected SSLSocket initSSLSocket(final SSLSocket s)
+  {
+    if (this.cipherSuites != null) {
+      s.setEnabledCipherSuites(this.cipherSuites);
+    }
+    if (this.protocols != null) {
+      s.setEnabledProtocols(this.protocols);
+    }
+    return s;
+  }
+
+
+  /**
    * This returns a socket layered over an existing socket connected to the
    * named host, at the given port.
    *
@@ -78,9 +156,28 @@ public abstract class AbstractTLSSocketFactory extends SSLSocketFactory
     final boolean autoClose)
     throws IOException
   {
-    Socket socket = null;
+    SSLSocket socket = null;
     if (this.factory != null) {
-      socket = this.factory.createSocket(s, host, port, autoClose);
+      socket = this.initSSLSocket(
+        (SSLSocket) this.factory.createSocket(s, host, port, autoClose));
+    }
+    return socket;
+  }
+
+
+  /**
+   * This creates an unconnected socket.
+   *
+   * @return  <code>Socket</code> - unconnected socket
+   *
+   * @throws  IOException  if an I/O error occurs when creating the socket
+   */
+  public Socket createSocket()
+    throws IOException
+  {
+    SSLSocket socket = null;
+    if (this.factory != null) {
+      socket = this.initSSLSocket((SSLSocket) this.factory.createSocket());
     }
     return socket;
   }
@@ -88,7 +185,7 @@ public abstract class AbstractTLSSocketFactory extends SSLSocketFactory
 
   /**
    * This creates a socket and connects it to the specified port number at the
-   * specified addres.
+   * specified address.
    *
    * @param  host  <code>InetAddress</code> server hostname
    * @param  port  <code>int</code> server port
@@ -100,9 +197,10 @@ public abstract class AbstractTLSSocketFactory extends SSLSocketFactory
   public Socket createSocket(final InetAddress host, final int port)
     throws IOException
   {
-    Socket socket = null;
+    SSLSocket socket = null;
     if (this.factory != null) {
-      socket = this.factory.createSocket(host, port);
+      socket = this.initSSLSocket(
+        (SSLSocket) this.factory.createSocket(host, port));
     }
     return socket;
   }
@@ -129,13 +227,13 @@ public abstract class AbstractTLSSocketFactory extends SSLSocketFactory
     final int localPort)
     throws IOException
   {
-    Socket socket = null;
+    SSLSocket socket = null;
     if (this.factory != null) {
-      socket = this.factory.createSocket(
+      socket = this.initSSLSocket((SSLSocket) this.factory.createSocket(
         address,
         port,
         localAddress,
-        localPort);
+        localPort));
     }
     return socket;
   }
@@ -143,7 +241,7 @@ public abstract class AbstractTLSSocketFactory extends SSLSocketFactory
 
   /**
    * This creates a socket and connects it to the specified port number at the
-   * specified addres.
+   * specified address.
    *
    * @param  host  <code>String</code> server hostname
    * @param  port  <code>int</code> server port
@@ -155,9 +253,10 @@ public abstract class AbstractTLSSocketFactory extends SSLSocketFactory
   public Socket createSocket(final String host, final int port)
     throws IOException
   {
-    Socket socket = null;
+    SSLSocket socket = null;
     if (this.factory != null) {
-      socket = this.factory.createSocket(host, port);
+      socket = this.initSSLSocket(
+        (SSLSocket) this.factory.createSocket(host, port));
     }
     return socket;
   }
@@ -184,9 +283,10 @@ public abstract class AbstractTLSSocketFactory extends SSLSocketFactory
     final int localPort)
     throws IOException
   {
-    Socket socket = null;
+    SSLSocket socket = null;
     if (this.factory != null) {
-      socket = this.factory.createSocket(host, port, localHost, localPort);
+      socket = this.initSSLSocket((SSLSocket) this.factory.createSocket(
+        host, port, localHost, localPort));
     }
     return socket;
   }
