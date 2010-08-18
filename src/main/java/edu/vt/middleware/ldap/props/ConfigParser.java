@@ -136,5 +136,8 @@ public class ConfigParser
     for (Map.Entry<String, String> entry : this.getProperties().entrySet()) {
       invoker.setProperty(o, entry.getKey(), entry.getValue());
     }
+    if (invoker.getProperties().contains("initialize")) {
+      invoker.setProperty(o, "initialize", null);
+    }
   }
 }

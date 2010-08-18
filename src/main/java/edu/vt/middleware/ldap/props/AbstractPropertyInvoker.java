@@ -15,8 +15,10 @@ package edu.vt.middleware.ldap.props;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -30,6 +32,10 @@ import org.apache.commons.logging.LogFactory;
 public abstract class AbstractPropertyInvoker
 {
 
+  /** Cache of properties. */
+  protected static final Map<String, Map<String, Method[]>> PROPERTIES_CACHE
+    = new HashMap<String, Map<String, Method[]>>();
+
   /** Log for this class. */
   protected final Log logger = LogFactory.getLog(this.getClass());
 
@@ -37,8 +43,7 @@ public abstract class AbstractPropertyInvoker
   protected Class<?> clazz;
 
   /** Map of all properties to their getter and setter methods. */
-  protected final Map<String, Method[]> properties =
-    new HashMap<String, Method[]>();
+  protected Map<String, Method[]> properties;
 
 
   /**
@@ -49,21 +54,45 @@ public abstract class AbstractPropertyInvoker
    */
   protected void initialize(final Class<?> c, final String domain)
   {
-    for (Method setterMethod : c.getMethods()) {
-      if (
-        setterMethod.getName().startsWith("set") &&
-          setterMethod.getParameterTypes().length == 1) {
-        final String mName = setterMethod.getName().substring("set".length());
-        try {
-          final Method getterMethod = c.getMethod("get" + mName, new Class[0]);
-          final StringBuffer pName = new StringBuffer(domain);
-          pName.append(mName.substring(0, 1).toLowerCase());
-          pName.append(mName.substring(1, mName.length()));
-          this.properties.put(
-            pName.toString(),
-            new Method[] {getterMethod, setterMethod});
-        } catch (NoSuchMethodException e) {
-          // no matching getter method
+    final String cacheKey = new StringBuilder(
+      c.getName()).append("@").append(domain).toString();
+    if (PROPERTIES_CACHE.containsKey(cacheKey)) {
+      this.properties = PROPERTIES_CACHE.get(cacheKey);
+    } else {
+      this.properties = new HashMap<String, Method[]>();
+      PROPERTIES_CACHE.put(cacheKey, this.properties);
+      for (Method method : c.getMethods()) {
+        if (method.getName().startsWith("set") &&
+            method.getParameterTypes().length == 1) {
+          final String mName = method.getName().substring(3);
+          final String pName = new StringBuilder(domain).append(
+            mName.substring(0, 1).toLowerCase()).append(
+              mName.substring(1, mName.length())).toString();
+          if (this.properties.containsKey(pName)) {
+            final Method[] m = this.properties.get(pName);
+            m[1] = method;
+            this.properties.put(pName, m);
+          } else {
+            this.properties.put(pName, new Method[] {null, method});
+          }
+        } else if (method.getName().startsWith("get") &&
+                   method.getParameterTypes().length == 0) {
+          final String mName = method.getName().substring(3);
+          final String pName = new StringBuilder(domain).append(
+            mName.substring(0, 1).toLowerCase()).append(
+              mName.substring(1, mName.length())).toString();
+          if (this.properties.containsKey(pName)) {
+            final Method[] m = this.properties.get(pName);
+            m[0] = method;
+            this.properties.put(pName, m);
+          } else {
+            this.properties.put(pName, new Method[] {method, null});
+          }
+        } else if ("initialize".equals(method.getName()) &&
+                   method.getParameterTypes().length == 0) {
+          final String pName = new StringBuilder(domain).append(
+            method.getName()).toString();
+          this.properties.put(pName, new Method[] {method, method});
         }
       }
     }
@@ -145,11 +174,11 @@ public abstract class AbstractPropertyInvoker
   /**
    * This returns the property keys.
    *
-   * @return  <code>String[]</code> of property names
+   * @return  <code>Set</code> of property names
    */
-  public String[] getProperties()
+  public Set<String> getProperties()
   {
-    return this.properties.keySet().toArray(new String[0]);
+    return Collections.unmodifiableSet(this.properties.keySet());
   }
 
 
