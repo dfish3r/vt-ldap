@@ -92,4 +92,25 @@ public class TLSSocketFactory extends AbstractTLSSocketFactory
     }
     return sf;
   }
+
+
+  /**
+   * Provides a descriptive string representation of this instance.
+   *
+   * @return  String of the form $Classname::factory=$factory.
+   */
+  @Override
+  public String toString()
+  {
+    return
+      String.format(
+        "%s@%d::sslContextInitializer=%s,factory=%s," +
+        "enabledCipherSuites=%s,enabledProtocols=%s",
+        this.getClass().getName(),
+        this.hashCode(),
+        this.getSSLContextInitializer(),
+        this.getFactory(),
+        this.getEnabledCipherSuites(),
+        this.getEnabledProtocols());
+  }
 }
