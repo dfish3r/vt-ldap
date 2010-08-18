@@ -58,11 +58,13 @@ public class LdapConfigTest
     l.loadFromProperties(
       LdapConfigTest.class.getResourceAsStream("/ldap.parser.properties"));
 
-    AssertJUnit.assertEquals(LdapConfig.SearchScope.OBJECT, l.getLdapConfig().getSearchScope());
+    AssertJUnit.assertEquals(
+      LdapConfig.SearchScope.OBJECT, l.getLdapConfig().getSearchScope());
     AssertJUnit.assertEquals(10, l.getLdapConfig().getBatchSize());
     AssertJUnit.assertEquals(5000, l.getLdapConfig().getTimeLimit());
     AssertJUnit.assertEquals(8000, l.getLdapConfig().getTimeout());
-    AssertJUnit.assertEquals("jpegPhoto", l.getLdapConfig().getBinaryAttributes());
+    AssertJUnit.assertEquals(
+      "jpegPhoto", l.getLdapConfig().getBinaryAttributes());
 
     for (SearchResultHandler srh :
          l.getLdapConfig().getSearchResultHandlers()) {

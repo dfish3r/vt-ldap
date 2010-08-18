@@ -13,11 +13,11 @@
 */
 package edu.vt.middleware.ldap;
 
+import edu.vt.middleware.ldap.pool.BlockingLdapPool;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.testng.AssertJUnit;
 import org.testng.annotations.Test;
-import edu.vt.middleware.ldap.pool.BlockingLdapPool;
-  
+
 /**
  * Unit test for Spring integration.
  *
