@@ -70,8 +70,7 @@ public class LdapConfigPropertyInvoker extends AbstractPropertyInvoker
 
             final Object credentialConfig = configParser.initializeType();
             try {
-              // set the SSL context initializer based using the credential
-              // config, then initialize the TLS socket factory.
+              // set the SSL context initializer using the credential config
               invokeMethod(
                 newValue.getClass().getMethod(
                   "setSSLContextInitializer",
@@ -83,6 +82,7 @@ public class LdapConfigPropertyInvoker extends AbstractPropertyInvoker
                     new Class<?>[0]),
                   credentialConfig,
                   null));
+              // initialize the TLS socket factory.
               invokeMethod(
                 newValue.getClass().getMethod("initialize", new Class<?>[0]),
                 newValue,
