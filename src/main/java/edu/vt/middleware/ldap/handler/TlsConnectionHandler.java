@@ -41,6 +41,10 @@ public class TlsConnectionHandler extends DefaultConnectionHandler
   /** Start TLS response. */
   private StartTlsResponse startTlsResponse;
 
+  /** Whether to call {@link StartTlsResponse#close()} when {@link #close()} is
+      called. */
+  private boolean stopTlsOnClose;
+
 
   /** Default constructor. */
   public TlsConnectionHandler() {}
@@ -69,10 +73,38 @@ public class TlsConnectionHandler extends DefaultConnectionHandler
     this.setConnectionStrategy(ch.getConnectionStrategy());
     this.setConnectionRetryExceptions(ch.getConnectionRetryExceptions());
     this.setConnectionCount(ch.getConnectionCount());
+    this.setStopTlsOnClose(ch.getStopTlsOnClose());
   }
 
 
-/**
+  /**
+   * Returns whether to call {@link StartTlsResponse#close()} when
+   * {@link #close()} is called.
+   *
+   * @return  stop TLS on close
+   */
+  public boolean getStopTlsOnClose()
+  {
+    return this.stopTlsOnClose;
+  }
+
+
+  /**
+   * Sets whether to call {@link StartTlsResponse#close()} when {@link #close()}
+   * is called.
+   *
+   * @param  b  stop TLS on close
+   */
+  public void setStopTlsOnClose(final boolean b)
+  {
+    if (this.logger.isTraceEnabled()) {
+      this.logger.trace("setting stopTlsOnClose: " + b);
+    }
+    this.stopTlsOnClose = b;
+  }
+
+
+  /**
    * This returns the startTLS response created by a call to {@link
    * #connect(String, Object)}.
    *
@@ -143,7 +175,9 @@ public class TlsConnectionHandler extends DefaultConnectionHandler
     throws NamingException
   {
     try {
-      this.stopTls(this.startTlsResponse);
+      if (this.stopTlsOnClose) {
+        this.stopTls(this.startTlsResponse);
+      }
     } catch (NamingException e) {
       if (this.logger.isErrorEnabled()) {
         this.logger.error("Error stopping TLS", e);
