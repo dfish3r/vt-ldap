@@ -69,9 +69,9 @@
 
   <properties>
     <project.build.sourceEncoding>iso-8859-1</project.build.sourceEncoding>
-    <checkstyle.dir>src/main/checkstyle</checkstyle.dir>
-    <testng.dir>src/test/testng</testng.dir>
-    <assembly.dir>src/main/assembly</assembly.dir>
+    <checkstyle.dir>${basedir}/src/main/checkstyle</checkstyle.dir>
+    <testng.dir>${basedir}/src/test/testng</testng.dir>
+    <assembly.dir>${basedir}/src/main/assembly</assembly.dir>
   </properties>
 
   <dependencies>
@@ -122,9 +122,8 @@
     <dependency>
       <groupId>org.testng</groupId>
       <artifactId>testng</artifactId>
-      <version>5.9</version>
+      <version>5.14</version>
       <scope>test</scope>
-      <classifier>jdk15</classifier>
     </dependency>
     <dependency>
       <groupId>log4j</groupId>
@@ -159,7 +158,7 @@
     <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-context</artifactId>
-      <version>3.0.0.RELEASE</version>
+      <version>3.0.4.RELEASE</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
@@ -243,7 +242,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-checkstyle-plugin</artifactId>
-        <version>2.4</version>
+        <version>2.5</version>
         <configuration>
           <configLocation>${checkstyle.dir}/checkstyle_checks.xml</configLocation>
           <headerLocation>${checkstyle.dir}/checkstyle_header</headerLocation>
