@@ -18,6 +18,12 @@
     <appender-ref ref="CONSOLE"/>
   </category>
 
+  <category name="org.springframework"
+            additivity="false">
+    <priority value="ERROR"/>
+    <appender-ref ref="CONSOLE"/>
+  </category>
+
   <root>
     <priority value="INFO"/>
     <appender-ref ref="CONSOLE"/>
