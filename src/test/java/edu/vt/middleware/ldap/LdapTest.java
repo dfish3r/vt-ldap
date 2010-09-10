@@ -16,9 +16,11 @@ package edu.vt.middleware.ldap;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import javax.naming.Binding;
 import javax.naming.Context;
 import javax.naming.LimitExceededException;
@@ -40,6 +42,8 @@ import edu.vt.middleware.ldap.bean.LdapResult;
 import edu.vt.middleware.ldap.handler.AttributeHandler;
 import edu.vt.middleware.ldap.handler.BinaryAttributeHandler;
 import edu.vt.middleware.ldap.handler.BinarySearchResultHandler;
+import edu.vt.middleware.ldap.handler.CaseChangeSearchResultHandler;
+import edu.vt.middleware.ldap.handler.CaseChangeSearchResultHandler.CaseChange;
 import edu.vt.middleware.ldap.handler.EntryDnSearchResultHandler;
 import edu.vt.middleware.ldap.handler.FqdnSearchResultHandler;
 import edu.vt.middleware.ldap.handler.MergeSearchResultHandler;
@@ -649,6 +653,122 @@ public class LdapTest
     AssertJUnit.assertEquals(
       base64Value,
       iter.next().getAttributes().get(returnAttr).get());
+  }
+
+
+  /**
+   * @param  dn  to search on.
+   * @param  filter  to search with.
+   * @param  filterArgs  to replace args in filter with.
+   * @param  returnAttrs  to return from search.
+   * @param  ldifFile  to compare with
+   *
+   * @throws  Exception  On test failure.
+   */
+  @Parameters(
+      {
+        "searchDn",
+        "searchFilter",
+        "searchFilterArgs",
+        "searchReturnAttrs",
+        "searchResults"
+      }
+    )
+  @Test(groups = {"ldaptest"})
+  public void caseChangeSearch(
+    final String dn,
+    final String filter,
+    final String filterArgs,
+    final String returnAttrs,
+    final String ldifFile)
+    throws Exception
+  {
+    final CaseChangeSearchResultHandler srh =
+      new CaseChangeSearchResultHandler();
+    final String expected = TestUtil.readFileIntoString(ldifFile);
+    final Ldap ldap = TestUtil.createLdap();
+
+    // test no case change
+    final LdapEntry noChangeEntry = TestUtil.convertLdifToEntry(expected);
+    Iterator<SearchResult> iter = ldap.search(
+      dn,
+      new SearchFilter(filter, filterArgs.split("\\|")),
+      returnAttrs.split("\\|"),
+      new FqdnSearchResultHandler(),
+      srh);
+    AssertJUnit.assertEquals(
+      noChangeEntry,
+      TestUtil.convertLdifToEntry((new Ldif()).createLdif(iter)));
+
+    // test lower case attribute values
+    srh.setAttributeValueCaseChange(CaseChange.LOWER);
+    final LdapEntry lcValuesChangeEntry = TestUtil.convertLdifToEntry(expected);
+    for (LdapAttribute la :
+         lcValuesChangeEntry.getLdapAttributes().getAttributes()) {
+      final Set<Object> s = new HashSet<Object>();
+      for (Object o : la.getValues()) {
+        if (o instanceof String) {
+          s.add(((String) o).toLowerCase());
+        }
+      }
+      la.getValues().clear();
+      la.getValues().addAll(s);
+    }
+    iter = ldap.search(
+      dn,
+      new SearchFilter(filter, filterArgs.split("\\|")),
+      returnAttrs.split("\\|"),
+      new FqdnSearchResultHandler(),
+      srh);
+    AssertJUnit.assertEquals(
+      lcValuesChangeEntry,
+      TestUtil.convertLdifToEntry((new Ldif()).createLdif(iter)));
+
+    // test upper case attribute names
+    srh.setAttributeValueCaseChange(CaseChange.NONE);
+    srh.setAttributeNameCaseChange(CaseChange.UPPER);
+    final LdapEntry ucNamesChangeEntry = TestUtil.convertLdifToEntry(expected);
+    for (LdapAttribute la :
+         ucNamesChangeEntry.getLdapAttributes().getAttributes()) {
+      la.setName(la.getName().toUpperCase());
+    }
+    iter = ldap.search(
+      dn,
+      new SearchFilter(filter, filterArgs.split("\\|")),
+      returnAttrs.split("\\|"),
+      new FqdnSearchResultHandler(),
+      srh);
+    AssertJUnit.assertEquals(
+      ucNamesChangeEntry,
+      TestUtil.convertLdifToEntry((new Ldif()).createLdif(iter)));
+
+    // test lower case everything
+    srh.setAttributeValueCaseChange(CaseChange.LOWER);
+    srh.setAttributeNameCaseChange(CaseChange.LOWER);
+    srh.setDnCaseChange(CaseChange.LOWER);
+    final LdapEntry lcAllChangeEntry = TestUtil.convertLdifToEntry(expected);
+    for (LdapAttribute la :
+         ucNamesChangeEntry.getLdapAttributes().getAttributes()) {
+      lcAllChangeEntry.setDn(lcAllChangeEntry.getDn().toLowerCase());
+      la.setName(la.getName().toLowerCase());
+      final Set<Object> s = new HashSet<Object>();
+      for (Object o : la.getValues()) {
+        if (o instanceof String) {
+          s.add(((String) o).toLowerCase());
+        }
+      }
+      la.getValues().clear();
+      la.getValues().addAll(s);
+    }
+    iter = ldap.search(
+      dn,
+      new SearchFilter(filter, filterArgs.split("\\|")),
+      returnAttrs.split("\\|"),
+      new FqdnSearchResultHandler(),
+      srh);
+    AssertJUnit.assertEquals(
+      ucNamesChangeEntry,
+      TestUtil.convertLdifToEntry((new Ldif()).createLdif(iter)));
   }
 
 
