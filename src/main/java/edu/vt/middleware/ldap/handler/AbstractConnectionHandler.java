@@ -163,7 +163,7 @@ public abstract class AbstractConnectionHandler implements ConnectionHandler
       } catch (NamingException e) {
         lastThrown = e;
         if (this.logger.isDebugEnabled()) {
-          this.logger.debug("Error connectiong to LDAP URL: " + url, e);
+          this.logger.debug("Error connecting to LDAP URL: " + url, e);
         }
         boolean ignoreException = false;
         if (this.connectionRetryExceptions != null &&
