@@ -1,5 +1,5 @@
 /*
-  $Id: EntryDnSearchResultHandler.java 1330 2010-05-23 22:10:53Z dfisher $
+  $Id$
 
   Copyright (C) 2003-2010 Virginia Tech.
   All rights reserved.
@@ -8,8 +8,8 @@
 
   Author:  Middleware Services
   Email:   middleware@vt.edu
-  Version: $Revision: 1330 $
-  Updated: $Date: 2010-05-23 18:10:53 -0400 (Sun, 23 May 2010) $
+  Version: $Revision$
+  Updated: $Date$
 */
 package edu.vt.middleware.ldap.handler;
 
@@ -25,9 +25,7 @@ import javax.naming.directory.SearchResult;
 public class CaseChangeSearchResultHandler extends CopySearchResultHandler
 {
 
-  /**
-   * Enum to define the type of case change.
-   */
+  /** Enum to define the type of case change. */
   public enum CaseChange {
 
     /** no case change. */
@@ -45,6 +43,7 @@ public class CaseChangeSearchResultHandler extends CopySearchResultHandler
      *
      * @param  cc  <code>CaseChange</code> to perform
      * @param  string  <code>String</code> to modify
+     *
      * @return  <code>String</code> that has been changed
      */
     public static String perform(final CaseChange cc, final String string)
@@ -73,8 +72,7 @@ public class CaseChangeSearchResultHandler extends CopySearchResultHandler
   /** Creates a new <code>CaseSearchResultHandler</code>. */
   public CaseChangeSearchResultHandler()
   {
-    this.setAttributeHandler(
-      new AttributeHandler[] {this.attributeHandler});
+    this.setAttributeHandler(new AttributeHandler[] {this.attributeHandler});
   }
 
 

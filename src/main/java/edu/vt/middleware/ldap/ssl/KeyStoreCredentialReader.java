@@ -41,8 +41,8 @@ public class KeyStoreCredentialReader extends AbstractCredentialReader<KeyStore>
    *     omitted</li>
    * </ul>
    *
-   * <p>If only a single parameter is supplied, it is assumed to be the
-   * password.</p>
+   * <p>If only a single parameter is supplied, it is assumed to be
+   * the password.</p>
    *
    * @return  KeyStore read from data in stream.
    *

@@ -147,7 +147,8 @@ public abstract class AbstractConnectionHandler implements ConnectionHandler
       this.config.getEnvironment());
     NamingException lastThrown = null;
     final String[] urls = this.parseLdapUrl(
-      this.config.getLdapUrl(), this.connectionStrategy);
+      this.config.getLdapUrl(),
+      this.connectionStrategy);
     for (String url : urls) {
       env.put(LdapConstants.PROVIDER_URL, url);
       try {
@@ -165,8 +166,10 @@ public abstract class AbstractConnectionHandler implements ConnectionHandler
         if (this.logger.isDebugEnabled()) {
           this.logger.debug("Error connecting to LDAP URL: " + url, e);
         }
+
         boolean ignoreException = false;
-        if (this.connectionRetryExceptions != null &&
+        if (
+          this.connectionRetryExceptions != null &&
             this.connectionRetryExceptions.length > 0) {
           for (Class<?> ne : this.connectionRetryExceptions) {
             if (ne.isInstance(e)) {
@@ -193,6 +196,7 @@ public abstract class AbstractConnectionHandler implements ConnectionHandler
    * @param  dn  to bind as
    * @param  credential  to bind with in conjunction with dn
    * @param  env  to pass to the initial ldap context
+   *
    * @throws  NamingException  if a connection cannot be established
    */
   protected abstract void connectInternal(
@@ -234,14 +238,16 @@ public abstract class AbstractConnectionHandler implements ConnectionHandler
    *
    * @param  ldapUrl  to parse
    * @param  strategy  of ordered array to return
+   *
    * @return  array of ldap URLs
    */
   protected String[] parseLdapUrl(
-    final String ldapUrl, final ConnectionStrategy strategy)
+    final String ldapUrl,
+    final ConnectionStrategy strategy)
   {
     String[] urls = null;
     if (strategy == ConnectionStrategy.DEFAULT) {
-      urls = new String[]{ldapUrl};
+      urls = new String[] {ldapUrl};
     } else if (strategy == ConnectionStrategy.ACTIVE_PASSIVE) {
       final List<String> l = this.splitLdapUrl(ldapUrl);
       urls = l.toArray(new String[l.size()]);
@@ -264,6 +270,7 @@ public abstract class AbstractConnectionHandler implements ConnectionHandler
    * Takes a space delimited string of URLs and returns a list of URLs.
    *
    * @param  url  to split
+   *
    * @return  list of URLs
    */
   private List<String> splitLdapUrl(final String url)
@@ -287,6 +294,7 @@ public abstract class AbstractConnectionHandler implements ConnectionHandler
    */
   private class ConnectionCount
   {
+
     /** connection count. */
     private int count;
 
@@ -302,9 +310,7 @@ public abstract class AbstractConnectionHandler implements ConnectionHandler
     }
 
 
-    /**
-     * Increments the connection count.
-     */
+    /** Increments the connection count. */
     public void incrementCount()
     {
       this.count++;

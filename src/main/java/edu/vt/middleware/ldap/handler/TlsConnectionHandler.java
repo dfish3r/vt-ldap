@@ -41,8 +41,10 @@ public class TlsConnectionHandler extends DefaultConnectionHandler
   /** Start TLS response. */
   private StartTlsResponse startTlsResponse;
 
-  /** Whether to call {@link StartTlsResponse#close()} when {@link #close()} is
-      called. */
+  /**
+   * Whether to call {@link StartTlsResponse#close()} when {@link #close()} is
+   * called.
+   */
   private boolean stopTlsOnClose;
 
 
@@ -78,8 +80,8 @@ public class TlsConnectionHandler extends DefaultConnectionHandler
 
 
   /**
-   * Returns whether to call {@link StartTlsResponse#close()} when
-   * {@link #close()} is called.
+   * Returns whether to call {@link StartTlsResponse#close()} when {@link
+   * #close()} is called.
    *
    * @return  stop TLS on close
    */

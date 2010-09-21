@@ -27,9 +27,7 @@ import edu.vt.middleware.ldap.LdapConfig;
 public interface ConnectionHandler
 {
 
-  /**
-   * Enum to define the type of connection strategy.
-   */
+  /** Enum to define the type of connection strategy. */
   public enum ConnectionStrategy {
 
     /** default strategy. */

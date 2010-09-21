@@ -33,8 +33,8 @@ public abstract class AbstractPropertyInvoker
 {
 
   /** Cache of properties. */
-  protected static final Map<String, Map<String, Method[]>> PROPERTIES_CACHE
-    = new HashMap<String, Map<String, Method[]>>();
+  protected static final Map<String, Map<String, Method[]>> PROPERTIES_CACHE =
+    new HashMap<String, Map<String, Method[]>>();
 
   /** Log for this class. */
   protected final Log logger = LogFactory.getLog(this.getClass());
@@ -54,15 +54,16 @@ public abstract class AbstractPropertyInvoker
    */
   protected void initialize(final Class<?> c, final String domain)
   {
-    final String cacheKey = new StringBuilder(
-      c.getName()).append("@").append(domain).toString();
+    final String cacheKey = new StringBuilder(c.getName()).append("@").append(
+      domain).toString();
     if (PROPERTIES_CACHE.containsKey(cacheKey)) {
       this.properties = PROPERTIES_CACHE.get(cacheKey);
     } else {
       this.properties = new HashMap<String, Method[]>();
       PROPERTIES_CACHE.put(cacheKey, this.properties);
       for (Method method : c.getMethods()) {
-        if (method.getName().startsWith("set") &&
+        if (
+          method.getName().startsWith("set") &&
             method.getParameterTypes().length == 1) {
           final String mName = method.getName().substring(3);
           final String pName = new StringBuilder(domain).append(
@@ -75,8 +76,9 @@ public abstract class AbstractPropertyInvoker
           } else {
             this.properties.put(pName, new Method[] {null, method});
           }
-        } else if (method.getName().startsWith("get") &&
-                   method.getParameterTypes().length == 0) {
+        } else if (
+          method.getName().startsWith("get") &&
+            method.getParameterTypes().length == 0) {
           final String mName = method.getName().substring(3);
           final String pName = new StringBuilder(domain).append(
             mName.substring(0, 1).toLowerCase()).append(
@@ -88,8 +90,9 @@ public abstract class AbstractPropertyInvoker
           } else {
             this.properties.put(pName, new Method[] {method, null});
           }
-        } else if ("initialize".equals(method.getName()) &&
-                   method.getParameterTypes().length == 0) {
+        } else if (
+          "initialize".equals(method.getName()) &&
+            method.getParameterTypes().length == 0) {
           final String pName = new StringBuilder(domain).append(
             method.getName()).toString();
           this.properties.put(pName, new Method[] {method, method});
