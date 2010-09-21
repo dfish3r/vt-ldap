@@ -6,7 +6,7 @@
   <groupId>edu.vt.middleware</groupId>
   <artifactId>vt-ldap</artifactId>
   <packaging>jar</packaging>
-  <version>3.3.1-SNAPSHOT</version>
+  <version>3.3.1</version>
   <name>VT LDAP Libraries</name>
   <description>Library for performing common LDAP operations</description>
   <url>http://code.google.com/p/vt-middleware/wiki/vtldap</url>
