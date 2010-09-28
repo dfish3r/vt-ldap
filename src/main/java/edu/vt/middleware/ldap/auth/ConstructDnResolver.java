@@ -20,7 +20,7 @@ import org.apache.commons.logging.LogFactory;
 
 /**
  * <code>ConstructDnResolver</code> creates an LDAP DN using known information
- * about the LDAP. Specifically it concatonates the first user field with the
+ * about the LDAP. Specifically it concatenates the first user field with the
  * base DN.
  *
  * @author  Middleware Services
