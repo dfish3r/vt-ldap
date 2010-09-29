@@ -686,7 +686,7 @@ public class LdapTest
     final CaseChangeSearchResultHandler srh =
       new CaseChangeSearchResultHandler();
     final String expected = TestUtil.readFileIntoString(ldifFile);
-    final Ldap ldap = TestUtil.createLdap();
+    final Ldap ldap = this.createLdap(true);
 
     // test no case change
     final LdapEntry noChangeEntry = TestUtil.convertLdifToEntry(expected);
@@ -769,6 +769,8 @@ public class LdapTest
     AssertJUnit.assertEquals(
       ucNamesChangeEntry,
       TestUtil.convertLdifToEntry((new Ldif()).createLdif(iter)));
+
+    ldap.close();
   }
 
 
@@ -846,7 +848,9 @@ public class LdapTest
         e.getClass());
     }
     AssertJUnit.assertEquals(1, ldap.getRetryCount());
-    AssertJUnit.assertTrue(ldap.getRunTime() < 50);
+    AssertJUnit.assertEquals(
+      ldap.getRunTime(),
+      Math.min(ldap.getRunTime(), 50));
 
     // test no retry
     ldap.reset();
