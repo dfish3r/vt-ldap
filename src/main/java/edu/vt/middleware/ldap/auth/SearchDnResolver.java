@@ -119,12 +119,12 @@ public class SearchDnResolver extends AbstractLdap<AuthenticatorConfig>
             searchFilter.append("(|");
             for (int i = 0; i < this.config.getUserField().length; i++) {
               searchFilter.append("(").append(this.config.getUserField()[i])
-                .append("=").append(user).append(")");
+                .append("={0})");
             }
             searchFilter.append(")");
           } else {
             searchFilter.append("(").append(this.config.getUserField()[0])
-              .append("=").append(user).append(")");
+              .append("={0})");
           }
           filter.setFilter(searchFilter.toString());
         }
