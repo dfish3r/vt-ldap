@@ -234,6 +234,58 @@ public class LdapLoginModuleTest
     invocationCount = 100,
     timeOut = 60000
   )
+  public void contextSslTest(
+    final String dn,
+    final String user,
+    final String role,
+    final String credential)
+    throws Exception
+  {
+    this.doContextTest("vt-ldap-ssl", dn, user, role, credential, false);
+  }
+
+
+  /**
+   * @param  dn  of this user
+   * @param  user  to authenticate.
+   * @param  role  to set for this user
+   * @param  credential  to authenticate with.
+   *
+   * @throws  Exception  On test failure.
+   */
+  @Parameters({ "jaasDn", "jaasUser", "jaasUserRole", "jaasCredential" })
+  @Test(
+    groups = {"jaastest"},
+    threadPoolSize = 10,
+    invocationCount = 100,
+    timeOut = 60000
+  )
+  public void contextSsl2Test(
+    final String dn,
+    final String user,
+    final String role,
+    final String credential)
+    throws Exception
+  {
+    this.doContextTest("vt-ldap-ssl-2", dn, user, role, credential, false);
+  }
+
+
+  /**
+   * @param  dn  of this user
+   * @param  user  to authenticate.
+   * @param  role  to set for this user
+   * @param  credential  to authenticate with.
+   *
+   * @throws  Exception  On test failure.
+   */
+  @Parameters({ "jaasDn", "jaasUser", "jaasUserRole", "jaasCredential" })
+  @Test(
+    groups = {"jaastest"},
+    threadPoolSize = 10,
+    invocationCount = 100,
+    timeOut = 60000
+  )
   public void authzContextTest(
     final String dn,
     final String user,
