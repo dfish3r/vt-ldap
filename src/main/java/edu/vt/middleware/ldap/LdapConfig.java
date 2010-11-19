@@ -1789,7 +1789,7 @@ public class LdapConfig extends AbstractPropertyConfig
    *
    * @param  is  to load properties from
    *
-   * @return  <code>LdapPoolConfig</code> initialized ldap pool config
+   * @return  <code>LdapConfig</code> initialized ldap config
    */
   public static LdapConfig createFromProperties(final InputStream is)
   {

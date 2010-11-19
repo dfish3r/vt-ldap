@@ -58,7 +58,7 @@ public final class LdapProperties
 
   /**
    * This will create a new <code>LdapProperties</code> with the supplied
-   * properties properties config and file.
+   * properties properties config and input stream.
    *
    * @param  pc  object to set properties for
    * @param  is  <code>InputStream</code> containing properties

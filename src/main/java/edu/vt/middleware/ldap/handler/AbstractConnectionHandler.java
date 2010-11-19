@@ -114,11 +114,7 @@ public abstract class AbstractConnectionHandler implements ConnectionHandler
   }
 
 
-  /**
-   * Returns the ldap config.
-   *
-   * @return  ldap config
-   */
+  /** {@inheritDoc} */
   public LdapConfig getLdapConfig()
   {
     return this.config;

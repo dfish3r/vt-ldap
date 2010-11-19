@@ -23,7 +23,7 @@ import edu.vt.middleware.ldap.LdapUtil;
 
 /**
  * Reads private key credentials from classpath, filepath, or stream resource.
- * Supported private key formats include: PKCS7.
+ * Supported private key formats include: PKCS8.
  *
  * @author  Middleware Services
  * @version  $Revision$

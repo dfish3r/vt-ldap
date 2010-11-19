@@ -232,7 +232,7 @@ public abstract class AbstractAuthenticator<T extends AuthenticatorConfig>
   }
 
 
-  /** This will close the connection on the underlyng DN resolver. */
+  /** This will close the connection on the underlying DN resolver. */
   public synchronized void close()
   {
     if (this.config.getDnResolver() != null) {
