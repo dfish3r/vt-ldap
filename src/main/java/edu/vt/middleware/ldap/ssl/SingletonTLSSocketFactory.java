@@ -35,6 +35,12 @@ public class SingletonTLSSocketFactory extends TLSSocketFactory
   /** {@inheritDoc} */
   public void setSSLContextInitializer(final SSLContextInitializer initializer)
   {
+    if (staticContextInitializer != null) {
+      final Log logger = LogFactory.getLog(SingletonTLSSocketFactory.class);
+      if (logger.isWarnEnabled()) {
+        logger.warn("SSLContextInitializer is being overridden");
+      }
+    }
     staticContextInitializer = initializer;
   }
 
@@ -59,7 +65,7 @@ public class SingletonTLSSocketFactory extends TLSSocketFactory
     try {
       sf.initialize();
     } catch (GeneralSecurityException e) {
-      final Log logger = LogFactory.getLog(TLSSocketFactory.class);
+      final Log logger = LogFactory.getLog(SingletonTLSSocketFactory.class);
       if (logger.isErrorEnabled()) {
         logger.error("Error initializing socket factory", e);
       }
