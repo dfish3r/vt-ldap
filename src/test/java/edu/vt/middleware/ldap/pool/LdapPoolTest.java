@@ -211,6 +211,7 @@ public class LdapPoolTest
       "queuepooltest",
       "softlimitpooltest",
       "blockingpooltest",
+      "blockingtimeoutpooltest",
       "sharedpooltest",
       "connstrategypooltest",
       "comparisonpooltest"
@@ -305,6 +306,7 @@ public class LdapPoolTest
       "queuepooltest",
       "softlimitpooltest",
       "blockingpooltest",
+      "blockingtimeoutpooltest",
       "sharedpooltest",
       "connstrategypooltest",
       "comparisonpooltest"
@@ -349,6 +351,7 @@ public class LdapPoolTest
       "queuepooltest",
       "softlimitpooltest",
       "blockingpooltest",
+      "blockingtimeoutpooltest",
       "sharedpooltest",
       "connstrategypooltest",
       "comparisonpooltest"
@@ -799,7 +802,7 @@ public class LdapPoolTest
   /** @throws  Exception  On test failure. */
   @Test(
     groups = {"queuepooltest", "blockingtimeoutpooltest"},
-    dependsOnMethods = {"blockingLargeSearch"}
+    dependsOnMethods = {"blockingTimeoutLargeSearch"}
   )
   public void blockingTimeoutMaxClean()
     throws Exception
