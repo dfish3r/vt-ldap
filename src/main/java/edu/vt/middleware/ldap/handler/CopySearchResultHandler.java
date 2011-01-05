@@ -86,7 +86,7 @@ public class CopySearchResultHandler extends CopyResultHandler<SearchResult>
 
 
   /**
-   * Process the attributes of an ldap search search.
+   * Process the attributes of an ldap search.
    *
    * @param  sc  <code>SearchCriteria</code> used to find search result
    * @param  sr  <code>SearchResult</code> to extract the attributes from

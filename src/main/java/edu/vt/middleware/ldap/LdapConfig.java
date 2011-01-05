@@ -1624,7 +1624,7 @@ public class LdapConfig extends AbstractPropertyConfig
    * This specifies how the <code>LdapConfig</code> should handle referrals.
    * referral must be one of: "throw", "ignore", or "follow".
    *
-   * @param  referral  <code>String</code> defined by RFC 1766
+   * @param  referral  <code>String</code>
    */
   public void setReferral(final String referral)
   {

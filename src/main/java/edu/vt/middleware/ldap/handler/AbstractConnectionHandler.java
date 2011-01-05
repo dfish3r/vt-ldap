@@ -45,7 +45,7 @@ public abstract class AbstractConnectionHandler implements ConnectionHandler
   /** Ldap context. */
   protected LdapContext context;
 
-  /** Ldap URL parser. */
+  /** Ldap connection strategy. */
   protected ConnectionStrategy connectionStrategy = ConnectionStrategy.DEFAULT;
 
   /** Exception types to retry connections on. */
