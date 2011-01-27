@@ -15,10 +15,10 @@ package edu.vt.middleware.ldap.ldif;
 
 import java.io.IOException;
 import java.io.Writer;
-import javax.naming.NamingException;
-import edu.vt.middleware.ldap.Ldap;
-import edu.vt.middleware.ldap.LdapSearch;
+import edu.vt.middleware.ldap.LdapConnection;
+import edu.vt.middleware.ldap.LdapException;
 import edu.vt.middleware.ldap.pool.LdapPool;
+import edu.vt.middleware.ldap.pool.LdapSearch;
 
 /**
  * <code>LdifSearch</code> queries an LDAP and returns the result as an LDIF.
@@ -40,7 +40,7 @@ public class LdifSearch extends LdapSearch
    *
    * @param  pool  <code>LdapPool</code>
    */
-  public LdifSearch(final LdapPool<Ldap> pool)
+  public LdifSearch(final LdapPool<LdapConnection> pool)
   {
     super(pool);
   }
@@ -55,14 +55,14 @@ public class LdifSearch extends LdapSearch
    * @param  attrs  <code>String[]</code> to return
    * @param  writer  <code>Writer</code> to write to
    *
-   * @throws  NamingException  if an error occurs while searching
+   * @throws  LdapException  if an error occurs while searching
    * @throws  IOException  if an error occurs while writing search results
    */
   public void search(
     final String query,
     final String[] attrs,
     final Writer writer)
-    throws NamingException, IOException
+    throws LdapException, IOException
   {
     this.ldif.outputLdif(this.search(query, attrs), writer);
   }

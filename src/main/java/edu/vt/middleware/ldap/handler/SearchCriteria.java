@@ -13,11 +13,10 @@
 */
 package edu.vt.middleware.ldap.handler;
 
-import javax.naming.directory.Attributes;
+import edu.vt.middleware.ldap.SearchRequest;
 
 /**
- * <code>SearchCriteria</code> contains the attributes used to perform ldap
- * searches.
+ * Contains the attributes used to perform ldap searches.
  *
  * @author  Middleware Services
  * @version  $Revision$ $Date$
@@ -37,22 +36,35 @@ public class SearchCriteria
   /** return attributes. */
   private String[] returnAttrs;
 
-  /** match attributes. */
-  private Attributes matchAttrs;
-
 
   /** Default constructor. */
   public SearchCriteria() {}
 
 
   /**
-   * Creates a new search criteria with the supplied dn.
+   * Creates a new search criteria.
    *
    * @param  s  to set dn
    */
   public SearchCriteria(final String s)
   {
     this.dn = s;
+  }
+
+
+  /**
+   * Creates a new search criteria.
+   *
+   * @param  request  to set properties with
+   */
+  public SearchCriteria(final SearchRequest request)
+  {
+    this.setDn(request.getDn());
+    if (request.getSearchFilter() != null) {
+      this.setFilter(request.getSearchFilter().getFilter());
+      this.setFilterArgs(request.getSearchFilter().getFilterArgs().toArray());
+    }
+    this.setReturnAttrs(request.getReturnAttributes());
   }
 
 
@@ -114,7 +126,7 @@ public class SearchCriteria
   /**
    * Sets the filter arguments.
    *
-   * @param  o  to set filter argumets
+   * @param  o  to set filter arguments
    */
   public void setFilterArgs(final Object[] o)
   {
@@ -145,42 +157,21 @@ public class SearchCriteria
 
 
   /**
-   * Gets the match attributes.
+   * Provides a descriptive string representation of this instance.
    *
-   * @return  match attributes
-   */
-  public Attributes getMatchAttrs()
-  {
-    return this.matchAttrs;
-  }
-
-
-  /**
-   * Sets the match attributes.
-   *
-   * @param  a  to set match attributes
-   */
-  public void setMatchAttrs(final Attributes a)
-  {
-    this.matchAttrs = a;
-  }
-
-
-  /**
-   * This returns a string representation of this search criteria.
-   *
-   * @return  <code>String</code>
+   * @return  string representation
    */
   @Override
   public String toString()
   {
     return
       String.format(
-        "dn=%s,filter=%s,filterArgs=%s,returnAttrs=%s,matchAttrs=%s",
+        "%s@%d: dn=%s, filter=%s, filterArgs=%s, returnAttrs=%s",
+        this.getClass().getName(),
+        this.hashCode(),
         this.dn,
         this.filter,
         this.filterArgs,
-        this.returnAttrs,
-        this.matchAttrs);
+        this.returnAttrs);
   }
 }

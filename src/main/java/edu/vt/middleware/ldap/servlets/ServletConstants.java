@@ -44,64 +44,6 @@ public final class ServletConstants
   /** Type of pool used, value is {@value}. */
   public static final String POOL_TYPE = PROPERTIES_DOMAIN + "poolType";
 
-  /** Type of ldap bean factory, value is {@value}. */
-  public static final String BEAN_FACTORY = PROPERTIES_DOMAIN + "beanFactory";
-
-  /**
-   * Identifier to set in the session after valid authentication, value is
-   * {@value}.
-   */
-  public static final String SESSION_ID = PROPERTIES_DOMAIN + "sessionId";
-
-  /**
-   * Default identifier to set in the session after valid authentication, value
-   * is {@value}.
-   */
-  public static final String DEFAULT_SESSION_ID = "user";
-
-  /** Whether to invalidate the user session at logout, value is {@value}. */
-  public static final String INVALIDATE_SESSION = PROPERTIES_DOMAIN +
-    "invalidateSession";
-
-  /**
-   * Default behavior for invalidating the user session at logout, value is
-   * {@value}.
-   */
-  public static final String DEFAULT_INVALIDATE_SESSION = "true";
-
-  /** URL of the page that collects user credentials, value is {@value}. */
-  public static final String LOGIN_URL = PROPERTIES_DOMAIN + "loginUrl";
-
-  /**
-   * Default URL of the page that does collects user credentials, value is
-   * {@value}.
-   */
-  public static final String DEFAULT_LOGIN_URL = "/";
-
-  /** Error message to display if authentication fails, value is {@value}. */
-  public static final String ERROR_MSG = PROPERTIES_DOMAIN + "errorMsg";
-
-  /** Class used to initialize http sessions. */
-  public static final String SESSION_MANAGER = PROPERTIES_DOMAIN +
-    "sessionManager";
-
-  /** Default session initializer, value is {@value}. */
-  public static final String DEFAULT_SESSION_MANAGER =
-    "edu.vt.middleware.ldap.servlets.session.DefaultSessionManager";
-
-  /** Default error message, value is {@value}. */
-  public static final String DEFAULT_ERROR_MSG =
-    "Could not authenticate or authorize user";
-
-  /** HTTP parameter used to transmit the user identifier, value is {@value}. */
-  public static final String USER_PARAM = "user";
-
-  /** HTTP parameter used to transmit the user credential, value is {@value}. */
-  public static final String CREDENTIAL_PARAM = "credential";
-
-  /** HTTP parameter used to transmit the redirect url, value is {@value}. */
-  public static final String URL_PARAM = "url";
-
 
   /** Default constructor. */
   private ServletConstants() {}

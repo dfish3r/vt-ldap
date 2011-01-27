@@ -15,14 +15,15 @@ package edu.vt.middleware.ldap.ldif;
 
 import java.io.StringReader;
 import java.io.StringWriter;
-import java.util.Iterator;
-import javax.naming.directory.SearchResult;
-import edu.vt.middleware.ldap.Ldap;
+import edu.vt.middleware.ldap.AbstractTest;
+import edu.vt.middleware.ldap.LdapConnection;
+import edu.vt.middleware.ldap.LdapEntry;
+import edu.vt.middleware.ldap.LdapResult;
 import edu.vt.middleware.ldap.SearchFilter;
+import edu.vt.middleware.ldap.SearchOperation;
+import edu.vt.middleware.ldap.SearchRequest;
+import edu.vt.middleware.ldap.SortBehavior;
 import edu.vt.middleware.ldap.TestUtil;
-import edu.vt.middleware.ldap.bean.LdapEntry;
-import edu.vt.middleware.ldap.bean.LdapResult;
-import edu.vt.middleware.ldap.bean.SortedLdapBeanFactory;
 import org.testng.AssertJUnit;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
@@ -35,7 +36,7 @@ import org.testng.annotations.Test;
  * @author  Middleware Services
  * @version  $Revision$
  */
-public class LdifTest
+public class LdifTest extends AbstractTest
 {
 
   /** Entry created for ldap tests. */
@@ -47,27 +48,14 @@ public class LdifTest
    *
    * @throws  Exception  On test failure.
    */
-  @Parameters({ "createEntry12" })
+  @Parameters({ "createEntry14" })
   @BeforeClass(groups = {"ldiftest"})
   public void createLdapEntry(final String ldifFile)
     throws Exception
   {
     final String ldif = TestUtil.readFileIntoString(ldifFile);
-    testLdapEntry = TestUtil.convertLdifToEntry(ldif);
-
-    Ldap ldap = TestUtil.createSetupLdap();
-    ldap.create(
-      testLdapEntry.getDn(),
-      testLdapEntry.getLdapAttributes().toAttributes());
-    ldap.close();
-    ldap = TestUtil.createLdap();
-    while (
-      !ldap.compare(
-          testLdapEntry.getDn(),
-          new SearchFilter(testLdapEntry.getDn().split(",")[0]))) {
-      Thread.sleep(100);
-    }
-    ldap.close();
+    testLdapEntry = TestUtil.convertLdifToResult(ldif).getEntry();
+    super.createLdapEntry(testLdapEntry);
   }
 
 
@@ -76,9 +64,7 @@ public class LdifTest
   public void deleteLdapEntry()
     throws Exception
   {
-    final Ldap ldap = TestUtil.createSetupLdap();
-    ldap.delete(testLdapEntry.getDn());
-    ldap.close();
+    super.deleteLdapEntry(testLdapEntry.getDn());
   }
 
 
@@ -96,22 +82,22 @@ public class LdifTest
   public void searchAndCompareLdif(final String dn, final String filter)
     throws Exception
   {
-    final Ldap ldap = TestUtil.createLdap();
+    final LdapConnection conn = TestUtil.createLdapConnection();
+    conn.open();
+    final SearchOperation search = new SearchOperation(conn);
     final Ldif ldif = new Ldif();
 
-    final Iterator<SearchResult> iter = ldap.search(
-      dn,
-      new SearchFilter(filter));
+    final LdapResult result1 = search.execute(
+      new SearchRequest(dn, new SearchFilter(filter))).getResult();
 
-    final LdapResult result1 = TestUtil.newLdapResult(iter);
     final StringWriter writer = new StringWriter();
-    ldif.outputLdif(result1.toSearchResults().iterator(), writer);
+    ldif.outputLdif(result1, writer);
 
     final StringReader reader = new StringReader(writer.toString());
-    final LdapResult result2 = TestUtil.newLdapResult(ldif.importLdif(reader));
+    final LdapResult result2 = ldif.importLdif(reader);
 
     AssertJUnit.assertEquals(result1, result2);
-    ldap.close();
+    conn.close();
   }
 
 
@@ -132,13 +118,13 @@ public class LdifTest
     throws Exception
   {
     final Ldif ldif = new Ldif();
-    ldif.setLdapBeanFactory(new SortedLdapBeanFactory());
+    ldif.setSortBehavior(SortBehavior.SORTED);
 
     final String ldifStringSorted = TestUtil.readFileIntoString(ldifSortedFile);
-    final Iterator<SearchResult> iter = ldif.importLdif(
+    final LdapResult result = ldif.importLdif(
       new StringReader(TestUtil.readFileIntoString(ldifFile)));
     final StringWriter writer = new StringWriter();
-    ldif.outputLdif(iter, writer);
+    ldif.outputLdif(result, writer);
 
     AssertJUnit.assertEquals(ldifStringSorted, writer.toString());
   }
@@ -162,15 +148,11 @@ public class LdifTest
   {
     final Ldif ldif = new Ldif();
     final String ldifStringIn = TestUtil.readFileIntoString(ldifFileIn);
-    Iterator<SearchResult> iter = ldif.importLdif(
-      new StringReader(ldifStringIn));
-
-    final LdapResult ldif1 = TestUtil.newLdapResult(iter);
+    final LdapResult result1 = ldif.importLdif(new StringReader(ldifStringIn));
 
     final String ldifStringOut = TestUtil.readFileIntoString(ldifFileOut);
-    iter = ldif.importLdif(new StringReader(ldifStringOut));
+    final LdapResult result2 = ldif.importLdif(new StringReader(ldifStringOut));
 
-    final LdapResult ldif2 = TestUtil.newLdapResult(iter);
-    AssertJUnit.assertEquals(ldif1, ldif2);
+    AssertJUnit.assertEquals(result1, result2);
   }
 }

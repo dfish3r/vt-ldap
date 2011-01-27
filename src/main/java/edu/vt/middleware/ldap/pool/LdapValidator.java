@@ -13,7 +13,7 @@
 */
 package edu.vt.middleware.ldap.pool;
 
-import edu.vt.middleware.ldap.BaseLdap;
+import edu.vt.middleware.ldap.LdapConnection;
 
 /**
  * <code>LdapValidator</code> provides an interface for validating ldap objects
@@ -24,7 +24,7 @@ import edu.vt.middleware.ldap.BaseLdap;
  * @author  Middleware Services
  * @version  $Revision$ $Date$
  */
-public interface LdapValidator<T extends BaseLdap>
+public interface LdapValidator<T extends LdapConnection>
 {
 
 

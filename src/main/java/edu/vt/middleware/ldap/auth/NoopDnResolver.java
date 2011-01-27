@@ -14,10 +14,10 @@
 package edu.vt.middleware.ldap.auth;
 
 import java.io.Serializable;
-import javax.naming.NamingException;
+import edu.vt.middleware.ldap.LdapException;
 
 /**
- * <code>NoopDnResolver</code> returns the user as the LDAP DN.
+ * Returns a DN that is the user identifier.
  *
  * @author  Middleware Services
  * @version  $Revision$ $Date$
@@ -36,9 +36,9 @@ public class NoopDnResolver implements DnResolver, Serializable
   /**
    * This method is not implemented.
    *
-   * @param  authConfig  <code>AuthenticatorConfig</code>
+   * @param  ac  authenticator config
    */
-  public void setAuthenticatorConfig(final AuthenticatorConfig authConfig) {}
+  public void setAuthenticatorConfig(final AuthenticatorConfig ac) {}
 
 
   /**
@@ -53,21 +53,17 @@ public class NoopDnResolver implements DnResolver, Serializable
 
 
   /**
-   * Returns the user as the LDAP DN.
+   * Returns the user as the DN.
    *
-   * @param  user  <code>String</code> to find dn for
+   * @param  user  to set as DN
    *
-   * @return  <code>String</code> - user's dn
+   * @return  user as DN
    *
-   * @throws  NamingException  if the LDAP search fails
+   * @throws  LdapException  never
    */
   public String resolve(final String user)
-    throws NamingException
+    throws LdapException
   {
     return user;
   }
-
-
-  /** {@inheritDoc} */
-  public void close() {}
 }

@@ -13,10 +13,10 @@
 */
 package edu.vt.middleware.ldap.auth;
 
-import javax.naming.NamingException;
+import edu.vt.middleware.ldap.LdapException;
 
 /**
- * <code>DnResolver</code> provides an interface for finding LDAP DNs.
+ * Provides an interface for finding LDAP DNs with a user identifier.
  *
  * @author  Middleware Services
  * @version  $Revision$ $Date$
@@ -24,17 +24,17 @@ import javax.naming.NamingException;
 public interface DnResolver
 {
 
+
   /**
    * Attempts to find the LDAP DN for the supplied user.
    *
-   * @param  user  <code>String</code> to find dn for
+   * @param  user  to find DN for
    *
-   * @return  <code>String</code> - user's dn
+   * @return  user DN
    *
-   * @throws  NamingException  if an LDAP error occurs
+   * @throws  LdapException  if an LDAP error occurs
    */
-  String resolve(String user)
-    throws NamingException;
+  String resolve(String user) throws LdapException;
 
 
   /**
@@ -48,11 +48,7 @@ public interface DnResolver
   /**
    * Sets the authenticator config.
    *
-   * @param  config  authenticator configuration
+   * @param  config  of authenticator
    */
   void setAuthenticatorConfig(AuthenticatorConfig config);
-
-
-  /** This will close any resources associated with this resolver. */
-  void close();
 }

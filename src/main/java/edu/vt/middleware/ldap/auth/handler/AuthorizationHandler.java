@@ -13,12 +13,12 @@
 */
 package edu.vt.middleware.ldap.auth.handler;
 
-import javax.naming.NamingException;
-import javax.naming.ldap.LdapContext;
+import edu.vt.middleware.ldap.LdapException;
+import edu.vt.middleware.ldap.provider.Connection;
 
 /**
- * AuthorizationHandler provides processing of authorization queries after
- * authentication has succeeded.
+ * Provides processing of authorization queries after authentication has
+ * succeeded.
  *
  * @author  Middleware Services
  * @version  $Revision$
@@ -29,18 +29,15 @@ public interface AuthorizationHandler
 
   /**
    * Process an authorization after an ldap authentication. The supplied
-   * LdapContext should <b>not</b> be closed in this method. Implementations
-   * should throw <code>AuthorizationException</code> to indicate an
-   * authorization failure.
+   * connection should <b>not</b> be closed in this method. Implementations
+   * should throw authorization exception to indicate an authorization failure.
    *
-   * @param  ac  <code>AuthenticationCriteria</code> used to perform the
-   * authentication
-   * @param  ctx  <code>LdapContext</code> authenticated context used to perform
-   * the bind
+   * @param  ac  authentication criteria used to perform the authentication
+   * @param  conn  connection used to perform the bind
    *
    * @throws  AuthorizationException  if authorization fails
-   * @throws  NamingException  if an LDAP error occurs
+   * @throws  LdapException  if ldap operation fails
    */
-  void process(AuthenticationCriteria ac, LdapContext ctx)
-    throws NamingException;
+  void process(AuthenticationCriteria ac, Connection conn)
+    throws LdapException;
 }

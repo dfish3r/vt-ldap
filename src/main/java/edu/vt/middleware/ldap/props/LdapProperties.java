@@ -146,7 +146,7 @@ public final class LdapProperties
   public void setProperty(final String key, final String value)
   {
     if (
-      this.propertyConfig.hasEnvironmentProperty(
+      this.propertyConfig.hasProviderProperty(
           this.propertyConfig.getPropertiesDomain() + key)) {
       this.config.setProperty(
         this.propertyConfig.getPropertiesDomain() + key,
@@ -169,7 +169,7 @@ public final class LdapProperties
   {
     boolean exists = false;
     if (
-      this.propertyConfig.hasEnvironmentProperty(
+      this.propertyConfig.hasProviderProperty(
           this.propertyConfig.getPropertiesDomain() + key)) {
       exists = this.config.containsKey(
         this.propertyConfig.getPropertiesDomain() + key);
@@ -180,9 +180,9 @@ public final class LdapProperties
   }
 
 
-  /** Calls {@link PropertyConfig#setEnvironmentProperties(Properties)}. */
+  /** Calls {@link PropertyConfig#setProviderProperties(Properties)}. */
   public void configure()
   {
-    this.propertyConfig.setEnvironmentProperties(this.config);
+    this.propertyConfig.setProviderProperties(this.config);
   }
 }

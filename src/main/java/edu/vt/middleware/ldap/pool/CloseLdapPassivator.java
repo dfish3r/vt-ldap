@@ -13,7 +13,7 @@
 */
 package edu.vt.middleware.ldap.pool;
 
-import edu.vt.middleware.ldap.Ldap;
+import edu.vt.middleware.ldap.LdapConnection;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -24,7 +24,7 @@ import org.apache.commons.logging.LogFactory;
  * @author  Middleware Services
  * @version  $Revision$ $Date$
  */
-public class CloseLdapPassivator implements LdapPassivator<Ldap>
+public class CloseLdapPassivator implements LdapPassivator<LdapConnection>
 {
 
   /** Log for this class. */
@@ -32,11 +32,11 @@ public class CloseLdapPassivator implements LdapPassivator<Ldap>
 
 
   /** {@inheritDoc} */
-  public boolean passivate(final Ldap l)
+  public boolean passivate(final LdapConnection lc)
   {
     boolean success = false;
-    if (l != null) {
-      l.close();
+    if (lc != null) {
+      lc.close();
       success = true;
     }
     return success;

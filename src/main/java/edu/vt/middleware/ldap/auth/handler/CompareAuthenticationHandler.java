@@ -15,19 +15,19 @@ package edu.vt.middleware.ldap.auth.handler;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import javax.naming.AuthenticationException;
-import javax.naming.NamingEnumeration;
-import javax.naming.NamingException;
-import javax.naming.directory.SearchResult;
-import edu.vt.middleware.ldap.LdapConfig;
+import edu.vt.middleware.ldap.CompareRequest;
+import edu.vt.middleware.ldap.LdapAttribute;
+import edu.vt.middleware.ldap.LdapException;
 import edu.vt.middleware.ldap.LdapUtil;
+import edu.vt.middleware.ldap.auth.AuthenticationException;
 import edu.vt.middleware.ldap.auth.AuthenticatorConfig;
-import edu.vt.middleware.ldap.handler.ConnectionHandler;
+import edu.vt.middleware.ldap.provider.Connection;
+import edu.vt.middleware.ldap.provider.ConnectionFactory;
 
 /**
- * <code>CompareAuthenticationHandler</code> provides an LDAP authentication
- * implementation that leverages a compare operation against the userPassword
- * attribute. The default password scheme used is 'SHA'.
+ * Provides an LDAP authentication implementation that leverages a compare
+ * operation against the userPassword attribute. The default password scheme
+ * used is 'SHA'.
  *
  * @author  Middleware Services
  * @version  $Revision$
@@ -47,8 +47,7 @@ public class CompareAuthenticationHandler extends AbstractAuthenticationHandler
 
 
   /**
-   * Creates a new <code>CompareAuthenticationHandler</code> with the supplied
-   * authenticator config.
+   * Creates a new compare authentication handler.
    *
    * @param  ac  authenticator config
    */
@@ -81,41 +80,33 @@ public class CompareAuthenticationHandler extends AbstractAuthenticationHandler
 
 
   /** {@inheritDoc} */
-  public void authenticate(
-    final ConnectionHandler ch,
+  public Connection authenticate(
+    final ConnectionFactory ch,
     final AuthenticationCriteria ac)
-    throws NamingException
+    throws LdapException
   {
     byte[] hash = new byte[DIGEST_SIZE];
     try {
       final MessageDigest md = MessageDigest.getInstance(this.passwordScheme);
-      md.update(((String) ac.getCredential()).getBytes());
+      md.update(ac.getCredential().getBytes());
       hash = md.digest();
     } catch (NoSuchAlgorithmException e) {
-      throw new NamingException(e.getMessage());
+      throw new LdapException(e);
     }
 
-    ch.connect(this.config.getBindDn(), this.config.getBindCredential());
+    final Connection conn = ch.create(
+      this.config.getBindDn(), this.config.getBindCredential());
+    final LdapAttribute la = new LdapAttribute(
+      "userPassword",
+      String.format(
+        "{%s}%s", this.passwordScheme, LdapUtil.base64Encode(hash)).getBytes());
+    final boolean success = conn.compare(new CompareRequest(ac.getDn(), la));
 
-    NamingEnumeration<SearchResult> en = null;
-    try {
-      en = ch.getLdapContext().search(
-        ac.getDn(),
-        "userPassword={0}",
-        new Object[] {
-          String.format(
-            "{%s}%s",
-            this.passwordScheme,
-            LdapUtil.base64Encode(hash)).getBytes(),
-        },
-        LdapConfig.getCompareSearchControls());
-      if (!en.hasMore()) {
-        throw new AuthenticationException("Compare authentication failed.");
-      }
-    } finally {
-      if (en != null) {
-        en.close();
-      }
+    if (!success) {
+      ch.destroy(conn);
+      throw new AuthenticationException("Compare authentication failed.");
+    } else {
+      return conn;
     }
   }
 
@@ -124,5 +115,22 @@ public class CompareAuthenticationHandler extends AbstractAuthenticationHandler
   public CompareAuthenticationHandler newInstance()
   {
     return new CompareAuthenticationHandler(this.config);
+  }
+
+
+  /**
+   * Provides a descriptive string representation of this instance.
+   *
+   * @return  string representation
+   */
+  @Override
+  public String toString()
+  {
+    return
+      String.format(
+        "%s@%d: passwordScheme=%s",
+        this.getClass().getName(),
+        this.hashCode(),
+        this.passwordScheme);
   }
 }

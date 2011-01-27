@@ -46,9 +46,6 @@ public abstract class AbstractCli
   /** Option to print usage. */
   protected static final String OPT_HELP = "help";
 
-  /** Option for ldap trace. */
-  protected static final String OPT_TRACE = "trace";
-
   /** Option for loading ldap configuration from properties. */
   protected static final String OPT_USE_PROPERTIES = "useProperties";
 
@@ -78,7 +75,6 @@ public abstract class AbstractCli
   public AbstractCli()
   {
     this.opts.add(OPT_HELP);
-    this.opts.add(OPT_TRACE);
     this.opts.add(OPT_USE_PROPERTIES);
     this.opts.add(OPT_DSMLV1);
     this.opts.add(OPT_DSMLV2);
@@ -125,7 +121,7 @@ public abstract class AbstractCli
   /**
    * Initialize CLI options with the supplied invoker.
    *
-   * @param  invoker  <code>PropertyInvoker</code>
+   * @param  invoker  to configure options
    */
   protected void initOptions(final LdapConfigPropertyInvoker invoker)
   {
@@ -137,8 +133,6 @@ public abstract class AbstractCli
       }
     }
     options.addOption(new Option(OPT_HELP, false, "display all options"));
-    options.addOption(
-      new Option(OPT_TRACE, false, "print ASN.1 BER packets to System.out"));
     options.addOption(
       new Option(
         OPT_USE_PROPERTIES,

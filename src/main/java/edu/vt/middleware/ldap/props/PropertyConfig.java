@@ -13,7 +13,7 @@
 */
 package edu.vt.middleware.ldap.props;
 
-import java.util.Hashtable;
+import java.util.Map;
 import java.util.Properties;
 
 /**
@@ -42,7 +42,7 @@ public interface PropertyConfig
    *
    * @return  <code>boolean</code> whether the supplied property exists
    */
-  boolean hasEnvironmentProperty(String name);
+  boolean hasProviderProperty(String name);
 
 
   /**
@@ -52,21 +52,21 @@ public interface PropertyConfig
    * @param  name  <code>String</code> property name
    * @param  value  <code>String</code> property value
    */
-  void setEnvironmentProperties(String name, String value);
+  void setProviderProperty(String name, String value);
 
 
   /**
-   * See {@link #setEnvironmentProperties(String,String)}.
+   * See {@link #setProviderProperty(String,String)}.
    *
    * @param  properties  <code>Properties</code>
    */
-  void setEnvironmentProperties(Properties properties);
+  void setProviderProperties(Properties properties);
 
 
   /**
-   * See {@link #setEnvironmentProperties(String,String)}.
+   * See {@link #setProviderProperty(String,String)}.
    *
-   * @param  properties  <code>Hashtable</code>
+   * @param  properties  map of provider properties
    */
-  void setEnvironmentProperties(Hashtable<String, String> properties);
+  void setProviderProperties(Map<String, String> properties);
 }

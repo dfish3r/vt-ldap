@@ -25,7 +25,7 @@ import javax.security.auth.login.LoginException;
 import javax.security.auth.spi.LoginModule;
 
 /**
- * <code>TestLoginModule</code> is a test login module.
+ * Login module for testing.
  *
  * @author  Middleware Services
  * @version  $Revision$ $Date$
@@ -40,7 +40,6 @@ public class TestLoginModule implements LoginModule
   protected CallbackHandler callbackHandler;
 
   /** Shared state from other login module. */
-  @SuppressWarnings("unchecked")
   protected Map sharedState;
 
   /** Whether authentication was successful. */

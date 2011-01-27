@@ -13,8 +13,8 @@
 */
 package edu.vt.middleware.ldap.pool;
 
-import javax.naming.NamingException;
-import edu.vt.middleware.ldap.Ldap;
+import edu.vt.middleware.ldap.LdapConnection;
+import edu.vt.middleware.ldap.LdapException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -25,7 +25,7 @@ import org.apache.commons.logging.LogFactory;
  * @author  Middleware Services
  * @version  $Revision$ $Date$
  */
-public class ConnectLdapActivator implements LdapActivator<Ldap>
+public class ConnectLdapActivator implements LdapActivator<LdapConnection>
 {
 
   /** Log for this class. */
@@ -33,14 +33,14 @@ public class ConnectLdapActivator implements LdapActivator<Ldap>
 
 
   /** {@inheritDoc} */
-  public boolean activate(final Ldap l)
+  public boolean activate(final LdapConnection lc)
   {
     boolean success = false;
-    if (l != null) {
+    if (lc != null) {
       try {
-        l.connect();
+        lc.open();
         success = true;
-      } catch (NamingException e) {
+      } catch (LdapException e) {
         if (this.logger.isErrorEnabled()) {
           this.logger.error("unabled to connect to the ldap", e);
         }

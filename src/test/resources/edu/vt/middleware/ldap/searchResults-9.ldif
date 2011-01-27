@@ -1,5 +1,4 @@
 dn: uid=9,ou=test,dc=vt,dc=edu
 departmentNumber: 0829
-givenName: Johu
-sn: Dol
-
+givenName: William
+sn: Harrison

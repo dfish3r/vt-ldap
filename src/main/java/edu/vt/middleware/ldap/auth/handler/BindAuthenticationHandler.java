@@ -13,13 +13,14 @@
 */
 package edu.vt.middleware.ldap.auth.handler;
 
-import javax.naming.NamingException;
+import edu.vt.middleware.ldap.LdapException;
 import edu.vt.middleware.ldap.auth.AuthenticatorConfig;
-import edu.vt.middleware.ldap.handler.ConnectionHandler;
+import edu.vt.middleware.ldap.provider.Connection;
+import edu.vt.middleware.ldap.provider.ConnectionFactory;
 
 /**
- * <code>BindAuthenticationHandler</code> provides an LDAP authentication
- * implementation that leverages the LDAP bind operation.
+ * Provides an LDAP authentication implementation that leverages the LDAP bind
+ * operation.
  *
  * @author  Middleware Services
  * @version  $Revision$
@@ -33,8 +34,7 @@ public class BindAuthenticationHandler extends AbstractAuthenticationHandler
 
 
   /**
-   * Creates a new <code>BindAuthenticationHandler</code> with the supplied
-   * authenticator config.
+   * Creates a new bind authentication handler.
    *
    * @param  ac  authenticator config
    */
@@ -45,12 +45,12 @@ public class BindAuthenticationHandler extends AbstractAuthenticationHandler
 
 
   /** {@inheritDoc} */
-  public void authenticate(
-    final ConnectionHandler ch,
+  public Connection authenticate(
+    final ConnectionFactory cf,
     final AuthenticationCriteria ac)
-    throws NamingException
+    throws LdapException
   {
-    ch.connect(ac.getDn(), ac.getCredential());
+    return cf.create(ac.getDn(), ac.getCredential());
   }
 
 

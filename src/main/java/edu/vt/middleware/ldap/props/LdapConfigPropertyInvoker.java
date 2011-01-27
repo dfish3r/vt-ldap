@@ -16,12 +16,15 @@ package edu.vt.middleware.ldap.props;
 import java.lang.reflect.Array;
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLSocketFactory;
+import edu.vt.middleware.ldap.Credential;
+import edu.vt.middleware.ldap.ResultCode;
 import edu.vt.middleware.ldap.auth.DnResolver;
 import edu.vt.middleware.ldap.auth.handler.AuthenticationHandler;
 import edu.vt.middleware.ldap.auth.handler.AuthenticationResultHandler;
 import edu.vt.middleware.ldap.auth.handler.AuthorizationHandler;
-import edu.vt.middleware.ldap.handler.ConnectionHandler;
-import edu.vt.middleware.ldap.handler.SearchResultHandler;
+import edu.vt.middleware.ldap.handler.LdapResultHandler;
+import edu.vt.middleware.ldap.provider.ConnectionFactory;
+import edu.vt.middleware.ldap.provider.LdapProvider;
 import edu.vt.middleware.ldap.ssl.CredentialConfigParser;
 import edu.vt.middleware.ldap.ssl.SSLContextInitializer;
 
@@ -98,13 +101,17 @@ public class LdapConfigPropertyInvoker extends AbstractPropertyInvoker
             newValue = instantiateType(SSLSocketFactory.class, value);
           }
         }
+      } else if (LdapProvider.class.isAssignableFrom(type)) {
+        newValue = this.createTypeFromPropertyValue(
+          LdapProvider.class,
+          value);
       } else if (HostnameVerifier.class.isAssignableFrom(type)) {
         newValue = this.createTypeFromPropertyValue(
           HostnameVerifier.class,
           value);
-      } else if (ConnectionHandler.class.isAssignableFrom(type)) {
+      } else if (ConnectionFactory.class.isAssignableFrom(type)) {
         newValue = this.createTypeFromPropertyValue(
-          ConnectionHandler.class,
+          ConnectionFactory.class,
           value);
       } else if (AuthenticationHandler.class.isAssignableFrom(type)) {
         newValue = this.createTypeFromPropertyValue(
@@ -112,9 +119,9 @@ public class LdapConfigPropertyInvoker extends AbstractPropertyInvoker
           value);
       } else if (DnResolver.class.isAssignableFrom(type)) {
         newValue = this.createTypeFromPropertyValue(DnResolver.class, value);
-      } else if (SearchResultHandler[].class.isAssignableFrom(type)) {
+      } else if (LdapResultHandler[].class.isAssignableFrom(type)) {
         newValue = this.createArrayTypeFromPropertyValue(
-          SearchResultHandler.class,
+          LdapResultHandler.class,
           value);
       } else if (AuthenticationResultHandler[].class.isAssignableFrom(type)) {
         newValue = this.createArrayTypeFromPropertyValue(
@@ -124,17 +131,17 @@ public class LdapConfigPropertyInvoker extends AbstractPropertyInvoker
         newValue = this.createArrayTypeFromPropertyValue(
           AuthorizationHandler.class,
           value);
+      } else if (ResultCode[].class.isAssignableFrom(type)) {
+        newValue = this.createArrayEnumFromPropertyValue(
+          ResultCode.class, value);
       } else if (Class.class.isAssignableFrom(type)) {
         newValue = this.createTypeFromPropertyValue(Class.class, value);
       } else if (Class[].class.isAssignableFrom(type)) {
         newValue = this.createArrayTypeFromPropertyValue(Class.class, value);
       } else if (type.isEnum()) {
-        for (Object o : type.getEnumConstants()) {
-          final Enum<?> e = (Enum<?>) o;
-          if (e.name().equals(value)) {
-            newValue = o;
-          }
-        }
+        newValue = getEnum(type, value);
+      } else if (Credential.class.isAssignableFrom(type)) {
+        newValue = new Credential(value);
       } else if (String[].class == type) {
         newValue = value.split(",");
       } else if (Object[].class == type) {
@@ -233,6 +240,27 @@ public class LdapConfigPropertyInvoker extends AbstractPropertyInvoker
           }
         }
       }
+    }
+    return newObject;
+  }
+
+
+  /**
+   * Returns the enum array which represents the supplied class given the
+   * supplied string representation.
+   *
+   * @param  c  <code>Class</code> type to instantiate
+   * @param  s  <code>String</code> to parse
+   *
+   * @return  <code>Enum[]</code> of the supplied type or null
+   */
+  protected Object createArrayEnumFromPropertyValue(
+    final Class<?> c, final String s)
+  {
+    final String[] values = s.split(",");
+    final Object newObject = Array.newInstance(c, values.length);
+    for (int i = 0; i < values.length; i++) {
+      Array.set(newObject, i, getEnum(c, values[i]));
     }
     return newObject;
   }

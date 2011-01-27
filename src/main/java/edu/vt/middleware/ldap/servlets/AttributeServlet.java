@@ -15,21 +15,19 @@ package edu.vt.middleware.ldap.servlets;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.Iterator;
-import javax.naming.directory.SearchResult;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import edu.vt.middleware.ldap.Ldap;
+import edu.vt.middleware.ldap.LdapAttribute;
 import edu.vt.middleware.ldap.LdapConfig;
+import edu.vt.middleware.ldap.LdapConnection;
+import edu.vt.middleware.ldap.LdapEntry;
+import edu.vt.middleware.ldap.LdapResult;
 import edu.vt.middleware.ldap.SearchFilter;
-import edu.vt.middleware.ldap.bean.LdapAttribute;
-import edu.vt.middleware.ldap.bean.LdapBeanFactory;
-import edu.vt.middleware.ldap.bean.LdapBeanProvider;
-import edu.vt.middleware.ldap.bean.LdapEntry;
-import edu.vt.middleware.ldap.bean.LdapResult;
+import edu.vt.middleware.ldap.SearchOperation;
+import edu.vt.middleware.ldap.SearchRequest;
 import edu.vt.middleware.ldap.pool.BlockingLdapPool;
 import edu.vt.middleware.ldap.pool.DefaultLdapFactory;
 import edu.vt.middleware.ldap.pool.LdapPool;
@@ -75,11 +73,8 @@ public final class AttributeServlet extends HttpServlet
   /** Log for this class. */
   private final Log logger = LogFactory.getLog(AttributeServlet.class);
 
-  /** Ldap bean factory. */
-  private LdapBeanFactory beanFactory = LdapBeanProvider.getLdapBeanFactory();
-
   /** Pool to use for searching. */
-  private LdapPool<Ldap> pool;
+  private LdapPool<LdapConnection> pool;
 
 
   /**
@@ -134,24 +129,6 @@ public final class AttributeServlet extends HttpServlet
       throw new ServletException("Unknown pool type: " + poolType);
     }
     this.pool.initialize();
-
-    final String beanFactoryClass = getInitParameter(
-      ServletConstants.BEAN_FACTORY);
-    if (this.logger.isDebugEnabled()) {
-      this.logger.debug(ServletConstants.BEAN_FACTORY + " = " + beanFactory);
-    }
-    if (beanFactoryClass != null) {
-      try {
-        this.beanFactory = (LdapBeanFactory) Class.forName(beanFactoryClass)
-            .newInstance();
-      } catch (ClassNotFoundException e) {
-        throw new ServletException(e);
-      } catch (InstantiationException e) {
-        throw new ServletException(e);
-      } catch (IllegalAccessException e) {
-        throw new ServletException(e);
-      }
-    }
   }
 
 
@@ -183,17 +160,16 @@ public final class AttributeServlet extends HttpServlet
     }
 
     try {
-      Ldap ldap = null;
+      LdapConnection conn = null;
       try {
-        ldap = this.pool.checkOut();
+        conn = this.pool.checkOut();
 
-        final Iterator<SearchResult> i = ldap.search(
-          new SearchFilter(request.getParameter("query")),
-          request.getParameterValues("attr"));
-
-        final LdapResult r = this.beanFactory.newLdapResult();
-        r.addEntries(i);
-        for (LdapEntry e : r.getEntries()) {
+        final SearchOperation search = new SearchOperation(conn);
+        final LdapResult result = search.execute(
+          new SearchRequest(
+            new SearchFilter(request.getParameter("query")),
+            request.getParameterValues("attr"))).getResult();
+        for (LdapEntry e : result.getEntries()) {
           final LdapAttribute a = e.getLdapAttributes().getAttribute(attribute);
           if (a != null && a.getValues().size() > 0) {
             final Object rawValue = a.getValues().iterator().next();
@@ -206,7 +182,7 @@ public final class AttributeServlet extends HttpServlet
           }
         }
       } finally {
-        this.pool.checkIn(ldap);
+        this.pool.checkIn(conn);
       }
 
       if (value != null) {

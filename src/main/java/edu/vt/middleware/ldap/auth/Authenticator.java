@@ -14,30 +14,28 @@
 package edu.vt.middleware.ldap.auth;
 
 import java.io.InputStream;
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import javax.naming.NamingException;
-import javax.naming.directory.Attributes;
+
+import edu.vt.middleware.ldap.Credential;
+import edu.vt.middleware.ldap.LdapEntry;
+import edu.vt.middleware.ldap.LdapException;
+import edu.vt.middleware.ldap.LdapResponse;
+import edu.vt.middleware.ldap.LdapResult;
 import edu.vt.middleware.ldap.SearchFilter;
+import edu.vt.middleware.ldap.auth.handler.AuthenticationCriteria;
+import edu.vt.middleware.ldap.auth.handler.AuthenticationHandler;
 import edu.vt.middleware.ldap.auth.handler.AuthenticationResultHandler;
 import edu.vt.middleware.ldap.auth.handler.AuthorizationHandler;
-import edu.vt.middleware.ldap.auth.handler.CompareAuthorizationHandler;
+import edu.vt.middleware.ldap.provider.Connection;
+import edu.vt.middleware.ldap.provider.ConnectionFactory;
 
 /**
- * <code>Authenticator</code> contains functions for authenticating a user
- * against an LDAP.
+ * Provides functionality to authenticate users against an ldap directory.
  *
  * @author  Middleware Services
  * @version  $Revision$ $Date$
  */
 public class Authenticator extends AbstractAuthenticator<AuthenticatorConfig>
-  implements Serializable
 {
-
-  /** serial version uid. */
-  private static final long serialVersionUID = -444519681288987247L;
 
 
   /** Default constructor. */
@@ -45,32 +43,19 @@ public class Authenticator extends AbstractAuthenticator<AuthenticatorConfig>
 
 
   /**
-   * This will create a new <code>Authenticator</code> with the supplied <code>
-   * AuthenticatorConfig</code>.
+   * Creates a new authenticator.
    *
-   * @param  authConfig  <code>AuthenticatorConfig</code>
+   * @param  ac  authentication config
    */
-  public Authenticator(final AuthenticatorConfig authConfig)
+  public Authenticator(final AuthenticatorConfig ac)
   {
-    this.setAuthenticatorConfig(authConfig);
+    this.setAuthenticatorConfig(ac);
   }
 
 
   /**
-   * This returns the <code>AuthenticatorConfig</code> of the <code>
-   * Authenticator</code>.
-   *
-   * @return  <code>AuthenticatorConfig</code>
-   */
-  public AuthenticatorConfig getAuthenticatorConfig()
-  {
-    return this.config;
-  }
-
-
-  /**
-   * This will set the config parameters of this <code>Authenticator</code>
-   * using the default properties file, which must be located in your classpath.
+   * This will set the config parameters of this authenticator using the default
+   * properties file, which must be located in your classpath.
    */
   public void loadFromProperties()
   {
@@ -79,10 +64,10 @@ public class Authenticator extends AbstractAuthenticator<AuthenticatorConfig>
 
 
   /**
-   * This will set the config parameters of this <code>Authenticator</code>
-   * using the supplied input stream.
+   * This will set the config parameters of this authenticator using the
+   * supplied input stream.
    *
-   * @param  is  <code>InputStream</code>
+   * @param  is  to read properties from
    */
   public void loadFromProperties(final InputStream is)
   {
@@ -91,276 +76,130 @@ public class Authenticator extends AbstractAuthenticator<AuthenticatorConfig>
 
 
   /**
-   * This will attempt to find the LDAP DN for the supplied user. {@link
-   * AuthenticatorConfig#dnResolver} is invoked to perform this operation.
+   * Authenticate the user in the supplied request.
    *
-   * @param  user  <code>String</code> to find dn for
-   *
-   * @return  <code>String</code> - user's dn
-   *
-   * @throws  NamingException  an LDAP error occurs
+   * @param  request  authentication request
+   * @return  response containing the ldap entry of the user authenticated
+   * @throws  AuthenticationException  if authentication fails
+   * @throws  AuthorizationException  if authorization fails
+   * @throws  LdapException  if an LDAP error occurs
    */
-  public String getDn(final String user)
-    throws NamingException
+  public LdapResponse<LdapEntry> authenticate(
+    final AuthenticationRequest request)
+    throws LdapException
   {
-    return this.config.getDnResolver().resolve(user);
+    this.initializeRequest(request, this.config);
+    return new LdapResponse<LdapEntry>(
+      this.authenticate(this.resolveDn(request.getUser()), request));
   }
 
 
   /**
-   * This will authenticate by binding to the LDAP using parameters given by
-   * {@link AuthenticatorConfig#setUser} and {@link
-   * AuthenticatorConfig#setCredential}. See {@link #authenticate(String,
-   * Object)}.
+   * Performs authentication by opening a new connection to the LDAP and binding
+   * as the supplied DN. Authorization handlers are invoking directly after a
+   * successful bind. If return attributes have been request, the user entry
+   * will be searched on the same connection. Authentication result handlers are
+   * processed and then the connection is closed.
    *
-   * @return  <code>boolean</code> - whether the bind succeeded
-   *
-   * @throws  NamingException  if the authentication fails for any other reason
-   * than invalid credentials
+   * @param  dn  to authenticate as
+   * @param  request  containing authentication parameters
+   * @return  ldap entry for the supplied DN
+   * @throws  AuthenticationException  if authentication fails
+   * @throws  AuthorizationException  if authorization fails
+   * @throws  LdapException  if an LDAP error occurs
    */
-  public boolean authenticate()
-    throws NamingException
+  protected LdapEntry authenticate(
+    final String dn, final AuthenticationRequest request)
+    throws LdapException
   {
-    return
-      this.authenticate(this.config.getUser(), this.config.getCredential());
+    // check the credential
+    final Credential credential = request.getCredential();
+    if (credential == null || credential.getBytes() == null) {
+      throw new AuthenticationException(
+        "Cannot authenticate dn, credential cannot be null");
+    }
+    if (credential.getBytes().length == 0) {
+      throw new AuthenticationException(
+        "Cannot authenticate dn, credential cannot be empty");
+    }
+
+    // check the dn
+    if (dn == null || "".equals(dn)) {
+      throw new AuthenticationException(
+        "Cannot authenticate dn, dn cannot be empty or null");
+    }
+
+    LdapResult result = null;
+
+    final ConnectionFactory cf = this.config.getConnectionFactory();
+    final AuthenticationResultHandler[] authResultHandler =
+      request.getAuthenticationResultHandler();
+
+    Connection conn = null;
+    try {
+      final AuthenticationCriteria ac = new AuthenticationCriteria(dn);
+      ac.setCredential(request.getCredential());
+      final AuthenticationHandler authHandler =
+        this.config.getAuthenticationHandler().newInstance();
+
+      // attempt to bind as this dn
+      conn = this.authenticate(authHandler, authResultHandler, cf, ac);
+
+      // authentication succeeded, perform authorization if supplied
+      final AuthorizationHandler[] authzHandler =
+        this.getAuthorizationHandlers(request, this.config);
+      this.authorize(authzHandler, authResultHandler, conn, ac);
+
+      // retrieve requested attributes
+      if (request.getReturnAttributes() == null ||
+          request.getReturnAttributes().length > 0) {
+        result = this.getLdapEntry(dn, request, conn);
+      }
+
+      // authentication and authorization succeeded, report result
+      if (authResultHandler != null && authResultHandler.length > 0) {
+        for (AuthenticationResultHandler ah : authResultHandler) {
+          ah.process(ac, true);
+        }
+      }
+    } finally {
+      cf.destroy(conn);
+    }
+
+    if (result != null) {
+      return result.getEntry();
+    } else {
+      return new LdapEntry(dn);
+    }
   }
 
 
-  /**
-   * This will authenticate by binding to the LDAP with the supplied user and
-   * credential. If {@link AuthenticatorConfig#setAuthorizationFilter} has been
-   * called, then it will be used to authorize the user by performing an ldap
-   * compare. See {@link #authenticate(String, Object, SearchFilter)}.
-   *
-   * @param  user  <code>String</code> username for bind
-   * @param  credential  <code>Object</code> credential for bind
-   *
-   * @return  <code>boolean</code> - whether the bind succeeded
-   *
-   * @throws  NamingException  if the authentication fails for any other reason
-   * than invalid credentials
-   */
-  public boolean authenticate(final String user, final Object credential)
-    throws NamingException
+  /** {@inheritDoc} */
+  protected void initializeRequest(
+    final AuthenticationRequest request, final AuthenticatorConfig config)
   {
-    return
-      this.authenticate(
-        user,
-        credential,
+    if (request.getUser() == null) {
+      request.setUser(config.getUser());
+    }
+    if (request.getCredential() == null) {
+      request.setCredential(config.getCredential());
+    }
+    if (request.getReturnAttributes() == null) {
+      request.setReturnAttributes(config.getReturnAttributes());
+    }
+    if (request.getAuthorizationFilter() == null &&
+        config.getAuthorizationFilter() != null) {
+      request.setAuthorizationFilter(
         new SearchFilter(
-          this.config.getAuthorizationFilter(),
-          this.config.getAuthorizationFilterArgs()));
-  }
-
-
-  /**
-   * This will authenticate by binding to the LDAP with the supplied user and
-   * credential. If the supplied filter is not null it will be injected into a
-   * new instance of CompareAuthorizationHandler and set as the first
-   * AuthorizationHandler to execute. If {@link
-   * AuthenticatorConfig#setAuthenticationResultHandlers(
-   * AuthenticationResultHandler[])} has been called, then it will be used to
-   * post process authentication results. See {@link #authenticate(String,
-   * Object, AuthenticationResultHandler[], AuthorizationHandler[])}.
-   *
-   * @param  user  <code>String</code> username for bind
-   * @param  credential  <code>Object</code> credential for bind
-   * @param  filter  <code>SearchFilter</code> to authorize user
-   *
-   * @return  <code>boolean</code> - whether the bind succeeded
-   *
-   * @throws  NamingException  if the authentication fails for any other reason
-   * than invalid credentials
-   */
-  public boolean authenticate(
-    final String user,
-    final Object credential,
-    final SearchFilter filter)
-    throws NamingException
-  {
-    final List<AuthorizationHandler> authzHandler =
-      new ArrayList<AuthorizationHandler>();
-    if (filter != null && filter.getFilter() != null) {
-      authzHandler.add(new CompareAuthorizationHandler(filter));
+          config.getAuthorizationFilter(),
+          config.getAuthorizationFilterArgs()));
     }
-    if (this.config.getAuthorizationHandlers() != null) {
-      authzHandler.addAll(
-        Arrays.asList(this.config.getAuthorizationHandlers()));
+    if (request.getAuthorizationHandler() == null) {
+      request.setAuthorizationHandler(config.getAuthorizationHandlers());
     }
-    return
-      this.authenticate(
-        user,
-        credential,
-        this.config.getAuthenticationResultHandlers(),
-        authzHandler.toArray(new AuthorizationHandler[0]));
-  }
-
-
-  /**
-   * This will authenticate by binding to the LDAP with the supplied user and
-   * credential. The user's DN will be looked up before performing the bind by
-   * calling {@link DnResolver#resolve(String)}. See {@link
-   * #authenticateAndAuthorize(String, Object, AuthenticationResultHandler[],
-   * AuthorizationHandler[])}.
-   *
-   * @param  user  <code>String</code> username for bind
-   * @param  credential  <code>Object</code> credential for bind
-   * @param  authHandler  <code>AuthenticationResultHandler[]</code> to post
-   * process authentication results
-   * @param  authzHandler  <code>AuthorizationHandler[]</code> to process
-   * authorization after authentication
-   *
-   * @return  <code>boolean</code> - whether the bind succeeded
-   *
-   * @throws  NamingException  if the authentication fails for any other reason
-   * than invalid credentials
-   */
-  public boolean authenticate(
-    final String user,
-    final Object credential,
-    final AuthenticationResultHandler[] authHandler,
-    final AuthorizationHandler[] authzHandler)
-    throws NamingException
-  {
-    return
-      super.authenticateAndAuthorize(
-        this.getDn(user),
-        credential,
-        authHandler,
-        authzHandler);
-  }
-
-
-  /**
-   * This will authenticate by binding to the LDAP using parameters given by
-   * {@link AuthenticatorConfig#setUser} and {@link
-   * AuthenticatorConfig#setCredential}. See {@link
-   * #authenticate(String,Object,String[])}
-   *
-   * @param  retAttrs  <code>String[]</code> attributes to return
-   *
-   * @return  <code>Attributes</code> - of authenticated user
-   *
-   * @throws  NamingException  if any of the ldap operations fail
-   */
-  public Attributes authenticate(final String[] retAttrs)
-    throws NamingException
-  {
-    return
-      this.authenticate(
-        this.config.getUser(),
-        this.config.getCredential(),
-        retAttrs);
-  }
-
-
-  /**
-   * This will authenticate by binding to the LDAP with the supplied user and
-   * credential. If {@link AuthenticatorConfig#setAuthorizationFilter} has been
-   * called, then it will be used to authorize the user by performing an ldap
-   * compare. See {@link #authenticate(String, Object, SearchFilter, String[])}
-   *
-   * @param  user  <code>String</code> username for bind
-   * @param  credential  <code>Object</code> credential for bind
-   * @param  retAttrs  <code>String[]</code> to return
-   *
-   * @return  <code>Attributes</code> - of authenticated user
-   *
-   * @throws  NamingException  if any of the ldap operations fail
-   */
-  public Attributes authenticate(
-    final String user,
-    final Object credential,
-    final String[] retAttrs)
-    throws NamingException
-  {
-    return
-      this.authenticate(
-        user,
-        credential,
-        new SearchFilter(
-          this.config.getAuthorizationFilter(),
-          this.config.getAuthorizationFilterArgs()),
-        retAttrs);
-  }
-
-
-  /**
-   * This will authenticate by binding to the LDAP with the supplied user and
-   * credential. If the supplied filter is not null it will be injected into a
-   * new instance of CompareAuthorizationHandler and set as the first
-   * AuthorizationHandler to execute. See {@link #authenticate(String, Object,
-   * String[], AuthenticationResultHandler[], AuthorizationHandler[])}.
-   *
-   * @param  user  <code>String</code> username for bind
-   * @param  credential  <code>Object</code> credential for bind
-   * @param  filter  <code>SearchFilter</code> to authorize user
-   * @param  retAttrs  <code>String[]</code> to return
-   *
-   * @return  <code>Attributes</code> - of authenticated user
-   *
-   * @throws  NamingException  if any of the ldap operations fail
-   */
-  public Attributes authenticate(
-    final String user,
-    final Object credential,
-    final SearchFilter filter,
-    final String[] retAttrs)
-    throws NamingException
-  {
-    final List<AuthorizationHandler> authzHandler =
-      new ArrayList<AuthorizationHandler>();
-    if (filter != null && filter.getFilter() != null) {
-      authzHandler.add(new CompareAuthorizationHandler(filter));
+    if (request.getAuthenticationResultHandler() == null) {
+      request.setAuthenticationResultHandler(
+        config.getAuthenticationResultHandlers());
     }
-    if (this.config.getAuthorizationHandlers() != null) {
-      authzHandler.addAll(
-        Arrays.asList(this.config.getAuthorizationHandlers()));
-    }
-    return
-      this.authenticate(
-        user,
-        credential,
-        retAttrs,
-        this.config.getAuthenticationResultHandlers(),
-        authzHandler.toArray(new AuthorizationHandler[0]));
-  }
-
-
-  /**
-   * This will authenticate by binding to the LDAP with the supplied user and
-   * credential. The user's DN will be looked up before performing the bind by
-   * calling {@link DnResolver#resolve(String)}. See {@link
-   * #authenticateAndAuthorize(String, Object, boolean, String[],
-   * AuthenticationResultHandler[], AuthorizationHandler[])}.
-   *
-   * @param  user  <code>String</code> username for bind
-   * @param  credential  <code>Object</code> credential for bind
-   * @param  retAttrs  <code>String[]</code> to return
-   * @param  authHandler  <code>AuthenticationResultHandler[]</code> to post
-   * process authentication results
-   * @param  authzHandler  <code>AuthorizationHandler[]</code> to process
-   * authorization after authentication
-   *
-   * @return  <code>Attributes</code> - of authenticated user
-   *
-   * @throws  NamingException  if any of the ldap operations fail
-   */
-  public Attributes authenticate(
-    final String user,
-    final Object credential,
-    final String[] retAttrs,
-    final AuthenticationResultHandler[] authHandler,
-    final AuthorizationHandler[] authzHandler)
-    throws NamingException
-  {
-    return
-      this.authenticateAndAuthorize(
-        this.getDn(user),
-        credential,
-        true,
-        retAttrs,
-        authHandler,
-        authzHandler);
   }
 }

@@ -1,0 +1,4 @@
+dn: uid=13,ou=test,dc=vt,dc=edu
+departmentNumber: 0833
+givenName: Millard
+sn: Fillmore

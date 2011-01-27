@@ -14,7 +14,7 @@
 package edu.vt.middleware.ldap.pool;
 
 import java.util.TimerTask;
-import edu.vt.middleware.ldap.BaseLdap;
+import edu.vt.middleware.ldap.LdapConnection;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -27,7 +27,7 @@ import org.apache.commons.logging.LogFactory;
  * @author  Middleware Services
  * @version  $Revision$ $Date$
  */
-public class ValidatePoolTask<T extends BaseLdap> extends TimerTask
+public class ValidatePoolTask<T extends LdapConnection> extends TimerTask
 {
 
   /** Log for this class. */

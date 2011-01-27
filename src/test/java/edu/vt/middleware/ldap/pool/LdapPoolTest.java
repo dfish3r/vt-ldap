@@ -14,18 +14,20 @@
 package edu.vt.middleware.ldap.pool;
 
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
-import javax.naming.directory.SearchResult;
-import edu.vt.middleware.ldap.Ldap;
+import edu.vt.middleware.ldap.AbstractTest;
 import edu.vt.middleware.ldap.LdapConfig;
+import edu.vt.middleware.ldap.LdapConnection;
+import edu.vt.middleware.ldap.LdapEntry;
+import edu.vt.middleware.ldap.LdapResult;
 import edu.vt.middleware.ldap.SearchFilter;
+import edu.vt.middleware.ldap.SearchOperation;
+import edu.vt.middleware.ldap.SearchRequest;
 import edu.vt.middleware.ldap.TestUtil;
-import edu.vt.middleware.ldap.bean.LdapEntry;
-import edu.vt.middleware.ldap.handler.ConnectionHandler;
 import edu.vt.middleware.ldap.ldif.Ldif;
 import edu.vt.middleware.ldap.pool.commons.CommonsLdapPool;
 import edu.vt.middleware.ldap.pool.commons.DefaultLdapPoolableObjectFactory;
+import edu.vt.middleware.ldap.provider.ConnectionStrategy;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.testng.AssertJUnit;
@@ -41,7 +43,7 @@ import org.testng.annotations.Test;
  * @author  Middleware Services
  * @version  $Revision$
  */
-public class LdapPoolTest
+public class LdapPoolTest extends AbstractTest
 {
 
   /** Entries for pool tests. */
@@ -49,7 +51,7 @@ public class LdapPoolTest
     new HashMap<String, LdapEntry[]>();
 
   /**
-   * Intialize the map of entries.
+   * Initialize the map of entries.
    */
   static {
     for (int i = 2; i <= 10; i++) {
@@ -109,7 +111,7 @@ public class LdapPoolTest
     throws Exception
   {
     final DefaultLdapFactory factory = new DefaultLdapFactory(
-      TestUtil.createLdap().getLdapConfig());
+      TestUtil.createLdapConnection().getLdapConfig());
     factory.setLdapValidator(
       new CompareLdapValidator(
         "ou=test,dc=vt,dc=edu",
@@ -152,11 +154,12 @@ public class LdapPoolTest
     sharedLpc.setValidateTimerPeriod(5000L);
     this.sharedPool = new SharedLdapPool(sharedLpc, factory);
 
-    final LdapConfig connStrategyLc = TestUtil.createLdap().getLdapConfig();
+    final LdapConfig connStrategyLc =
+      TestUtil.createLdapConnection().getLdapConfig();
     connStrategyLc.setLdapUrl(
       "ldap://ed-dev.middleware.vt.edu:14389 ldap://ed-dne.middleware.vt.edu");
-    connStrategyLc.getConnectionHandler().setConnectionStrategy(
-      ConnectionHandler.ConnectionStrategy.ROUND_ROBIN);
+    connStrategyLc.getConnectionFactory().setConnectionStrategy(
+      ConnectionStrategy.ROUND_ROBIN);
     final DefaultLdapFactory connStrategyFactory = new DefaultLdapFactory(
       connStrategyLc);
     this.connStrategyPool = new BlockingLdapPool(
@@ -229,43 +232,28 @@ public class LdapPoolTest
     final String ldifFile10)
     throws Exception
   {
-    entries.get("2")[0] = TestUtil.convertLdifToEntry(
-      TestUtil.readFileIntoString(ldifFile2));
-    entries.get("3")[0] = TestUtil.convertLdifToEntry(
-      TestUtil.readFileIntoString(ldifFile3));
-    entries.get("4")[0] = TestUtil.convertLdifToEntry(
-      TestUtil.readFileIntoString(ldifFile4));
-    entries.get("5")[0] = TestUtil.convertLdifToEntry(
-      TestUtil.readFileIntoString(ldifFile5));
-    entries.get("6")[0] = TestUtil.convertLdifToEntry(
-      TestUtil.readFileIntoString(ldifFile6));
-    entries.get("7")[0] = TestUtil.convertLdifToEntry(
-      TestUtil.readFileIntoString(ldifFile7));
-    entries.get("8")[0] = TestUtil.convertLdifToEntry(
-      TestUtil.readFileIntoString(ldifFile8));
-    entries.get("9")[0] = TestUtil.convertLdifToEntry(
-      TestUtil.readFileIntoString(ldifFile9));
-    entries.get("10")[0] = TestUtil.convertLdifToEntry(
-      TestUtil.readFileIntoString(ldifFile10));
+    entries.get("2")[0] = TestUtil.convertLdifToResult(
+      TestUtil.readFileIntoString(ldifFile2)).getEntry();
+    entries.get("3")[0] = TestUtil.convertLdifToResult(
+      TestUtil.readFileIntoString(ldifFile3)).getEntry();
+    entries.get("4")[0] = TestUtil.convertLdifToResult(
+      TestUtil.readFileIntoString(ldifFile4)).getEntry();
+    entries.get("5")[0] = TestUtil.convertLdifToResult(
+      TestUtil.readFileIntoString(ldifFile5)).getEntry();
+    entries.get("6")[0] = TestUtil.convertLdifToResult(
+      TestUtil.readFileIntoString(ldifFile6)).getEntry();
+    entries.get("7")[0] = TestUtil.convertLdifToResult(
+      TestUtil.readFileIntoString(ldifFile7)).getEntry();
+    entries.get("8")[0] = TestUtil.convertLdifToResult(
+      TestUtil.readFileIntoString(ldifFile8)).getEntry();
+    entries.get("9")[0] = TestUtil.convertLdifToResult(
+      TestUtil.readFileIntoString(ldifFile9)).getEntry();
+    entries.get("10")[0] = TestUtil.convertLdifToResult(
+      TestUtil.readFileIntoString(ldifFile10)).getEntry();
 
-    Ldap ldap = TestUtil.createSetupLdap();
     for (Map.Entry<String, LdapEntry[]> e : entries.entrySet()) {
-      ldap.create(
-        e.getValue()[0].getDn(),
-        e.getValue()[0].getLdapAttributes().toAttributes());
+      super.createLdapEntry(e.getValue()[0]);
     }
-    ldap.close();
-
-    ldap = TestUtil.createLdap();
-    for (Map.Entry<String, LdapEntry[]> e : entries.entrySet()) {
-      while (
-        !ldap.compare(
-            e.getValue()[0].getDn(),
-            new SearchFilter(e.getValue()[0].getDn().split(",")[0]))) {
-        Thread.sleep(100);
-      }
-    }
-    ldap.close();
 
     this.softLimitPool.initialize();
     this.blockingPool.initialize();
@@ -324,24 +312,24 @@ public class LdapPoolTest
     final String ldifFile10)
     throws Exception
   {
-    entries.get("2")[1] = TestUtil.convertLdifToEntry(
-      TestUtil.readFileIntoString(ldifFile2));
-    entries.get("3")[1] = TestUtil.convertLdifToEntry(
-      TestUtil.readFileIntoString(ldifFile3));
-    entries.get("4")[1] = TestUtil.convertLdifToEntry(
-      TestUtil.readFileIntoString(ldifFile4));
-    entries.get("5")[1] = TestUtil.convertLdifToEntry(
-      TestUtil.readFileIntoString(ldifFile5));
-    entries.get("6")[1] = TestUtil.convertLdifToEntry(
-      TestUtil.readFileIntoString(ldifFile6));
-    entries.get("7")[1] = TestUtil.convertLdifToEntry(
-      TestUtil.readFileIntoString(ldifFile7));
-    entries.get("8")[1] = TestUtil.convertLdifToEntry(
-      TestUtil.readFileIntoString(ldifFile8));
-    entries.get("9")[1] = TestUtil.convertLdifToEntry(
-      TestUtil.readFileIntoString(ldifFile9));
-    entries.get("10")[1] = TestUtil.convertLdifToEntry(
-      TestUtil.readFileIntoString(ldifFile10));
+    entries.get("2")[1] = TestUtil.convertLdifToResult(
+      TestUtil.readFileIntoString(ldifFile2)).getEntry();
+    entries.get("3")[1] = TestUtil.convertLdifToResult(
+      TestUtil.readFileIntoString(ldifFile3)).getEntry();
+    entries.get("4")[1] = TestUtil.convertLdifToResult(
+      TestUtil.readFileIntoString(ldifFile4)).getEntry();
+    entries.get("5")[1] = TestUtil.convertLdifToResult(
+      TestUtil.readFileIntoString(ldifFile5)).getEntry();
+    entries.get("6")[1] = TestUtil.convertLdifToResult(
+      TestUtil.readFileIntoString(ldifFile6)).getEntry();
+    entries.get("7")[1] = TestUtil.convertLdifToResult(
+      TestUtil.readFileIntoString(ldifFile7)).getEntry();
+    entries.get("8")[1] = TestUtil.convertLdifToResult(
+      TestUtil.readFileIntoString(ldifFile8)).getEntry();
+    entries.get("9")[1] = TestUtil.convertLdifToResult(
+      TestUtil.readFileIntoString(ldifFile9)).getEntry();
+    entries.get("10")[1] = TestUtil.convertLdifToResult(
+      TestUtil.readFileIntoString(ldifFile10)).getEntry();
   }
 
 
@@ -360,17 +348,15 @@ public class LdapPoolTest
   public void deletePoolEntry()
     throws Exception
   {
-    final Ldap ldap = TestUtil.createSetupLdap();
-    ldap.delete(entries.get("2")[0].getDn());
-    ldap.delete(entries.get("3")[0].getDn());
-    ldap.delete(entries.get("4")[0].getDn());
-    ldap.delete(entries.get("5")[0].getDn());
-    ldap.delete(entries.get("6")[0].getDn());
-    ldap.delete(entries.get("7")[0].getDn());
-    ldap.delete(entries.get("8")[0].getDn());
-    ldap.delete(entries.get("9")[0].getDn());
-    ldap.delete(entries.get("10")[0].getDn());
-    ldap.close();
+    super.deleteLdapEntry(entries.get("2")[0].getDn());
+    super.deleteLdapEntry(entries.get("3")[0].getDn());
+    super.deleteLdapEntry(entries.get("4")[0].getDn());
+    super.deleteLdapEntry(entries.get("5")[0].getDn());
+    super.deleteLdapEntry(entries.get("6")[0].getDn());
+    super.deleteLdapEntry(entries.get("7")[0].getDn());
+    super.deleteLdapEntry(entries.get("8")[0].getDn());
+    super.deleteLdapEntry(entries.get("9")[0].getDn());
+    super.deleteLdapEntry(entries.get("10")[0].getDn());
 
     this.softLimitPool.close();
     AssertJUnit.assertEquals(this.softLimitPool.availableCount(), 0);
@@ -412,47 +398,47 @@ public class LdapPoolTest
     return
       new Object[][] {
         {
-          new SearchFilter("mail=jdoe2@vt.edu"),
+          new SearchFilter("mail=jadams@vt.edu"),
           "departmentNumber|givenName|sn",
           entries.get("2")[1],
         },
         {
-          new SearchFilter("mail=jdoe3@vt.edu"),
+          new SearchFilter("mail=tjefferson@vt.edu"),
           "departmentNumber|givenName|sn",
           entries.get("3")[1],
         },
         {
-          new SearchFilter("mail=jdoe4@vt.edu"),
+          new SearchFilter("mail=jmadison@vt.edu"),
           "departmentNumber|givenName|sn",
           entries.get("4")[1],
         },
         {
-          new SearchFilter("mail=jdoe5@vt.edu"),
+          new SearchFilter("mail=jmonroe@vt.edu"),
           "departmentNumber|givenName|sn",
           entries.get("5")[1],
         },
         {
-          new SearchFilter("mail=jdoe6@vt.edu"),
+          new SearchFilter("mail=jqadams@vt.edu"),
           "departmentNumber|givenName|sn",
           entries.get("6")[1],
         },
         {
-          new SearchFilter("mail=jdoe7@vt.edu"),
+          new SearchFilter("mail=ajackson@vt.edu"),
           "departmentNumber|givenName|sn",
           entries.get("7")[1],
         },
         {
-          new SearchFilter("mail=jdoe8@vt.edu"),
+          new SearchFilter("mail=mvburen@vt.edu"),
           "departmentNumber|givenName|sn|jpegPhoto",
           entries.get("8")[1],
         },
         {
-          new SearchFilter("mail=jdoe9@vt.edu"),
+          new SearchFilter("mail=whharrison@vt.edu"),
           "departmentNumber|givenName|sn",
           entries.get("9")[1],
         },
         {
-          new SearchFilter("mail=jdoe10@vt.edu"),
+          new SearchFilter("mail=jtyler@vt.edu"),
           "departmentNumber|givenName|sn",
           entries.get("10")[1],
         },
@@ -472,23 +458,23 @@ public class LdapPoolTest
       AssertJUnit.assertEquals(IllegalStateException.class, e.getClass());
     }
 
-    Ldap ldap = null;
+    LdapConnection conn = null;
     try {
-      ldap = this.softLimitPool.checkOut();
+      conn = this.softLimitPool.checkOut();
       try {
-        ldap.setLdapConfig(new LdapConfig());
+        conn.setLdapConfig(new LdapConfig());
         AssertJUnit.fail("Expected illegalstateexception to be thrown");
       } catch (IllegalStateException e) {
         AssertJUnit.assertEquals(IllegalStateException.class, e.getClass());
       }
       try {
-        ldap.getLdapConfig().setTimeout(10000);
+        conn.getLdapConfig().setTimeout(10000);
         AssertJUnit.fail("Expected illegalstateexception to be thrown");
       } catch (IllegalStateException e) {
         AssertJUnit.assertEquals(IllegalStateException.class, e.getClass());
       }
     } finally {
-      this.softLimitPool.checkIn(ldap);
+      this.softLimitPool.checkIn(conn);
     }
   }
 
@@ -578,23 +564,23 @@ public class LdapPoolTest
       AssertJUnit.assertEquals(IllegalStateException.class, e.getClass());
     }
 
-    Ldap ldap = null;
+    LdapConnection conn = null;
     try {
-      ldap = this.blockingPool.checkOut();
+      conn = this.blockingPool.checkOut();
       try {
-        ldap.setLdapConfig(new LdapConfig());
+        conn.setLdapConfig(new LdapConfig());
         AssertJUnit.fail("Expected illegalstateexception to be thrown");
       } catch (IllegalStateException e) {
         AssertJUnit.assertEquals(IllegalStateException.class, e.getClass());
       }
       try {
-        ldap.getLdapConfig().setTimeout(10000);
+        conn.getLdapConfig().setTimeout(10000);
         AssertJUnit.fail("Expected illegalstateexception to be thrown");
       } catch (IllegalStateException e) {
         AssertJUnit.assertEquals(IllegalStateException.class, e.getClass());
       }
     } finally {
-      this.blockingPool.checkIn(ldap);
+      this.blockingPool.checkIn(conn);
     }
   }
 
@@ -827,23 +813,23 @@ public class LdapPoolTest
       AssertJUnit.assertEquals(IllegalStateException.class, e.getClass());
     }
 
-    Ldap ldap = null;
+    LdapConnection conn = null;
     try {
-      ldap = this.sharedPool.checkOut();
+      conn = this.sharedPool.checkOut();
       try {
-        ldap.setLdapConfig(new LdapConfig());
+        conn.setLdapConfig(new LdapConfig());
         AssertJUnit.fail("Expected illegalstateexception to be thrown");
       } catch (IllegalStateException e) {
         AssertJUnit.assertEquals(IllegalStateException.class, e.getClass());
       }
       try {
-        ldap.getLdapConfig().setTimeout(10000);
+        conn.getLdapConfig().setTimeout(10000);
         AssertJUnit.fail("Expected illegalstateexception to be thrown");
       } catch (IllegalStateException e) {
         AssertJUnit.assertEquals(IllegalStateException.class, e.getClass());
       }
     } finally {
-      this.sharedPool.checkIn(ldap);
+      this.sharedPool.checkIn(conn);
     }
   }
 
@@ -985,24 +971,26 @@ public class LdapPoolTest
    * @throws  Exception  On test failure.
    */
   private long search(
-    final LdapPool<Ldap> pool,
+    final LdapPool<LdapConnection> pool,
     final SearchFilter filter,
     final String returnAttrs,
     final LdapEntry results)
     throws Exception
   {
     final long startTime = System.currentTimeMillis();
-    Ldap ldap = null;
-    Iterator<SearchResult> iter = null;
+    LdapConnection conn = null;
+    LdapResult result = null;
     try {
       if (this.logger.isTraceEnabled()) {
         this.logger.trace("waiting for pool checkout");
       }
-      ldap = pool.checkOut();
+      conn = pool.checkOut();
       if (this.logger.isTraceEnabled()) {
         this.logger.trace("performing search");
       }
-      iter = ldap.search(filter, returnAttrs.split("\\|"));
+      final SearchOperation search = new SearchOperation(conn);
+      result = search.execute(
+        new SearchRequest(filter, returnAttrs.split("\\|"))).getResult();
       if (this.logger.isTraceEnabled()) {
         this.logger.trace("search completed");
       }
@@ -1010,11 +998,11 @@ public class LdapPoolTest
       if (this.logger.isTraceEnabled()) {
         this.logger.trace("returning ldap to pool");
       }
-      pool.checkIn(ldap);
+      pool.checkIn(conn);
     }
     AssertJUnit.assertEquals(
       results,
-      TestUtil.convertLdifToEntry((new Ldif()).createLdif(iter)));
+      TestUtil.convertLdifToResult((new Ldif()).createLdif(result)));
     return System.currentTimeMillis() - startTime;
   }
 
@@ -1040,16 +1028,17 @@ public class LdapPoolTest
     throws Exception
   {
     final long startTime = System.currentTimeMillis();
-    Ldap ldap = null;
+    LdapConnection conn = null;
     try {
       if (this.logger.isTraceEnabled()) {
         this.logger.trace("waiting for pool checkout");
       }
-      ldap = this.vtComparisonPool.checkOut();
+      conn = this.vtComparisonPool.checkOut();
       if (this.logger.isTraceEnabled()) {
         this.logger.trace("performing search");
       }
-      ldap.search(filter, returnAttrs.split("\\|"));
+      final SearchOperation search = new SearchOperation(conn);
+      search.execute(new SearchRequest(filter, returnAttrs.split("\\|")));
       if (this.logger.isTraceEnabled()) {
         this.logger.trace("search completed");
       }
@@ -1057,7 +1046,7 @@ public class LdapPoolTest
       if (this.logger.isTraceEnabled()) {
         this.logger.trace("returning ldap to pool");
       }
-      this.vtComparisonPool.checkIn(ldap);
+      this.vtComparisonPool.checkIn(conn);
     }
     this.vtPoolRuntime += System.currentTimeMillis() - startTime;
   }
@@ -1084,16 +1073,17 @@ public class LdapPoolTest
     throws Exception
   {
     final long startTime = System.currentTimeMillis();
-    Ldap ldap = null;
+    LdapConnection conn = null;
     try {
       if (this.logger.isTraceEnabled()) {
         this.logger.trace("waiting for pool checkout");
       }
-      ldap = (Ldap) this.commonsComparisonPool.borrowObject();
+      conn = (LdapConnection) this.commonsComparisonPool.borrowObject();
       if (this.logger.isTraceEnabled()) {
         this.logger.trace("performing search");
       }
-      ldap.search(filter, returnAttrs.split("\\|"));
+      final SearchOperation search = new SearchOperation(conn);
+      search.execute(new SearchRequest(filter, returnAttrs.split("\\|")));
       if (this.logger.isTraceEnabled()) {
         this.logger.trace("search completed");
       }
@@ -1101,7 +1091,7 @@ public class LdapPoolTest
       if (this.logger.isTraceEnabled()) {
         this.logger.trace("returning ldap to pool");
       }
-      this.commonsComparisonPool.returnObject(ldap);
+      this.commonsComparisonPool.returnObject(conn);
     }
     this.commonsPoolRuntime += System.currentTimeMillis() - startTime;
   }

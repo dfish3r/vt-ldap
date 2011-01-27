@@ -16,10 +16,7 @@ package edu.vt.middleware.ldap.ldif;
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
-import javax.naming.NamingException;
-import edu.vt.middleware.ldap.bean.LdapBeanFactory;
-import edu.vt.middleware.ldap.bean.LdapBeanProvider;
-import edu.vt.middleware.ldap.bean.LdapResult;
+import edu.vt.middleware.ldap.LdapResult;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -36,36 +33,8 @@ public class LdifResultConverter
   /** Log for this class. */
   protected final Log logger = LogFactory.getLog(getClass());
 
-  /** Ldap bean factory. */
-  protected LdapBeanFactory beanFactory = LdapBeanProvider.getLdapBeanFactory();
-
   /** Class for outputting LDIF. */
   private Ldif ldif = new Ldif();
-
-
-  /**
-   * Returns the factory for creating ldap beans.
-   *
-   * @return  <code>LdapBeanFactory</code>
-   */
-  public LdapBeanFactory getLdapBeanFactory()
-  {
-    return this.beanFactory;
-  }
-
-
-  /**
-   * Sets the factory for creating ldap beans.
-   *
-   * @param  lbf  <code>LdapBeanFactory</code>
-   */
-  public void setLdapBeanFactory(final LdapBeanFactory lbf)
-  {
-    if (lbf != null) {
-      this.beanFactory = lbf;
-      this.ldif.setLdapBeanFactory(lbf);
-    }
-  }
 
 
   /**
@@ -79,7 +48,7 @@ public class LdifResultConverter
   {
     final StringWriter writer = new StringWriter();
     try {
-      this.ldif.outputLdif(result.toSearchResults().iterator(), writer);
+      this.ldif.outputLdif(result, writer);
     } catch (IOException e) {
       if (this.logger.isWarnEnabled()) {
         this.logger.warn("Could not write ldif to StringWriter", e);
@@ -99,16 +68,12 @@ public class LdifResultConverter
    */
   public LdapResult fromLdif(final String ldif)
   {
-    final LdapResult result = this.beanFactory.newLdapResult();
+    LdapResult result = null;
     try {
-      result.addEntries(this.ldif.importLdif(new StringReader(ldif)));
+      result = this.ldif.importLdif(new StringReader(ldif));
     } catch (IOException e) {
       if (this.logger.isWarnEnabled()) {
         this.logger.warn("Could not read ldif from StringReader", e);
-      }
-    } catch (NamingException e) {
-      if (this.logger.isErrorEnabled()) {
-        this.logger.error("Unexpected naming exception occurred", e);
       }
     }
     return result;

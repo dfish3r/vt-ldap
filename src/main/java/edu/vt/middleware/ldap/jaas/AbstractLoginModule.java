@@ -22,8 +22,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
-import javax.naming.NamingException;
-import javax.naming.directory.Attributes;
 import javax.security.auth.Subject;
 import javax.security.auth.callback.Callback;
 import javax.security.auth.callback.CallbackHandler;
@@ -32,13 +30,12 @@ import javax.security.auth.callback.PasswordCallback;
 import javax.security.auth.callback.UnsupportedCallbackException;
 import javax.security.auth.login.LoginException;
 import javax.security.auth.spi.LoginModule;
-import edu.vt.middleware.ldap.Ldap;
+import edu.vt.middleware.ldap.LdapAttribute;
+import edu.vt.middleware.ldap.LdapAttributes;
 import edu.vt.middleware.ldap.LdapConfig;
+import edu.vt.middleware.ldap.LdapConnection;
 import edu.vt.middleware.ldap.auth.Authenticator;
 import edu.vt.middleware.ldap.auth.AuthenticatorConfig;
-import edu.vt.middleware.ldap.bean.LdapAttribute;
-import edu.vt.middleware.ldap.bean.LdapAttributes;
-import edu.vt.middleware.ldap.bean.LdapBeanProvider;
 import edu.vt.middleware.ldap.props.LdapProperties;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -129,17 +126,17 @@ public abstract class AbstractLoginModule implements LoginModule
 
   /** {@inheritDoc} */
   public void initialize(
-    final Subject subject,
-    final CallbackHandler callbackHandler,
-    final Map<String, ?> sharedState,
+    final Subject subj,
+    final CallbackHandler cbh,
+    final Map<String, ?> state,
     final Map<String, ?> options)
   {
     if (this.logger.isTraceEnabled()) {
       this.logger.trace("Begin initialize");
     }
-    this.subject = subject;
-    this.callbackHandler = callbackHandler;
-    this.sharedState = sharedState;
+    this.subject = subj;
+    this.callbackHandler = cbh;
+    this.sharedState = state;
 
     final Iterator<String> i = options.keySet().iterator();
     while (i.hasNext()) {
@@ -298,13 +295,15 @@ public abstract class AbstractLoginModule implements LoginModule
 
 
   /**
-   * This constructs a new <code>Ldap</code> with the supplied jaas options.
+   * This constructs a new <code>LdapConnection</code> with the supplied jaas
+   * options.
    *
    * @param  options  <code>Map</code>
    *
-   * @return  <code>Ldap</code>
+   * @return  <code>LdapConnection</code>
    */
-  public static Ldap createLdap(final Map<String, ?> options)
+  public static LdapConnection createLdapConnection(
+    final Map<String, ?> options)
   {
     final LdapConfig ldapConfig = new LdapConfig();
     final LdapProperties ldapProperties = new LdapProperties(ldapConfig);
@@ -317,7 +316,7 @@ public abstract class AbstractLoginModule implements LoginModule
       }
     }
     ldapProperties.configure();
-    return new Ldap(ldapConfig);
+    return new LdapConnection(ldapConfig);
   }
 
 
@@ -329,10 +328,12 @@ public abstract class AbstractLoginModule implements LoginModule
    *
    * @return  <code>Authenticator</code>
    */
-  public static Authenticator createAuthenticator(final Map<String, ?> options)
+  public static Authenticator createAuthenticator(
+    final Map<String, ?> options)
   {
-    final AuthenticatorConfig authConfig = new AuthenticatorConfig();
-    final LdapProperties authProperties = new LdapProperties(authConfig);
+    final AuthenticatorConfig authenticatorConfig = new AuthenticatorConfig();
+    final LdapProperties authProperties = new LdapProperties(
+      authenticatorConfig);
     final Iterator<String> i = options.keySet().iterator();
     while (i.hasNext()) {
       final String key = i.next();
@@ -342,7 +343,7 @@ public abstract class AbstractLoginModule implements LoginModule
       }
     }
     authProperties.configure();
-    return new JaasAuthenticator(authConfig);
+    return new Authenticator(authenticatorConfig);
   }
 
 
@@ -436,26 +437,20 @@ public abstract class AbstractLoginModule implements LoginModule
    * This parses the supplied attributes and returns them as a list of <code>
    * LdapRole</code>s.
    *
-   * @param  attributes  <code>Attributes</code>
+   * @param  attributes  <code>LdapAttributes</code>
    *
-   * @return  <code>List</code>
-   *
-   * @throws  NamingException  if the attributes cannot be parsed
+   * @return  <code>List</code> of LdapRole
    */
-  protected List<LdapRole> attributesToRoles(final Attributes attributes)
-    throws NamingException
+  protected List<LdapRole> attributesToRoles(final LdapAttributes attributes)
   {
-    final List<LdapRole> roles = new ArrayList<LdapRole>();
+    final List<LdapRole> r = new ArrayList<LdapRole>();
     if (attributes != null) {
-      final LdapAttributes ldapAttrs = LdapBeanProvider.getLdapBeanFactory()
-          .newLdapAttributes();
-      ldapAttrs.addAttributes(attributes);
-      for (LdapAttribute ldapAttr : ldapAttrs.getAttributes()) {
+      for (LdapAttribute ldapAttr : attributes.getAttributes()) {
         for (String attrValue : ldapAttr.getStringValues()) {
-          roles.add(new LdapRole(attrValue));
+          r.add(new LdapRole(attrValue));
         }
       }
     }
-    return roles;
+    return r;
   }
 }

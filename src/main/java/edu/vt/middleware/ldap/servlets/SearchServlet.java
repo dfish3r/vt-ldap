@@ -21,8 +21,8 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import edu.vt.middleware.ldap.Ldap;
 import edu.vt.middleware.ldap.LdapConfig;
+import edu.vt.middleware.ldap.LdapConnection;
 import edu.vt.middleware.ldap.dsml.DsmlSearch;
 import edu.vt.middleware.ldap.ldif.LdifSearch;
 import edu.vt.middleware.ldap.pool.BlockingLdapPool;
@@ -139,7 +139,7 @@ public final class SearchServlet extends HttpServlet
     final LdapPoolConfig ldapPoolConfig = LdapPoolConfig.createFromProperties(
       SearchServlet.class.getResourceAsStream(poolPropertiesFile));
 
-    LdapPool<Ldap> ldapPool = null;
+    LdapPool<LdapConnection> ldapPool = null;
     final String poolType = getInitParameter(ServletConstants.POOL_TYPE);
     if (this.logger.isDebugEnabled()) {
       this.logger.debug(ServletConstants.POOL_TYPE + " = " + poolType);

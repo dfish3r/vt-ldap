@@ -15,7 +15,6 @@ package edu.vt.middleware.ldap.props;
 
 import java.util.Enumeration;
 import java.util.HashMap;
-import java.util.Hashtable;
 import java.util.Map;
 import java.util.Properties;
 import org.apache.commons.logging.Log;
@@ -63,13 +62,13 @@ public abstract class AbstractPropertyConfig implements PropertyConfig
 
 
   /** {@inheritDoc} */
-  public abstract void setEnvironmentProperties(
+  public abstract void setProviderProperty(
     final String name,
     final String value);
 
 
   /** {@inheritDoc} */
-  public void setEnvironmentProperties(final Properties properties)
+  public void setProviderProperties(final Properties properties)
   {
     if (properties != null) {
       final Map<String, String> props = new HashMap<String, String>();
@@ -78,14 +77,14 @@ public abstract class AbstractPropertyConfig implements PropertyConfig
         while (en.hasMoreElements()) {
           final String name = (String) en.nextElement();
           final String value = (String) properties.get(name);
-          if (this.hasEnvironmentProperty(name)) {
+          if (this.hasProviderProperty(name)) {
             props.put(name, value);
           } else {
-            this.setEnvironmentProperties(name, value);
+            this.setProviderProperty(name, value);
           }
         }
         for (Map.Entry<String, String> e : props.entrySet()) {
-          this.setEnvironmentProperties(e.getKey(), e.getValue());
+          this.setProviderProperty(e.getKey(), e.getValue());
         }
       }
     }
@@ -93,31 +92,30 @@ public abstract class AbstractPropertyConfig implements PropertyConfig
 
 
   /**
-   * See {@link #setEnvironmentProperties(String,String)}.
+   * See {@link #setProviderProperty(String,String)}.
    *
-   * @param  properties  <code>Hashtable</code> of environment properties
+   * @param  properties  map of provider properties
    */
-  public void setEnvironmentProperties(
-    final Hashtable<String, String> properties)
+  public void setProviderProperties(final Map<String, String> properties)
   {
     if (properties != null) {
       final Map<String, String> props = new HashMap<String, String>();
       for (Map.Entry<String, String> e : properties.entrySet()) {
-        if (this.hasEnvironmentProperty(e.getKey())) {
+        if (this.hasProviderProperty(e.getKey())) {
           props.put(e.getKey(), e.getValue());
         } else {
-          this.setEnvironmentProperties(e.getKey(), e.getValue());
+          this.setProviderProperty(e.getKey(), e.getValue());
         }
       }
       for (Map.Entry<String, String> e : props.entrySet()) {
-        this.setEnvironmentProperties(e.getKey(), e.getValue());
+        this.setProviderProperty(e.getKey(), e.getValue());
       }
     }
   }
 
 
   /** {@inheritDoc} */
-  public abstract boolean hasEnvironmentProperty(final String name);
+  public abstract boolean hasProviderProperty(final String name);
 
 
   /**

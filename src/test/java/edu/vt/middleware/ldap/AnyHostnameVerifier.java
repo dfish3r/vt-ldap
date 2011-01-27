@@ -17,7 +17,7 @@ import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLSession;
 
 /**
- * <code>AnyHostnameVerifier</code> returns true for any host.
+ * Returns true for any host it is asked to verify.
  *
  * @author  Middleware Services
  * @version  $Revision$ $Date$
@@ -47,7 +47,7 @@ public class AnyHostnameVerifier implements HostnameVerifier
   /**
    * Dummy setter method. Noop.
    *
-   * @param  s  <code>String</code>
+   * @param  s  ignored
    */
   public void setFoo(final String s) {}
 
@@ -66,7 +66,7 @@ public class AnyHostnameVerifier implements HostnameVerifier
   /**
    * Dummy setter method. Noop.
    *
-   * @param  b  <code>boolean</code>
+   * @param  b  ignored
    */
   public void setBar(final boolean b) {}
 }

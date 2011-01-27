@@ -15,14 +15,15 @@ package edu.vt.middleware.ldap.dsml;
 
 import java.io.StringReader;
 import java.io.StringWriter;
-import java.util.Iterator;
-import javax.naming.directory.SearchResult;
-import edu.vt.middleware.ldap.Ldap;
+import edu.vt.middleware.ldap.AbstractTest;
+import edu.vt.middleware.ldap.LdapConnection;
+import edu.vt.middleware.ldap.LdapEntry;
+import edu.vt.middleware.ldap.LdapResult;
 import edu.vt.middleware.ldap.SearchFilter;
+import edu.vt.middleware.ldap.SearchOperation;
+import edu.vt.middleware.ldap.SearchRequest;
+import edu.vt.middleware.ldap.SortBehavior;
 import edu.vt.middleware.ldap.TestUtil;
-import edu.vt.middleware.ldap.bean.LdapEntry;
-import edu.vt.middleware.ldap.bean.LdapResult;
-import edu.vt.middleware.ldap.bean.SortedLdapBeanFactory;
 import org.testng.AssertJUnit;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
@@ -35,7 +36,7 @@ import org.testng.annotations.Test;
  * @author  Middleware Services
  * @version  $Revision$
  */
-public class DsmlTest
+public class DsmlTest extends AbstractTest
 {
 
   /** Entry created for ldap tests. */
@@ -47,27 +48,14 @@ public class DsmlTest
    *
    * @throws  Exception  On test failure.
    */
-  @Parameters({ "createEntry11" })
+  @Parameters({ "createEntry13" })
   @BeforeClass(groups = {"dsmltest"})
   public void createLdapEntry(final String ldifFile)
     throws Exception
   {
     final String ldif = TestUtil.readFileIntoString(ldifFile);
-    testLdapEntry = TestUtil.convertLdifToEntry(ldif);
-
-    Ldap ldap = TestUtil.createSetupLdap();
-    ldap.create(
-      testLdapEntry.getDn(),
-      testLdapEntry.getLdapAttributes().toAttributes());
-    ldap.close();
-    ldap = TestUtil.createLdap();
-    while (
-      !ldap.compare(
-          testLdapEntry.getDn(),
-          new SearchFilter(testLdapEntry.getDn().split(",")[0]))) {
-      Thread.sleep(100);
-    }
-    ldap.close();
+    testLdapEntry = TestUtil.convertLdifToResult(ldif).getEntry();
+    super.createLdapEntry(testLdapEntry);
   }
 
 
@@ -76,9 +64,7 @@ public class DsmlTest
   public void deleteLdapEntry()
     throws Exception
   {
-    final Ldap ldap = TestUtil.createSetupLdap();
-    ldap.delete(testLdapEntry.getDn());
-    ldap.close();
+    super.deleteLdapEntry(testLdapEntry.getDn());
   }
 
 
@@ -96,22 +82,22 @@ public class DsmlTest
   public void searchAndCompareDsmlv1(final String dn, final String filter)
     throws Exception
   {
-    final Ldap ldap = TestUtil.createLdap();
+    final LdapConnection conn = TestUtil.createLdapConnection();
+    conn.open();
+    final SearchOperation search = new SearchOperation(conn);
     final Dsmlv1 dsml = new Dsmlv1();
 
-    final Iterator<SearchResult> iter = ldap.search(
-      dn,
-      new SearchFilter(filter));
+    final LdapResult result1 = search.execute(
+      new SearchRequest(dn, new SearchFilter(filter))).getResult();
 
-    final LdapResult result1 = TestUtil.newLdapResult(iter);
     final StringWriter writer = new StringWriter();
-    dsml.outputDsml(result1.toSearchResults().iterator(), writer);
+    dsml.outputDsml(result1, writer);
 
     final StringReader reader = new StringReader(writer.toString());
-    final LdapResult result2 = dsml.importDsmlToLdapResult(reader);
+    final LdapResult result2 = dsml.importDsml(reader);
 
     AssertJUnit.assertEquals(result1, result2);
-    ldap.close();
+    conn.close();
   }
 
 
@@ -132,13 +118,13 @@ public class DsmlTest
     throws Exception
   {
     final Dsmlv1 dsml = new Dsmlv1();
-    dsml.setLdapBeanFactory(new SortedLdapBeanFactory());
+    dsml.setSortBehavior(SortBehavior.SORTED);
 
     final String dsmlStringSorted = TestUtil.readFileIntoString(dsmlSortedFile);
-    final Iterator<SearchResult> iter = dsml.importDsml(
+    final LdapResult result = dsml.importDsml(
       new StringReader(TestUtil.readFileIntoString(dsmlFile)));
     final StringWriter writer = new StringWriter();
-    dsml.outputDsml(iter, writer);
+    dsml.outputDsml(result, writer);
 
     AssertJUnit.assertEquals(dsmlStringSorted, writer.toString());
   }
@@ -158,22 +144,22 @@ public class DsmlTest
   public void searchAndCompareDsmlv2(final String dn, final String filter)
     throws Exception
   {
-    final Ldap ldap = TestUtil.createLdap();
+    final LdapConnection conn = TestUtil.createLdapConnection();
+    conn.open();
+    final SearchOperation search = new SearchOperation(conn);
     final Dsmlv2 dsml = new Dsmlv2();
 
-    final Iterator<SearchResult> iter = ldap.search(
-      dn,
-      new SearchFilter(filter));
+    final LdapResult result1 = search.execute(
+      new SearchRequest(dn, new SearchFilter(filter))).getResult();
 
-    final LdapResult result1 = TestUtil.newLdapResult(iter);
     final StringWriter writer = new StringWriter();
-    dsml.outputDsml(result1.toSearchResults().iterator(), writer);
+    dsml.outputDsml(result1, writer);
 
     final StringReader reader = new StringReader(writer.toString());
-    final LdapResult result2 = dsml.importDsmlToLdapResult(reader);
+    final LdapResult result2 = dsml.importDsml(reader);
 
     AssertJUnit.assertEquals(result1, result2);
-    ldap.close();
+    conn.close();
   }
 
 
@@ -194,13 +180,13 @@ public class DsmlTest
     throws Exception
   {
     final Dsmlv2 dsml = new Dsmlv2();
-    dsml.setLdapBeanFactory(new SortedLdapBeanFactory());
+    dsml.setSortBehavior(SortBehavior.SORTED);
 
     final String dsmlStringSorted = TestUtil.readFileIntoString(dsmlSortedFile);
-    final Iterator<SearchResult> iter = dsml.importDsml(
+    final LdapResult result = dsml.importDsml(
       new StringReader(TestUtil.readFileIntoString(dsmlFile)));
     final StringWriter writer = new StringWriter();
-    dsml.outputDsml(iter, writer);
+    dsml.outputDsml(result, writer);
 
     AssertJUnit.assertEquals(dsmlStringSorted, writer.toString());
   }

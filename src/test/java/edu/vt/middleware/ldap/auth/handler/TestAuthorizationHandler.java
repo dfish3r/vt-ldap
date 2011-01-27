@@ -15,12 +15,12 @@ package edu.vt.middleware.ldap.auth.handler;
 
 import java.util.ArrayList;
 import java.util.List;
-import javax.naming.NamingException;
-import javax.naming.ldap.LdapContext;
+import edu.vt.middleware.ldap.LdapException;
 import edu.vt.middleware.ldap.auth.AuthorizationException;
+import edu.vt.middleware.ldap.provider.Connection;
 
 /**
- * <code>TestAuthenticationResultHandler</code>.
+ * Class for testing that authorization handlers are firing.
  *
  * @author  Middleware Services
  * @version  $Revision$ $Date$
@@ -36,8 +36,8 @@ public class TestAuthorizationHandler implements AuthorizationHandler
 
 
   /** {@inheritDoc} */
-  public void process(final AuthenticationCriteria ac, final LdapContext ctx)
-    throws NamingException
+  public void process(final AuthenticationCriteria ac, final Connection conn)
+    throws LdapException
   {
     if (!succeed) {
       throw new AuthorizationException("Succeed is false");
@@ -60,7 +60,7 @@ public class TestAuthorizationHandler implements AuthorizationHandler
   /**
    * Sets whether process will succeed.
    *
-   * @param  b  <code>boolean</code>
+   * @param  b  whether process succeed
    */
   public void setSucceed(final boolean b)
   {

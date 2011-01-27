@@ -15,12 +15,12 @@ package edu.vt.middleware.ldap.auth;
 
 import java.util.HashMap;
 import java.util.Map;
-import javax.naming.directory.Attributes;
-import edu.vt.middleware.ldap.Ldap;
+import edu.vt.middleware.ldap.AbstractTest;
+import edu.vt.middleware.ldap.Credential;
+import edu.vt.middleware.ldap.LdapEntry;
+import edu.vt.middleware.ldap.LdapResult;
 import edu.vt.middleware.ldap.SearchFilter;
 import edu.vt.middleware.ldap.TestUtil;
-import edu.vt.middleware.ldap.bean.LdapAttributes;
-import edu.vt.middleware.ldap.bean.LdapEntry;
 import org.testng.AssertJUnit;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
@@ -34,7 +34,7 @@ import org.testng.annotations.Test;
  * @author  Middleware Services
  * @version  $Revision$
  */
-public class AuthenticatorLoadTest
+public class AuthenticatorLoadTest extends AbstractTest
 {
 
   /** Invalid password test data. */
@@ -63,15 +63,14 @@ public class AuthenticatorLoadTest
   /**
    * Default constructor.
    *
-   * @throws  Exception  On test failure.
+   * @throws  Exception  if ldap cannot be constructed
    */
   public AuthenticatorLoadTest()
     throws Exception
   {
-    this.singleTLSAuth = new Authenticator();
-    this.singleTLSAuth.loadFromProperties(
-      AuthenticatorLoadTest.class.getResourceAsStream(
-        "/ldap.tls.load.properties"));
+    this.singleTLSAuth = new Authenticator(
+      AuthenticatorConfig.createFromProperties(
+        TestUtil.class.getResourceAsStream("/ldap.tls.load.properties")));
   }
 
 
@@ -114,43 +113,28 @@ public class AuthenticatorLoadTest
     final String ldifFile10)
     throws Exception
   {
-    entries.get("2")[0] = TestUtil.convertLdifToEntry(
-      TestUtil.readFileIntoString(ldifFile2));
-    entries.get("3")[0] = TestUtil.convertLdifToEntry(
-      TestUtil.readFileIntoString(ldifFile3));
-    entries.get("4")[0] = TestUtil.convertLdifToEntry(
-      TestUtil.readFileIntoString(ldifFile4));
-    entries.get("5")[0] = TestUtil.convertLdifToEntry(
-      TestUtil.readFileIntoString(ldifFile5));
-    entries.get("6")[0] = TestUtil.convertLdifToEntry(
-      TestUtil.readFileIntoString(ldifFile6));
-    entries.get("7")[0] = TestUtil.convertLdifToEntry(
-      TestUtil.readFileIntoString(ldifFile7));
-    entries.get("8")[0] = TestUtil.convertLdifToEntry(
-      TestUtil.readFileIntoString(ldifFile8));
-    entries.get("9")[0] = TestUtil.convertLdifToEntry(
-      TestUtil.readFileIntoString(ldifFile9));
-    entries.get("10")[0] = TestUtil.convertLdifToEntry(
-      TestUtil.readFileIntoString(ldifFile10));
+    entries.get("2")[0] = TestUtil.convertLdifToResult(
+      TestUtil.readFileIntoString(ldifFile2)).getEntry();
+    entries.get("3")[0] = TestUtil.convertLdifToResult(
+      TestUtil.readFileIntoString(ldifFile3)).getEntry();
+    entries.get("4")[0] = TestUtil.convertLdifToResult(
+      TestUtil.readFileIntoString(ldifFile4)).getEntry();
+    entries.get("5")[0] = TestUtil.convertLdifToResult(
+      TestUtil.readFileIntoString(ldifFile5)).getEntry();
+    entries.get("6")[0] = TestUtil.convertLdifToResult(
+      TestUtil.readFileIntoString(ldifFile6)).getEntry();
+    entries.get("7")[0] = TestUtil.convertLdifToResult(
+      TestUtil.readFileIntoString(ldifFile7)).getEntry();
+    entries.get("8")[0] = TestUtil.convertLdifToResult(
+      TestUtil.readFileIntoString(ldifFile8)).getEntry();
+    entries.get("9")[0] = TestUtil.convertLdifToResult(
+      TestUtil.readFileIntoString(ldifFile9)).getEntry();
+    entries.get("10")[0] = TestUtil.convertLdifToResult(
+      TestUtil.readFileIntoString(ldifFile10)).getEntry();
 
-    Ldap ldap = TestUtil.createSetupLdap();
     for (Map.Entry<String, LdapEntry[]> e : entries.entrySet()) {
-      ldap.create(
-        e.getValue()[0].getDn(),
-        e.getValue()[0].getLdapAttributes().toAttributes());
+      super.createLdapEntry(e.getValue()[0]);
     }
-    ldap.close();
-
-    ldap = TestUtil.createLdap();
-    for (Map.Entry<String, LdapEntry[]> e : entries.entrySet()) {
-      while (
-        !ldap.compare(
-            e.getValue()[0].getDn(),
-            new SearchFilter(e.getValue()[0].getDn().split(",")[0]))) {
-        Thread.sleep(100);
-      }
-    }
-    ldap.close();
   }
 
 
@@ -159,17 +143,15 @@ public class AuthenticatorLoadTest
   public void deleteAuthEntry()
     throws Exception
   {
-    final Ldap ldap = TestUtil.createSetupLdap();
-    ldap.delete(entries.get("2")[0].getDn());
-    ldap.delete(entries.get("3")[0].getDn());
-    ldap.delete(entries.get("4")[0].getDn());
-    ldap.delete(entries.get("5")[0].getDn());
-    ldap.delete(entries.get("6")[0].getDn());
-    ldap.delete(entries.get("7")[0].getDn());
-    ldap.delete(entries.get("8")[0].getDn());
-    ldap.delete(entries.get("9")[0].getDn());
-    ldap.delete(entries.get("10")[0].getDn());
-    ldap.close();
+    super.deleteLdapEntry(entries.get("2")[0].getDn());
+    super.deleteLdapEntry(entries.get("3")[0].getDn());
+    super.deleteLdapEntry(entries.get("4")[0].getDn());
+    super.deleteLdapEntry(entries.get("5")[0].getDn());
+    super.deleteLdapEntry(entries.get("6")[0].getDn());
+    super.deleteLdapEntry(entries.get("7")[0].getDn());
+    super.deleteLdapEntry(entries.get("8")[0].getDn());
+    super.deleteLdapEntry(entries.get("9")[0].getDn());
+    super.deleteLdapEntry(entries.get("10")[0].getDn());
   }
 
 
@@ -184,76 +166,76 @@ public class AuthenticatorLoadTest
     return
       new Object[][] {
         {
-          "jdoe2@vt.edu",
+          "jadams@vt.edu",
           "password2",
           "departmentNumber={1}",
           "0822",
-          "givenName|sn",
-          "givenName=John|sn=Doe",
+          "cn",
+          "cn=John Adams",
         },
         {
-          "jdoe3@vt.edu",
+          "tjefferson@vt.edu",
           "password3",
           "departmentNumber={1}",
           "0823",
           "givenName|sn",
-          "givenName=Joho|sn=Dof",
+          "givenName=Thomas|sn=Jefferson",
         },
         {
-          "jdoe4@vt.edu",
+          "jmadison@vt.edu",
           "password4",
           "departmentNumber={1}",
           "0824",
           "givenName|sn",
-          "givenName=Johp|sn=Dog",
+          "givenName=James|sn=Madison",
         },
         {
-          "jdoe5@vt.edu",
+          "jmonroe@vt.edu",
           "password5",
           "departmentNumber={1}",
           "0825",
           "givenName|sn",
-          "givenName=Johq|sn=Doh",
+          "givenName=James|sn=Monroe",
         },
         {
-          "jdoe6@vt.edu",
+          "jqadams@vt.edu",
           "password6",
           "departmentNumber={1}",
           "0826",
-          "givenName|sn",
-          "givenName=Johr|sn=Doi",
+          "cn",
+          "cn=John Quincy Adams",
         },
         {
-          "jdoe7@vt.edu",
+          "ajackson@vt.edu",
           "password7",
           "departmentNumber={1}",
           "0827",
           "givenName|sn",
-          "givenName=Johs|sn=Doj",
+          "givenName=Andrew|sn=Jackson",
         },
         {
-          "jdoe8@vt.edu",
+          "mvburen@vt.edu",
           "password8",
           "departmentNumber={1}",
           "0828",
           "givenName|sn",
-          "givenName=Joht|sn=Dok",
+          "givenName=Martin|sn=Buren",
         },
         {
-          "jdoe9@vt.edu",
+          "whharrison@vt.edu",
           "password9",
           "departmentNumber={1}",
           "0829",
           "givenName|sn",
-          "givenName=Johu|sn=Dol",
+          "givenName=William|sn=Harrison",
         },
         {
-          "jdoe10@vt.edu",
+          "jtyler@vt.edu",
           "password10",
           "departmentNumber={1}",
           "0830",
           "givenName|sn",
-          "givenName=Johv|sn=Dom",
+          "givenName=John|sn=Tyler",
         },
       };
   }
@@ -265,7 +247,7 @@ public class AuthenticatorLoadTest
    * @param  filter  to authorize with.
    * @param  filterArgs  to authorize with
    * @param  returnAttrs  to search for.
-   * @param  results  to expect from the search.
+   * @param  ldifFile  to expect from the search.
    *
    * @throws  Exception  On test failure.
    */
@@ -282,16 +264,18 @@ public class AuthenticatorLoadTest
     final String filter,
     final String filterArgs,
     final String returnAttrs,
-    final String results)
+    final String ldifFile)
     throws Exception
   {
     // test auth with return attributes
-    final Attributes attrs = this.singleTLSAuth.authenticate(
-      user,
-      credential,
-      new SearchFilter(filter, filterArgs.split("\\|")),
-      returnAttrs.split("\\|"));
-    final LdapAttributes expected = TestUtil.convertStringToAttributes(results);
-    AssertJUnit.assertEquals(expected, TestUtil.newLdapAttributes(attrs));
+    final String expected = TestUtil.readFileIntoString(ldifFile);
+    final LdapEntry entry = this.singleTLSAuth.authenticate(
+      new AuthenticationRequest(
+        user,
+        new Credential(credential),
+        returnAttrs.split("\\|"),
+        new SearchFilter(filter, filterArgs.split("\\|")))).getResult();
+    AssertJUnit.assertEquals(
+      TestUtil.convertLdifToResult(expected), new LdapResult(entry));
   }
 }

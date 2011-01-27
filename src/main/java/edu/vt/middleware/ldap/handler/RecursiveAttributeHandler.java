@@ -15,76 +15,74 @@ package edu.vt.middleware.ldap.handler;
 
 import java.util.ArrayList;
 import java.util.List;
-import javax.naming.NamingEnumeration;
-import javax.naming.NamingException;
-import javax.naming.directory.Attribute;
-import javax.naming.directory.Attributes;
-import javax.naming.directory.BasicAttribute;
-import edu.vt.middleware.ldap.Ldap;
+import edu.vt.middleware.ldap.LdapAttribute;
+import edu.vt.middleware.ldap.LdapAttributes;
+import edu.vt.middleware.ldap.LdapConnection;
+import edu.vt.middleware.ldap.LdapException;
+import edu.vt.middleware.ldap.LdapResult;
+import edu.vt.middleware.ldap.SearchOperation;
+import edu.vt.middleware.ldap.SearchRequest;
 
 /**
- * <code>RecursiveAttributeHandler</code> will recursively search for attributes
- * of the same name and combine them into one attribute. Attribute values must
- * represent DNs in the LDAP.
+ * Recursively searches for attributes of the same name and combine them into
+ * one attribute. Attribute values must represent DNs in the LDAP.
  *
  * @author  Middleware Services
  * @version  $Revision$ $Date$
  */
-public class RecursiveAttributeHandler extends CopyAttributeHandler
-  implements ExtendedAttributeHandler
+public class RecursiveAttributeHandler extends CopyLdapAttributeHandler
+  implements ExtendedLdapAttributeHandler
 {
 
-  /** Ldap to use for searching. */
-  private Ldap ldap;
+  /** Ldap connection to use for searching. */
+  private LdapConnection ldapConnection;
 
   /** Attribute name to search for. */
   private String attributeName;
 
 
   /**
-   * Creates a new <code>RecursiveAttributeHandler</code> with the supplied
-   * attribute name.
+   * Creates a new recursive attribute handler.
    *
-   * @param  attrName  <code>String</code>
+   * @param  name  of the attribute
    */
-  public RecursiveAttributeHandler(final String attrName)
+  public RecursiveAttributeHandler(final String name)
   {
-    this(null, attrName);
+    this(null, name);
   }
 
 
   /**
-   * Creates a new <code>RecursiveAttributeHandler</code> with the supplied ldap
-   * and attribute name.
+   * Creates a new recursive attribute handler.
    *
-   * @param  l  <code>Ldap</code>
-   * @param  attrName  <code>String</code>
+   * @param  lc  ldap connection
+   * @param  name  of the attribute
    */
-  public RecursiveAttributeHandler(final Ldap l, final String attrName)
+  public RecursiveAttributeHandler(final LdapConnection lc, final String name)
   {
-    this.ldap = l;
-    this.attributeName = attrName;
+    this.ldapConnection = lc;
+    this.attributeName = name;
   }
 
 
   /** {@inheritDoc} */
-  public Ldap getSearchResultLdap()
+  public LdapConnection getResultLdapConnection()
   {
-    return this.ldap;
+    return this.ldapConnection;
   }
 
 
   /** {@inheritDoc} */
-  public void setSearchResultLdap(final Ldap l)
+  public void setResultLdapConnection(final LdapConnection lc)
   {
-    this.ldap = l;
+    this.ldapConnection = lc;
   }
 
 
   /**
    * Returns the attribute name that will be recursively searched on.
    *
-   * @return  <code>String</code> attribute name
+   * @return  attribute name
    */
   public String getAttributeName()
   {
@@ -95,46 +93,40 @@ public class RecursiveAttributeHandler extends CopyAttributeHandler
   /**
    * Sets the attribute name that will be recursively searched on.
    *
-   * @param  s  <code>String</code>
+   * @param  name  of the attribute
    */
-  public void setAttributeName(final String s)
+  public void setAttributeName(final String name)
   {
-    this.attributeName = s;
+    this.attributeName = name;
   }
 
 
   /** {@inheritDoc} */
-  protected Attribute processResult(
-    final SearchCriteria sc,
-    final Attribute attr)
-    throws NamingException
+  public void process(final SearchCriteria sc, final LdapAttribute attr)
+    throws LdapException
   {
-    Attribute newAttr = null;
     if (attr != null) {
-      newAttr = new BasicAttribute(attr.getID(), attr.isOrdered());
-      if (attr.getID().equals(this.attributeName)) {
-        final NamingEnumeration<?> en = attr.getAll();
-        while (en.hasMore()) {
-          final Object rawValue = this.processValue(sc, en.next());
+      attr.setName(this.processName(sc, attr.getName()));
+      if (attr.getName().equals(this.attributeName)) {
+        final List<Object> newValues =
+          new ArrayList<Object>(attr.getValues().size());
+        for (Object o : attr.getValues()) {
+          final Object rawValue = this.processValue(sc, o);
           if (rawValue instanceof String) {
             final List<String> recursiveValues = this.recursiveSearch(
               (String) rawValue,
               new ArrayList<String>());
             for (String s : recursiveValues) {
-              newAttr.add(this.processValue(sc, s));
+              newValues.add(this.processValue(sc, s));
             }
           } else {
-            newAttr.add(rawValue);
+            newValues.add(rawValue);
           }
         }
-      } else {
-        final NamingEnumeration<?> en = attr.getAll();
-        while (en.hasMore()) {
-          newAttr.add(this.processValue(sc, en.next()));
-        }
+        attr.getValues().clear();
+        attr.getValues().addAll(newValues);
       }
     }
-    return newAttr;
   }
 
 
@@ -146,21 +138,25 @@ public class RecursiveAttributeHandler extends CopyAttributeHandler
    *
    * @return  list of attribute values found by recursively searching
    *
-   * @throws  NamingException  if a search error occurs
+   * @throws  LdapException  if a search error occurs
    */
   private List<String> recursiveSearch(
     final String dn,
     final List<String> searchedDns)
-    throws NamingException
+    throws LdapException
   {
     final List<String> results = new ArrayList<String>();
     if (!searchedDns.contains(dn)) {
 
-      Attributes attrs = null;
+      LdapAttributes attrs = null;
       try {
-        attrs = this.ldap.getAttributes(dn, new String[] {this.attributeName});
+        final SearchOperation search = new SearchOperation(this.ldapConnection);
+        final LdapResult result = search.execute(
+          SearchRequest.newObjectScopeSearchRequest(
+            dn, new String[] {this.attributeName})).getResult();
+        attrs = result.getEntry(dn).getLdapAttributes();
         results.add(dn);
-      } catch (NamingException e) {
+      } catch (LdapException e) {
         if (this.logger.isWarnEnabled()) {
           this.logger.warn(
             "Error retreiving attribute: " + this.attributeName,
@@ -169,11 +165,9 @@ public class RecursiveAttributeHandler extends CopyAttributeHandler
       }
       searchedDns.add(dn);
       if (attrs != null) {
-        final Attribute attr = attrs.get(this.attributeName);
+        final LdapAttribute attr = attrs.getAttribute(this.attributeName);
         if (attr != null) {
-          final NamingEnumeration<?> en = attr.getAll();
-          while (en.hasMore()) {
-            final Object rawValue = en.next();
+          for (Object rawValue : attr.getValues()) {
             if (rawValue instanceof String) {
               results.addAll(
                 this.recursiveSearch((String) rawValue, searchedDns));

@@ -14,115 +14,47 @@
 package edu.vt.middleware.ldap;
 
 import java.io.InputStream;
-import java.io.PrintStream;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.Hashtable;
 import java.util.Map;
-import javax.naming.CommunicationException;
-import javax.naming.LimitExceededException;
-import javax.naming.ServiceUnavailableException;
-import javax.naming.directory.SearchControls;
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLSocketFactory;
-import edu.vt.middleware.ldap.handler.ConnectionHandler;
-import edu.vt.middleware.ldap.handler.DefaultConnectionHandler;
-import edu.vt.middleware.ldap.handler.FqdnSearchResultHandler;
-import edu.vt.middleware.ldap.handler.SearchResultHandler;
-import edu.vt.middleware.ldap.handler.TlsConnectionHandler;
+import edu.vt.middleware.ldap.handler.LdapResultHandler;
 import edu.vt.middleware.ldap.props.AbstractPropertyConfig;
 import edu.vt.middleware.ldap.props.LdapConfigPropertyInvoker;
 import edu.vt.middleware.ldap.props.LdapProperties;
+import edu.vt.middleware.ldap.provider.ConnectionFactory;
+import edu.vt.middleware.ldap.provider.ConnectionStrategy;
+import edu.vt.middleware.ldap.provider.LdapProvider;
+import edu.vt.middleware.ldap.provider.jndi.JndiProvider;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 /**
- * <code>LdapConfig</code> contains all the configuration data that the <code>
- * Ldap</code> needs to control connections and searching.
+ * Contains all the configuration data needed to control LDAP connections and
+ * searching.
  *
  * @author  Middleware Services
  * @version  $Revision$ $Date$
  */
 public class LdapConfig extends AbstractPropertyConfig
 {
-
-
   /** Domain to look for ldap properties in, value is {@value}. */
   public static final String PROPERTIES_DOMAIN = "edu.vt.middleware.ldap.";
+
+  /** ldap provider class name. */
+  public static final String LDAP_PROVIDER = "edu.vt.middleware.ldap.provider";
 
   /** Invoker for ldap properties. */
   private static final LdapConfigPropertyInvoker PROPERTIES =
     new LdapConfigPropertyInvoker(LdapConfig.class, PROPERTIES_DOMAIN);
 
-
-  /**
-   * Enum to define the type of search scope. See {@link
-   * javax.naming.directory.SearchControls}.
-   */
-  public enum SearchScope {
-
-    /** object level search. */
-    OBJECT(SearchControls.OBJECT_SCOPE),
-
-    /** one level search. */
-    ONELEVEL(SearchControls.ONELEVEL_SCOPE),
-
-    /** subtree search. */
-    SUBTREE(SearchControls.SUBTREE_SCOPE);
-
-    /** underlying search scope integer. */
-    private int scope;
-
-
-    /**
-     * Creates a new <code>SearchScope</code> with the supplied integer.
-     *
-     * @param  i  search scope
-     */
-    SearchScope(final int i)
-    {
-      this.scope = i;
-    }
-
-
-    /**
-     * Returns the search scope integer.
-     *
-     * @return  <code>int</code>
-     */
-    public int scope()
-    {
-      return this.scope;
-    }
-
-
-    /**
-     * Method to convert a JNDI constant value to an enum. Returns null if the
-     * supplied constant does not match a known value.
-     *
-     * @param  i  search scope
-     *
-     * @return  search scope
-     */
-    public static SearchScope parseSearchScope(final int i)
-    {
-      SearchScope ss = null;
-      if (OBJECT.scope() == i) {
-        ss = OBJECT;
-      } else if (ONELEVEL.scope() == i) {
-        ss = ONELEVEL;
-      } else if (SUBTREE.scope() == i) {
-        ss = SUBTREE;
-      }
-      return ss;
-    }
-  }
-
-  /** Default context factory. */
-  private String contextFactory = LdapConstants.DEFAULT_CONTEXT_FACTORY;
+  /** Ldap provider implementation. */
+  private LdapProvider ldapProvider = getDefaultLdapProvider();
 
   /** Default connection handler. */
-  private ConnectionHandler connectionHandler = new DefaultConnectionHandler(
-    this);
+  private ConnectionFactory connectionFactory;
 
   /** Default ldap socket factory used for SSL and TLS. */
   private SSLSocketFactory sslSocketFactory;
@@ -133,111 +65,82 @@ public class LdapConfig extends AbstractPropertyConfig
   /** URL to the LDAP(s). */
   private String ldapUrl;
 
-  /** Hostname of the LDAP server. */
-  private String host;
-
-  /** Port the LDAP server is listening on. */
-  private String port = LdapConstants.DEFAULT_PORT;
-
   /** Amount of time in milliseconds that connect operations will block. */
-  private Integer timeout;
+  private long timeout = -1;
 
   /** DN to bind as before performing operations. */
   private String bindDn;
 
   /** Credential for the bind DN. */
-  private Object bindCredential;
+  private Credential bindCredential;
 
   /** Base dn for LDAP searching. */
-  private String baseDn = LdapConstants.DEFAULT_BASE_DN;
+  private String baseDn = "";
 
   /** Type of search scope to use, default is subtree. */
   private SearchScope searchScope = SearchScope.SUBTREE;
 
-  /** Security level to use when binding to the LDAP. */
-  private String authtype = LdapConstants.DEFAULT_AUTHTYPE;
-
-  /** Whether to require the most authoritative source for this service. */
-  private boolean authoritative = LdapConstants.DEFAULT_AUTHORITATIVE;
+  /** Authentication mechanism to use when binding to the LDAP. */
+  private String authtype = "simple";
 
   /** Preferred batch size to use when returning results. */
-  private Integer batchSize;
+  private int batchSize = -1;
 
   /** Amount of time in milliseconds that search operations will block. */
-  private Integer timeLimit;
+  private long timeLimit;
 
   /** Maximum number of entries that search operations will return. */
-  private Long countLimit;
+  private long countLimit;
 
   /** Size of result set when using paged searching. */
-  private Integer pagedResultsSize;
+  private int pagedResultsSize;
 
-  /** Number of times to retry ldap operations on communication exception. */
-  private Integer operationRetry;
-
-  /** Exception types to retry operations on. */
-  private Class<?>[] operationRetryExceptions = new Class[] {
-    CommunicationException.class,
-    ServiceUnavailableException.class,
-  };
+  /** Number of times to retry ldap operations on exception. */
+  private int operationRetry = 1;
 
   /** Amount of time in milliseconds to wait before retrying. */
-  private Long operationRetryWait;
+  private long operationRetryWait;
 
   /** Factor to multiply operation retry wait by. */
-  private Integer operationRetryBackoff;
-
-  /** Whether link dereferencing should be performed during the search. */
-  private boolean derefLinkFlag;
-
-  /** Whether objects will be returned in the result. */
-  private boolean returningObjFlag;
-
-  /** DNS host to use for JNDI URL context implementation. */
-  private String dnsUrl;
-
-  /** Preferred language as defined by RFC 1766. */
-  private String language;
+  private int operationRetryBackoff;
 
   /** How the provider should handle referrals. */
-  private String referral;
+  private ReferralBehavior referralBehavior;
 
   /** How the provider should handle aliases. */
-  private String derefAliases;
+  private DerefAliases derefAliases;
 
-  /** Additional attributes that should be considered binary. */
-  private String binaryAttributes;
+  /** Attributes that should be considered binary. */
+  private String[] binaryAttributes;
 
   /** Handlers to process search results. */
-  private SearchResultHandler[] searchResultHandlers =
-    new SearchResultHandler[] {new FqdnSearchResultHandler()};
+  private LdapResultHandler[] ldapResultHandlers;
 
-  /** Exception types to ignore when handling results. */
-  private Class<?>[] handlerIgnoreExceptions = new Class[] {
-    LimitExceededException.class,
-  };
-
-  /** SASL authorization ID. */
-  private String saslAuthorizationId;
-
-  /** SASL realm. */
-  private String saslRealm;
+  /** Result codes to ignore when handling search results. */
+  private ResultCode[] searchIgnoreResultCodes = new ResultCode[] {
+    ResultCode.TIME_LIMIT_EXCEEDED, ResultCode.SIZE_LIMIT_EXCEEDED, };
 
   /** Whether only attribute type names should be returned. */
-  private boolean typesOnly = LdapConstants.DEFAULT_TYPES_ONLY;
+  private boolean typesOnly;
 
-  /** Additional environment properties. */
-  private Map<String, Object> additionalEnvironmentProperties =
+  /** Additional provider properties. */
+  private Map<String, Object> providerProperties =
     new HashMap<String, Object>();
 
   /** Whether to log authentication credentials. */
-  private boolean logCredentials = LdapConstants.DEFAULT_LOG_CREDENTIALS;
+  private boolean logCredentials;
 
   /** Connect to LDAP using SSL protocol. */
-  private boolean ssl = LdapConstants.DEFAULT_USE_SSL;
+  private boolean ssl;
 
-  /** Stream to print LDAP ASN.1 BER packets. */
-  private PrintStream tracePackets;
+  /** Connect to LDAP using TLS protocol. */
+  private boolean tls;
+
+  /** Ldap connection strategy. */
+  private ConnectionStrategy connectionStrategy = ConnectionStrategy.DEFAULT;
+
+  /** Sort behavior for ldap results. */
+  private SortBehavior sortBehavior = SortBehavior.getDefaultSortBehavior();
 
 
   /** Default constructor. */
@@ -245,9 +148,9 @@ public class LdapConfig extends AbstractPropertyConfig
 
 
   /**
-   * This will create a new <code>LdapConfig</code> with the supplied ldap url.
+   * Creates a new ldap config.
    *
-   * @param  ldapUrl  <code>String</code> LDAP URL
+   * @param  ldapUrl  to connect to
    */
   public LdapConfig(final String ldapUrl)
   {
@@ -257,11 +160,10 @@ public class LdapConfig extends AbstractPropertyConfig
 
 
   /**
-   * This will create a new <code>LdapConfig</code> with the supplied ldap url
-   * and base Strings.
+   * Creates a new ldap config.
    *
-   * @param  ldapUrl  <code>String</code> LDAP URL
-   * @param  baseDn  <code>String</code> LDAP base DN
+   * @param  ldapUrl  to connect to
+   * @param  baseDn  to search
    */
   public LdapConfig(final String ldapUrl, final String baseDn)
   {
@@ -272,122 +174,107 @@ public class LdapConfig extends AbstractPropertyConfig
 
 
   /**
-   * This returns the Context environment properties that are used to make LDAP
-   * connections.
+   * Returns the default ldap provider. The {@link #LDAP_PROVIDER} property
+   * is checked and that class is loaded if provided. Otherwise the JNDI
+   * provider is returned.
    *
-   * @return  <code>Hashtable</code> - context environment
+   * @return  default ldap provider
    */
-  public Hashtable<String, ?> getEnvironment()
+  protected static LdapProvider getDefaultLdapProvider()
   {
-    final Hashtable<String, Object> environment =
-      new Hashtable<String, Object>();
-    environment.put(LdapConstants.CONTEXT_FACTORY, this.contextFactory);
-
-    if (this.authoritative) {
-      environment.put(
-        LdapConstants.AUTHORITATIVE,
-        Boolean.valueOf(this.authoritative).toString());
-    }
-
-    if (this.batchSize != null) {
-      environment.put(LdapConstants.BATCH_SIZE, this.batchSize.toString());
-    }
-
-    if (this.dnsUrl != null) {
-      environment.put(LdapConstants.DNS_URL, this.dnsUrl);
-    }
-
-    if (this.language != null) {
-      environment.put(LdapConstants.LANGUAGE, this.language);
-    }
-
-    if (this.referral != null) {
-      environment.put(LdapConstants.REFERRAL, this.referral);
-    }
-
-    if (this.derefAliases != null) {
-      environment.put(LdapConstants.DEREF_ALIASES, this.derefAliases);
-    }
-
-    if (this.binaryAttributes != null) {
-      environment.put(LdapConstants.BINARY_ATTRIBUTES, this.binaryAttributes);
-    }
-
-    if (this.saslAuthorizationId != null) {
-      environment.put(
-        LdapConstants.SASL_AUTHORIZATION_ID,
-        this.saslAuthorizationId);
-    }
-
-    if (this.saslRealm != null) {
-      environment.put(LdapConstants.SASL_REALM, this.saslRealm);
-    }
-
-    if (this.typesOnly) {
-      environment.put(
-        LdapConstants.TYPES_ONLY,
-        Boolean.valueOf(this.typesOnly).toString());
-    }
-
-    if (this.ssl) {
-      environment.put(LdapConstants.PROTOCOL, LdapConstants.SSL_PROTOCOL);
-      if (this.sslSocketFactory != null) {
-        environment.put(
-          LdapConstants.SOCKET_FACTORY,
-          this.sslSocketFactory.getClass().getName());
+    final String ldapProviderClass = System.getProperty(LDAP_PROVIDER);
+    if (ldapProviderClass != null) {
+      final Log log = LogFactory.getLog(LdapConfig.class);
+      try {
+        if (log.isInfoEnabled()) {
+          log.info("Setting ldap provider to " + ldapProviderClass);
+        }
+        return (LdapProvider) Class.forName(ldapProviderClass).newInstance();
+      } catch (ClassNotFoundException e) {
+        if (log.isErrorEnabled()) {
+          log.error("Error instantiating " + ldapProviderClass, e);
+        }
+      } catch (InstantiationException e) {
+        if (log.isErrorEnabled()) {
+          log.error("Error instantiating " + ldapProviderClass, e);
+        }
+      } catch (IllegalAccessException e) {
+        if (log.isErrorEnabled()) {
+          log.error("Error instantiating " + ldapProviderClass, e);
+        }
       }
     }
-
-    if (this.tracePackets != null) {
-      environment.put(LdapConstants.TRACE, this.tracePackets);
-    }
-
-    if (this.ldapUrl != null) {
-      environment.put(LdapConstants.PROVIDER_URL, this.ldapUrl);
-    }
-
-    if (this.timeout != null) {
-      environment.put(LdapConstants.TIMEOUT, this.timeout.toString());
-    }
-
-    if (!this.additionalEnvironmentProperties.isEmpty()) {
-      for (
-        Map.Entry<String, Object> entry :
-          this.additionalEnvironmentProperties.entrySet()) {
-        environment.put(entry.getKey(), entry.getValue());
-      }
-    }
-
-    return environment;
+    // set the default ldap provider to JNDI
+    return new JndiProvider();
   }
 
 
-  /**
-   * This returns the context factory of the <code>LdapConfig</code>.
-   *
-   * @return  <code>String</code> - context factory
-   */
-  public String getContextFactory()
+  /** {@inheritDoc} */
+  public String getPropertiesDomain()
   {
-    return this.contextFactory;
+    return PROPERTIES_DOMAIN;
   }
 
 
   /**
-   * This returns the connection handler of the <code>LdapConfig</code>.
+   * Returns the ldap provider.
    *
-   * @return  <code>ConnectionHandler</code> - connection handler
+   * @return  ldap provider
    */
-  public ConnectionHandler getConnectionHandler()
+  public LdapProvider getLdapProvider()
   {
-    return this.connectionHandler;
+    return this.ldapProvider;
   }
 
 
   /**
-   * This returns the SSL socket factory of the <code>LdapConfig</code>.
+   * Sets the ldap provider.
    *
-   * @return  <code>SSLSocketFactory</code> - SSL socket factory
+   * @param  lp  ldap provider to set
+   */
+  public void setLdapProvider(final LdapProvider lp)
+  {
+    checkImmutable();
+    if (this.logger.isTraceEnabled()) {
+      this.logger.trace("setting ldapProvider: " + lp);
+    }
+    this.ldapProvider = lp;
+  }
+
+
+  /**
+   * Returns the connection factory.
+   *
+   * @return  connection factory
+   */
+  public ConnectionFactory getConnectionFactory()
+  {
+    if (this.connectionFactory == null) {
+      this.connectionFactory = this.ldapProvider.getConnectionFactory(this);
+    }
+    return this.connectionFactory;
+  }
+
+
+  /**
+   * Sets the connection factory.
+   *
+   * @param  cf  connection factory
+   */
+  public void setConnectionFactory(final ConnectionFactory cf)
+  {
+    checkImmutable();
+    if (this.logger.isTraceEnabled()) {
+      this.logger.trace("setting connectionFactory: " + cf);
+    }
+    this.connectionFactory = cf;
+  }
+
+
+  /**
+   * Returns the SSL socket factory used when making SSL or TLS connections.
+   *
+   * @return  SSL socket factory
    */
   public SSLSocketFactory getSslSocketFactory()
   {
@@ -396,21 +283,24 @@ public class LdapConfig extends AbstractPropertyConfig
 
 
   /**
-   * This returns whether the <code>LdapConfig</code> is using a custom SSL
-   * socket factory.
+   * Sets the SSL socket factory.
    *
-   * @return  <code>boolean</code>
+   * @param  sf  SSL socket factory
    */
-  public boolean useSslSocketFactory()
+  public void setSslSocketFactory(final SSLSocketFactory sf)
   {
-    return this.sslSocketFactory != null;
+    checkImmutable();
+    if (this.logger.isTraceEnabled()) {
+      this.logger.trace("setting sslSocketFactory: " + sf);
+    }
+    this.sslSocketFactory = sf;
   }
 
 
   /**
-   * This returns the hostname verifier of the <code>LdapConfig</code>.
+   * Returns the hostname verifier used when making SSL or TLS connections.
    *
-   * @return  <code>HostnameVerifier</code> - hostname verifier
+   * @return  hostname verifier
    */
   public HostnameVerifier getHostnameVerifier()
   {
@@ -419,21 +309,24 @@ public class LdapConfig extends AbstractPropertyConfig
 
 
   /**
-   * This returns whether the <code>LdapConfig</code> is using a custom hostname
-   * verifier.
+   * Sets the hostname verifier.
    *
-   * @return  <code>boolean</code>
+   * @param  hv  hostname verifier
    */
-  public boolean useHostnameVerifier()
+  public void setHostnameVerifier(final HostnameVerifier hv)
   {
-    return this.hostnameVerifier != null;
+    checkImmutable();
+    if (this.logger.isTraceEnabled()) {
+      this.logger.trace("setting hostnameVerifier: " + hv);
+    }
+    this.hostnameVerifier = hv;
   }
 
 
   /**
-   * This returns the ldap url of the <code>LdapConfig</code>.
+   * Returns the ldap url.
    *
-   * @return  <code>String</code> - ldap url
+   * @return  ldap url
    */
   public String getLdapUrl()
   {
@@ -442,53 +335,53 @@ public class LdapConfig extends AbstractPropertyConfig
 
 
   /**
-   * This returns the hostname of the <code>LdapConfig</code>.
+   * Sets the ldap url.
    *
-   * @return  <code>String</code> - hostname
-   *
-   * @deprecated  use {@link #getLdapUrl()} instead
+   * @param  url  of the ldap
    */
-  @Deprecated
-  public String getHost()
+  public void setLdapUrl(final String url)
   {
-    return this.host;
-  }
-
-
-  /**
-   * This returns the port of the <code>LdapConfig</code>.
-   *
-   * @return  <code>String</code> - port
-   *
-   * @deprecated  use {@link #getLdapUrl()} instead
-   */
-  @Deprecated
-  public String getPort()
-  {
-    return this.port;
-  }
-
-
-  /**
-   * This returns the timeout for the <code>LdapConfig</code>. If this value is
-   * 0, then connect operations will wait indefinitely.
-   *
-   * @return  <code>int</code> - timeout
-   */
-  public int getTimeout()
-  {
-    int time = LdapConstants.DEFAULT_TIMEOUT;
-    if (this.timeout != null) {
-      time = this.timeout.intValue();
+    checkImmutable();
+    checkStringInput(url, true);
+    if (this.logger.isTraceEnabled()) {
+      this.logger.trace("setting ldapUrl: " + url);
     }
-    return time;
+    this.ldapUrl = url;
   }
 
 
   /**
-   * This returns the bind DN.
+   * Returns the connect timeout. If this value is 0, then connect operations
+   * will wait indefinitely.
    *
-   * @return  <code>String</code> - DN to bind as
+   * @return  timeout
+   */
+  public long getTimeout()
+  {
+    return this.timeout;
+  }
+
+
+  /**
+   * Sets the maximum amount of time in milliseconds that connect operations
+   * will block.
+   *
+   * @param  l  timeout for connect operations
+   */
+  public void setTimeout(final long l)
+  {
+    checkImmutable();
+    if (this.logger.isTraceEnabled()) {
+      this.logger.trace("setting timeout: " + l);
+    }
+    this.timeout = l;
+  }
+
+
+  /**
+   * Returns the bind DN.
+   *
+   * @return  DN to bind as
    */
   public String getBindDn()
   {
@@ -497,776 +390,9 @@ public class LdapConfig extends AbstractPropertyConfig
 
 
   /**
-   * This returns the username of the service user.
+   * Sets the bind DN to authenticate as before performing operations.
    *
-   * @return  <code>String</code> - username
-   *
-   * @deprecated  use {@link #getBindDn()} instead
-   */
-  @Deprecated
-  public String getServiceUser()
-  {
-    return this.getBindDn();
-  }
-
-
-  /**
-   * This returns the credential used with the bind DN.
-   *
-   * @return  <code>Object</code> - bind DN credential
-   */
-  public Object getBindCredential()
-  {
-    return this.bindCredential;
-  }
-
-
-  /**
-   * This returns the credential of the service user.
-   *
-   * @return  <code>Object</code> - credential
-   *
-   * @deprecated  use {@link #getBindCredential()} instead
-   */
-  @Deprecated
-  public Object getServiceCredential()
-  {
-    return this.getBindCredential();
-  }
-
-
-  /**
-   * This returns the base dn for the <code>LdapConfig</code>.
-   *
-   * @return  <code>String</code> - base dn
-   *
-   * @deprecated  use {@link #getBaseDn()} instead
-   */
-  public String getBase()
-  {
-    return this.getBaseDn();
-  }
-
-
-  /**
-   * This returns the base dn for the <code>LdapConfig</code>.
-   *
-   * @return  <code>String</code> - base dn
-   */
-  public String getBaseDn()
-  {
-    return this.baseDn;
-  }
-
-
-  /**
-   * This returns the search scope for the <code>LdapConfig</code>.
-   *
-   * @return  <code>SearchScope</code> - search scope
-   */
-  public SearchScope getSearchScope()
-  {
-    return this.searchScope;
-  }
-
-
-  /**
-   * This returns whether the search scope is set to object.
-   *
-   * @return  <code>boolean</code>
-   */
-  public boolean isObjectSearchScope()
-  {
-    return this.searchScope == SearchScope.OBJECT;
-  }
-
-
-  /**
-   * This returns whether the search scope is set to one level.
-   *
-   * @return  <code>boolean</code>
-   */
-  public boolean isOneLevelSearchScope()
-  {
-    return this.searchScope == SearchScope.ONELEVEL;
-  }
-
-
-  /**
-   * This returns whether the search scope is set to sub tree.
-   *
-   * @return  <code>boolean</code>
-   */
-  public boolean isSubTreeSearchScope()
-  {
-    return this.searchScope == SearchScope.SUBTREE;
-  }
-
-
-  /**
-   * This returns the security level for the <code>LdapConfig</code>.
-   *
-   * @return  <code>String</code> - security level
-   */
-  public String getAuthtype()
-  {
-    return this.authtype;
-  }
-
-
-  /**
-   * This returns whether the security authentication context is set to 'none'.
-   *
-   * @return  <code>boolean</code>
-   */
-  public boolean isAnonymousAuth()
-  {
-    return this.authtype.equalsIgnoreCase(LdapConstants.NONE_AUTHTYPE);
-  }
-
-
-  /**
-   * This returns whether the security authentication context is set to
-   * 'simple'.
-   *
-   * @return  <code>boolean</code>
-   */
-  public boolean isSimpleAuth()
-  {
-    return this.authtype.equalsIgnoreCase(LdapConstants.SIMPLE_AUTHTYPE);
-  }
-
-
-  /**
-   * This returns whether the security authentication context is set to
-   * 'strong'.
-   *
-   * @return  <code>boolean</code>
-   */
-  public boolean isStrongAuth()
-  {
-    return this.authtype.equalsIgnoreCase(LdapConstants.STRONG_AUTHTYPE);
-  }
-
-
-  /**
-   * This returns whether the security authentication context will perform a
-   * SASL bind as defined by the supported SASL mechanisms.
-   *
-   * @return  <code>boolean</code>
-   */
-  public boolean isSaslAuth()
-  {
-    boolean authtypeSasl = false;
-    for (String sasl : LdapConstants.SASL_MECHANISMS) {
-      if (this.authtype.equalsIgnoreCase(sasl)) {
-        authtypeSasl = true;
-        break;
-      }
-    }
-    return authtypeSasl;
-  }
-
-
-  /**
-   * This returns whether the security authentication context is set to
-   * 'EXTERNAL'.
-   *
-   * @return  <code>boolean</code>
-   */
-  public boolean isExternalAuth()
-  {
-    return
-      this.authtype.equalsIgnoreCase(LdapConstants.SASL_MECHANISM_EXTERNAL);
-  }
-
-
-  /**
-   * This returns whether the security authentication context is set to
-   * 'DIGEST-MD5'.
-   *
-   * @return  <code>boolean</code>
-   */
-  public boolean isDigestMD5Auth()
-  {
-    return
-      this.authtype.equalsIgnoreCase(LdapConstants.SASL_MECHANISM_DIGEST_MD5);
-  }
-
-
-  /**
-   * This returns whether the security authentication context is set to
-   * 'CRAM-MD5'.
-   *
-   * @return  <code>boolean</code>
-   */
-  public boolean isCramMD5Auth()
-  {
-    return
-      this.authtype.equalsIgnoreCase(LdapConstants.SASL_MECHANISM_CRAM_MD5);
-  }
-
-
-  /**
-   * This returns whether the security authentication context is set to
-   * 'GSSAPI'.
-   *
-   * @return  <code>boolean</code>
-   */
-  public boolean isGSSAPIAuth()
-  {
-    return this.authtype.equalsIgnoreCase(LdapConstants.SASL_MECHANISM_GSS_API);
-  }
-
-
-  /**
-   * See {@link #isAuthoritative()}.
-   *
-   * @return  <code>boolean</code>
-   */
-  public boolean getAuthoritative()
-  {
-    return this.isAuthoritative();
-  }
-
-
-  /**
-   * This returns whether the <code>LdapConfig</code> is set to require a
-   * authoritative source.
-   *
-   * @return  <code>boolean</code>
-   */
-  public boolean isAuthoritative()
-  {
-    return this.authoritative;
-  }
-
-
-  /**
-   * This returns the time limit for the <code>LdapConfig</code>. If this value
-   * is 0, then search operations will wait indefinitely for an answer.
-   *
-   * @return  <code>int</code> - time limit
-   */
-  public int getTimeLimit()
-  {
-    int limit = LdapConstants.DEFAULT_TIME_LIMIT;
-    if (this.timeLimit != null) {
-      limit = this.timeLimit.intValue();
-    }
-    return limit;
-  }
-
-
-  /**
-   * This returns the count limit for the <code>LdapConfig</code>. If this value
-   * is 0, then search operations will return all the results it finds.
-   *
-   * @return  <code>long</code> - count limit
-   */
-  public long getCountLimit()
-  {
-    long limit = LdapConstants.DEFAULT_COUNT_LIMIT;
-    if (this.countLimit != null) {
-      limit = this.countLimit.longValue();
-    }
-    return limit;
-  }
-
-
-  /**
-   * This returns the paged results size for the <code>LdapConfig</code>. This
-   * value is used whenever the PagedResultsControl in invoked.
-   *
-   * @return  <code>int</code> - page size
-   */
-  public int getPagedResultsSize()
-  {
-    int size = LdapConstants.DEFAULT_PAGED_RESULTS_SIZE;
-    if (this.pagedResultsSize != null) {
-      size = this.pagedResultsSize.intValue();
-    }
-    return size;
-  }
-
-
-  /**
-   * This returns the number of times ldap operations will be retried if a
-   * communication exception occurs. If this value is 0, no retries will occur.
-   *
-   * @return  <code>int</code> - retry count
-   */
-  public int getOperationRetry()
-  {
-    int retry = LdapConstants.DEFAULT_OPERATION_RETRY;
-    if (this.operationRetry != null) {
-      retry = this.operationRetry.intValue();
-    }
-    return retry;
-  }
-
-
-  /**
-   * This returns the exception types to retry operations on.
-   *
-   * @return  <code>Class[]</code>
-   */
-  public Class<?>[] getOperationRetryExceptions()
-  {
-    return this.operationRetryExceptions;
-  }
-
-
-  /**
-   * This returns the operation retry wait time for the <code>LdapConfig</code>.
-   *
-   * @return  <code>int</code> - time limit
-   */
-  public long getOperationRetryWait()
-  {
-    long wait = LdapConstants.DEFAULT_OPERATION_RETRY_WAIT;
-    if (this.operationRetryWait != null) {
-      wait = this.operationRetryWait.intValue();
-    }
-    return wait;
-  }
-
-
-  /**
-   * This returns the factor by which to multiply the operation retry wait time.
-   * This allows clients to progressively delay each retry. The formula for
-   * backoff is (wait * backoff * attempt). So a wait time of 2s with a backoff
-   * of 3 will delay by 6s, then 12s, then 18s, and so forth.
-   *
-   * @return  <code>int</code> - backoff factor
-   */
-  public int getOperationRetryBackoff()
-  {
-    int backoff = LdapConstants.DEFAULT_OPERATION_RETRY_BACKOFF;
-    if (this.operationRetryBackoff != null) {
-      backoff = this.operationRetryBackoff.intValue();
-    }
-    return backoff;
-  }
-
-
-  /**
-   * This returns the derefLinkFlag for the <code>LdapConfig</code>.
-   *
-   * @return  <code>boolean</code>
-   */
-  public boolean getDerefLinkFlag()
-  {
-    return this.derefLinkFlag;
-  }
-
-
-  /**
-   * This returns the returningObjFlag for the <code>LdapConfig</code>.
-   *
-   * @return  <code>boolean</code>
-   */
-  public boolean getReturningObjFlag()
-  {
-    return this.returningObjFlag;
-  }
-
-
-  /**
-   * This returns the batch size for the <code>LdapConfig</code>. If this value
-   * is -1, then the default provider setting is being used.
-   *
-   * @return  <code>int</code> - batch size
-   */
-  public int getBatchSize()
-  {
-    int size = LdapConstants.DEFAULT_BATCH_SIZE;
-    if (this.batchSize != null) {
-      size = this.batchSize.intValue();
-    }
-    return size;
-  }
-
-
-  /**
-   * This returns the dns url for the <code>LdapConfig</code>. If this value is
-   * null, then this property is not being used.
-   *
-   * @return  <code>String</code> - dns url
-   */
-  public String getDnsUrl()
-  {
-    return this.dnsUrl;
-  }
-
-
-  /**
-   * This returns the preferred language for the <code>LdapConfig</code>. If
-   * this value is null, then the default provider setting is being used.
-   *
-   * @return  <code>String</code> - language
-   */
-  public String getLanguage()
-  {
-    return this.language;
-  }
-
-
-  /**
-   * This returns the referral setting for the <code>LdapConfig</code>. If this
-   * value is null, then the default provider setting is being used.
-   *
-   * @return  <code>String</code> - referral
-   */
-  public String getReferral()
-  {
-    return this.referral;
-  }
-
-
-  /**
-   * This returns the alias setting for the <code>LdapConfig</code>. If this
-   * value is null, then the default provider setting is being used.
-   *
-   * @return  <code>String</code> - alias
-   */
-  public String getDerefAliases()
-  {
-    return this.derefAliases;
-  }
-
-
-  /**
-   * This returns additional binary attributes for the <code>LdapConfig</code>.
-   * If this value is null, then the default provider setting is being used.
-   *
-   * @return  <code>String</code> - binary attributes
-   */
-  public String getBinaryAttributes()
-  {
-    return this.binaryAttributes;
-  }
-
-
-  /**
-   * This returns the handlers to use for processing search results.
-   *
-   * @return  <code>SearchResultHandler[]</code>
-   */
-  public SearchResultHandler[] getSearchResultHandlers()
-  {
-    return this.searchResultHandlers;
-  }
-
-
-  /**
-   * This returns the exception types to ignore when handling results.
-   *
-   * @return  <code>Class[]</code>
-   */
-  public Class<?>[] getHandlerIgnoreExceptions()
-  {
-    return this.handlerIgnoreExceptions;
-  }
-
-
-  /**
-   * This returns ths SASL authorization id for the <code>LdapConfig</code>.
-   *
-   * @return  <code>String</code> - authorization id
-   */
-  public String getSaslAuthorizationId()
-  {
-    return this.saslAuthorizationId;
-  }
-
-
-  /**
-   * This returns ths SASL realm for the <code>LdapConfig</code>.
-   *
-   * @return  <code>String</code> - realm
-   */
-  public String getSaslRealm()
-  {
-    return this.saslRealm;
-  }
-
-
-  /**
-   * See {@link #isTypesOnly()}.
-   *
-   * @return  <code>boolean</code>
-   */
-  public boolean getTypesOnly()
-  {
-    return this.isTypesOnly();
-  }
-
-
-  /**
-   * This returns whether the <code>LdapConfig</code> is set to only return
-   * attribute types.
-   *
-   * @return  <code>boolean</code>
-   */
-  public boolean isTypesOnly()
-  {
-    return this.typesOnly;
-  }
-
-
-  /**
-   * This returns any environment properties that may have been set for the
-   * <code>LdapConfig</code> using {@link
-   * #setEnvironmentProperties(String,String)} that do not represent properties
-   * of this config. The collection returned is unmodifiable.
-   *
-   * @return  <code>Map</code> - additional environment properties
-   */
-  public Map<String, Object> getEnvironmentProperties()
-  {
-    return Collections.unmodifiableMap(this.additionalEnvironmentProperties);
-  }
-
-
-  /**
-   * This returns whether authentication credentials will be logged.
-   *
-   * @return  <code>boolean</code> - whether authentication credentials will be
-   * logged.
-   */
-  public boolean getLogCredentials()
-  {
-    return this.logCredentials;
-  }
-
-
-  /**
-   * See {@link #isSslEnabled()}.
-   *
-   * @return  <code>boolean</code> - whether the SSL protocol is being used
-   */
-  public boolean getSsl()
-  {
-    return this.isSslEnabled();
-  }
-
-
-  /**
-   * This returns whether the <code>LdapConfig</code> is using the SSL protocol
-   * for connections.
-   *
-   * @return  <code>boolean</code> - whether the SSL protocol is being used
-   */
-  public boolean isSslEnabled()
-  {
-    return this.ssl;
-  }
-
-
-  /**
-   * See {@link #isTlsEnabled()}.
-   *
-   * @return  <code>boolean</code> - whether the TLS protocol is being used
-   */
-  public boolean getTls()
-  {
-    return this.isTlsEnabled();
-  }
-
-
-  /**
-   * This returns whether the <code>LdapConfig</code> is using the TLS protocol
-   * for connections.
-   *
-   * @return  <code>boolean</code> - whether the TLS protocol is being used
-   */
-  public boolean isTlsEnabled()
-  {
-    return
-      this.connectionHandler != null &&
-        this.connectionHandler.getClass().isAssignableFrom(
-          TlsConnectionHandler.class);
-  }
-
-
-  /**
-   * This sets the context factory of the <code>LdapConfig</code>.
-   *
-   * @param  contextFactory  <code>String</code> context factory
-   */
-  public void setContextFactory(final String contextFactory)
-  {
-    checkImmutable();
-    checkStringInput(contextFactory, false);
-    if (this.logger.isTraceEnabled()) {
-      this.logger.trace("setting contextFactory: " + contextFactory);
-    }
-    this.contextFactory = contextFactory;
-  }
-
-
-  /**
-   * This sets the connection handler of the <code>LdapConfig</code>.
-   *
-   * @param  connectionHandler  <code>ConnectionHandler</code> connection
-   * handler
-   */
-  public void setConnectionHandler(final ConnectionHandler connectionHandler)
-  {
-    checkImmutable();
-    if (this.logger.isTraceEnabled()) {
-      this.logger.trace("setting connectionHandler: " + connectionHandler);
-    }
-    this.connectionHandler = connectionHandler;
-    if (this.connectionHandler != null) {
-      this.connectionHandler.setLdapConfig(this);
-    }
-  }
-
-
-  /**
-   * This sets the SSL socket factory of the <code>LdapConfig</code>.
-   *
-   * @param  sslSocketFactory  <code>SSLSocketFactory</code> SSL socket factory
-   */
-  public void setSslSocketFactory(final SSLSocketFactory sslSocketFactory)
-  {
-    checkImmutable();
-    if (this.logger.isTraceEnabled()) {
-      this.logger.trace("setting sslSocketFactory: " + sslSocketFactory);
-    }
-    this.sslSocketFactory = sslSocketFactory;
-  }
-
-
-  /**
-   * This sets the hostname verifier of the <code>LdapConfig</code>.
-   *
-   * @param  hostnameVerifier  <code>HostnameVerifier</code> hostname verifier
-   */
-  public void setHostnameVerifier(final HostnameVerifier hostnameVerifier)
-  {
-    checkImmutable();
-    if (this.logger.isTraceEnabled()) {
-      this.logger.trace("setting hostnameVerifier: " + hostnameVerifier);
-    }
-    this.hostnameVerifier = hostnameVerifier;
-  }
-
-
-  /**
-   * This sets the ldap url of the <code>LdapConfig</code>.
-   *
-   * @param  ldapUrl  <code>String</code> url
-   */
-  public void setLdapUrl(final String ldapUrl)
-  {
-    checkImmutable();
-    checkStringInput(ldapUrl, true);
-    if (this.logger.isTraceEnabled()) {
-      this.logger.trace("setting ldapUrl: " + ldapUrl);
-    }
-    this.ldapUrl = ldapUrl;
-  }
-
-
-  /**
-   * This sets the hostname of the <code>LdapConfig</code>. The host string may
-   * be of the form ldap://host.domain.name:389, host.domain.name:389, or
-   * host.domain.name. Do not use with {@link #setLdapUrl(String)}.
-   *
-   * @param  host  <code>String</code> hostname
-   *
-   * @deprecated  use {@link #setLdapUrl(String)} instead
-   */
-  @Deprecated
-  public void setHost(final String host)
-  {
-    checkImmutable();
-    if (host != null) {
-      final int prefixLength = LdapConstants.PROVIDER_URL_PREFIX.length();
-      final int separatorLength = LdapConstants.PROVIDER_URL_SEPARATOR.length();
-      String h = host;
-
-      // if host contains '://' and there is data after it, remove the scheme
-      if (
-        h.indexOf(LdapConstants.PROVIDER_URL_PREFIX) != -1 &&
-          h.indexOf(LdapConstants.PROVIDER_URL_PREFIX) + prefixLength <
-          h.length()) {
-        final String scheme = h.substring(
-          0,
-          h.indexOf(LdapConstants.PROVIDER_URL_PREFIX));
-        if (scheme.equalsIgnoreCase(LdapConstants.PROVIDER_URL_SSL_SCHEME)) {
-          this.setSsl(true);
-          this.setPort(LdapConstants.DEFAULT_SSL_PORT);
-        }
-        h = h.substring(
-          h.indexOf(LdapConstants.PROVIDER_URL_PREFIX) + prefixLength,
-          h.length());
-      }
-
-      // if host contains ':' and there is data after it, remove the port
-      if (
-        h.indexOf(LdapConstants.PROVIDER_URL_SEPARATOR) != -1 &&
-          h.indexOf(LdapConstants.PROVIDER_URL_SEPARATOR) + separatorLength <
-          h.length()) {
-        final String p = h.substring(
-          h.indexOf(LdapConstants.PROVIDER_URL_SEPARATOR) + separatorLength,
-          h.length());
-        this.port = p;
-        h = h.substring(0, h.indexOf(LdapConstants.PROVIDER_URL_SEPARATOR));
-      }
-
-      this.host = h;
-      this.setLdapUrl(
-        LdapConstants.PROVIDER_URL_SCHEME + LdapConstants.PROVIDER_URL_PREFIX +
-        this.host + LdapConstants.PROVIDER_URL_SEPARATOR + this.port);
-    }
-  }
-
-
-  /**
-   * This sets the port of the <code>LdapConfig</code>. Do not use with {@link
-   * #setLdapUrl(String)}.
-   *
-   * @param  port  <code>String</code> port
-   *
-   * @deprecated  use {@link #setLdapUrl(String)} instead
-   */
-  @Deprecated
-  public void setPort(final String port)
-  {
-    checkImmutable();
-    this.port = port;
-    if (this.host != null) {
-      this.setLdapUrl(
-        LdapConstants.PROVIDER_URL_SCHEME + LdapConstants.PROVIDER_URL_PREFIX +
-        this.host + LdapConstants.PROVIDER_URL_SEPARATOR + this.port);
-    }
-  }
-
-
-  /**
-   * This sets the maximum amount of time in milliseconds that connect
-   * operations will block.
-   *
-   * @param  timeout  <code>int</code>
-   */
-  public void setTimeout(final int timeout)
-  {
-    checkImmutable();
-    if (this.logger.isTraceEnabled()) {
-      this.logger.trace("setting timeout: " + timeout);
-    }
-    this.timeout = new Integer(timeout);
-  }
-
-
-  /**
-   * This sets the bind DN to authenticate as before performing operations.
-   *
-   * @param  dn  <code>String</code> bind DN
+   * @param  dn  to bind as
    */
   public void setBindDn(final String dn)
   {
@@ -1280,26 +406,22 @@ public class LdapConfig extends AbstractPropertyConfig
 
 
   /**
-   * This sets the username of the service user. user must be a fully qualified
-   * DN.
+   * Returns the credential used with the bind DN.
    *
-   * @param  user  <code>String</code> username
-   *
-   * @deprecated  use {@link #setBindDn(String)} instead
+   * @return  bind DN credential
    */
-  @Deprecated
-  public void setServiceUser(final String user)
+  public Credential getBindCredential()
   {
-    this.setBindDn(user);
+    return this.bindCredential;
   }
 
 
   /**
-   * This sets the credential of the bind DN.
+   * Sets the credential of the bind DN.
    *
-   * @param  credential  <code>Object</code>
+   * @param  credential  to use with bind DN
    */
-  public void setBindCredential(final Object credential)
+  public void setBindCredential(final Credential credential)
   {
     checkImmutable();
     if (this.logger.isTraceEnabled()) {
@@ -1314,213 +436,239 @@ public class LdapConfig extends AbstractPropertyConfig
 
 
   /**
-   * This sets the credential of the service user.
+   * Returns the base DN used for searching.
    *
-   * @param  credential  <code>Object</code>
-   *
-   * @deprecated  use {@link #setBindCredential(Object)} instead
+   * @return  base DN
    */
-  @Deprecated
-  public void setServiceCredential(final Object credential)
+  public String getBaseDn()
   {
-    this.setBindCredential(credential);
+    return this.baseDn;
   }
 
 
   /**
-   * This sets the username and credential of the service user. user must be a
-   * fully qualified DN.
+   * Sets the base dn.
    *
-   * @param  user  <code>String</code> service user dn
-   * @param  credential  <code>Object</code>
-   *
-   * @deprecated  use {@link #setBindDn(String)} and {@link
-   * #setBindCredential(Object)} instead
+   * @param  dn  to use for searching
    */
-  @Deprecated
-  public void setService(final String user, final Object credential)
-  {
-    this.setBindDn(user);
-    this.setBindCredential(credential);
-  }
-
-
-  /**
-   * This sets the base dn for the <code>LdapConfig</code>.
-   *
-   * @param  base  <code>String</code> base dn
-   *
-   * @deprecated  use {@link #setBaseDn(String)}
-   */
-  public void setBase(final String base)
-  {
-    this.setBaseDn(base);
-  }
-
-
-  /**
-   * This sets the base dn for the <code>LdapConfig</code>.
-   *
-   * @param  baseDn  <code>String</code> base dn
-   */
-  public void setBaseDn(final String baseDn)
+  public void setBaseDn(final String dn)
   {
     checkImmutable();
     if (this.logger.isTraceEnabled()) {
-      this.logger.trace("setting baseDn: " + baseDn);
+      this.logger.trace("setting baseDn: " + dn);
     }
-    this.baseDn = baseDn;
+    this.baseDn = dn;
   }
 
 
   /**
-   * This sets the search scope for the <code>LdapConfig</code>.
+   * Returns the search scope.
    *
-   * @param  searchScope  <code>SearchScope</code>
+   * @return  search scope
    */
-  public void setSearchScope(final SearchScope searchScope)
+  public SearchScope getSearchScope()
+  {
+    return this.searchScope;
+  }
+
+
+  /**
+   * Sets the search scope.
+   *
+   * @param  ss  search scope
+   */
+  public void setSearchScope(final SearchScope ss)
   {
     checkImmutable();
     if (this.logger.isTraceEnabled()) {
-      this.logger.trace("setting searchScope: " + searchScope);
+      this.logger.trace("setting searchScope: " + ss);
     }
-    this.searchScope = searchScope;
+    this.searchScope = ss;
   }
 
 
   /**
-   * This sets the security level for the <code>LdapConfig</code>.
+   * Returns the authentication type.
    *
-   * @param  authtype  <code>String</code> security level
+   * @return  authentication type
    */
-  public void setAuthtype(final String authtype)
+  public String getAuthtype()
+  {
+    return this.authtype;
+  }
+
+
+  /**
+   * This sets the authentication type.
+   *
+   * @param  type  of authentication to use
+   */
+  public void setAuthtype(final String type)
   {
     checkImmutable();
-    checkStringInput(authtype, false);
+    checkStringInput(type, false);
     if (this.logger.isTraceEnabled()) {
-      this.logger.trace("setting authtype: " + authtype);
+      this.logger.trace("setting authtype: " + type);
     }
-    this.authtype = authtype;
+    this.authtype = type;
   }
 
 
   /**
-   * This specifies whether or not to force this <code>LdapConfig</code> to
-   * require an authoritative source.
+   * Returns the time limit. If this value is 0, then search operations will
+   * wait indefinitely for an answer.
    *
-   * @param  authoritative  <code>boolean</code>
+   * @return  time limit
    */
-  public void setAuthoritative(final boolean authoritative)
+  public long getTimeLimit()
   {
-    checkImmutable();
-    if (this.logger.isTraceEnabled()) {
-      this.logger.trace("setting authoritative: " + authoritative);
-    }
-    this.authoritative = authoritative;
+    return this.timeLimit;
   }
 
 
   /**
-   * This sets the maximum amount of time in milliseconds that search operations
-   * will block.
+   * Sets the maximum amount of time in milliseconds that search operations will
+   * block.
    *
-   * @param  timeLimit  <code>int</code>
+   * @param  l  time limit
    */
-  public void setTimeLimit(final int timeLimit)
-  {
-    checkImmutable();
-    if (this.logger.isTraceEnabled()) {
-      this.logger.trace("setting timeLimit: " + timeLimit);
-    }
-    this.timeLimit = new Integer(timeLimit);
-  }
-
-
-  /**
-   * This sets the maximum number of entries that search operations will return.
-   *
-   * @param  countLimit  <code>long</code>
-   */
-  public void setCountLimit(final long countLimit)
+  public void setTimeLimit(final long l)
   {
     checkImmutable();
     if (this.logger.isTraceEnabled()) {
-      this.logger.trace("setting countLimit: " + countLimit);
+      this.logger.trace("setting timeLimit: " + l);
     }
-    this.countLimit = new Long(countLimit);
+    this.timeLimit = l;
   }
 
 
   /**
-   * This sets the results size to use when the PagedResultsControl is invoked.
+   * Returns the count limit. If this value is 0, then search operations will
+   * return all the results it finds.
    *
-   * @param  pageSize  <code>int</code>
+   * @return  count limit
    */
-  public void setPagedResultsSize(final int pageSize)
+  public long getCountLimit()
+  {
+    return this.countLimit;
+  }
+
+
+  /**
+   * Sets the maximum number of entries that search operations will return.
+   *
+   * @param  l  count limit
+   */
+  public void setCountLimit(final long l)
   {
     checkImmutable();
     if (this.logger.isTraceEnabled()) {
-      this.logger.trace("setting pagedResultsSize: " + pageSize);
+      this.logger.trace("setting countLimit: " + l);
     }
-    this.pagedResultsSize = new Integer(pageSize);
+    this.countLimit = l;
   }
 
 
   /**
-   * This sets the number of times that ldap operations will be retried if a
-   * communication exception occurs.
+   * Returns the paged results size. This value is used by the
+   * {@link PagedSearchOperation}.
    *
-   * @param  operationRetry  <code>int</code>
+   * @return  page size
    */
-  public void setOperationRetry(final int operationRetry)
+  public int getPagedResultsSize()
+  {
+    return this.pagedResultsSize;
+  }
+
+
+  /**
+   * Sets the results size to use when the PagedResultsControl is invoked.
+   *
+   * @param  size  of paged results
+   */
+  public void setPagedResultsSize(final int size)
   {
     checkImmutable();
     if (this.logger.isTraceEnabled()) {
-      this.logger.trace("setting operationRetry: " + operationRetry);
+      this.logger.trace("setting pagedResultsSize: " + size);
     }
-    this.operationRetry = new Integer(operationRetry);
+    this.pagedResultsSize = size;
   }
 
 
   /**
-   * This sets the exception types to retry operations on.
+   * Returns the number of times ldap operations will be retried if an operation
+   * exception occurs. If this value is 0, no retries will occur.
    *
-   * @param  exceptions  <code>Class[]</code>
+   * @return  number of retries
    */
-  public void setOperationRetryExceptions(final Class<?>[] exceptions)
+  public int getOperationRetry()
+  {
+    return this.operationRetry;
+  }
+
+
+  /**
+   * Sets the number of times that ldap operations will be retried if an
+   * operation exception occurs.
+   *
+   * @param  i  number of retries
+   */
+  public void setOperationRetry(final int i)
   {
     checkImmutable();
     if (this.logger.isTraceEnabled()) {
-      this.logger.trace(
-        "setting operationRetryExceptions: " + Arrays.toString(exceptions));
+      this.logger.trace("setting operationRetry: " + i);
     }
-    this.operationRetryExceptions = exceptions;
+    this.operationRetry = i;
   }
 
 
   /**
-   * This sets the amount of time in milliseconds that operations should wait
+   * Returns the operation retry wait time.
+   *
+   * @return  retry wait
+   */
+  public long getOperationRetryWait()
+  {
+    return this.operationRetryWait;
+  }
+
+
+  /**
+   * Sets the amount of time in milliseconds that operations should wait
    * before retrying.
    *
-   * @param  wait  <code>long</code>
+   * @param  l  time in milliseconds to wait
    */
-  public void setOperationRetryWait(final long wait)
+  public void setOperationRetryWait(final long l)
   {
     checkImmutable();
     if (this.logger.isTraceEnabled()) {
-      this.logger.trace("setting operationRetryWait: " + wait);
+      this.logger.trace("setting operationRetryWait: " + l);
     }
-    this.operationRetryWait = new Long(wait);
+    this.operationRetryWait = l;
   }
 
 
   /**
-   * This sets the factor by which to multiply the operation retry wait time.
+   * Returns the factor by which to multiply the operation retry wait time.
    * This allows clients to progressively delay each retry. The formula for
    * backoff is (wait * backoff * attempt). So a wait time of 2s with a backoff
    * of 3 will delay by 6s, then 12s, then 18s, and so forth.
    *
-   * @param  backoff  <code>int</code>
+   * @return  backoff factor
+   */
+  public int getOperationRetryBackoff()
+  {
+    return this.operationRetryBackoff;
+  }
+
+
+  /**
+   * Sets the factor by which to multiply the operation retry wait time.
+   *
+   * @param  backoff  factor to multiply wait time by
    */
   public void setOperationRetryBackoff(final int backoff)
   {
@@ -1528,238 +676,225 @@ public class LdapConfig extends AbstractPropertyConfig
     if (this.logger.isTraceEnabled()) {
       this.logger.trace("setting operationRetryBackoff: " + backoff);
     }
-    this.operationRetryBackoff = new Integer(backoff);
+    this.operationRetryBackoff = backoff;
   }
 
 
   /**
-   * This specifies whether or not to force this <code>LdapConfig</code> to link
-   * dereferencing during searches.
+   * Returns the batch size. If this value is -1, then the default provider
+   * setting is being used.
    *
-   * @param  derefLinkFlag  <code>boolean</code>
+   * @return  batch size
    */
-  public void setDerefLinkFlag(final boolean derefLinkFlag)
+  public int getBatchSize()
+  {
+    return this.batchSize;
+  }
+
+
+  /**
+   * Sets the batch size. A value of -1 indicates to use the provider default.
+   *
+   * @param  i  batch size to use when returning results
+   */
+  public void setBatchSize(final int i)
+  {
+    checkImmutable();
+    this.batchSize = i;
+  }
+
+
+  /**
+   * Returns the referral behavior.
+   *
+   * @return  referral behavior
+   */
+  public ReferralBehavior getReferralBehavior()
+  {
+    return this.referralBehavior;
+  }
+
+
+  /**
+   * Sets how referrals should be handled.
+   *
+   * @param  rb  referral behavior
+   */
+  public void setReferralBehavior(final ReferralBehavior rb)
   {
     checkImmutable();
     if (this.logger.isTraceEnabled()) {
-      this.logger.trace("setting derefLinkFlag: " + derefLinkFlag);
+      this.logger.trace("setting referral: " + rb);
     }
-    this.derefLinkFlag = derefLinkFlag;
+    this.referralBehavior = rb;
   }
 
 
   /**
-   * This specifies whether or not to force this <code>LdapConfig</code> to
-   * return objects for searches.
+   * Returns the dereference aliases setting. If this value is null, then the
+   * default provider setting is being used.
    *
-   * @param  returningObjFlag  <code>boolean</code>
+   * @return  dereference aliases setting
    */
-  public void setReturningObjFlag(final boolean returningObjFlag)
+  public DerefAliases getDerefAliases()
+  {
+    return this.derefAliases;
+  }
+
+
+  /**
+   * Sets how aliases should be dereferenced.
+   *
+   * @param  da  dereference aliases
+   */
+  public void setDerefAliases(final DerefAliases da)
   {
     checkImmutable();
     if (this.logger.isTraceEnabled()) {
-      this.logger.trace("setting returningObjFlag: " + returningObjFlag);
+      this.logger.trace("setting derefAliases: " + da);
     }
-    this.returningObjFlag = returningObjFlag;
+    this.derefAliases = da;
   }
 
 
   /**
-   * This sets the batch size for the <code>LdapConfig</code>. A value of -1
-   * indicates to use the provider default.
+   * Returns the names of binary attributes.
    *
-   * @param  batchSize  <code>int</code> batch size to use when returning
-   * results
+   * @return  binary attribute names
    */
-  public void setBatchSize(final int batchSize)
+  public String[] getBinaryAttributes()
   {
-    checkImmutable();
-    if (batchSize == -1) {
-      if (this.logger.isTraceEnabled()) {
-        this.logger.trace("setting batchSize: " + null);
-      }
-      this.batchSize = null;
-    } else {
-      if (this.logger.isTraceEnabled()) {
-        this.logger.trace("setting batchSize: " + batchSize);
-      }
-      this.batchSize = new Integer(batchSize);
-    }
+    return this.binaryAttributes;
   }
 
 
   /**
-   * This sets the dns url for the <code>LdapConfig</code>.
+   * Sets attributes that should be considered binary.
    *
-   * @param  dnsUrl  <code>String</code>
+   * @param  s  names of binary attributes
    */
-  public void setDnsUrl(final String dnsUrl)
+  public void setBinaryAttributes(final String[] s)
   {
     checkImmutable();
-    checkStringInput(dnsUrl, true);
     if (this.logger.isTraceEnabled()) {
-      this.logger.trace("setting dnsUrl: " + dnsUrl);
+      this.logger.trace(
+        "setting binaryAttributes: " + Arrays.toString(s));
     }
-    this.dnsUrl = dnsUrl;
+    this.binaryAttributes = s;
   }
 
 
   /**
-   * This sets the preferred language for the <code>LdapConfig</code>.
+   * Returns the handlers to use for processing search results.
    *
-   * @param  language  <code>String</code> defined by RFC 1766
+   * @return  ldap result handlers
    */
-  public void setLanguage(final String language)
+  public LdapResultHandler[] getLdapResultHandlers()
   {
-    checkImmutable();
-    checkStringInput(language, true);
-    if (this.logger.isTraceEnabled()) {
-      this.logger.trace("setting language: " + language);
-    }
-    this.language = language;
+    return this.ldapResultHandlers;
   }
 
 
   /**
-   * This specifies how the <code>LdapConfig</code> should handle referrals.
-   * referral must be one of: "throw", "ignore", or "follow".
+   * Sets the handlers for processing search results.
    *
-   * @param  referral  <code>String</code>
+   * @param  handlers  to process search results with
    */
-  public void setReferral(final String referral)
-  {
-    checkImmutable();
-    checkStringInput(referral, true);
-    if (this.logger.isTraceEnabled()) {
-      this.logger.trace("setting referral: " + referral);
-    }
-    this.referral = referral;
-  }
-
-
-  /**
-   * This specifies how the <code>LdapConfig</code> should handle aliases.
-   * derefAliases must be one of: "always", "never", "finding", or "searching".
-   *
-   * @param  derefAliases  <code>String</code>
-   */
-  public void setDerefAliases(final String derefAliases)
-  {
-    checkImmutable();
-    checkStringInput(derefAliases, true);
-    if (this.logger.isTraceEnabled()) {
-      this.logger.trace("setting derefAliases: " + derefAliases);
-    }
-    this.derefAliases = derefAliases;
-  }
-
-
-  /**
-   * This specifies additional attributes that should be considered binary.
-   * Attributes should be space delimited.
-   *
-   * @param  binaryAttributes  <code>String</code>
-   */
-  public void setBinaryAttributes(final String binaryAttributes)
-  {
-    checkImmutable();
-    checkStringInput(binaryAttributes, true);
-    if (this.logger.isTraceEnabled()) {
-      this.logger.trace("setting binaryAttributes: " + binaryAttributes);
-    }
-    this.binaryAttributes = binaryAttributes;
-  }
-
-
-  /**
-   * This sets the handlers for processing search results.
-   *
-   * @param  handlers  <code>SearchResultHandler[]</code>
-   */
-  public void setSearchResultHandlers(final SearchResultHandler[] handlers)
+  public void setLdapResultHandlers(final LdapResultHandler[] handlers)
   {
     checkImmutable();
     if (this.logger.isTraceEnabled()) {
       this.logger.trace(
         "setting searchResultsHandlers: " + Arrays.toString(handlers));
     }
-    this.searchResultHandlers = handlers;
+    this.ldapResultHandlers = handlers;
   }
 
 
   /**
-   * This sets the exception types to ignore when handling results.
+   * Returns the ldap result codes to ignore when handling search results.
    *
-   * @param  exceptions  <code>Class[]</code>
+   * @return  result codes
    */
-  public void setHandlerIgnoreExceptions(final Class<?>[] exceptions)
+  public ResultCode[] getSearchIgnoreResultCodes()
+  {
+    return this.searchIgnoreResultCodes;
+  }
+
+
+  /**
+   * Sets the ldap result codes to ignore when handling search results.
+   *
+   * @param  codes  to ignore
+   */
+  public void setSearchIgnoreResultCodes(final ResultCode[] codes)
   {
     checkImmutable();
     if (this.logger.isTraceEnabled()) {
       this.logger.trace(
-        "setting handlerIgnoreExceptions: " + Arrays.toString(exceptions));
+        "setting searchIgnoreResultCodes: " + Arrays.asList(codes));
     }
-    this.handlerIgnoreExceptions = exceptions;
+    this.searchIgnoreResultCodes = codes;
   }
 
 
   /**
-   * This specifies a SASL authorization id.
+   * See {@link #isTypesOnly()}.
    *
-   * @param  saslAuthorizationId  <code>String</code>
+   * @return  whether to only return attribute types
    */
-  public void setSaslAuthorizationId(final String saslAuthorizationId)
+  public boolean getTypesOnly()
   {
-    checkImmutable();
-    checkStringInput(saslAuthorizationId, true);
-    if (this.logger.isTraceEnabled()) {
-      this.logger.trace("setting saslAuthorizationId: " + saslAuthorizationId);
-    }
-    this.saslAuthorizationId = saslAuthorizationId;
+    return this.isTypesOnly();
   }
 
 
   /**
-   * This specifies a SASL realm.
+   * Returns whether searches should only return attribute types.
    *
-   * @param  saslRealm  <code>String</code>
+   * @return  whether to return only attribute types
    */
-  public void setSaslRealm(final String saslRealm)
+  public boolean isTypesOnly()
   {
-    checkImmutable();
-    checkStringInput(saslRealm, true);
-    if (this.logger.isTraceEnabled()) {
-      this.logger.trace("setting saslRealm: " + saslRealm);
-    }
-    this.saslRealm = saslRealm;
+    return this.typesOnly;
   }
 
 
   /**
-   * This specifies whether or not to force this <code>LdapConfig</code> to
-   * return only attribute types.
+   * Sets whether or not to return only attribute types.
    *
-   * @param  typesOnly  <code>boolean</code>
+   * @param  b  whether to return only attribute types
    */
-  public void setTypesOnly(final boolean typesOnly)
+  public void setTypesOnly(final boolean b)
   {
     checkImmutable();
     if (this.logger.isTraceEnabled()) {
-      this.logger.trace("setting typesOnly: " + typesOnly);
+      this.logger.trace("setting typesOnly: " + b);
     }
-    this.typesOnly = typesOnly;
+    this.typesOnly = b;
+  }
+
+
+  /**
+   * Returns provider specific properties.
+   *
+   * @return  map of additional provider properties
+   */
+  public Map<String, Object> getProviderProperties()
+  {
+    return this.providerProperties;
   }
 
 
   /** {@inheritDoc} */
-  public String getPropertiesDomain()
+  public boolean hasProviderProperty(final String name)
   {
-    return PROPERTIES_DOMAIN;
+    return PROPERTIES.hasProperty(name);
   }
 
 
   /** {@inheritDoc} */
-  public void setEnvironmentProperties(final String name, final String value)
+  public void setProviderProperty(final String name, final String value)
   {
     checkImmutable();
     if (name != null && value != null) {
@@ -1769,16 +904,9 @@ public class LdapConfig extends AbstractPropertyConfig
         if (this.logger.isTraceEnabled()) {
           this.logger.trace("setting property " + name + ": " + value);
         }
-        this.additionalEnvironmentProperties.put(name, value);
+        this.providerProperties.put(name, value);
       }
     }
-  }
-
-
-  /** {@inheritDoc} */
-  public boolean hasEnvironmentProperty(final String name)
-  {
-    return PROPERTIES.hasProperty(name);
   }
 
 
@@ -1789,7 +917,7 @@ public class LdapConfig extends AbstractPropertyConfig
    *
    * @param  is  to load properties from
    *
-   * @return  <code>LdapConfig</code> initialized ldap config
+   * @return  initialized ldap config
    */
   public static LdapConfig createFromProperties(final InputStream is)
   {
@@ -1807,115 +935,171 @@ public class LdapConfig extends AbstractPropertyConfig
 
 
   /**
-   * This sets whether authentication credentials will be logged.
+   * Returns whether authentication credentials will be logged.
    *
-   * @param  log  <code>boolean</code>
+   * @return  whether authentication credentials will be logged.
    */
-  public void setLogCredentials(final boolean log)
+  public boolean getLogCredentials()
+  {
+    return this.logCredentials;
+  }
+
+
+  /**
+   * Sets whether authentication credentials will be logged.
+   *
+   * @param  b  whether authentication credentials will be logged
+   */
+  public void setLogCredentials(final boolean b)
   {
     checkImmutable();
     if (this.logger.isTraceEnabled()) {
-      this.logger.trace("setting logCredentials: " + log);
+      this.logger.trace("setting logCredentials: " + b);
     }
-    this.logCredentials = log;
+    this.logCredentials = b;
   }
 
 
   /**
-   * This sets this <code>LdapConfig</code> to use the SSL protocol for
-   * connections.
+   * See {@link #isSslEnabled()}.
    *
-   * @param  ssl  <code>boolean</code>
+   * @return  whether the SSL protocol will be used
    */
-  public void setSsl(final boolean ssl)
+  public boolean getSsl()
+  {
+    return this.isSslEnabled();
+  }
+
+
+  /**
+   * Returns whether the SSL protocol will be used for connections.
+   *
+   * @return  whether the SSL protocol will be used
+   */
+  public boolean isSslEnabled()
+  {
+    return this.ssl;
+  }
+
+
+  /**
+   * Sets whether the SSL protocol will be used for connections.
+   *
+   * @param  b  whether the SSL protocol will be used
+   */
+  public void setSsl(final boolean b)
   {
     checkImmutable();
     if (this.logger.isTraceEnabled()) {
-      this.logger.trace("setting ssl: " + ssl);
+      this.logger.trace("setting ssl: " + b);
     }
-    this.ssl = ssl;
+    this.ssl = b;
   }
 
 
   /**
-   * This sets this <code>LdapConfig</code> to use the TLS protocol for
-   * connections. Specifically it sets the connection handler to use {@link
-   * TlsConnectionHandler}.
+   * See {@link #isTlsEnabled()}.
    *
-   * @param  tls  <code>boolean</code>
+   * @return  whether the TLS protocol will be used
    */
-  public void setTls(final boolean tls)
+  public boolean getTls()
   {
-    if (tls) {
-      this.setConnectionHandler(new TlsConnectionHandler());
-    } else {
-      this.setConnectionHandler(new DefaultConnectionHandler());
-    }
+    return this.isTlsEnabled();
   }
 
 
   /**
-   * This returns a <code>SearchControls</code> object configured with this
-   * <code>LdapConfig</code>.
+   * Returns whether the TLS protocol will be used for connections.
    *
-   * @param  retAttrs  <code>String[]</code> attributes to return from search
-   *
-   * @return  <code>SearchControls</code>
+   * @return  whether the TLS protocol will be used
    */
-  public SearchControls getSearchControls(final String[] retAttrs)
+  public boolean isTlsEnabled()
   {
-    final SearchControls ctls = new SearchControls();
-    ctls.setReturningAttributes(retAttrs);
-    ctls.setSearchScope(this.getSearchScope().ordinal());
-    ctls.setTimeLimit(this.getTimeLimit());
-    ctls.setCountLimit(this.getCountLimit());
-    ctls.setDerefLinkFlag(this.getDerefLinkFlag());
-    ctls.setReturningObjFlag(this.getReturningObjFlag());
-    return ctls;
+    return this.tls;
   }
 
 
   /**
-   * This returns a <code>SearchControls</code> object configured to perform a
-   * LDAP compare operation.
+   * Sets whether the TLS protocol will be used for connections.
    *
-   * @return  <code>SearchControls</code>
+   * @param  b  whether the TLS protocol will be used
    */
-  public static SearchControls getCompareSearchControls()
-  {
-    final SearchControls ctls = new SearchControls();
-    ctls.setReturningAttributes(new String[0]);
-    ctls.setSearchScope(SearchScope.OBJECT.ordinal());
-    return ctls;
-  }
-
-
-  /**
-   * This sets this <code>LdapConfig</code> to print ASN.1 BER packets to the
-   * supplied <code>PrintStream</code>.
-   *
-   * @param  stream  <code>PrintStream</code>
-   */
-  public void setTracePackets(final PrintStream stream)
+  public void setTls(final boolean b)
   {
     checkImmutable();
-    this.tracePackets = stream;
+    if (this.logger.isTraceEnabled()) {
+      this.logger.trace("setting tls: " + b);
+    }
+    this.tls = b;
+  }
+
+
+  /**
+   * Returns the connection strategy.
+   *
+   * @return  connection strategy
+   */
+  public ConnectionStrategy getConnectionStrategy()
+  {
+    return this.connectionStrategy;
+  }
+
+
+  /**
+   * Sets the connection strategy.
+   *
+   * @param  strategy  for making new connections
+   */
+  public void setConnectionStrategy(final ConnectionStrategy strategy)
+  {
+    checkImmutable();
+    if (this.logger.isTraceEnabled()) {
+      this.logger.trace("setting connectionStrategy: " + strategy);
+    }
+    this.connectionStrategy = strategy;
+  }
+
+
+  /**
+   * Returns the sort behavior.
+   *
+   * @return  sort behavior
+   */
+  public SortBehavior getSortBehavior()
+  {
+    return this.sortBehavior;
+  }
+
+
+  /**
+   * Sets the sort behavior.
+   *
+   * @param  behavior  for sorting
+   */
+  public void setSortBehavior(final SortBehavior behavior)
+  {
+    checkImmutable();
+    if (this.logger.isTraceEnabled()) {
+      this.logger.trace("setting sortBehavior: " + behavior);
+    }
+    this.sortBehavior = behavior;
   }
 
 
   /**
    * Provides a descriptive string representation of this instance.
    *
-   * @return  String of the form $Classname@hashCode::env=$env.
+   * @return  string representation
    */
   @Override
   public String toString()
   {
     return
       String.format(
-        "%s@%d::env=%s",
+        "%s@%d::ldapProvider=%s, ldapUrl=%s",
         this.getClass().getName(),
         this.hashCode(),
-        this.getEnvironment());
+        this.getLdapProvider(),
+        this.getLdapUrl());
   }
 }

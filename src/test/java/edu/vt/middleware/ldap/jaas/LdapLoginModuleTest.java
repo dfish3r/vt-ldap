@@ -22,12 +22,15 @@ import java.util.Map;
 import java.util.Set;
 import javax.security.auth.login.LoginContext;
 import javax.security.auth.login.LoginException;
-import edu.vt.middleware.ldap.AttributesFactory;
-import edu.vt.middleware.ldap.Ldap;
-import edu.vt.middleware.ldap.Ldap.AttributeModification;
-import edu.vt.middleware.ldap.SearchFilter;
+import edu.vt.middleware.ldap.AbstractTest;
+import edu.vt.middleware.ldap.AttributeModification;
+import edu.vt.middleware.ldap.AttributeModificationType;
+import edu.vt.middleware.ldap.LdapAttribute;
+import edu.vt.middleware.ldap.LdapConnection;
+import edu.vt.middleware.ldap.LdapEntry;
+import edu.vt.middleware.ldap.ModifyOperation;
+import edu.vt.middleware.ldap.ModifyRequest;
 import edu.vt.middleware.ldap.TestUtil;
-import edu.vt.middleware.ldap.bean.LdapEntry;
 import org.testng.AssertJUnit;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
@@ -40,7 +43,7 @@ import org.testng.annotations.Test;
  * @author  Middleware Services
  * @version  $Revision$
  */
-public class LdapLoginModuleTest
+public class LdapLoginModuleTest extends AbstractTest
 {
 
   /** Invalid password test data. */
@@ -68,27 +71,14 @@ public class LdapLoginModuleTest
    *
    * @throws  Exception  On test failure.
    */
-  @Parameters({ "createEntry7" })
+  @Parameters({ "createEntry10" })
   @BeforeClass(groups = {"jaastest"})
   public void createAuthEntry(final String ldifFile)
     throws Exception
   {
     final String ldif = TestUtil.readFileIntoString(ldifFile);
-    testLdapEntry = TestUtil.convertLdifToEntry(ldif);
-
-    Ldap ldap = TestUtil.createSetupLdap();
-    ldap.create(
-      testLdapEntry.getDn(),
-      testLdapEntry.getLdapAttributes().toAttributes());
-    ldap.close();
-    ldap = TestUtil.createLdap();
-    while (
-      !ldap.compare(
-          testLdapEntry.getDn(),
-          new SearchFilter(testLdapEntry.getDn().split(",")[0]))) {
-      Thread.sleep(100);
-    }
-    ldap.close();
+    testLdapEntry = TestUtil.convertLdifToResult(ldif).getEntry();
+    super.createLdapEntry(testLdapEntry);
 
     System.setProperty(
       "java.security.auth.login.config",
@@ -120,59 +110,49 @@ public class LdapLoginModuleTest
     final String ldifFile9)
     throws Exception
   {
-    groupEntries.get("6")[0] = TestUtil.convertLdifToEntry(
-      TestUtil.readFileIntoString(ldifFile6));
-    groupEntries.get("7")[0] = TestUtil.convertLdifToEntry(
-      TestUtil.readFileIntoString(ldifFile7));
-    groupEntries.get("8")[0] = TestUtil.convertLdifToEntry(
-      TestUtil.readFileIntoString(ldifFile8));
-    groupEntries.get("9")[0] = TestUtil.convertLdifToEntry(
-      TestUtil.readFileIntoString(ldifFile9));
+    groupEntries.get("6")[0] = TestUtil.convertLdifToResult(
+      TestUtil.readFileIntoString(ldifFile6)).getEntry();
+    groupEntries.get("7")[0] = TestUtil.convertLdifToResult(
+      TestUtil.readFileIntoString(ldifFile7)).getEntry();
+    groupEntries.get("8")[0] = TestUtil.convertLdifToResult(
+      TestUtil.readFileIntoString(ldifFile8)).getEntry();
+    groupEntries.get("9")[0] = TestUtil.convertLdifToResult(
+      TestUtil.readFileIntoString(ldifFile9)).getEntry();
 
-    Ldap ldap = TestUtil.createSetupLdap();
     for (Map.Entry<String, LdapEntry[]> e : groupEntries.entrySet()) {
-      ldap.create(
-        e.getValue()[0].getDn(),
-        e.getValue()[0].getLdapAttributes().toAttributes());
-    }
-    ldap.close();
-
-    ldap = TestUtil.createLdap();
-    for (Map.Entry<String, LdapEntry[]> e : groupEntries.entrySet()) {
-      while (
-        !ldap.compare(
-            e.getValue()[0].getDn(),
-            new SearchFilter(e.getValue()[0].getDn().split(",")[0]))) {
-        Thread.sleep(100);
-      }
+      super.createLdapEntry(e.getValue()[0]);
     }
 
     // setup group relationships
-    ldap.modifyAttributes(
+    final LdapConnection conn = TestUtil.createSetupLdapConnection();
+    conn.open();
+    final ModifyOperation modify = new ModifyOperation(conn);
+    modify.execute(new ModifyRequest(
       groupEntries.get("6")[0].getDn(),
-      AttributeModification.ADD,
-      AttributesFactory.createAttributes(
-        "member",
-        new String[] {
-          "uid=7,ou=test,dc=vt,dc=edu",
-          "uugid=group7,ou=test,dc=vt,dc=edu",
-        }));
-    ldap.modifyAttributes(
+      new AttributeModification(
+        AttributeModificationType.ADD,
+        new LdapAttribute(
+          "member",
+          new String[]{
+            "uid=10,ou=test,dc=vt,dc=edu",
+            "uugid=group7,ou=test,dc=vt,dc=edu", }))));
+    modify.execute(new ModifyRequest(
       groupEntries.get("7")[0].getDn(),
-      AttributeModification.ADD,
-      AttributesFactory.createAttributes(
-        "member",
-        new String[] {
-          "uugid=group8,ou=test,dc=vt,dc=edu",
-          "uugid=group9,ou=test,dc=vt,dc=edu",
-        }));
-    ldap.modifyAttributes(
+      new AttributeModification(
+        AttributeModificationType.ADD,
+        new LdapAttribute(
+          "member",
+          new String[]{
+            "uugid=group8,ou=test,dc=vt,dc=edu",
+            "uugid=group9,ou=test,dc=vt,dc=edu", }))));
+    modify.execute(new ModifyRequest(
       groupEntries.get("8")[0].getDn(),
-      AttributeModification.ADD,
-      AttributesFactory.createAttributes(
-        "member",
-        "uugid=group7,ou=test,dc=vt,dc=edu"));
-    ldap.close();
+      new AttributeModification(
+        AttributeModificationType.ADD,
+        new LdapAttribute(
+          "member",
+          new String[]{"uugid=group7,ou=test,dc=vt,dc=edu"}))));
+    conn.close();
   }
 
 
@@ -183,13 +163,11 @@ public class LdapLoginModuleTest
   {
     System.clearProperty("java.security.auth.login.config");
 
-    final Ldap ldap = TestUtil.createSetupLdap();
-    ldap.delete(testLdapEntry.getDn());
-    ldap.delete(groupEntries.get("6")[0].getDn());
-    ldap.delete(groupEntries.get("7")[0].getDn());
-    ldap.delete(groupEntries.get("8")[0].getDn());
-    ldap.delete(groupEntries.get("9")[0].getDn());
-    ldap.close();
+    super.deleteLdapEntry(testLdapEntry.getDn());
+    super.deleteLdapEntry(groupEntries.get("6")[0].getDn());
+    super.deleteLdapEntry(groupEntries.get("7")[0].getDn());
+    super.deleteLdapEntry(groupEntries.get("8")[0].getDn());
+    super.deleteLdapEntry(groupEntries.get("9")[0].getDn());
   }
 
 
@@ -260,32 +238,6 @@ public class LdapLoginModuleTest
     invocationCount = 100,
     timeOut = 60000
   )
-  public void contextSsl2Test(
-    final String dn,
-    final String user,
-    final String role,
-    final String credential)
-    throws Exception
-  {
-    this.doContextTest("vt-ldap-ssl-2", dn, user, role, credential, false);
-  }
-
-
-  /**
-   * @param  dn  of this user
-   * @param  user  to authenticate.
-   * @param  role  to set for this user
-   * @param  credential  to authenticate with.
-   *
-   * @throws  Exception  On test failure.
-   */
-  @Parameters({ "jaasDn", "jaasUser", "jaasUserRole", "jaasCredential" })
-  @Test(
-    groups = {"jaastest"},
-    threadPoolSize = 10,
-    invocationCount = 100,
-    timeOut = 60000
-  )
   public void authzContextTest(
     final String dn,
     final String user,
@@ -309,7 +261,7 @@ public class LdapLoginModuleTest
   @Test(
     groups = {"jaastest"},
     threadPoolSize = 10,
-    invocationCount = 100,
+    invocationCount = 10,
     timeOut = 60000
   )
   public void randomContextTest(
@@ -475,27 +427,6 @@ public class LdapLoginModuleTest
     throws Exception
   {
     this.doContextTest("vt-ldap-try-first", dn, user, role, credential, false);
-  }
-
-
-  /**
-   * @param  dn  of this user
-   * @param  user  to authenticate.
-   * @param  role  to set for this user
-   * @param  credential  to authenticate with.
-   *
-   * @throws  Exception  On test failure.
-   */
-  @Parameters({ "jaasDn", "jaasUser", "jaasUserRole", "jaasCredential" })
-  @Test(groups = {"jaastest"})
-  public void oldContextTest(
-    final String dn,
-    final String user,
-    final String role,
-    final String credential)
-    throws Exception
-  {
-    this.doContextTest("vt-ldap-deprecated", dn, user, role, credential, false);
   }
 
 

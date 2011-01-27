@@ -15,10 +15,9 @@ package edu.vt.middleware.ldap.auth;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
-import edu.vt.middleware.ldap.Ldap;
-import edu.vt.middleware.ldap.SearchFilter;
+import edu.vt.middleware.ldap.AbstractTest;
+import edu.vt.middleware.ldap.LdapEntry;
 import edu.vt.middleware.ldap.TestUtil;
-import edu.vt.middleware.ldap.bean.LdapEntry;
 import org.testng.AssertJUnit;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
@@ -31,7 +30,7 @@ import org.testng.annotations.Test;
  * @author  Middleware Services
  * @version  $Revision$
  */
-public class AuthenticatorCliTest
+public class AuthenticatorCliTest extends AbstractTest
 {
 
   /** Entry created for ldap tests. */
@@ -43,27 +42,14 @@ public class AuthenticatorCliTest
    *
    * @throws  Exception  On test failure.
    */
-  @Parameters({ "createEntry6" })
+  @Parameters({ "createEntry9" })
   @BeforeClass(groups = {"authclitest"})
   public void createLdapEntry(final String ldifFile)
     throws Exception
   {
     final String ldif = TestUtil.readFileIntoString(ldifFile);
-    testLdapEntry = TestUtil.convertLdifToEntry(ldif);
-
-    Ldap ldap = TestUtil.createSetupLdap();
-    ldap.create(
-      testLdapEntry.getDn(),
-      testLdapEntry.getLdapAttributes().toAttributes());
-    ldap.close();
-    ldap = TestUtil.createLdap();
-    while (
-      !ldap.compare(
-          testLdapEntry.getDn(),
-          new SearchFilter(testLdapEntry.getDn().split(",")[0]))) {
-      Thread.sleep(100);
-    }
-    ldap.close();
+    testLdapEntry = TestUtil.convertLdifToResult(ldif).getEntry();
+    super.createLdapEntry(testLdapEntry);
   }
 
 
@@ -72,9 +58,7 @@ public class AuthenticatorCliTest
   public void deleteLdapEntry()
     throws Exception
   {
-    final Ldap ldap = TestUtil.createSetupLdap();
-    ldap.delete(testLdapEntry.getDn());
-    ldap.close();
+    super.deleteLdapEntry(testLdapEntry.getDn());
   }
 
 
@@ -103,8 +87,8 @@ public class AuthenticatorCliTest
 
       AuthenticatorCli.main(args.split("\\|"));
       AssertJUnit.assertEquals(
-        TestUtil.convertLdifToEntry(ldif),
-        TestUtil.convertLdifToEntry(outStream.toString()));
+        TestUtil.convertLdifToResult(ldif),
+        TestUtil.convertLdifToResult(outStream.toString()));
     } finally {
       // Restore STDOUT
       System.setOut(oldStdOut);

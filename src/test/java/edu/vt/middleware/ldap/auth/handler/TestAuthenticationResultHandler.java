@@ -17,7 +17,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * <code>TestAuthenticationResultHandler</code>.
+ * Class for testing that authentication result handlers are firing.
  *
  * @author  Middleware Services
  * @version  $Revision$ $Date$

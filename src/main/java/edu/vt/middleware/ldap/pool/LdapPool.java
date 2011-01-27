@@ -14,7 +14,7 @@
 package edu.vt.middleware.ldap.pool;
 
 import java.util.Timer;
-import edu.vt.middleware.ldap.BaseLdap;
+import edu.vt.middleware.ldap.LdapConnection;
 
 /**
  * <code>LdapPool</code> provides an interface for pooling ldap objects.
@@ -24,7 +24,7 @@ import edu.vt.middleware.ldap.BaseLdap;
  * @author  Middleware Services
  * @version  $Revision$ $Date$
  */
-public interface LdapPool<T extends BaseLdap>
+public interface LdapPool<T extends LdapConnection>
 {
 
 

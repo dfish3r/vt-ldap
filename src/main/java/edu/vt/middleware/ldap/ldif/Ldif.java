@@ -19,15 +19,12 @@ import java.io.Reader;
 import java.io.Serializable;
 import java.io.Writer;
 import java.net.URL;
-import java.util.Iterator;
-import javax.naming.NamingException;
-import javax.naming.directory.SearchResult;
+import edu.vt.middleware.ldap.LdapAttribute;
+import edu.vt.middleware.ldap.LdapEntry;
+import edu.vt.middleware.ldap.LdapResult;
 import edu.vt.middleware.ldap.LdapUtil;
-import edu.vt.middleware.ldap.bean.LdapAttribute;
-import edu.vt.middleware.ldap.bean.LdapBeanFactory;
-import edu.vt.middleware.ldap.bean.LdapBeanProvider;
-import edu.vt.middleware.ldap.bean.LdapEntry;
-import edu.vt.middleware.ldap.bean.LdapResult;
+import edu.vt.middleware.ldap.SortBehavior;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -72,54 +69,29 @@ public class Ldif implements Serializable
   /** Log for this class. */
   protected final Log logger = LogFactory.getLog(this.getClass());
 
-  /** Ldap bean factory. */
-  protected LdapBeanFactory beanFactory = LdapBeanProvider.getLdapBeanFactory();
+  /** Ldap result sort behavior. */
+  protected SortBehavior sortBehavior = SortBehavior.getDefaultSortBehavior();
 
 
   /**
-   * Returns the factory for creating ldap beans.
+   * Returns the sort behavior for ldap results.
    *
-   * @return  <code>LdapBeanFactory</code>
+   * @return  <code>SortBehavior</code>
    */
-  public LdapBeanFactory getLdapBeanFactory()
+  public SortBehavior getSortBehavior()
   {
-    return this.beanFactory;
+    return this.sortBehavior;
   }
 
 
   /**
-   * Sets the factory for creating ldap beans.
+   * Sets the sort behavior for ldap results.
    *
-   * @param  lbf  <code>LdapBeanFactory</code>
+   * @param  sb  <code>SortBehavior</code>
    */
-  public void setLdapBeanFactory(final LdapBeanFactory lbf)
+  public void setSortBehavior(final SortBehavior sb)
   {
-    if (lbf != null) {
-      this.beanFactory = lbf;
-    }
-  }
-
-
-  /**
-   * This will take the results of a prior LDAP query and convert it to LDIF.
-   *
-   * @param  results  <code>Iterator</code> of LDAP search results
-   *
-   * @return  <code>String</code>
-   */
-  public String createLdif(final Iterator<SearchResult> results)
-  {
-    String ldif = "";
-    try {
-      final LdapResult lr = this.beanFactory.newLdapResult();
-      lr.addEntries(results);
-      ldif = this.createLdif(lr);
-    } catch (NamingException e) {
-      if (this.logger.isErrorEnabled()) {
-        this.logger.error("Error creating String from SearchResults", e);
-      }
-    }
-    return ldif;
+    this.sortBehavior = sb;
   }
 
 
@@ -255,25 +227,6 @@ public class Ldif implements Serializable
    * This will write the supplied LDAP search results to the supplied writer in
    * LDIF form.
    *
-   * @param  results  <code>Iterator</code> of LDAP search results
-   * @param  writer  <code>Writer</code> to write to
-   *
-   * @throws  IOException  if an error occurs while writing to the output stream
-   */
-  public void outputLdif(
-    final Iterator<SearchResult> results,
-    final Writer writer)
-    throws IOException
-  {
-    writer.write(createLdif(results));
-    writer.flush();
-  }
-
-
-  /**
-   * This will write the supplied LDAP search results to the supplied writer in
-   * LDIF form.
-   *
    * @param  result  <code>LdapResult</code>
    * @param  writer  <code>Writer</code> to write to
    *
@@ -288,24 +241,6 @@ public class Ldif implements Serializable
 
 
   /**
-   * This will take a Reader containing an LDIF and convert it to an Iterator of
-   * LDAP search results. Provides a loose implementation of RFC 2849. Should
-   * not be used to validate LDIF format as it does not enforce strictness.
-   *
-   * @param  reader  <code>Reader</code> containing LDIF content
-   *
-   * @return  <code>Iterator</code> - of LDAP search results
-   *
-   * @throws  IOException  if an I/O error occurs
-   */
-  public Iterator<SearchResult> importLdif(final Reader reader)
-    throws IOException
-  {
-    return this.importLdifToLdapResult(reader).toSearchResults().iterator();
-  }
-
-
-  /**
    * This will take a Reader containing an LDIF and convert it to an <code>
    * LdapResult</code>. Provides a loose implementation of RFC 2849. Should not
    * be used to validate LDIF format as it does not enforce strictness.
@@ -316,10 +251,10 @@ public class Ldif implements Serializable
    *
    * @throws  IOException  if an I/O error occurs
    */
-  public LdapResult importLdifToLdapResult(final Reader reader)
+  public LdapResult importLdif(final Reader reader)
     throws IOException
   {
-    final LdapResult ldapResult = this.beanFactory.newLdapResult();
+    final LdapResult ldapResult = new LdapResult(this.sortBehavior);
     final BufferedReader br = new BufferedReader(reader);
     String line = null;
     int lineCount = 0;
@@ -330,7 +265,7 @@ public class Ldif implements Serializable
       lineCount++;
       if (line.startsWith("dn:")) {
         lineValue.append(line);
-        ldapEntry = this.beanFactory.newLdapEntry();
+        ldapEntry = new LdapEntry(this.sortBehavior);
         break;
       }
     }
@@ -345,7 +280,7 @@ public class Ldif implements Serializable
       if (!line.startsWith("#")) {
         if (line.startsWith("dn:")) {
           ldapResult.addEntry(ldapEntry);
-          ldapEntry = this.beanFactory.newLdapEntry();
+          ldapEntry = new LdapEntry(this.sortBehavior);
         }
         if (line.startsWith(" ")) {
           lineValue.append(line.substring(1));
@@ -373,7 +308,7 @@ public class Ldif implements Serializable
               LdapAttribute ldapAttr = ldapEntry.getLdapAttributes()
                   .getAttribute(attrName);
               if (ldapAttr == null) {
-                ldapAttr = this.beanFactory.newLdapAttribute();
+                ldapAttr = new LdapAttribute(this.sortBehavior);
                 ldapAttr.setName(attrName);
                 ldapEntry.getLdapAttributes().addAttribute(ldapAttr);
               }

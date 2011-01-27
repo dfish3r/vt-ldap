@@ -1,5 +1,4 @@
 dn: uid=5,ou=test,dc=vt,dc=edu
 departmentNumber: 0825
-givenName: Johq
-sn: Doh
-
+givenName: James
+sn: Monroe

@@ -14,11 +14,11 @@
 package edu.vt.middleware.ldap;
 
 import java.util.Arrays;
-import edu.vt.middleware.ldap.handler.BinarySearchResultHandler;
-import edu.vt.middleware.ldap.handler.EntryDnSearchResultHandler;
-import edu.vt.middleware.ldap.handler.MergeSearchResultHandler;
-import edu.vt.middleware.ldap.handler.RecursiveSearchResultHandler;
-import edu.vt.middleware.ldap.handler.SearchResultHandler;
+import edu.vt.middleware.ldap.handler.BinaryResultHandler;
+import edu.vt.middleware.ldap.handler.DnAttributeResultHandler;
+import edu.vt.middleware.ldap.handler.LdapResultHandler;
+import edu.vt.middleware.ldap.handler.MergeResultHandler;
+import edu.vt.middleware.ldap.handler.RecursiveResultHandler;
 import org.testng.AssertJUnit;
 import org.testng.annotations.Test;
 
@@ -33,56 +33,56 @@ public class LdapConfigTest
 
 
   /** @throws  Exception  On test failure. */
-  @Test(groups = {"ldaptest"})
+  @Test(groups = {"configtest"})
   public void nullProperties()
     throws Exception
   {
-    final Ldap l = new Ldap();
-    l.loadFromProperties(
-      LdapConfigTest.class.getResourceAsStream("/ldap.null.properties"));
+    final LdapConnection conn = new LdapConnection(
+      LdapConfig.createFromProperties(
+        TestUtil.class.getResourceAsStream("/ldap.null.properties")));
 
-    AssertJUnit.assertNull(l.getLdapConfig().getSslSocketFactory());
-    AssertJUnit.assertNull(l.getLdapConfig().getHostnameVerifier());
-    AssertJUnit.assertNull(l.getLdapConfig().getOperationRetryExceptions());
-    AssertJUnit.assertNull(l.getLdapConfig().getSearchResultHandlers());
-    AssertJUnit.assertNull(l.getLdapConfig().getHandlerIgnoreExceptions());
+    AssertJUnit.assertNull(conn.getLdapConfig().getSslSocketFactory());
+    AssertJUnit.assertNull(conn.getLdapConfig().getHostnameVerifier());
+    AssertJUnit.assertNull(conn.getLdapConfig().getLdapResultHandlers());
+    AssertJUnit.assertNull(conn.getLdapConfig().getSearchIgnoreResultCodes());
   }
 
 
   /** @throws  Exception  On test failure. */
-  @Test(groups = {"ldaptest"})
+  @Test(groups = {"configtest"})
   public void parserProperties()
     throws Exception
   {
-    final Ldap l = new Ldap();
-    l.loadFromProperties(
-      LdapConfigTest.class.getResourceAsStream("/ldap.parser.properties"));
+    final LdapConnection conn = new LdapConnection(
+      LdapConfig.createFromProperties(
+        TestUtil.class.getResourceAsStream("/ldap.parser.properties")));
 
     AssertJUnit.assertEquals(
-      LdapConfig.SearchScope.OBJECT, l.getLdapConfig().getSearchScope());
-    AssertJUnit.assertEquals(10, l.getLdapConfig().getBatchSize());
-    AssertJUnit.assertEquals(5000, l.getLdapConfig().getTimeLimit());
-    AssertJUnit.assertEquals(8000, l.getLdapConfig().getTimeout());
+      SearchScope.OBJECT,
+      conn.getLdapConfig().getSearchScope());
+    AssertJUnit.assertEquals(10, conn.getLdapConfig().getBatchSize());
+    AssertJUnit.assertEquals(5000, conn.getLdapConfig().getTimeLimit());
+    AssertJUnit.assertEquals(8000, conn.getLdapConfig().getTimeout());
     AssertJUnit.assertEquals(
-      "jpegPhoto", l.getLdapConfig().getBinaryAttributes());
+      "jpegPhoto", conn.getLdapConfig().getBinaryAttributes());
 
-    for (SearchResultHandler srh :
-         l.getLdapConfig().getSearchResultHandlers()) {
-      if (RecursiveSearchResultHandler.class.isInstance(srh)) {
-        final RecursiveSearchResultHandler h = (RecursiveSearchResultHandler)
+    for (LdapResultHandler srh :
+         conn.getLdapConfig().getLdapResultHandlers()) {
+      if (RecursiveResultHandler.class.isInstance(srh)) {
+        final RecursiveResultHandler h = (RecursiveResultHandler)
           srh;
         AssertJUnit.assertEquals("member", h.getSearchAttribute());
         AssertJUnit.assertEquals(
           Arrays.asList(new String[] {"mail", "department"}),
           Arrays.asList(h.getMergeAttributes()));
-      } else if (MergeSearchResultHandler.class.isInstance(srh)) {
-        final MergeSearchResultHandler h = (MergeSearchResultHandler) srh;
+      } else if (MergeResultHandler.class.isInstance(srh)) {
+        final MergeResultHandler h = (MergeResultHandler) srh;
         AssertJUnit.assertTrue(h.getAllowDuplicates());
-      } else if (BinarySearchResultHandler.class.isInstance(srh)) {
-        final BinarySearchResultHandler h = (BinarySearchResultHandler) srh;
+      } else if (BinaryResultHandler.class.isInstance(srh)) {
+        final BinaryResultHandler h = (BinaryResultHandler) srh;
         AssertJUnit.assertNotNull(h);
-      } else if (EntryDnSearchResultHandler.class.isInstance(srh)) {
-        final EntryDnSearchResultHandler h = (EntryDnSearchResultHandler) srh;
+      } else if (DnAttributeResultHandler.class.isInstance(srh)) {
+        final DnAttributeResultHandler h = (DnAttributeResultHandler) srh;
         AssertJUnit.assertEquals("myDN", h.getDnAttributeName());
       } else {
         throw new Exception("Unknown search result handler type " + srh);

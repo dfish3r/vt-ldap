@@ -34,7 +34,7 @@ public class SpringTest
    *
    * @throws  Exception  On test failure.
    */
-  @Test(groups = {"ldaptest"})
+  @Test(groups = {"springtest"})
   public void testSpringWiring()
     throws Exception
   {
@@ -43,8 +43,10 @@ public class SpringTest
         "/spring-context.xml",
       });
     AssertJUnit.assertTrue(context.getBeanDefinitionCount() > 0);
-    final Ldap l = (Ldap) context.getBean("ldap");
-    l.close();
+    final LdapConnection conn =
+      (LdapConnection) context.getBean("ldapConnection");
+    conn.open();
+    conn.close();
 
     final ClassPathXmlApplicationContext poolContext =
       new ClassPathXmlApplicationContext(new String[] {

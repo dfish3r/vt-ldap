@@ -19,11 +19,10 @@ import com.meterware.httpunit.WebRequest;
 import com.meterware.httpunit.WebResponse;
 import com.meterware.servletunit.ServletRunner;
 import com.meterware.servletunit.ServletUnitClient;
-import edu.vt.middleware.ldap.Ldap;
-import edu.vt.middleware.ldap.SearchFilter;
+import edu.vt.middleware.ldap.AbstractTest;
+import edu.vt.middleware.ldap.LdapEntry;
+import edu.vt.middleware.ldap.LdapResult;
 import edu.vt.middleware.ldap.TestUtil;
-import edu.vt.middleware.ldap.bean.LdapEntry;
-import edu.vt.middleware.ldap.bean.LdapResult;
 import edu.vt.middleware.ldap.dsml.DsmlResultConverter;
 import org.testng.AssertJUnit;
 import org.testng.annotations.AfterClass;
@@ -37,7 +36,7 @@ import org.testng.annotations.Test;
  * @author  Middleware Services
  * @version  $Revision$
  */
-public class SearchServletTest
+public class SearchServletTest extends AbstractTest
 {
 
   /** Entry created for tests. */
@@ -56,27 +55,14 @@ public class SearchServletTest
    *
    * @throws  Exception  On test failure.
    */
-  @Parameters({ "createEntry8", "webXml" })
+  @Parameters({ "createEntry11", "webXml" })
   @BeforeClass(groups = {"servlettest"})
   public void createLdapEntry(final String ldifFile, final String webXml)
     throws Exception
   {
     final String ldif = TestUtil.readFileIntoString(ldifFile);
-    testLdapEntry = TestUtil.convertLdifToEntry(ldif);
-
-    Ldap ldap = TestUtil.createSetupLdap();
-    ldap.create(
-      testLdapEntry.getDn(),
-      testLdapEntry.getLdapAttributes().toAttributes());
-    ldap.close();
-    ldap = TestUtil.createLdap();
-    while (
-      !ldap.compare(
-          testLdapEntry.getDn(),
-          new SearchFilter(testLdapEntry.getDn().split(",")[0]))) {
-      Thread.sleep(100);
-    }
-    ldap.close();
+    testLdapEntry = TestUtil.convertLdifToResult(ldif).getEntry();
+    super.createLdapEntry(testLdapEntry);
 
     this.ldifServletRunner = new ServletRunner(new File(webXml));
     this.dsmlServletRunner = new ServletRunner(new File(webXml));
@@ -88,9 +74,7 @@ public class SearchServletTest
   public void deleteLdapEntry()
     throws Exception
   {
-    final Ldap ldap = TestUtil.createSetupLdap();
-    ldap.delete(testLdapEntry.getDn());
-    ldap.close();
+    super.deleteLdapEntry(testLdapEntry.getDn());
   }
 
 
@@ -115,8 +99,7 @@ public class SearchServletTest
     final String ldifFile)
     throws Exception
   {
-    final String ldif = TestUtil.readFileIntoString(ldifFile);
-    final LdapEntry entry = TestUtil.convertLdifToEntry(ldif);
+    final String expected = TestUtil.readFileIntoString(ldifFile);
 
     final ServletUnitClient sc = this.ldifServletRunner.newClient();
     final WebRequest request = new PostMethodWebRequest(
@@ -129,8 +112,8 @@ public class SearchServletTest
     AssertJUnit.assertNotNull(response);
     AssertJUnit.assertEquals("text/plain", response.getContentType());
 
-    final LdapEntry result = TestUtil.convertLdifToEntry(response.getText());
-    AssertJUnit.assertEquals(entry, result);
+    final LdapResult result = TestUtil.convertLdifToResult(response.getText());
+    AssertJUnit.assertEquals(TestUtil.convertLdifToResult(expected), result);
   }
 
 

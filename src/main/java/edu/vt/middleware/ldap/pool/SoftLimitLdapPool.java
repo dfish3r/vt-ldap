@@ -14,7 +14,7 @@
 package edu.vt.middleware.ldap.pool;
 
 import java.util.NoSuchElementException;
-import edu.vt.middleware.ldap.Ldap;
+import edu.vt.middleware.ldap.LdapConnection;
 
 /**
  * <code>SoftLimitLdapPool</code> implements a pool of ldap objects that has a
@@ -46,7 +46,7 @@ public class SoftLimitLdapPool extends BlockingLdapPool
    *
    * @param  lf  ldap factory
    */
-  public SoftLimitLdapPool(final LdapFactory<Ldap> lf)
+  public SoftLimitLdapPool(final LdapFactory<LdapConnection> lf)
   {
     super(new LdapPoolConfig(), lf);
   }
@@ -58,17 +58,18 @@ public class SoftLimitLdapPool extends BlockingLdapPool
    * @param  lpc  ldap pool configuration
    * @param  lf  ldap factory
    */
-  public SoftLimitLdapPool(final LdapPoolConfig lpc, final LdapFactory<Ldap> lf)
+  public SoftLimitLdapPool(
+    final LdapPoolConfig lpc, final LdapFactory<LdapConnection> lf)
   {
     super(lpc, lf);
   }
 
 
   /** {@inheritDoc} */
-  public Ldap checkOut()
+  public LdapConnection checkOut()
     throws LdapPoolException
   {
-    Ldap l = null;
+    LdapConnection lc = null;
     if (this.logger.isTraceEnabled()) {
       this.logger.trace(
         "waiting on pool lock for check out " + this.poolLock.getQueueLength());
@@ -82,7 +83,7 @@ public class SoftLimitLdapPool extends BlockingLdapPool
           if (this.logger.isTraceEnabled()) {
             this.logger.trace("retrieve available ldap object");
           }
-          l = this.retrieveAvailable();
+          lc = this.retrieveAvailable();
         } catch (NoSuchElementException e) {
           if (this.logger.isErrorEnabled()) {
             this.logger.error("could not remove ldap object from list", e);
@@ -94,29 +95,29 @@ public class SoftLimitLdapPool extends BlockingLdapPool
       this.poolLock.unlock();
     }
 
-    if (l == null) {
+    if (lc == null) {
       // no object was available, create a new one
-      l = this.createActive();
+      lc = this.createActive();
       if (this.logger.isTraceEnabled()) {
-        this.logger.trace("created new active ldap object: " + l);
+        this.logger.trace("created new active ldap connection: " + lc);
       }
-      if (l == null) {
+      if (lc == null) {
         // create failed, block until an object is available
         if (this.logger.isDebugEnabled()) {
           this.logger.debug(
             "created failed, block until an object " +
             "is available");
         }
-        l = this.blockAvailable();
+        lc = this.blockAvailable();
       } else {
         if (this.logger.isTraceEnabled()) {
-          this.logger.trace("created new active ldap object: " + l);
+          this.logger.trace("created new active ldap connection: " + lc);
         }
       }
     }
 
-    if (l != null) {
-      this.activateAndValidate(l);
+    if (lc != null) {
+      this.activateAndValidate(lc);
     } else {
       if (this.logger.isErrorEnabled()) {
         this.logger.error("Could not service check out request");
@@ -125,6 +126,6 @@ public class SoftLimitLdapPool extends BlockingLdapPool
         "Pool is empty and object creation failed");
     }
 
-    return l;
+    return lc;
   }
 }

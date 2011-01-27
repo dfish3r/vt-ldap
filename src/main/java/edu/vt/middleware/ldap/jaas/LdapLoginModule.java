@@ -18,9 +18,6 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
-import javax.naming.AuthenticationException;
-import javax.naming.NamingException;
-import javax.naming.directory.Attributes;
 import javax.security.auth.Subject;
 import javax.security.auth.callback.CallbackHandler;
 import javax.security.auth.callback.NameCallback;
@@ -29,6 +26,11 @@ import javax.security.auth.login.LoginContext;
 import javax.security.auth.login.LoginException;
 import javax.security.auth.spi.LoginModule;
 import com.sun.security.auth.callback.TextCallbackHandler;
+import edu.vt.middleware.ldap.Credential;
+import edu.vt.middleware.ldap.LdapEntry;
+import edu.vt.middleware.ldap.LdapException;
+import edu.vt.middleware.ldap.auth.AuthenticationException;
+import edu.vt.middleware.ldap.auth.AuthenticationRequest;
 import edu.vt.middleware.ldap.auth.Authenticator;
 
 /**
@@ -97,27 +99,33 @@ public class LdapLoginModule extends AbstractLoginModule implements LoginModule
         false);
       this.getCredentials(nameCb, passCb, false);
 
-      AuthenticationException authEx = null;
-      Attributes attrs = null;
+      LdapException authEx = null;
+      LdapEntry entry = null;
       try {
-        attrs = this.auth.authenticate(
+        entry = this.auth.authenticate(new AuthenticationRequest(
           nameCb.getName(),
-          passCb.getPassword(),
-          this.userRoleAttribute);
-        this.roles.addAll(this.attributesToRoles(attrs));
-        if (this.defaultRole != null && !this.defaultRole.isEmpty()) {
-          this.roles.addAll(this.defaultRole);
+          new Credential(passCb.getPassword()),
+          this.userRoleAttribute)).getResult();
+        if (entry != null) {
+          this.roles.addAll(
+            this.attributesToRoles(entry.getLdapAttributes()));
+          if (this.defaultRole != null && !this.defaultRole.isEmpty()) {
+            this.roles.addAll(this.defaultRole);
+          }
         }
         this.success = true;
       } catch (AuthenticationException e) {
         if (this.tryFirstPass) {
           this.getCredentials(nameCb, passCb, true);
           try {
-            attrs = this.auth.authenticate(
+            entry = this.auth.authenticate(new AuthenticationRequest(
               nameCb.getName(),
-              passCb.getPassword(),
-              this.userRoleAttribute);
-            this.roles.addAll(this.attributesToRoles(attrs));
+              new Credential(passCb.getPassword()),
+              this.userRoleAttribute)).getResult();
+            if (entry != null) {
+              this.roles.addAll(
+                this.attributesToRoles(entry.getLdapAttributes()));
+            }
             if (this.defaultRole != null && !this.defaultRole.isEmpty()) {
               this.roles.addAll(this.defaultRole);
             }
@@ -140,17 +148,19 @@ public class LdapLoginModule extends AbstractLoginModule implements LoginModule
       } else {
         if (this.setLdapPrincipal) {
           final LdapPrincipal lp = new LdapPrincipal(nameCb.getName());
-          if (attrs != null) {
-            lp.getLdapAttributes().addAttributes(attrs);
+          if (entry != null) {
+            lp.getLdapAttributes().addAttributes(
+              entry.getLdapAttributes().getAttributes());
           }
           this.principals.add(lp);
         }
 
-        final String loginDn = this.auth.getDn(nameCb.getName());
+        final String loginDn = this.auth.resolveDn(nameCb.getName());
         if (loginDn != null && this.setLdapDnPrincipal) {
           final LdapDnPrincipal lp = new LdapDnPrincipal(loginDn);
-          if (attrs != null) {
-            lp.getLdapAttributes().addAttributes(attrs);
+          if (entry != null) {
+            lp.getLdapAttributes().addAttributes(
+              entry.getLdapAttributes().getAttributes());
           }
           this.principals.add(lp);
         }
@@ -159,15 +169,13 @@ public class LdapLoginModule extends AbstractLoginModule implements LoginModule
         }
         this.storeCredentials(nameCb, passCb, loginDn);
       }
-    } catch (NamingException e) {
+    } catch (LdapException e) {
       if (this.logger.isDebugEnabled()) {
         this.logger.debug("Error occured attempting authentication", e);
       }
       this.success = false;
       throw new LoginException(
         e != null ? e.getMessage() : "Authentication Error");
-    } finally {
-      this.auth.close();
     }
     return true;
   }

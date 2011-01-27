@@ -13,7 +13,7 @@
 */
 package edu.vt.middleware.ldap.pool;
 
-import edu.vt.middleware.ldap.BaseLdap;
+import edu.vt.middleware.ldap.LdapConnection;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -26,7 +26,7 @@ import org.apache.commons.logging.LogFactory;
  * @author  Middleware Services
  * @version  $Revision$ $Date$
  */
-public abstract class AbstractLdapFactory<T extends BaseLdap>
+public abstract class AbstractLdapFactory<T extends LdapConnection>
   implements LdapFactory<T>
 {
 

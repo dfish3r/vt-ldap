@@ -21,14 +21,13 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
-import javax.naming.directory.SearchResult;
+import edu.vt.middleware.ldap.LdapAttribute;
+import edu.vt.middleware.ldap.LdapAttributes;
+import edu.vt.middleware.ldap.LdapEntry;
+import edu.vt.middleware.ldap.LdapResult;
 import edu.vt.middleware.ldap.LdapUtil;
-import edu.vt.middleware.ldap.bean.LdapAttribute;
-import edu.vt.middleware.ldap.bean.LdapAttributes;
-import edu.vt.middleware.ldap.bean.LdapBeanFactory;
-import edu.vt.middleware.ldap.bean.LdapBeanProvider;
-import edu.vt.middleware.ldap.bean.LdapEntry;
-import edu.vt.middleware.ldap.bean.LdapResult;
+import edu.vt.middleware.ldap.SortBehavior;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.dom4j.Document;
@@ -57,43 +56,30 @@ public abstract class AbstractDsml implements Serializable
   /** Log for this class. */
   protected final Log logger = LogFactory.getLog(this.getClass());
 
-  /** Ldap bean factory. */
-  protected LdapBeanFactory beanFactory = LdapBeanProvider.getLdapBeanFactory();
+  /** Ldap result sort behavior. */
+  protected SortBehavior sortBehavior = SortBehavior.getDefaultSortBehavior();
 
 
   /**
-   * Returns the factory for creating ldap beans.
+   * Returns the sort behavior for ldap results.
    *
-   * @return  <code>LdapBeanFactory</code>
+   * @return  <code>SortBehavior</code>
    */
-  public LdapBeanFactory getLdapBeanFactory()
+  public SortBehavior getSortBehavior()
   {
-    return this.beanFactory;
+    return this.sortBehavior;
   }
 
 
   /**
-   * Sets the factory for creating ldap beans.
+   * Sets the sort behavior for ldap results.
    *
-   * @param  lbf  <code>LdapBeanFactory</code>
+   * @param  sb  <code>SortBehavior</code>
    */
-  public void setLdapBeanFactory(final LdapBeanFactory lbf)
+  public void setSortBehavior(final SortBehavior sb)
   {
-    if (lbf != null) {
-      this.beanFactory = lbf;
-    }
+    this.sortBehavior = sb;
   }
-
-
-  /**
-   * This will take the results of a prior LDAP query and convert it to a DSML
-   * <code>Document</code>.
-   *
-   * @param  results  <code>Iterator</code> of LDAP search results
-   *
-   * @return  <code>Document</code>
-   */
-  public abstract Document createDsml(final Iterator<SearchResult> results);
 
 
   /**
@@ -238,28 +224,6 @@ public abstract class AbstractDsml implements Serializable
 
 
   /**
-   * This will write the supplied LDAP search results to the supplied writer in
-   * the form of DSML.
-   *
-   * @param  results  <code>Iterator</code> of LDAP search results
-   * @param  writer  <code>Writer</code> to write to
-   *
-   * @throws  IOException  if an error occurs while writing
-   */
-  public void outputDsml(
-    final Iterator<SearchResult> results,
-    final Writer writer)
-    throws IOException
-  {
-    final XMLWriter xmlWriter = new XMLWriter(
-      writer,
-      OutputFormat.createPrettyPrint());
-    xmlWriter.write(createDsml(results));
-    writer.flush();
-  }
-
-
-  /**
    * This will write the supplied LDAP result to the supplied writer in the form
    * of DSML.
    *
@@ -281,26 +245,6 @@ public abstract class AbstractDsml implements Serializable
 
   /**
    * This will take a Reader containing a DSML <code>Document</code> and convert
-   * it to an Iterator of LDAP search results.
-   *
-   * @param  reader  <code>Reader</code> containing DSML content
-   *
-   * @return  <code>Iterator</code> - of LDAP search results
-   *
-   * @throws  DocumentException  if an error occurs building a document from the
-   * reader
-   * @throws  IOException  if an I/O error occurs
-   */
-  public Iterator<SearchResult> importDsml(final Reader reader)
-    throws DocumentException, IOException
-  {
-    final Document dsml = new SAXReader().read(reader);
-    return createLdapResult(dsml).toSearchResults().iterator();
-  }
-
-
-  /**
-   * This will take a Reader containing a DSML <code>Document</code> and convert
    * it to an <code>LdapResult</code>.
    *
    * @param  reader  <code>Reader</code> containing DSML content
@@ -311,7 +255,7 @@ public abstract class AbstractDsml implements Serializable
    * reader
    * @throws  IOException  if an I/O error occurs
    */
-  public LdapResult importDsmlToLdapResult(final Reader reader)
+  public LdapResult importDsml(final Reader reader)
     throws DocumentException, IOException
   {
     final Document dsml = new SAXReader().read(reader);
@@ -340,7 +284,7 @@ public abstract class AbstractDsml implements Serializable
    */
   protected LdapEntry createLdapEntry(final Element entryElement)
   {
-    final LdapEntry ldapEntry = this.beanFactory.newLdapEntry();
+    final LdapEntry ldapEntry = new LdapEntry(this.sortBehavior);
     ldapEntry.setDn("");
 
     if (entryElement != null) {
@@ -358,8 +302,8 @@ public abstract class AbstractDsml implements Serializable
           final Element attrElement = (Element) attrIterator.next();
           final String attrName = attrElement.attributeValue("name");
           if (attrName != null && attrElement.hasContent()) {
-            final LdapAttribute ldapAttribute = this.beanFactory
-                .newLdapAttribute();
+            final LdapAttribute ldapAttribute = new LdapAttribute(
+              this.sortBehavior);
             ldapAttribute.setName(attrName);
 
             final Iterator<?> valueIterator = attrElement.elementIterator(

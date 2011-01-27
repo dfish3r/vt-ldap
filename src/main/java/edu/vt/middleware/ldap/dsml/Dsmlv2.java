@@ -14,10 +14,9 @@
 package edu.vt.middleware.ldap.dsml;
 
 import java.util.Iterator;
-import javax.naming.NamingException;
-import javax.naming.directory.SearchResult;
-import edu.vt.middleware.ldap.bean.LdapEntry;
-import edu.vt.middleware.ldap.bean.LdapResult;
+
+import edu.vt.middleware.ldap.LdapEntry;
+import edu.vt.middleware.ldap.LdapResult;
 import org.dom4j.Document;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
@@ -40,30 +39,6 @@ public final class Dsmlv2 extends AbstractDsml
 
   /** Default constructor. */
   public Dsmlv2() {}
-
-
-  /**
-   * This will take the results of a prior LDAP query and convert it to a DSML
-   * <code>Document</code>.
-   *
-   * @param  results  <code>Iterator</code> of LDAP search results
-   *
-   * @return  <code>Document</code>
-   */
-  public Document createDsml(final Iterator<SearchResult> results)
-  {
-    Document dsml = null;
-    try {
-      final LdapResult lr = this.beanFactory.newLdapResult();
-      lr.addEntries(results);
-      dsml = this.createDsml(lr);
-    } catch (NamingException e) {
-      if (this.logger.isErrorEnabled()) {
-        this.logger.error("Error creating Element from SearchResult", e);
-      }
-    }
-    return dsml;
-  }
 
 
   /**
@@ -104,20 +79,6 @@ public final class Dsmlv2 extends AbstractDsml
 
 
   /**
-   * This will take a DSML <code>Document</code> and convert it to an Iterator
-   * of LDAP search results.
-   *
-   * @param  doc  <code>Document</code> of DSML
-   *
-   * @return  <code>Iterator</code> - of LDAP search results
-   */
-  public Iterator<SearchResult> createSearchResults(final Document doc)
-  {
-    return this.createLdapResult(doc).toSearchResults().iterator();
-  }
-
-
-  /**
    * This will take a DSML <code>Document</code> and convert it to a <code>
    * LdapResult</code>.
    *
@@ -127,7 +88,7 @@ public final class Dsmlv2 extends AbstractDsml
    */
   public LdapResult createLdapResult(final Document doc)
   {
-    final LdapResult result = this.beanFactory.newLdapResult();
+    final LdapResult result = new LdapResult(this.sortBehavior);
 
     if (doc != null && doc.hasContent()) {
       final Iterator<?> entryIterator = doc.selectNodes(

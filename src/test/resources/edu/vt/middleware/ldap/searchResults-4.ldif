@@ -1,5 +1,4 @@
 dn: uid=4,ou=test,dc=vt,dc=edu
 departmentNumber: 0824
-givenName: Johp
-sn: Dog
-
+givenName: James
+sn: Madison

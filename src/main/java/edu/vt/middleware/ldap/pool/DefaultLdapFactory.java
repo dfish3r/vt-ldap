@@ -14,9 +14,9 @@
 package edu.vt.middleware.ldap.pool;
 
 import java.io.InputStream;
-import javax.naming.NamingException;
-import edu.vt.middleware.ldap.Ldap;
 import edu.vt.middleware.ldap.LdapConfig;
+import edu.vt.middleware.ldap.LdapConnection;
+import edu.vt.middleware.ldap.LdapException;
 
 /**
  * <code>DefaultLdapFactory</code> provides a simple implementation of an ldap
@@ -25,7 +25,7 @@ import edu.vt.middleware.ldap.LdapConfig;
  * @author  Middleware Services
  * @version  $Revision$ $Date$
  */
-public class DefaultLdapFactory extends AbstractLdapFactory<Ldap>
+public class DefaultLdapFactory extends AbstractLdapFactory<LdapConnection>
 {
 
   /** Ldap config to create ldap objects with. */
@@ -98,29 +98,29 @@ public class DefaultLdapFactory extends AbstractLdapFactory<Ldap>
 
 
   /** {@inheritDoc} */
-  public Ldap create()
+  public LdapConnection create()
   {
-    Ldap l = new Ldap(this.config);
+    LdapConnection conn = new LdapConnection(this.config);
     if (this.connectOnCreate) {
       try {
-        l.connect();
-      } catch (NamingException e) {
+        conn.open();
+      } catch (LdapException e) {
         if (this.logger.isErrorEnabled()) {
           this.logger.error("unabled to connect to the ldap", e);
         }
-        l = null;
+        conn = null;
       }
     }
-    return l;
+    return conn;
   }
 
 
   /** {@inheritDoc} */
-  public void destroy(final Ldap l)
+  public void destroy(final LdapConnection lc)
   {
-    l.close();
+    lc.close();
     if (this.logger.isTraceEnabled()) {
-      this.logger.trace("destroyed ldap object: " + l);
+      this.logger.trace("destroyed ldap connection: " + lc);
     }
   }
 }

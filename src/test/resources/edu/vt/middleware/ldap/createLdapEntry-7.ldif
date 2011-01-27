@@ -1,24 +1,15 @@
 dn: uid=7,ou=test,dc=vt,dc=edu
-cn: Johs H Doj
-creationDate: 2015-06-06T12:00:00
+cn: Andrew Jackson
 departmentNumber: 0827
-displayName: Johs H Doj
-eduPersonAffiliation: student
-eduPersonAffiliation: staff
-eduPersonPrimaryAffiliation: student
-givenName: Johs
-initials: JHD
-mail: jdoe7@vt.edu
-groupMembership: uugid=group6,ou=test,dc=vt,dc=edu
-groupMembership: uugid=group9,ou=test,dc=vt,dc=edu
+displayName: Andrew Jackson
+givenName: Andrew
+initials: AJ
+mail: ajackson@vt.edu
 objectClass: inetOrgPerson
 objectClass: organizationalPerson
 objectClass: person
-objectClass: virginiaTechPerson
 objectClass: top
-personType: Virginia Tech Person
-sn: Doj
+sn: Jackson
 uid: 7
 userPassword: {SHA}MwumDiQxhun6JY+Zkth2bqboi8E=
 jpegPhoto:: /9j/4AAQSkZJRgABAQEASABIAAD//gATQ3JlYXRlZCB3aXRoIEdJTVD/2wBDAFA3PEY8MlBGQUZaVVBfeMiCeG5uePWvuZHI////////////////////////////////////////////////////2wBDAVVaWnhpeOuCguv/////////////////////////////////////////////////////////////////////////wAARCAANABcDASIAAhEBAxEB/8QAGAAAAwEBAAAAAAAAAAAAAAAAAAIEAQP/xAAiEAEAAgIABQUAAAAAAAAAAAABAAMCEQQSMUFxISIjMnP/xAAUAQEAAAAAAAAAAAAAAAAAAAAA/8QAFBEBAAAAAAAAAAAAAAAAAAAAAP/aAAwDAQACEQMRAD8A71fHZZW+ge48MWqvG0bLMRcnZvsdpnGH0R0ryvhlAAAdCBPRTXkZ7wHWaEI/D9LP0yhA/9k=
-

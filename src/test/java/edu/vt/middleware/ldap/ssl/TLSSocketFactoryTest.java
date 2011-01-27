@@ -16,7 +16,9 @@ package edu.vt.middleware.ldap.ssl;
 import java.util.Arrays;
 import javax.net.ssl.SSLSocket;
 import edu.vt.middleware.ldap.AnyHostnameVerifier;
-import edu.vt.middleware.ldap.Ldap;
+import edu.vt.middleware.ldap.LdapConnection;
+import edu.vt.middleware.ldap.SearchOperation;
+import edu.vt.middleware.ldap.SearchRequest;
 import edu.vt.middleware.ldap.TestUtil;
 import org.testng.AssertJUnit;
 import org.testng.annotations.Test;
@@ -84,11 +86,11 @@ public class TLSSocketFactoryTest
 
 
   /**
-   * @return  <code>Ldap</code>
+   * @return  ldap connection
    *
-   * @throws  Exception  On ldap construction failure.
+   * @throws  Exception  On ldap connection failure.
    */
-  public Ldap createTLSLdap()
+  public LdapConnection createTLSLdapConnection()
     throws Exception
   {
     // configure TLSSocketFactory
@@ -103,11 +105,11 @@ public class TLSSocketFactoryTest
     sf.initialize();
 
     // configure ldap object to use TLS
-    final Ldap ldap = TestUtil.createLdap();
-    ldap.getLdapConfig().setTls(true);
-    ldap.getLdapConfig().setSslSocketFactory(sf);
-    ldap.getLdapConfig().setHostnameVerifier(new AnyHostnameVerifier());
-    return ldap;
+    final LdapConnection conn = TestUtil.createLdapConnection();
+    conn.getLdapConfig().setTls(true);
+    conn.getLdapConfig().setSslSocketFactory(sf);
+    conn.getLdapConfig().setHostnameVerifier(new AnyHostnameVerifier());
+    return conn;
   }
 
 
@@ -116,22 +118,24 @@ public class TLSSocketFactoryTest
   public void setEnabledCipherSuites()
     throws Exception
   {
-    final Ldap ldap = this.createTLSLdap();
+    final LdapConnection conn = this.createTLSLdapConnection();
     final TLSSocketFactory sf =
-      (TLSSocketFactory) ldap.getLdapConfig().getSslSocketFactory();
+      (TLSSocketFactory) conn.getLdapConfig().getSslSocketFactory();
 
-    AssertJUnit.assertTrue(ldap.connect());
-    ldap.getSchema("ou=test,dc=vt,dc=edu");
+    conn.open();
+    SearchOperation search = new SearchOperation(conn);
+    search.execute(
+      SearchRequest.newObjectScopeSearchRequest("ou=test,dc=vt,dc=edu"));
     AssertJUnit.assertEquals(
       Arrays.asList(((SSLSocket) sf.createSocket()).getEnabledCipherSuites()),
       Arrays.asList(sf.getDefaultCipherSuites()));
     AssertJUnit.assertNotSame(
       Arrays.asList(sf.getDefaultCipherSuites()), Arrays.asList(CIPHERS));
-    ldap.close();
+    conn.close();
 
     sf.setEnabledCipherSuites(UNKNOWN_CIPHERS);
     try {
-      ldap.connect();
+      conn.open();
       AssertJUnit.fail(
         "Should have thrown IllegalArgumentException, no exception thrown");
     } catch (IllegalArgumentException e) {
@@ -140,15 +144,17 @@ public class TLSSocketFactoryTest
       AssertJUnit.fail(
         "Should have thrown IllegalArgumentException, threw " + e);
     }
-    ldap.close();
+    conn.close();
 
     sf.setEnabledCipherSuites(CIPHERS);
-    AssertJUnit.assertTrue(ldap.connect());
-    ldap.getSchema("ou=test,dc=vt,dc=edu");
+    conn.open();
+    search = new SearchOperation(conn);
+    search.execute(
+      SearchRequest.newObjectScopeSearchRequest("ou=test,dc=vt,dc=edu"));
     AssertJUnit.assertEquals(
       Arrays.asList(((SSLSocket) sf.createSocket()).getEnabledCipherSuites()),
       Arrays.asList(CIPHERS));
-    ldap.close();
+    conn.close();
   }
 
 
@@ -157,23 +163,25 @@ public class TLSSocketFactoryTest
   public void setEnabledProtocols()
     throws Exception
   {
-    final Ldap ldap = this.createTLSLdap();
+    final LdapConnection conn = this.createTLSLdapConnection();
     final TLSSocketFactory sf =
-      (TLSSocketFactory) ldap.getLdapConfig().getSslSocketFactory();
+      (TLSSocketFactory) conn.getLdapConfig().getSslSocketFactory();
 
-    AssertJUnit.assertTrue(ldap.connect());
-    ldap.getSchema("ou=test,dc=vt,dc=edu");
+    conn.open();
+    SearchOperation search = new SearchOperation(conn);
+    search.execute(
+      SearchRequest.newObjectScopeSearchRequest("ou=test,dc=vt,dc=edu"));
     AssertJUnit.assertEquals(
       Arrays.asList(((SSLSocket) sf.createSocket()).getEnabledProtocols()),
       Arrays.asList(ALL_PROTOCOLS));
     AssertJUnit.assertNotSame(
       Arrays.asList(((SSLSocket) sf.createSocket()).getEnabledProtocols()),
       Arrays.asList(PROTOCOLS));
-    ldap.close();
+    conn.close();
 
     sf.setEnabledProtocols(FAIL_PROTOCOLS);
     try {
-      ldap.connect();
+      conn.open();
       AssertJUnit.fail(
         "Should have thrown IllegalArgumentException, no exception thrown");
     } catch (IllegalArgumentException e) {
@@ -182,11 +190,11 @@ public class TLSSocketFactoryTest
       AssertJUnit.fail(
         "Should have thrown IllegalArgumentException, threw " + e);
     }
-    ldap.close();
+    conn.close();
 
     sf.setEnabledProtocols(UNKNOWN_PROTOCOLS);
     try {
-      ldap.connect();
+      conn.open();
       AssertJUnit.fail(
         "Should have thrown IllegalArgumentException, no exception thrown");
     } catch (IllegalArgumentException e) {
@@ -195,14 +203,16 @@ public class TLSSocketFactoryTest
       AssertJUnit.fail(
         "Should have thrown IllegalArgumentException, threw " + e);
     }
-    ldap.close();
+    conn.close();
 
     sf.setEnabledProtocols(PROTOCOLS);
-    AssertJUnit.assertTrue(ldap.connect());
-    ldap.getSchema("ou=test,dc=vt,dc=edu");
+    conn.open();
+    search = new SearchOperation(conn);
+    search.execute(
+      SearchRequest.newObjectScopeSearchRequest("ou=test,dc=vt,dc=edu"));
     AssertJUnit.assertEquals(
       Arrays.asList(((SSLSocket) sf.createSocket()).getEnabledProtocols()),
       Arrays.asList(PROTOCOLS));
-    ldap.close();
+    conn.close();
   }
 }

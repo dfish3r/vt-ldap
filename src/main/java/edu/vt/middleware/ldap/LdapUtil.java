@@ -23,13 +23,18 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 /**
- * <code>LdapUtil</code> provides helper methods for <code>Ldap</code>.
+ * Provides utility methods for this package.
  *
  * @author  Middleware Services
  * @version  $Revision$ $Date$
  */
 public final class LdapUtil
 {
+  /**
+   * UTF-8 character set identifier. The value of this constant is
+   * {@value}.
+   */
+  public static final String UTF8_CHARSET = "UTF-8";
 
   /** Size of buffer in bytes to use when reading files. */
   private static final int READ_BUFFER_SIZE = 128;
@@ -39,59 +44,23 @@ public final class LdapUtil
 
 
   /**
-   * This checks a credential to ensure it is the right type and it is not
-   * empty. A credential can be of type String, char[], or byte[].
-   *
-   * @param  credential  <code>Object</code> to check
-   *
-   * @return  <code>boolean</code> - whether the credential is valid
-   */
-  public static boolean checkCredential(final Object credential)
-  {
-    boolean answer = false;
-    if (credential != null) {
-      if (credential instanceof String) {
-        final String string = (String) credential;
-        if (!"".equals(string)) {
-          answer = true;
-        }
-      } else if (credential instanceof char[]) {
-        final char[] array = (char[]) credential;
-        if (array.length != 0) {
-          answer = true;
-        }
-      } else if (credential instanceof byte[]) {
-        final byte[] array = (byte[]) credential;
-        if (array.length != 0) {
-          answer = true;
-        }
-      }
-    }
-    return answer;
-  }
-
-
-  /**
    * This will convert the supplied value to a base64 encoded string. Returns
    * null if the bytes cannot be encoded.
    *
-   * @param  value  <code>byte[]</code> to base64 encode
+   * @param  value  to base64 encode
    *
-   * @return  <code>String</code>
+   * @return  base64 encoded value
    */
   public static String base64Encode(final byte[] value)
   {
     String encodedValue = null;
     if (value != null) {
       try {
-        encodedValue = new String(
-          Base64.encodeBase64(value),
-          LdapConstants.DEFAULT_CHARSET);
+        encodedValue = new String(Base64.encodeBase64(value), UTF8_CHARSET);
       } catch (UnsupportedEncodingException e) {
         final Log logger = LogFactory.getLog(LdapUtil.class);
         if (logger.isErrorEnabled()) {
-          logger.error(
-            "Could not encode value using " + LdapConstants.DEFAULT_CHARSET);
+          logger.error("Could not encode value using " + UTF8_CHARSET, e);
         }
       }
     }
@@ -103,22 +72,45 @@ public final class LdapUtil
    * This will convert the supplied value to a base64 encoded string. Returns
    * null if the string cannot be encoded.
    *
-   * @param  value  <code>String</code> to base64 encode
+   * @param  value  to base64 encode
    *
-   * @return  <code>String</code>
+   * @return  base64 encoded value
    */
   public static String base64Encode(final String value)
   {
     String encodedValue = null;
     if (value != null) {
       try {
-        encodedValue = base64Encode(
-          value.getBytes(LdapConstants.DEFAULT_CHARSET));
+        encodedValue = base64Encode(value.getBytes(UTF8_CHARSET));
       } catch (UnsupportedEncodingException e) {
         final Log logger = LogFactory.getLog(LdapUtil.class);
         if (logger.isErrorEnabled()) {
-          logger.error(
-            "Could not encode value using " + LdapConstants.DEFAULT_CHARSET);
+          logger.error("Could not encode value using " + UTF8_CHARSET, e);
+        }
+      }
+    }
+    return encodedValue;
+  }
+
+
+  /**
+   * This will convert the supplied value to a UTF-8 encoded byte array. Returns
+   * null if the string cannot be encoded.
+   *
+   * @param  value  to UTF-8 encode
+   *
+   * @return  UTF-8 encoded value
+   */
+  public static byte[] utf8Encode(final String value)
+  {
+    byte[] encodedValue = null;
+    if (value != null) {
+      try {
+        encodedValue = value.getBytes(UTF8_CHARSET);
+      } catch (UnsupportedEncodingException e) {
+        final Log logger = LogFactory.getLog(LdapUtil.class);
+        if (logger.isErrorEnabled()) {
+          logger.error("Could not encode value using " + UTF8_CHARSET, e);
         }
       }
     }
@@ -129,9 +121,9 @@ public final class LdapUtil
   /**
    * This will decode the supplied value as a base64 encoded string to a byte[].
    *
-   * @param  value  <code>Object</code> to base64 encode
+   * @param  value  to base64 decode
    *
-   * @return  <code>String</code>
+   * @return  base64 decoded value
    */
   public static byte[] base64Decode(final String value)
   {
@@ -146,9 +138,9 @@ public final class LdapUtil
   /**
    * Reads the data at the supplied URL and returns it as a byte array.
    *
-   * @param  url  <code>URL</code> to read
+   * @param  url  to read
    *
-   * @return  <code>byte[]</code> read from URL
+   * @return  bytes read from the URL
    *
    * @throws  IOException  if an error occurs reading data
    */
@@ -162,9 +154,9 @@ public final class LdapUtil
   /**
    * Reads the data in the supplied stream and returns it as a byte array.
    *
-   * @param  is  <code>InputStream</code> to read
+   * @param  is  stream to read
    *
-   * @return  <code>byte[]</code> read from the stream
+   * @return  bytes read from the stream
    *
    * @throws  IOException  if an error occurs reading data
    */

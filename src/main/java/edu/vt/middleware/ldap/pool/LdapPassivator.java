@@ -13,7 +13,7 @@
 */
 package edu.vt.middleware.ldap.pool;
 
-import edu.vt.middleware.ldap.BaseLdap;
+import edu.vt.middleware.ldap.LdapConnection;
 
 /**
  * <code>LdapPasivator</code> provides an interface for passivating ldap objects
@@ -24,7 +24,7 @@ import edu.vt.middleware.ldap.BaseLdap;
  * @author  Middleware Services
  * @version  $Revision$ $Date$
  */
-public interface LdapPassivator<T extends BaseLdap>
+public interface LdapPassivator<T extends LdapConnection>
 {
 
 

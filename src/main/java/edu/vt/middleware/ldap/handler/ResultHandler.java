@@ -13,65 +13,28 @@
 */
 package edu.vt.middleware.ldap.handler;
 
-import java.util.List;
-import javax.naming.NamingEnumeration;
-import javax.naming.NamingException;
+import edu.vt.middleware.ldap.LdapException;
 
 /**
- * ResultHandler provides post search processing of ldap results.
+ * Provides post search processing of ldap results.
  *
  * @param  <R>  type of result
- * @param  <O>  type of output
  *
  * @author  Middleware Services
  * @version  $Revision$
  */
-public interface ResultHandler<R, O>
+public interface ResultHandler<R>
 {
 
 
   /**
    * Process the results from an ldap search.
    *
-   * @param  sc  <code>SearchCriteria</code> used to perform the search
-   * @param  en  <code>NamingEnumeration</code> of search results
+   * @param  sc  search criteria used to perform the search
+   * @param  r  search results
    *
-   * @return  <code>List</code> of result objects
-   *
-   * @throws  NamingException  if the LDAP returns an error
+   * @throws  LdapException  if the LDAP returns an error
    */
-  List<O> process(SearchCriteria sc, NamingEnumeration<? extends R> en)
-    throws NamingException;
-
-
-  /**
-   * Process the results from an ldap search.
-   *
-   * @param  sc  <code>SearchCriteria</code> used to perform the search
-   * @param  en  <code>NamingEnumeration</code> of search results
-   * @param  ignore  <code>Class[]</code> of exception types to ignore results
-   *
-   * @return  <code>List</code> of result objects
-   *
-   * @throws  NamingException  if the LDAP returns an error
-   */
-  List<O> process(
-    SearchCriteria sc,
-    NamingEnumeration<? extends R> en,
-    Class<?>[] ignore)
-    throws NamingException;
-
-
-  /**
-   * Process the results from an ldap search.
-   *
-   * @param  sc  <code>SearchCriteria</code> used to perform the search
-   * @param  l  <code>List</code> of search results
-   *
-   * @return  <code>List</code> of result objects
-   *
-   * @throws  NamingException  if the LDAP returns an error
-   */
-  List<O> process(SearchCriteria sc, List<? extends R> l)
-    throws NamingException;
+  void process(SearchCriteria sc, R r)
+    throws LdapException;
 }

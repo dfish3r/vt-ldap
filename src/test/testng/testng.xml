@@ -26,6 +26,12 @@
              value="/edu/vt/middleware/ldap/createLdapEntry-11.ldif"/>
   <parameter name="createEntry12"
              value="/edu/vt/middleware/ldap/createLdapEntry-12.ldif"/>
+  <parameter name="createEntry13"
+             value="/edu/vt/middleware/ldap/createLdapEntry-13.ldif"/>
+  <parameter name="createEntry14"
+             value="/edu/vt/middleware/ldap/createLdapEntry-14.ldif"/>
+  <parameter name="createEntry15"
+             value="/edu/vt/middleware/ldap/createLdapEntry-15.ldif"/>
 
   <parameter name="createGroup2"
              value="/edu/vt/middleware/ldap/createGroupEntry-2.ldif"/>
@@ -84,13 +90,12 @@
              value="/edu/vt/middleware/ldap/searchResults-11.ldif"/>
   <parameter name="searchResults12"
              value="/edu/vt/middleware/ldap/searchResults-12.ldif"/>
-
-  <parameter name="renameOldDn" value="uid=2,ou=test,dc=vt,dc=edu"/>
-  <parameter name="renameNewDn" value="uid=1002,ou=test,dc=vt,dc=edu"/>
-
-  <parameter name="compareDn" value="uid=2,ou=test,dc=vt,dc=edu"/>
-  <parameter name="compareFilter" value="(departmentNumber={0})"/>
-  <parameter name="compareFilterArgs" value="0822"/>
+  <parameter name="searchResults13"
+             value="/edu/vt/middleware/ldap/searchResults-13.ldif"/>
+  <parameter name="searchResults14"
+             value="/edu/vt/middleware/ldap/searchResults-14.ldif"/>
+  <parameter name="searchResults15"
+             value="/edu/vt/middleware/ldap/searchResults-15.ldif"/>
 
   <parameter name="searchDn" value="ou=test,dc=vt,dc=edu"/>
   <parameter name="searchFilter" value="(uid={0})"/>
@@ -100,15 +105,10 @@
              value="/edu/vt/middleware/ldap/searchResults-2.ldif"/>
 
   <parameter name="searchAttributesDn" value="ou=test,dc=vt,dc=edu"/>
-  <parameter name="searchAttributesFilter" value="mail=jdoe2@vt.edu"/>
+  <parameter name="searchAttributesFilter" value="mail=jadams@vt.edu"/>
   <parameter name="searchAttributesReturnAttrs" value="departmentNumber|givenName|sn"/>
   <parameter name="searchAttributesResults"
              value="/edu/vt/middleware/ldap/searchAttributesResults-2.ldif"/>
-
-  <parameter name="pagedSearchDn" value="ou=test,dc=vt,dc=edu"/>
-  <parameter name="pagedSearchFilter" value="uugid=*"/>
-  <parameter name="pagedSearchResults"
-             value="/edu/vt/middleware/ldap/pagedResults.ldif"/>
 
   <parameter name="recursiveSearchDn" value="ou=test,dc=vt,dc=edu"/>
   <parameter name="recursiveSearchFilter" value="(uugid={0})"/>
@@ -138,49 +138,55 @@
   <parameter name="searchExceptionFilter" value="(|(uugid=group2)(uugid=group3)(uugid=group4))"/>
   <parameter name="searchExceptionResultsSize" value="3"/>
 
-  <parameter name="listDn" value="ou=test,dc=vt,dc=edu"/>
-  <parameter name="listResults" value="uid=1|uid=2"/>
-
-  <parameter name="listBindingsDn" value="ou=test,dc=vt,dc=edu"/>
-  <parameter name="listBindingsResults" value="uid=1|uid=2"/>
-
   <parameter name="getAttributesDn" value="uid=2,ou=test,dc=vt,dc=edu"/>
   <parameter name="getAttributesReturnAttrs" value="departmentNumber|givenName|sn"/>
   <parameter name="getAttributesResults"
-             value="departmentNumber=0822|givenName=John|sn=Doe"/>
+             value="departmentNumber=0822|givenName=John|sn=Adams"/>
 
   <parameter name="getAttributesBase64Dn" value="uid=2,ou=test,dc=vt,dc=edu"/>
   <parameter name="getAttributesBase64ReturnAttrs" value="sn|jpegPhoto"/>
   <parameter name="getAttributesBase64Results"
-             value="sn=Doe|jpegPhoto=/9j/4AAQSkZJRgABAQEASABIAAD//gATQ3JlYXRlZCB3aXRoIEdJTVD/2wBDAFA3PEY8MlBGQUZaVVBfeMiCeG5uePWvuZHI////////////////////////////////////////////////////2wBDAVVaWnhpeOuCguv/////////////////////////////////////////////////////////////////////////wAARCAANABcDASIAAhEBAxEB/8QAGAAAAwEBAAAAAAAAAAAAAAAAAAIEAQP/xAAiEAEAAgIABQUAAAAAAAAAAAABAAMCEQQSMUFxISIjMnP/xAAUAQEAAAAAAAAAAAAAAAAAAAAA/8QAFBEBAAAAAAAAAAAAAAAAAAAAAP/aAAwDAQACEQMRAD8A71fHZZW+ge48MWqvG0bLMRcnZvsdpnGH0R0ryvhlAAAdCBPRTXkZ7wHWaEI/D9LP0yhA/9k="/>
+             value="sn=Adams|jpegPhoto=/9j/4AAQSkZJRgABAQEASABIAAD//gATQ3JlYXRlZCB3aXRoIEdJTVD/2wBDAFA3PEY8MlBGQUZaVVBfeMiCeG5uePWvuZHI////////////////////////////////////////////////////2wBDAVVaWnhpeOuCguv/////////////////////////////////////////////////////////////////////////wAARCAANABcDASIAAhEBAxEB/8QAGAAAAwEBAAAAAAAAAAAAAAAAAAIEAQP/xAAiEAEAAgIABQUAAAAAAAAAAAABAAMCEQQSMUFxISIjMnP/xAAUAQEAAAAAAAAAAAAAAAAAAAAA/8QAFBEBAAAAAAAAAAAAAAAAAAAAAP/aAAwDAQACEQMRAD8A71fHZZW+ge48MWqvG0bLMRcnZvsdpnGH0R0ryvhlAAAdCBPRTXkZ7wHWaEI/D9LP0yhA/9k="/>
+
+  <parameter name="pagedSearchDn" value="ou=test,dc=vt,dc=edu"/>
+  <parameter name="pagedSearchFilter" value="(|(uugid=group2)(uugid=group3)(uugid=group4)(uugid=group5))"/>
+  <parameter name="pagedSearchResults"
+             value="/edu/vt/middleware/ldap/pagedResults.ldif"/>
 
   <parameter name="getSchemaDn" value="ou=test,dc=vt,dc=edu"/>
   <parameter name="getSchemaResults"
              value="/edu/vt/middleware/ldap/getSchemaResults.ldif"/>
 
-  <parameter name="addAttributeDn" value="uid=2,ou=test,dc=vt,dc=edu"/>
+  <parameter name="compareDn" value="uid=3,ou=test,dc=vt,dc=edu"/>
+  <parameter name="compareAttrName" value="departmentNumber"/>
+  <parameter name="compareAttrValue" value="0823"/>
+
+  <parameter name="addAttributeDn" value="uid=4,ou=test,dc=vt,dc=edu"/>
   <parameter name="addAttributeAttribute"
              value="title=Test User|title=Best User"/>
 
-  <parameter name="addAttributesDn" value="uid=2,ou=test,dc=vt,dc=edu"/>
+  <parameter name="addAttributesDn" value="uid=4,ou=test,dc=vt,dc=edu"/>
   <parameter name="addAttributesAttributes"
              value="telephoneNumber=15408675309|homePhone=15555555555"/>
 
-  <parameter name="replaceAttributeDn" value="uid=2,ou=test,dc=vt,dc=edu"/>
+  <parameter name="replaceAttributeDn" value="uid=4,ou=test,dc=vt,dc=edu"/>
   <parameter name="replaceAttributeAttribute"
              value="title=Unit Test User|title=Best Test User"/>
 
-  <parameter name="replaceAttributesDn" value="uid=2,ou=test,dc=vt,dc=edu"/>
+  <parameter name="replaceAttributesDn" value="uid=4,ou=test,dc=vt,dc=edu"/>
   <parameter name="replaceAttributesAttributes"
              value="telephoneNumber=12223334444|homePhone=155566677777"/>
 
-  <parameter name="removeAttributeDn" value="uid=2,ou=test,dc=vt,dc=edu"/>
+  <parameter name="removeAttributeDn" value="uid=4,ou=test,dc=vt,dc=edu"/>
   <parameter name="removeAttributeAttribute"
              value="title=Unit Test User|title=Best Test User"/>
 
-  <parameter name="removeAttributesDn" value="uid=2,ou=test,dc=vt,dc=edu"/>
+  <parameter name="removeAttributesDn" value="uid=4,ou=test,dc=vt,dc=edu"/>
   <parameter name="removeAttributesAttributes"
              value="telephoneNumber=12223334444|homePhone=155566677777"/>
+
+  <parameter name="renameOldDn" value="uid=5,ou=test,dc=vt,dc=edu"/>
+  <parameter name="renameNewDn" value="uid=1005,ou=test,dc=vt,dc=edu"/>
 
   <parameter name="krb5Realm" value="VT.EDU"/>
   <parameter name="krb5Kdc" value="ed-dev.middleware.vt.edu"/>
@@ -194,22 +200,24 @@
   <parameter name="loadPropertiesUrl" value="ldap://ed-dev.middleware.vt.edu:389 ldap://ed-dev.middleware.vt.edu:14389"/>
   <parameter name="loadPropertiesBaseDn" value="ou=test,dc=vt,dc=edu"/>
 
-  <parameter name="getDnUid" value="3"/>
-  <parameter name="getDnUser" value="jdoe3@vt.edu"/>
+  <parameter name="getDnUid" value="6"/>
+  <parameter name="getDnUser" value="jqadams@vt.edu"/>
   <parameter name="getDnDuplicateFilter" value="uid=*"/>
 
-  <parameter name="authenticateDn" value="uid=3,ou=test,dc=vt,dc=edu"/>
-  <parameter name="authenticateDnCredential" value="password3"/>
+  <parameter name="authenticateDn" value="uid=6,ou=test,dc=vt,dc=edu"/>
+  <parameter name="authenticateDnCredential" value="password6"/>
   <parameter name="authenticateDnFilter" value="departmentNumber={1}"/>
-  <parameter name="authenticateDnFilterArgs" value="0823"/>
-  <parameter name="authenticateDnReturnAttrs" value="givenName|sn"/>
-  <parameter name="authenticateDnResults" value="givenName=Joho|sn=Dof"/>
-
-  <parameter name="authenticateUser" value="jdoe3@vt.edu"/>
-  <parameter name="authenticateCredential" value="password3"/>
-  <parameter name="authenticateFilter" value="departmentNumber=0823"/>
-  <parameter name="authenticateReturnAttrs" value="givenName|sn"/>
-  <parameter name="authenticateResults" value="givenName=Joho|sn=Dof"/>
+  <parameter name="authenticateDnFilterArgs" value="0826"/>
+  <parameter name="authenticateDnReturnAttrs" value="departmentNumber|givenName|sn"/>
+  <parameter name="authenticateDnResults"
+             value="/edu/vt/middleware/ldap/searchResults-6.ldif"/>
+             
+  <parameter name="authenticateUser" value="jqadams@vt.edu"/>
+  <parameter name="authenticateCredential" value="password6"/>
+  <parameter name="authenticateFilter" value="departmentNumber=0826"/>
+  <parameter name="authenticateReturnAttrs" value="departmentNumber|givenName|sn"/>
+  <parameter name="authenticateResults"
+             value="/edu/vt/middleware/ldap/searchResults-6.ldif"/>
 
   <parameter name="digestMd5User" value="test3"/>
   <parameter name="digestMd5Credential" value="password"/>
@@ -218,52 +226,49 @@
   <parameter name="cramMd5Credential" value="password"/>
 
   <parameter name="toSearchResultsDn" value="ou=test,dc=vt,dc=edu"/>
-  <parameter name="toSearchResultsFilter" value="uid=4"/>
+  <parameter name="toSearchResultsFilter" value="uid=7"/>
   <parameter name="toSearchResultsAttrs" value="departmentNumber|givenName|sn"/>
   <parameter name="toSearchResultsResults"
-             value="/edu/vt/middleware/ldap/searchResults-4.ldif"/>
+             value="/edu/vt/middleware/ldap/searchResults-7.ldif"/>
 
   <parameter name="cliSearchArgs"
-             value="-ldapUrl|ldap://ed-dev.middleware.vt.edu:14389|-baseDn|ou=test,dc=vt,dc=edu|-bindDn|uid=1,ou=test,dc=vt,dc=edu|-bindCredential|VKSxXwlU7YssGl1foLMH2mGMWkifbODb1djfJ4t2|-query|(mail=jdoe5@vt.edu)|departmentNumber|givenName|sn"/>
+             value="-ldapUrl|ldap://ed-dev.middleware.vt.edu:14389|-baseDn|ou=test,dc=vt,dc=edu|-bindDn|uid=1,ou=test,dc=vt,dc=edu|-bindCredential|VKSxXwlU7YssGl1foLMH2mGMWkifbODb1djfJ4t2|-query|(mail=mvburen@vt.edu)|departmentNumber|givenName|sn"/>
   <parameter name="cliSearchResults"
-             value="/edu/vt/middleware/ldap/searchResults-5.ldif"/>
+             value="/edu/vt/middleware/ldap/searchResults-8.ldif"/>
 
   <parameter name="cliAuthArgs"
-             value="-ldapUrl|ldap://ed-dev.middleware.vt.edu:14389|-baseDn|ou=test,dc=vt,dc=edu|-tls|true|-hostnameVerifier|edu.vt.middleware.ldap.AnyHostnameVerifier|-bindDn|uid=1,ou=test,dc=vt,dc=edu|-bindCredential|VKSxXwlU7YssGl1foLMH2mGMWkifbODb1djfJ4t2|-userField|mail|-user|jdoe6@vt.edu|-credential|password6|-authorizationFilter|(departmentNumber=0826)|departmentNumber|givenName|sn"/>
+             value="-ldapUrl|ldap://ed-dev.middleware.vt.edu:14389|-baseDn|ou=test,dc=vt,dc=edu|-tls|true|-hostnameVerifier|edu.vt.middleware.ldap.AnyHostnameVerifier|-bindDn|uid=1,ou=test,dc=vt,dc=edu|-bindCredential|VKSxXwlU7YssGl1foLMH2mGMWkifbODb1djfJ4t2|-userFilter|mail={0}|-user|whharrison@vt.edu|-credential|password9|-authorizationFilter|(departmentNumber=0829)|departmentNumber|givenName|sn"/>
   <parameter name="cliAuthResults"
-             value="/edu/vt/middleware/ldap/searchResults-6.ldif"/>
+             value="/edu/vt/middleware/ldap/searchResults-9.ldif"/>
 
-  <parameter name="jaasDn" value="uid=7,ou=test,dc=vt,dc=edu"/>
-  <parameter name="jaasUser" value="jdoe7@vt.edu"/>
-  <parameter name="jaasUserRole" value="0827"/>
-  <parameter name="jaasUserRoleDefault" value="0827|test-role1|test-role2"/>
+  <parameter name="jaasDn" value="uid=10,ou=test,dc=vt,dc=edu"/>
+  <parameter name="jaasUser" value="jtyler@vt.edu"/>
+  <parameter name="jaasUserRole" value="0830"/>
+  <parameter name="jaasUserRoleDefault" value="0830|test-role1|test-role2"/>
   <parameter name="jaasRole" value="inetOrgPerson|organizationalPerson|person|top|virginiaTechPerson"/>
-  <parameter name="jaasRoleCombined" value="0827|inetOrgPerson|organizationalPerson|person|top|virginiaTechPerson"/>
-  <parameter name="jaasRoleCombinedRecursive" value="0827|group6|group7|group8|group9"/>
-  <parameter name="jaasCredential" value="password7"/>
+  <parameter name="jaasRoleCombined" value="0830|inetOrgPerson|organizationalPerson|person|top|virginiaTechPerson"/>
+  <parameter name="jaasRoleCombinedRecursive" value="0830|group6|group7|group8|group9"/>
+  <parameter name="jaasCredential" value="password10"/>
 
   <parameter name="webXml" value="src/test/resources/web.xml"/>
 
-  <parameter name="ldifSearchServletQuery" value="mail=jdoe8@vt.edu"/>
+  <parameter name="ldifSearchServletQuery" value="mail=jkpolk@vt.edu"/>
   <parameter name="ldifSearchServletAttrs" value="departmentNumber|givenName|sn|jpegPhoto"/>
-  <parameter name="ldifSearchServletLdif" value="/edu/vt/middleware/ldap/searchResults-8.ldif"/>
+  <parameter name="ldifSearchServletLdif" value="/edu/vt/middleware/ldap/searchResults-11.ldif"/>
 
-  <parameter name="dsmlSearchServletQuery" value="uid=8"/>
+  <parameter name="dsmlSearchServletQuery" value="uid=11"/>
   <parameter name="dsmlSearchServletAttrs" value="departmentNumber|givenName|sn|jpegPhoto"/>
-  <parameter name="dsmlSearchServletLdif" value="/edu/vt/middleware/ldap/searchResults-8.ldif"/>
+  <parameter name="dsmlSearchServletLdif" value="/edu/vt/middleware/ldap/searchResults-11.ldif"/>
 
-  <parameter name="attributeServletQuery" value="(&amp;(givenName=johu)(sn=dol))"/>
+  <parameter name="attributeServletQuery" value="(&amp;(givenName=zachary)(sn=taylor))"/>
   <parameter name="attributeServletAttr" value="jpegPhoto"/>
   <parameter name="attributeServletValue" value="/9j/4AAQSkZJRgABAQEASABIAAD//gATQ3JlYXRlZCB3aXRoIEdJTVD/2wBDAFA3PEY8MlBGQUZaVVBfeMiCeG5uePWvuZHI////////////////////////////////////////////////////2wBDAVVaWnhpeOuCguv/////////////////////////////////////////////////////////////////////////wAARCAANABcDASIAAhEBAxEB/8QAGAAAAwEBAAAAAAAAAAAAAAAAAAIEAQP/xAAiEAEAAgIABQUAAAAAAAAAAAABAAMCEQQSMUFxISIjMnP/xAAUAQEAAAAAAAAAAAAAAAAAAAAA/8QAFBEBAAAAAAAAAAAAAAAAAAAAAP/aAAwDAQACEQMRAD8A71fHZZW+ge48MWqvG0bLMRcnZvsdpnGH0R0ryvhlAAAdCBPRTXkZ7wHWaEI/D9LP0yhA/9k="/>
 
-  <parameter name="sessionManagerUser" value="jdoe10@vt.edu"/>
-  <parameter name="sessionManagerPassword" value="password10"/>
-
   <parameter name="dsmlSearchDn" value="ou=test,dc=vt,dc=edu"/>
-  <parameter name="dsmlSearchFilter" value="(uid=11)"/>
+  <parameter name="dsmlSearchFilter" value="(uid=13)"/>
 
   <parameter name="ldifSearchDn" value="ou=test,dc=vt,dc=edu"/>
-  <parameter name="ldifSearchFilter" value="(uid=12)"/>
+  <parameter name="ldifSearchFilter" value="(uid=14)"/>
 
   <parameter name="ldapHost" value="ed-dev"/>
   <parameter name="sleepTime" value="10000"/>
@@ -271,21 +276,29 @@
   <test name="coretests" parallel="methods" thread-count="12">
     <groups>
       <run>
-        <include name="ldaptest" />
-        <include name="authtest" />
+        <include name="configtest" />
+        <include name="searchtest" />
+        <include name="comparetest" />
+        <include name="modifytest" />
+        <include name="renametest" />
         <include name="beantest" />
+        <include name="springtest" />
+        <include name="authtest" />
         <include name="jaastest" />
         <include name="servlettest" />
         <include name="dsmltest" />
         <include name="ldiftest" />
         <include name="ssltest" />
+      <!--
         <include name="wikitest" />
+      -->
       </run>
     </groups>
     <packages>
       <package name="edu.vt.middleware.ldap.*" />
     </packages>
   </test>
+  <!--
   <test name="clitests">
     <groups>
       <run>
@@ -297,10 +310,11 @@
       <package name="edu.vt.middleware.ldap.*" />
     </packages>
   </test>
+  -->
   <test name="conntest">
     <groups>
       <run>
-        <include name="conntest" />
+        <include name="ldapconntest" />
       </run>
     </groups>
     <packages>

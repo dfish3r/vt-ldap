@@ -17,8 +17,6 @@ import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
-import java.util.Iterator;
-import javax.naming.directory.SearchResult;
 import edu.vt.middleware.ldap.dsml.Dsmlv1;
 import edu.vt.middleware.ldap.dsml.Dsmlv2;
 import edu.vt.middleware.ldap.ldif.Ldif;
@@ -87,9 +85,6 @@ public class LdapCli extends AbstractCli
   {
     final LdapConfig config = new LdapConfig();
     this.initLdapProperties(config, line);
-    if (line.hasOption(OPT_TRACE)) {
-      config.setTracePackets(System.out);
-    }
     if (config.getBindDn() != null && config.getBindCredential() == null) {
       // prompt the user to enter a password
       System.out.print(
@@ -97,7 +92,7 @@ public class LdapCli extends AbstractCli
 
       final String pass = (new BufferedReader(new InputStreamReader(System.in)))
           .readLine();
-      config.setBindCredential(pass);
+      config.setBindCredential(new Credential(pass));
     }
     return config;
   }
@@ -140,32 +135,34 @@ public class LdapCli extends AbstractCli
     final String[] attrs)
     throws Exception
   {
-    final Ldap ldap = new Ldap();
-    ldap.setLdapConfig(config);
+    final LdapConnection conn = new LdapConnection(config);
+    final SearchOperation search = new SearchOperation(conn);
 
     try {
-      Iterator<SearchResult> results = null;
+      LdapResult result = null;
       if (attrs == null || attrs.length == 0) {
-        results = ldap.search(new SearchFilter(filter));
+        result = search.execute(
+          new SearchRequest(new SearchFilter(filter))).getResult();
       } else {
-        results = ldap.search(new SearchFilter(filter), attrs);
+        result = search.execute(
+          new SearchRequest(new SearchFilter(filter), attrs)).getResult();
       }
       if (this.outputDsmlv1) {
         (new Dsmlv1()).outputDsml(
-          results,
+          result,
           new BufferedWriter(new OutputStreamWriter(System.out)));
       } else if (this.outputDsmlv2) {
         (new Dsmlv2()).outputDsml(
-          results,
+          result,
           new BufferedWriter(new OutputStreamWriter(System.out)));
       } else {
         (new Ldif()).outputLdif(
-          results,
+          result,
           new BufferedWriter(new OutputStreamWriter(System.out)));
       }
     } finally {
-      if (ldap != null) {
-        ldap.close();
+      if (conn != null) {
+        conn.close();
       }
     }
   }

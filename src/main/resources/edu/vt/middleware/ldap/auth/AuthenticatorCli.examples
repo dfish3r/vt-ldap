@@ -1,17 +1,17 @@
 - Authenticate a user and return their ldap entry
 
    ldapauth -ldapUrl ldap://directory.vt.edu -baseDn ou=People,dc=vt,dc=edu \
-            -tls true -userField uupid
+            -tls true -userFilter uupid={0}
 
 - Authenticate and authorize a user on their accountState attribute
 
    ldapauth -ldapUrl ldap://directory.vt.edu -baseDn ou=People,dc=vt,dc=edu \
-            -tls true -userField uupid -authorizationFilter accountState=active
+            -tls true -userFilter uupid={0} -authorizationFilter accountState=active
 
 - Authenticate a user and return their mail attribute in dsmlv1 format
 
    ldapauth -ldapUrl ldap://directory.vt.edu -baseDn ou=People,dc=vt,dc=edu \
-            -tls true -userField uupid -dsmlv1 mail
+            -tls true -userFilter uupid={0} -dsmlv1 mail
 
 - Display all the command line options available 
 

@@ -18,21 +18,15 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.StringReader;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
-import javax.naming.directory.Attributes;
-import javax.naming.directory.SearchResult;
 import edu.vt.middleware.ldap.auth.Authenticator;
+import edu.vt.middleware.ldap.auth.AuthenticatorConfig;
 import edu.vt.middleware.ldap.auth.NoopDnResolver;
-import edu.vt.middleware.ldap.bean.LdapAttributes;
-import edu.vt.middleware.ldap.bean.LdapBeanProvider;
-import edu.vt.middleware.ldap.bean.LdapEntry;
-import edu.vt.middleware.ldap.bean.LdapResult;
 import edu.vt.middleware.ldap.ldif.Ldif;
 import org.testng.annotations.DataProvider;
 
 /**
- * Common methods for ldap tests.
+ * Utility methods for ldap tests.
  *
  * @author  Middleware Services
  * @version  $Revision$
@@ -45,165 +39,158 @@ public final class TestUtil
 
 
   /**
-   * @return  Test configuration.
+   * @return  ldap connection
    *
-   * @throws  Exception  On test data generation failure.
+   * @throws  Exception  On test failure.
    */
   @DataProvider(name = "setup-ldap")
-  public static Ldap createSetupLdap()
+  public static LdapConnection createSetupLdapConnection()
     throws Exception
   {
-    final Ldap l = new Ldap();
-    l.loadFromProperties(
-      TestUtil.class.getResourceAsStream("/ldap.setup.properties"));
-    return l;
+    return new LdapConnection(
+      LdapConfig.createFromProperties(
+        TestUtil.class.getResourceAsStream("/ldap.setup.properties")));
   }
 
 
   /**
-   * @return  Test configuration.
+   * @return  ldap connection
    *
-   * @throws  Exception  On test data generation failure.
+   * @throws  Exception  On test failure.
    */
   @DataProvider(name = "ldap")
-  public static Ldap createLdap()
+  public static LdapConnection createLdapConnection()
     throws Exception
   {
-    final Ldap l = new Ldap();
-    l.loadFromProperties();
-    return l;
+    return new LdapConnection(LdapConfig.createFromProperties(null));
   }
 
 
   /**
-   * @return  Test configuration.
+   * @return  ldap connection
    *
-   * @throws  Exception  On test data generation failure.
+   * @throws  Exception  On test failure.
    */
   @DataProvider(name = "sasl-external-ldap")
-  public static Ldap createSaslExternalLdap()
+  public static LdapConnection createSaslExternalLdapConnection()
     throws Exception
   {
-    final Ldap l = new Ldap();
-    l.loadFromProperties(
-      TestUtil.class.getResourceAsStream("/ldap.sasl.properties"));
-    return l;
+    return new LdapConnection(
+      LdapConfig.createFromProperties(
+        TestUtil.class.getResourceAsStream("/ldap.external.properties")));
   }
 
 
   /**
-   * @return  Test configuration.
+   * @return  ldap connection
    *
-   * @throws  Exception  On test data generation failure.
+   * @throws  Exception  On test failure.
    */
   @DataProvider(name = "gss-api-ldap")
-  public static Ldap createGssApiLdap()
+  public static LdapConnection createGssApiLdapConnection()
     throws Exception
   {
-    final Ldap l = new Ldap();
-    l.loadFromProperties(
-      TestUtil.class.getResourceAsStream("/ldap.gssapi.properties"));
-    return l;
+    return new LdapConnection(
+      LdapConfig.createFromProperties(
+        TestUtil.class.getResourceAsStream("/ldap.gssapi.properties")));
   }
 
 
   /**
-   * @return  Test configuration.
+   * @return  authenticator
    *
-   * @throws  Exception  On test data generation failure.
+   * @throws  Exception  On test failure.
    */
   @DataProvider(name = "ssl-auth")
   public static Authenticator createSSLAuthenticator()
     throws Exception
   {
-    final Authenticator a = new Authenticator();
-    a.loadFromProperties(
-      TestUtil.class.getResourceAsStream("/ldap.ssl.properties"));
-    return a;
+    return new Authenticator(
+      AuthenticatorConfig.createFromProperties(
+        TestUtil.class.getResourceAsStream("/ldap.ssl.properties")));
   }
 
 
   /**
-   * @return  Test configuration.
+   * @return  authenticator
    *
-   * @throws  Exception  On test data generation failure.
+   * @throws  Exception  On test failure.
    */
   @DataProvider(name = "ssl-dn-auth")
   public static Authenticator createSSLDnAuthenticator()
     throws Exception
   {
-    final Authenticator a = new Authenticator();
-    a.loadFromProperties(
-      TestUtil.class.getResourceAsStream("/ldap.ssl.properties"));
-    a.getAuthenticatorConfig().setDnResolver(new NoopDnResolver());
-    return a;
+    final Authenticator auth = new Authenticator(
+      AuthenticatorConfig.createFromProperties(
+        TestUtil.class.getResourceAsStream("/ldap.ssl.properties")));
+    auth.getAuthenticatorConfig().setDnResolver(new NoopDnResolver());
+    return auth;
   }
 
 
   /**
-   * @return  Test configuration.
+   * @return  authenticator
    *
-   * @throws  Exception  On test data generation failure.
+   * @throws  Exception  On test failure.
    */
   @DataProvider(name = "tls-auth")
   public static Authenticator createTLSAuthenticator()
     throws Exception
   {
-    final Authenticator a = new Authenticator();
-    a.loadFromProperties(
-      TestUtil.class.getResourceAsStream("/ldap.tls.properties"));
-    return a;
+    return new Authenticator(
+      AuthenticatorConfig.createFromProperties(
+        TestUtil.class.getResourceAsStream("/ldap.tls.properties")));
   }
 
 
   /**
-   * @return  Test configuration.
+   * @return  authenticator
    *
-   * @throws  Exception  On test data generation failure.
+   * @throws  Exception  On test failure.
    */
   @DataProvider(name = "tls-dn-auth")
   public static Authenticator createTLSDnAuthenticator()
     throws Exception
   {
-    final Authenticator a = new Authenticator();
-    a.loadFromProperties(
-      TestUtil.class.getResourceAsStream("/ldap.tls.properties"));
-    a.getAuthenticatorConfig().setDnResolver(new NoopDnResolver());
-    return a;
+    final Authenticator auth = new Authenticator(
+      AuthenticatorConfig.createFromProperties(
+        TestUtil.class.getResourceAsStream("/ldap.tls.properties")));
+    auth.getAuthenticatorConfig().setDnResolver(new NoopDnResolver());
+    return auth;
   }
 
 
   /**
-   * @return  Test configuration.
+   * @return  authenticator
    *
-   * @throws  Exception  On test data generation failure.
+   * @throws  Exception  On test failure.
    */
   @DataProvider(name = "digest-md5-auth")
   public static Authenticator createDigestMD5Authenticator()
     throws Exception
   {
-    final Authenticator a = new Authenticator();
-    a.loadFromProperties(
-      TestUtil.class.getResourceAsStream("/ldap.digest-md5.properties"));
-    a.getAuthenticatorConfig().setDnResolver(new NoopDnResolver());
-    return a;
+    final Authenticator auth = new Authenticator(
+      AuthenticatorConfig.createFromProperties(
+        TestUtil.class.getResourceAsStream("/ldap.digest-md5.properties")));
+    auth.getAuthenticatorConfig().setDnResolver(new NoopDnResolver());
+    return auth;
   }
 
 
   /**
-   * @return  Test configuration.
+   * @return  authenticator
    *
-   * @throws  Exception  On test data generation failure.
+   * @throws  Exception  On test failure.
    */
   @DataProvider(name = "cram-md5-auth")
   public static Authenticator createCramMD5Authenticator()
     throws Exception
   {
-    final Authenticator a = new Authenticator();
-    a.loadFromProperties(
-      TestUtil.class.getResourceAsStream("/ldap.cram-md5.properties"));
-    a.getAuthenticatorConfig().setDnResolver(new NoopDnResolver());
-    return a;
+    final Authenticator auth = new Authenticator(
+      AuthenticatorConfig.createFromProperties(
+        TestUtil.class.getResourceAsStream("/ldap.cram-md5.properties")));
+    auth.getAuthenticatorConfig().setDnResolver(new NoopDnResolver());
+    return auth;
   }
 
 
@@ -252,94 +239,18 @@ public final class TestUtil
 
 
   /**
-   * Creates a new <code>LdapResult</code> with the supplied <code>
-   * Iterator</code> of search results.
-   *
-   * @param  iter  <code>Iterator</code> of search results
-   *
-   * @return  <code>LdapResult</code>
-   *
-   * @throws  Exception  if search results cannot be read
-   */
-  public static LdapResult newLdapResult(final Iterator<SearchResult> iter)
-    throws Exception
-  {
-    final LdapResult lr = LdapBeanProvider.getLdapBeanFactory().newLdapResult();
-    lr.addEntries(iter);
-    return lr;
-  }
-
-
-  /**
-   * Converts a ldif to a <code>LdapResult</code>.
+   * Converts an ldif to a ldap result.
    *
    * @param  ldif  to convert.
    *
-   * @return  LdapResult.
+   * @return  ldap result.
    *
    * @throws  Exception  if ldif cannot be read
    */
   public static LdapResult convertLdifToResult(final String ldif)
     throws Exception
   {
-    return (new Ldif()).importLdifToLdapResult(new StringReader(ldif));
-  }
-
-
-  /**
-   * Creates a new <code>LdapEntry</code> with the supplied <code>
-   * SearchResult</code>.
-   *
-   * @param  sr  <code>SearchResult</code>
-   *
-   * @return  <code>LdapEntry</code>
-   *
-   * @throws  Exception  if search result cannot be read
-   */
-  public static LdapEntry newLdapEntry(final SearchResult sr)
-    throws Exception
-  {
-    final LdapEntry le = LdapBeanProvider.getLdapBeanFactory().newLdapEntry();
-    le.setEntry(sr);
-    return le;
-  }
-
-
-  /**
-   * Converts a ldif to a <code>LdapEntry</code>.
-   *
-   * @param  ldif  to convert.
-   *
-   * @return  LdapEntry.
-   *
-   * @throws  Exception  if ldif cannot be read
-   */
-  public static LdapEntry convertLdifToEntry(final String ldif)
-    throws Exception
-  {
-    return
-      (new Ldif()).importLdifToLdapResult(new StringReader(ldif)).getEntries()
-        .iterator().next();
-  }
-
-
-  /**
-   * Creates a new <code>LdapAttributes</code> with the supplied <code>
-   * Attributes</code>.
-   *
-   * @param  attrs  <code>Attributes</code>
-   *
-   * @return  <code>LdapAttributes</code>
-   *
-   * @throws  Exception  if attributes cannot be read
-   */
-  public static LdapAttributes newLdapAttributes(final Attributes attrs)
-    throws Exception
-  {
-    final LdapAttributes la = LdapBeanProvider.getLdapBeanFactory()
-        .newLdapAttributes();
-    la.addAttributes(attrs);
-    return la;
+    return (new Ldif()).importLdif(new StringReader(ldif));
   }
 
 
@@ -349,12 +260,11 @@ public final class TestUtil
    *
    * @param  attrs  to convert.
    *
-   * @return  LdapAttributes.
+   * @return  ldap attributes.
    */
   public static LdapAttributes convertStringToAttributes(final String attrs)
   {
-    final LdapAttributes la = LdapBeanProvider.getLdapBeanFactory()
-        .newLdapAttributes();
+    final LdapAttributes la = new LdapAttributes();
     final String[] s = attrs.split("\\|");
     for (int i = 0; i < s.length; i++) {
       final String[] nameValuePairs = s[i].trim().split("=", 2);

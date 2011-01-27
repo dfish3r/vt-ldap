@@ -17,7 +17,6 @@ import java.security.Principal;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
-import javax.naming.NamingException;
 import javax.security.auth.Subject;
 import javax.security.auth.callback.CallbackHandler;
 import javax.security.auth.callback.NameCallback;
@@ -26,6 +25,7 @@ import javax.security.auth.login.LoginContext;
 import javax.security.auth.login.LoginException;
 import javax.security.auth.spi.LoginModule;
 import com.sun.security.auth.callback.TextCallbackHandler;
+import edu.vt.middleware.ldap.LdapException;
 import edu.vt.middleware.ldap.auth.Authenticator;
 
 /**
@@ -98,7 +98,7 @@ public class LdapDnAuthorizationModule extends AbstractLoginModule
         this.success = true;
       }
 
-      final String loginDn = this.auth.getDn(nameCb.getName());
+      final String loginDn = auth.resolveDn(nameCb.getName());
       if (loginDn == null && this.noResultsIsError) {
         this.success = false;
         throw new LoginException("Could not find DN for " + nameCb.getName());
@@ -112,14 +112,13 @@ public class LdapDnAuthorizationModule extends AbstractLoginModule
         this.success = true;
       }
       this.storeCredentials(nameCb, passCb, loginDn);
-    } catch (NamingException e) {
+    } catch (LdapException e) {
       if (this.logger.isDebugEnabled()) {
         this.logger.debug("Error occured attempting DN lookup", e);
       }
       this.success = false;
-      throw new LoginException(e.getMessage());
-    } finally {
-      this.auth.close();
+      throw new LoginException(
+        e != null ? e.getMessage() : "DN resolution error");
     }
     return true;
   }

@@ -13,13 +13,13 @@
 */
 package edu.vt.middleware.ldap.auth.handler;
 
-import javax.naming.NamingException;
+import edu.vt.middleware.ldap.LdapException;
 import edu.vt.middleware.ldap.auth.AuthenticatorConfig;
-import edu.vt.middleware.ldap.handler.ConnectionHandler;
+import edu.vt.middleware.ldap.provider.Connection;
+import edu.vt.middleware.ldap.provider.ConnectionFactory;
 
 /**
- * <code>AuthenticationHandler</code> provides an interface for LDAP
- * authentication implementations.
+ * Provides an interface for LDAP authentication implementations.
  *
  * @author  Middleware Services
  * @version  $Revision$
@@ -37,20 +37,21 @@ public interface AuthenticationHandler
 
 
   /**
-   * Perform an ldap authentication. Implementations should throw <code>
-   * AuthenticationException</code> to indicate an authentication failure. The
-   * resulting <code>LdapContext</code> can be retrieved from the connection
-   * handler if it is needed.
+   * Perform an ldap authentication. Implementations should throw authentication
+   * exception to indicate an authentication failure. The
+   * resulting connection should be returned so that other operations can be
+   * performed on it.
    *
-   * @param  ch  <code>ConnectionHandler</code> to communicate with the LDAP
-   * @param  ac  <code>AuthenticationCriteria</code> to perform the
-   * authentication with
+   * @param  cf  connection factory to create connection
+   * @param  ac  to perform the authentication with
+   *
+   * @return  connection created by the connection handler
    *
    * @throws  AuthenticationException  if authentication fails
-   * @throws  NamingException  if an LDAP error occurs
+   * @throws  LdapException  if ldap operation fails
    */
-  void authenticate(ConnectionHandler ch, AuthenticationCriteria ac)
-    throws NamingException;
+  Connection authenticate(ConnectionFactory cf, AuthenticationCriteria ac)
+    throws LdapException;
 
 
   /**

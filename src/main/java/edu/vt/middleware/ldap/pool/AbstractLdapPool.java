@@ -18,7 +18,7 @@ import java.util.Queue;
 import java.util.Timer;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
-import edu.vt.middleware.ldap.BaseLdap;
+import edu.vt.middleware.ldap.LdapConnection;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -38,7 +38,7 @@ import org.apache.commons.logging.LogFactory;
  * @author  Middleware Services
  * @version  $Revision$ $Date$
  */
-public abstract class AbstractLdapPool<T extends BaseLdap>
+public abstract class AbstractLdapPool<T extends LdapConnection>
   implements LdapPool<T>
 {
 
@@ -58,10 +58,12 @@ public abstract class AbstractLdapPool<T extends BaseLdap>
   protected final Log logger = LogFactory.getLog(this.getClass());
 
   /** List of available ldap objects in the pool. */
-  protected Queue<PooledLdap<T>> available = new LinkedList<PooledLdap<T>>();
+  protected Queue<PooledLdapConnection<T>> available =
+    new LinkedList<PooledLdapConnection<T>>();
 
   /** List of ldap objects in use. */
-  protected Queue<PooledLdap<T>> active = new LinkedList<PooledLdap<T>>();
+  protected Queue<PooledLdapConnection<T>> active =
+    new LinkedList<PooledLdapConnection<T>>();
 
   /** Ldap pool config. */
   protected LdapPoolConfig poolConfig;
@@ -176,12 +178,12 @@ public abstract class AbstractLdapPool<T extends BaseLdap>
     this.poolLock.lock();
     try {
       while (this.available.size() > 0) {
-        final PooledLdap<T> pl = this.available.remove();
-        this.ldapFactory.destroy(pl.getLdap());
+        final PooledLdapConnection<T> pl = this.available.remove();
+        this.ldapFactory.destroy(pl.getLdapConnection());
       }
       while (this.active.size() > 0) {
-        final PooledLdap<T> pl = this.active.remove();
-        this.ldapFactory.destroy(pl.getLdap());
+        final PooledLdapConnection<T> pl = this.active.remove();
+        this.ldapFactory.destroy(pl.getLdapConnection());
       }
       if (this.logger.isDebugEnabled()) {
         this.logger.debug("pool closed");
@@ -203,7 +205,7 @@ public abstract class AbstractLdapPool<T extends BaseLdap>
   {
     final T t = this.ldapFactory.create();
     if (t != null) {
-      final PooledLdap<T> pl = new PooledLdap<T>(t);
+      final PooledLdapConnection<T> pl = new PooledLdapConnection<T>(t);
       this.poolLock.lock();
       try {
         this.available.add(pl);
@@ -228,7 +230,7 @@ public abstract class AbstractLdapPool<T extends BaseLdap>
   {
     final T t = this.ldapFactory.create();
     if (t != null) {
-      final PooledLdap<T> pl = new PooledLdap<T>(t);
+      final PooledLdapConnection<T> pl = new PooledLdapConnection<T>(t);
       this.poolLock.lock();
       try {
         this.active.add(pl);
@@ -254,7 +256,7 @@ public abstract class AbstractLdapPool<T extends BaseLdap>
   {
     final T t = this.ldapFactory.create();
     if (t != null) {
-      final PooledLdap<T> pl = new PooledLdap<T>(t);
+      final PooledLdapConnection<T> pl = new PooledLdapConnection<T>(t);
       this.poolLock.lock();
       try {
         this.available.add(pl);
@@ -279,7 +281,7 @@ public abstract class AbstractLdapPool<T extends BaseLdap>
   protected void removeAvailable(final T t)
   {
     boolean destroy = false;
-    final PooledLdap<T> pl = new PooledLdap<T>(t);
+    final PooledLdapConnection<T> pl = new PooledLdapConnection<T>(t);
     this.poolLock.lock();
     try {
       if (this.available.remove(pl)) {
@@ -310,7 +312,7 @@ public abstract class AbstractLdapPool<T extends BaseLdap>
   protected void removeActive(final T t)
   {
     boolean destroy = false;
-    final PooledLdap<T> pl = new PooledLdap<T>(t);
+    final PooledLdapConnection<T> pl = new PooledLdapConnection<T>(t);
     this.poolLock.lock();
     try {
       if (this.active.remove(pl)) {
@@ -342,7 +344,7 @@ public abstract class AbstractLdapPool<T extends BaseLdap>
   protected void removeAvailableAndActive(final T t)
   {
     boolean destroy = false;
-    final PooledLdap<T> pl = new PooledLdap<T>(t);
+    final PooledLdapConnection<T> pl = new PooledLdapConnection<T>(t);
     this.poolLock.lock();
     try {
       if (this.available.remove(pl)) {
@@ -451,15 +453,16 @@ public abstract class AbstractLdapPool<T extends BaseLdap>
           this.logger.debug("pruning pool of size " + this.available.size());
         }
         while (this.available.size() > this.poolConfig.getMinPoolSize()) {
-          PooledLdap<T> pl = this.available.peek();
+          PooledLdapConnection<T> pl = this.available.peek();
           final long time = System.currentTimeMillis() - pl.getCreatedTime();
           if (time > this.poolConfig.getExpirationTime()) {
             pl = this.available.remove();
             if (this.logger.isTraceEnabled()) {
               this.logger.trace(
-                "removing " + pl.getLdap() + " in the pool for " + time + "ms");
+                "removing " + pl.getLdapConnection() +
+                " in the pool for " + time + "ms");
             }
-            this.ldapFactory.destroy(pl.getLdap());
+            this.ldapFactory.destroy(pl.getLdapConnection());
           } else {
             break;
           }
@@ -490,30 +493,32 @@ public abstract class AbstractLdapPool<T extends BaseLdap>
               "validate for pool of size " + this.available.size());
           }
 
-          final Queue<PooledLdap<T>> remove = new LinkedList<PooledLdap<T>>();
-          for (PooledLdap<T> pl : this.available) {
+          final Queue<PooledLdapConnection<T>> remove =
+            new LinkedList<PooledLdapConnection<T>>();
+          for (PooledLdapConnection<T> pl : this.available) {
             if (this.logger.isTraceEnabled()) {
-              this.logger.trace("validating " + pl.getLdap());
+              this.logger.trace("validating " + pl.getLdapConnection());
             }
-            if (this.ldapFactory.validate(pl.getLdap())) {
+            if (this.ldapFactory.validate(pl.getLdapConnection())) {
               if (this.logger.isTraceEnabled()) {
                 this.logger.trace(
-                  "ldap object passed validation: " + pl.getLdap());
+                  "ldap object passed validation: " + pl.getLdapConnection());
               }
             } else {
               if (this.logger.isWarnEnabled()) {
                 this.logger.warn(
-                  "ldap object failed validation: " + pl.getLdap());
+                  "ldap object failed validation: " + pl.getLdapConnection());
               }
               remove.add(pl);
             }
           }
-          for (PooledLdap<T> pl : remove) {
+          for (PooledLdapConnection<T> pl : remove) {
             if (this.logger.isTraceEnabled()) {
-              this.logger.trace("removing " + pl.getLdap() + " from the pool");
+              this.logger.trace(
+                "removing " + pl.getLdapConnection() + " from the pool");
             }
             this.available.remove(pl);
-            this.ldapFactory.destroy(pl.getLdap());
+            this.ldapFactory.destroy(pl.getLdapConnection());
           }
         }
         this.initializePool();
@@ -572,14 +577,14 @@ public abstract class AbstractLdapPool<T extends BaseLdap>
    *
    * @param  <T>  type of ldap object
    */
-  static protected class PooledLdap<T extends BaseLdap>
+  static protected class PooledLdapConnection<T extends LdapConnection>
   {
 
     /** hash code seed. */
     protected static final int HASH_CODE_SEED = 89;
 
-    /** Underlying ldap object. */
-    private T ldap;
+    /** Underlying search operation object. */
+    private T ldapConn;
 
     /** Time this object was created. */
     private long createdTime;
@@ -590,21 +595,21 @@ public abstract class AbstractLdapPool<T extends BaseLdap>
      *
      * @param  t  ldap object
      */
-    public PooledLdap(final T t)
+    public PooledLdapConnection(final T t)
     {
-      this.ldap = t;
+      this.ldapConn = t;
       this.createdTime = System.currentTimeMillis();
     }
 
 
     /**
-     * Returns the ldap object.
+     * Returns the ldap connection.
      *
-     * @return  underlying ldap object
+     * @return  underlying ldap connection
      */
-    public T getLdap()
+    public T getLdapConnection()
     {
-      return this.ldap;
+      return this.ldapConn;
     }
 
 
@@ -647,8 +652,8 @@ public abstract class AbstractLdapPool<T extends BaseLdap>
     public int hashCode()
     {
       int hc = HASH_CODE_SEED;
-      if (this.ldap != null) {
-        hc += this.ldap.hashCode();
+      if (this.ldapConn != null) {
+        hc += this.ldapConn.hashCode();
       }
       return hc;
     }

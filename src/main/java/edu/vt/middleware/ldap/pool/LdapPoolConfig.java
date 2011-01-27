@@ -336,7 +336,7 @@ public class LdapPoolConfig extends AbstractPropertyConfig
 
 
   /** {@inheritDoc} */
-  public void setEnvironmentProperties(final String name, final String value)
+  public void setProviderProperty(final String name, final String value)
   {
     checkImmutable();
     if (name != null && value != null) {
@@ -348,7 +348,7 @@ public class LdapPoolConfig extends AbstractPropertyConfig
 
 
   /** {@inheritDoc} */
-  public boolean hasEnvironmentProperty(final String name)
+  public boolean hasProviderProperty(final String name)
   {
     return PROPERTIES.hasProperty(name);
   }

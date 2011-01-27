@@ -13,9 +13,11 @@
 */
 package edu.vt.middleware.ldap.auth.handler;
 
-import javax.naming.NamingException;
+import edu.vt.middleware.ldap.LdapException;
 import edu.vt.middleware.ldap.auth.AuthenticatorConfig;
-import edu.vt.middleware.ldap.handler.ConnectionHandler;
+import edu.vt.middleware.ldap.provider.Connection;
+import edu.vt.middleware.ldap.provider.ConnectionFactory;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -45,10 +47,10 @@ public abstract class AbstractAuthenticationHandler
 
 
   /** {@inheritDoc} */
-  public abstract void authenticate(
-    final ConnectionHandler ch,
+  public abstract Connection authenticate(
+    final ConnectionFactory ch,
     final AuthenticationCriteria ac)
-    throws NamingException;
+    throws LdapException;
 
 
   /** {@inheritDoc} */

@@ -16,10 +16,7 @@ package edu.vt.middleware.ldap.dsml;
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
-import javax.naming.NamingException;
-import edu.vt.middleware.ldap.bean.LdapBeanFactory;
-import edu.vt.middleware.ldap.bean.LdapBeanProvider;
-import edu.vt.middleware.ldap.bean.LdapResult;
+import edu.vt.middleware.ldap.LdapResult;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.dom4j.DocumentException;
@@ -37,40 +34,11 @@ public class DsmlResultConverter
   /** Log for this class. */
   protected final Log logger = LogFactory.getLog(getClass());
 
-  /** Ldap bean factory. */
-  protected LdapBeanFactory beanFactory = LdapBeanProvider.getLdapBeanFactory();
-
   /** Class for outputting version 1 DSML. */
   private Dsmlv1 dsmlv1 = new Dsmlv1();
 
   /** Class for outputting version 2 DSML. */
   private Dsmlv2 dsmlv2 = new Dsmlv2();
-
-
-  /**
-   * Returns the factory for creating ldap beans.
-   *
-   * @return  <code>LdapBeanFactory</code>
-   */
-  public LdapBeanFactory getLdapBeanFactory()
-  {
-    return this.beanFactory;
-  }
-
-
-  /**
-   * Sets the factory for creating ldap beans.
-   *
-   * @param  lbf  <code>LdapBeanFactory</code>
-   */
-  public void setLdapBeanFactory(final LdapBeanFactory lbf)
-  {
-    if (lbf != null) {
-      this.beanFactory = lbf;
-      this.dsmlv1.setLdapBeanFactory(lbf);
-      this.dsmlv2.setLdapBeanFactory(lbf);
-    }
-  }
 
 
   /**
@@ -84,7 +52,7 @@ public class DsmlResultConverter
   {
     final StringWriter writer = new StringWriter();
     try {
-      this.dsmlv1.outputDsml(result.toSearchResults().iterator(), writer);
+      this.dsmlv1.outputDsml(result, writer);
     } catch (IOException e) {
       if (this.logger.isWarnEnabled()) {
         this.logger.warn("Could not write dsml to StringWriter", e);
@@ -107,16 +75,12 @@ public class DsmlResultConverter
   public LdapResult fromDsmlv1(final String dsml)
     throws DocumentException
   {
-    final LdapResult result = this.beanFactory.newLdapResult();
+    LdapResult result = null;
     try {
-      result.addEntries(this.dsmlv1.importDsml(new StringReader(dsml)));
+      result = this.dsmlv1.importDsml(new StringReader(dsml));
     } catch (IOException e) {
       if (this.logger.isWarnEnabled()) {
         this.logger.warn("Could not read dsml from StringReader", e);
-      }
-    } catch (NamingException e) {
-      if (this.logger.isErrorEnabled()) {
-        this.logger.error("Unexpected naming exception occurred", e);
       }
     }
     return result;
@@ -134,7 +98,7 @@ public class DsmlResultConverter
   {
     final StringWriter writer = new StringWriter();
     try {
-      this.dsmlv2.outputDsml(result.toSearchResults().iterator(), writer);
+      this.dsmlv2.outputDsml(result, writer);
     } catch (IOException e) {
       if (this.logger.isWarnEnabled()) {
         this.logger.warn("Could not write dsml to StringWriter", e);
@@ -157,16 +121,12 @@ public class DsmlResultConverter
   public LdapResult fromDsmlv2(final String dsml)
     throws DocumentException
   {
-    final LdapResult result = this.beanFactory.newLdapResult();
+    LdapResult result = null;
     try {
-      result.addEntries(this.dsmlv2.importDsml(new StringReader(dsml)));
+      result = this.dsmlv2.importDsml(new StringReader(dsml));
     } catch (IOException e) {
       if (this.logger.isWarnEnabled()) {
         this.logger.warn("Could not read dsml from StringReader", e);
-      }
-    } catch (NamingException e) {
-      if (this.logger.isErrorEnabled()) {
-        this.logger.error("Unexpected naming exception occurred", e);
       }
     }
     return result;

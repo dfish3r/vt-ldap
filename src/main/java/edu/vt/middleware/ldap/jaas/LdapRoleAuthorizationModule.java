@@ -18,8 +18,6 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
-import javax.naming.NamingException;
-import javax.naming.directory.SearchResult;
 import javax.security.auth.Subject;
 import javax.security.auth.callback.CallbackHandler;
 import javax.security.auth.callback.NameCallback;
@@ -28,8 +26,13 @@ import javax.security.auth.login.LoginContext;
 import javax.security.auth.login.LoginException;
 import javax.security.auth.spi.LoginModule;
 import com.sun.security.auth.callback.TextCallbackHandler;
-import edu.vt.middleware.ldap.Ldap;
+import edu.vt.middleware.ldap.LdapConnection;
+import edu.vt.middleware.ldap.LdapEntry;
+import edu.vt.middleware.ldap.LdapException;
+import edu.vt.middleware.ldap.LdapResult;
 import edu.vt.middleware.ldap.SearchFilter;
+import edu.vt.middleware.ldap.SearchOperation;
+import edu.vt.middleware.ldap.SearchRequest;
 
 /**
  * <code>LdapRoleAuthorizationModule</code> provides a JAAS authentication hook
@@ -54,7 +57,7 @@ public class LdapRoleAuthorizationModule extends AbstractLoginModule
   private boolean noResultsIsError;
 
   /** Ldap to use for searching roles against the LDAP. */
-  private Ldap ldap;
+  private LdapConnection ldapConn;
 
 
   /** {@inheritDoc} */
@@ -90,9 +93,10 @@ public class LdapRoleAuthorizationModule extends AbstractLoginModule
       this.logger.debug("noResultsIsError = " + this.noResultsIsError);
     }
 
-    this.ldap = createLdap(options);
+    this.ldapConn = createLdapConnection(options);
     if (this.logger.isDebugEnabled()) {
-      this.logger.debug("Created ldap: " + this.ldap.getLdapConfig());
+      this.logger.debug(
+        "Created ldap connection: " + this.ldapConn.getLdapConfig());
     }
   }
 
@@ -126,17 +130,18 @@ public class LdapRoleAuthorizationModule extends AbstractLoginModule
 
       if (this.roleFilter != null) {
         final Object[] filterArgs = new Object[] {loginDn, loginName, };
-        final Iterator<SearchResult> results = this.ldap.search(
-          new SearchFilter(this.roleFilter, filterArgs),
-          this.roleAttribute);
-        if (!results.hasNext() && this.noResultsIsError) {
+        this.ldapConn.open();
+        final SearchOperation search = new SearchOperation(this.ldapConn);
+        final LdapResult result = search.execute(new SearchRequest(
+          new SearchFilter(
+            this.roleFilter, filterArgs), this.roleAttribute)).getResult();
+        if (result.size() == 0 && this.noResultsIsError) {
           this.success = false;
           throw new LoginException(
             "Could not find roles using " + this.roleFilter);
         }
-        while (results.hasNext()) {
-          final SearchResult sr = results.next();
-          this.roles.addAll(this.attributesToRoles(sr.getAttributes()));
+        for (LdapEntry le : result.getEntries()) {
+          this.roles.addAll(this.attributesToRoles(le.getLdapAttributes()));
         }
       }
       if (this.defaultRole != null && !this.defaultRole.isEmpty()) {
@@ -146,14 +151,14 @@ public class LdapRoleAuthorizationModule extends AbstractLoginModule
         this.success = true;
       }
       this.storeCredentials(nameCb, passCb, null);
-    } catch (NamingException e) {
+    } catch (LdapException e) {
       if (this.logger.isDebugEnabled()) {
         this.logger.debug("Error occured attempting role lookup", e);
       }
       this.success = false;
       throw new LoginException(e.getMessage());
     } finally {
-      this.ldap.close();
+      this.ldapConn.close();
     }
     return true;
   }

@@ -14,14 +14,12 @@
 package edu.vt.middleware.ldap.auth;
 
 import java.io.Serializable;
-import javax.naming.NamingException;
+import edu.vt.middleware.ldap.LdapException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 /**
- * <code>ConstructDnResolver</code> creates an LDAP DN using known information
- * about the LDAP. Specifically it concatenates the first user field with the
- * base DN.
+ * Returns a DN with the user field concatenated with the base DN.
  *
  * @author  Middleware Services
  * @version  $Revision$ $Date$
@@ -38,39 +36,42 @@ public class ConstructDnResolver implements DnResolver, Serializable
   /** Authentication configuration. */
   protected AuthenticatorConfig config;
 
+  /** Directory user field. */
+  protected String userField = "uid";
+
 
   /** Default constructor. */
   public ConstructDnResolver() {}
 
 
   /**
-   * This will create a new <code>ConstructDnResolver</code> with the supplied
-   * <code>AuthenticatorConfig</code>.
+   * Creates a new construct DN resolver.
    *
-   * @param  authConfig  <code>AuthenticatorConfig</code>
+   * @param  ac  authenticator config
    */
-  public ConstructDnResolver(final AuthenticatorConfig authConfig)
+  public ConstructDnResolver(final AuthenticatorConfig ac)
   {
-    this.setAuthenticatorConfig(authConfig);
+    this.setAuthenticatorConfig(ac);
   }
 
 
   /**
-   * This will set the config parameters of this <code>Authenticator</code>.
+   * Creates a new construct DN resolver.
    *
-   * @param  authConfig  <code>AuthenticatorConfig</code>
+   * @param  ac  authenticator config
+   * @param  s  user field
    */
-  public void setAuthenticatorConfig(final AuthenticatorConfig authConfig)
+  public ConstructDnResolver(final AuthenticatorConfig ac, final String s)
   {
-    this.config = authConfig;
+    this.setAuthenticatorConfig(ac);
+    this.setUserField(s);
   }
 
 
   /**
-   * This returns the <code>AuthenticatorConfig</code> of the <code>
-   * Authenticator</code>.
+   * Returns the authenticator config.
    *
-   * @return  <code>AuthenticatorConfig</code>
+   * @return  authenticator config
    */
   public AuthenticatorConfig getAuthenticatorConfig()
   {
@@ -79,27 +80,60 @@ public class ConstructDnResolver implements DnResolver, Serializable
 
 
   /**
-   * Creates a LDAP DN by combining the userField and the base dn.
+   * Sets the authenticator config.
    *
-   * @param  user  <code>String</code> to find dn for
+   * @param  ac  of the authenticator
+   */
+  public void setAuthenticatorConfig(final AuthenticatorConfig ac)
+  {
+    this.config = ac;
+  }
+
+
+  /**
+   * Returns the user field used to construct the entry DN.
    *
-   * @return  <code>String</code> - user's dn
+   * @return  user field
+   */
+  public String getUserField()
+  {
+    return this.userField;
+  }
+
+
+  /**
+   * Sets the user field used to construct the entry DN.
    *
-   * @throws  NamingException  if the LDAP search fails
+   * @param  s  user field to construct DN with
+   */
+  public void setUserField(final String s)
+  {
+    if (this.logger.isTraceEnabled()) {
+      this.logger.trace("setting userField: " + s);
+    }
+    this.userField = s;
+  }
+
+
+  /**
+   * Creates an ldap entry where the DN is the user field and the base DN.
+   *
+   * @param  user  to construct dn for
+   *
+   * @return  ldap entry
+   *
+   * @throws  LdapException  if the LDAP search fails
    */
   public String resolve(final String user)
-    throws NamingException
+    throws LdapException
   {
     String dn = null;
     if (user != null && !"".equals(user)) {
       if (this.logger.isDebugEnabled()) {
-        this.logger.debug("Constructing DN from first userfield and base");
+        this.logger.debug("Constructing DN from userFilter and base");
       }
       dn = String.format(
-        "%s=%s,%s",
-        this.config.getUserField()[0],
-        user,
-        this.config.getBaseDn());
+        "%s=%s,%s", this.userField, user, this.config.getBaseDn());
     } else {
       if (this.logger.isDebugEnabled()) {
         this.logger.debug("User input was empty or null");
@@ -107,8 +141,4 @@ public class ConstructDnResolver implements DnResolver, Serializable
     }
     return dn;
   }
-
-
-  /** {@inheritDoc} */
-  public void close() {}
 }

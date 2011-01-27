@@ -15,10 +15,10 @@ package edu.vt.middleware.ldap.dsml;
 
 import java.io.IOException;
 import java.io.Writer;
-import javax.naming.NamingException;
-import edu.vt.middleware.ldap.Ldap;
-import edu.vt.middleware.ldap.LdapSearch;
+import edu.vt.middleware.ldap.LdapConnection;
+import edu.vt.middleware.ldap.LdapException;
 import edu.vt.middleware.ldap.pool.LdapPool;
+import edu.vt.middleware.ldap.pool.LdapSearch;
 
 /**
  * <code>DsmlSearch</code> queries an LDAP and returns the result as DSML. Each
@@ -56,7 +56,7 @@ public class DsmlSearch extends LdapSearch
    *
    * @param  pool  <code>LdapPool</code>
    */
-  public DsmlSearch(final LdapPool<Ldap> pool)
+  public DsmlSearch(final LdapPool<LdapConnection> pool)
   {
     super(pool);
   }
@@ -94,14 +94,14 @@ public class DsmlSearch extends LdapSearch
    * @param  attrs  <code>String[]</code> to return
    * @param  writer  <code>Writer</code> to write to
    *
-   * @throws  NamingException  if an error occurs while searching
+   * @throws  LdapException  if an error occurs while searching
    * @throws  IOException  if an error occurs while writing search results
    */
   public void search(
     final String query,
     final String[] attrs,
     final Writer writer)
-    throws NamingException, IOException
+    throws LdapException, IOException
   {
     if (this.version == Version.TWO) {
       this.dsmlv2.outputDsml(this.search(query, attrs), writer);

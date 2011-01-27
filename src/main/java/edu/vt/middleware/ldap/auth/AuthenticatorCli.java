@@ -17,12 +17,10 @@ import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
-import javax.naming.directory.Attributes;
 import edu.vt.middleware.ldap.AbstractCli;
-import edu.vt.middleware.ldap.bean.LdapAttributes;
-import edu.vt.middleware.ldap.bean.LdapBeanProvider;
-import edu.vt.middleware.ldap.bean.LdapEntry;
-import edu.vt.middleware.ldap.bean.LdapResult;
+import edu.vt.middleware.ldap.Credential;
+import edu.vt.middleware.ldap.LdapEntry;
+import edu.vt.middleware.ldap.LdapResult;
 import edu.vt.middleware.ldap.dsml.Dsmlv1;
 import edu.vt.middleware.ldap.dsml.Dsmlv2;
 import edu.vt.middleware.ldap.ldif.Ldif;
@@ -68,7 +66,7 @@ public class AuthenticatorCli extends AbstractCli
    *
    * @param  line  Parsed command line arguments container.
    *
-   * @return  <code>AuthenticatorConfig</code> that has been initialized
+   * @return  initialized authenticator configuration
    *
    * @throws  Exception  On errors thrown by handler.
    */
@@ -77,9 +75,6 @@ public class AuthenticatorCli extends AbstractCli
   {
     final AuthenticatorConfig config = new AuthenticatorConfig();
     this.initLdapProperties(config, line);
-    if (line.hasOption(OPT_TRACE)) {
-      config.setTracePackets(System.out);
-    }
     if (config.getBindDn() != null && config.getBindCredential() == null) {
       // prompt the user to enter a password
       System.out.print(
@@ -87,7 +82,7 @@ public class AuthenticatorCli extends AbstractCli
 
       final String pass = (new BufferedReader(new InputStreamReader(System.in)))
           .readLine();
-      config.setBindCredential(pass);
+      config.setBindCredential(new Credential(pass));
     }
     if (config.getUser() == null) {
       // prompt for a user name
@@ -103,7 +98,10 @@ public class AuthenticatorCli extends AbstractCli
 
       final String pass = (new BufferedReader(new InputStreamReader(System.in)))
           .readLine();
-      config.setCredential(pass);
+      config.setCredential(new Credential(pass));
+    }
+    if (line.getArgs() != null && line.getArgs().length > 0) {
+      config.setReturnAttributes(line.getArgs());
     }
     return config;
   }
@@ -121,7 +119,7 @@ public class AuthenticatorCli extends AbstractCli
     if (line.hasOption(OPT_HELP)) {
       printHelp();
     } else {
-      authenticate(initAuthenticatorConfig(line), line.getArgs());
+      authenticate(initAuthenticatorConfig(line));
     }
   }
 
@@ -130,54 +128,28 @@ public class AuthenticatorCli extends AbstractCli
    * Executes the authenticate operation.
    *
    * @param  config  Authenticator configuration.
-   * @param  attrs  Ldap attributes to return
    *
    * @throws  Exception  On errors.
    */
-  protected void authenticate(
-    final AuthenticatorConfig config,
-    final String[] attrs)
+  protected void authenticate(final AuthenticatorConfig config)
     throws Exception
   {
-    final Authenticator auth = new Authenticator();
-    auth.setAuthenticatorConfig(config);
-
-    Attributes results = null;
-    try {
-      if (attrs == null || attrs.length == 0) {
-        results = auth.authenticate(null);
+    final Authenticator auth = new Authenticator(config);
+    final LdapEntry entry = auth.authenticate(
+      new AuthenticationRequest()).getResult();
+    if (entry != null) {
+      if (this.outputDsmlv1) {
+        (new Dsmlv1()).outputDsml(
+          new LdapResult(entry),
+          new BufferedWriter(new OutputStreamWriter(System.out)));
+      } else if (this.outputDsmlv2) {
+        (new Dsmlv2()).outputDsml(
+          new LdapResult(entry),
+          new BufferedWriter(new OutputStreamWriter(System.out)));
       } else {
-        results = auth.authenticate(attrs);
-      }
-      if (results != null && results.size() > 0) {
-        final LdapEntry entry = LdapBeanProvider.getLdapBeanFactory()
-            .newLdapEntry();
-        final LdapResult result = LdapBeanProvider.getLdapBeanFactory()
-            .newLdapResult();
-        result.addEntry(entry);
-        entry.setDn(auth.getDn(config.getUser()));
-
-        final LdapAttributes la = LdapBeanProvider.getLdapBeanFactory()
-            .newLdapAttributes();
-        la.addAttributes(results);
-        entry.setLdapAttributes(la);
-        if (this.outputDsmlv1) {
-          (new Dsmlv1()).outputDsml(
-            result.toSearchResults().iterator(),
-            new BufferedWriter(new OutputStreamWriter(System.out)));
-        } else if (this.outputDsmlv2) {
-          (new Dsmlv2()).outputDsml(
-            result.toSearchResults().iterator(),
-            new BufferedWriter(new OutputStreamWriter(System.out)));
-        } else {
-          (new Ldif()).outputLdif(
-            result.toSearchResults().iterator(),
-            new BufferedWriter(new OutputStreamWriter(System.out)));
-        }
-      }
-    } finally {
-      if (auth != null) {
-        auth.close();
+        (new Ldif()).outputLdif(
+          new LdapResult(entry),
+          new BufferedWriter(new OutputStreamWriter(System.out)));
       }
     }
   }

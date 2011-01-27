@@ -1,16 +1,23 @@
 dn: uid=10,ou=test,dc=vt,dc=edu
-cn: Johv H Dom
+cn: John Tyler
+creationDate: 2015-06-06T12:00:00
 departmentNumber: 0830
-displayName: Johv H Dom
-givenName: Johv
-initials: JHD
-mail: jdoe10@vt.edu
+displayName: John Tyler
+eduPersonAffiliation: student
+eduPersonAffiliation: staff
+eduPersonPrimaryAffiliation: student
+givenName: John
+initials: JT
+mail: jtyler@vt.edu
+groupMembership: uugid=group6,ou=test,dc=vt,dc=edu
+groupMembership: uugid=group9,ou=test,dc=vt,dc=edu
 objectClass: inetOrgPerson
 objectClass: organizationalPerson
 objectClass: person
+objectClass: virginiaTechPerson
 objectClass: top
-sn: Dom
+personType: Virginia Tech Person
+sn: Tyler
 uid: 10
 userPassword: {SHA}9o7EHN4W9rgG17BMcFdmtzGPux0=
 jpegPhoto:: /9j/4AAQSkZJRgABAQEASABIAAD//gATQ3JlYXRlZCB3aXRoIEdJTVD/2wBDAFA3PEY8MlBGQUZaVVBfeMiCeG5uePWvuZHI////////////////////////////////////////////////////2wBDAVVaWnhpeOuCguv/////////////////////////////////////////////////////////////////////////wAARCAANABcDASIAAhEBAxEB/8QAGAAAAwEBAAAAAAAAAAAAAAAAAAIEAQP/xAAiEAEAAgIABQUAAAAAAAAAAAABAAMCEQQSMUFxISIjMnP/xAAUAQEAAAAAAAAAAAAAAAAAAAAA/8QAFBEBAAAAAAAAAAAAAAAAAAAAAP/aAAwDAQACEQMRAD8A71fHZZW+ge48MWqvG0bLMRcnZvsdpnGH0R0ryvhlAAAdCBPRTXkZ7wHWaEI/D9LP0yhA/9k=
-

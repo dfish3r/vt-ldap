@@ -14,31 +14,30 @@
 package edu.vt.middleware.ldap.auth;
 
 import java.util.Arrays;
-import javax.naming.AuthenticationException;
-import javax.naming.NamingException;
-import javax.naming.directory.Attributes;
-import edu.vt.middleware.ldap.LdapConstants;
-import edu.vt.middleware.ldap.LdapUtil;
+import edu.vt.middleware.ldap.LdapException;
+import edu.vt.middleware.ldap.LdapResult;
+import edu.vt.middleware.ldap.SearchFilter;
+import edu.vt.middleware.ldap.SearchRequest;
 import edu.vt.middleware.ldap.auth.handler.AuthenticationCriteria;
 import edu.vt.middleware.ldap.auth.handler.AuthenticationHandler;
 import edu.vt.middleware.ldap.auth.handler.AuthenticationResultHandler;
 import edu.vt.middleware.ldap.auth.handler.AuthorizationHandler;
-import edu.vt.middleware.ldap.handler.ConnectionHandler;
+import edu.vt.middleware.ldap.auth.handler.CompareAuthorizationHandler;
+import edu.vt.middleware.ldap.provider.Connection;
+import edu.vt.middleware.ldap.provider.ConnectionFactory;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 /**
- * <code>AbstractAuthenticator</code> provides basic functionality for
- * authenticating against an LDAP.
+ * Base class for authenticator implementations.
  *
- * @param  <T>  type of AuthenticatorConfig
+ * @param  <T>  type of authenticator config
  *
  * @author  Middleware Services
  * @version  $Revision$ $Date$
  */
 public abstract class AbstractAuthenticator<T extends AuthenticatorConfig>
 {
-
   /** Log for this class. */
   protected final Log logger = LogFactory.getLog(this.getClass());
 
@@ -47,196 +46,206 @@ public abstract class AbstractAuthenticator<T extends AuthenticatorConfig>
 
 
   /**
-   * This will set the config parameters of this <code>Authenticator</code>.
+   * Returns the authenticator config.
    *
-   * @param  authConfig  <code>AuthenticatorConfig</code>
+   * @return  authenticator config
    */
-  public void setAuthenticatorConfig(final T authConfig)
+  public T getAuthenticatorConfig()
+  {
+    return this.config;
+  }
+
+
+  /**
+   * Sets the authenticator config.
+   *
+   * @param  ac  authenticator config
+   */
+  public void setAuthenticatorConfig(final T ac)
   {
     if (this.config != null) {
       this.config.checkImmutable();
     }
-    this.config = authConfig;
+    this.config = ac;
   }
 
 
   /**
-   * This will authenticate by binding to the LDAP with the supplied dn and
-   * credential. See {@link #authenticateAndAuthorize( String, Object, boolean,
-   * String[], AuthenticationResultHandler[], AuthorizationHandler[])}.
+   * This will attempt to find the DN for the supplied user. {@link
+   * AuthenticatorConfig#getDnResolver()} is invoked to perform this operation.
    *
-   * @param  dn  <code>String</code> for bind
-   * @param  credential  <code>Object</code> for bind
-   * @param  authResultHandler  <code>AuthenticationResultHandler[]</code> to
-   * post process authentication results
-   * @param  authzHandler  <code>AuthorizationHandler[]</code> to process
-   * authorization after authentication
+   * @param  user  to find DN for
    *
-   * @return  <code>boolean</code> - whether the bind succeeded
+   * @return  user DN
    *
-   * @throws  NamingException  if the authentication fails for any other reason
-   * than invalid credentials
+   * @throws  LdapException  if an LDAP error occurs during resolution
    */
-  protected boolean authenticateAndAuthorize(
-    final String dn,
-    final Object credential,
-    final AuthenticationResultHandler[] authResultHandler,
-    final AuthorizationHandler[] authzHandler)
-    throws NamingException
+  public String resolveDn(final String user)
+    throws LdapException
   {
-    boolean success = false;
+    return this.config.getDnResolver().resolve(user);
+  }
+
+
+  /**
+   * Invokes the authentication handler. If an authentication exception is
+   * thrown from the handler, the authentication result handlers are processed
+   * to record the failure.
+   *
+   * @param  authHandler  to perform authentication
+   * @param  authResultHandler  to process authentication failures
+   * @param  cf  connection factory to pass to the authentication handler
+   * @param  ac  needed by both the authentication handler and the result
+   * handlers
+   * @return  ldap connection that the bind occurred on
+   * @throws  AuthenticationException  if the bind fails
+   * @throws  LdapException  if an LDAP error occurs
+   */
+  protected Connection authenticate(
+    final AuthenticationHandler authHandler,
+    final AuthenticationResultHandler[] authResultHandler,
+    final ConnectionFactory cf,
+    final AuthenticationCriteria ac)
+    throws LdapException
+  {
+    Connection conn = null;
     try {
-      this.authenticateAndAuthorize(
-        dn,
-        credential,
-        false,
-        null,
-        authResultHandler,
-        authzHandler);
-      success = true;
+      conn = authHandler.authenticate(cf, ac);
+      if (this.logger.isInfoEnabled()) {
+        this.logger.info("Authentication succeeded for dn: " + ac.getDn());
+      }
     } catch (AuthenticationException e) {
-      if (this.logger.isDebugEnabled()) {
-        this.logger.debug("Authentication failed for dn: " + dn, e);
-      }
-    } catch (AuthorizationException e) {
-      if (this.logger.isDebugEnabled()) {
-        this.logger.debug("Authorization failed for dn: " + dn, e);
-      }
-    }
-    return success;
-  }
-
-
-  /**
-   * This will authenticate by binding to the LDAP with the supplied dn and
-   * credential. Authentication will never succeed if {@link
-   * AuthenticatorConfig#getAuthtype()} is set to 'none'. If retAttrs is null
-   * and searchAttrs is true then all user attributes will be returned. If
-   * retAttrs is an empty array and searchAttrs is true then no attributes will
-   * be returned. This method throws AuthenticationException if authentication
-   * fails and AuthorizationException if authorization fails.
-   *
-   * @param  dn  <code>String</code> for bind
-   * @param  credential  <code>Object</code> for bind
-   * @param  searchAttrs  <code>boolean</code> whether to perform attribute
-   * search
-   * @param  retAttrs  <code>String[]</code> user attributes to return
-   * @param  authResultHandler  <code>AuthenticationResultHandler[]</code> to
-   * post process authentication results
-   * @param  authzHandler  <code>AuthorizationHandler[]</code> to process
-   * authorization after authentication
-   *
-   * @return  <code>Attribute</code> - belonging to the supplied user, returns
-   * null if searchAttrs is false
-   *
-   * @throws  NamingException  if any of the ldap operations fail
-   * @throws  AuthenticationException  if authentication fails
-   * @throws  AuthorizationException  if authorization fails
-   */
-  protected Attributes authenticateAndAuthorize(
-    final String dn,
-    final Object credential,
-    final boolean searchAttrs,
-    final String[] retAttrs,
-    final AuthenticationResultHandler[] authResultHandler,
-    final AuthorizationHandler[] authzHandler)
-    throws NamingException
-  {
-    // check the authentication type
-    final String authtype = this.config.getAuthtype();
-    if (authtype.equalsIgnoreCase(LdapConstants.NONE_AUTHTYPE)) {
-      throw new AuthenticationException(
-        "Cannot authenticate dn, authtype is 'none'");
-    }
-
-    // check the credential
-    if (!LdapUtil.checkCredential(credential)) {
-      throw new AuthenticationException(
-        "Cannot authenticate dn, invalid credential");
-    }
-
-    // check the dn
-    if (dn == null || "".equals(dn)) {
-      throw new AuthenticationException("Cannot authenticate dn, invalid dn");
-    }
-
-    Attributes userAttributes = null;
-
-    // attempt to bind as this dn
-    final ConnectionHandler ch = this.config.getConnectionHandler()
-        .newInstance();
-    try {
-      final AuthenticationCriteria ac = new AuthenticationCriteria(dn);
-      ac.setCredential(credential);
-      try {
-        final AuthenticationHandler authHandler = this.config
-            .getAuthenticationHandler().newInstance();
-        authHandler.authenticate(ch, ac);
-        if (this.logger.isInfoEnabled()) {
-          this.logger.info("Authentication succeeded for dn: " + dn);
-        }
-      } catch (AuthenticationException e) {
-        if (this.logger.isInfoEnabled()) {
-          this.logger.info("Authentication failed for dn: " + dn);
-        }
-        if (authResultHandler != null && authResultHandler.length > 0) {
-          for (AuthenticationResultHandler ah : authResultHandler) {
-            ah.process(ac, false);
-          }
-        }
-        throw e;
-      }
-      // authentication succeeded, perform authorization if supplied
-      if (authzHandler != null && authzHandler.length > 0) {
-        for (AuthorizationHandler azh : authzHandler) {
-          try {
-            azh.process(ac, ch.getLdapContext());
-            if (this.logger.isInfoEnabled()) {
-              this.logger.info(
-                "Authorization succeeded for dn: " + dn + " with handler: " +
-                azh);
-            }
-          } catch (AuthenticationException e) {
-            if (this.logger.isInfoEnabled()) {
-              this.logger.info(
-                "Authorization failed for dn: " + dn + " with handler: " + azh);
-            }
-            if (authResultHandler != null && authResultHandler.length > 0) {
-              for (AuthenticationResultHandler ah : authResultHandler) {
-                ah.process(ac, false);
-              }
-            }
-            throw e;
-          }
-        }
-      }
-      if (searchAttrs) {
-        if (this.logger.isDebugEnabled()) {
-          this.logger.debug("Returning attributes: ");
-          this.logger.debug(
-            "    " +
-            (retAttrs == null ? "all attributes" : Arrays.toString(retAttrs)));
-        }
-        userAttributes = ch.getLdapContext().getAttributes(dn, retAttrs);
+      if (this.logger.isInfoEnabled()) {
+        this.logger.info("Authentication failed for dn: " + ac.getDn());
       }
       if (authResultHandler != null && authResultHandler.length > 0) {
         for (AuthenticationResultHandler ah : authResultHandler) {
-          ah.process(ac, true);
+          ah.process(ac, false);
         }
       }
-    } finally {
-      ch.close();
+      throw e;
     }
-
-    return userAttributes;
+    return conn;
   }
 
 
-  /** This will close the connection on the underlying DN resolver. */
-  public synchronized void close()
+  /**
+   * Iterates over the supplied authorization handlers and invokes each one. If
+   * an authorization exception is thrown from the handler, the authentication
+   * result handlers are processed to record the failure.
+   *
+   * @param  authzHandler  to process
+   * @param  authResultHandler  to process authorization failures
+   * @param  conn  to perform authorization on
+   * @param  ac  needed by both the authorization handlers and the result
+   * handlers
+   * @throws  AuthorizationException  if any authorization handler fails
+   * @throws  LdapException  if an LDAP error occurs
+   */
+  protected void authorize(
+    final AuthorizationHandler[] authzHandler,
+    final AuthenticationResultHandler[] authResultHandler,
+    final Connection conn,
+    final AuthenticationCriteria ac)
+    throws LdapException
   {
-    if (this.config.getDnResolver() != null) {
-      this.config.getDnResolver().close();
+    if (authzHandler != null && authzHandler.length > 0) {
+      for (AuthorizationHandler azh : authzHandler) {
+        try {
+          azh.process(ac, conn);
+          if (this.logger.isInfoEnabled()) {
+            this.logger.info(
+              "Authorization succeeded for dn: " + ac.getDn() +
+              " with handler: " + azh);
+          }
+        } catch (AuthorizationException e) {
+          if (this.logger.isInfoEnabled()) {
+            this.logger.info(
+              "Authorization failed for dn: " + ac.getDn() +
+              " with handler: " + azh);
+          }
+          if (authResultHandler != null && authResultHandler.length > 0) {
+            for (AuthenticationResultHandler ah : authResultHandler) {
+              ah.process(ac, false);
+            }
+          }
+          throw e;
+        }
+      }
     }
+  }
+
+
+  /**
+   * Retrieves the ldap entry for the supplied DN from the ldap.
+   *
+   * @param  dn  of the ldap entry to retrieve
+   * @param  request  containing the return attributes to include
+   * @param  conn  to perform the search on
+   * @return  ldap result containing the ldap entry
+   * @throws  LdapException  if an LDAP error occurs
+   */
+  protected LdapResult getLdapEntry(
+    final String dn, final AuthenticationRequest request, final Connection conn)
+    throws LdapException
+  {
+    if (this.logger.isDebugEnabled()) {
+      this.logger.debug("Returning attributes: ");
+      this.logger.debug(
+        "    " +
+        (request.getReturnAttributes() == null ?
+          "all attributes" : Arrays.toString(request.getReturnAttributes())));
+    }
+    return conn.search(SearchRequest.newObjectScopeSearchRequest(
+      dn, request.getReturnAttributes()));
+  }
+
+
+  /**
+   * Creates authorization handlers based on the authentication request and the
+   * authentication configuration. Defers to the request data if an option has
+   * been set, otherwise uses the configuration data. If an authorization filter
+   * has been supplied, this results in the compare authorization filter being
+   * added to the handlers.
+   *
+   * @param  request  containing authentication data
+   * @param  ac  configuration containing authentication data
+   * @return  authorization handlers
+   */
+  protected AuthorizationHandler[] getAuthorizationHandlers(
+    final AuthenticationRequest request, final AuthenticatorConfig ac)
+  {
+    SearchFilter filter = request.getAuthorizationFilter();
+    if (filter == null && ac.getAuthorizationFilter() != null) {
+      filter = new SearchFilter(
+        ac.getAuthorizationFilter(), ac.getAuthorizationFilterArgs());
+    }
+
+    AuthorizationHandler[] ah = null;
+    if (request.getAuthorizationHandler() != null) {
+      ah = request.getAuthorizationHandler();
+    } else if (ac.getAuthorizationHandlers() != null) {
+      ah = ac.getAuthorizationHandlers();
+    }
+
+    int size = 0;
+    if (filter != null) {
+      size += 1;
+    }
+    if (ah != null) {
+      size += ah.length;
+    }
+    final AuthorizationHandler[] authzHandler = new AuthorizationHandler[size];
+    if (filter != null) {
+      authzHandler[0] = new CompareAuthorizationHandler(filter);
+    }
+    if (ah != null) {
+      if (authzHandler[0] != null) {
+        System.arraycopy(ah, 0, authzHandler, 1, ah.length);
+      } else {
+        System.arraycopy(ah, 0, authzHandler, 0, ah.length);
+      }
+    }
+    return authzHandler;
   }
 }

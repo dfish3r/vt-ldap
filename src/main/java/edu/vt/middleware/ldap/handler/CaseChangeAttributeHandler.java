@@ -13,20 +13,16 @@
 */
 package edu.vt.middleware.ldap.handler;
 
-import javax.naming.NamingEnumeration;
-import javax.naming.NamingException;
-import javax.naming.directory.Attribute;
-import javax.naming.directory.BasicAttribute;
-import edu.vt.middleware.ldap.handler.CaseChangeSearchResultHandler.CaseChange;
+import edu.vt.middleware.ldap.handler.CaseChangeResultHandler.CaseChange;
 
 /**
- * <code>CaseChangeAttributeHandler</code> provides the ability to modify the
- * case of attribute names and attribute values.
+ * Provides the ability to modify the case of attribute names and attribute
+ * values.
  *
  * @author  Middleware Services
  * @version  $Revision: 1330 $ $Date: 2010-05-23 18:10:53 -0400 (Sun, 23 May 2010) $
  */
-public class CaseChangeAttributeHandler extends CopyAttributeHandler
+public class CaseChangeAttributeHandler extends CopyLdapAttributeHandler
 {
 
   /** Type of case modification to make to the attribute names. */
@@ -39,7 +35,7 @@ public class CaseChangeAttributeHandler extends CopyAttributeHandler
   /**
    * Returns the attribute name case change.
    *
-   * @return  <code>CaseChange</code>
+   * @return  case change
    */
   public CaseChange getAttributeNameCaseChange()
   {
@@ -50,18 +46,18 @@ public class CaseChangeAttributeHandler extends CopyAttributeHandler
   /**
    * Sets the attribute name case change.
    *
-   * @param  caseChange  <code>CaseChange</code>
+   * @param  cc  case change
    */
-  public void setAttributeNameCaseChange(final CaseChange caseChange)
+  public void setAttributeNameCaseChange(final CaseChange cc)
   {
-    this.attributeNameCaseChange = caseChange;
+    this.attributeNameCaseChange = cc;
   }
 
 
   /**
    * Returns the attribute value case change.
    *
-   * @return  <code>CaseChange</code>
+   * @return  case change
    */
   public CaseChange getAttributeValueCaseChange()
   {
@@ -72,32 +68,18 @@ public class CaseChangeAttributeHandler extends CopyAttributeHandler
   /**
    * Sets the attribute value case change.
    *
-   * @param  caseChange  <code>CaseChange</code>
+   * @param  cc  case change
    */
-  public void setAttributeValueCaseChange(final CaseChange caseChange)
+  public void setAttributeValueCaseChange(final CaseChange cc)
   {
-    this.attributeValueCaseChange = caseChange;
+    this.attributeValueCaseChange = cc;
   }
 
 
   /** {@inheritDoc} */
-  protected Attribute processResult(
-    final SearchCriteria sc,
-    final Attribute attr)
-    throws NamingException
+  protected String processName(final SearchCriteria sc, final String name)
   {
-    Attribute newAttr = null;
-    if (attr != null) {
-      newAttr = new BasicAttribute(
-        CaseChange.perform(this.attributeNameCaseChange, attr.getID()),
-        attr.isOrdered());
-
-      final NamingEnumeration<?> en = attr.getAll();
-      while (en.hasMore()) {
-        newAttr.add(this.processValue(sc, en.next()));
-      }
-    }
-    return newAttr;
+    return CaseChange.perform(this.attributeNameCaseChange, name);
   }
 
 

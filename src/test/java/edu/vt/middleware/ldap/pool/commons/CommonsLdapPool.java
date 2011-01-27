@@ -17,8 +17,8 @@ import org.apache.commons.pool.PoolableObjectFactory;
 import org.apache.commons.pool.impl.GenericObjectPool;
 
 /**
- * <code>CommonsLdapPool</code> provides a implementation of a commons pooling
- * <code>GenericObjectPool</code> for testing.
+ * Provides a implementation of a commons pooling generic object pool for
+ * testing.
  *
  * @author  Middleware Services
  * @version  $Revision$ $Date$

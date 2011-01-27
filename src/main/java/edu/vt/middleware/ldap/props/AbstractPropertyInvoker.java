@@ -233,6 +233,26 @@ public abstract class AbstractPropertyInvoker
 
 
   /**
+   * Returns the enum for the supplied type and value.
+   *
+   * @param  clazz  of the enum
+   * @param  value  of the enum
+   *
+   * @return  enum that matches the supplied value
+   */
+  public static Enum<?> getEnum(final Class<?> clazz, final String value)
+  {
+    for (Object o : clazz.getEnumConstants()) {
+      final Enum<?> e = (Enum<?>) o;
+      if (e.name().equals(value)) {
+        return e;
+      }
+    }
+    return null;
+  }
+
+
+  /**
    * Invokes the supplied method on the supplied object with the supplied
    * argument.
    *

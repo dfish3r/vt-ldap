@@ -27,6 +27,5 @@ authorizationFilter:ldap filter to authorize user with
 constructDn:whether to construct the user dn instead of looking it up (true|false)
 credential:password to bind with
 subtreeSearch:whether to lookup user dn with a subtree search (true|false)
-user:combined with userField to lookup user dn
-userField:combined with user to lookup user dn
+user:combined with userFilter to lookup user dn
 userFilter:ldap filter to lookup user dn

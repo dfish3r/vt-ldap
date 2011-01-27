@@ -13,9 +13,12 @@
 */
 package edu.vt.middleware.ldap.pool;
 
-import javax.naming.NamingException;
-import edu.vt.middleware.ldap.Ldap;
+import edu.vt.middleware.ldap.LdapConnection;
+import edu.vt.middleware.ldap.LdapException;
+import edu.vt.middleware.ldap.LdapResult;
 import edu.vt.middleware.ldap.SearchFilter;
+import edu.vt.middleware.ldap.SearchOperation;
+import edu.vt.middleware.ldap.SearchRequest;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -26,7 +29,7 @@ import org.apache.commons.logging.LogFactory;
  * @author  Middleware Services
  * @version  $Revision$ $Date$
  */
-public class CompareLdapValidator implements LdapValidator<Ldap>
+public class CompareLdapValidator implements LdapValidator<LdapConnection>
 {
 
   /** Log for this class. */
@@ -102,13 +105,17 @@ public class CompareLdapValidator implements LdapValidator<Ldap>
 
 
   /** {@inheritDoc} */
-  public boolean validate(final Ldap l)
+  public boolean validate(final LdapConnection lc)
   {
     boolean success = false;
-    if (l != null) {
+    if (lc != null) {
       try {
-        success = l.compare(this.validateDn, this.validateFilter);
-      } catch (NamingException e) {
+        final SearchOperation search = new SearchOperation(lc);
+        final LdapResult lr = search.execute(
+          new SearchRequest(
+            this.validateDn, this.validateFilter)).getResult();
+        success = lr.size() == 1;
+      } catch (LdapException e) {
         if (this.logger.isDebugEnabled()) {
           this.logger.debug(
             "validation failed for compare " + this.validateFilter,

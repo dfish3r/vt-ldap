@@ -9,4 +9,3 @@ objectclass: MatchingRule
 
 dn: SyntaxDefinition
 objectclass: SyntaxDefinition
-

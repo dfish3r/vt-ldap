@@ -13,9 +13,10 @@
 */
 package edu.vt.middleware.ldap.auth.handler;
 
+import edu.vt.middleware.ldap.Credential;
+
 /**
- * <code>AuthenticationCriteria</code> contains the attributes used to perform
- * authentications.
+ * Contains the attributes used to perform authentication.
  *
  * @author  Middleware Services
  * @version  $Revision$ $Date$
@@ -24,10 +25,10 @@ public class AuthenticationCriteria
 {
 
   /** dn. */
-  private String dn;
+  protected String dn;
 
   /** credential. */
-  private Object credential;
+  protected Credential credential;
 
 
   /** Default constructor. */
@@ -35,7 +36,7 @@ public class AuthenticationCriteria
 
 
   /**
-   * Creates a new authentication criteria with the supplied dn.
+   * Creates a new authentication criteria.
    *
    * @param  s  to set dn
    */
@@ -46,9 +47,9 @@ public class AuthenticationCriteria
 
 
   /**
-   * Gets the dn.
+   * Returns the dn.
    *
-   * @return  dn
+   * @return  dn  to authenticate
    */
   public String getDn()
   {
@@ -68,11 +69,11 @@ public class AuthenticationCriteria
 
 
   /**
-   * Gets the credential.
+   * Returns the credential.
    *
-   * @return  credential
+   * @return  credential  to authenticate dn
    */
-  public Object getCredential()
+  public Credential getCredential()
   {
     return this.credential;
   }
@@ -81,22 +82,28 @@ public class AuthenticationCriteria
   /**
    * Sets the credential.
    *
-   * @param  o  to set credential
+   * @param  c  to set credential
    */
-  public void setCredential(final Object o)
+  public void setCredential(final Credential c)
   {
-    this.credential = o;
+    this.credential = c;
   }
 
 
   /**
-   * This returns a string representation of this search criteria.
+   * Provides a descriptive string representation of this instance.
    *
-   * @return  <code>String</code>
+   * @return  string representation
    */
   @Override
   public String toString()
   {
-    return String.format("dn=%s,credential=%s", this.dn, this.credential);
+    return
+      String.format(
+        "%s@%d: dn=%s, credential=%s",
+        this.getClass().getName(),
+        this.hashCode(),
+        this.dn,
+        this.credential);
   }
 }

@@ -17,23 +17,33 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import javax.naming.NamingException;
-import javax.naming.directory.SearchResult;
-import edu.vt.middleware.ldap.AbstractLdap;
+import edu.vt.middleware.ldap.LdapConnection;
+import edu.vt.middleware.ldap.LdapEntry;
+import edu.vt.middleware.ldap.LdapException;
+import edu.vt.middleware.ldap.LdapResult;
 import edu.vt.middleware.ldap.SearchFilter;
+import edu.vt.middleware.ldap.SearchOperation;
+import edu.vt.middleware.ldap.SearchRequest;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 /**
- * <code>SearchDnResolver</code> looks up a user's DN using an LDAP search.
+ * Looks up a user's DN using an LDAP search.
  *
  * @author  Middleware Services
  * @version  $Revision$ $Date$
  */
-public class SearchDnResolver extends AbstractLdap<AuthenticatorConfig>
-  implements DnResolver, Serializable
+public class SearchDnResolver implements DnResolver, Serializable
 {
 
   /** serial version uid. */
   private static final long serialVersionUID = -7615995272176088807L;
+
+  /** Log for this class. */
+  protected final Log logger = LogFactory.getLog(this.getClass());
+
+  /** Authenticator config. */
+  protected AuthenticatorConfig config;
 
 
   /** Default constructor. */
@@ -41,33 +51,20 @@ public class SearchDnResolver extends AbstractLdap<AuthenticatorConfig>
 
 
   /**
-   * This will create a new <code>SearchDnResolver</code> with the supplied
-   * <code>AuthenticatorConfig</code>.
+   * Creates a new search dn resolver.
    *
-   * @param  authConfig  <code>AuthenticatorConfig</code>
+   * @param  ac  authenticator config
    */
-  public SearchDnResolver(final AuthenticatorConfig authConfig)
+  public SearchDnResolver(final AuthenticatorConfig ac)
   {
-    this.setAuthenticatorConfig(authConfig);
+    this.setAuthenticatorConfig(ac);
   }
 
 
   /**
-   * This will set the config parameters of this <code>Authenticator</code>.
+   * Returns the authenticator config.
    *
-   * @param  authConfig  <code>AuthenticatorConfig</code>
-   */
-  public void setAuthenticatorConfig(final AuthenticatorConfig authConfig)
-  {
-    super.setLdapConfig(authConfig);
-  }
-
-
-  /**
-   * This returns the <code>AuthenticatorConfig</code> of the <code>
-   * Authenticator</code>.
-   *
-   * @return  <code>AuthenticatorConfig</code>
+   * @return  authenticator config
    */
   public AuthenticatorConfig getAuthenticatorConfig()
   {
@@ -76,76 +73,44 @@ public class SearchDnResolver extends AbstractLdap<AuthenticatorConfig>
 
 
   /**
-   * This will attempt to find the dn for the supplied user. {@link
-   * AuthenticatorConfig#getUserFilter()} or {@link
-   * AuthenticatorConfig#getUserField()} is used to look up the dn. If a filter
-   * is used, the user is provided as the {0} variable filter argument. If a
-   * field is used, the filter is built by ORing the fields together. If more
-   * than one entry matches the search, the result is controlled by {@link
-   * AuthenticatorConfig#setAllowMultipleDns(boolean)}.
+   * Sets the authenticator config.
    *
-   * @param  user  <code>String</code> to find dn for
+   * @param  ac  authenticator config
+   */
+  public void setAuthenticatorConfig(final AuthenticatorConfig ac)
+  {
+    this.config = ac;
+  }
+
+
+  /**
+   * Attempts to find the DN for the supplied user. {@link
+   * AuthenticatorConfig#getUserFilter()} is used to look up the DN. The user is
+   * provided as the {0} variable filter argument. If more than one entry
+   * matches the search, the result is controlled by
+   * {@link AuthenticatorConfig#setAllowMultipleDns(boolean)}.
    *
-   * @return  <code>String</code> - user's dn
+   * @param  user  to find DN for
    *
-   * @throws  NamingException  if the LDAP search fails
+   * @return  user DN
+   *
+   * @throws  LdapException  if the entry resolution fails
    */
   public String resolve(final String user)
-    throws NamingException
+    throws LdapException
   {
     String dn = null;
     if (user != null && !"".equals(user)) {
       // create the search filter
-      final SearchFilter filter = new SearchFilter();
-      if (this.config.getUserFilter() != null) {
-        if (this.logger.isDebugEnabled()) {
-          this.logger.debug("Looking up DN using userFilter");
-        }
-        filter.setFilter(this.config.getUserFilter());
-        filter.setFilterArgs(this.config.getUserFilterArgs());
-      } else {
-        if (this.logger.isDebugEnabled()) {
-          this.logger.debug("Looking up DN using userField");
-        }
-        if (
-          this.config.getUserField() == null ||
-            this.config.getUserField().length == 0) {
-          if (this.logger.isErrorEnabled()) {
-            this.logger.error("Invalid userField, cannot be null or empty.");
-          }
-        } else {
-          final StringBuffer searchFilter = new StringBuffer();
-          if (this.config.getUserField().length > 1) {
-            searchFilter.append("(|");
-            for (int i = 0; i < this.config.getUserField().length; i++) {
-              searchFilter.append("(").append(this.config.getUserField()[i])
-                .append("={0})");
-            }
-            searchFilter.append(")");
-          } else {
-            searchFilter.append("(").append(this.config.getUserField()[0])
-              .append("={0})");
-          }
-          filter.setFilter(searchFilter.toString());
-        }
-      }
+      final SearchFilter filter = this.createSearchFilter(user);
 
       if (filter.getFilter() != null) {
-        // make user the first filter arg
-        final List<Object> filterArgs = new ArrayList<Object>();
-        filterArgs.add(user);
-        filterArgs.addAll(filter.getFilterArgs());
+        final LdapResult result = this.performLdapSearch(filter);
+        final Iterator<LdapEntry> answer = result.getEntries().iterator();
 
-        final Iterator<SearchResult> answer = this.search(
-          this.config.getBaseDn(),
-          filter.getFilter(),
-          filterArgs.toArray(),
-          this.config.getSearchControls(new String[0]),
-          this.config.getSearchResultHandlers());
         // return first match, otherwise user doesn't exist
         if (answer != null && answer.hasNext()) {
-          final SearchResult sr = answer.next();
-          dn = sr.getName();
+          dn = answer.next().getDn();
           if (answer.hasNext()) {
             if (this.logger.isDebugEnabled()) {
               this.logger.debug(
@@ -153,14 +118,13 @@ public class SearchDnResolver extends AbstractLdap<AuthenticatorConfig>
                 filter);
             }
             if (!this.config.getAllowMultipleDns()) {
-              throw new NamingException("Found more than (1) DN for: " + user);
+              throw new LdapException("Found more than (1) DN for: " + user);
             }
           }
         } else {
           if (this.logger.isInfoEnabled()) {
             this.logger.info(
-              "Search for user: " + user + " failed using filter: " +
-              filter.getFilter());
+              "Search for user: " + user + " failed using filter: " + filter);
           }
         }
       } else {
@@ -177,9 +141,60 @@ public class SearchDnResolver extends AbstractLdap<AuthenticatorConfig>
   }
 
 
-  /** {@inheritDoc} */
-  public void close()
+  /**
+   * Returns a search filter using the user filter and user filter args of the
+   * authentication config. The user parameter is injected as the first filter
+   * argument.
+   *
+   * @param  user identifier
+   * @return  search filter
+   */
+  protected SearchFilter createSearchFilter(final String user)
   {
-    super.close();
+    final SearchFilter filter = new SearchFilter();
+    if (this.config.getUserFilter() != null) {
+      if (this.logger.isDebugEnabled()) {
+        this.logger.debug("Looking up DN using userFilter");
+      }
+      filter.setFilter(this.config.getUserFilter());
+      filter.setFilterArgs(this.config.getUserFilterArgs());
+
+      // make user the first filter arg
+      final List<Object> filterArgs = new ArrayList<Object>();
+      filterArgs.add(user);
+      filterArgs.addAll(filter.getFilterArgs());
+      filter.setFilterArgs(filterArgs);
+
+    } else {
+      if (this.logger.isErrorEnabled()) {
+        this.logger.error("Invalid userFilter, cannot be null or empty.");
+      }
+    }
+    return filter;
+  }
+
+
+  /**
+   * Executes the ldap search operation with the supplied filter.
+   *
+   * @param  filter  to execute
+   * @return  ldap search result
+   * @throws  LdapException  if an error occurs
+   */
+  protected LdapResult performLdapSearch(final SearchFilter filter)
+    throws LdapException
+  {
+    final SearchRequest request = new SearchRequest();
+    request.setSearchFilter(filter);
+    request.setReturnAttributes(new String[0]);
+
+    final LdapConnection conn = new LdapConnection(this.config);
+    try {
+      conn.open();
+      final SearchOperation op = new SearchOperation(conn);
+      return op.execute(request).getResult();
+    } finally {
+      conn.close();
+    }
   }
 }
