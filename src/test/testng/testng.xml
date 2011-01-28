@@ -138,6 +138,8 @@
   <parameter name="searchExceptionFilter" value="(|(uugid=group2)(uugid=group3)(uugid=group4))"/>
   <parameter name="searchExceptionResultsSize" value="3"/>
 
+  <parameter name="searchRetryResultCode" value="INAPPROPRIATE_MATCHING"/>
+
   <parameter name="getAttributesDn" value="uid=2,ou=test,dc=vt,dc=edu"/>
   <parameter name="getAttributesReturnAttrs" value="departmentNumber|givenName|sn"/>
   <parameter name="getAttributesResults"

@@ -16,11 +16,10 @@ package edu.vt.middleware.ldap.provider.jndi;
 import java.io.PrintStream;
 import java.util.Hashtable;
 import java.util.Map;
-import javax.naming.CommunicationException;
 import javax.naming.NamingException;
-import javax.naming.ServiceUnavailableException;
 import edu.vt.middleware.ldap.LdapConfig;
 import edu.vt.middleware.ldap.LdapException;
+import edu.vt.middleware.ldap.ResultCode;
 import edu.vt.middleware.ldap.provider.AbstractConnectionFactory;
 import edu.vt.middleware.ldap.provider.Connection;
 
@@ -146,9 +145,9 @@ public abstract class AbstractJndiConnectionFactory
   /** Whether to remove the URL from any DNs which are not relative. */
   protected boolean removeDnUrls = true;
 
-  /** Exceptions indicating that an operation should be retried. */
-  protected Class<?>[] operationRetryExceptions = new Class<?>[] {
-    CommunicationException.class, ServiceUnavailableException.class,
+  /** Result codes indicating that an operation should be retried. */
+  protected ResultCode[] operationRetryResultCodes = new ResultCode[] {
+    ResultCode.PROTOCOL_ERROR, ResultCode.BUSY, ResultCode.UNAVAILABLE,
   };
 
 
@@ -266,25 +265,17 @@ public abstract class AbstractJndiConnectionFactory
   }
 
 
-  /**
-   * Returns the naming exceptions to retry operations on.
-   *
-   * @return  naming exceptions
-   */
-  public Class<?>[] getOperationRetryExceptions()
+  /** {@inheritDoc} */
+  public ResultCode[] getOperationRetryResultCodes()
   {
-    return this.operationRetryExceptions;
+    return this.operationRetryResultCodes;
   }
 
 
-  /**
-   * Sets the naming exceptions to retry operations on.
-   *
-   * @param  exceptions  naming exceptions
-   */
-  public void setOperationRetryExceptions(final Class<?>[] exceptions)
+  /** {@inheritDoc} */
+  public void setOperationRetryResultCodes(final ResultCode[] codes)
   {
-    this.operationRetryExceptions = exceptions;
+    this.operationRetryResultCodes = codes;
   }
 
 

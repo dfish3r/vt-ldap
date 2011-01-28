@@ -15,6 +15,7 @@ package edu.vt.middleware.ldap.provider;
 
 import edu.vt.middleware.ldap.Credential;
 import edu.vt.middleware.ldap.LdapException;
+import edu.vt.middleware.ldap.ResultCode;
 
 /**
  * Provides an interface for creating and closing provider connections.
@@ -40,6 +41,22 @@ public interface ConnectionFactory
    * @param  strategy  for making connections
    */
   void setConnectionStrategy(ConnectionStrategy strategy);
+
+
+  /**
+   * Returns the result codes that trigger an operation retry.
+   *
+   * @return  ldap result codes
+   */
+  ResultCode[] getOperationRetryResultCodes();
+
+
+  /**
+   * Sets the result codes that trigger an operation retry.
+   *
+   * @param  codes  ldap result codes
+   */
+  void setOperationRetryResultCodes(ResultCode[] codes);
 
 
   /**

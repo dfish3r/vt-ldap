@@ -17,7 +17,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import javax.naming.directory.InvalidSearchFilterException;
 import edu.vt.middleware.ldap.handler.BinaryResultHandler;
 import edu.vt.middleware.ldap.handler.CaseChangeResultHandler;
 import edu.vt.middleware.ldap.handler.CaseChangeResultHandler.CaseChange;
@@ -28,11 +27,6 @@ import edu.vt.middleware.ldap.handler.LdapResultHandler;
 import edu.vt.middleware.ldap.handler.MergeResultHandler;
 import edu.vt.middleware.ldap.handler.RecursiveAttributeHandler;
 import edu.vt.middleware.ldap.handler.RecursiveResultHandler;
-import edu.vt.middleware.ldap.provider.jldap.JLdapConnectionFactory;
-import edu.vt.middleware.ldap.provider.jldap.JLdapProvider;
-import edu.vt.middleware.ldap.provider.jndi.JndiConnectionFactory;
-import edu.vt.middleware.ldap.provider.jndi.JndiProvider;
-
 import org.testng.AssertJUnit;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
@@ -720,22 +714,16 @@ public class SearchOperationTest extends AbstractTest
 
 
   /** @throws  Exception  On test failure. */
+  @Parameters({"searchRetryResultCode"})
   @Test(groups = {"searchtest"})
-  public void searchWithRetry()
+  public void searchWithRetry(final String resultCode)
     throws Exception
   {
     final LdapConnection conn = this.createLdapConnection(true);
 
-    if (JndiProvider.class.isInstance(conn.getLdapConfig().getLdapProvider())) {
-      ((JndiConnectionFactory) conn.getLdapConfig().getConnectionFactory())
-        .setOperationRetryExceptions(
-          new Class<?>[] {InvalidSearchFilterException.class});
-    } else if (JLdapProvider.class.isInstance(
-      conn.getLdapConfig().getLdapProvider())) {
-      ((JLdapConnectionFactory) conn.getLdapConfig().getConnectionFactory())
-        .setOperationRetryResultCodes(
-          new ResultCode[] {ResultCode.FILTER_ERROR});
-    }
+    final ResultCode retryResultCode = ResultCode.valueOf(resultCode);
+    conn.getLdapConfig().getConnectionFactory().setOperationRetryResultCodes(
+      new ResultCode[] {retryResultCode, });
 
     conn.open();
     final RetrySearchOperation search = new RetrySearchOperation(conn);
@@ -770,14 +758,8 @@ public class SearchOperationTest extends AbstractTest
     search.reset();
     search.setOperationRetry(1);
 
-    if (JndiProvider.class.isInstance(conn.getLdapConfig().getLdapProvider())) {
-      ((JndiConnectionFactory) conn.getLdapConfig().getConnectionFactory())
-        .setOperationRetryExceptions(null);
-    } else if (JLdapProvider.class.isInstance(
-      conn.getLdapConfig().getLdapProvider())) {
-      ((JLdapConnectionFactory) conn.getLdapConfig().getConnectionFactory())
-        .setOperationRetryResultCodes(null);
-    }
+    conn.getLdapConfig().getConnectionFactory().setOperationRetryResultCodes(
+      null);
 
     conn.open();
     try {
@@ -796,16 +778,8 @@ public class SearchOperationTest extends AbstractTest
     search.setOperationRetry(3);
     search.setOperationRetryWait(1000);
 
-    if (JndiProvider.class.isInstance(conn.getLdapConfig().getLdapProvider())) {
-      ((JndiConnectionFactory) conn.getLdapConfig().getConnectionFactory())
-        .setOperationRetryExceptions(
-          new Class<?>[] {InvalidSearchFilterException.class});
-    } else if (JLdapProvider.class.isInstance(
-      conn.getLdapConfig().getLdapProvider())) {
-      ((JLdapConnectionFactory) conn.getLdapConfig().getConnectionFactory())
-        .setOperationRetryResultCodes(
-          new ResultCode[] {ResultCode.FILTER_ERROR});
-    }
+    conn.getLdapConfig().getConnectionFactory().setOperationRetryResultCodes(
+      new ResultCode[] {retryResultCode, });
 
     conn.open();
     try {

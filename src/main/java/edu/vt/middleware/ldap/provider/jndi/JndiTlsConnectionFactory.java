@@ -187,7 +187,9 @@ public class JndiTlsConnectionFactory extends AbstractJndiConnectionFactory
       }
       conn.getLdapContext().reconnect(null);
       conn.setRemoveDnUrls(this.removeDnUrls);
-      conn.setOperationRetryExceptions(this.operationRetryExceptions);
+      conn.setOperationRetryExceptions(
+        NamingExceptionUtil.getNamingExceptions(
+          this.operationRetryResultCodes));
     } catch (javax.naming.AuthenticationException e) {
       try {
         this.destroy(conn);

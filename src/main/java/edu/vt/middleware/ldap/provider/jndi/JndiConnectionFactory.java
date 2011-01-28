@@ -94,7 +94,9 @@ public class JndiConnectionFactory extends AbstractJndiConnectionFactory
     try {
       conn = new JndiConnection(new InitialLdapContext(env, null));
       conn.setRemoveDnUrls(this.removeDnUrls);
-      conn.setOperationRetryExceptions(this.operationRetryExceptions);
+      conn.setOperationRetryExceptions(
+        NamingExceptionUtil.getNamingExceptions(
+          this.operationRetryResultCodes));
     } catch (javax.naming.AuthenticationException e) {
       throw new AuthenticationException(e, ResultCode.INVALID_CREDENTIALS);
     } catch (NamingException e) {
