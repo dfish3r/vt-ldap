@@ -257,10 +257,15 @@ public class LdapConfigPropertyInvoker extends AbstractPropertyInvoker
   protected Object createArrayEnumFromPropertyValue(
     final Class<?> c, final String s)
   {
-    final String[] values = s.split(",");
-    final Object newObject = Array.newInstance(c, values.length);
-    for (int i = 0; i < values.length; i++) {
-      Array.set(newObject, i, getEnum(c, values[i]));
+    Object newObject = null;
+    if ("null".equals(s)) {
+      newObject = null;
+    } else {
+      final String[] values = s.split(",");
+      newObject = Array.newInstance(c, values.length);
+      for (int i = 0; i < values.length; i++) {
+        Array.set(newObject, i, getEnum(c, values[i]));
+      }
     }
     return newObject;
   }
