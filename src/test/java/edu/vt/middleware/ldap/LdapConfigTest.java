@@ -64,7 +64,7 @@ public class LdapConfigTest
     AssertJUnit.assertEquals(5000, conn.getLdapConfig().getTimeLimit());
     AssertJUnit.assertEquals(8000, conn.getLdapConfig().getTimeout());
     AssertJUnit.assertEquals(
-      "jpegPhoto", conn.getLdapConfig().getBinaryAttributes());
+      "jpegPhoto", conn.getLdapConfig().getBinaryAttributes()[0]);
 
     for (LdapResultHandler srh :
          conn.getLdapConfig().getLdapResultHandlers()) {
