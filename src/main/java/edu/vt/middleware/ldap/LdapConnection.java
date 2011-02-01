@@ -128,6 +128,101 @@ public class LdapConnection
 
 
   /**
+   * Convenience method for performing an ldap add operation.
+   *
+   * @param  dn  to add
+   * @param  attrs  to add
+   * @throws  LdapException  if an error occurs
+   */
+  public void add(final String dn, final LdapAttributes attrs)
+    throws LdapException
+  {
+    final AddOperation op = new AddOperation(this);
+    op.execute(new AddRequest(dn, attrs));
+  }
+
+
+  /**
+   * Convenience method for performing an ldap compare operation.
+   *
+   * @param  dn  to compare
+   * @param  attr  to compare
+   * @return  whether compare succeeded
+   * @throws  LdapException  if an error occurs
+   */
+  public boolean compare(final String dn, final LdapAttribute attr)
+    throws LdapException
+  {
+    final CompareOperation op = new CompareOperation(this);
+    return op.execute(new CompareRequest(dn, attr)).getResult();
+  }
+
+
+  /**
+   * Convenience method for performing an ldap delete operation.
+   *
+   * @param  dn  to delete
+   * @throws  LdapException  if an error occurs
+   */
+  public void delete(final String dn)
+    throws LdapException
+  {
+    final DeleteOperation op = new DeleteOperation(this);
+    op.execute(new DeleteRequest(dn));
+  }
+
+
+  /**
+   * Convenience method for performing an ldap modify operation.
+   *
+   * @param  dn  to modify
+   * @param  mods  to modify
+   * @throws  LdapException  if an error occurs
+   */
+  public void modify(final String dn, final AttributeModification[] mods)
+    throws LdapException
+  {
+    final ModifyOperation op = new ModifyOperation(this);
+    op.execute(new ModifyRequest(dn, mods));
+  }
+
+
+  /**
+   * Convenience method for performing an ldap rename operation.
+   *
+   * @param  oldDn  to rename
+   * @param  newDn  to rename
+   * @throws  LdapException  if an error occurs
+   */
+  public void rename(final String oldDn, final String newDn)
+    throws LdapException
+  {
+    final RenameOperation op = new RenameOperation(this);
+    op.execute(new RenameRequest(oldDn, newDn));
+  }
+
+
+  /**
+   * Convenience method for performing an ldap search operation.
+   *
+   * @param  dn  to search on
+   * @param  filter  to apply to search
+   * @param  retAttrs  attribute names to return
+   * @return  ldap result
+   * @throws  LdapException  if an error occurs
+   */
+  public LdapResult search(
+    final String dn,
+    final SearchFilter filter,
+    final String[] retAttrs)
+    throws LdapException
+  {
+    final SearchOperation op = new SearchOperation(this);
+    return op.execute(new SearchRequest(dn, filter, retAttrs)).getResult();
+  }
+
+
+  /**
    * Closes this connection if it is garbage collected.
    *
    * @throws  Throwable  if an exception is thrown by this method

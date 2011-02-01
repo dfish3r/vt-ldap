@@ -15,7 +15,9 @@ package edu.vt.middleware.ldap;
 
 import edu.vt.middleware.ldap.provider.ConnectionStrategy;
 import org.testng.AssertJUnit;
+import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterSuite;
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Parameters;
 import org.testng.annotations.Test;
 
@@ -27,6 +29,92 @@ import org.testng.annotations.Test;
  */
 public class LdapConnectionTest
 {
+  /** Entry created for ldap tests. */
+  private static LdapEntry testLdapEntry;
+
+
+  /** @throws  Exception  On test failure. */
+  @Parameters({ "createEntry15" })
+  @BeforeClass(groups = {"ldapconntest"})
+  public void add(final String ldifFile)
+    throws Exception
+  {
+    final String ldif = TestUtil.readFileIntoString(ldifFile);
+    testLdapEntry = TestUtil.convertLdifToResult(ldif).getEntry();
+    final LdapConnection conn = TestUtil.createLdapConnection();
+    conn.open();
+    conn.add(testLdapEntry.getDn(), testLdapEntry.getLdapAttributes());
+    conn.close();
+  }
+
+
+  /** @throws  Exception  On test failure. */
+  @Test(groups = {"ldapconntest"})
+  public void compare()
+    throws Exception
+  {
+    final LdapConnection conn = TestUtil.createLdapConnection();
+    conn.open();
+    AssertJUnit.assertTrue(conn.compare(
+      testLdapEntry.getDn(), testLdapEntry.getLdapAttributes().getAttribute()));
+    conn.close();
+  }
+
+
+  /** @throws  Exception  On test failure. */
+  @AfterClass(groups = {"ldapconntest"})
+  public void delete()
+    throws Exception
+  {
+    final LdapConnection conn = TestUtil.createLdapConnection();
+    conn.open();
+    conn.delete(testLdapEntry.getDn());
+    conn.close();
+  }
+
+
+  /** @throws  Exception  On test failure. */
+  @Test(groups = {"ldapconntest"})
+  public void modify()
+    throws Exception
+  {
+    final LdapConnection conn = TestUtil.createLdapConnection();
+    conn.open();
+    conn.modify(
+      testLdapEntry.getDn(),
+      new AttributeModification[] {
+        new AttributeModification(
+          AttributeModificationType.ADD,
+          new LdapAttribute("title", "President"))});
+    conn.close();
+  }
+
+
+  /** @throws  Exception  On test failure. */
+  @Test(groups = {"ldapconntest"})
+  public void rename()
+    throws Exception
+  {
+    final LdapConnection conn = TestUtil.createLdapConnection();
+    conn.open();
+    conn.rename(testLdapEntry.getDn(), "uid=1500,ou=test,dc=vt,dc=edu");
+    conn.rename("uid=1500,ou=test,dc=vt,dc=edu", testLdapEntry.getDn());
+    conn.close();
+  }
+
+
+  /** @throws  Exception  On test failure. */
+  @Test(groups = {"ldapconntest"})
+  public void search()
+    throws Exception
+  {
+    final LdapConnection conn = TestUtil.createLdapConnection();
+    conn.open();
+    final LdapResult lr = conn.search(
+      "ou=test,dc=vt,dc=edu", new SearchFilter("uid=15"), null);
+    AssertJUnit.assertEquals(testLdapEntry.getDn(), lr.getEntry().getDn());
+    conn.close();
+  }
 
 
   /** @throws  Exception  On test failure. */
