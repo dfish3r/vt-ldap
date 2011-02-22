@@ -14,6 +14,7 @@
 package edu.vt.middleware.ldap.pool.commons;
 
 import edu.vt.middleware.ldap.LdapConnection;
+import edu.vt.middleware.ldap.LdapConnectionConfig;
 import edu.vt.middleware.ldap.pool.DefaultLdapFactory;
 import org.apache.commons.pool.PoolableObjectFactory;
 
@@ -27,6 +28,18 @@ import org.apache.commons.pool.PoolableObjectFactory;
 public class DefaultLdapPoolableObjectFactory extends DefaultLdapFactory
   implements PoolableObjectFactory
 {
+
+
+  /**
+   * Creates a new default ldap poolable object factory.
+   *
+   * @param  lcc  ldap connection config
+   */
+  public DefaultLdapPoolableObjectFactory(final LdapConnectionConfig lcc)
+  {
+    super(lcc);
+  }
+
 
   /** {@inheritDoc} */
   public void activateObject(final Object obj)

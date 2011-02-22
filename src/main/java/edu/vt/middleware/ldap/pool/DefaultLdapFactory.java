@@ -13,9 +13,8 @@
 */
 package edu.vt.middleware.ldap.pool;
 
-import java.io.InputStream;
-import edu.vt.middleware.ldap.LdapConfig;
 import edu.vt.middleware.ldap.LdapConnection;
+import edu.vt.middleware.ldap.LdapConnectionConfig;
 import edu.vt.middleware.ldap.LdapException;
 
 /**
@@ -28,35 +27,11 @@ import edu.vt.middleware.ldap.LdapException;
 public class DefaultLdapFactory extends AbstractLdapFactory<LdapConnection>
 {
 
-  /** Ldap config to create ldap objects with. */
-  private LdapConfig config;
+  /** Ldap connection configuration to create ldap objects with. */
+  private LdapConnectionConfig config;
 
   /** Whether to connect to the ldap on object creation. */
   private boolean connectOnCreate = true;
-
-
-  /**
-   * This creates a new <code>DefaultLdapFactory</code> with the default
-   * properties file, which must be located in your classpath.
-   */
-  public DefaultLdapFactory()
-  {
-    this.config = LdapConfig.createFromProperties(null);
-    this.config.makeImmutable();
-  }
-
-
-  /**
-   * This creates a new <code>DefaultLdapFactory</code> with the supplied input
-   * stream.
-   *
-   * @param  is  <code>InputStream</code>
-   */
-  public DefaultLdapFactory(final InputStream is)
-  {
-    this.config = LdapConfig.createFromProperties(is);
-    this.config.makeImmutable();
-  }
 
 
   /**
@@ -64,11 +39,11 @@ public class DefaultLdapFactory extends AbstractLdapFactory<LdapConnection>
    * configuration. The ldap configuration will be marked as immutable by this
    * factory.
    *
-   * @param  lc  ldap config
+   * @param  lcc  ldap connection config
    */
-  public DefaultLdapFactory(final LdapConfig lc)
+  public DefaultLdapFactory(final LdapConnectionConfig lcc)
   {
-    this.config = lc;
+    this.config = lcc;
     this.config.makeImmutable();
   }
 

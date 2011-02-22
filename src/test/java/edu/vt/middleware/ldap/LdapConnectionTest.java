@@ -134,7 +134,7 @@ public class LdapConnectionTest
     throws Exception
   {
     final LdapConnection conn = new LdapConnection(
-      LdapConfig.createFromProperties(
+      TestUtil.readLdapConnectionConfig(
         TestUtil.class.getResourceAsStream("/ldap.conn.properties")));
 
     conn.open();
@@ -144,7 +144,7 @@ public class LdapConnectionTest
     conn.open();
     conn.close();
 
-    conn.getLdapConfig().getConnectionFactory().setConnectionStrategy(
+    conn.getLdapConnectionConfig().getConnectionFactory().setConnectionStrategy(
       ConnectionStrategy.DEFAULT);
     conn.open();
     conn.close();
@@ -153,7 +153,7 @@ public class LdapConnectionTest
     conn.open();
     conn.close();
 
-    conn.getLdapConfig().getConnectionFactory().setConnectionStrategy(
+    conn.getLdapConnectionConfig().getConnectionFactory().setConnectionStrategy(
       ConnectionStrategy.ACTIVE_PASSIVE);
     conn.open();
     conn.close();
@@ -162,7 +162,7 @@ public class LdapConnectionTest
     conn.open();
     conn.close();
 
-    conn.getLdapConfig().getConnectionFactory().setConnectionStrategy(
+    conn.getLdapConnectionConfig().getConnectionFactory().setConnectionStrategy(
       ConnectionStrategy.RANDOM);
     conn.open();
     conn.close();

@@ -47,15 +47,15 @@ public abstract class AbstractLdapOperation<Q extends LdapRequest, S>
 
   /**
    * Sets the properties of this operation with values from the supplied ldap
-   * config.
+   * connection configuration.
    *
-   * @param  lc  ldap configuration to read properties from
+   * @param  lcc  ldap connection configuration to read properties from
    */
-  protected void initialize(final LdapConfig lc)
+  protected void initialize(final LdapConnectionConfig lcc)
   {
-    this.operationRetry = lc.getOperationRetry();
-    this.operationRetryWait = lc.getOperationRetryWait();
-    this.operationRetryBackoff = lc.getOperationRetryBackoff();
+    this.operationRetry = lcc.getOperationRetry();
+    this.operationRetryWait = lcc.getOperationRetryWait();
+    this.operationRetryBackoff = lcc.getOperationRetryBackoff();
   }
 
 
@@ -143,15 +143,14 @@ public abstract class AbstractLdapOperation<Q extends LdapRequest, S>
 
 
   /**
-   * Populates the supplied request with values from the supplied ldap
-   * configuration. Allows the ldap configuration to take effect when no value
-   * was set specifically on the request.
+   * Performs any initialization on the supplied request to prepare it for use
+   * in this operation.
    *
    * @param  request  to initialize
-   * @param  lc  ldap configuration to initialize request with
+   * @param  lcc  ldap connection configuration to initialize request with
    */
   protected abstract void initializeRequest(
-    final Q request, final LdapConfig lc);
+    final Q request, final LdapConnectionConfig lcc);
 
 
   /** {@inheritDoc} */
@@ -165,7 +164,8 @@ public abstract class AbstractLdapOperation<Q extends LdapRequest, S>
     }
 
     LdapResponse<S> response = null;
-    this.initializeRequest(request, this.ldapConnection.getLdapConfig());
+    this.initializeRequest(
+      request, this.ldapConnection.getLdapConnectionConfig());
     for (int i = 0;
          i <= this.operationRetry || this.operationRetry == -1;
          i++) {

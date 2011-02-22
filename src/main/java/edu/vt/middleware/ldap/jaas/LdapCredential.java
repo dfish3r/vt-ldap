@@ -16,8 +16,7 @@ package edu.vt.middleware.ldap.jaas;
 import java.io.Serializable;
 
 /**
- * <code>LdapCredential</code> provides a custom implementation for adding LDAP
- * credentials to a <code>Subject</code>.
+ * Provides a custom implementation for adding LDAP credentials to a subject.
  *
  * @author  Middleware Services
  * @version  $Revision$ $Date$
@@ -36,10 +35,9 @@ public class LdapCredential implements Serializable
 
 
   /**
-   * This creates a new <code>LdapCredential</code> with the supplied
-   * credential.
+   * Creates a new ldap credential with the supplied credential.
    *
-   * @param  credential  <code>Object</code>
+   * @param  credential  to store
    */
   public LdapCredential(final Object credential)
   {
@@ -48,9 +46,9 @@ public class LdapCredential implements Serializable
 
 
   /**
-   * This returns the credential for this <code>LdapCredential</code>.
+   * Returns the credential for this ldap credential.
    *
-   * @return  <code>Object</code>
+   * @return  credential
    */
   public Object getCredential()
   {
@@ -59,12 +57,11 @@ public class LdapCredential implements Serializable
 
 
   /**
-   * This returns the supplied Object is equal to this <code>
-   * LdapCredential</code>.
+   * Returns whether the supplied object is equal to this ldap credential.
    *
-   * @param  o  <code>Object</code>
+   * @param  o  to compare
    *
-   * @return  <code>boolean</code>
+   * @return  whether the supplied object is equal
    */
   public boolean equals(final Object o)
   {
@@ -78,9 +75,9 @@ public class LdapCredential implements Serializable
 
 
   /**
-   * This returns the hash code for this <code>LdapPrincipal</code>.
+   * Returns the hash code for this ldap credential.
    *
-   * @return  <code>int</code>
+   * @return  hash code
    */
   public int hashCode()
   {
@@ -89,5 +86,21 @@ public class LdapCredential implements Serializable
       hc += this.credential.hashCode();
     }
     return hc;
+  }
+
+
+  /**
+   * Provides a descriptive string representation of this instance.
+   *
+   * @return  string representation
+   */
+  @Override
+  public String toString()
+  {
+    return String.format(
+        "%s@%d::%s",
+        this.getClass().getName(),
+        this.hashCode(),
+        this.credential);
   }
 }

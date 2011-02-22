@@ -29,9 +29,9 @@ import edu.vt.middleware.ldap.LdapException;
 import edu.vt.middleware.ldap.auth.Authenticator;
 
 /**
- * <code>LdapDnAuthorizationModule</code> provides a JAAS authentication hook
- * into LDAP DNs. No authentication is performed in this module. The LDAP entry
- * dn can be stored and shared with other modules.
+ * Provides a JAAS authentication hook into LDAP DNs. No authentication is
+ * performed by this module. The LDAP entry DN can be stored and shared with
+ * other JAAS modules.
  *
  * @author  Middleware Services
  * @version  $Revision$ $Date$
@@ -125,9 +125,9 @@ public class LdapDnAuthorizationModule extends AbstractLoginModule
 
 
   /**
-   * This provides command line access to a <code>LdapLoginModule</code>.
+   * This provides command line access to this JAAS module.
    *
-   * @param  args  <code>String[]</code>
+   * @param  args  command line arguments
    *
    * @throws  Exception  if an error occurs
    */
@@ -141,7 +141,6 @@ public class LdapDnAuthorizationModule extends AbstractLoginModule
 
     final LoginContext lc = new LoginContext(name, new TextCallbackHandler());
     lc.login();
-    System.out.println("Authorization succeeded");
 
     final Set<Principal> principals = lc.getSubject().getPrincipals();
     System.out.println("Subject Principal(s): ");

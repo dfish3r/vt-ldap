@@ -14,11 +14,8 @@
 package edu.vt.middleware.ldap.auth;
 
 import java.util.Arrays;
-
 import edu.vt.middleware.ldap.Credential;
 import edu.vt.middleware.ldap.LdapRequest;
-import edu.vt.middleware.ldap.SearchFilter;
-import edu.vt.middleware.ldap.auth.handler.AuthenticationResultHandler;
 import edu.vt.middleware.ldap.auth.handler.AuthorizationHandler;
 
 /**
@@ -36,16 +33,10 @@ public class AuthenticationRequest implements LdapRequest
   protected Credential credential;
 
   /** User attributes to return. */
-  protected String[] retAttrs;
-
-  /** Filter to resolve user DN. */
-  protected SearchFilter filter;
-
-  /** Handlers to process authentication results. */
-  protected AuthenticationResultHandler[] authHandler;
+  protected String[] retAttrs = new String[0];
 
   /** Handlers to authorize the user. */
-  protected AuthorizationHandler[] authzHandler;
+  protected AuthorizationHandler[] authzHandlers;
 
 
   /** Default constructor. */
@@ -86,14 +77,16 @@ public class AuthenticationRequest implements LdapRequest
    *
    * @param  id  that identifies the user
    * @param  c  credential to authenticate the user
-   * @param  sf  search filter to resolve the user DN
+   * @param  ah  authorization handlers
    */
   public AuthenticationRequest(
-    final String id, final Credential c, final SearchFilter sf)
+    final String id,
+    final Credential c,
+    final AuthorizationHandler[] ah)
   {
     this.setUser(id);
     this.setCredential(c);
-    this.setAuthorizationFilter(sf);
+    this.setAuthorizationHandler(ah);
   }
 
 
@@ -103,18 +96,18 @@ public class AuthenticationRequest implements LdapRequest
    * @param  id  that identifies the user
    * @param  c  credential to authenticate the user
    * @param  attrs  attributes to return
-   * @param  sf  search filter to resolve the user DN
+   * @param  ah  authorization handlers
    */
   public AuthenticationRequest(
     final String id,
     final Credential c,
     final String[] attrs,
-    final SearchFilter sf)
+    final AuthorizationHandler[] ah)
   {
     this.setUser(id);
     this.setCredential(c);
     this.setReturnAttributes(attrs);
-    this.setAuthorizationFilter(sf);
+    this.setAuthorizationHandler(ah);
   }
 
 
@@ -184,58 +177,13 @@ public class AuthenticationRequest implements LdapRequest
 
 
   /**
-   * Returns the authorization filter.
-   *
-   * @return  authorization filter
-   */
-  public SearchFilter getAuthorizationFilter()
-  {
-    return this.filter;
-  }
-
-
-  /**
-   * Sets the authorization filter.
-   *
-   * @param  sf  authorization filter
-   */
-  public void setAuthorizationFilter(final SearchFilter sf)
-  {
-    this.filter = sf;
-  }
-
-
-  /**
-   * Returns the authentication result handlers.
-   *
-   * @return  authentication result handlers
-   */
-  public AuthenticationResultHandler[] getAuthenticationResultHandler()
-  {
-    return this.authHandler;
-  }
-
-
-  /**
-   * Sets the authentication result handlers.
-   *
-   * @param  arh  authentication result handlers
-   */
-  public void setAuthenticationResultHandler(
-    final AuthenticationResultHandler[] arh)
-  {
-    this.authHandler = arh;
-  }
-
-
-  /**
    * Returns the authorization handlers.
    *
    * @return  authorization handlers
    */
   public AuthorizationHandler[] getAuthorizationHandler()
   {
-    return this.authzHandler;
+    return this.authzHandlers;
   }
 
 
@@ -246,7 +194,7 @@ public class AuthenticationRequest implements LdapRequest
    */
   public void setAuthorizationHandler(final AuthorizationHandler[] ah)
   {
-    this.authzHandler = ah;
+    this.authzHandlers = ah;
   }
 
 
@@ -260,15 +208,12 @@ public class AuthenticationRequest implements LdapRequest
   {
     return
       String.format(
-        "%s@%d: user=%s, credential=%s, retAttrs=%s, filter=%s, " +
-        "authHandler=%s, authzHandler=%s",
+        "%s@%d: user=%s, credential=%s, retAttrs=%s, authzHandler=%s",
         this.getClass().getName(),
         this.hashCode(),
         this.user,
         this.credential,
         this.retAttrs != null ? Arrays.asList(this.retAttrs) : null,
-        this.filter,
-        this.authHandler != null ? Arrays.asList(this.authHandler) : null,
-        this.authzHandler != null ? Arrays.asList(this.authzHandler) : null);
+        this.authzHandlers != null ? Arrays.asList(this.authzHandlers) : null);
   }
 }

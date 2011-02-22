@@ -16,8 +16,8 @@ package edu.vt.middleware.ldap.pool;
 import java.util.HashMap;
 import java.util.Map;
 import edu.vt.middleware.ldap.AbstractTest;
-import edu.vt.middleware.ldap.LdapConfig;
 import edu.vt.middleware.ldap.LdapConnection;
+import edu.vt.middleware.ldap.LdapConnectionConfig;
 import edu.vt.middleware.ldap.LdapEntry;
 import edu.vt.middleware.ldap.LdapResult;
 import edu.vt.middleware.ldap.SearchFilter;
@@ -110,8 +110,9 @@ public class LdapPoolTest extends AbstractTest
   public LdapPoolTest()
     throws Exception
   {
-    final DefaultLdapFactory factory = new DefaultLdapFactory(
-      TestUtil.createLdapConnection().getLdapConfig());
+    final LdapConnectionConfig lcc =
+      TestUtil.createLdapConnection().getLdapConnectionConfig();
+    final DefaultLdapFactory factory = new DefaultLdapFactory(lcc);
     factory.setLdapValidator(
       new CompareLdapValidator(
         "ou=test,dc=vt,dc=edu",
@@ -154,14 +155,14 @@ public class LdapPoolTest extends AbstractTest
     sharedLpc.setValidateTimerPeriod(5000L);
     this.sharedPool = new SharedLdapPool(sharedLpc, factory);
 
-    final LdapConfig connStrategyLc =
-      TestUtil.createLdapConnection().getLdapConfig();
-    connStrategyLc.setLdapUrl(
+    final LdapConnectionConfig connStrategyLcc =
+      TestUtil.createLdapConnection().getLdapConnectionConfig();
+    connStrategyLcc.setLdapUrl(
       "ldap://ed-dev.middleware.vt.edu:14389 ldap://ed-dne.middleware.vt.edu");
-    connStrategyLc.getConnectionFactory().setConnectionStrategy(
+    connStrategyLcc.getConnectionFactory().setConnectionStrategy(
       ConnectionStrategy.ROUND_ROBIN);
     final DefaultLdapFactory connStrategyFactory = new DefaultLdapFactory(
-      connStrategyLc);
+      connStrategyLcc);
     this.connStrategyPool = new BlockingLdapPool(
       new LdapPoolConfig(), connStrategyFactory);
 
@@ -172,7 +173,7 @@ public class LdapPoolTest extends AbstractTest
     this.vtComparisonPool = new BlockingLdapPool(vtComparisonLpc, factory);
 
     final DefaultLdapPoolableObjectFactory commonsFactory =
-      new DefaultLdapPoolableObjectFactory();
+      new DefaultLdapPoolableObjectFactory(lcc);
     commonsFactory.setLdapValidator(
       new CompareLdapValidator(
         "ou=test,dc=vt,dc=edu",
@@ -398,48 +399,66 @@ public class LdapPoolTest extends AbstractTest
     return
       new Object[][] {
         {
-          new SearchFilter("mail=jadams@vt.edu"),
-          "departmentNumber|givenName|sn",
+          new SearchRequest(
+            "ou=test,dc=vt,dc=edu",
+            new SearchFilter("mail=jadams@vt.edu"),
+            new String[] {"departmentNumber", "givenName", "sn", }),
           entries.get("2")[1],
         },
         {
-          new SearchFilter("mail=tjefferson@vt.edu"),
-          "departmentNumber|givenName|sn",
+          new SearchRequest(
+            "ou=test,dc=vt,dc=edu",
+            new SearchFilter("mail=tjefferson@vt.edu"),
+            new String[] {"departmentNumber", "givenName", "sn", }),
           entries.get("3")[1],
         },
         {
-          new SearchFilter("mail=jmadison@vt.edu"),
-          "departmentNumber|givenName|sn",
+          new SearchRequest(
+            "ou=test,dc=vt,dc=edu",
+            new SearchFilter("mail=jmadison@vt.edu"),
+            new String[] {"departmentNumber", "givenName", "sn", }),
           entries.get("4")[1],
         },
         {
-          new SearchFilter("mail=jmonroe@vt.edu"),
-          "departmentNumber|givenName|sn",
+          new SearchRequest(
+            "ou=test,dc=vt,dc=edu",
+            new SearchFilter("mail=jmonroe@vt.edu"),
+            new String[] {"departmentNumber", "givenName", "sn", }),
           entries.get("5")[1],
         },
         {
-          new SearchFilter("mail=jqadams@vt.edu"),
-          "departmentNumber|givenName|sn",
+          new SearchRequest(
+            "ou=test,dc=vt,dc=edu",
+            new SearchFilter("mail=jqadams@vt.edu"),
+            new String[] {"departmentNumber", "givenName", "sn", }),
           entries.get("6")[1],
         },
         {
-          new SearchFilter("mail=ajackson@vt.edu"),
-          "departmentNumber|givenName|sn",
+          new SearchRequest(
+            "ou=test,dc=vt,dc=edu",
+            new SearchFilter("mail=ajackson@vt.edu"),
+            new String[] {"departmentNumber", "givenName", "sn", }),
           entries.get("7")[1],
         },
         {
-          new SearchFilter("mail=mvburen@vt.edu"),
-          "departmentNumber|givenName|sn|jpegPhoto",
+          new SearchRequest(
+            "ou=test,dc=vt,dc=edu",
+            new SearchFilter("mail=mvburen@vt.edu"),
+            new String[] {"departmentNumber", "givenName", "sn", }),
           entries.get("8")[1],
         },
         {
-          new SearchFilter("mail=whharrison@vt.edu"),
-          "departmentNumber|givenName|sn",
+          new SearchRequest(
+            "ou=test,dc=vt,dc=edu",
+            new SearchFilter("mail=whharrison@vt.edu"),
+            new String[] {"departmentNumber", "givenName", "sn", }),
           entries.get("9")[1],
         },
         {
-          new SearchFilter("mail=jtyler@vt.edu"),
-          "departmentNumber|givenName|sn",
+          new SearchRequest(
+            "ou=test,dc=vt,dc=edu",
+            new SearchFilter("mail=jtyler@vt.edu"),
+            new String[] {"departmentNumber", "givenName", "sn", }),
           entries.get("10")[1],
         },
       };
@@ -462,13 +481,13 @@ public class LdapPoolTest extends AbstractTest
     try {
       conn = this.softLimitPool.checkOut();
       try {
-        conn.setLdapConfig(new LdapConfig());
+        conn.setLdapConnectionConfig(new LdapConnectionConfig());
         AssertJUnit.fail("Expected illegalstateexception to be thrown");
       } catch (IllegalStateException e) {
         AssertJUnit.assertEquals(IllegalStateException.class, e.getClass());
       }
       try {
-        conn.getLdapConfig().setTimeout(10000);
+        conn.getLdapConnectionConfig().setTimeout(10000);
         AssertJUnit.fail("Expected illegalstateexception to be thrown");
       } catch (IllegalStateException e) {
         AssertJUnit.assertEquals(IllegalStateException.class, e.getClass());
@@ -480,8 +499,7 @@ public class LdapPoolTest extends AbstractTest
 
 
   /**
-   * @param  filter  to search with.
-   * @param  returnAttrs  to search for.
+   * @param  request  to search with
    * @param  results  to expect from the search.
    *
    * @throws  Exception  On test failure.
@@ -494,22 +512,19 @@ public class LdapPoolTest extends AbstractTest
     timeOut = 60000
   )
   public void softLimitSmallSearch(
-    final SearchFilter filter,
-    final String returnAttrs,
+    final SearchRequest request,
     final LdapEntry results)
     throws Exception
   {
     this.softLimitRuntime += this.search(
       this.softLimitPool,
-      filter,
-      returnAttrs,
+      request,
       results);
   }
 
 
   /**
-   * @param  filter  to search with.
-   * @param  returnAttrs  to search for.
+   * @param  request  to search with
    * @param  results  to expect from the search.
    *
    * @throws  Exception  On test failure.
@@ -523,15 +538,13 @@ public class LdapPoolTest extends AbstractTest
     dependsOnMethods = {"softLimitSmallSearch"}
   )
   public void softLimitMediumSearch(
-    final SearchFilter filter,
-    final String returnAttrs,
+    final SearchRequest request,
     final LdapEntry results)
     throws Exception
   {
     this.softLimitRuntime += this.search(
       this.softLimitPool,
-      filter,
-      returnAttrs,
+      request,
       results);
   }
 
@@ -568,13 +581,13 @@ public class LdapPoolTest extends AbstractTest
     try {
       conn = this.blockingPool.checkOut();
       try {
-        conn.setLdapConfig(new LdapConfig());
+        conn.setLdapConnectionConfig(new LdapConnectionConfig());
         AssertJUnit.fail("Expected illegalstateexception to be thrown");
       } catch (IllegalStateException e) {
         AssertJUnit.assertEquals(IllegalStateException.class, e.getClass());
       }
       try {
-        conn.getLdapConfig().setTimeout(10000);
+        conn.getLdapConnectionConfig().setTimeout(10000);
         AssertJUnit.fail("Expected illegalstateexception to be thrown");
       } catch (IllegalStateException e) {
         AssertJUnit.assertEquals(IllegalStateException.class, e.getClass());
@@ -586,8 +599,7 @@ public class LdapPoolTest extends AbstractTest
 
 
   /**
-   * @param  filter  to search with.
-   * @param  returnAttrs  to search for.
+   * @param  request  to search with
    * @param  results  to expect from the search.
    *
    * @throws  Exception  On test failure.
@@ -600,22 +612,19 @@ public class LdapPoolTest extends AbstractTest
     timeOut = 60000
   )
   public void blockingSmallSearch(
-    final SearchFilter filter,
-    final String returnAttrs,
+    final SearchRequest request,
     final LdapEntry results)
     throws Exception
   {
     this.blockingRuntime += this.search(
       this.blockingPool,
-      filter,
-      returnAttrs,
+      request,
       results);
   }
 
 
   /**
-   * @param  filter  to search with.
-   * @param  returnAttrs  to search for.
+   * @param  request  to search with
    * @param  results  to expect from the search.
    *
    * @throws  Exception  On test failure.
@@ -629,22 +638,19 @@ public class LdapPoolTest extends AbstractTest
     dependsOnMethods = {"blockingSmallSearch"}
   )
   public void blockingMediumSearch(
-    final SearchFilter filter,
-    final String returnAttrs,
+    final SearchRequest request,
     final LdapEntry results)
     throws Exception
   {
     this.blockingRuntime += this.search(
       this.blockingPool,
-      filter,
-      returnAttrs,
+      request,
       results);
   }
 
 
   /**
-   * @param  filter  to search with.
-   * @param  returnAttrs  to search for.
+   * @param  request  to search with
    * @param  results  to expect from the search.
    *
    * @throws  Exception  On test failure.
@@ -658,15 +664,13 @@ public class LdapPoolTest extends AbstractTest
     dependsOnMethods = {"blockingMediumSearch"}
   )
   public void blockingLargeSearch(
-    final SearchFilter filter,
-    final String returnAttrs,
+    final SearchRequest request,
     final LdapEntry results)
     throws Exception
   {
     this.blockingRuntime += this.search(
       this.blockingPool,
-      filter,
-      returnAttrs,
+      request,
       results);
   }
 
@@ -688,8 +692,7 @@ public class LdapPoolTest extends AbstractTest
 
 
   /**
-   * @param  filter  to search with.
-   * @param  returnAttrs  to search for.
+   * @param  request  to search with
    * @param  results  to expect from the search.
    *
    * @throws  Exception  On test failure.
@@ -702,16 +705,14 @@ public class LdapPoolTest extends AbstractTest
     timeOut = 60000
   )
   public void blockingTimeoutSmallSearch(
-    final SearchFilter filter,
-    final String returnAttrs,
+    final SearchRequest request,
     final LdapEntry results)
     throws Exception
   {
     try {
       this.blockingTimeoutRuntime += this.search(
         this.blockingTimeoutPool,
-        filter,
-        returnAttrs,
+        request,
         results);
     } catch (BlockingTimeoutException e) {
       this.logger.info("block timeout exceeded");
@@ -720,8 +721,7 @@ public class LdapPoolTest extends AbstractTest
 
 
   /**
-   * @param  filter  to search with.
-   * @param  returnAttrs  to search for.
+   * @param  request  to search with
    * @param  results  to expect from the search.
    *
    * @throws  Exception  On test failure.
@@ -735,16 +735,14 @@ public class LdapPoolTest extends AbstractTest
     dependsOnMethods = {"blockingTimeoutSmallSearch"}
   )
   public void blockingTimeoutMediumSearch(
-    final SearchFilter filter,
-    final String returnAttrs,
+    final SearchRequest request,
     final LdapEntry results)
     throws Exception
   {
     try {
       this.blockingTimeoutRuntime += this.search(
         this.blockingTimeoutPool,
-        filter,
-        returnAttrs,
+        request,
         results);
     } catch (BlockingTimeoutException e) {
       this.logger.info("block timeout exceeded");
@@ -753,8 +751,7 @@ public class LdapPoolTest extends AbstractTest
 
 
   /**
-   * @param  filter  to search with.
-   * @param  returnAttrs  to search for.
+   * @param  request  to search with
    * @param  results  to expect from the search.
    *
    * @throws  Exception  On test failure.
@@ -768,16 +765,14 @@ public class LdapPoolTest extends AbstractTest
     dependsOnMethods = {"blockingTimeoutMediumSearch"}
   )
   public void blockingTimeoutLargeSearch(
-    final SearchFilter filter,
-    final String returnAttrs,
+    final SearchRequest request,
     final LdapEntry results)
     throws Exception
   {
     try {
       this.blockingTimeoutRuntime += this.search(
         this.blockingTimeoutPool,
-        filter,
-        returnAttrs,
+        request,
         results);
     } catch (BlockingTimeoutException e) {
       this.logger.info("block timeout exceeded");
@@ -817,13 +812,13 @@ public class LdapPoolTest extends AbstractTest
     try {
       conn = this.sharedPool.checkOut();
       try {
-        conn.setLdapConfig(new LdapConfig());
+        conn.setLdapConnectionConfig(new LdapConnectionConfig());
         AssertJUnit.fail("Expected illegalstateexception to be thrown");
       } catch (IllegalStateException e) {
         AssertJUnit.assertEquals(IllegalStateException.class, e.getClass());
       }
       try {
-        conn.getLdapConfig().setTimeout(10000);
+        conn.getLdapConnectionConfig().setTimeout(10000);
         AssertJUnit.fail("Expected illegalstateexception to be thrown");
       } catch (IllegalStateException e) {
         AssertJUnit.assertEquals(IllegalStateException.class, e.getClass());
@@ -835,8 +830,7 @@ public class LdapPoolTest extends AbstractTest
 
 
   /**
-   * @param  filter  to search with.
-   * @param  returnAttrs  to search for.
+   * @param  request  to search with
    * @param  results  to expect from the search.
    *
    * @throws  Exception  On test failure.
@@ -849,22 +843,19 @@ public class LdapPoolTest extends AbstractTest
     timeOut = 60000
   )
   public void sharedSmallSearch(
-    final SearchFilter filter,
-    final String returnAttrs,
+    final SearchRequest request,
     final LdapEntry results)
     throws Exception
   {
     this.sharedRuntime += this.search(
       this.sharedPool,
-      filter,
-      returnAttrs,
+      request,
       results);
   }
 
 
   /**
-   * @param  filter  to search with.
-   * @param  returnAttrs  to search for.
+   * @param  request  to search with
    * @param  results  to expect from the search.
    *
    * @throws  Exception  On test failure.
@@ -878,22 +869,19 @@ public class LdapPoolTest extends AbstractTest
     dependsOnMethods = {"sharedSmallSearch"}
   )
   public void sharedMediumSearch(
-    final SearchFilter filter,
-    final String returnAttrs,
+    final SearchRequest request,
     final LdapEntry results)
     throws Exception
   {
     this.sharedRuntime += this.search(
       this.sharedPool,
-      filter,
-      returnAttrs,
+      request,
       results);
   }
 
 
   /**
-   * @param  filter  to search with.
-   * @param  returnAttrs  to search for.
+   * @param  request  to search with
    * @param  results  to expect from the search.
    *
    * @throws  Exception  On test failure.
@@ -907,15 +895,13 @@ public class LdapPoolTest extends AbstractTest
     dependsOnMethods = {"sharedMediumSearch"}
   )
   public void sharedLargeSearch(
-    final SearchFilter filter,
-    final String returnAttrs,
+    final SearchRequest request,
     final LdapEntry results)
     throws Exception
   {
     this.sharedRuntime += this.search(
       this.sharedPool,
-      filter,
-      returnAttrs,
+      request,
       results);
   }
 
@@ -937,8 +923,7 @@ public class LdapPoolTest extends AbstractTest
 
 
   /**
-   * @param  filter  to search with.
-   * @param  returnAttrs  to search for.
+   * @param  request  to search with
    * @param  results  to expect from the search.
    *
    * @throws  Exception  On test failure.
@@ -951,19 +936,17 @@ public class LdapPoolTest extends AbstractTest
     timeOut = 60000
   )
   public void connStrategySearch(
-    final SearchFilter filter,
-    final String returnAttrs,
+    final SearchRequest request,
     final LdapEntry results)
     throws Exception
   {
-    this.search(this.connStrategyPool, filter, returnAttrs, results);
+    this.search(this.connStrategyPool, request, results);
   }
 
 
   /**
    * @param  pool  to get ldap object from.
-   * @param  filter  to search with.
-   * @param  returnAttrs  to search for.
+   * @param  request  to search with
    * @param  results  to expect from the search.
    *
    * @return  time it takes to checkout/search/checkin from the pool
@@ -972,8 +955,7 @@ public class LdapPoolTest extends AbstractTest
    */
   private long search(
     final LdapPool<LdapConnection> pool,
-    final SearchFilter filter,
-    final String returnAttrs,
+    final SearchRequest request,
     final LdapEntry results)
     throws Exception
   {
@@ -989,8 +971,7 @@ public class LdapPoolTest extends AbstractTest
         this.logger.trace("performing search");
       }
       final SearchOperation search = new SearchOperation(conn);
-      result = search.execute(
-        new SearchRequest(filter, returnAttrs.split("\\|"))).getResult();
+      result = search.execute(request).getResult();
       if (this.logger.isTraceEnabled()) {
         this.logger.trace("search completed");
       }
@@ -1008,8 +989,7 @@ public class LdapPoolTest extends AbstractTest
 
 
   /**
-   * @param  filter  to search with.
-   * @param  returnAttrs  to search for.
+   * @param  request  to search with
    * @param  results  to expect from the search.
    *
    * @throws  Exception  On test failure.
@@ -1022,8 +1002,7 @@ public class LdapPoolTest extends AbstractTest
     timeOut = 60000
   )
   public void vtPoolComparison(
-    final SearchFilter filter,
-    final String returnAttrs,
+    final SearchRequest request,
     final LdapEntry results)
     throws Exception
   {
@@ -1038,7 +1017,7 @@ public class LdapPoolTest extends AbstractTest
         this.logger.trace("performing search");
       }
       final SearchOperation search = new SearchOperation(conn);
-      search.execute(new SearchRequest(filter, returnAttrs.split("\\|")));
+      search.execute(request);
       if (this.logger.isTraceEnabled()) {
         this.logger.trace("search completed");
       }
@@ -1053,8 +1032,7 @@ public class LdapPoolTest extends AbstractTest
 
 
   /**
-   * @param  filter  to search with.
-   * @param  returnAttrs  to search for.
+   * @param  request  to search with
    * @param  results  to expect from the search.
    *
    * @throws  Exception  On test failure.
@@ -1067,8 +1045,7 @@ public class LdapPoolTest extends AbstractTest
     timeOut = 60000
   )
   public void commonsPoolComparison(
-    final SearchFilter filter,
-    final String returnAttrs,
+    final SearchRequest request,
     final LdapEntry results)
     throws Exception
   {
@@ -1083,7 +1060,7 @@ public class LdapPoolTest extends AbstractTest
         this.logger.trace("performing search");
       }
       final SearchOperation search = new SearchOperation(conn);
-      search.execute(new SearchRequest(filter, returnAttrs.split("\\|")));
+      search.execute(request);
       if (this.logger.isTraceEnabled()) {
         this.logger.trace("search completed");
       }

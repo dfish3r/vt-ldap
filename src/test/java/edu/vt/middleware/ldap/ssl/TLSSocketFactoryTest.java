@@ -106,9 +106,10 @@ public class TLSSocketFactoryTest
 
     // configure ldap object to use TLS
     final LdapConnection conn = TestUtil.createLdapConnection();
-    conn.getLdapConfig().setTls(true);
-    conn.getLdapConfig().setSslSocketFactory(sf);
-    conn.getLdapConfig().setHostnameVerifier(new AnyHostnameVerifier());
+    conn.getLdapConnectionConfig().setTls(true);
+    conn.getLdapConnectionConfig().setSslSocketFactory(sf);
+    conn.getLdapConnectionConfig().setHostnameVerifier(
+      new AnyHostnameVerifier());
     return conn;
   }
 
@@ -120,7 +121,7 @@ public class TLSSocketFactoryTest
   {
     final LdapConnection conn = this.createTLSLdapConnection();
     final TLSSocketFactory sf =
-      (TLSSocketFactory) conn.getLdapConfig().getSslSocketFactory();
+      (TLSSocketFactory) conn.getLdapConnectionConfig().getSslSocketFactory();
 
     conn.open();
     SearchOperation search = new SearchOperation(conn);
@@ -165,7 +166,7 @@ public class TLSSocketFactoryTest
   {
     final LdapConnection conn = this.createTLSLdapConnection();
     final TLSSocketFactory sf =
-      (TLSSocketFactory) conn.getLdapConfig().getSslSocketFactory();
+      (TLSSocketFactory) conn.getLdapConnectionConfig().getSslSocketFactory();
 
     conn.open();
     SearchOperation search = new SearchOperation(conn);

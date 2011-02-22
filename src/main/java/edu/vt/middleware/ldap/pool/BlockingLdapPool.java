@@ -38,13 +38,6 @@ public class BlockingLdapPool extends AbstractLdapPool<LdapConnection>
   private long blockWaitTime;
 
 
-  /** Creates a new ldap pool using {@link DefaultLdapFactory}. */
-  public BlockingLdapPool()
-  {
-    super(new LdapPoolConfig(), new DefaultLdapFactory());
-  }
-
-
   /**
    * Creates a new ldap pool with the supplied ldap factory.
    *

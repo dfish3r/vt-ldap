@@ -31,7 +31,7 @@ public class AddOperation extends AbstractLdapOperation<AddRequest, Void>
   public AddOperation(final LdapConnection lc)
   {
     this.ldapConnection = lc;
-    this.initialize(lc.getLdapConfig());
+    this.initialize(lc.getLdapConnectionConfig());
   }
 
 
@@ -46,5 +46,5 @@ public class AddOperation extends AbstractLdapOperation<AddRequest, Void>
 
   /** {@inheritDoc} */
   protected void initializeRequest(
-    final AddRequest request, final LdapConfig config) {}
+    final AddRequest request, final LdapConnectionConfig config) {}
 }

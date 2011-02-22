@@ -22,8 +22,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * <code>LdapGroup</code> provides a custom implementation for grouping
- * principals.
+ * Provides a custom implementation for grouping principals.
  *
  * @author  Middleware Services
  * @version  $Revision$ $Date$
@@ -42,9 +41,9 @@ public class LdapGroup implements Group, Serializable
 
 
   /**
-   * This creates a new <code>LdapGroup</code> with the supplied name.
+   * Creates a new ldap group with the supplied name.
    *
-   * @param  name  <code>String</code>
+   * @param  name  of the group
    */
   public LdapGroup(final String name)
   {
@@ -53,9 +52,9 @@ public class LdapGroup implements Group, Serializable
 
 
   /**
-   * This returns the name for this <code>LdapGroup</code>.
+   * Returns the name for this ldap group.
    *
-   * @return  <code>String</code>
+   * @return  name
    */
   public String getName()
   {
@@ -99,7 +98,7 @@ public class LdapGroup implements Group, Serializable
   /**
    * Returns an unmodifiable set of the members in this group.
    *
-   * @return  <code>Set</code> of member principals
+   * @return  set of member principals
    */
   public Set<Principal> getMembers()
   {
@@ -108,13 +107,18 @@ public class LdapGroup implements Group, Serializable
 
 
   /**
-   * This returns a String representation of this <code>LdapGroup</code>.
+   * Provides a descriptive string representation of this instance.
    *
-   * @return  <code>String</code>
+   * @return  string representation
    */
   @Override
   public String toString()
   {
-    return String.format("%s%s", this.name, this.members);
+    return String.format(
+      "%s@%d::%s%s",
+      this.getClass().getName(),
+      this.hashCode(),
+      this.name,
+      this.members);
   }
 }

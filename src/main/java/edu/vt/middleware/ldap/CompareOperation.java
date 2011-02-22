@@ -32,7 +32,7 @@ public class CompareOperation
   public CompareOperation(final LdapConnection lc)
   {
     this.ldapConnection = lc;
-    this.initialize(lc.getLdapConfig());
+    this.initialize(lc.getLdapConnectionConfig());
   }
 
 
@@ -47,10 +47,5 @@ public class CompareOperation
 
   /** {@inheritDoc} */
   protected void initializeRequest(
-    final CompareRequest request, final LdapConfig config)
-  {
-    if (request.getDn() == null) {
-      request.setDn(config.getBaseDn());
-    }
-  }
+    final CompareRequest request, final LdapConnectionConfig config) {}
 }

@@ -29,7 +29,7 @@ import java.util.regex.Pattern;
  * @author  Middleware Services
  * @version  $Revision$ $Date$
  */
-public class ConfigParser
+public class PropertyValueParser
 {
 
   /** Property string containing configuration. */
@@ -53,7 +53,7 @@ public class ConfigParser
    *
    * @param  config  <code>String</code>
    */
-  public ConfigParser(final String config)
+  public PropertyValueParser(final String config)
   {
     final Matcher matcher = CONFIG_PATTERN.matcher(config);
     if (matcher.matches()) {

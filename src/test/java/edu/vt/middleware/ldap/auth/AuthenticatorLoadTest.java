@@ -21,6 +21,8 @@ import edu.vt.middleware.ldap.LdapEntry;
 import edu.vt.middleware.ldap.LdapResult;
 import edu.vt.middleware.ldap.SearchFilter;
 import edu.vt.middleware.ldap.TestUtil;
+import edu.vt.middleware.ldap.auth.handler.AuthorizationHandler;
+import edu.vt.middleware.ldap.auth.handler.CompareAuthorizationHandler;
 import org.testng.AssertJUnit;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
@@ -69,7 +71,7 @@ public class AuthenticatorLoadTest extends AbstractTest
     throws Exception
   {
     this.singleTLSAuth = new Authenticator(
-      AuthenticatorConfig.createFromProperties(
+      TestUtil.readAuthenticatorConfig(
         TestUtil.class.getResourceAsStream("/ldap.tls.load.properties")));
   }
 
@@ -274,7 +276,9 @@ public class AuthenticatorLoadTest extends AbstractTest
         user,
         new Credential(credential),
         returnAttrs.split("\\|"),
-        new SearchFilter(filter, filterArgs.split("\\|")))).getResult();
+        new AuthorizationHandler[]{
+          new CompareAuthorizationHandler(
+            new SearchFilter(filter, filterArgs.split("\\|")))})).getResult();
     AssertJUnit.assertEquals(
       TestUtil.convertLdifToResult(expected), new LdapResult(entry));
   }

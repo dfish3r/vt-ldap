@@ -13,7 +13,7 @@
 */
 package edu.vt.middleware.ldap.provider;
 
-import edu.vt.middleware.ldap.LdapConfig;
+import edu.vt.middleware.ldap.LdapConnectionConfig;
 
 /**
  * Provides access to a provider specific connection factory.
@@ -28,8 +28,8 @@ public interface LdapProvider
   /**
    * Returns the connection factory for this provider.
    *
-   * @param  lc  ldap configuration
+   * @param  lcc  ldap connection configuration
    * @return  connection factory
    */
-  ConnectionFactory getConnectionFactory(LdapConfig lc);
+  ConnectionFactory getConnectionFactory(LdapConnectionConfig lcc);
 }

@@ -20,6 +20,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.Set;
 import java.util.TreeSet;
 import javax.security.auth.Subject;
@@ -32,17 +33,17 @@ import javax.security.auth.login.LoginException;
 import javax.security.auth.spi.LoginModule;
 import edu.vt.middleware.ldap.LdapAttribute;
 import edu.vt.middleware.ldap.LdapAttributes;
-import edu.vt.middleware.ldap.LdapConfig;
 import edu.vt.middleware.ldap.LdapConnection;
+import edu.vt.middleware.ldap.SearchRequest;
 import edu.vt.middleware.ldap.auth.Authenticator;
-import edu.vt.middleware.ldap.auth.AuthenticatorConfig;
-import edu.vt.middleware.ldap.props.LdapProperties;
+import edu.vt.middleware.ldap.props.AuthenticatorConfigProperties;
+import edu.vt.middleware.ldap.props.LdapConnectionConfigProperties;
+import edu.vt.middleware.ldap.props.SearchRequestProperties;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 /**
- * <code>AbstractLoginModule</code> provides functionality common to ldap based
- * login modules.
+ * Provides functionality common to ldap based JAAS login modules.
  *
  * @author  Middleware Services
  * @version  $Revision$ $Date$
@@ -78,7 +79,6 @@ public abstract class AbstractLoginModule implements LoginModule
   protected CallbackHandler callbackHandler;
 
   /** Shared state from other login module. */
-  @SuppressWarnings("unchecked")
   protected Map sharedState;
 
   /** Whether credentials from the shared state should be used. */
@@ -295,60 +295,83 @@ public abstract class AbstractLoginModule implements LoginModule
 
 
   /**
-   * This constructs a new <code>LdapConnection</code> with the supplied jaas
-   * options.
+   * Creates a new ldap connection with the supplied JAAS options.
    *
-   * @param  options  <code>Map</code>
+   * @param  options  JAAS configuration options
    *
-   * @return  <code>LdapConnection</code>
+   * @return  ldap connection
    */
-  public static LdapConnection createLdapConnection(
+  protected static LdapConnection createLdapConnection(
     final Map<String, ?> options)
   {
-    final LdapConfig ldapConfig = new LdapConfig();
-    final LdapProperties ldapProperties = new LdapProperties(ldapConfig);
-    final Iterator<String> i = options.keySet().iterator();
-    while (i.hasNext()) {
-      final String key = i.next();
-      final String value = (String) options.get(key);
-      if (!key.matches(IGNORE_LDAP_REGEX)) {
-        ldapProperties.setProperty(key, value);
-      }
-    }
-    ldapProperties.configure();
-    return new LdapConnection(ldapConfig);
+    final LdapConnectionConfigProperties props =
+      new LdapConnectionConfigProperties(
+        createProperties(LdapConnectionConfigProperties.getDomain(), options));
+    return new LdapConnection(props.get());
   }
 
 
   /**
-   * This constructs a new <code>Authenticator</code> with the supplied jaas
-   * options.
+   * Creates a new authenticator with the supplied JAAS options.
    *
-   * @param  options  <code>Map</code>
+   * @param  options  JAAS configuration options
    *
-   * @return  <code>Authenticator</code>
+   * @return  authenticator
    */
-  public static Authenticator createAuthenticator(
+  protected static Authenticator createAuthenticator(
     final Map<String, ?> options)
   {
-    final AuthenticatorConfig authenticatorConfig = new AuthenticatorConfig();
-    final LdapProperties authProperties = new LdapProperties(
-      authenticatorConfig);
-    final Iterator<String> i = options.keySet().iterator();
-    while (i.hasNext()) {
-      final String key = i.next();
-      final String value = (String) options.get(key);
-      if (!key.matches(IGNORE_LDAP_REGEX)) {
-        authProperties.setProperty(key, value);
-      }
-    }
-    authProperties.configure();
-    return new Authenticator(authenticatorConfig);
+    final AuthenticatorConfigProperties props =
+      new AuthenticatorConfigProperties(
+        createProperties(AuthenticatorConfigProperties.getDomain(), options));
+    return new Authenticator(props.get());
   }
 
 
   /**
-   * This attempts to retrieve credentials for the supplied name and password
+   * Creates a new search request with the supplied JAAS options.
+   *
+   * @param  options  JAAS configuration options
+   *
+   * @return  search request
+   */
+  protected static SearchRequest createSearchRequest(
+    final Map<String, ?> options)
+  {
+    final SearchRequestProperties props = new SearchRequestProperties(
+      createProperties(SearchRequestProperties.getDomain(), options));
+    return props.get();
+  }
+
+
+  /**
+   * Initializes the supplied properties with supplied JAAS options.
+   *
+   * @param  domain  to prepend to properties
+   * @param  options  to read properties from
+   * @return  properties
+   */
+  protected static Properties createProperties(
+    final String domain, final Map<String, ?> options)
+  {
+    final Properties p = new Properties();
+    for (Map.Entry<String, ?> entry : options.entrySet()) {
+      if (!entry.getKey().matches(IGNORE_LDAP_REGEX)) {
+        // if property name contains a dot, it isn't a vt-ldap property
+        if (entry.getKey().indexOf(".") != -1) {
+          p.setProperty(entry.getKey(), entry.getValue().toString());
+        // add the domain to vt-ldap properties
+        } else {
+          p.setProperty(domain + entry.getKey(), entry.getValue().toString());
+        }
+      }
+    }
+    return p;
+  }
+
+
+  /**
+   * Attempts to retrieve credentials for the supplied name and password
    * callbacks. If useFirstPass or tryFirstPass is set, then name and password
    * data is retrieved from shared state. Otherwise a callback handler is used
    * to get the data. Set useCallback to force a callback handler to be used.
@@ -406,8 +429,8 @@ public abstract class AbstractLoginModule implements LoginModule
 
 
   /**
-   * This will store the supplied name, password, and entry dn in the stored
-   * state map. storePass must be set for this method to have any affect.
+   * Stores the supplied name, password, and entry dn in the stored state map.
+   * storePass must be set for this method to have any affect.
    *
    * @param  nameCb  to store
    * @param  passCb  to store
@@ -434,12 +457,11 @@ public abstract class AbstractLoginModule implements LoginModule
 
 
   /**
-   * This parses the supplied attributes and returns them as a list of <code>
-   * LdapRole</code>s.
+   * Parses the supplied attributes and returns them as a list of ldap roles.
    *
-   * @param  attributes  <code>LdapAttributes</code>
+   * @param  attributes  to parse
    *
-   * @return  <code>List</code> of LdapRole
+   * @return  list of ldap roles
    */
   protected List<LdapRole> attributesToRoles(final LdapAttributes attributes)
   {

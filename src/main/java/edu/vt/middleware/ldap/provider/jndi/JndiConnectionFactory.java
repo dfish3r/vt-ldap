@@ -17,7 +17,7 @@ import java.util.Hashtable;
 import javax.naming.NamingException;
 import javax.naming.ldap.InitialLdapContext;
 import edu.vt.middleware.ldap.Credential;
-import edu.vt.middleware.ldap.LdapConfig;
+import edu.vt.middleware.ldap.LdapConnectionConfig;
 import edu.vt.middleware.ldap.LdapException;
 import edu.vt.middleware.ldap.ResultCode;
 import edu.vt.middleware.ldap.auth.AuthenticationException;
@@ -110,18 +110,20 @@ public class JndiConnectionFactory extends AbstractJndiConnectionFactory
   /**
    * Creates a new instance of this connection factory.
    *
-   * @param  lc  ldap configuration to read connection properties from
+   * @param  lcc  ldap connection configuration to read connection properties
+   * from
    * @return  jndi connection factory
    */
-  public static JndiConnectionFactory newInstance(final LdapConfig lc)
+  public static JndiConnectionFactory newInstance(
+    final LdapConnectionConfig lcc)
   {
     final JndiConnectionFactory cf = new JndiConnectionFactory(
-      lc.getLdapUrl());
-    cf.setAuthentication(lc.getAuthtype());
-    cf.setEnvironment(createEnvironment(lc));
-    cf.setLogCredentials(lc.getLogCredentials());
-    if (lc.getConnectionStrategy() != null) {
-      cf.setConnectionStrategy(lc.getConnectionStrategy());
+      lcc.getLdapUrl());
+    cf.setAuthentication(lcc.getAuthtype());
+    cf.setEnvironment(createEnvironment(lcc));
+    cf.setLogCredentials(lcc.getLogCredentials());
+    if (lcc.getConnectionStrategy() != null) {
+      cf.setConnectionStrategy(lcc.getConnectionStrategy());
     }
     return cf;
   }

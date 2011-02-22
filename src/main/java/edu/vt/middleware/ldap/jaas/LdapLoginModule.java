@@ -34,8 +34,7 @@ import edu.vt.middleware.ldap.auth.AuthenticationRequest;
 import edu.vt.middleware.ldap.auth.Authenticator;
 
 /**
- * <code>LdapLoginModule</code> provides a JAAS authentication hook into LDAP
- * authentication.
+ * Provides a JAAS authentication hook for LDAP authentication.
  *
  * @author  Middleware Services
  * @version  $Revision$ $Date$
@@ -182,9 +181,9 @@ public class LdapLoginModule extends AbstractLoginModule implements LoginModule
 
 
   /**
-   * This provides command line access to a <code>LdapLoginModule</code>.
+   * This provides command line access to this JAAS module.
    *
-   * @param  args  <code>String[]</code>
+   * @param  args  command line arguments
    *
    * @throws  Exception  if an error occurs
    */

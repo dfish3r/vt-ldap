@@ -13,14 +13,11 @@
 */
 package edu.vt.middleware.ldap.auth;
 
-import java.io.InputStream;
-
 import edu.vt.middleware.ldap.Credential;
 import edu.vt.middleware.ldap.LdapEntry;
 import edu.vt.middleware.ldap.LdapException;
 import edu.vt.middleware.ldap.LdapResponse;
 import edu.vt.middleware.ldap.LdapResult;
-import edu.vt.middleware.ldap.SearchFilter;
 import edu.vt.middleware.ldap.auth.handler.AuthenticationCriteria;
 import edu.vt.middleware.ldap.auth.handler.AuthenticationHandler;
 import edu.vt.middleware.ldap.auth.handler.AuthenticationResultHandler;
@@ -50,28 +47,6 @@ public class Authenticator extends AbstractAuthenticator<AuthenticatorConfig>
   public Authenticator(final AuthenticatorConfig ac)
   {
     this.setAuthenticatorConfig(ac);
-  }
-
-
-  /**
-   * This will set the config parameters of this authenticator using the default
-   * properties file, which must be located in your classpath.
-   */
-  public void loadFromProperties()
-  {
-    this.setAuthenticatorConfig(AuthenticatorConfig.createFromProperties(null));
-  }
-
-
-  /**
-   * This will set the config parameters of this authenticator using the
-   * supplied input stream.
-   *
-   * @param  is  to read properties from
-   */
-  public void loadFromProperties(final InputStream is)
-  {
-    this.setAuthenticatorConfig(AuthenticatorConfig.createFromProperties(is));
   }
 
 
@@ -133,7 +108,7 @@ public class Authenticator extends AbstractAuthenticator<AuthenticatorConfig>
 
     final ConnectionFactory cf = this.config.getConnectionFactory();
     final AuthenticationResultHandler[] authResultHandler =
-      request.getAuthenticationResultHandler();
+      this.config.getAuthenticationResultHandlers();
 
     Connection conn = null;
     try {
@@ -176,30 +151,5 @@ public class Authenticator extends AbstractAuthenticator<AuthenticatorConfig>
 
   /** {@inheritDoc} */
   protected void initializeRequest(
-    final AuthenticationRequest request, final AuthenticatorConfig config)
-  {
-    if (request.getUser() == null) {
-      request.setUser(config.getUser());
-    }
-    if (request.getCredential() == null) {
-      request.setCredential(config.getCredential());
-    }
-    if (request.getReturnAttributes() == null) {
-      request.setReturnAttributes(config.getReturnAttributes());
-    }
-    if (request.getAuthorizationFilter() == null &&
-        config.getAuthorizationFilter() != null) {
-      request.setAuthorizationFilter(
-        new SearchFilter(
-          config.getAuthorizationFilter(),
-          config.getAuthorizationFilterArgs()));
-    }
-    if (request.getAuthorizationHandler() == null) {
-      request.setAuthorizationHandler(config.getAuthorizationHandlers());
-    }
-    if (request.getAuthenticationResultHandler() == null) {
-      request.setAuthenticationResultHandler(
-        config.getAuthenticationResultHandlers());
-    }
-  }
+    final AuthenticationRequest request, final AuthenticatorConfig config) {}
 }

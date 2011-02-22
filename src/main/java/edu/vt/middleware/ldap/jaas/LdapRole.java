@@ -17,8 +17,8 @@ import java.io.Serializable;
 import java.security.Principal;
 
 /**
- * <code>LdapRole</code> provides a custom implementation for adding LDAP
- * principals to a <code>Subject</code> that represent roles.
+ * Provides a custom implementation for adding LDAP principals to a subject
+ * that represent roles.
  *
  * @author  Middleware Services
  * @version  $Revision$ $Date$
@@ -34,9 +34,9 @@ public class LdapRole implements Principal, Serializable, Comparable<Principal>
 
 
   /**
-   * This creates a new <code>LdapRole</code> with the supplied name.
+   * Creates a new ldap role with the supplied name.
    *
-   * @param  name  <code>String</code>
+   * @param  name  of this role
    */
   public LdapRole(final String name)
   {
@@ -45,9 +45,9 @@ public class LdapRole implements Principal, Serializable, Comparable<Principal>
 
 
   /**
-   * This returns the name for this <code>LdapRole</code>.
+   * Returns the name for this ldap role.
    *
-   * @return  <code>String</code>
+   * @return  role name
    */
   public String getName()
   {
@@ -56,11 +56,11 @@ public class LdapRole implements Principal, Serializable, Comparable<Principal>
 
 
   /**
-   * This returns the supplied Object is equal to this <code>LdapRole</code>.
+   * Returns whether the supplied object is equal to this ldap role.
    *
-   * @param  o  <code>Object</code>
+   * @param  o  to compare
    *
-   * @return  <code>boolean</code>
+   * @return  whether the supplied object is equal
    */
   public boolean equals(final Object o)
   {
@@ -81,9 +81,9 @@ public class LdapRole implements Principal, Serializable, Comparable<Principal>
 
 
   /**
-   * This returns the hash code for this <code>LdapRole</code>.
+   * Returns the hash code for this ldap role.
    *
-   * @return  <code>int</code>
+   * @return  hash code
    */
   public int hashCode()
   {
@@ -92,25 +92,29 @@ public class LdapRole implements Principal, Serializable, Comparable<Principal>
 
 
   /**
-   * This returns a String representation of this <code>LdapRole</code>.
+   * Provides a descriptive string representation of this instance.
    *
-   * @return  <code>String</code>
+   * @return  string representation
    */
   @Override
   public String toString()
   {
-    return this.name;
+    return String.format(
+      "%s@%d::%s",
+      this.getClass().getName(),
+      this.hashCode(),
+      this.name);
   }
 
 
   /**
-   * This compares the supplied object for order. <code>LdapRole</code> is
-   * always greater than any other object. Otherwise principals are compared
-   * lexicographically on name.
+   * Principals are compared lexicographically by name. See
+   * {@link Comparable#compareTo(Object)}.
    *
-   * @param  p  <code>Principal</code>
+   * @param  p  principal to compare
    *
-   * @return  <code>int</code>
+   * @return  a negative integer, zero, or a positive integer as this object is
+   * less than, equal to, or greater than the specified object.
    */
   public int compareTo(final Principal p)
   {

@@ -59,7 +59,7 @@ public class PersistentSearchDnResolver extends SearchDnResolver
   public void setAuthenticatorConfig(final AuthenticatorConfig ac)
   {
     super.setAuthenticatorConfig(ac);
-    this.ldapConnection.setLdapConfig(this.config);
+    this.ldapConnection.setLdapConnectionConfig(this.config);
   }
 
 

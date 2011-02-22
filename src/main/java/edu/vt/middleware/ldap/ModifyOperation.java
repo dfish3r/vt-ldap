@@ -31,7 +31,7 @@ public class ModifyOperation extends AbstractLdapOperation<ModifyRequest, Void>
   public ModifyOperation(final LdapConnection lc)
   {
     this.ldapConnection = lc;
-    this.initialize(lc.getLdapConfig());
+    this.initialize(lc.getLdapConnectionConfig());
   }
 
 
@@ -46,5 +46,5 @@ public class ModifyOperation extends AbstractLdapOperation<ModifyRequest, Void>
 
   /** {@inheritDoc} */
   protected void initializeRequest(
-    final ModifyRequest request, final LdapConfig config) {}
+    final ModifyRequest request, final LdapConnectionConfig config) {}
 }

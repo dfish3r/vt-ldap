@@ -258,20 +258,6 @@ public class RecursiveResultHandler extends CopyLdapResultHandler
         final SearchOperation search = new SearchOperation(this.ldapConnection);
         final SearchRequest sr = SearchRequest.newObjectScopeSearchRequest(
           dn, this.retAttrs);
-        // remove the recursive search result handler if it's in the ldap config
-        if (this.ldapConnection.getLdapConfig().getLdapResultHandlers() !=
-            null) {
-          final List<LdapResultHandler> srHandlers =
-            new ArrayList<LdapResultHandler>();
-          for (LdapResultHandler srh :
-               this.ldapConnection.getLdapConfig().getLdapResultHandlers()) {
-            if (srh != this) {
-              srHandlers.add(srh);
-            }
-          }
-          sr.setLdapResultHandler(
-            srHandlers.toArray(new LdapResultHandler[srHandlers.size()]));
-        }
         final LdapResult result = search.execute(sr).getResult();
         newAttrs = result.getEntry(dn).getLdapAttributes();
       } catch (LdapException e) {

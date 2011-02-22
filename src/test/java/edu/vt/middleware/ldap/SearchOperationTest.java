@@ -304,12 +304,13 @@ public class SearchOperationTest extends AbstractTest
     final LdapConnection conn = TestUtil.createLdapConnection();
     conn.open();
     final PagedSearchOperation search = new PagedSearchOperation(conn);
-    conn.getLdapConfig().setPagedResultsSize(1);
     final String expected = TestUtil.readFileIntoString(ldifFile);
 
     // test searching
-    final LdapResult result = search.execute(
-      new PagedSearchRequest(dn, new SearchFilter(filter))).getResult();
+    final PagedSearchRequest request = new PagedSearchRequest(
+      dn, new SearchFilter(filter));
+    request.setPagedResultsSize(1);
+    final LdapResult result = search.execute(request).getResult();
     AssertJUnit.assertEquals(
       TestUtil.convertLdifToResult(expected), result);
 
@@ -679,35 +680,38 @@ public class SearchOperationTest extends AbstractTest
     final LdapConnection conn = this.createLdapConnection(true);
     conn.open();
     final SearchOperation search = new SearchOperation(conn);
+    final SearchRequest request = new SearchRequest();
 
     // test exception searching
-    conn.getLdapConfig().setCountLimit(resultsSize);
-    conn.getLdapConfig().setSearchIgnoreResultCodes(null);
+    request.setBaseDn(dn);
+    request.setCountLimit(resultsSize);
+    request.setSearchIgnoreResultCodes(null);
 
+    request.setSearchFilter(new SearchFilter("(uugid=*)"));
     try {
-      search.execute(new SearchRequest(dn, new SearchFilter("(uugid=*)")));
+      search.execute(request);
       AssertJUnit.fail("Should have thrown SizeLimitExceededException");
     } catch (LdapException e) {
       AssertJUnit.assertEquals(
         ResultCode.SIZE_LIMIT_EXCEEDED, e.getResultCode());
     }
 
-    conn.getLdapConfig().setSearchIgnoreResultCodes(
+    request.setSearchIgnoreResultCodes(
       new ResultCode[] {ResultCode.TIME_LIMIT_EXCEEDED, });
     try {
-      search.execute(new SearchRequest(dn, new SearchFilter("(uugid=*)")));
+      search.execute(request);
       AssertJUnit.fail("Should have thrown SizeLimitExceededException");
     } catch (LdapException e) {
       AssertJUnit.assertEquals(
         ResultCode.SIZE_LIMIT_EXCEEDED, e.getResultCode());
     }
 
-    conn.getLdapConfig().setSearchIgnoreResultCodes(
+    request.setSearchIgnoreResultCodes(
       new ResultCode[] {
         ResultCode.TIME_LIMIT_EXCEEDED, ResultCode.SIZE_LIMIT_EXCEEDED, });
+    request.setSearchFilter(new SearchFilter(filter));
 
-    final LdapResult result = search.execute(
-      new SearchRequest(dn, new SearchFilter(filter))).getResult();
+    final LdapResult result = search.execute(request).getResult();
     AssertJUnit.assertEquals(resultsSize, result.size());
     conn.close();
   }
@@ -722,15 +726,15 @@ public class SearchOperationTest extends AbstractTest
     final LdapConnection conn = this.createLdapConnection(true);
 
     final ResultCode retryResultCode = ResultCode.valueOf(resultCode);
-    conn.getLdapConfig().getConnectionFactory().setOperationRetryResultCodes(
-      new ResultCode[] {retryResultCode, });
+    conn.getLdapConnectionConfig().getConnectionFactory()
+      .setOperationRetryResultCodes(new ResultCode[] {retryResultCode, });
 
     conn.open();
     final RetrySearchOperation search = new RetrySearchOperation(conn);
 
     // test defaults
     try {
-      search.execute(new SearchRequest(null, new SearchFilter("((")));
+      search.execute(new SearchRequest(new SearchFilter("((")));
       AssertJUnit.fail("Should have thrown LdapException");
     } catch (LdapException e) {
       AssertJUnit.assertEquals(
@@ -744,7 +748,7 @@ public class SearchOperationTest extends AbstractTest
     search.setOperationRetry(0);
 
     try {
-      search.execute(new SearchRequest(null, new SearchFilter("((")));
+      search.execute(new SearchRequest(new SearchFilter("((")));
       AssertJUnit.fail("Should have thrown LdapException");
     } catch (LdapException e) {
       AssertJUnit.assertEquals(
@@ -758,12 +762,12 @@ public class SearchOperationTest extends AbstractTest
     search.reset();
     search.setOperationRetry(1);
 
-    conn.getLdapConfig().getConnectionFactory().setOperationRetryResultCodes(
-      null);
+    conn.getLdapConnectionConfig().getConnectionFactory()
+      .setOperationRetryResultCodes(null);
 
     conn.open();
     try {
-      search.execute(new SearchRequest(null, new SearchFilter("((")));
+      search.execute(new SearchRequest(new SearchFilter("((")));
       AssertJUnit.fail("Should have thrown LdapException");
     } catch (LdapException e) {
       AssertJUnit.assertEquals(
@@ -778,12 +782,12 @@ public class SearchOperationTest extends AbstractTest
     search.setOperationRetry(3);
     search.setOperationRetryWait(1000);
 
-    conn.getLdapConfig().getConnectionFactory().setOperationRetryResultCodes(
-      new ResultCode[] {retryResultCode, });
+    conn.getLdapConnectionConfig().getConnectionFactory()
+      .setOperationRetryResultCodes(new ResultCode[] {retryResultCode, });
 
     conn.open();
     try {
-      search.execute(new SearchRequest(null, new SearchFilter("((")));
+      search.execute(new SearchRequest(new SearchFilter("((")));
       AssertJUnit.fail("Should have thrown LdapException");
     } catch (LdapException e) {
       AssertJUnit.assertEquals(
@@ -796,7 +800,7 @@ public class SearchOperationTest extends AbstractTest
     search.reset();
     search.setOperationRetryBackoff(2);
     try {
-      search.execute(new SearchRequest(null, new SearchFilter("((")));
+      search.execute(new SearchRequest(new SearchFilter("((")));
       AssertJUnit.fail("Should have thrown LdapException");
     } catch (LdapException e) {
       AssertJUnit.assertEquals(
@@ -810,7 +814,7 @@ public class SearchOperationTest extends AbstractTest
     search.setStopCount(10);
     search.setOperationRetry(-1);
     try {
-      search.execute(new SearchRequest(null, new SearchFilter("((")));
+      search.execute(new SearchRequest(new SearchFilter("((")));
       AssertJUnit.fail("Should have thrown LdapException");
     } catch (LdapException e) {
       AssertJUnit.assertEquals(
@@ -885,7 +889,7 @@ public class SearchOperationTest extends AbstractTest
     final SearchOperation search = new SearchOperation(conn);
     final SearchRequest request = SearchRequest.newObjectScopeSearchRequest(
       dn, returnAttrs.split("\\|"));
-    request.setLdapResultHandler(
+    request.setLdapResultHandlers(
       new LdapResultHandler[] {new BinaryResultHandler()});
     final LdapResult result = search.execute(request).getResult();
     AssertJUnit.assertEquals(

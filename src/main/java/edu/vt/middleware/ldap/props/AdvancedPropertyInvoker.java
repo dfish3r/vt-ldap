@@ -13,7 +13,6 @@
 */
 package edu.vt.middleware.ldap.props;
 
-import java.lang.reflect.Array;
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLSocketFactory;
 import edu.vt.middleware.ldap.Credential;
@@ -29,26 +28,34 @@ import edu.vt.middleware.ldap.ssl.CredentialConfigParser;
 import edu.vt.middleware.ldap.ssl.SSLContextInitializer;
 
 /**
- * <code>PropertyInvoker</code> stores setter methods for a class to make method
- * invocation by property easier.
+ * Handles complex properties specific to the vt-ldap package.
  *
  * @author  Middleware Services
  * @version  $Revision$ $Date$
  */
-public class LdapConfigPropertyInvoker extends AbstractPropertyInvoker
+public class AdvancedPropertyInvoker extends AbstractPropertyInvoker
 {
 
 
   /**
-   * Creates a new <code>PropertyInvoker</code> for the supplied class.
+   * Creates a new advanced property invoker for the supplied class.
    *
-   * @param  c  <code>Class</code> that has setter methods
-   * @param  propertiesDomain  <code>String</code> to prepend to each setter
-   * name
+   * @param  c  class that has setter methods
    */
-  public LdapConfigPropertyInvoker(
-    final Class<?> c,
-    final String propertiesDomain)
+  public AdvancedPropertyInvoker(final Class<?> c)
+  {
+    this.initialize(c, "");
+  }
+
+
+  /**
+   * Creates a new advanced property invoker for the supplied class.
+   *
+   * @param  c  class that has setter methods
+   * @param  propertiesDomain  to prepend to each setter name
+   */
+  public AdvancedPropertyInvoker(
+    final Class<?> c, final String propertiesDomain)
   {
     this.initialize(c, propertiesDomain);
   }
@@ -94,8 +101,9 @@ public class LdapConfigPropertyInvoker extends AbstractPropertyInvoker
               throw new IllegalArgumentException(e);
             }
             // use a standard config to initialize the socket factory
-          } else if (ConfigParser.isConfig(value)) {
-            final ConfigParser configParser = new ConfigParser(value);
+          } else if (PropertyValueParser.isConfig(value)) {
+            final PropertyValueParser configParser =
+              new PropertyValueParser(value);
             newValue = configParser.initializeType();
           } else {
             newValue = instantiateType(SSLSocketFactory.class, value);
@@ -161,112 +169,5 @@ public class LdapConfigPropertyInvoker extends AbstractPropertyInvoker
       }
     }
     return newValue;
-  }
-
-
-  /**
-   * Returns the object which represents the supplied class given the supplied
-   * string representation.
-   *
-   * @param  c  <code>Class</code> type to instantiate
-   * @param  s  <code>String</code> to parse
-   *
-   * @return  <code>Object</code> of the supplied type or null
-   */
-  protected Object createTypeFromPropertyValue(final Class<?> c, final String s)
-  {
-    Object newObject = null;
-    if ("null".equals(s)) {
-      newObject = null;
-    } else {
-      if (ConfigParser.isConfig(s)) {
-        final ConfigParser configParser = new ConfigParser(s);
-        newObject = configParser.initializeType();
-      } else {
-        if (Class.class == c) {
-          newObject = createClass(s);
-        } else {
-          newObject = instantiateType(c, s);
-        }
-      }
-    }
-    return newObject;
-  }
-
-
-  /**
-   * Returns the object which represents an array of the supplied class given
-   * the supplied string representation.
-   *
-   * @param  c  <code>Class</code> type to instantiate
-   * @param  s  <code>String</code> to parse
-   *
-   * @return  <code>Object</code> that is an array or null
-   */
-  protected Object createArrayTypeFromPropertyValue(
-    final Class<?> c,
-    final String s)
-  {
-    Object newObject = null;
-    if ("null".equals(s)) {
-      newObject = null;
-    } else {
-      if (s.indexOf("},") != -1) {
-        final String[] classes = s.split("\\},");
-        newObject = Array.newInstance(c, classes.length);
-        for (int i = 0; i < classes.length; i++) {
-          classes[i] = classes[i] + "}";
-          if (ConfigParser.isConfig(classes[i])) {
-            final ConfigParser configParser = new ConfigParser(classes[i]);
-            Array.set(newObject, i, configParser.initializeType());
-          } else {
-            throw new IllegalArgumentException(
-              "Could not parse property string: " + classes[i]);
-          }
-        }
-      } else {
-        final String[] classes = s.split(",");
-        newObject = Array.newInstance(c, classes.length);
-        for (int i = 0; i < classes.length; i++) {
-          if (ConfigParser.isConfig(classes[i])) {
-            final ConfigParser configParser = new ConfigParser(classes[i]);
-            Array.set(newObject, i, configParser.initializeType());
-          } else {
-            if (Class.class == c) {
-              Array.set(newObject, i, createClass(classes[i]));
-            } else {
-              Array.set(newObject, i, instantiateType(c, classes[i]));
-            }
-          }
-        }
-      }
-    }
-    return newObject;
-  }
-
-
-  /**
-   * Returns the enum array which represents the supplied class given the
-   * supplied string representation.
-   *
-   * @param  c  <code>Class</code> type to instantiate
-   * @param  s  <code>String</code> to parse
-   *
-   * @return  <code>Enum[]</code> of the supplied type or null
-   */
-  protected Object createArrayEnumFromPropertyValue(
-    final Class<?> c, final String s)
-  {
-    Object newObject = null;
-    if ("null".equals(s)) {
-      newObject = null;
-    } else {
-      final String[] values = s.split(",");
-      newObject = Array.newInstance(c, values.length);
-      for (int i = 0; i < values.length; i++) {
-        Array.set(newObject, i, getEnum(c, values[i]));
-      }
-    }
-    return newObject;
   }
 }

@@ -31,7 +31,7 @@ public class RenameOperation extends AbstractLdapOperation<RenameRequest, Void>
   public RenameOperation(final LdapConnection lc)
   {
     this.ldapConnection = lc;
-    this.initialize(lc.getLdapConfig());
+    this.initialize(lc.getLdapConnectionConfig());
   }
 
 
@@ -46,5 +46,5 @@ public class RenameOperation extends AbstractLdapOperation<RenameRequest, Void>
 
   /** {@inheritDoc} */
   protected void initializeRequest(
-    final RenameRequest request, final LdapConfig config) {}
+    final RenameRequest request, final LdapConnectionConfig config) {}
 }

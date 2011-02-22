@@ -34,7 +34,7 @@ public class SearchOperation extends AbstractSearchOperation<SearchRequest>
   public SearchOperation(final LdapConnection lc)
   {
     this.ldapConnection = lc;
-    this.initialize(lc.getLdapConfig());
+    this.initialize(lc.getLdapConnectionConfig());
   }
 
 
@@ -44,7 +44,7 @@ public class SearchOperation extends AbstractSearchOperation<SearchRequest>
   {
     final LdapResult lr =
       this.ldapConnection.getProviderConnection().search(request);
-    final LdapResultHandler[] handler = request.getLdapResultHandler();
+    final LdapResultHandler[] handler = request.getLdapResultHandlers();
     if (handler != null && handler.length > 0) {
       final SearchCriteria sc = new SearchCriteria(request);
       for (int i = 0; i < handler.length; i++) {

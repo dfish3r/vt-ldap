@@ -324,7 +324,7 @@ public final class NamingExceptionUtil
    * result code does not map to an exception, null is returned
    *
    * @param  code  ldap result code
-   * @return  naming exception
+   * @return  array of naming exception classes
    */
   public static Class<?> getNamingException(final ResultCode code)
   {
@@ -336,8 +336,8 @@ public final class NamingExceptionUtil
    * Returns the naming exception that maps to the supplied result code. If the
    * result code does not map to an exception, null is returned
    *
-   * @param  code  ldap result code
-   * @return  naming exception
+   * @param  codes  ldap result codes
+   * @return  array of naming exception classes
    */
   public static Class<?>[] getNamingExceptions(final ResultCode[] codes)
   {

@@ -34,13 +34,6 @@ public class SoftLimitLdapPool extends BlockingLdapPool
 {
 
 
-  /** Creates a new ldap pool using {@link DefaultLdapFactory}. */
-  public SoftLimitLdapPool()
-  {
-    super(new LdapPoolConfig(), new DefaultLdapFactory());
-  }
-
-
   /**
    * Creates a new ldap pool with the supplied ldap factory.
    *

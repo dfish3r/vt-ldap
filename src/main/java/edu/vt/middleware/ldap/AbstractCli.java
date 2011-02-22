@@ -21,9 +21,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import edu.vt.middleware.ldap.props.LdapConfigPropertyInvoker;
-import edu.vt.middleware.ldap.props.LdapProperties;
-import edu.vt.middleware.ldap.props.PropertyConfig;
+import java.util.Properties;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.GnuParser;
@@ -45,9 +43,6 @@ public abstract class AbstractCli
 
   /** Option to print usage. */
   protected static final String OPT_HELP = "help";
-
-  /** Option for loading ldap configuration from properties. */
-  protected static final String OPT_USE_PROPERTIES = "useProperties";
 
   /** Option for dsmlv1 output. */
   protected static final String OPT_DSMLV1 = "dsmlv1";
@@ -75,7 +70,6 @@ public abstract class AbstractCli
   public AbstractCli()
   {
     this.opts.add(OPT_HELP);
-    this.opts.add(OPT_USE_PROPERTIES);
     this.opts.add(OPT_DSMLV1);
     this.opts.add(OPT_DSMLV2);
   }
@@ -115,29 +109,13 @@ public abstract class AbstractCli
 
 
   /** Initialize CLI options. */
-  protected abstract void initOptions();
-
-
-  /**
-   * Initialize CLI options with the supplied invoker.
-   *
-   * @param  invoker  to configure options
-   */
-  protected void initOptions(final LdapConfigPropertyInvoker invoker)
+  protected void initOptions()
   {
     final Map<String, String> args = this.getArgs();
-    for (String s : invoker.getProperties()) {
-      final String arg = s.substring(s.lastIndexOf(".") + 1, s.length());
-      if (args.containsKey(arg)) {
-        options.addOption(new Option(arg, true, args.get(arg)));
-      }
+    for (Map.Entry<String, String> entry : args.entrySet()) {
+      options.addOption(new Option(entry.getKey(), true, entry.getValue()));
     }
     options.addOption(new Option(OPT_HELP, false, "display all options"));
-    options.addOption(
-      new Option(
-        OPT_USE_PROPERTIES,
-        false,
-        "load options from the default properties file"));
     options.addOption(
       new Option(OPT_DSMLV1, false, "output results in DSML v1"));
     options.addOption(
@@ -247,26 +225,14 @@ public abstract class AbstractCli
 
 
   /**
-   * Initialize the supplied config with command line options.
-   *
-   * @param  config  property config to configure
-   * @param  line  Parsed command line arguments container.
-   *
-   * @throws  Exception  On errors thrown by handler.
    */
-  protected void initLdapProperties(
-    final PropertyConfig config,
-    final CommandLine line)
+  protected Properties getPropertiesFromOptions(final CommandLine line)
     throws Exception
   {
-    final LdapProperties ldapProperties = new LdapProperties(config);
+    final Properties props = new Properties();
     for (Option o : line.getOptions()) {
-      if (o.getOpt().equals(OPT_USE_PROPERTIES)) {
-        ldapProperties.useDefaultPropertiesFile();
-      } else if (!this.opts.contains(o.getOpt())) {
-        ldapProperties.setProperty(o.getOpt(), o.getValue());
-      }
+      props.setProperty(o.getOpt(), o.getValue());
     }
-    ldapProperties.configure();
+    return props;
   }
 }

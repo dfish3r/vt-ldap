@@ -13,14 +13,13 @@
 */
 package edu.vt.middleware.ldap;
 
-import java.io.BufferedReader;
 import java.io.BufferedWriter;
-import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import edu.vt.middleware.ldap.dsml.Dsmlv1;
 import edu.vt.middleware.ldap.dsml.Dsmlv2;
 import edu.vt.middleware.ldap.ldif.Ldif;
-import edu.vt.middleware.ldap.props.LdapConfigPropertyInvoker;
+import edu.vt.middleware.ldap.props.LdapConnectionConfigProperties;
+import edu.vt.middleware.ldap.props.SearchRequestProperties;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
 
@@ -62,39 +61,52 @@ public class LdapCli extends AbstractCli
   /** {@inheritDoc} */
   protected void initOptions()
   {
-    super.initOptions(
-      new LdapConfigPropertyInvoker(
-        LdapConfig.class,
-        LdapConfig.PROPERTIES_DOMAIN));
-
+    super.initOptions();
     options.addOption(new Option(OPT_QUERY, true, ""));
   }
 
 
   /**
-   * Initialize an LdapConfig with command line options.
+   * Initialize an LdapConnectionConfig with command line options.
    *
    * @param  line  Parsed command line arguments container.
    *
-   * @return  <code>LdapConfig</code> that has been initialized
+   * @return  ldap connection config that has been initialized
    *
    * @throws  Exception  On errors thrown by handler.
    */
-  protected LdapConfig initLdapConfig(final CommandLine line)
+  protected LdapConnectionConfig initLdapConnectionConfig(
+    final CommandLine line)
     throws Exception
   {
-    final LdapConfig config = new LdapConfig();
-    this.initLdapProperties(config, line);
+    final LdapConnectionConfigProperties reader =
+      new LdapConnectionConfigProperties(this.getPropertiesFromOptions(line));
+    final LdapConnectionConfig config = reader.get();
     if (config.getBindDn() != null && config.getBindCredential() == null) {
       // prompt the user to enter a password
-      System.out.print(
-        "Enter password for service user " + config.getBindDn() + ": ");
-
-      final String pass = (new BufferedReader(new InputStreamReader(System.in)))
-          .readLine();
+      final char[] pass = System.console().readPassword(
+        "[%s]", "Enter password for bind DN " + config.getBindDn() + ": ");
       config.setBindCredential(new Credential(pass));
     }
     return config;
+  }
+
+
+  /**
+   * Initialize a search request with command line options.
+   *
+   * @param  line  Parsed command line arguments container.
+   *
+   * @return  search config that has been initialized
+   *
+   * @throws  Exception  On errors thrown by handler.
+   */
+  protected SearchRequest initSearchRequest(final CommandLine line)
+    throws Exception
+  {
+    final SearchRequestProperties reader = new SearchRequestProperties(
+      this.getPropertiesFromOptions(line));
+    return reader.get();
   }
 
 
@@ -111,7 +123,8 @@ public class LdapCli extends AbstractCli
       printHelp();
     } else if (line.hasOption(OPT_QUERY)) {
       search(
-        initLdapConfig(line),
+        initLdapConnectionConfig(line),
+        initSearchRequest(line),
         line.getOptionValue(OPT_QUERY),
         line.getArgs());
     } else {
@@ -123,30 +136,29 @@ public class LdapCli extends AbstractCli
   /**
    * Executes the ldap search operation.
    *
-   * @param  config  Ldap configuration.
-   * @param  filter  Ldap filter to search on.
-   * @param  attrs  Ldap attributes to return.
+   * @param  lcc  ldap connection configuration.
+   * @param  sr  search reqeust
+   * @param  filter  ldap filter to search on.
+   * @param  attrs  ldap attributes to return.
    *
    * @throws  Exception  On errors.
    */
   protected void search(
-    final LdapConfig config,
+    final LdapConnectionConfig lcc,
+    final SearchRequest sr,
     final String filter,
     final String[] attrs)
     throws Exception
   {
-    final LdapConnection conn = new LdapConnection(config);
+    final LdapConnection conn = new LdapConnection(lcc);
     final SearchOperation search = new SearchOperation(conn);
+    sr.setSearchFilter(new SearchFilter(filter));
 
+    if (attrs != null && attrs.length > 0) {
+      sr.setReturnAttributes(attrs);
+    }
     try {
-      LdapResult result = null;
-      if (attrs == null || attrs.length == 0) {
-        result = search.execute(
-          new SearchRequest(new SearchFilter(filter))).getResult();
-      } else {
-        result = search.execute(
-          new SearchRequest(new SearchFilter(filter), attrs)).getResult();
-      }
+      final LdapResult result = search.execute(sr).getResult();
       if (this.outputDsmlv1) {
         (new Dsmlv1()).outputDsml(
           result,

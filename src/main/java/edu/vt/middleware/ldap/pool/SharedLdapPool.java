@@ -33,13 +33,6 @@ public class SharedLdapPool extends AbstractLdapPool<LdapConnection>
 {
 
 
-  /** Creates a new ldap pool using {@link DefaultLdapFactory}. */
-  public SharedLdapPool()
-  {
-    super(new LdapPoolConfig(), new DefaultLdapFactory());
-  }
-
-
   /**
    * Creates a new ldap pool with the supplied ldap factory.
    *

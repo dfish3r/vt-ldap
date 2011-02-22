@@ -18,8 +18,7 @@ import java.security.Principal;
 import edu.vt.middleware.ldap.LdapAttributes;
 
 /**
- * <code>LdapPrincipal</code> provides a custom implementation for adding LDAP
- * principals to a <code>Subject</code>.
+ * Provides a custom implementation for adding LDAP principals to a subject.
  *
  * @author  Middleware Services
  * @version  $Revision$ $Date$
@@ -42,9 +41,9 @@ public class LdapPrincipal
 
 
   /**
-   * This creates a new <code>LdapPrincipal</code> with the supplied name.
+   * Creates a new ldap principal with the supplied name.
    *
-   * @param  name  <code>String</code>
+   * @param  name  of this principal
    */
   public LdapPrincipal(final String name)
   {
@@ -53,9 +52,9 @@ public class LdapPrincipal
 
 
   /**
-   * This returns the name for this <code>LdapPrincipal</code>.
+   * Returns the name for this ldap principal.
    *
-   * @return  <code>String</code>
+   * @return  ldap principal name
    */
   public String getName()
   {
@@ -64,9 +63,9 @@ public class LdapPrincipal
 
 
   /**
-   * This returns the ldap attributes for this <code>LdapPrincipal</code>.
+   * Returns the ldap attributes for this ldap principal.
    *
-   * @return  <code>LdapAttributes</code>
+   * @return  ldap attributes
    */
   public LdapAttributes getLdapAttributes()
   {
@@ -75,12 +74,11 @@ public class LdapPrincipal
 
 
   /**
-   * This returns the supplied Object is equal to this <code>
-   * LdapPrincipal</code>.
+   * Returns whether the supplied object is equal to this ldap principal.
    *
-   * @param  o  <code>Object</code>
+   * @param  o  to compare
    *
-   * @return  <code>boolean</code>
+   * @return  whether the supplied object is equal
    */
   public boolean equals(final Object o)
   {
@@ -94,9 +92,9 @@ public class LdapPrincipal
 
 
   /**
-   * This returns the hash code for this <code>LdapPrincipal</code>.
+   * Returns the hash code for this ldap principal.
    *
-   * @return  <code>int</code>
+   * @return  hash code
    */
   public int hashCode()
   {
@@ -109,25 +107,30 @@ public class LdapPrincipal
 
 
   /**
-   * This returns a String representation of this <code>LdapPrincipal</code>.
+   * Provides a descriptive string representation of this instance.
    *
-   * @return  <code>String</code>
+   * @return  string representation
    */
   @Override
   public String toString()
   {
-    return String.format("%s%s", this.name, this.attributes);
+    return String.format(
+      "%s@%d::%s%s",
+      this.getClass().getName(),
+      this.hashCode(),
+      this.name,
+      this.attributes);
   }
 
 
   /**
-   * This compares the supplied object for order. <code>LdapPrincipal</code> is
-   * always less than any other object. Otherwise principals are compared
-   * lexicographically on name.
+   * Principals are compared lexicographically by name. See
+   * {@link Comparable#compareTo(Object)}.
    *
-   * @param  p  <code>Principal</code>
+   * @param  p  principal to compare
    *
-   * @return  <code>int</code>
+   * @return  a negative integer, zero, or a positive integer as this object is
+   * less than, equal to, or greater than the specified object.
    */
   public int compareTo(final Principal p)
   {

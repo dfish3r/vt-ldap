@@ -49,6 +49,38 @@ import org.apache.commons.logging.LogFactory;
  */
 public class JndiConnection implements Connection
 {
+  /**
+   * The value of this property is a string of decimal digits that specifies the
+   * batch size of search results returned by the server. The value of this
+   * constant is {@value}.
+   */
+  public static final String BATCH_SIZE = "java.naming.batchsize";
+
+  /**
+   * The value of this property is a string that specifies additional binary
+   * attributes. The value of this constant is {@value}.
+   */
+  public static final String BINARY_ATTRIBUTES =
+    "java.naming.ldap.attributes.binary";
+
+  /**
+   * The value of this property is a string that specifies how aliases shall be
+   * handled by the provider. The value of this constant is {@value}.
+   */
+  public static final String DEREF_ALIASES = "java.naming.ldap.derefAliases";
+
+  /**
+   * The value of this property is a string that specifies how referrals shall
+   * be handled by the provider. The value of this constant is {@value}.
+   */
+  public static final String REFERRAL = "java.naming.referral";
+
+  /**
+   * The value of this property is a string that specifies to only return
+   * attribute type names, no values. The value of this constant is {@value}.
+   */
+  public static final String TYPES_ONLY = "java.naming.ldap.typesOnly";
+
   /** Log for this class. */
   protected final Log logger = LogFactory.getLog(this.getClass());
 
@@ -279,16 +311,16 @@ public class JndiConnection implements Connection
         final SearchControls controls = getSearchControls(request);
         do {
           en = ctx.search(
-            request.getDn(),
+            request.getBaseDn(),
             request.getSearchFilter() != null ?
               request.getSearchFilter().getFilter() : null,
             request.getSearchFilter() != null ?
               request.getSearchFilter().getFilterArgs().toArray() : null,
             controls);
 
-          request.setDn(this.getSearchDn(request, ctx));
+          request.setBaseDn(this.getSearchDn(request, ctx));
           final LdapResult pagedResults = this.readSearchResults(
-            request.getDn(),
+            request.getBaseDn(),
             en,
             request.getSearchIgnoreResultCodes(),
             request.getSortBehavior());
@@ -347,9 +379,10 @@ public class JndiConnection implements Connection
       NamingEnumeration<SearchResult> en = null;
       try {
         ctx = this.context.newInstance(null);
+        this.initializeSearchContext(ctx, request);
         final SearchControls controls = getSearchControls(request);
         en = ctx.search(
-          request.getDn(),
+          request.getBaseDn(),
           request.getSearchFilter() != null ?
             request.getSearchFilter().getFilter() : null,
           request.getSearchFilter() != null ?
@@ -402,9 +435,51 @@ public class JndiConnection implements Connection
 
 
   /**
+   * Adds any additional environment properties found in the supplied request to
+   * the supplied context.
+   *
+   * @param  ctx  to initialize for searching
+   * @param  request  to read properties from
+   * @throws  NamingException  if a property cannot be added to the context
+   */
+  protected void initializeSearchContext(
+    final LdapContext ctx, final SearchRequest request)
+    throws NamingException
+  {
+    if (request.getBatchSize() != -1) {
+      ctx.addToEnvironment(
+        BATCH_SIZE, Integer.toString(request.getBatchSize()));
+    }
+    if (request.getReferralBehavior() != null) {
+      ctx.addToEnvironment(
+        REFERRAL, request.getReferralBehavior().name().toLowerCase());
+    }
+    if (request.getDerefAliases() != null) {
+      ctx.addToEnvironment(
+        DEREF_ALIASES, request.getDerefAliases().name().toLowerCase());
+    }
+    if (request.getBinaryAttributes() != null) {
+      final String[] a = request.getBinaryAttributes();
+      final StringBuilder sb = new StringBuilder();
+      for (int i = 0; i < a.length; i++) {
+        sb.append(a[i]);
+        if (i < a.length - 1) {
+          sb.append(" ");
+        }
+      }
+      ctx.addToEnvironment(BINARY_ATTRIBUTES, sb.toString());
+    }
+    if (request.getTypesOnly()) {
+      ctx.addToEnvironment(
+        TYPES_ONLY, Boolean.valueOf(request.getTypesOnly()).toString());
+    }
+  }
+
+
+  /**
    * Determines the DN of the supplied search request. Returns
    * {@link LdapContext#getNameInNamespace()} if it is available, otherwise
-   * returns {@link SearchRequest#getDn()}.
+   * returns {@link SearchRequest#getBaseDn()}.
    *
    * @param  sr  search request
    * @param  ctx  ldap context the search was performed on
@@ -417,7 +492,7 @@ public class JndiConnection implements Connection
     if (ctx != null && !"".equals(ctx.getNameInNamespace())) {
       return ctx.getNameInNamespace();
     } else {
-      return sr.getDn();
+      return sr.getBaseDn();
     }
   }
 
@@ -524,7 +599,7 @@ public class JndiConnection implements Connection
     final SearchControls ctls = new SearchControls();
     ctls.setReturningAttributes(sr.getReturnAttributes());
     ctls.setSearchScope(getSearchScope(sr.getSearchScope()));
-    ctls.setTimeLimit(sr.getTimeLimit().intValue());
+    ctls.setTimeLimit(Long.valueOf(sr.getTimeLimit()).intValue());
     ctls.setCountLimit(sr.getCountLimit());
     ctls.setDerefLinkFlag(false);
     // note that if returning obj flag is set to true, object contexts on the

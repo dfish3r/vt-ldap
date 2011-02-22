@@ -13,6 +13,7 @@
 */
 package edu.vt.middleware.ldap.props;
 
+import java.lang.reflect.Array;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Collections;
@@ -23,13 +24,12 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 /**
- * <code>AbstractPropertyInvoker</code> provides methods common to property
- * invokers.
+ * Provides methods common to property invokers.
  *
  * @author  Middleware Services
  * @version  $Revision$ $Date$
  */
-public abstract class AbstractPropertyInvoker
+public abstract class AbstractPropertyInvoker implements PropertyInvoker
 {
 
   /** Cache of properties. */
@@ -47,7 +47,9 @@ public abstract class AbstractPropertyInvoker
 
 
   /**
-   * Initializes the properties map with the supplied class.
+   * Initializes the properties cache with the supplied class. The cache
+   * contains a map of properties to an array of the setter and getter methods.
+   * If a method named 'initialize' is found, it is also cached.
    *
    * @param  c  to read methods from
    * @param  domain  optional domain that properties are in
@@ -105,11 +107,11 @@ public abstract class AbstractPropertyInvoker
 
   /**
    * This invokes the setter method for the supplied property name with the
-   * supplied value. If name or value is null, then this method does nothing.
+   * supplied value.
    *
-   * @param  object  <code>Object</code> to invoke method on
-   * @param  name  <code>String</code> property name
-   * @param  value  <code>String</code> property value
+   * @param  object  to invoke method on
+   * @param  name  of the property
+   * @param  value  of the property
    *
    * @throws  IllegalArgumentException  if an invocation exception occurs
    */
@@ -148,8 +150,8 @@ public abstract class AbstractPropertyInvoker
 
 
   /**
-   * This converts the supplied string value into an Object of the appropriate
-   * supplied type. If value cannot be converted it is returned as is.
+   * Converts the supplied string value into an Object of the supplied type. If
+   * value cannot be converted it is returned as is.
    *
    * @param  type  of object to convert value into
    * @param  value  to parse
@@ -162,11 +164,11 @@ public abstract class AbstractPropertyInvoker
 
 
   /**
-   * This returns whether the supplied property exists.
+   * Returns whether the supplied property exists for this invoker.
    *
-   * @param  name  <code>String</code> to check
+   * @param  name  to check
    *
-   * @return  <code>boolean</code> whether the supplied property exists
+   * @return  whether the supplied property exists
    */
   public boolean hasProperty(final String name)
   {
@@ -175,9 +177,9 @@ public abstract class AbstractPropertyInvoker
 
 
   /**
-   * This returns the property keys.
+   * Returns the property keys for this invoker.
    *
-   * @return  <code>Set</code> of property names
+   * @return  set of property names
    */
   public Set<String> getProperties()
   {
@@ -240,7 +242,7 @@ public abstract class AbstractPropertyInvoker
    *
    * @return  enum that matches the supplied value
    */
-  public static Enum<?> getEnum(final Class<?> clazz, final String value)
+  protected static Enum<?> getEnum(final Class<?> clazz, final String value)
   {
     for (Object o : clazz.getEnumConstants()) {
       final Enum<?> e = (Enum<?>) o;
@@ -253,14 +255,123 @@ public abstract class AbstractPropertyInvoker
 
 
   /**
+   * Returns the object which represents the supplied class given the supplied
+   * string representation.
+   *
+   * @param  c  type to instantiate
+   * @param  s  property value to parse
+   *
+   * @return  the supplied type or null
+   */
+  protected Object createTypeFromPropertyValue(final Class<?> c, final String s)
+  {
+    Object newObject = null;
+    if ("null".equals(s)) {
+      newObject = null;
+    } else {
+      if (PropertyValueParser.isConfig(s)) {
+        final PropertyValueParser configParser = new PropertyValueParser(s);
+        newObject = configParser.initializeType();
+      } else {
+        if (Class.class == c) {
+          newObject = createClass(s);
+        } else {
+          newObject = instantiateType(c, s);
+        }
+      }
+    }
+    return newObject;
+  }
+
+
+  /**
+   * Returns the object which represents an array of the supplied class given
+   * the supplied string representation.
+   *
+   * @param  c  type to instantiate
+   * @param  s  property value to parse
+   *
+   * @return  an array or null
+   */
+  protected Object createArrayTypeFromPropertyValue(
+    final Class<?> c,
+    final String s)
+  {
+    Object newObject = null;
+    if ("null".equals(s)) {
+      newObject = null;
+    } else {
+      if (s.indexOf("},") != -1) {
+        final String[] classes = s.split("\\},");
+        newObject = Array.newInstance(c, classes.length);
+        for (int i = 0; i < classes.length; i++) {
+          classes[i] = classes[i] + "}";
+          if (PropertyValueParser.isConfig(classes[i])) {
+            final PropertyValueParser configParser = new PropertyValueParser(
+              classes[i]);
+            Array.set(newObject, i, configParser.initializeType());
+          } else {
+            throw new IllegalArgumentException(
+              "Could not parse property string: " + classes[i]);
+          }
+        }
+      } else {
+        final String[] classes = s.split(",");
+        newObject = Array.newInstance(c, classes.length);
+        for (int i = 0; i < classes.length; i++) {
+          if (PropertyValueParser.isConfig(classes[i])) {
+            final PropertyValueParser configParser = new PropertyValueParser(
+              classes[i]);
+            Array.set(newObject, i, configParser.initializeType());
+          } else {
+            if (Class.class == c) {
+              Array.set(newObject, i, createClass(classes[i]));
+            } else {
+              Array.set(newObject, i, instantiateType(c, classes[i]));
+            }
+          }
+        }
+      }
+    }
+    return newObject;
+  }
+
+
+  /**
+   * Returns the enum array which represents the supplied class given the
+   * supplied string representation.
+   *
+   * @param  c  type to instantiate
+   * @param  s  property value to parse
+   *
+   * @return  Enum[] of the supplied type or null
+   */
+  protected Object createArrayEnumFromPropertyValue(
+    final Class<?> c, final String s)
+  {
+    Object newObject = null;
+    if ("null".equals(s)) {
+      newObject = null;
+    } else {
+      final String[] values = s.split(",");
+      newObject = Array.newInstance(c, values.length);
+      for (int i = 0; i < values.length; i++) {
+        Array.set(newObject, i, getEnum(c, values[i]));
+      }
+    }
+    return newObject;
+  }
+
+
+  /**
    * Invokes the supplied method on the supplied object with the supplied
    * argument.
    *
-   * @param  method  <code>Method</code> to invoke
-   * @param  object  <code>Object</code> to invoke method on
-   * @param  arg  <code>Object</code> to invoke method with
+   * @param  method  to invoke
+   * @param  object  to invoke method on
+   * @param  arg  to invoke method with
    *
-   * @return  <code>Object</code> produced by the invocation
+   * @return  object produced by the invocation
    *
    * @throws  IllegalArgumentException  if an error occurs invoking the method
    */

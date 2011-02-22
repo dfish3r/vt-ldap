@@ -13,17 +13,12 @@
 */
 package edu.vt.middleware.ldap.auth;
 
-import java.io.InputStream;
 import java.util.Arrays;
-import edu.vt.middleware.ldap.Credential;
-import edu.vt.middleware.ldap.LdapConfig;
-import edu.vt.middleware.ldap.SearchScope;
+import edu.vt.middleware.ldap.LdapConnectionConfig;
 import edu.vt.middleware.ldap.auth.handler.AuthenticationHandler;
 import edu.vt.middleware.ldap.auth.handler.AuthenticationResultHandler;
 import edu.vt.middleware.ldap.auth.handler.AuthorizationHandler;
 import edu.vt.middleware.ldap.auth.handler.BindAuthenticationHandler;
-import edu.vt.middleware.ldap.props.LdapConfigPropertyInvoker;
-import edu.vt.middleware.ldap.props.LdapProperties;
 
 /**
  * Contains all the configuration data needed to control authentication.
@@ -31,31 +26,16 @@ import edu.vt.middleware.ldap.props.LdapProperties;
  * @author  Middleware Services
  * @version  $Revision$ $Date$
  */
-public class AuthenticatorConfig extends LdapConfig
+public class AuthenticatorConfig extends LdapConnectionConfig
 {
-
-  /** Domain to look for ldap properties in, value is {@value}. */
-  public static final String PROPERTIES_DOMAIN = "edu.vt.middleware.ldap.auth.";
-
-  /** Invoker for ldap properties. */
-  private static final LdapConfigPropertyInvoker PROPERTIES =
-    new LdapConfigPropertyInvoker(AuthenticatorConfig.class, PROPERTIES_DOMAIN);
+  /** DN to search. */
+  protected String baseDn = "";
 
   /** Filter for searching for the user. */
   private String userFilter;
 
   /** Filter arguments for searching for the user. */
   private Object[] userFilterArgs;
-
-  /** User to authenticate. */
-  private String user;
-
-  /** Credential for authenticating user. */
-  private Credential credential;
-
-  /** User attributes to return after successful authentication. Default value
-      returns no attributes. */
-  private String[] returnAttributes = new String[0];
 
   /** Filter for authorizing user. */
   private String authorizationFilter;
@@ -66,6 +46,9 @@ public class AuthenticatorConfig extends LdapConfig
   /** Whether to throw an exception if multiple DNs are found. */
   private boolean allowMultipleDns;
 
+  /** Whether to use a subtree search when resolving DNs. */
+  private boolean subtreeSearch;
+
   /** For finding user DNs. */
   private DnResolver dnResolver;
 
@@ -75,15 +58,12 @@ public class AuthenticatorConfig extends LdapConfig
   /** Handlers to process authentication results. */
   private AuthenticationResultHandler[] authenticationResultHandlers;
 
-  /** Handlers to process authorization. */
+  /** Handlers to authorize the user. */
   private AuthorizationHandler[] authorizationHandlers;
 
 
   /** Default constructor. */
-  public AuthenticatorConfig()
-  {
-    this.setSearchScope(SearchScope.ONELEVEL);
-  }
+  public AuthenticatorConfig() {}
 
 
   /**
@@ -99,16 +79,24 @@ public class AuthenticatorConfig extends LdapConfig
 
 
   /**
-   * Creates a new auth config.
+   * Returns the base DN.
    *
-   * @param  ldapUrl  to connect to
-   * @param  baseDn  to search
+   * @return  base DN
    */
-  public AuthenticatorConfig(final String ldapUrl, final String baseDn)
+  public String getBaseDn()
   {
-    this();
-    this.setLdapUrl(ldapUrl);
-    this.setBaseDn(baseDn);
+    return this.baseDn;
+  }
+
+
+  /**
+   * Sets the base DN.
+   *
+   * @param  dn base DN
+   */
+  public void setBaseDn(final String dn)
+  {
+    this.baseDn = dn;
   }
 
 
@@ -162,88 +150,6 @@ public class AuthenticatorConfig extends LdapConfig
         "setting userFilterArgs: " + Arrays.toString(filterArgs));
     }
     this.userFilterArgs = filterArgs;
-  }
-
-
-  /**
-   * Returns the user to authenticate.
-   *
-   * @return  user name
-   */
-  public String getUser()
-  {
-    return this.user;
-  }
-
-
-  /**
-   * Sets the user to authenticate.
-   *
-   * @param  s  user name
-   */
-  public void setUser(final String s)
-  {
-    checkImmutable();
-    if (this.logger.isTraceEnabled()) {
-      this.logger.trace("setting user: " + s);
-    }
-    this.user = s;
-  }
-
-
-  /**
-   * This returns the credential to authenticate.
-   *
-   * @return  user credential
-   */
-  public Credential getCredential()
-  {
-    return this.credential;
-  }
-
-
-  /**
-   * Sets the credential to authenticate.
-   *
-   * @param  c  user credential
-   */
-  public void setCredential(final Credential c)
-  {
-    checkImmutable();
-    if (this.logger.isTraceEnabled()) {
-      if (this.getLogCredentials()) {
-        this.logger.trace("setting credential: " + c);
-      } else {
-        this.logger.trace("setting credential: <suppressed>");
-      }
-    }
-    this.credential = c;
-  }
-
-
-  /**
-   * Returns the attributes that should be returned after authentication.
-   *
-   * @return  attribute names
-   */
-  public String[] getReturnAttributes()
-  {
-    return this.returnAttributes;
-  }
-
-
-  /**
-   * Sets the attributes that should be returned after authentication.
-   *
-   * @param  s  attribute names
-   */
-  public void setReturnAttributes(final String[] s)
-  {
-    checkImmutable();
-    if (this.logger.isTraceEnabled()) {
-      this.logger.trace("setting returnAttributes: " + Arrays.toString(s));
-    }
-    this.returnAttributes = s;
   }
 
 
@@ -367,15 +273,14 @@ public class AuthenticatorConfig extends LdapConfig
    */
   public boolean getSubtreeSearch()
   {
-    return SearchScope.SUBTREE == this.getSearchScope();
+    return this.subtreeSearch;
   }
 
 
   /**
    * Sets whether subtree searching will be used. If true, the DN used for
-   * authenticating will be searched for over the entire {@link
-   * LdapConfig#getBaseDn()}. Otherwise the DN will be search for in the {@link
-   * LdapConfig#getBaseDn()} context.
+   * authenticating will be searched for over the entire {@link #getBaseDn()}.
+   * Otherwise the DN will be search for in the {@link #getBaseDn()} context.
    *
    * @param  b  whether the DN will be searched for over the entire base
    */
@@ -385,11 +290,7 @@ public class AuthenticatorConfig extends LdapConfig
     if (this.logger.isTraceEnabled()) {
       this.logger.trace("setting subtreeSearch: " + b);
     }
-    if (b) {
-      this.setSearchScope(SearchScope.SUBTREE);
-    } else {
-      this.setSearchScope(SearchScope.ONELEVEL);
-    }
+    this.subtreeSearch = b;
   }
 
 
@@ -461,7 +362,7 @@ public class AuthenticatorConfig extends LdapConfig
 
 
   /**
-   * Returns the handlers to use for processing authentication results.
+   * Returns the authentication result handlers.
    *
    * @return  authentication result handlers
    */
@@ -472,23 +373,24 @@ public class AuthenticatorConfig extends LdapConfig
 
 
   /**
-   * Sets the handlers for processing authentication results.
+   * Sets the authentication result handlers.
    *
-   * @param  handlers  for processing authentication results
+   * @param  arh  authentication result handlers
    */
   public void setAuthenticationResultHandlers(
-    final AuthenticationResultHandler[] handlers)
+    final AuthenticationResultHandler[] arh)
   {
     checkImmutable();
     if (this.logger.isTraceEnabled()) {
-      this.logger.trace("setting authenticationResultHandlers: " + handlers);
+      this.logger.trace(
+        "setting authenticationResultHandlers: " + Arrays.toString(arh));
     }
-    this.authenticationResultHandlers = handlers;
+    this.authenticationResultHandlers = arh;
   }
 
 
   /**
-   * Returns the handlers to use for processing authorization.
+   * Returns the authorization handlers.
    *
    * @return  authorization handlers
    */
@@ -499,68 +401,49 @@ public class AuthenticatorConfig extends LdapConfig
 
 
   /**
-   * Sets the handlers for processing authorization.
+   * Sets the authorization handlers.
    *
-   * @param  handlers  for processing authorization
+   * @param  ah  authorization handlers
    */
-  public void setAuthorizationHandlers(final AuthorizationHandler[] handlers)
+  public void setAuthorizationHandlers(final AuthorizationHandler[] ah)
   {
     checkImmutable();
     if (this.logger.isTraceEnabled()) {
-      this.logger.trace("setting authorizationHandlers: " + handlers);
+      this.logger.trace(
+        "setting authorizationHandlers: " + Arrays.toString(ah));
     }
-    this.authorizationHandlers = handlers;
-  }
-
-
-  /** {@inheritDoc} */
-  public String getPropertiesDomain()
-  {
-    return PROPERTIES_DOMAIN;
-  }
-
-
-  /** {@inheritDoc} */
-  public void setProviderProperty(final String name, final String value)
-  {
-    checkImmutable();
-    if (name != null && value != null) {
-      if (PROPERTIES.hasProperty(name)) {
-        PROPERTIES.setProperty(this, name, value);
-      } else {
-        super.setProviderProperty(name, value);
-      }
-    }
-  }
-
-
-  /** {@inheritDoc} */
-  public boolean hasProviderProperty(final String name)
-  {
-    return PROPERTIES.hasProperty(name);
+    this.authorizationHandlers = ah;
   }
 
 
   /**
-   * Create an instance of this class initialized with properties from the input
-   * stream. If the input stream is null, load properties from the default
-   * properties file.
+   * Provides a descriptive string representation of this instance.
    *
-   * @param  is  to load properties from
-   *
-   * @return  <code>AuthenticatorConfig</code> initialized ldap pool config
+   * @return  string representation
    */
-  public static AuthenticatorConfig createFromProperties(final InputStream is)
+  @Override
+  public String toString()
   {
-    final AuthenticatorConfig authenticatorConfig = new AuthenticatorConfig();
-    LdapProperties properties = null;
-    if (is != null) {
-      properties = new LdapProperties(authenticatorConfig, is);
-    } else {
-      properties = new LdapProperties(authenticatorConfig);
-      properties.useDefaultPropertiesFile();
-    }
-    properties.configure();
-    return authenticatorConfig;
+    return
+      String.format(
+        "%s@%d: userFilter=%s, userFilterArgs=%s, authorizationFilter=%s, " +
+        "authorizationFilterArgs=%s, allowMultipleDns=%s, subtreeSearch=%s, " +
+        "dnResolver=%s, authenticationHandler=%s, " +
+        "authenticationResultHandlers=%s, authorizationHandlers=%s",
+        this.getClass().getName(),
+        this.hashCode(),
+        this.userFilter,
+        this.userFilterArgs != null ? Arrays.asList(this.userFilterArgs) : null,
+        this.authorizationFilter,
+        this.authorizationFilterArgs != null ?
+          Arrays.asList(this.authorizationFilterArgs) : null,
+        this.allowMultipleDns,
+        this.subtreeSearch,
+        this.dnResolver,
+        this.authenticationHandler,
+        this.authenticationResultHandlers != null ?
+          Arrays.asList(this.authenticationResultHandlers) : null,
+        this.authorizationHandlers != null ?
+          Arrays.asList(this.authorizationHandlers) : null);
   }
 }

@@ -23,7 +23,7 @@ import javax.naming.ldap.StartTlsResponse;
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLSocketFactory;
 import edu.vt.middleware.ldap.Credential;
-import edu.vt.middleware.ldap.LdapConfig;
+import edu.vt.middleware.ldap.LdapConnectionConfig;
 import edu.vt.middleware.ldap.LdapException;
 import edu.vt.middleware.ldap.ResultCode;
 import edu.vt.middleware.ldap.auth.AuthenticationException;
@@ -310,20 +310,22 @@ public class JndiTlsConnectionFactory extends AbstractJndiConnectionFactory
   /**
    * Creates a new instance of this connection factory.
    *
-   * @param  lc  ldap configuration to read connection properties from
+   * @param  lcc  ldap connection configuration to read connection properties
+   * from
    * @return  jndi tls connection factory
    */
-  public static JndiTlsConnectionFactory newInstance(final LdapConfig lc)
+  public static JndiTlsConnectionFactory newInstance(
+    final LdapConnectionConfig lcc)
   {
     final JndiTlsConnectionFactory cf = new JndiTlsConnectionFactory(
-      lc.getLdapUrl());
-    cf.setAuthentication(lc.getAuthtype());
-    cf.setEnvironment(createEnvironment(lc));
-    cf.setLogCredentials(lc.getLogCredentials());
-    cf.setSslSocketFactory(lc.getSslSocketFactory());
-    cf.setHostnameVerifier(lc.getHostnameVerifier());
-    if (lc.getConnectionStrategy() != null) {
-      cf.setConnectionStrategy(lc.getConnectionStrategy());
+      lcc.getLdapUrl());
+    cf.setAuthentication(lcc.getAuthtype());
+    cf.setEnvironment(createEnvironment(lcc));
+    cf.setLogCredentials(lcc.getLogCredentials());
+    cf.setSslSocketFactory(lcc.getSslSocketFactory());
+    cf.setHostnameVerifier(lcc.getHostnameVerifier());
+    if (lcc.getConnectionStrategy() != null) {
+      cf.setConnectionStrategy(lcc.getConnectionStrategy());
     }
     return cf;
   }

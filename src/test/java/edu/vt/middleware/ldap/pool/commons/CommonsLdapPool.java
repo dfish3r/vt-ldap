@@ -27,13 +27,6 @@ public class CommonsLdapPool extends GenericObjectPool
 {
 
 
-  /** Creates a new ldap pool using {@link DefaultLdapPoolableObjectFactory}. */
-  public CommonsLdapPool()
-  {
-    this(new DefaultLdapPoolableObjectFactory());
-  }
-
-
   /**
    * Creates a new ldap pool using the supplied poolable object factory.
    *

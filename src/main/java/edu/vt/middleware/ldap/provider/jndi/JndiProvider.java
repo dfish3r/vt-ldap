@@ -13,7 +13,7 @@
 */
 package edu.vt.middleware.ldap.provider.jndi;
 
-import edu.vt.middleware.ldap.LdapConfig;
+import edu.vt.middleware.ldap.LdapConnectionConfig;
 import edu.vt.middleware.ldap.provider.ConnectionFactory;
 import edu.vt.middleware.ldap.provider.LdapProvider;
 
@@ -28,13 +28,13 @@ public class JndiProvider implements LdapProvider
 
 
   /** {@inheritDoc} */
-  public ConnectionFactory getConnectionFactory(final LdapConfig lc)
+  public ConnectionFactory getConnectionFactory(final LdapConnectionConfig lcc)
   {
     ConnectionFactory cf = null;
-    if (lc.isTlsEnabled()) {
-      cf = JndiTlsConnectionFactory.newInstance(lc);
+    if (lcc.isTlsEnabled()) {
+      cf = JndiTlsConnectionFactory.newInstance(lcc);
     } else {
-      cf = JndiConnectionFactory.newInstance(lc);
+      cf = JndiConnectionFactory.newInstance(lcc);
     }
     return cf;
   }

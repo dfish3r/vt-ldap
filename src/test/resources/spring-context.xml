@@ -8,15 +8,14 @@ http://www.springframework.org/schema/beans http://www.springframework.org/schem
 
   <bean id="ldapConnection"
     class="edu.vt.middleware.ldap.LdapConnection"
-    p:ldapConfig-ref="ldapConfig"
+    p:ldapConnectionConfig-ref="ldapConnectionConfig"
   />
   
-  <bean id="ldapConfig"
-    class="edu.vt.middleware.ldap.LdapConfig"
+  <bean id="ldapConnectionConfig"
+    class="edu.vt.middleware.ldap.LdapConnectionConfig"
     p:ldapUrl="ldap://ed-dev.middleware.vt.edu:14389"
     p:tls="true"
-    p:authtype="EXTERNAL"
-    p:searchScope="SUBTREE">
+    p:authtype="EXTERNAL">
     <property name="sslSocketFactory">
       <bean class="edu.vt.middleware.ldap.ssl.TLSSocketFactory"
         init-method="initialize">

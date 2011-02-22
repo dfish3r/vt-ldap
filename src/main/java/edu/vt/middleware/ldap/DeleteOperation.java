@@ -31,7 +31,7 @@ public class DeleteOperation extends AbstractLdapOperation<DeleteRequest, Void>
   public DeleteOperation(final LdapConnection lc)
   {
     this.ldapConnection = lc;
-    this.initialize(lc.getLdapConfig());
+    this.initialize(lc.getLdapConnectionConfig());
   }
 
 
@@ -46,5 +46,5 @@ public class DeleteOperation extends AbstractLdapOperation<DeleteRequest, Void>
 
   /** {@inheritDoc} */
   protected void initializeRequest(
-    final DeleteRequest request, final LdapConfig config) {}
+    final DeleteRequest request, final LdapConnectionConfig config) {}
 }

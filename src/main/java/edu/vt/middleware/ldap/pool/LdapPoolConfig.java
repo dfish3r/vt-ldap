@@ -13,10 +13,7 @@
 */
 package edu.vt.middleware.ldap.pool;
 
-import java.io.InputStream;
-import edu.vt.middleware.ldap.props.AbstractPropertyConfig;
-import edu.vt.middleware.ldap.props.LdapConfigPropertyInvoker;
-import edu.vt.middleware.ldap.props.LdapProperties;
+import edu.vt.middleware.ldap.AbstractConfig;
 
 /**
  * <code>LdapPoolConfig</code> contains all the configuration data that the
@@ -25,12 +22,8 @@ import edu.vt.middleware.ldap.props.LdapProperties;
  * @author  Middleware Services
  * @version  $Revision$ $Date$
  */
-public class LdapPoolConfig extends AbstractPropertyConfig
+public class LdapPoolConfig extends AbstractConfig
 {
-
-  /** Domain to look for ldap properties in, value is {@value}. */
-  public static final String PROPERTIES_DOMAIN = "edu.vt.middleware.ldap.pool.";
-
   /** Default min pool size, value is {@value}. */
   public static final int DEFAULT_MIN_POOL_SIZE = 3;
 
@@ -54,10 +47,6 @@ public class LdapPoolConfig extends AbstractPropertyConfig
 
   /** Default expiration time, value is {@value}. */
   public static final long DEFAULT_EXPIRATION_TIME = 600000;
-
-  /** Invoker for ldap properties. */
-  private static final LdapConfigPropertyInvoker PROPERTIES =
-    new LdapConfigPropertyInvoker(LdapPoolConfig.class, PROPERTIES_DOMAIN);
 
   /** Min pool size. */
   private int minPoolSize = DEFAULT_MIN_POOL_SIZE;
@@ -325,55 +314,5 @@ public class LdapPoolConfig extends AbstractPropertyConfig
       }
       this.expirationTime = time;
     }
-  }
-
-
-  /** {@inheritDoc} */
-  public String getPropertiesDomain()
-  {
-    return PROPERTIES_DOMAIN;
-  }
-
-
-  /** {@inheritDoc} */
-  public void setProviderProperty(final String name, final String value)
-  {
-    checkImmutable();
-    if (name != null && value != null) {
-      if (PROPERTIES.hasProperty(name)) {
-        PROPERTIES.setProperty(this, name, value);
-      }
-    }
-  }
-
-
-  /** {@inheritDoc} */
-  public boolean hasProviderProperty(final String name)
-  {
-    return PROPERTIES.hasProperty(name);
-  }
-
-
-  /**
-   * Create an instance of this class initialized with properties from the input
-   * stream. If the input stream is null, load properties from the default
-   * properties file.
-   *
-   * @param  is  to load properties from
-   *
-   * @return  <code>LdapPoolConfig</code> initialized ldap pool config
-   */
-  public static LdapPoolConfig createFromProperties(final InputStream is)
-  {
-    final LdapPoolConfig poolConfig = new LdapPoolConfig();
-    LdapProperties properties = null;
-    if (is != null) {
-      properties = new LdapProperties(poolConfig, is);
-    } else {
-      properties = new LdapProperties(poolConfig);
-      properties.useDefaultPropertiesFile();
-    }
-    properties.configure();
-    return poolConfig;
   }
 }

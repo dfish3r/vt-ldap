@@ -17,7 +17,7 @@ import java.io.PrintStream;
 import java.util.Hashtable;
 import java.util.Map;
 import javax.naming.NamingException;
-import edu.vt.middleware.ldap.LdapConfig;
+import edu.vt.middleware.ldap.LdapConnectionConfig;
 import edu.vt.middleware.ldap.LdapException;
 import edu.vt.middleware.ldap.ResultCode;
 import edu.vt.middleware.ldap.provider.AbstractConnectionFactory;
@@ -41,20 +41,6 @@ public abstract class AbstractJndiConnectionFactory
     "java.naming.security.authentication";
 
   /**
-   * The value of this property is a string of decimal digits that specifies the
-   * batch size of search results returned by the server. The value of this
-   * constant is {@value}.
-   */
-  public static final String BATCH_SIZE = "java.naming.batchsize";
-
-  /**
-   * The value of this property is a string that specifies additional binary
-   * attributes. The value of this constant is {@value}.
-   */
-  public static final String BINARY_ATTRIBUTES =
-    "java.naming.ldap.attributes.binary";
-
-  /**
    * The value of this property is a fully qualified class name of the factory
    * class which creates the initial context for the LDAP service provider. The
    * value of this constant is {@value}.
@@ -66,12 +52,6 @@ public abstract class AbstractJndiConnectionFactory
    * the principal to be authenticated. The value of this constant is {@value}.
    */
   public static final String CREDENTIALS = "java.naming.security.credentials";
-
-  /**
-   * The value of this property is a string that specifies how aliases shall be
-   * handled by the provider. The value of this constant is {@value}.
-   */
-  public static final String DEREF_ALIASES = "java.naming.ldap.derefAliases";
 
   /**
    * The value of this property is a string that specifies the identity of the
@@ -93,12 +73,6 @@ public abstract class AbstractJndiConnectionFactory
   public static final String PROVIDER_URL = "java.naming.provider.url";
 
   /**
-   * The value of this property is a string that specifies how referrals shall
-   * be handled by the provider. The value of this constant is {@value}.
-   */
-  public static final String REFERRAL = "java.naming.referral";
-
-  /**
    * The value of this property is a string identifying the class name of a
    * socket factory. The value of this constant is {@value}.
    */
@@ -117,12 +91,6 @@ public abstract class AbstractJndiConnectionFactory
    * written. The value of this constant is {@value}.
    */
   public static final String TRACE = "com.sun.jndi.ldap.trace.ber";
-
-  /**
-   * The value of this property is a string that specifies to only return
-   * attribute type names, no values. The value of this constant is {@value}.
-   */
-  public static final String TYPES_ONLY = "java.naming.ldap.typesOnly";
 
   /**
    * The value of this property is a string that specifies the protocol version
@@ -301,58 +269,30 @@ public abstract class AbstractJndiConnectionFactory
 
   /**
    * Returns the configuration environment for a JNDI ldap context using the
-   * properties found in the supplied ldap config.
+   * properties found in the supplied ldap connection config.
    *
-   * @param  lc  ldap config
+   * @param  lcc  ldap connection config
    * @return  JNDI ldap context environment
    */
   protected static Hashtable<String, Object> createEnvironment(
-    final LdapConfig lc)
+    final LdapConnectionConfig lcc)
   {
     final Hashtable<String, Object> env = new Hashtable<String, Object>();
 
     env.put(CONTEXT_FACTORY, "com.sun.jndi.ldap.LdapCtxFactory");
 
-    if (lc.getBatchSize() != -1) {
-      env.put(BATCH_SIZE, Integer.toString(lc.getBatchSize()));
-    }
-
-    if (lc.getReferralBehavior() != null) {
-      env.put(REFERRAL, lc.getReferralBehavior().name().toLowerCase());
-    }
-
-    if (lc.getDerefAliases() != null) {
-      env.put(DEREF_ALIASES, lc.getDerefAliases().name().toLowerCase());
-    }
-
-    if (lc.getBinaryAttributes() != null) {
-      final String[] a = lc.getBinaryAttributes();
-      final StringBuilder sb = new StringBuilder();
-      for (int i = 0; i < a.length; i++) {
-        sb.append(a[i]);
-        if (i < a.length - 1) {
-          sb.append(" ");
-        }
-      }
-      env.put(BINARY_ATTRIBUTES, sb.toString());
-    }
-
-    if (lc.isTypesOnly()) {
-      env.put(TYPES_ONLY, Boolean.valueOf(lc.getTypesOnly()).toString());
-    }
-
-    if (lc.isSslEnabled()) {
+    if (lcc.isSslEnabled()) {
       env.put(PROTOCOL, "ssl");
-      if (lc.getSslSocketFactory() != null) {
-        env.put(SOCKET_FACTORY, lc.getSslSocketFactory().getClass().getName());
+      if (lcc.getSslSocketFactory() != null) {
+        env.put(SOCKET_FACTORY, lcc.getSslSocketFactory().getClass().getName());
       }
     }
 
-    env.put(TIMEOUT, Long.toString(lc.getTimeout()));
+    env.put(TIMEOUT, Long.toString(lcc.getTimeout()));
 
-    if (!lc.getProviderProperties().isEmpty()) {
+    if (!lcc.getProviderProperties().isEmpty()) {
       for (Map.Entry<String, Object> entry :
-           lc.getProviderProperties().entrySet()) {
+           lcc.getProviderProperties().entrySet()) {
         env.put(entry.getKey(), entry.getValue());
       }
     }

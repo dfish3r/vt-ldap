@@ -165,7 +165,7 @@ public class PagedSearchRequest extends SearchRequest
       "sortBehavior=%s, searchResultHandler=%s, pagedResultsSize=%s",
       this.getClass().getName(),
       this.hashCode(),
-      this.searchDn,
+      this.baseDn,
       this.filter,
       this.retAttrs != null ? Arrays.asList(this.retAttrs) : null,
       this.scope,
@@ -177,7 +177,7 @@ public class PagedSearchRequest extends SearchRequest
       this.typesOnly,
       this.binaryAttrs != null ? Arrays.asList(this.binaryAttrs) : null,
       this.sortBehavior,
-      this.handler != null ? Arrays.asList(this.handler) : null,
+      this.handlers != null ? Arrays.asList(this.handlers) : null,
       this.pagedResultsSize);
   }
 }

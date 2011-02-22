@@ -278,7 +278,7 @@
   <test name="coretests" parallel="methods" thread-count="12">
     <groups>
       <run>
-        <include name="configtest" />
+        <include name="propstest" />
         <include name="searchtest" />
         <include name="comparetest" />
         <include name="modifytest" />

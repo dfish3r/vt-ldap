@@ -16,8 +16,7 @@ package edu.vt.middleware.ldap.props;
 import java.lang.reflect.Array;
 
 /**
- * <code>SimplePropertyInvoker</code> stores setter methods for a class to make
- * method invocation of simple properties easier.
+ * Handles simple properties common to all objects.
  *
  * @author  Middleware Services
  * @version  $Revision$ $Date$
@@ -27,13 +26,25 @@ public class SimplePropertyInvoker extends AbstractPropertyInvoker
 
 
   /**
-   * Creates a new <code>SimplePropertyInvoker</code> for the supplied class.
+   * Creates a new simple property invoker for the supplied class.
    *
-   * @param  c  <code>Class</code> that has setter methods
+   * @param  c  class that has setter methods
    */
   public SimplePropertyInvoker(final Class<?> c)
   {
     this.initialize(c, "");
+  }
+
+
+  /**
+   * Creates a new simple property invoker for the supplied class.
+   *
+   * @param  c  class that has setter methods
+   * @param  propertiesDomain  to prepend to each setter name
+   */
+  public SimplePropertyInvoker(final Class<?> c, final String propertiesDomain)
+  {
+    this.initialize(c, propertiesDomain);
   }
 
 

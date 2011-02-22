@@ -35,10 +35,9 @@ import edu.vt.middleware.ldap.SearchOperation;
 import edu.vt.middleware.ldap.SearchRequest;
 
 /**
- * <code>LdapRoleAuthorizationModule</code> provides a JAAS authentication hook
- * into LDAP roles. No authentication is performed in this module. Role data is
- * set for the login name in the shared state or for the name returned by the
- * CallbackHandler.
+ * Provides a JAAS authentication hook into LDAP roles. No authentication is
+ * performed in this module. Role data is set for the login name in the shared
+ * state or for the name returned by the CallbackHandler.
  *
  * @author  Middleware Services
  * @version  $Revision$ $Date$
@@ -56,8 +55,11 @@ public class LdapRoleAuthorizationModule extends AbstractLoginModule
   /** Whether failing to find any roles should raise an exception. */
   private boolean noResultsIsError;
 
-  /** Ldap to use for searching roles against the LDAP. */
+  /** Ldap connection to use for searching roles against the LDAP. */
   private LdapConnection ldapConn;
+
+  /** Search request to use for searching roles. */
+  private SearchRequest searchRequest;
 
 
   /** {@inheritDoc} */
@@ -95,8 +97,13 @@ public class LdapRoleAuthorizationModule extends AbstractLoginModule
 
     this.ldapConn = createLdapConnection(options);
     if (this.logger.isDebugEnabled()) {
-      this.logger.debug(
-        "Created ldap connection: " + this.ldapConn.getLdapConfig());
+      this.logger.debug("Created ldap connection: " + this.ldapConn);
+    }
+
+    this.searchRequest = createSearchRequest(options);
+    this.searchRequest.setReturnAttributes(this.roleAttribute);
+    if (this.logger.isDebugEnabled()) {
+      this.logger.debug("Created search request: " + this.searchRequest);
     }
   }
 
@@ -132,9 +139,10 @@ public class LdapRoleAuthorizationModule extends AbstractLoginModule
         final Object[] filterArgs = new Object[] {loginDn, loginName, };
         this.ldapConn.open();
         final SearchOperation search = new SearchOperation(this.ldapConn);
-        final LdapResult result = search.execute(new SearchRequest(
-          new SearchFilter(
-            this.roleFilter, filterArgs), this.roleAttribute)).getResult();
+        this.searchRequest.setSearchFilter(
+          new SearchFilter(this.roleFilter, filterArgs));
+        final LdapResult result = search.execute(
+          this.searchRequest).getResult();
         if (result.size() == 0 && this.noResultsIsError) {
           this.success = false;
           throw new LoginException(
@@ -165,9 +173,9 @@ public class LdapRoleAuthorizationModule extends AbstractLoginModule
 
 
   /**
-   * This provides command line access to a <code>LdapRoleLoginModule</code>.
+   * This provides command line access to this JAAS module.
    *
-   * @param  args  <code>String[]</code>
+   * @param  args  command line arguments
    *
    * @throws  Exception  if an error occurs
    */
@@ -181,7 +189,6 @@ public class LdapRoleAuthorizationModule extends AbstractLoginModule
 
     final LoginContext lc = new LoginContext(name, new TextCallbackHandler());
     lc.login();
-    System.out.println("Authorization succeeded");
 
     final Set<Principal> principals = lc.getSubject().getPrincipals();
     System.out.println("Subject Principal(s): ");

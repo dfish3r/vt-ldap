@@ -24,6 +24,7 @@ import edu.vt.middleware.ldap.LdapResult;
 import edu.vt.middleware.ldap.SearchFilter;
 import edu.vt.middleware.ldap.SearchOperation;
 import edu.vt.middleware.ldap.SearchRequest;
+import edu.vt.middleware.ldap.SearchScope;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -185,8 +186,14 @@ public class SearchDnResolver implements DnResolver, Serializable
     throws LdapException
   {
     final SearchRequest request = new SearchRequest();
+    request.setBaseDn(this.config.getBaseDn());
     request.setSearchFilter(filter);
     request.setReturnAttributes(new String[0]);
+    if (this.config.getSubtreeSearch()) {
+      request.setSearchScope(SearchScope.SUBTREE);
+    } else {
+      request.setSearchScope(SearchScope.ONELEVEL);
+    }
 
     final LdapConnection conn = new LdapConnection(this.config);
     try {

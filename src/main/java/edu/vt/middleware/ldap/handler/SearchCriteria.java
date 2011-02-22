@@ -59,7 +59,7 @@ public class SearchCriteria
    */
   public SearchCriteria(final SearchRequest request)
   {
-    this.setDn(request.getDn());
+    this.setDn(request.getBaseDn());
     if (request.getSearchFilter() != null) {
       this.setFilter(request.getSearchFilter().getFilter());
       this.setFilterArgs(request.getSearchFilter().getFilterArgs().toArray());

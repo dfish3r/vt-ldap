@@ -60,34 +60,6 @@
       <param-value>SHARED</param-value>
     </init-param>
   </servlet>
-  <servlet>
-    <servlet-name>Login</servlet-name>
-    <servlet-class>edu.vt.middleware.ldap.servlets.LoginServlet</servlet-class>
-    <init-param>
-      <param-name>edu.vt.middleware.ldap.servlets.propertiesFile</param-name>
-      <param-value>/ldap.tls.properties</param-value>
-    </init-param>
-    <init-param>
-      <param-name>edu.vt.middleware.ldap.servlets.sessionId</param-name>
-      <param-value>vt-ldap.User</param-value>
-    </init-param>
-    <init-param>
-      <param-name>edu.vt.middleware.ldap.servlets.loginUrl</param-name>
-      <param-value>SessionCheck</param-value>
-    </init-param>
-  </servlet>
-  <servlet>
-    <servlet-name>Logout</servlet-name>
-    <servlet-class>edu.vt.middleware.ldap.servlets.LogoutServlet</servlet-class>
-    <init-param>
-      <param-name>edu.vt.middleware.ldap.servlets.sessionId</param-name>
-      <param-value>vt-ldap.User</param-value>
-    </init-param>
-  </servlet>
-  <servlet>
-    <servlet-name>SessionCheck</servlet-name>
-    <servlet-class>edu.vt.middleware.ldap.servlets.SessionCheck</servlet-class>
-  </servlet>
   <servlet-mapping>
     <servlet-name>LdifSearch</servlet-name>
     <url-pattern>/LdifSearch</url-pattern>
@@ -99,17 +71,5 @@
   <servlet-mapping>
     <servlet-name>AttributeSearch</servlet-name>
     <url-pattern>/AttributeSearch</url-pattern>
-  </servlet-mapping>
-  <servlet-mapping>
-    <servlet-name>Login</servlet-name>
-    <url-pattern>/Login</url-pattern>
-  </servlet-mapping>
-  <servlet-mapping>
-    <servlet-name>Logout</servlet-name>
-    <url-pattern>/Logout</url-pattern>
-  </servlet-mapping>
-  <servlet-mapping>
-    <servlet-name>SessionCheck</servlet-name>
-    <url-pattern>/SessionCheck</url-pattern>
   </servlet-mapping>
 </web-app>

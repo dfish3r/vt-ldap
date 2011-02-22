@@ -22,7 +22,7 @@ package edu.vt.middleware.ldap;
 public class CompareRequest implements LdapRequest
 {
   /** DN to compare. */
-  protected String compareDn;
+  protected String compareDn = "";
 
   /** Attribute to compare. */
   protected LdapAttribute attribute;

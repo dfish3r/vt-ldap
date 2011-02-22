@@ -32,45 +32,10 @@ public abstract class AbstractSearchOperation<Q extends SearchRequest>
 
 
   /** {@inheritDoc} */
-  protected void initializeRequest(final Q request, final LdapConfig lc)
+  protected void initializeRequest(
+    final Q request, final LdapConnectionConfig lc)
   {
-    if (request.getDn() == null) {
-      request.setDn(lc.getBaseDn());
-    }
-    if (request.getSearchScope() == null) {
-      request.setSearchScope(lc.getSearchScope());
-    }
-    if (request.getTimeLimit() == null) {
-      request.setTimeLimit(lc.getTimeLimit());
-    }
-    if (request.getCountLimit() == null) {
-      request.setCountLimit(lc.getCountLimit());
-    }
-    if (request.getBatchSize() == null) {
-      request.setBatchSize(lc.getBatchSize());
-    }
-    if (request.getDerefAliases() == null) {
-      request.setDerefAliases(lc.getDerefAliases());
-    }
-    if (request.getReferralBehavior() == null) {
-      request.setReferralBehavior(lc.getReferralBehavior());
-    }
-    if (request.getTypesOnly() == null) {
-      request.setTypeOnly(lc.getTypesOnly());
-    }
-    if (request.getBinaryAttributes() == null) {
-      request.setBinaryAttributes(lc.getBinaryAttributes());
-    }
-    if (request.getSortBehavior() == null) {
-      request.setSortBehavior(lc.getSortBehavior());
-    }
-    if (request.getLdapResultHandler() == null) {
-      request.setLdapResultHandler(lc.getLdapResultHandlers());
-    }
-    if (request.getSearchIgnoreResultCodes() == null) {
-      request.setSearchIgnoreResultCodes(lc.getSearchIgnoreResultCodes());
-    }
-    request.setLdapResultHandler(
+    request.setLdapResultHandlers(
       this.initializeLdapResultHandlers(request, this.ldapConnection));
   }
 
@@ -86,7 +51,7 @@ public abstract class AbstractSearchOperation<Q extends SearchRequest>
   protected LdapResultHandler[] initializeLdapResultHandlers(
     final Q request, final LdapConnection conn)
   {
-    final LdapResultHandler[] handler = request.getLdapResultHandler();
+    final LdapResultHandler[] handler = request.getLdapResultHandlers();
     if (handler != null && handler.length > 0) {
       for (LdapResultHandler h : handler) {
         if (ExtendedLdapResultHandler.class.isInstance(h)) {

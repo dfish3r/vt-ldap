@@ -28,8 +28,8 @@ public class LdapConnection
   /** Log for this class. */
   protected final Log logger = LogFactory.getLog(this.getClass());
 
-  /** Ldap config. */
-  protected LdapConfig config;
+  /** LDAP connection configuration. */
+  protected LdapConnectionConfig config;
 
   /** LDAP connection handler. */
   protected ConnectionFactory connectionFactory;
@@ -45,42 +45,54 @@ public class LdapConnection
   /**
    * Creates a new ldap connection.
    *
-   * @param  lc  ldap configuration
+   * @param  ldapUrl  to connect to
    */
-  public LdapConnection(final LdapConfig lc)
+  public LdapConnection(final String ldapUrl)
   {
-    this.setLdapConfig(lc);
+    this.setLdapConnectionConfig(new LdapConnectionConfig(ldapUrl));
   }
 
 
   /**
-   * Returns the ldap configuration.
+   * Creates a new ldap connection.
    *
-   * @return  ldap configuration
+   * @param  lcc  ldap connection configuration
    */
-  public LdapConfig getLdapConfig()
+  public LdapConnection(final LdapConnectionConfig lcc)
+  {
+    this.setLdapConnectionConfig(lcc);
+  }
+
+
+  /**
+   * Returns the ldap connection configuration.
+   *
+   * @return  ldap connection configuration
+   */
+  public LdapConnectionConfig getLdapConnectionConfig()
   {
     return this.config;
   }
 
 
   /**
-   * Sets the ldap configuration.
+   * Sets the ldap connection configuration.
    *
-   * @param  lc  ldap configuration
+   * @param  lcc  ldap connection configuration
    */
-  public void setLdapConfig(final LdapConfig lc)
+  public void setLdapConnectionConfig(final LdapConnectionConfig lcc)
   {
-    this.config = lc;
+    this.config = lcc;
   }
 
 
   /**
    * This will establish a connection if one does not already exist by binding
-   * to the LDAP using parameters given by {@link LdapConfig#getBindDn()} and
-   * {@link LdapConfig#getBindCredential()}. If these parameters have not been
-   * set then an anonymous bind will be attempted. This connection must be
-   * closed using {@link #close()}.
+   * to the LDAP using parameters given by
+   * {@link LdapConnectionConfig#getBindDn()} and
+   * {@link LdapConnectionConfig#getBindCredential()}. If these parameters
+   * have not been set then an anonymous bind will be attempted. This connection
+   * should be closed using {@link #close()}.
    *
    * @throws  LdapException  if the LDAP cannot be reached
    */

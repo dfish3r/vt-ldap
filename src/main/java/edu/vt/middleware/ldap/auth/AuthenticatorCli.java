@@ -13,9 +13,7 @@
 */
 package edu.vt.middleware.ldap.auth;
 
-import java.io.BufferedReader;
 import java.io.BufferedWriter;
-import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import edu.vt.middleware.ldap.AbstractCli;
 import edu.vt.middleware.ldap.Credential;
@@ -24,7 +22,7 @@ import edu.vt.middleware.ldap.LdapResult;
 import edu.vt.middleware.ldap.dsml.Dsmlv1;
 import edu.vt.middleware.ldap.dsml.Dsmlv2;
 import edu.vt.middleware.ldap.ldif.Ldif;
-import edu.vt.middleware.ldap.props.LdapConfigPropertyInvoker;
+import edu.vt.middleware.ldap.props.AuthenticatorConfigProperties;
 import org.apache.commons.cli.CommandLine;
 
 /**
@@ -51,16 +49,6 @@ public class AuthenticatorCli extends AbstractCli
   }
 
 
-  /** {@inheritDoc} */
-  protected void initOptions()
-  {
-    super.initOptions(
-      new LdapConfigPropertyInvoker(
-        AuthenticatorConfig.class,
-        AuthenticatorConfig.PROPERTIES_DOMAIN));
-  }
-
-
   /**
    * Initialize an AuthenticatorConfig with command line options.
    *
@@ -73,37 +61,37 @@ public class AuthenticatorCli extends AbstractCli
   protected AuthenticatorConfig initAuthenticatorConfig(final CommandLine line)
     throws Exception
   {
-    final AuthenticatorConfig config = new AuthenticatorConfig();
-    this.initLdapProperties(config, line);
+    final AuthenticatorConfigProperties reader = new AuthenticatorConfigProperties(
+      this.getPropertiesFromOptions(line));
+    final AuthenticatorConfig config = reader.get();
     if (config.getBindDn() != null && config.getBindCredential() == null) {
       // prompt the user to enter a password
-      System.out.print(
-        "Enter password for service user " + config.getBindDn() + ": ");
-
-      final String pass = (new BufferedReader(new InputStreamReader(System.in)))
-          .readLine();
+      final char[] pass = System.console().readPassword(
+          "[%s]", "Enter password for bind DN " + config.getBindDn() + ": ");
       config.setBindCredential(new Credential(pass));
     }
-    if (config.getUser() == null) {
-      // prompt for a user name
-      System.out.print("Enter user name: ");
-
-      final String user = (new BufferedReader(new InputStreamReader(System.in)))
-          .readLine();
-      config.setUser(user);
-    }
-    if (config.getCredential() == null) {
-      // prompt the user to enter a password
-      System.out.print("Enter password for user " + config.getUser() + ": ");
-
-      final String pass = (new BufferedReader(new InputStreamReader(System.in)))
-          .readLine();
-      config.setCredential(new Credential(pass));
-    }
-    if (line.getArgs() != null && line.getArgs().length > 0) {
-      config.setReturnAttributes(line.getArgs());
-    }
     return config;
+  }
+
+
+  protected AuthenticationRequest initAuthenticationRequest(
+    final CommandLine line)
+    throws Exception
+  {
+    final AuthenticationRequest request = new AuthenticationRequest();
+    // prompt for a user name
+    final String user = System.console().readLine("[%s]", "Enter user name: ");
+    request.setUser(user);
+
+    // prompt the user to enter a password
+    final char[] pass = System.console().readPassword(
+      "[%s]", "Enter password for user " + user + ": ");
+    request.setCredential(new Credential(pass));
+
+    if (line.getArgs() != null && line.getArgs().length > 0) {
+      request.setReturnAttributes(line.getArgs());
+    }
+    return request;
   }
 
 
@@ -119,7 +107,9 @@ public class AuthenticatorCli extends AbstractCli
     if (line.hasOption(OPT_HELP)) {
       printHelp();
     } else {
-      authenticate(initAuthenticatorConfig(line));
+      authenticate(
+        this.initAuthenticatorConfig(line),
+        this.initAuthenticationRequest(line));
     }
   }
 
@@ -131,12 +121,12 @@ public class AuthenticatorCli extends AbstractCli
    *
    * @throws  Exception  On errors.
    */
-  protected void authenticate(final AuthenticatorConfig config)
+  protected void authenticate(
+    final AuthenticatorConfig config, final AuthenticationRequest request)
     throws Exception
   {
     final Authenticator auth = new Authenticator(config);
-    final LdapEntry entry = auth.authenticate(
-      new AuthenticationRequest()).getResult();
+    final LdapEntry entry = auth.authenticate(request).getResult();
     if (entry != null) {
       if (this.outputDsmlv1) {
         (new Dsmlv1()).outputDsml(

@@ -35,7 +35,7 @@ public class PagedSearchOperation
   public PagedSearchOperation(final LdapConnection lc)
   {
     this.ldapConnection = lc;
-    this.initialize(lc.getLdapConfig());
+    this.initialize(lc.getLdapConnectionConfig());
   }
 
 
@@ -45,7 +45,7 @@ public class PagedSearchOperation
   {
     final LdapResult lr =
       this.ldapConnection.getProviderConnection().pagedSearch(request);
-    final LdapResultHandler[] handler = request.getLdapResultHandler();
+    final LdapResultHandler[] handler = request.getLdapResultHandlers();
     if (handler != null && handler.length > 0) {
       final SearchCriteria sc = new SearchCriteria(request);
       for (int i = 0; i < handler.length; i++) {
@@ -60,11 +60,8 @@ public class PagedSearchOperation
 
   /** {@inheritDoc} */
   protected void initializeRequest(
-    final PagedSearchRequest request, final LdapConfig config)
+    final PagedSearchRequest request, final LdapConnectionConfig config)
   {
     super.initializeRequest(request, config);
-    if (request.getPagedResultsSize() == null) {
-      request.setPagedResultsSize(config.getPagedResultsSize());
-    }
   }
 }
