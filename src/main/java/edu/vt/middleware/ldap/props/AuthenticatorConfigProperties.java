@@ -89,11 +89,4 @@ public final class AuthenticatorConfigProperties
   {
     return AUTHENTICATOR_CONFIG_INVOKER.hasProperty(name);
   }
-
-
-  /** {@inheritDoc} */
-  public AuthenticatorConfig get()
-  {
-    return this.object;
-  }
 }

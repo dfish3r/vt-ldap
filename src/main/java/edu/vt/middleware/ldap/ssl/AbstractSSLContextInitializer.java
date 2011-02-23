@@ -14,9 +14,7 @@
 package edu.vt.middleware.ldap.ssl;
 
 import java.security.GeneralSecurityException;
-import javax.net.ssl.KeyManager;
 import javax.net.ssl.SSLContext;
-import javax.net.ssl.TrustManager;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -42,14 +40,4 @@ public abstract class AbstractSSLContextInitializer
     ctx.init(this.getKeyManagers(), this.getTrustManagers(), null);
     return ctx;
   }
-
-
-  /** {@inheritDoc} */
-  public abstract TrustManager[] getTrustManagers()
-    throws GeneralSecurityException;
-
-
-  /** {@inheritDoc} */
-  public abstract KeyManager[] getKeyManagers()
-    throws GeneralSecurityException;
 }

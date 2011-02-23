@@ -87,11 +87,4 @@ public final class LdapPoolConfigProperties
   {
     return POOL_CONFIG_INVOKER.hasProperty(name);
   }
-
-
-  /** {@inheritDoc} */
-  public LdapPoolConfig get()
-  {
-    return this.object;
-  }
 }

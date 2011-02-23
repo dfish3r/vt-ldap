@@ -110,14 +110,6 @@ public abstract class AbstractLdapFactory<T extends LdapConnection>
 
 
   /** {@inheritDoc} */
-  public abstract T create();
-
-
-  /** {@inheritDoc} */
-  public abstract void destroy(final T t);
-
-
-  /** {@inheritDoc} */
   public boolean activate(final T t)
   {
     boolean success = false;

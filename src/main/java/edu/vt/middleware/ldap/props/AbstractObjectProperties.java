@@ -46,10 +46,6 @@ public abstract class AbstractObjectProperties<T> implements ObjectProperties<T>
   protected T object;
 
 
-  /** {@inheritDoc} */
-  public abstract boolean hasProperty(final String name);
-
-
   /**
    * Creates properties from the supplied input stream. See
    * {@link Properties#load(InputStream)}.
@@ -132,5 +128,12 @@ public abstract class AbstractObjectProperties<T> implements ObjectProperties<T>
         }
       }
     }
+  }
+
+
+  /** {@inheritDoc} */
+  public T get()
+  {
+    return this.object;
   }
 }

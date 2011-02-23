@@ -184,11 +184,6 @@ public abstract class AbstractLoginModule implements LoginModule
 
 
   /** {@inheritDoc} */
-  public abstract boolean login()
-    throws LoginException;
-
-
-  /** {@inheritDoc} */
   public boolean commit()
     throws LoginException
   {

@@ -85,11 +85,4 @@ public final class SearchRequestProperties
   {
     return SEARCH_REQUEST_INVOKER.hasProperty(name);
   }
-
-
-  /** {@inheritDoc} */
-  public SearchRequest get()
-  {
-    return this.object;
-  }
 }

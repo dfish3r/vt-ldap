@@ -86,11 +86,6 @@ public abstract class AbstractCredentialReader<T> implements CredentialReader<T>
   }
 
 
-  /** {@inheritDoc} */
-  public abstract T read(InputStream is, String... params)
-    throws IOException, GeneralSecurityException;
-
-
   /**
    * Gets a buffered input stream from the given input stream. If the given
    * instance is already buffered, it is simply returned.

@@ -88,11 +88,4 @@ public final class LdapConnectionConfigProperties
   {
     return CONNECTION_CONFIG_INVOKER.hasProperty(name);
   }
-
-
-  /** {@inheritDoc} */
-  public LdapConnectionConfig get()
-  {
-    return this.object;
-  }
 }
