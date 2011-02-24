@@ -717,7 +717,11 @@ public class SearchOperationTest extends AbstractTest
   }
 
 
-  /** @throws  Exception  On test failure. */
+  /**
+   * @param  resultCode  to retry operations on.
+   *
+   * @throws  Exception  On test failure.
+   */
   @Parameters({"searchRetryResultCode"})
   @Test(groups = {"searchtest"})
   public void searchWithRetry(final String resultCode)

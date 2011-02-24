@@ -278,7 +278,7 @@ public class AuthenticatorLoadTest extends AbstractTest
         returnAttrs.split("\\|"),
         new AuthorizationHandler[]{
           new CompareAuthorizationHandler(
-            new SearchFilter(filter, filterArgs.split("\\|")))})).getResult();
+            new SearchFilter(filter, filterArgs.split("\\|"))), })).getResult();
     AssertJUnit.assertEquals(
       TestUtil.convertLdifToResult(expected), new LdapResult(entry));
   }

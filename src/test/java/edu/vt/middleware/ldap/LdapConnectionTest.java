@@ -33,7 +33,11 @@ public class LdapConnectionTest
   private static LdapEntry testLdapEntry;
 
 
-  /** @throws  Exception  On test failure. */
+  /**
+   * @param  ldifFile  to create.
+   *
+   * @throws  Exception  On test failure.
+   */
   @Parameters({ "createEntry15" })
   @BeforeClass(groups = {"ldapconntest"})
   public void add(final String ldifFile)
@@ -85,7 +89,7 @@ public class LdapConnectionTest
       new AttributeModification[] {
         new AttributeModification(
           AttributeModificationType.ADD,
-          new LdapAttribute("title", "President"))});
+          new LdapAttribute("title", "President")), });
     conn.close();
   }
 
