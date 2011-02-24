@@ -30,7 +30,7 @@ import org.apache.commons.logging.LogFactory;
  * @author  Middleware Services
  * @version  $Revision$ $Date$
  */
-public abstract class AbstractObjectProperties<T> implements ObjectProperties<T>
+public abstract class AbstractPropertySource<T> implements PropertySource<T>
 {
 
   /** Default file to read properties from, value is {@value}. */

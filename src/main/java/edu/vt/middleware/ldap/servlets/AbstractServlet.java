@@ -30,9 +30,9 @@ import edu.vt.middleware.ldap.pool.LdapPoolConfig;
 import edu.vt.middleware.ldap.pool.LdapPoolException;
 import edu.vt.middleware.ldap.pool.SharedLdapPool;
 import edu.vt.middleware.ldap.pool.SoftLimitLdapPool;
-import edu.vt.middleware.ldap.props.LdapConnectionConfigProperties;
-import edu.vt.middleware.ldap.props.LdapPoolConfigProperties;
-import edu.vt.middleware.ldap.props.SearchRequestProperties;
+import edu.vt.middleware.ldap.props.LdapConnectionConfigPropertySource;
+import edu.vt.middleware.ldap.props.LdapPoolConfigPropertySource;
+import edu.vt.middleware.ldap.props.SearchRequestPropertySource;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -83,7 +83,7 @@ public abstract class AbstractServlet extends HttpServlet
   private LdapPool<LdapConnection> ldapPool;
 
   /** Search request reader for reading search properties. */
-  private SearchRequestProperties searchRequestProps;
+  private SearchRequestPropertySource searchRequestSource;
 
 
   /**
@@ -103,12 +103,12 @@ public abstract class AbstractServlet extends HttpServlet
       this.logger.debug(PROPERTIES_FILE + " = " + propertiesFile);
     }
 
-    final LdapConnectionConfigProperties lccProps =
-      new LdapConnectionConfigProperties(
+    final LdapConnectionConfigPropertySource lccSource =
+      new LdapConnectionConfigPropertySource(
         SearchServlet.class.getResourceAsStream(propertiesFile));
-    final LdapConnectionConfig lcc = lccProps.get();
+    final LdapConnectionConfig lcc = lccSource.get();
 
-    this.searchRequestProps = new SearchRequestProperties(
+    this.searchRequestSource = new SearchRequestPropertySource(
       SearchServlet.class.getResourceAsStream(propertiesFile));
 
     final String poolPropertiesFile = getInitParameter(POOL_PROPERTIES_FILE);
@@ -116,9 +116,10 @@ public abstract class AbstractServlet extends HttpServlet
       this.logger.debug(POOL_PROPERTIES_FILE + " = " + poolPropertiesFile);
     }
 
-    final LdapPoolConfigProperties lpcProps = new LdapPoolConfigProperties(
-      SearchServlet.class.getResourceAsStream(poolPropertiesFile));
-    final LdapPoolConfig lpc = lpcProps.get();
+    final LdapPoolConfigPropertySource lpcSource =
+      new LdapPoolConfigPropertySource(
+        SearchServlet.class.getResourceAsStream(poolPropertiesFile));
+    final LdapPoolConfig lpc = lpcSource.get();
 
     final String poolType = getInitParameter(POOL_TYPE);
     if (this.logger.isDebugEnabled()) {
@@ -158,7 +159,7 @@ public abstract class AbstractServlet extends HttpServlet
           conn = this.ldapPool.checkOut();
           final SearchOperation search = new SearchOperation(conn);
           final SearchRequest sr = SearchRequest.newSearchRequest(
-            this.searchRequestProps.get());
+            this.searchRequestSource.get());
           sr.setSearchFilter(new SearchFilter(query));
           sr.setReturnAttributes(attrs);
           result = search.execute(sr).getResult();

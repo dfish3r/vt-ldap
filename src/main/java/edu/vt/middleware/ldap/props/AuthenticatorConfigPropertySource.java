@@ -24,8 +24,8 @@ import edu.vt.middleware.ldap.auth.AuthenticatorConfig;
  * @author  Middleware Services
  * @version  $Revision$ $Date$
  */
-public final class AuthenticatorConfigProperties
-  extends AbstractObjectProperties<AuthenticatorConfig>
+public final class AuthenticatorConfigPropertySource
+  extends AbstractPropertySource<AuthenticatorConfig>
 {
 
   /** Domain to look for ldap properties in, value is {@value}. */
@@ -42,10 +42,11 @@ public final class AuthenticatorConfigProperties
    * Creates a new authenticator config properties using the default properties
    * file.
    */
-  public AuthenticatorConfigProperties()
+  public AuthenticatorConfigPropertySource()
   {
     this(
-      AuthenticatorConfigProperties.class.getResourceAsStream(PROPERTIES_FILE));
+      AuthenticatorConfigPropertySource.class.getResourceAsStream(
+        PROPERTIES_FILE));
   }
 
 
@@ -54,7 +55,7 @@ public final class AuthenticatorConfigProperties
    *
    * @param  is  to read properties from
    */
-  public AuthenticatorConfigProperties(final InputStream is)
+  public AuthenticatorConfigPropertySource(final InputStream is)
   {
     this(loadProperties(is));
   }
@@ -65,7 +66,7 @@ public final class AuthenticatorConfigProperties
    *
    * @param  props  to read properties from
    */
-  public AuthenticatorConfigProperties(final Properties props)
+  public AuthenticatorConfigPropertySource(final Properties props)
   {
     this.object = new AuthenticatorConfig();
     this.initializeObject(

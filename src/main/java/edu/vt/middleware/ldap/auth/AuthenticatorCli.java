@@ -22,7 +22,7 @@ import edu.vt.middleware.ldap.LdapResult;
 import edu.vt.middleware.ldap.dsml.Dsmlv1;
 import edu.vt.middleware.ldap.dsml.Dsmlv2;
 import edu.vt.middleware.ldap.ldif.Ldif;
-import edu.vt.middleware.ldap.props.AuthenticatorConfigProperties;
+import edu.vt.middleware.ldap.props.AuthenticatorConfigPropertySource;
 import org.apache.commons.cli.CommandLine;
 
 /**
@@ -61,9 +61,10 @@ public class AuthenticatorCli extends AbstractCli
   protected AuthenticatorConfig initAuthenticatorConfig(final CommandLine line)
     throws Exception
   {
-    final AuthenticatorConfigProperties reader = new AuthenticatorConfigProperties(
-      this.getPropertiesFromOptions(line));
-    final AuthenticatorConfig config = reader.get();
+    final AuthenticatorConfigPropertySource acSource =
+      new AuthenticatorConfigPropertySource(
+        this.getPropertiesFromOptions(line));
+    final AuthenticatorConfig config = acSource.get();
     if (config.getBindDn() != null && config.getBindCredential() == null) {
       // prompt the user to enter a password
       final char[] pass = System.console().readPassword(

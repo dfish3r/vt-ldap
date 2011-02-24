@@ -24,8 +24,8 @@ import edu.vt.middleware.ldap.SearchRequest;
  * @author  Middleware Services
  * @version  $Revision$ $Date$
  */
-public final class SearchRequestProperties
-  extends AbstractObjectProperties<SearchRequest>
+public final class SearchRequestPropertySource
+  extends AbstractPropertySource<SearchRequest>
 {
 
   /** Domain to look for ldap properties in, value is {@value}. */
@@ -39,9 +39,10 @@ public final class SearchRequestProperties
   /**
    * Creates a new search request properties using the default properties file.
    */
-  public SearchRequestProperties()
+  public SearchRequestPropertySource()
   {
-    this(SearchRequestProperties.class.getResourceAsStream(PROPERTIES_FILE));
+    this(
+      SearchRequestPropertySource.class.getResourceAsStream(PROPERTIES_FILE));
   }
 
 
@@ -50,7 +51,7 @@ public final class SearchRequestProperties
    *
    * @param  is  to read properties from
    */
-  public SearchRequestProperties(final InputStream is)
+  public SearchRequestPropertySource(final InputStream is)
   {
     this(loadProperties(is));
   }
@@ -61,7 +62,7 @@ public final class SearchRequestProperties
    *
    * @param  props  to read properties from
    */
-  public SearchRequestProperties(final Properties props)
+  public SearchRequestPropertySource(final Properties props)
   {
     this.object = new SearchRequest();
     this.initializeObject(

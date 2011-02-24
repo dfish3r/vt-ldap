@@ -24,8 +24,8 @@ import edu.vt.middleware.ldap.pool.LdapPoolConfig;
  * @author  Middleware Services
  * @version  $Revision$ $Date$
  */
-public final class LdapPoolConfigProperties
-  extends AbstractObjectProperties<LdapPoolConfig>
+public final class LdapPoolConfigPropertySource
+  extends AbstractPropertySource<LdapPoolConfig>
 {
 
   /** Domain to look for ldap properties in, value is {@value}. */
@@ -41,9 +41,10 @@ public final class LdapPoolConfigProperties
    * Creates a new ldap pool config properties using the default properties
    * file.
    */
-  public LdapPoolConfigProperties()
+  public LdapPoolConfigPropertySource()
   {
-    this(LdapPoolConfigProperties.class.getResourceAsStream(PROPERTIES_FILE));
+    this(
+      LdapPoolConfigPropertySource.class.getResourceAsStream(PROPERTIES_FILE));
   }
 
 
@@ -52,7 +53,7 @@ public final class LdapPoolConfigProperties
    *
    * @param  is  to read properties from
    */
-  public LdapPoolConfigProperties(final InputStream is)
+  public LdapPoolConfigPropertySource(final InputStream is)
   {
     this(loadProperties(is));
   }
@@ -63,7 +64,7 @@ public final class LdapPoolConfigProperties
    *
    * @param  props  to read properties from
    */
-  public LdapPoolConfigProperties(final Properties props)
+  public LdapPoolConfigPropertySource(final Properties props)
   {
     this.object = new LdapPoolConfig();
     this.initializeObject(

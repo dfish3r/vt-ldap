@@ -36,9 +36,9 @@ import edu.vt.middleware.ldap.LdapAttributes;
 import edu.vt.middleware.ldap.LdapConnection;
 import edu.vt.middleware.ldap.SearchRequest;
 import edu.vt.middleware.ldap.auth.Authenticator;
-import edu.vt.middleware.ldap.props.AuthenticatorConfigProperties;
-import edu.vt.middleware.ldap.props.LdapConnectionConfigProperties;
-import edu.vt.middleware.ldap.props.SearchRequestProperties;
+import edu.vt.middleware.ldap.props.AuthenticatorConfigPropertySource;
+import edu.vt.middleware.ldap.props.LdapConnectionConfigPropertySource;
+import edu.vt.middleware.ldap.props.SearchRequestPropertySource;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -299,10 +299,11 @@ public abstract class AbstractLoginModule implements LoginModule
   protected static LdapConnection createLdapConnection(
     final Map<String, ?> options)
   {
-    final LdapConnectionConfigProperties props =
-      new LdapConnectionConfigProperties(
-        createProperties(LdapConnectionConfigProperties.getDomain(), options));
-    return new LdapConnection(props.get());
+    final LdapConnectionConfigPropertySource source =
+      new LdapConnectionConfigPropertySource(
+        createProperties(
+          LdapConnectionConfigPropertySource.getDomain(), options));
+    return new LdapConnection(source.get());
   }
 
 
@@ -316,10 +317,11 @@ public abstract class AbstractLoginModule implements LoginModule
   protected static Authenticator createAuthenticator(
     final Map<String, ?> options)
   {
-    final AuthenticatorConfigProperties props =
-      new AuthenticatorConfigProperties(
-        createProperties(AuthenticatorConfigProperties.getDomain(), options));
-    return new Authenticator(props.get());
+    final AuthenticatorConfigPropertySource source =
+      new AuthenticatorConfigPropertySource(
+        createProperties(
+          AuthenticatorConfigPropertySource.getDomain(), options));
+    return new Authenticator(source.get());
   }
 
 
@@ -333,9 +335,9 @@ public abstract class AbstractLoginModule implements LoginModule
   protected static SearchRequest createSearchRequest(
     final Map<String, ?> options)
   {
-    final SearchRequestProperties props = new SearchRequestProperties(
-      createProperties(SearchRequestProperties.getDomain(), options));
-    return props.get();
+    final SearchRequestPropertySource source = new SearchRequestPropertySource(
+      createProperties(SearchRequestPropertySource.getDomain(), options));
+    return source.get();
   }
 
 

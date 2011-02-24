@@ -21,7 +21,7 @@ package edu.vt.middleware.ldap.props;
  * @author  Middleware Services
  * @version  $Revision$ $Date$
  */
-public interface ObjectProperties<T>
+public interface PropertySource<T>
 {
 
 

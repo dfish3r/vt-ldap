@@ -23,9 +23,9 @@ import edu.vt.middleware.ldap.handler.LdapResultHandler;
 import edu.vt.middleware.ldap.handler.MergeResultHandler;
 import edu.vt.middleware.ldap.handler.RecursiveResultHandler;
 import edu.vt.middleware.ldap.jaas.TestCallbackHandler;
-import edu.vt.middleware.ldap.props.AuthenticatorConfigProperties;
-import edu.vt.middleware.ldap.props.LdapConnectionConfigProperties;
-import edu.vt.middleware.ldap.props.SearchRequestProperties;
+import edu.vt.middleware.ldap.props.AuthenticatorConfigPropertySource;
+import edu.vt.middleware.ldap.props.LdapConnectionConfigPropertySource;
+import edu.vt.middleware.ldap.props.SearchRequestPropertySource;
 import org.testng.AssertJUnit;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -56,16 +56,18 @@ public class PropertiesTest
   public void nullProperties()
     throws Exception
   {
-    final LdapConnectionConfigProperties lccReader = new LdapConnectionConfigProperties(
-      PropertiesTest.class.getResourceAsStream("/ldap.null.properties"));
-    final LdapConnectionConfig lcc = lccReader.get();
+    final LdapConnectionConfigPropertySource lccSource =
+      new LdapConnectionConfigPropertySource(
+        PropertiesTest.class.getResourceAsStream("/ldap.null.properties"));
+    final LdapConnectionConfig lcc = lccSource.get();
 
     AssertJUnit.assertNull(lcc.getSslSocketFactory());
     AssertJUnit.assertNull(lcc.getHostnameVerifier());
 
-    final SearchRequestProperties srReader = new SearchRequestProperties(
-      PropertiesTest.class.getResourceAsStream("/ldap.null.properties"));
-    final SearchRequest sr = srReader.get();
+    final SearchRequestPropertySource srSource =
+      new SearchRequestPropertySource(
+        PropertiesTest.class.getResourceAsStream("/ldap.null.properties"));
+    final SearchRequest sr = srSource.get();
 
     AssertJUnit.assertNull(sr.getLdapResultHandlers());
     AssertJUnit.assertNull(sr.getSearchIgnoreResultCodes());
@@ -77,9 +79,10 @@ public class PropertiesTest
   public void parserProperties()
     throws Exception
   {
-    final LdapConnectionConfigProperties lccReader = new LdapConnectionConfigProperties(
-      PropertiesTest.class.getResourceAsStream("/ldap.parser.properties"));
-    final LdapConnectionConfig lcc = lccReader.get();
+    final LdapConnectionConfigPropertySource lccSource =
+      new LdapConnectionConfigPropertySource(
+        PropertiesTest.class.getResourceAsStream("/ldap.parser.properties"));
+    final LdapConnectionConfig lcc = lccSource.get();
 
     AssertJUnit.assertEquals(
       "ldap://ed-dev.middleware.vt.edu:14389", lcc.getLdapUrl());
@@ -91,9 +94,10 @@ public class PropertiesTest
     AssertJUnit.assertEquals(
       "true", lcc.getProviderProperties().get("java.naming.authoritative"));
 
-    final SearchRequestProperties scReader = new SearchRequestProperties(
-      PropertiesTest.class.getResourceAsStream("/ldap.parser.properties"));
-    final SearchRequest sr = scReader.get();
+    final SearchRequestPropertySource scSource =
+      new SearchRequestPropertySource(
+        PropertiesTest.class.getResourceAsStream("/ldap.parser.properties"));
+    final SearchRequest sr = scSource.get();
 
     AssertJUnit.assertEquals("ou=test,dc=vt,dc=edu", sr.getBaseDn());
     AssertJUnit.assertEquals(10, sr.getBatchSize());
@@ -129,9 +133,10 @@ public class PropertiesTest
     AssertJUnit.assertEquals(
       ResultCode.PARTIAL_RESULTS, sr.getSearchIgnoreResultCodes()[1]);
 
-    final AuthenticatorConfigProperties acReader = new AuthenticatorConfigProperties(
+    final AuthenticatorConfigPropertySource acSource =
+      new AuthenticatorConfigPropertySource(
         PropertiesTest.class.getResourceAsStream("/ldap.parser.properties"));
-    final AuthenticatorConfig ac = acReader.get();
+    final AuthenticatorConfig ac = acSource.get();
 
     AssertJUnit.assertEquals(
       "ldap://ed-auth.middleware.vt.edu:14389", ac.getLdapUrl());
@@ -150,7 +155,7 @@ public class PropertiesTest
   public void jaasProperties()
     throws Exception
   {
-    LoginContext lc = new LoginContext(
+    final LoginContext lc = new LoginContext(
       "vt-ldap-props", new TestCallbackHandler());
     lc.login();
 

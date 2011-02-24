@@ -24,8 +24,8 @@ import edu.vt.middleware.ldap.LdapConnectionConfig;
  * @author  Middleware Services
  * @version  $Revision$ $Date$
  */
-public final class LdapConnectionConfigProperties
-  extends AbstractObjectProperties<LdapConnectionConfig>
+public final class LdapConnectionConfigPropertySource
+  extends AbstractPropertySource<LdapConnectionConfig>
 {
 
   /** Domain to look for ldap properties in, value is {@value}. */
@@ -40,10 +40,10 @@ public final class LdapConnectionConfigProperties
    * Creates a new ldap connection config properties using the default
    * properties file.
    */
-  public LdapConnectionConfigProperties()
+  public LdapConnectionConfigPropertySource()
   {
     this(
-      LdapConnectionConfigProperties.class.getResourceAsStream(
+      LdapConnectionConfigPropertySource.class.getResourceAsStream(
         PROPERTIES_FILE));
   }
 
@@ -53,7 +53,7 @@ public final class LdapConnectionConfigProperties
    *
    * @param  is  to read properties from
    */
-  public LdapConnectionConfigProperties(final InputStream is)
+  public LdapConnectionConfigPropertySource(final InputStream is)
   {
     this(loadProperties(is));
   }
@@ -64,7 +64,7 @@ public final class LdapConnectionConfigProperties
    *
    * @param  props  to read properties from
    */
-  public LdapConnectionConfigProperties(final Properties props)
+  public LdapConnectionConfigPropertySource(final Properties props)
   {
     this.object = new LdapConnectionConfig();
     this.initializeObject(

@@ -18,8 +18,8 @@ import java.io.OutputStreamWriter;
 import edu.vt.middleware.ldap.dsml.Dsmlv1;
 import edu.vt.middleware.ldap.dsml.Dsmlv2;
 import edu.vt.middleware.ldap.ldif.Ldif;
-import edu.vt.middleware.ldap.props.LdapConnectionConfigProperties;
-import edu.vt.middleware.ldap.props.SearchRequestProperties;
+import edu.vt.middleware.ldap.props.LdapConnectionConfigPropertySource;
+import edu.vt.middleware.ldap.props.SearchRequestPropertySource;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
 
@@ -79,9 +79,10 @@ public class LdapCli extends AbstractCli
     final CommandLine line)
     throws Exception
   {
-    final LdapConnectionConfigProperties reader =
-      new LdapConnectionConfigProperties(this.getPropertiesFromOptions(line));
-    final LdapConnectionConfig config = reader.get();
+    final LdapConnectionConfigPropertySource lccSource =
+      new LdapConnectionConfigPropertySource(
+        this.getPropertiesFromOptions(line));
+    final LdapConnectionConfig config = lccSource.get();
     if (config.getBindDn() != null && config.getBindCredential() == null) {
       // prompt the user to enter a password
       final char[] pass = System.console().readPassword(
@@ -104,7 +105,7 @@ public class LdapCli extends AbstractCli
   protected SearchRequest initSearchRequest(final CommandLine line)
     throws Exception
   {
-    final SearchRequestProperties reader = new SearchRequestProperties(
+    final SearchRequestPropertySource reader = new SearchRequestPropertySource(
       this.getPropertiesFromOptions(line));
     return reader.get();
   }

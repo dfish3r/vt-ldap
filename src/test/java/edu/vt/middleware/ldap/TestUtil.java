@@ -24,8 +24,8 @@ import edu.vt.middleware.ldap.auth.Authenticator;
 import edu.vt.middleware.ldap.auth.AuthenticatorConfig;
 import edu.vt.middleware.ldap.auth.NoopDnResolver;
 import edu.vt.middleware.ldap.ldif.Ldif;
-import edu.vt.middleware.ldap.props.AuthenticatorConfigProperties;
-import edu.vt.middleware.ldap.props.LdapConnectionConfigProperties;
+import edu.vt.middleware.ldap.props.AuthenticatorConfigPropertySource;
+import edu.vt.middleware.ldap.props.LdapConnectionConfigPropertySource;
 import org.testng.annotations.DataProvider;
 
 /**
@@ -41,32 +41,40 @@ public final class TestUtil
   public static final int NETSTAT_HOST_INDEX = 4;
 
 
+  /**
+   * @param  is  to read properties from, if null use default properties
+   * @return  authenticator config
+   */
   public static LdapConnectionConfig readLdapConnectionConfig(
     final InputStream is)
   {
     if (is != null) {
-      final LdapConnectionConfigProperties lccReader =
-        new LdapConnectionConfigProperties(is);
-      return lccReader.get();
+      final LdapConnectionConfigPropertySource lccSource =
+        new LdapConnectionConfigPropertySource(is);
+      return lccSource.get();
     } else {
-      final LdapConnectionConfigProperties lccReader = 
-        new LdapConnectionConfigProperties();
-      return lccReader.get();
+      final LdapConnectionConfigPropertySource lccSource =
+        new LdapConnectionConfigPropertySource();
+      return lccSource.get();
     }
   }
 
 
+  /**
+   * @param  is  to read properties from, if null use default properties
+   * @return  authenticator config
+   */
   public static AuthenticatorConfig readAuthenticatorConfig(
     final InputStream is)
   {
     if (is != null) {
-      final AuthenticatorConfigProperties acReader =
-        new AuthenticatorConfigProperties(is);
-      return acReader.get();
+      final AuthenticatorConfigPropertySource acSource =
+        new AuthenticatorConfigPropertySource(is);
+      return acSource.get();
     } else {
-      final AuthenticatorConfigProperties acReader = 
-        new AuthenticatorConfigProperties();
-      return acReader.get();
+      final AuthenticatorConfigPropertySource acSource =
+        new AuthenticatorConfigPropertySource();
+      return acSource.get();
     }
   }
 
