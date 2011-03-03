@@ -21,9 +21,8 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import edu.vt.middleware.ldap.LdapResult;
-import edu.vt.middleware.ldap.dsml.Dsmlv1;
-import edu.vt.middleware.ldap.dsml.Dsmlv2;
-import edu.vt.middleware.ldap.ldif.Ldif;
+import edu.vt.middleware.ldap.dsml.Dsmlv1Writer;
+import edu.vt.middleware.ldap.ldif.LdifWriter;
 
 /**
  * Queries an LDAP and returns the result as LDIF or DSML. The following init
@@ -46,10 +45,7 @@ import edu.vt.middleware.ldap.ldif.Ldif;
  * <h3>DSML</h3>
  * <p>The content returned by the servlet is of type text/xml, if you want to
  * receive the content as text/plain that can be specified as well. Example:
- * http://www.server.com/Search?query=uid=dfisher&content-type=text By default
- * DSML version 1 is returned, if you want to receive DSML version 2 then you
- * must pass in the dsml-version parameter. Example:
- * http://www.server.com/Search?query=uid=dfisher&dsml-version=2</p>
+ * http://www.server.com/Search?query=uid=dfisher&content-type=text</p>
  *
  * @author  Middleware Services
  * @version  $Revision$ $Date$
@@ -128,10 +124,10 @@ public final class SearchServlet extends AbstractServlet
         request.getParameterValues("attrs"));
       if (this.output == OutputType.LDIF) {
         response.setContentType("text/plain");
-        (new Ldif()).outputLdif(
-          result,
+        final LdifWriter writer = new LdifWriter(
           new BufferedWriter(
             new OutputStreamWriter(response.getOutputStream())));
+        writer.write(result);
       } else {
         final String content = request.getParameter("content-type");
         if (content != null && content.equalsIgnoreCase("text")) {
@@ -140,18 +136,10 @@ public final class SearchServlet extends AbstractServlet
           response.setContentType("text/xml");
         }
 
-        final String dsmlVersion = request.getParameter("dsml-version");
-        if ("2".equals(dsmlVersion)) {
-          (new Dsmlv2()).outputDsml(
-            result,
-            new BufferedWriter(
-              new OutputStreamWriter(response.getOutputStream())));
-        } else {
-          (new Dsmlv1()).outputDsml(
-            result,
-            new BufferedWriter(
-              new OutputStreamWriter(response.getOutputStream())));
-        }
+        final Dsmlv1Writer writer = new Dsmlv1Writer(
+          new BufferedWriter(
+            new OutputStreamWriter(response.getOutputStream())));
+        writer.write(result);
       }
     } catch (Exception e) {
       if (this.logger.isErrorEnabled()) {

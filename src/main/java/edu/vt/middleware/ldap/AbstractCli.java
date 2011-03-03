@@ -47,9 +47,6 @@ public abstract class AbstractCli
   /** Option for dsmlv1 output. */
   protected static final String OPT_DSMLV1 = "dsmlv1";
 
-  /** Option for dsmlv2 output. */
-  protected static final String OPT_DSMLV2 = "dsmlv2";
-
   /** List of command options. */
   protected List<String> opts = new ArrayList<String>();
 
@@ -62,16 +59,12 @@ public abstract class AbstractCli
   /** Whether to output dsml version 1, the default is ldif. */
   protected boolean outputDsmlv1;
 
-  /** Whether to output dsml version 2, the default is ldif. */
-  protected boolean outputDsmlv2;
-
 
   /** Default constructor. */
   public AbstractCli()
   {
     this.opts.add(OPT_HELP);
     this.opts.add(OPT_DSMLV1);
-    this.opts.add(OPT_DSMLV2);
   }
 
 
@@ -118,8 +111,6 @@ public abstract class AbstractCli
     options.addOption(new Option(OPT_HELP, false, "display all options"));
     options.addOption(
       new Option(OPT_DSMLV1, false, "output results in DSML v1"));
-    options.addOption(
-      new Option(OPT_DSMLV2, false, "output results in DSML v2"));
   }
 
 

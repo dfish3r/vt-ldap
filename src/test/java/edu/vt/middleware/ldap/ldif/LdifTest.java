@@ -31,7 +31,7 @@ import org.testng.annotations.Parameters;
 import org.testng.annotations.Test;
 
 /**
- * Unit test for {@link Ldif}.
+ * Unit test for {@link LdifReader} and {@link LdifWriter}.
  *
  * @author  Middleware Services
  * @version  $Revision$
@@ -85,16 +85,17 @@ public class LdifTest extends AbstractTest
     final LdapConnection conn = TestUtil.createLdapConnection();
     conn.open();
     final SearchOperation search = new SearchOperation(conn);
-    final Ldif ldif = new Ldif();
 
     final LdapResult result1 = search.execute(
       new SearchRequest(dn, new SearchFilter(filter))).getResult();
 
     final StringWriter writer = new StringWriter();
-    ldif.outputLdif(result1, writer);
+    final LdifWriter ldifWriter = new LdifWriter(writer);
+    ldifWriter.write(result1);
 
     final StringReader reader = new StringReader(writer.toString());
-    final LdapResult result2 = ldif.importLdif(reader);
+    final LdifReader ldifReader = new LdifReader(reader);
+    final LdapResult result2 = ldifReader.read();
 
     AssertJUnit.assertEquals(result1, result2);
     conn.close();
@@ -117,14 +118,15 @@ public class LdifTest extends AbstractTest
     final String ldifSortedFile)
     throws Exception
   {
-    final Ldif ldif = new Ldif();
-    ldif.setSortBehavior(SortBehavior.SORTED);
-
     final String ldifStringSorted = TestUtil.readFileIntoString(ldifSortedFile);
-    final LdapResult result = ldif.importLdif(
-      new StringReader(TestUtil.readFileIntoString(ldifFile)));
+    final LdifReader ldifReader = new LdifReader(
+      new StringReader(TestUtil.readFileIntoString(ldifFile)),
+      SortBehavior.SORTED);
+    final LdapResult result = ldifReader.read();
+
     final StringWriter writer = new StringWriter();
-    ldif.outputLdif(result, writer);
+    final LdifWriter ldifWriter = new LdifWriter(writer);
+    ldifWriter.write(result);
 
     AssertJUnit.assertEquals(ldifStringSorted, writer.toString());
   }
@@ -146,12 +148,13 @@ public class LdifTest extends AbstractTest
     final String ldifFileOut)
     throws Exception
   {
-    final Ldif ldif = new Ldif();
     final String ldifStringIn = TestUtil.readFileIntoString(ldifFileIn);
-    final LdapResult result1 = ldif.importLdif(new StringReader(ldifStringIn));
+    LdifReader ldifReader = new LdifReader(new StringReader(ldifStringIn));
+    final LdapResult result1 = ldifReader.read();
 
     final String ldifStringOut = TestUtil.readFileIntoString(ldifFileOut);
-    final LdapResult result2 = ldif.importLdif(new StringReader(ldifStringOut));
+    ldifReader = new LdifReader(new StringReader(ldifStringOut));
+    final LdapResult result2 = ldifReader.read();
 
     AssertJUnit.assertEquals(result1, result2);
   }

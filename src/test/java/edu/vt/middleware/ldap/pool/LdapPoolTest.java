@@ -13,6 +13,7 @@
 */
 package edu.vt.middleware.ldap.pool;
 
+import java.io.StringWriter;
 import java.util.HashMap;
 import java.util.Map;
 import edu.vt.middleware.ldap.AbstractTest;
@@ -24,7 +25,7 @@ import edu.vt.middleware.ldap.SearchFilter;
 import edu.vt.middleware.ldap.SearchOperation;
 import edu.vt.middleware.ldap.SearchRequest;
 import edu.vt.middleware.ldap.TestUtil;
-import edu.vt.middleware.ldap.ldif.Ldif;
+import edu.vt.middleware.ldap.ldif.LdifWriter;
 import edu.vt.middleware.ldap.pool.commons.CommonsLdapPool;
 import edu.vt.middleware.ldap.pool.commons.DefaultLdapPoolableObjectFactory;
 import edu.vt.middleware.ldap.provider.ConnectionStrategy;
@@ -981,9 +982,12 @@ public class LdapPoolTest extends AbstractTest
       }
       pool.checkIn(conn);
     }
+    final StringWriter sw = new StringWriter();
+    final LdifWriter lw = new LdifWriter(sw);
+    lw.write(result);
     AssertJUnit.assertEquals(
       results,
-      TestUtil.convertLdifToResult((new Ldif()).createLdif(result)));
+      TestUtil.convertLdifToResult(sw.toString()));
     return System.currentTimeMillis() - startTime;
   }
 

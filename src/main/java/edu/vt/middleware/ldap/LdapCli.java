@@ -15,9 +15,8 @@ package edu.vt.middleware.ldap;
 
 import java.io.BufferedWriter;
 import java.io.OutputStreamWriter;
-import edu.vt.middleware.ldap.dsml.Dsmlv1;
-import edu.vt.middleware.ldap.dsml.Dsmlv2;
-import edu.vt.middleware.ldap.ldif.Ldif;
+import edu.vt.middleware.ldap.dsml.Dsmlv1Writer;
+import edu.vt.middleware.ldap.ldif.LdifWriter;
 import edu.vt.middleware.ldap.props.LdapConnectionConfigPropertySource;
 import edu.vt.middleware.ldap.props.SearchRequestPropertySource;
 import org.apache.commons.cli.CommandLine;
@@ -117,8 +116,6 @@ public class LdapCli extends AbstractCli
   {
     if (line.hasOption(OPT_DSMLV1)) {
       this.outputDsmlv1 = true;
-    } else if (line.hasOption(OPT_DSMLV2)) {
-      this.outputDsmlv2 = true;
     }
     if (line.hasOption(OPT_HELP)) {
       printHelp();
@@ -161,17 +158,13 @@ public class LdapCli extends AbstractCli
     try {
       final LdapResult result = search.execute(sr).getResult();
       if (this.outputDsmlv1) {
-        (new Dsmlv1()).outputDsml(
-          result,
+        final Dsmlv1Writer writer = new Dsmlv1Writer(
           new BufferedWriter(new OutputStreamWriter(System.out)));
-      } else if (this.outputDsmlv2) {
-        (new Dsmlv2()).outputDsml(
-          result,
-          new BufferedWriter(new OutputStreamWriter(System.out)));
+        writer.write(result);
       } else {
-        (new Ldif()).outputLdif(
-          result,
+        final LdifWriter writer = new LdifWriter(
           new BufferedWriter(new OutputStreamWriter(System.out)));
+        writer.write(result);
       }
     } finally {
       if (conn != null) {

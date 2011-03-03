@@ -14,6 +14,7 @@
 package edu.vt.middleware.ldap.servlets;
 
 import java.io.File;
+import java.io.StringWriter;
 import com.meterware.httpunit.PostMethodWebRequest;
 import com.meterware.httpunit.WebRequest;
 import com.meterware.httpunit.WebResponse;
@@ -23,7 +24,7 @@ import edu.vt.middleware.ldap.AbstractTest;
 import edu.vt.middleware.ldap.LdapEntry;
 import edu.vt.middleware.ldap.LdapResult;
 import edu.vt.middleware.ldap.TestUtil;
-import edu.vt.middleware.ldap.dsml.DsmlResultConverter;
+import edu.vt.middleware.ldap.dsml.Dsmlv1Writer;
 import org.testng.AssertJUnit;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
@@ -138,9 +139,13 @@ public class SearchServletTest extends AbstractTest
     final String ldifFile)
     throws Exception
   {
-    final DsmlResultConverter converter = new DsmlResultConverter();
     final String ldif = TestUtil.readFileIntoString(ldifFile);
     final LdapResult result = TestUtil.convertLdifToResult(ldif);
+    // convert ldif into dsmlv1
+    final StringWriter s1w = new StringWriter();
+    final Dsmlv1Writer d1w = new Dsmlv1Writer(s1w);
+    d1w.write(result);
+    final String dsmlv1 = s1w.toString();
 
     final ServletUnitClient sc = this.dsmlServletRunner.newClient();
     // test basic dsml query
@@ -153,7 +158,7 @@ public class SearchServletTest extends AbstractTest
 
     AssertJUnit.assertNotNull(response);
     AssertJUnit.assertEquals("text/xml", response.getContentType());
-    AssertJUnit.assertEquals(converter.toDsmlv1(result), response.getText());
+    AssertJUnit.assertEquals(dsmlv1, response.getText());
 
     // test plain text
     request = new PostMethodWebRequest(
@@ -165,19 +170,7 @@ public class SearchServletTest extends AbstractTest
 
     AssertJUnit.assertNotNull(response);
     AssertJUnit.assertEquals("text/plain", response.getContentType());
-    AssertJUnit.assertEquals(converter.toDsmlv1(result), response.getText());
-
-    // test dsmlv2
-    request = new PostMethodWebRequest(
-      "http://servlets.ldap.middleware.vt.edu/DsmlSearch");
-    request.setParameter("dsml-version", "2");
-    request.setParameter("query", query);
-    request.setParameter("attrs", attrs.split("\\|"));
-    response = sc.getResponse(request);
-
-    AssertJUnit.assertNotNull(response);
-    AssertJUnit.assertEquals("text/xml", response.getContentType());
-    AssertJUnit.assertEquals(converter.toDsmlv2(result), response.getText());
+    AssertJUnit.assertEquals(dsmlv1, response.getText());
   }
 
 

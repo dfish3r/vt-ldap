@@ -31,7 +31,8 @@ import org.testng.annotations.Parameters;
 import org.testng.annotations.Test;
 
 /**
- * Unit test for {@link Dsmlv1} and {@link Dsmlv2}.
+ * Unit test for {@link Dsmlv1Reader}, {@link Dsmlv1Writer},
+ * {@link Dsmlv2Reader}, and {@link Dsmlv2Writer}.
  *
  * @author  Middleware Services
  * @version  $Revision$
@@ -85,16 +86,17 @@ public class DsmlTest extends AbstractTest
     final LdapConnection conn = TestUtil.createLdapConnection();
     conn.open();
     final SearchOperation search = new SearchOperation(conn);
-    final Dsmlv1 dsml = new Dsmlv1();
 
     final LdapResult result1 = search.execute(
       new SearchRequest(dn, new SearchFilter(filter))).getResult();
 
     final StringWriter writer = new StringWriter();
-    dsml.outputDsml(result1, writer);
+    final Dsmlv1Writer dsmlWriter = new Dsmlv1Writer(writer);
+    dsmlWriter.write(result1);
 
     final StringReader reader = new StringReader(writer.toString());
-    final LdapResult result2 = dsml.importDsml(reader);
+    final Dsmlv1Reader dsmlReader = new Dsmlv1Reader(reader);
+    final LdapResult result2 = dsmlReader.read();
 
     AssertJUnit.assertEquals(result1, result2);
     conn.close();
@@ -117,76 +119,15 @@ public class DsmlTest extends AbstractTest
     final String dsmlSortedFile)
     throws Exception
   {
-    final Dsmlv1 dsml = new Dsmlv1();
-    dsml.setSortBehavior(SortBehavior.SORTED);
-
     final String dsmlStringSorted = TestUtil.readFileIntoString(dsmlSortedFile);
-    final LdapResult result = dsml.importDsml(
-      new StringReader(TestUtil.readFileIntoString(dsmlFile)));
-    final StringWriter writer = new StringWriter();
-    dsml.outputDsml(result, writer);
-
-    AssertJUnit.assertEquals(dsmlStringSorted, writer.toString());
-  }
-
-
-  /**
-   * @param  dn  to search on.
-   * @param  filter  to search with.
-   *
-   * @throws  Exception  On test failure.
-   */
-  @Parameters({
-      "dsmlSearchDn",
-      "dsmlSearchFilter"
-    })
-  @Test(groups = {"dsmltest"})
-  public void searchAndCompareDsmlv2(final String dn, final String filter)
-    throws Exception
-  {
-    final LdapConnection conn = TestUtil.createLdapConnection();
-    conn.open();
-    final SearchOperation search = new SearchOperation(conn);
-    final Dsmlv2 dsml = new Dsmlv2();
-
-    final LdapResult result1 = search.execute(
-      new SearchRequest(dn, new SearchFilter(filter))).getResult();
+    final Dsmlv1Reader dsmlReader = new Dsmlv1Reader(
+      new StringReader(TestUtil.readFileIntoString(dsmlFile)),
+      SortBehavior.SORTED);
+    final LdapResult result = dsmlReader.read();
 
     final StringWriter writer = new StringWriter();
-    dsml.outputDsml(result1, writer);
-
-    final StringReader reader = new StringReader(writer.toString());
-    final LdapResult result2 = dsml.importDsml(reader);
-
-    AssertJUnit.assertEquals(result1, result2);
-    conn.close();
-  }
-
-
-  /**
-   * @param  dsmlFile  to test with.
-   * @param  dsmlSortedFile  to test with.
-   *
-   * @throws  Exception  On test failure.
-   */
-  @Parameters({
-      "dsmlv2Entry",
-      "dsmlv2SortedEntry"
-    })
-  @Test(groups = {"dsmltest"})
-  public void readAndCompareDsmlv2(
-    final String dsmlFile,
-    final String dsmlSortedFile)
-    throws Exception
-  {
-    final Dsmlv2 dsml = new Dsmlv2();
-    dsml.setSortBehavior(SortBehavior.SORTED);
-
-    final String dsmlStringSorted = TestUtil.readFileIntoString(dsmlSortedFile);
-    final LdapResult result = dsml.importDsml(
-      new StringReader(TestUtil.readFileIntoString(dsmlFile)));
-    final StringWriter writer = new StringWriter();
-    dsml.outputDsml(result, writer);
+    final Dsmlv1Writer dsmlWriter = new Dsmlv1Writer(writer);
+    dsmlWriter.write(result);
 
     AssertJUnit.assertEquals(dsmlStringSorted, writer.toString());
   }

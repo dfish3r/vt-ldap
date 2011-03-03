@@ -23,7 +23,7 @@ import java.util.List;
 import edu.vt.middleware.ldap.auth.Authenticator;
 import edu.vt.middleware.ldap.auth.AuthenticatorConfig;
 import edu.vt.middleware.ldap.auth.NoopDnResolver;
-import edu.vt.middleware.ldap.ldif.Ldif;
+import edu.vt.middleware.ldap.ldif.LdifReader;
 import edu.vt.middleware.ldap.props.AuthenticatorConfigPropertySource;
 import edu.vt.middleware.ldap.props.LdapConnectionConfigPropertySource;
 import org.testng.annotations.DataProvider;
@@ -291,7 +291,8 @@ public final class TestUtil
   public static LdapResult convertLdifToResult(final String ldif)
     throws Exception
   {
-    return (new Ldif()).importLdif(new StringReader(ldif));
+    final LdifReader reader = new LdifReader(new StringReader(ldif));
+    return reader.read();
   }
 
 
