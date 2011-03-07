@@ -389,7 +389,7 @@ public class SearchRequest implements LdapRequest
    *
    * @param  b  whether to return only attribute types
    */
-  public void setTypeOnly(final boolean b)
+  public void setTypesOnly(final boolean b)
   {
     this.typesOnly = b;
   }
@@ -501,7 +501,7 @@ public class SearchRequest implements LdapRequest
     request.setBatchSize(sr.getBatchSize());
     request.setDerefAliases(sr.getDerefAliases());
     request.setReferralBehavior(sr.getReferralBehavior());
-    request.setTypeOnly(sr.getTypesOnly());
+    request.setTypesOnly(sr.getTypesOnly());
     request.setBinaryAttributes(sr.getBinaryAttributes());
     request.setSortBehavior(sr.getSortBehavior());
     request.setLdapResultHandlers(sr.getLdapResultHandlers());
