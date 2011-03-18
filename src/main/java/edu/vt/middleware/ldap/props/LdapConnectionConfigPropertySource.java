@@ -38,7 +38,7 @@ public final class LdapConnectionConfigPropertySource
 
 
   /**
-   * Creates a new ldap connection config properties using the default
+   * Creates a new ldap connection config property source using the default
    * properties file.
    */
   public LdapConnectionConfigPropertySource()
@@ -50,7 +50,7 @@ public final class LdapConnectionConfigPropertySource
 
 
   /**
-   * Creates a new ldap connection config properties.
+   * Creates a new ldap connection config property source.
    *
    * @param  is  to read properties from
    */
@@ -61,7 +61,7 @@ public final class LdapConnectionConfigPropertySource
 
 
   /**
-   * Creates a new ldap connection config properties.
+   * Creates a new ldap connection config property source.
    *
    * @param  props  to read properties from
    */

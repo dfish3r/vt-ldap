@@ -39,7 +39,7 @@ public final class LdapPoolConfigPropertySource
 
 
   /**
-   * Creates a new ldap pool config properties using the default properties
+   * Creates a new ldap pool config property source using the default properties
    * file.
    */
   public LdapPoolConfigPropertySource()
@@ -50,7 +50,7 @@ public final class LdapPoolConfigPropertySource
 
 
   /**
-   * Creates a new ldap pool config properties.
+   * Creates a new ldap pool config property source.
    *
    * @param  is  to read properties from
    */
@@ -61,7 +61,7 @@ public final class LdapPoolConfigPropertySource
 
 
   /**
-   * Creates a new ldap pool config properties.
+   * Creates a new ldap pool config property source.
    *
    * @param  props  to read properties from
    */

@@ -38,7 +38,8 @@ public final class SearchRequestPropertySource
 
 
   /**
-   * Creates a new search request properties using the default properties file.
+   * Creates a new search request property source using the default properties
+   * file.
    */
   public SearchRequestPropertySource()
   {
@@ -48,7 +49,7 @@ public final class SearchRequestPropertySource
 
 
   /**
-   * Creates a new search request properties.
+   * Creates a new search request property source.
    *
    * @param  is  to read properties from
    */
@@ -59,7 +60,7 @@ public final class SearchRequestPropertySource
 
 
   /**
-   * Creates a new search request properties.
+   * Creates a new search request property source.
    *
    * @param  props  to read properties from
    */

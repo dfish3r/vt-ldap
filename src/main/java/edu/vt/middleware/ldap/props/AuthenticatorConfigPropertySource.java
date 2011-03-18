@@ -40,8 +40,8 @@ public final class AuthenticatorConfigPropertySource
 
 
   /**
-   * Creates a new authenticator config properties using the default properties
-   * file.
+   * Creates a new authenticator config property source using the default
+   * properties file.
    */
   public AuthenticatorConfigPropertySource()
   {
@@ -52,7 +52,7 @@ public final class AuthenticatorConfigPropertySource
 
 
   /**
-   * Creates a new authenticator config properties.
+   * Creates a new authenticator config property source.
    *
    * @param  is  to read properties from
    */
@@ -63,7 +63,7 @@ public final class AuthenticatorConfigPropertySource
 
 
   /**
-   * Creates a new authenticator config properties.
+   * Creates a new authenticator config property source.
    *
    * @param  props  to read properties from
    */

@@ -38,7 +38,7 @@ public final class AuthenticationRequestPropertySource
 
 
   /**
-   * Creates a new authentication request properties using the default
+   * Creates a new authentication request property source using the default
    * properties file.
    */
   public AuthenticationRequestPropertySource()
@@ -50,7 +50,7 @@ public final class AuthenticationRequestPropertySource
 
 
   /**
-   * Creates a new authentication request properties.
+   * Creates a new authentication request property source.
    *
    * @param  is  to read properties from
    */
@@ -61,7 +61,7 @@ public final class AuthenticationRequestPropertySource
 
 
   /**
-   * Creates a new authentication request properties.
+   * Creates a new authentication request property source.
    *
    * @param  props  to read properties from
    */
