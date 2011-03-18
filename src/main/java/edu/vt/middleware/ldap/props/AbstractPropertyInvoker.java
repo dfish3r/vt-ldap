@@ -18,6 +18,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 import org.apache.commons.logging.Log;
@@ -98,6 +99,14 @@ public abstract class AbstractPropertyInvoker implements PropertyInvoker
           final String pName = new StringBuilder(domain).append(
             method.getName()).toString();
           this.properties.put(pName, new Method[] {method, method});
+        }
+      }
+      // remove any properties that don't have both getters and setters
+      final Iterator<Method[]> i = this.properties.values().iterator();
+      while (i.hasNext()) {
+        final Method[] m = i.next();
+        if (m[0] == null || m[1] == null) {
+          i.remove();
         }
       }
     }
