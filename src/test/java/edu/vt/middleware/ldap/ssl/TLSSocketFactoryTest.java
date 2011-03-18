@@ -145,7 +145,6 @@ public class TLSSocketFactoryTest
       AssertJUnit.fail(
         "Should have thrown IllegalArgumentException, threw " + e);
     }
-    conn.close();
 
     sf.setEnabledCipherSuites(CIPHERS);
     conn.open();
@@ -191,7 +190,6 @@ public class TLSSocketFactoryTest
       AssertJUnit.fail(
         "Should have thrown IllegalArgumentException, threw " + e);
     }
-    conn.close();
 
     sf.setEnabledProtocols(UNKNOWN_PROTOCOLS);
     try {
@@ -204,7 +202,6 @@ public class TLSSocketFactoryTest
       AssertJUnit.fail(
         "Should have thrown IllegalArgumentException, threw " + e);
     }
-    conn.close();
 
     sf.setEnabledProtocols(PROTOCOLS);
     conn.open();

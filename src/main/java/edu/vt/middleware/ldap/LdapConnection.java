@@ -111,6 +111,9 @@ public class LdapConnection
   /** This will close the connection to the LDAP. */
   public synchronized void close()
   {
+    if (this.providerConnection == null) {
+      throw new IllegalStateException("Connection not open");
+    }
     try {
       this.connectionFactory.destroy(this.providerConnection);
     } catch (LdapException e) {
