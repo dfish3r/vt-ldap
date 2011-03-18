@@ -454,49 +454,51 @@ public class AuthenticatorTest extends AbstractTest
     auth.getAuthenticatorConfig().setAuthenticationResultHandlers(
       new AuthenticationResultHandler[] {authHandler});
 
-    final TestAuthorizationHandler authzHandler =
+    final TestAuthorizationHandler testAuthzHandler =
       new TestAuthorizationHandler();
-    auth.getAuthenticatorConfig().setAuthorizationHandlers(
-      new AuthorizationHandler[] {authzHandler});
+    final AuthorizationHandler[] authzHandlers =
+      new AuthorizationHandler[] {testAuthzHandler};
 
     try {
       auth.authenticate(
-        new AuthenticationRequest(dn, new Credential(INVALID_PASSWD)));
+        new AuthenticationRequest(
+          dn, new Credential(INVALID_PASSWD), authzHandlers));
       AssertJUnit.fail("Should have thrown AuthenticationException");
     } catch (LdapException e) {
       AssertJUnit.assertEquals(AuthenticationException.class, e.getClass());
     }
     AssertJUnit.assertTrue(!authHandler.getResults().isEmpty());
     AssertJUnit.assertFalse(authHandler.getResults().get(dn).booleanValue());
-    AssertJUnit.assertTrue(authzHandler.getResults().isEmpty());
+    AssertJUnit.assertTrue(testAuthzHandler.getResults().isEmpty());
 
     try {
       auth.authenticate(
-        new AuthenticationRequest(dn, new Credential(credential)));
+        new AuthenticationRequest(
+          dn, new Credential(credential), authzHandlers));
       AssertJUnit.fail("Should have thrown AuthorizationException");
     } catch (LdapException e) {
       AssertJUnit.assertEquals(AuthorizationException.class, e.getClass());
     }
     AssertJUnit.assertFalse(authHandler.getResults().get(dn).booleanValue());
-    AssertJUnit.assertFalse(!authzHandler.getResults().isEmpty());
+    AssertJUnit.assertFalse(!testAuthzHandler.getResults().isEmpty());
 
-    authzHandler.setSucceed(true);
+    testAuthzHandler.setSucceed(true);
 
     auth.authenticate(
-      new AuthenticationRequest(dn, new Credential(credential)));
+      new AuthenticationRequest(dn, new Credential(credential), authzHandlers));
     AssertJUnit.assertTrue(authHandler.getResults().get(dn).booleanValue());
-    AssertJUnit.assertTrue(authzHandler.getResults().get(0).equals(dn));
+    AssertJUnit.assertTrue(testAuthzHandler.getResults().get(0).equals(dn));
 
     authHandler.getResults().clear();
-    authzHandler.getResults().clear();
+    testAuthzHandler.getResults().clear();
 
-    auth.getAuthenticatorConfig().setAuthorizationFilter(filter);
-    auth.getAuthenticatorConfig().setAuthorizationFilterArgs(
-      filterArgs.split("\\|"));
-    auth.authenticate(
-      new AuthenticationRequest(dn, new Credential(credential)));
+    final AuthenticationRequest authRequest = new AuthenticationRequest(
+      dn, new Credential(credential), authzHandlers);
+    authRequest.setAuthorizationFilter(filter);
+    authRequest.setAuthorizationFilterArgs(filterArgs.split("\\|"));
+    auth.authenticate(authRequest);
     AssertJUnit.assertTrue(authHandler.getResults().get(dn).booleanValue());
-    AssertJUnit.assertTrue(authzHandler.getResults().get(0).equals(dn));
+    AssertJUnit.assertTrue(testAuthzHandler.getResults().get(0).equals(dn));
   }
 
 
@@ -870,11 +872,11 @@ public class AuthenticatorTest extends AbstractTest
       AssertJUnit.assertEquals(AuthenticationException.class, e.getClass());
     }
 
-    auth.getAuthenticatorConfig().setAuthorizationFilter(INVALID_FILTER);
+    final AuthenticationRequest authRequest = new AuthenticationRequest(
+      user, new Credential(credential), returnAttrs.split("\\|"));
+    authRequest.setAuthorizationFilter(INVALID_FILTER);
     try {
-      auth.authenticate(
-        new AuthenticationRequest(
-          user, new Credential(credential), returnAttrs.split("\\|")));
+      auth.authenticate(authRequest);
       AssertJUnit.fail("Should have thrown AuthorizationException");
     } catch (LdapException e) {
       AssertJUnit.assertEquals(AuthorizationException.class, e.getClass());

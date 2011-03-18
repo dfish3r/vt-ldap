@@ -17,7 +17,6 @@ import java.util.Arrays;
 import edu.vt.middleware.ldap.LdapConnectionConfig;
 import edu.vt.middleware.ldap.auth.handler.AuthenticationHandler;
 import edu.vt.middleware.ldap.auth.handler.AuthenticationResultHandler;
-import edu.vt.middleware.ldap.auth.handler.AuthorizationHandler;
 import edu.vt.middleware.ldap.auth.handler.BindAuthenticationHandler;
 
 /**
@@ -37,12 +36,6 @@ public class AuthenticatorConfig extends LdapConnectionConfig
   /** Filter arguments for searching for the user. */
   private Object[] userFilterArgs;
 
-  /** Filter for authorizing user. */
-  private String authorizationFilter;
-
-  /** Filter arguments for authorizing user. */
-  private Object[] authorizationFilterArgs;
-
   /** Whether to throw an exception if multiple DNs are found. */
   private boolean allowMultipleDns;
 
@@ -57,9 +50,6 @@ public class AuthenticatorConfig extends LdapConnectionConfig
 
   /** Handlers to process authentication results. */
   private AuthenticationResultHandler[] authenticationResultHandlers;
-
-  /** Handlers to authorize the user. */
-  private AuthorizationHandler[] authorizationHandlers;
 
 
   /** Default constructor. */
@@ -150,60 +140,6 @@ public class AuthenticatorConfig extends LdapConnectionConfig
         "setting userFilterArgs: " + Arrays.toString(filterArgs));
     }
     this.userFilterArgs = filterArgs;
-  }
-
-
-  /**
-   * Returns the filter used to authorize the user.
-   *
-   * @return  filter
-   */
-  public String getAuthorizationFilter()
-  {
-    return this.authorizationFilter;
-  }
-
-
-  /**
-   * Sets the filter used to authorize the user. If not set, no authorization
-   * is performed.
-   *
-   * @param  filter  for authorization
-   */
-  public void setAuthorizationFilter(final String filter)
-  {
-    checkImmutable();
-    if (this.logger.isTraceEnabled()) {
-      this.logger.trace("setting authorizationFilter: " + filter);
-    }
-    this.authorizationFilter = filter;
-  }
-
-
-  /**
-   * Returns the filter arguments used to authorize the user.
-   *
-   * @return  filter arguments
-   */
-  public Object[] getAuthorizationFilterArgs()
-  {
-    return this.authorizationFilterArgs;
-  }
-
-
-  /**
-   * Sets the filter arguments used to authorize the user.
-   *
-   * @param  filterArgs  filter arguments
-   */
-  public void setAuthorizationFilterArgs(final Object[] filterArgs)
-  {
-    checkImmutable();
-    if (this.logger.isTraceEnabled()) {
-      this.logger.trace(
-        "setting authorizationFilterArgs: " + Arrays.toString(filterArgs));
-    }
-    this.authorizationFilterArgs = filterArgs;
   }
 
 
@@ -390,33 +326,6 @@ public class AuthenticatorConfig extends LdapConnectionConfig
 
 
   /**
-   * Returns the authorization handlers.
-   *
-   * @return  authorization handlers
-   */
-  public AuthorizationHandler[] getAuthorizationHandlers()
-  {
-    return this.authorizationHandlers;
-  }
-
-
-  /**
-   * Sets the authorization handlers.
-   *
-   * @param  ah  authorization handlers
-   */
-  public void setAuthorizationHandlers(final AuthorizationHandler[] ah)
-  {
-    checkImmutable();
-    if (this.logger.isTraceEnabled()) {
-      this.logger.trace(
-        "setting authorizationHandlers: " + Arrays.toString(ah));
-    }
-    this.authorizationHandlers = ah;
-  }
-
-
-  /**
    * Provides a descriptive string representation of this instance.
    *
    * @return  string representation
@@ -434,16 +343,11 @@ public class AuthenticatorConfig extends LdapConnectionConfig
         this.hashCode(),
         this.userFilter,
         this.userFilterArgs != null ? Arrays.asList(this.userFilterArgs) : null,
-        this.authorizationFilter,
-        this.authorizationFilterArgs != null ?
-          Arrays.asList(this.authorizationFilterArgs) : null,
         this.allowMultipleDns,
         this.subtreeSearch,
         this.dnResolver,
         this.authenticationHandler,
         this.authenticationResultHandlers != null ?
-          Arrays.asList(this.authenticationResultHandlers) : null,
-        this.authorizationHandlers != null ?
-          Arrays.asList(this.authorizationHandlers) : null);
+          Arrays.asList(this.authenticationResultHandlers) : null);
   }
 }

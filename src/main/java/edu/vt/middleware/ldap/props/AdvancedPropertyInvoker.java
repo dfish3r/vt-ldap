@@ -17,6 +17,7 @@ import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLSocketFactory;
 import edu.vt.middleware.ldap.Credential;
 import edu.vt.middleware.ldap.ResultCode;
+import edu.vt.middleware.ldap.SearchFilter;
 import edu.vt.middleware.ldap.auth.DnResolver;
 import edu.vt.middleware.ldap.auth.handler.AuthenticationHandler;
 import edu.vt.middleware.ldap.auth.handler.AuthenticationResultHandler;
@@ -148,6 +149,8 @@ public class AdvancedPropertyInvoker extends AbstractPropertyInvoker
         newValue = this.createArrayTypeFromPropertyValue(Class.class, value);
       } else if (type.isEnum()) {
         newValue = getEnum(type, value);
+      } else if (SearchFilter.class.isAssignableFrom(type)) {
+        newValue = new SearchFilter(value);
       } else if (Credential.class.isAssignableFrom(type)) {
         newValue = new Credential(value);
       } else if (String[].class == type) {

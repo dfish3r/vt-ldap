@@ -216,16 +216,14 @@ public abstract class AbstractAuthenticator<T extends AuthenticatorConfig>
     final AuthenticationRequest request, final AuthenticatorConfig ac)
   {
     SearchFilter filter = null;
-    if (ac.getAuthorizationFilter() != null) {
+    if (request.getAuthorizationFilter() != null) {
       filter = new SearchFilter(
-        ac.getAuthorizationFilter(), ac.getAuthorizationFilterArgs());
+        request.getAuthorizationFilter(), request.getAuthorizationFilterArgs());
     }
 
     AuthorizationHandler[] ah = null;
-    if (request.getAuthorizationHandler() != null) {
-      ah = request.getAuthorizationHandler();
-    } else if (ac.getAuthorizationHandlers() != null) {
-      ah = ac.getAuthorizationHandlers();
+    if (request.getAuthorizationHandlers() != null) {
+      ah = request.getAuthorizationHandlers();
     }
 
     int size = 0;

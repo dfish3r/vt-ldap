@@ -48,6 +48,9 @@ public class LdapLoginModule extends AbstractLoginModule implements LoginModule
   /** Authenticator to use against the LDAP. */
   private Authenticator auth;
 
+  /** Authentication request to use for authentication. */
+  private AuthenticationRequest authRequest;
+
 
   /** {@inheritDoc} */
   public void initialize(
@@ -84,6 +87,12 @@ public class LdapLoginModule extends AbstractLoginModule implements LoginModule
       this.logger.debug(
         "Created authenticator: " + this.auth.getAuthenticatorConfig());
     }
+
+    this.authRequest = createAuthenticationRequest(options);
+    this.authRequest.setReturnAttributes(this.userRoleAttribute);
+    if (this.logger.isDebugEnabled()) {
+      this.logger.debug("Created authentication request: " + this.authRequest);
+    }
   }
 
 
@@ -97,14 +106,13 @@ public class LdapLoginModule extends AbstractLoginModule implements LoginModule
         "Enter user password: ",
         false);
       this.getCredentials(nameCb, passCb, false);
+      this.authRequest.setUser(nameCb.getName());
+      this.authRequest.setCredential(new Credential(passCb.getPassword()));
 
       LdapException authEx = null;
       LdapEntry entry = null;
       try {
-        entry = this.auth.authenticate(new AuthenticationRequest(
-          nameCb.getName(),
-          new Credential(passCb.getPassword()),
-          this.userRoleAttribute)).getResult();
+        entry = this.auth.authenticate(this.authRequest).getResult();
         if (entry != null) {
           this.roles.addAll(
             this.attributesToRoles(entry.getLdapAttributes()));
@@ -117,10 +125,7 @@ public class LdapLoginModule extends AbstractLoginModule implements LoginModule
         if (this.tryFirstPass) {
           this.getCredentials(nameCb, passCb, true);
           try {
-            entry = this.auth.authenticate(new AuthenticationRequest(
-              nameCb.getName(),
-              new Credential(passCb.getPassword()),
-              this.userRoleAttribute)).getResult();
+            entry = this.auth.authenticate(this.authRequest).getResult();
             if (entry != null) {
               this.roles.addAll(
                 this.attributesToRoles(entry.getLdapAttributes()));

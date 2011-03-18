@@ -35,6 +35,12 @@ public class AuthenticationRequest implements LdapRequest
   /** User attributes to return. */
   protected String[] retAttrs = new String[0];
 
+  /** Filter for authorizing user. */
+  protected String authzFilter;
+
+  /** Filter arguments for authorizing user. */
+  protected Object[] authzFilterArgs;
+
   /** Handlers to authorize the user. */
   protected AuthorizationHandler[] authzHandlers;
 
@@ -86,7 +92,7 @@ public class AuthenticationRequest implements LdapRequest
   {
     this.setUser(id);
     this.setCredential(c);
-    this.setAuthorizationHandler(ah);
+    this.setAuthorizationHandlers(ah);
   }
 
 
@@ -107,7 +113,7 @@ public class AuthenticationRequest implements LdapRequest
     this.setUser(id);
     this.setCredential(c);
     this.setReturnAttributes(attrs);
-    this.setAuthorizationHandler(ah);
+    this.setAuthorizationHandlers(ah);
   }
 
 
@@ -177,11 +183,56 @@ public class AuthenticationRequest implements LdapRequest
 
 
   /**
+   * Returns the filter used to authorize the user.
+   *
+   * @return  filter
+   */
+  public String getAuthorizationFilter()
+  {
+    return this.authzFilter;
+  }
+
+
+  /**
+   * Sets the filter used to authorize the user. If not set, no authorization
+   * is performed.
+   *
+   * @param  filter  for authorization
+   */
+  public void setAuthorizationFilter(final String filter)
+  {
+    this.authzFilter = filter;
+  }
+
+
+  /**
+   * Returns the filter arguments used to authorize the user.
+   *
+   * @return  filter arguments
+   */
+  public Object[] getAuthorizationFilterArgs()
+  {
+    return this.authzFilterArgs;
+  }
+
+
+  /**
+   * Sets the filter arguments used to authorize the user.
+   *
+   * @param  filterArgs  filter arguments
+   */
+  public void setAuthorizationFilterArgs(final Object[] filterArgs)
+  {
+    this.authzFilterArgs = filterArgs;
+  }
+
+
+  /**
    * Returns the authorization handlers.
    *
    * @return  authorization handlers
    */
-  public AuthorizationHandler[] getAuthorizationHandler()
+  public AuthorizationHandler[] getAuthorizationHandlers()
   {
     return this.authzHandlers;
   }
@@ -192,7 +243,7 @@ public class AuthenticationRequest implements LdapRequest
    *
    * @param  ah  authorization handlers
    */
-  public void setAuthorizationHandler(final AuthorizationHandler[] ah)
+  public void setAuthorizationHandlers(final AuthorizationHandler[] ah)
   {
     this.authzHandlers = ah;
   }
@@ -208,12 +259,16 @@ public class AuthenticationRequest implements LdapRequest
   {
     return
       String.format(
-        "%s@%d: user=%s, credential=%s, retAttrs=%s, authzHandler=%s",
+        "%s@%d: user=%s, credential=%s, retAttrs=%s, authzFilter=%s, " +
+        "authzFilterArgs=%s, authzHandlers=%s",
         this.getClass().getName(),
         this.hashCode(),
         this.user,
         this.credential,
         this.retAttrs != null ? Arrays.asList(this.retAttrs) : null,
+        this.authzFilter,
+        this.authzFilterArgs != null ?
+          Arrays.asList(this.authzFilterArgs) : null,
         this.authzHandlers != null ? Arrays.asList(this.authzHandlers) : null);
   }
 }

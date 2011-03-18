@@ -35,7 +35,9 @@ import edu.vt.middleware.ldap.LdapAttribute;
 import edu.vt.middleware.ldap.LdapAttributes;
 import edu.vt.middleware.ldap.LdapConnection;
 import edu.vt.middleware.ldap.SearchRequest;
+import edu.vt.middleware.ldap.auth.AuthenticationRequest;
 import edu.vt.middleware.ldap.auth.Authenticator;
+import edu.vt.middleware.ldap.props.AuthenticationRequestPropertySource;
 import edu.vt.middleware.ldap.props.AuthenticatorConfigPropertySource;
 import edu.vt.middleware.ldap.props.LdapConnectionConfigPropertySource;
 import edu.vt.middleware.ldap.props.SearchRequestPropertySource;
@@ -337,6 +339,24 @@ public abstract class AbstractLoginModule implements LoginModule
   {
     final SearchRequestPropertySource source = new SearchRequestPropertySource(
       createProperties(SearchRequestPropertySource.getDomain(), options));
+    return source.get();
+  }
+
+
+  /**
+   * Creates a new authentication request with the supplied JAAS options.
+   *
+   * @param  options  JAAS configuration options
+   *
+   * @return  authentication request
+   */
+  protected static AuthenticationRequest createAuthenticationRequest(
+    final Map<String, ?> options)
+  {
+    final AuthenticationRequestPropertySource source =
+      new AuthenticationRequestPropertySource(
+        createProperties(
+          AuthenticationRequestPropertySource.getDomain(), options));
     return source.get();
   }
 
