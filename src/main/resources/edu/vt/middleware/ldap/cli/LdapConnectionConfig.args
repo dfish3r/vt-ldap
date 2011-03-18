@@ -1,0 +1,17 @@
+authtype:type of authentication (none|simple|strong)
+bindCredential:password for the bindDn
+bindDn:fully qualified dn to bind as
+connectionFactory:fully qualified class name that implements edu.vt.middleware.ldap.provider.ConnectionFactory
+connectionStrategy:LDAP connection strategy for failover
+hostnameVerifier:fully qualified class name that implements javax.net.ssl.HostnameVerifier
+ldapProvider:fully qualified class name that implements edu.vt.middleware.ldap.provider.LdapProvider
+ldapUrl:URL that identifies the LDAP server to search
+logCredentials:whether to log authentication credentials (true|false)
+operationRetry:number of times to retry LDAP operations on exception
+operationRetryBackoff:factor to multiply operationRetryWait by
+operationRetryWait:milliseconds to wait before retrying LDAP operations
+providerProperties:LDAP provider specific properties
+ssl:whether to use ssl (true|false)
+sslSocketFactory:fully qualified class name that implements javax.net.ssl.SSLSocketFactory
+timeout: amount of time in milliseconds that connect operations will block
+tls:whether to use tls (true|false)

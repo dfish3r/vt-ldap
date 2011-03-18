@@ -1,0 +1,7 @@
+- Delete an entry from an ldap directory
+   ldapdelete -ldapUrl ldap://directory.vt.edu \
+              -dn uid=818037,ou=People,dc=vt,dc=edu
+
+- Display all the command line options available 
+
+   ldapdelete -help

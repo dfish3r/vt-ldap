@@ -11,7 +11,7 @@
 - Authenticate a user and return their mail attribute in dsmlv1 format
 
    ldapauth -ldapUrl ldap://directory.vt.edu -baseDn ou=People,dc=vt,dc=edu \
-            -tls true -userFilter uupid={0} -dsmlv1 mail
+            -tls true -userFilter uupid={0} -dsmlv1 -returnAttributes mail
 
 - Display all the command line options available 
 

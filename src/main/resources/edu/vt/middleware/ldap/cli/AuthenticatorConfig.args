@@ -1,0 +1,9 @@
+allowMultipleDns:whether finding multiple DNs should throw an exception (true|false)
+authenticationHandler:fully qualified class name that implements edu.vt.middleware.ldap.auth.handler.AuthenticationHandler
+authenticationResultHandlers:LDAP handlers for post processing results
+baseDn:base dn
+constructDn:whether to construct the user DN from the userFilter (true|false)
+dnResolver:fully qualified class name that implements edu.vt.middleware.ldap.auth.DnResolver
+subtreeSearch:whether to search for the user using a subtree search (true|false)
+userFilter:LDAP filter to search for the user
+userFilterArgs:LDAP filter arguments to apply to the userFilter

@@ -233,13 +233,19 @@
   <parameter name="toSearchResultsResults"
              value="/edu/vt/middleware/ldap/searchResults-7.ldif"/>
 
+  <parameter name="cliAddArgs"
+             value="-ldapUrl|ldap://ed-dev.middleware.vt.edu:14389|-bindDn|uid=1,ou=test,dc=vt,dc=edu|-bindCredential|VKSxXwlU7YssGl1foLMH2mGMWkifbODb1djfJ4t2|-file|src/test/resources/edu/vt/middleware/ldap/createLdapEntry-8.ldif"/>
   <parameter name="cliSearchArgs"
-             value="-ldapUrl|ldap://ed-dev.middleware.vt.edu:14389|-baseDn|ou=test,dc=vt,dc=edu|-bindDn|uid=1,ou=test,dc=vt,dc=edu|-bindCredential|VKSxXwlU7YssGl1foLMH2mGMWkifbODb1djfJ4t2|-query|(mail=mvburen@vt.edu)|departmentNumber|givenName|sn"/>
+             value="-ldapUrl|ldap://ed-dev.middleware.vt.edu:14389|-baseDn|ou=test,dc=vt,dc=edu|-bindDn|uid=1,ou=test,dc=vt,dc=edu|-bindCredential|VKSxXwlU7YssGl1foLMH2mGMWkifbODb1djfJ4t2|-searchFilter|(mail=mvburen@vt.edu)|-returnAttributes|departmentNumber,givenName,jpegPhoto,sn"/>
   <parameter name="cliSearchResults"
              value="/edu/vt/middleware/ldap/searchResults-8.ldif"/>
+  <parameter name="cliCompareArgs"
+             value="-ldapUrl|ldap://ed-dev.middleware.vt.edu:14389|-bindDn|uid=1,ou=test,dc=vt,dc=edu|-bindCredential|VKSxXwlU7YssGl1foLMH2mGMWkifbODb1djfJ4t2|-dn|uid=8,ou=test,dc=vt,dc=edu|-attribute|sn:buren"/>
+  <parameter name="cliDeleteArgs"
+             value="-ldapUrl|ldap://ed-dev.middleware.vt.edu:14389|-bindDn|uid=1,ou=test,dc=vt,dc=edu|-bindCredential|VKSxXwlU7YssGl1foLMH2mGMWkifbODb1djfJ4t2|-dn|uid=8,ou=test,dc=vt,dc=edu"/>
 
   <parameter name="cliAuthArgs"
-             value="-ldapUrl|ldap://ed-dev.middleware.vt.edu:14389|-baseDn|ou=test,dc=vt,dc=edu|-tls|true|-hostnameVerifier|edu.vt.middleware.ldap.AnyHostnameVerifier|-bindDn|uid=1,ou=test,dc=vt,dc=edu|-bindCredential|VKSxXwlU7YssGl1foLMH2mGMWkifbODb1djfJ4t2|-userFilter|mail={0}|-user|whharrison@vt.edu|-credential|password9|-authorizationFilter|(departmentNumber=0829)|departmentNumber|givenName|sn"/>
+             value="-ldapUrl|ldap://ed-dev.middleware.vt.edu:14389|-baseDn|ou=test,dc=vt,dc=edu|-tls|true|-hostnameVerifier|edu.vt.middleware.ldap.AnyHostnameVerifier|-bindDn|uid=1,ou=test,dc=vt,dc=edu|-bindCredential|VKSxXwlU7YssGl1foLMH2mGMWkifbODb1djfJ4t2|-userFilter|mail={0}|-user|whharrison@vt.edu|-credential|password9|-authorizationFilter|(departmentNumber=0829)|-returnAttributes|departmentNumber,givenName,sn"/>
   <parameter name="cliAuthResults"
              value="/edu/vt/middleware/ldap/searchResults-9.ldif"/>
 
@@ -300,7 +306,6 @@
       <package name="edu.vt.middleware.ldap.*" />
     </packages>
   </test>
-  <!--
   <test name="clitests">
     <groups>
       <run>
@@ -312,7 +317,6 @@
       <package name="edu.vt.middleware.ldap.*" />
     </packages>
   </test>
-  -->
   <test name="conntest">
     <groups>
       <run>

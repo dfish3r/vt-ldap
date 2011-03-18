@@ -15,6 +15,7 @@ package edu.vt.middleware.ldap.props;
 
 import java.io.InputStream;
 import java.util.Properties;
+import java.util.Set;
 import edu.vt.middleware.ldap.auth.AuthenticatorConfig;
 
 /**
@@ -82,6 +83,17 @@ public final class AuthenticatorConfigPropertySource
   public static String getDomain()
   {
     return PROPERTIES_DOMAIN;
+  }
+
+
+  /**
+   * Returns the property names for this object.
+   *
+   * @return  all property names
+   */
+  public static Set<String> getProperties()
+  {
+    return AUTHENTICATOR_CONFIG_INVOKER.getProperties();
   }
 
 

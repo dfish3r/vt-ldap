@@ -27,5 +27,5 @@ for JAR in `ls ${PREFIX}/lib/*.jar` ; do
 done
 
 ${JAVA} ${JAVA_OPTS} -cp ${CLASSPATH} \
-  edu.vt.middleware.ldap.cli.SearchOperationCli $@
+  edu.vt.middleware.ldap.cli.DeleteOperationCli $@
 

@@ -15,6 +15,7 @@ package edu.vt.middleware.ldap.props;
 
 import java.io.InputStream;
 import java.util.Properties;
+import java.util.Set;
 import edu.vt.middleware.ldap.SearchRequest;
 
 /**
@@ -78,6 +79,17 @@ public final class SearchRequestPropertySource
   public static String getDomain()
   {
     return PROPERTIES_DOMAIN;
+  }
+
+
+  /**
+   * Returns the property names for this object.
+   *
+   * @return  all property names
+   */
+  public static Set<String> getProperties()
+  {
+    return SEARCH_REQUEST_INVOKER.getProperties();
   }
 
 

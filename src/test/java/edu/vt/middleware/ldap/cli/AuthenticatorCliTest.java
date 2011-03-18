@@ -11,10 +11,13 @@
   Version: $Revision$
   Updated: $Date$
 */
-package edu.vt.middleware.ldap;
+package edu.vt.middleware.ldap.cli;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
+import edu.vt.middleware.ldap.AbstractTest;
+import edu.vt.middleware.ldap.LdapEntry;
+import edu.vt.middleware.ldap.TestUtil;
 import org.testng.AssertJUnit;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
@@ -22,12 +25,12 @@ import org.testng.annotations.Parameters;
 import org.testng.annotations.Test;
 
 /**
- * Unit test for {@link LdapCli} class.
+ * Unit test for {@link AuthenticatorCli} class.
  *
  * @author  Middleware Services
  * @version  $Revision$
  */
-public class LdapCliTest extends AbstractTest
+public class AuthenticatorCliTest extends AbstractTest
 {
 
   /** Entry created for ldap tests. */
@@ -39,8 +42,8 @@ public class LdapCliTest extends AbstractTest
    *
    * @throws  Exception  On test failure.
    */
-  @Parameters({ "createEntry8" })
-  @BeforeClass(groups = {"ldapclitest"})
+  @Parameters({ "createEntry9" })
+  @BeforeClass(groups = {"authclitest"})
   public void createLdapEntry(final String ldifFile)
     throws Exception
   {
@@ -51,7 +54,7 @@ public class LdapCliTest extends AbstractTest
 
 
   /** @throws  Exception  On test failure. */
-  @AfterClass(groups = {"ldapclitest"})
+  @AfterClass(groups = {"authclitest"})
   public void deleteLdapEntry()
     throws Exception
   {
@@ -60,23 +63,29 @@ public class LdapCliTest extends AbstractTest
 
 
   /**
-   * @param  args  list of delimited arguments to pass to the CLI.
+   * @param  args  List of delimited arguments to pass to the CLI.
    * @param  ldifFile  to compare with
    *
    * @throws  Exception  On test failure.
    */
-  @Parameters({ "cliSearchArgs", "cliSearchResults" })
-  @Test(groups = {"ldapclitest"})
-  public void search(final String args, final String ldifFile)
+  @Parameters({ "cliAuthArgs", "cliAuthResults" })
+  @Test(groups = {"authclitest"})
+  public void authenticate(final String args, final String ldifFile)
     throws Exception
   {
+    System.setProperty(
+      "javax.net.ssl.trustStore",
+      "src/test/resources/ed.truststore");
+    System.setProperty("javax.net.ssl.trustStoreType", "BKS");
+    System.setProperty("javax.net.ssl.trustStorePassword", "changeit");
+
     final String ldif = TestUtil.readFileIntoString(ldifFile);
     final PrintStream oldStdOut = System.out;
     try {
       final ByteArrayOutputStream outStream = new ByteArrayOutputStream();
       System.setOut(new PrintStream(outStream));
 
-      LdapCli.main(args.split("\\|"));
+      AuthenticatorCli.main(args.split("\\|"));
       AssertJUnit.assertEquals(
         TestUtil.convertLdifToResult(ldif),
         TestUtil.convertLdifToResult(outStream.toString()));
@@ -84,5 +93,9 @@ public class LdapCliTest extends AbstractTest
       // Restore STDOUT
       System.setOut(oldStdOut);
     }
+
+    System.clearProperty("javax.net.ssl.trustStore");
+    System.clearProperty("javax.net.ssl.trustStoreType");
+    System.clearProperty("javax.net.ssl.trustStorePassword");
   }
 }

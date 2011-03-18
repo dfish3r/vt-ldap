@@ -11,7 +11,7 @@ set LIBDIR=%VTLDAP_HOME%\lib
 
 set CLASSPATH=%LIBDIR%\commons-cli-1.2.jar;%LIBDIR%\commons-codec-1.4.jar;%LIBDIR%\commons-logging-1.1.1.jar;%LDAP_JAR%
 
-call "%JAVA%" -cp "%CLASSPATH%" edu.vt.middleware.ldap.cli.SearchOperationCli %*
+call "%JAVA%" -cp "%CLASSPATH%" edu.vt.middleware.ldap.cli.CompareOperationCli %*
 goto end
 
 :no_vtldap_home
