@@ -74,8 +74,7 @@ public interface ConnectionFactory
   /**
    * Tear down a connection to an LDAP.
    *
-   * @param  dn  to attempt bind with
-   * @param  credential  to attempt bind with
+   * @param  conn  connection to destroy
    *
    * @throws  LdapException  if an LDAP error occurs
    */
