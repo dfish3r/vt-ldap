@@ -84,8 +84,7 @@ public class LdapLoginModule extends AbstractLoginModule implements LoginModule
 
     this.auth = createAuthenticator(options);
     if (this.logger.isDebugEnabled()) {
-      this.logger.debug(
-        "Created authenticator: " + this.auth.getAuthenticatorConfig());
+      this.logger.debug("Created authenticator: " + this.auth);
     }
 
     this.authRequest = createAuthenticationRequest(options);
