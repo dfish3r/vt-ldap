@@ -71,8 +71,7 @@ public class LdapDnAuthorizationModule extends AbstractLoginModule
 
     this.auth = createAuthenticator(options);
     if (this.logger.isDebugEnabled()) {
-      this.logger.debug(
-        "Created authenticator: " + this.auth.getAuthenticatorConfig());
+      this.logger.debug("Created authenticator: " + this.auth);
     }
   }
 
