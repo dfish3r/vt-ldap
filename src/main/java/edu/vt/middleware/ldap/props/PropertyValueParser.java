@@ -64,7 +64,7 @@ public class PropertyValueParser
       while (m.find()) {
         final String input = m.group().trim();
         if (input != null && !"".equals(input)) {
-          final String[] s = input.split("=");
+          final String[] s = input.split("=", 2);
           this.properties.put(s[0].trim(), s[1].trim());
         }
       }
