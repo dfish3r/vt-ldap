@@ -15,6 +15,7 @@ package edu.vt.middleware.ldap.auth;
 
 import edu.vt.middleware.ldap.AbstractTest;
 import edu.vt.middleware.ldap.Credential;
+import edu.vt.middleware.ldap.LdapConnectionConfig;
 import edu.vt.middleware.ldap.LdapEntry;
 import edu.vt.middleware.ldap.LdapException;
 import edu.vt.middleware.ldap.LdapResult;
@@ -183,10 +184,14 @@ public class AuthenticatorTest extends AbstractTest
   @Test(groups = {"authtest"})
   public void loadProperties(final String ldapUrl, final String baseDn)
   {
-    final AuthenticatorConfig ac = TestUtil.readAuthenticatorConfig(
+    final Authenticator auth = TestUtil.readAuthenticator(
       TestUtil.class.getResourceAsStream("/ldap.tls.properties"));
-    AssertJUnit.assertEquals(ldapUrl, ac.getLdapUrl());
-    AssertJUnit.assertEquals(baseDn, ac.getBaseDn());
+    AssertJUnit.assertEquals(
+      ldapUrl,
+      ((SearchDnResolver) auth.getDnResolver()).
+        getLdapConnectionConfig().getLdapUrl());
+    AssertJUnit.assertEquals(
+      baseDn, ((SearchDnResolver) auth.getDnResolver()).getBaseDn());
   }
 
 
@@ -211,25 +216,26 @@ public class AuthenticatorTest extends AbstractTest
     AssertJUnit.assertNull(auth.resolveDn(null));
     AssertJUnit.assertNull(auth.resolveDn(""));
 
+    final SearchDnResolver resolver = (SearchDnResolver) auth.getDnResolver();
+
     // test construct dn
-    auth.getAuthenticatorConfig().setConstructDn(true);
+    auth.setDnResolver(new ConstructDnResolver(resolver.getBaseDn()));
     AssertJUnit.assertEquals(testLdapEntry.getDn(), auth.resolveDn(uid));
-    auth.getAuthenticatorConfig().setConstructDn(false);
+    auth.setDnResolver(resolver);
 
     // test subtree searching
-    auth.getAuthenticatorConfig().setSubtreeSearch(true);
-    final String baseDn = auth.getAuthenticatorConfig().getBaseDn();
-    auth.getAuthenticatorConfig().setBaseDn(
-      baseDn.substring(baseDn.indexOf(",") + 1));
+    resolver.setSubtreeSearch(true);
+    final String baseDn = resolver.getBaseDn();
+    resolver.setBaseDn(baseDn.substring(baseDn.indexOf(",") + 1));
     AssertJUnit.assertEquals(testLdapEntry.getDn(), auth.resolveDn(user));
-    auth.getAuthenticatorConfig().setBaseDn(baseDn);
-    auth.getAuthenticatorConfig().setSubtreeSearch(false);
+    resolver.setBaseDn(baseDn);
+    resolver.setSubtreeSearch(false);
 
     // test one level searching
     AssertJUnit.assertEquals(testLdapEntry.getDn(), auth.resolveDn(user));
 
     // test duplicate DNs
-    auth.getAuthenticatorConfig().setUserFilter(duplicateFilter);
+    resolver.setUserFilter(duplicateFilter);
     try {
       auth.resolveDn(user);
       AssertJUnit.fail("Should have thrown LdapException");
@@ -237,7 +243,7 @@ public class AuthenticatorTest extends AbstractTest
       AssertJUnit.assertEquals(LdapException.class, e.getClass());
     }
 
-    auth.getAuthenticatorConfig().setAllowMultipleDns(true);
+    resolver.setAllowMultipleDns(true);
     auth.resolveDn(user);
   }
 
@@ -451,7 +457,7 @@ public class AuthenticatorTest extends AbstractTest
 
     final TestAuthenticationResultHandler authHandler =
       new TestAuthenticationResultHandler();
-    auth.getAuthenticatorConfig().setAuthenticationResultHandlers(
+    auth.setAuthenticationResultHandlers(
       new AuthenticationResultHandler[] {authHandler});
 
     final TestAuthorizationHandler testAuthzHandler =
@@ -776,8 +782,9 @@ public class AuthenticatorTest extends AbstractTest
     throws Exception
   {
     final Authenticator auth = this.createTLSAuthenticator(true);
-    auth.getAuthenticatorConfig().setAuthenticationHandler(
-      new CompareAuthenticationHandler());
+    final LdapConnectionConfig authLcc =
+      auth.getAuthenticationHandler().getLdapConnectionConfig();
+    auth.setAuthenticationHandler(new CompareAuthenticationHandler(authLcc));
 
     // test plain auth
     try {

@@ -1,0 +1,5 @@
+allowMultipleDns:whether finding multiple DNs should throw an exception (true|false)
+baseDn:base dn
+subtreeSearch:whether to search for the user using a subtree search (true|false)
+userFilter:LDAP filter to search for the user
+userFilterArgs:LDAP filter arguments to apply to the userFilter

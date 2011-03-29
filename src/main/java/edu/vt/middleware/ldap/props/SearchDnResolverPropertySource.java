@@ -16,69 +16,69 @@ package edu.vt.middleware.ldap.props;
 import java.io.InputStream;
 import java.util.Properties;
 import java.util.Set;
-import edu.vt.middleware.ldap.auth.AuthenticationRequest;
+import edu.vt.middleware.ldap.auth.SearchDnResolver;
 
 /**
- * Reads properties specific to {@link AuthenticationRequest} and returns an
+ * Reads properties specific to {@link SearchDnResolver} and returns an
  * initialized object of that type.
  *
  * @author  Middleware Services
  * @version  $Revision$ $Date$
  */
-public final class AuthenticationRequestPropertySource
-  extends AbstractPropertySource<AuthenticationRequest>
+public final class SearchDnResolverPropertySource
+  extends AbstractPropertySource<SearchDnResolver>
 {
 
-  /** Invoker for authentication request. */
+  /** Invoker for search dn resolver. */
   private static final AdvancedPropertyInvoker INVOKER =
-    new AdvancedPropertyInvoker(AuthenticationRequest.class);
+    new AdvancedPropertyInvoker(SearchDnResolver.class);
 
 
   /**
-   * Creates a new authentication request property source using the default
+   * Creates a new search dn resolver property source using the default
    * properties file.
    */
-  public AuthenticationRequestPropertySource()
+  public SearchDnResolverPropertySource()
   {
     this(
-      AuthenticationRequestPropertySource.class.getResourceAsStream(
+      SearchDnResolverPropertySource.class.getResourceAsStream(
         PROPERTIES_FILE));
   }
 
 
   /**
-   * Creates a new authentication request property source.
+   * Creates a new search dn resolver property source.
    *
    * @param  is  to read properties from
    */
-  public AuthenticationRequestPropertySource(final InputStream is)
+  public SearchDnResolverPropertySource(final InputStream is)
   {
     this(loadProperties(is));
   }
 
 
   /**
-   * Creates a new authentication request property source.
+   * Creates a new search dn resolver property source.
    *
    * @param  props  to read properties from
    */
-  public AuthenticationRequestPropertySource(final Properties props)
+  public SearchDnResolverPropertySource(final Properties props)
   {
     this(PropertyDomain.AUTH, props);
   }
 
 
   /**
-   * Creates a new authentication request property source.
+   * Creates a new search dn resolver property source.
    *
    * @param  domain  that properties are in
    * @param  props  to read properties from
    */
-  public AuthenticationRequestPropertySource(
+  public SearchDnResolverPropertySource(
     final PropertyDomain domain, final Properties props)
   {
     this.object = initializeObject(
-      INVOKER, new AuthenticationRequest(), domain.value(), props);
+      INVOKER, new SearchDnResolver(), domain.value(), props);
   }
 
 

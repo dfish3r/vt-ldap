@@ -34,25 +34,6 @@ public class NoopDnResolver implements DnResolver, Serializable
 
 
   /**
-   * This method is not implemented.
-   *
-   * @param  ac  authenticator config
-   */
-  public void setAuthenticatorConfig(final AuthenticatorConfig ac) {}
-
-
-  /**
-   * This method is not implemented.
-   *
-   * @return  null
-   */
-  public AuthenticatorConfig getAuthenticatorConfig()
-  {
-    return null;
-  }
-
-
-  /**
    * Returns the user as the DN.
    *
    * @param  user  to set as DN

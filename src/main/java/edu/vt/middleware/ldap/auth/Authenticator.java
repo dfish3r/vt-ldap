@@ -13,7 +13,9 @@
 */
 package edu.vt.middleware.ldap.auth;
 
+import java.util.Arrays;
 import edu.vt.middleware.ldap.Credential;
+import edu.vt.middleware.ldap.LdapConnectionConfig;
 import edu.vt.middleware.ldap.LdapEntry;
 import edu.vt.middleware.ldap.LdapException;
 import edu.vt.middleware.ldap.LdapResponse;
@@ -22,8 +24,8 @@ import edu.vt.middleware.ldap.auth.handler.AuthenticationCriteria;
 import edu.vt.middleware.ldap.auth.handler.AuthenticationHandler;
 import edu.vt.middleware.ldap.auth.handler.AuthenticationResultHandler;
 import edu.vt.middleware.ldap.auth.handler.AuthorizationHandler;
+import edu.vt.middleware.ldap.auth.handler.BindAuthenticationHandler;
 import edu.vt.middleware.ldap.provider.Connection;
-import edu.vt.middleware.ldap.provider.ConnectionFactory;
 
 /**
  * Provides functionality to authenticate users against an ldap directory.
@@ -31,7 +33,7 @@ import edu.vt.middleware.ldap.provider.ConnectionFactory;
  * @author  Middleware Services
  * @version  $Revision$ $Date$
  */
-public class Authenticator extends AbstractAuthenticator<AuthenticatorConfig>
+public class Authenticator extends AbstractAuthenticator
 {
 
 
@@ -40,13 +42,42 @@ public class Authenticator extends AbstractAuthenticator<AuthenticatorConfig>
 
 
   /**
+   * Creates a new authenticator. See
+   * {@link #Authenticator(LdapConnectionConfig)}.
+   *
+   * @param  ldapUrl  to connect to
+   */
+  public Authenticator(final String ldapUrl)
+  {
+    this(new LdapConnectionConfig(ldapUrl));
+  }
+
+
+  /**
+   * Creates a new authenticator. Defaults the DN resolver to
+   * {@link SearchDnResolver} and the authentication handler to
+   * {@link BindAuthenticationHandler}.
+   *
+   * @param  lcc  ldap connection config
+   */
+  public Authenticator(final LdapConnectionConfig lcc)
+  {
+    this(new SearchDnResolver(lcc), new BindAuthenticationHandler(lcc));
+  }
+
+
+  /**
    * Creates a new authenticator.
    *
-   * @param  ac  authentication config
+   * @param  dr  dn resolver
+   * @param  ah  authentication handler
    */
-  public Authenticator(final AuthenticatorConfig ac)
+  public Authenticator(
+    final DnResolver dr,
+    final AuthenticationHandler ah)
   {
-    this.setAuthenticatorConfig(ac);
+    this.setDnResolver(dr);
+    this.setAuthenticationHandler(ah);
   }
 
 
@@ -63,7 +94,6 @@ public class Authenticator extends AbstractAuthenticator<AuthenticatorConfig>
     final AuthenticationRequest request)
     throws LdapException
   {
-    this.initializeRequest(request, this.config);
     return new LdapResponse<LdapEntry>(
       this.authenticate(this.resolveDn(request.getUser()), request));
   }
@@ -106,24 +136,21 @@ public class Authenticator extends AbstractAuthenticator<AuthenticatorConfig>
 
     LdapResult result = null;
 
-    final ConnectionFactory cf = this.config.getConnectionFactory();
-    final AuthenticationResultHandler[] authResultHandler =
-      this.config.getAuthenticationResultHandlers();
-
+    AuthenticationHandler authHandler = null;
     Connection conn = null;
     try {
       final AuthenticationCriteria ac = new AuthenticationCriteria(dn);
       ac.setCredential(request.getCredential());
-      final AuthenticationHandler authHandler =
-        this.config.getAuthenticationHandler().newInstance();
+      authHandler = this.authenticationHandler.newInstance();
 
       // attempt to bind as this dn
-      conn = this.authenticate(authHandler, authResultHandler, cf, ac);
+      conn = this.authenticate(
+        authHandler, this.authenticationResultHandlers, ac);
 
       // authentication succeeded, perform authorization if supplied
       final AuthorizationHandler[] authzHandler =
-        this.getAuthorizationHandlers(request, this.config);
-      this.authorize(authzHandler, authResultHandler, conn, ac);
+        this.getAuthorizationHandlers(request);
+      this.authorize(authzHandler, this.authenticationResultHandlers, conn, ac);
 
       // retrieve requested attributes
       if (request.getReturnAttributes() == null ||
@@ -132,13 +159,17 @@ public class Authenticator extends AbstractAuthenticator<AuthenticatorConfig>
       }
 
       // authentication and authorization succeeded, report result
-      if (authResultHandler != null && authResultHandler.length > 0) {
-        for (AuthenticationResultHandler ah : authResultHandler) {
+      if (this.authenticationResultHandlers != null &&
+          this.authenticationResultHandlers.length > 0) {
+        for (AuthenticationResultHandler ah :
+             this.authenticationResultHandlers) {
           ah.process(ac, true);
         }
       }
     } finally {
-      cf.destroy(conn);
+      if (authHandler != null) {
+        authHandler.destroy(conn);
+      }
     }
 
     if (result != null) {
@@ -149,7 +180,23 @@ public class Authenticator extends AbstractAuthenticator<AuthenticatorConfig>
   }
 
 
-  /** {@inheritDoc} */
-  protected void initializeRequest(
-    final AuthenticationRequest request, final AuthenticatorConfig config) {}
+  /**
+   * Provides a descriptive string representation of this instance.
+   *
+   * @return  string representation
+   */
+  @Override
+  public String toString()
+  {
+    return
+      String.format(
+        "%s@%d: dnResolver=%s, authenticationHandler=%s, " +
+        "authenticationResultHandlers=%s",
+        this.getClass().getName(),
+        this.hashCode(),
+        this.dnResolver,
+        this.authenticationHandler,
+        this.authenticationResultHandlers != null ?
+          Arrays.asList(this.authenticationResultHandlers) : null);
+  }
 }

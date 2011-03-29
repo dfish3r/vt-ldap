@@ -24,6 +24,7 @@ import edu.vt.middleware.ldap.SearchRequest;
 import edu.vt.middleware.ldap.dsml.Dsmlv1Writer;
 import edu.vt.middleware.ldap.ldif.LdifWriter;
 import edu.vt.middleware.ldap.props.LdapConnectionConfigPropertySource;
+import edu.vt.middleware.ldap.props.PropertySource.PropertyDomain;
 import edu.vt.middleware.ldap.props.SearchRequestPropertySource;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
@@ -63,12 +64,10 @@ public class SearchOperationCli extends AbstractCli
     final Map<String, String> desc = this.getArgDesc(
       LdapConnectionConfig.class, SearchRequest.class);
     for (String s : LdapConnectionConfigPropertySource.getProperties()) {
-      final String opt = s.substring(s.lastIndexOf(".") + 1);
-      this.options.addOption(new Option(opt, true, desc.get(opt)));
+      this.options.addOption(new Option(s, true, desc.get(s)));
     }
     for (String s : SearchRequestPropertySource.getProperties()) {
-      final String opt = s.substring(s.lastIndexOf(".") + 1);
-      this.options.addOption(new Option(opt, true, desc.get(opt)));
+      this.options.addOption(new Option(s, true, desc.get(s)));
     }
     super.initOptions();
   }
@@ -87,8 +86,7 @@ public class SearchOperationCli extends AbstractCli
     throws Exception
   {
     final SearchRequestPropertySource reader = new SearchRequestPropertySource(
-      this.getPropertiesFromOptions(
-        SearchRequestPropertySource.getDomain(), line));
+      this.getPropertiesFromOptions(PropertyDomain.LDAP.value(), line));
     return reader.get();
   }
 

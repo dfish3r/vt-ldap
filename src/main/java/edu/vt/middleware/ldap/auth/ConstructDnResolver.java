@@ -33,11 +33,11 @@ public class ConstructDnResolver implements DnResolver, Serializable
   /** Log for this class. */
   protected final Log logger = LogFactory.getLog(this.getClass());
 
-  /** Authentication configuration. */
-  protected AuthenticatorConfig config;
-
   /** Directory user field. */
   protected String userField = "uid";
+
+  /** Base DN to append to all DNs. */
+  protected String baseDn = "";
 
 
   /** Default constructor. */
@@ -47,46 +47,24 @@ public class ConstructDnResolver implements DnResolver, Serializable
   /**
    * Creates a new construct DN resolver.
    *
-   * @param  ac  authenticator config
+   * @param  dn  base DN to append
    */
-  public ConstructDnResolver(final AuthenticatorConfig ac)
+  public ConstructDnResolver(final String dn)
   {
-    this.setAuthenticatorConfig(ac);
+    this.setBaseDn(dn);
   }
 
 
   /**
    * Creates a new construct DN resolver.
    *
-   * @param  ac  authenticator config
+   * @param  dn  base DN to append
    * @param  s  user field
    */
-  public ConstructDnResolver(final AuthenticatorConfig ac, final String s)
+  public ConstructDnResolver(final String dn, final String s)
   {
-    this.setAuthenticatorConfig(ac);
+    this.setBaseDn(dn);
     this.setUserField(s);
-  }
-
-
-  /**
-   * Returns the authenticator config.
-   *
-   * @return  authenticator config
-   */
-  public AuthenticatorConfig getAuthenticatorConfig()
-  {
-    return this.config;
-  }
-
-
-  /**
-   * Sets the authenticator config.
-   *
-   * @param  ac  of the authenticator
-   */
-  public void setAuthenticatorConfig(final AuthenticatorConfig ac)
-  {
-    this.config = ac;
   }
 
 
@@ -116,6 +94,31 @@ public class ConstructDnResolver implements DnResolver, Serializable
 
 
   /**
+   * Returns the base DN.
+   *
+   * @return  base DN
+   */
+  public String getBaseDn()
+  {
+    return this.baseDn;
+  }
+
+
+  /**
+   * Sets the base DN.
+   *
+   * @param  dn base DN
+   */
+  public void setBaseDn(final String dn)
+  {
+    if (this.logger.isTraceEnabled()) {
+      this.logger.trace("setting baseDn: " + dn);
+    }
+    this.baseDn = dn;
+  }
+
+
+  /**
    * Creates an ldap entry where the DN is the user field and the base DN.
    *
    * @param  user  to construct dn for
@@ -132,8 +135,7 @@ public class ConstructDnResolver implements DnResolver, Serializable
       if (this.logger.isDebugEnabled()) {
         this.logger.debug("Constructing DN from userFilter and base");
       }
-      dn = String.format(
-        "%s=%s,%s", this.userField, user, this.config.getBaseDn());
+      dn = String.format("%s=%s,%s", this.userField, user, this.baseDn);
     } else {
       if (this.logger.isDebugEnabled()) {
         this.logger.debug("User input was empty or null");

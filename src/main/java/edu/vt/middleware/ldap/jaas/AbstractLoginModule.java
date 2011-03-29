@@ -38,8 +38,9 @@ import edu.vt.middleware.ldap.SearchRequest;
 import edu.vt.middleware.ldap.auth.AuthenticationRequest;
 import edu.vt.middleware.ldap.auth.Authenticator;
 import edu.vt.middleware.ldap.props.AuthenticationRequestPropertySource;
-import edu.vt.middleware.ldap.props.AuthenticatorConfigPropertySource;
+import edu.vt.middleware.ldap.props.AuthenticatorPropertySource;
 import edu.vt.middleware.ldap.props.LdapConnectionConfigPropertySource;
+import edu.vt.middleware.ldap.props.PropertySource.PropertyDomain;
 import edu.vt.middleware.ldap.props.SearchRequestPropertySource;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -292,6 +293,22 @@ public abstract class AbstractLoginModule implements LoginModule
 
 
   /**
+   * Creates a new authenticator with the supplied JAAS options.
+   *
+   * @param  options  JAAS configuration options
+   *
+   * @return  authenticator
+   */
+  protected static Authenticator createAuthenticator(
+    final Map<String, ?> options)
+  {
+    final AuthenticatorPropertySource source = new AuthenticatorPropertySource(
+      createProperties(options));
+    return source.get();
+  }
+
+
+  /**
    * Creates a new ldap connection with the supplied JAAS options.
    *
    * @param  options  JAAS configuration options
@@ -303,27 +320,8 @@ public abstract class AbstractLoginModule implements LoginModule
   {
     final LdapConnectionConfigPropertySource source =
       new LdapConnectionConfigPropertySource(
-        createProperties(
-          LdapConnectionConfigPropertySource.getDomain(), options));
+        PropertyDomain.AUTH, createProperties(options));
     return new LdapConnection(source.get());
-  }
-
-
-  /**
-   * Creates a new authenticator with the supplied JAAS options.
-   *
-   * @param  options  JAAS configuration options
-   *
-   * @return  authenticator
-   */
-  protected static Authenticator createAuthenticator(
-    final Map<String, ?> options)
-  {
-    final AuthenticatorConfigPropertySource source =
-      new AuthenticatorConfigPropertySource(
-        createProperties(
-          AuthenticatorConfigPropertySource.getDomain(), options));
-    return new Authenticator(source.get());
   }
 
 
@@ -338,7 +336,7 @@ public abstract class AbstractLoginModule implements LoginModule
     final Map<String, ?> options)
   {
     final SearchRequestPropertySource source = new SearchRequestPropertySource(
-      createProperties(SearchRequestPropertySource.getDomain(), options));
+      PropertyDomain.AUTH, createProperties(options));
     return source.get();
   }
 
@@ -354,9 +352,7 @@ public abstract class AbstractLoginModule implements LoginModule
     final Map<String, ?> options)
   {
     final AuthenticationRequestPropertySource source =
-      new AuthenticationRequestPropertySource(
-        createProperties(
-          AuthenticationRequestPropertySource.getDomain(), options));
+      new AuthenticationRequestPropertySource(createProperties(options));
     return source.get();
   }
 
@@ -364,12 +360,10 @@ public abstract class AbstractLoginModule implements LoginModule
   /**
    * Initializes the supplied properties with supplied JAAS options.
    *
-   * @param  domain  to prepend to properties
    * @param  options  to read properties from
    * @return  properties
    */
-  protected static Properties createProperties(
-    final String domain, final Map<String, ?> options)
+  protected static Properties createProperties(final Map<String, ?> options)
   {
     final Properties p = new Properties();
     for (Map.Entry<String, ?> entry : options.entrySet()) {
@@ -379,7 +373,9 @@ public abstract class AbstractLoginModule implements LoginModule
           p.setProperty(entry.getKey(), entry.getValue().toString());
         // add the domain to vt-ldap properties
         } else {
-          p.setProperty(domain + entry.getKey(), entry.getValue().toString());
+          p.setProperty(
+            PropertyDomain.AUTH.value() + entry.getKey(),
+            entry.getValue().toString());
         }
       }
     }

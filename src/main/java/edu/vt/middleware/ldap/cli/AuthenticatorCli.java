@@ -22,12 +22,14 @@ import edu.vt.middleware.ldap.LdapEntry;
 import edu.vt.middleware.ldap.LdapResult;
 import edu.vt.middleware.ldap.auth.AuthenticationRequest;
 import edu.vt.middleware.ldap.auth.Authenticator;
-import edu.vt.middleware.ldap.auth.AuthenticatorConfig;
+import edu.vt.middleware.ldap.auth.SearchDnResolver;
 import edu.vt.middleware.ldap.dsml.Dsmlv1Writer;
 import edu.vt.middleware.ldap.ldif.LdifWriter;
 import edu.vt.middleware.ldap.props.AuthenticationRequestPropertySource;
-import edu.vt.middleware.ldap.props.AuthenticatorConfigPropertySource;
+import edu.vt.middleware.ldap.props.AuthenticatorPropertySource;
 import edu.vt.middleware.ldap.props.LdapConnectionConfigPropertySource;
+import edu.vt.middleware.ldap.props.PropertySource.PropertyDomain;
+import edu.vt.middleware.ldap.props.SearchDnResolverPropertySource;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
 
@@ -65,48 +67,42 @@ public class AuthenticatorCli extends AbstractCli
       new Option(OPT_DSMLV1, false, "output results in DSML v1"));
     final Map<String, String> desc = this.getArgDesc(
       LdapConnectionConfig.class,
-      AuthenticatorConfig.class,
+      Authenticator.class,
+      SearchDnResolver.class,
       AuthenticationRequest.class);
     for (String s : LdapConnectionConfigPropertySource.getProperties()) {
-      final String opt = s.substring(s.lastIndexOf(".") + 1);
-      this.options.addOption(new Option(opt, true, desc.get(opt)));
+      this.options.addOption(new Option(s, true, desc.get(s)));
     }
-    for (String s : AuthenticatorConfigPropertySource.getProperties()) {
-      final String opt = s.substring(s.lastIndexOf(".") + 1);
-      this.options.addOption(new Option(opt, true, desc.get(opt)));
+    for (String s : AuthenticatorPropertySource.getProperties()) {
+      this.options.addOption(new Option(s, true, desc.get(s)));
+    }
+    for (String s : SearchDnResolverPropertySource.getProperties()) {
+      this.options.addOption(new Option(s, true, desc.get(s)));
     }
     for (String s : AuthenticationRequestPropertySource.getProperties()) {
-      final String opt = s.substring(s.lastIndexOf(".") + 1);
-      this.options.addOption(new Option(opt, true, desc.get(opt)));
+      this.options.addOption(new Option(s, true, desc.get(s)));
     }
     super.initOptions();
   }
 
 
   /**
-   * Initialize an AuthenticatorConfig with command line options.
+   * Initialize an Authenticator with command line options.
    *
    * @param  line  parsed command line arguments
    *
-   * @return  authenticator configuration that has been initialized
+   * @return  authenticator that has been initialized
    *
-   * @throws  Exception  if an authenticator config cannot be created
+   * @throws  Exception  if an authenticator cannot be created
    */
-  protected AuthenticatorConfig initAuthenticatorConfig(final CommandLine line)
+  protected Authenticator initAuthenticator(final CommandLine line)
     throws Exception
   {
-    final AuthenticatorConfigPropertySource acSource =
-      new AuthenticatorConfigPropertySource(
-        this.getPropertiesFromOptions(
-          AuthenticatorConfigPropertySource.getDomain(), line));
-    final AuthenticatorConfig config = acSource.get();
-    if (config.getBindDn() != null && config.getBindCredential() == null) {
-      // prompt the user to enter a password
-      final char[] pass = System.console().readPassword(
-        "[Enter password for %s]: ", config.getBindDn());
-      config.setBindCredential(new Credential(pass));
-    }
-    return config;
+    final AuthenticatorPropertySource aSource =
+      new AuthenticatorPropertySource(
+        this.getPropertiesFromOptions(PropertyDomain.AUTH.value(), line));
+    final Authenticator auth = aSource.get();
+    return auth;
   }
 
 
@@ -125,8 +121,7 @@ public class AuthenticatorCli extends AbstractCli
   {
     final AuthenticationRequestPropertySource arSource =
       new AuthenticationRequestPropertySource(
-        this.getPropertiesFromOptions(
-          AuthenticationRequestPropertySource.getDomain(), line));
+        this.getPropertiesFromOptions(PropertyDomain.AUTH.value(), line));
     final AuthenticationRequest request = arSource.get();
     if (request.getUser() == null) {
       // prompt for a user name
@@ -156,7 +151,7 @@ public class AuthenticatorCli extends AbstractCli
       this.printHelp();
     } else {
       this.authenticate(
-        this.initAuthenticatorConfig(line),
+        this.initAuthenticator(line),
         this.initAuthenticationRequest(line));
     }
   }
@@ -165,16 +160,16 @@ public class AuthenticatorCli extends AbstractCli
   /**
    * Executes the authentication operation.
    *
-   * @param  config  authenticator configuration
+   * @param  auth  authenticator
    * @param  request  authentication request
    *
    * @throws  Exception  on any LDAP error
    */
   protected void authenticate(
-    final AuthenticatorConfig config, final AuthenticationRequest request)
+    final Authenticator auth,
+    final AuthenticationRequest request)
     throws Exception
   {
-    final Authenticator auth = new Authenticator(config);
     // by default return all attributes
     if (request.getReturnAttributes() != null &&
         request.getReturnAttributes().length == 0) {

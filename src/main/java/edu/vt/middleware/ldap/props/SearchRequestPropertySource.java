@@ -29,13 +29,9 @@ public final class SearchRequestPropertySource
   extends AbstractPropertySource<SearchRequest>
 {
 
-  /** Domain to look for ldap properties in, value is {@value}. */
-  public static final String PROPERTIES_DOMAIN = "edu.vt.middleware.ldap.";
-
   /** Invoker for search request. */
-  private static final AdvancedPropertyInvoker SEARCH_REQUEST_INVOKER =
-    new AdvancedPropertyInvoker(SearchRequest.class, PROPERTIES_DOMAIN);
-
+  private static final AdvancedPropertyInvoker INVOKER =
+    new AdvancedPropertyInvoker(SearchRequest.class);
 
   /**
    * Creates a new search request property source using the default properties
@@ -66,37 +62,31 @@ public final class SearchRequestPropertySource
    */
   public SearchRequestPropertySource(final Properties props)
   {
-    this.object = new SearchRequest();
-    this.initializeObject(
-      SEARCH_REQUEST_INVOKER, this.object, getDomain(), props);
+    this(PropertyDomain.LDAP, props);
   }
 
 
   /**
-   * Returns the properties domain for this invoker.
+   * Creates a new search request property source.
    *
-   * @return  properties domain
+   * @param  domain  that properties are in
+   * @param  props  to read properties from
    */
-  public static String getDomain()
+  public SearchRequestPropertySource(
+    final PropertyDomain domain, final Properties props)
   {
-    return PROPERTIES_DOMAIN;
+    this.object = initializeObject(
+      INVOKER, new SearchRequest(), domain.value(), props);
   }
 
 
   /**
-   * Returns the property names for this object.
+   * Returns the property names for this property source.
    *
    * @return  all property names
    */
   public static Set<String> getProperties()
   {
-    return SEARCH_REQUEST_INVOKER.getProperties();
-  }
-
-
-  /** {@inheritDoc} */
-  public boolean hasProperty(final String name)
-  {
-    return SEARCH_REQUEST_INVOKER.hasProperty(name);
+    return INVOKER.getProperties();
   }
 }

@@ -632,10 +632,30 @@ public class LdapConnectionConfig extends AbstractConfig
   {
     return
       String.format(
-        "%s@%d::ldapProvider=%s, ldapUrl=%s",
+        "%s@%d::ldapProvider=%s, connectionFactory=%s, sslSocketFactory=%s, " +
+        "hostnameVerifier=%s, ldapUrl=%s, timeout=%s, bindDn=%s, " +
+        "bindCredential=%s, authtype=%s, operationRetry=%s, " +
+        "operationRetryWait=%s, operationRetryBackoff=%s, " +
+        "providerProperties=%s, logCredentials=%s, ssl=%s, tls=%s, " +
+        "connectionStrategy=%s",
         this.getClass().getName(),
         this.hashCode(),
-        this.getLdapProvider(),
-        this.getLdapUrl());
+        this.ldapProvider,
+        this.connectionFactory,
+        this.sslSocketFactory,
+        this.hostnameVerifier,
+        this.ldapUrl,
+        this.timeout,
+        this.bindDn,
+        this.bindCredential,
+        this.authtype,
+        this.operationRetry,
+        this.operationRetryWait,
+        this.operationRetryBackoff,
+        this.providerProperties,
+        this.logCredentials,
+        this.ssl,
+        this.tls,
+        this.connectionStrategy);
   }
 }

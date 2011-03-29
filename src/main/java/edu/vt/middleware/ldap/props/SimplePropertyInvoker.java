@@ -32,19 +32,7 @@ public class SimplePropertyInvoker extends AbstractPropertyInvoker
    */
   public SimplePropertyInvoker(final Class<?> c)
   {
-    this.initialize(c, "");
-  }
-
-
-  /**
-   * Creates a new simple property invoker for the supplied class.
-   *
-   * @param  c  class that has setter methods
-   * @param  propertiesDomain  to prepend to each setter name
-   */
-  public SimplePropertyInvoker(final Class<?> c, final String propertiesDomain)
-  {
-    this.initialize(c, propertiesDomain);
+    this.initialize(c);
   }
 
 

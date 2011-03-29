@@ -29,12 +29,9 @@ public final class LdapConnectionConfigPropertySource
   extends AbstractPropertySource<LdapConnectionConfig>
 {
 
-  /** Domain to look for ldap properties in, value is {@value}. */
-  public static final String PROPERTIES_DOMAIN = BASE_PROPERTIES_DOMAIN;
-
   /** Invoker for ldap connection config. */
-  private static final AdvancedPropertyInvoker CONNECTION_CONFIG_INVOKER =
-    new AdvancedPropertyInvoker(LdapConnectionConfig.class, PROPERTIES_DOMAIN);
+  private static final AdvancedPropertyInvoker INVOKER =
+    new AdvancedPropertyInvoker(LdapConnectionConfig.class);
 
 
   /**
@@ -67,37 +64,31 @@ public final class LdapConnectionConfigPropertySource
    */
   public LdapConnectionConfigPropertySource(final Properties props)
   {
-    this.object = new LdapConnectionConfig();
-    this.initializeObject(
-      CONNECTION_CONFIG_INVOKER, this.object, getDomain(), props);
+    this(PropertyDomain.LDAP, props);
   }
 
 
   /**
-   * Returns the properties domain for this invoker.
+   * Creates a new ldap connection config property source.
    *
-   * @return  properties domain
+   * @param  domain  that properties are in
+   * @param  props  to read properties from
    */
-  public static String getDomain()
+  public LdapConnectionConfigPropertySource(
+    final PropertyDomain domain, final Properties props)
   {
-    return PROPERTIES_DOMAIN;
+    this.object = initializeObject(
+      INVOKER, new LdapConnectionConfig(), domain.value(), props);
   }
 
 
   /**
-   * Returns the property names for this object.
+   * Returns the property names for this property source.
    *
    * @return  all property names
    */
   public static Set<String> getProperties()
   {
-    return CONNECTION_CONFIG_INVOKER.getProperties();
-  }
-
-
-  /** {@inheritDoc} */
-  public boolean hasProperty(final String name)
-  {
-    return CONNECTION_CONFIG_INVOKER.hasProperty(name);
+    return INVOKER.getProperties();
   }
 }

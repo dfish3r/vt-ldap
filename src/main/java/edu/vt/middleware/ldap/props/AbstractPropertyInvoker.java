@@ -53,12 +53,10 @@ public abstract class AbstractPropertyInvoker implements PropertyInvoker
    * If a method named 'initialize' is found, it is also cached.
    *
    * @param  c  to read methods from
-   * @param  domain  optional domain that properties are in
    */
-  protected void initialize(final Class<?> c, final String domain)
+  protected void initialize(final Class<?> c)
   {
-    final String cacheKey = new StringBuilder(c.getName()).append("@").append(
-      domain).toString();
+    final String cacheKey = c.getName();
     if (PROPERTIES_CACHE.containsKey(cacheKey)) {
       this.properties = PROPERTIES_CACHE.get(cacheKey);
     } else {
@@ -69,7 +67,7 @@ public abstract class AbstractPropertyInvoker implements PropertyInvoker
           method.getName().startsWith("set") &&
             method.getParameterTypes().length == 1) {
           final String mName = method.getName().substring(3);
-          final String pName = new StringBuilder(domain).append(
+          final String pName = new StringBuilder(
             mName.substring(0, 1).toLowerCase()).append(
               mName.substring(1, mName.length())).toString();
           if (this.properties.containsKey(pName)) {
@@ -83,7 +81,7 @@ public abstract class AbstractPropertyInvoker implements PropertyInvoker
           method.getName().startsWith("get") &&
             method.getParameterTypes().length == 0) {
           final String mName = method.getName().substring(3);
-          final String pName = new StringBuilder(domain).append(
+          final String pName = new StringBuilder(
             mName.substring(0, 1).toLowerCase()).append(
               mName.substring(1, mName.length())).toString();
           if (this.properties.containsKey(pName)) {
@@ -96,8 +94,7 @@ public abstract class AbstractPropertyInvoker implements PropertyInvoker
         } else if (
           "initialize".equals(method.getName()) &&
             method.getParameterTypes().length == 0) {
-          final String pName = new StringBuilder(domain).append(
-            method.getName()).toString();
+          final String pName = new StringBuilder(method.getName()).toString();
           this.properties.put(pName, new Method[] {method, method});
         }
       }

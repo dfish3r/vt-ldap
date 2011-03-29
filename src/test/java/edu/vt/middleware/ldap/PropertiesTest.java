@@ -16,14 +16,14 @@ package edu.vt.middleware.ldap;
 import java.util.Arrays;
 import javax.security.auth.login.LoginContext;
 import edu.vt.middleware.ldap.auth.Authenticator;
-import edu.vt.middleware.ldap.auth.AuthenticatorConfig;
+import edu.vt.middleware.ldap.auth.SearchDnResolver;
 import edu.vt.middleware.ldap.handler.BinaryResultHandler;
 import edu.vt.middleware.ldap.handler.DnAttributeResultHandler;
 import edu.vt.middleware.ldap.handler.LdapResultHandler;
 import edu.vt.middleware.ldap.handler.MergeResultHandler;
 import edu.vt.middleware.ldap.handler.RecursiveResultHandler;
 import edu.vt.middleware.ldap.jaas.TestCallbackHandler;
-import edu.vt.middleware.ldap.props.AuthenticatorConfigPropertySource;
+import edu.vt.middleware.ldap.props.AuthenticatorPropertySource;
 import edu.vt.middleware.ldap.props.LdapConnectionConfigPropertySource;
 import edu.vt.middleware.ldap.props.SearchRequestPropertySource;
 import org.testng.AssertJUnit;
@@ -133,20 +133,22 @@ public class PropertiesTest
     AssertJUnit.assertEquals(
       ResultCode.PARTIAL_RESULTS, sr.getSearchIgnoreResultCodes()[1]);
 
-    final AuthenticatorConfigPropertySource acSource =
-      new AuthenticatorConfigPropertySource(
+    final AuthenticatorPropertySource aSource =
+      new AuthenticatorPropertySource(
         PropertiesTest.class.getResourceAsStream("/ldap.parser.properties"));
-    final AuthenticatorConfig ac = acSource.get();
+    final Authenticator auth = aSource.get();
 
+    final LdapConnectionConfig authLcc =
+      ((SearchDnResolver) auth.getDnResolver()).getLdapConnectionConfig();
     AssertJUnit.assertEquals(
-      "ldap://ed-auth.middleware.vt.edu:14389", ac.getLdapUrl());
-    AssertJUnit.assertEquals("uid=1,ou=test,dc=vt,dc=edu", ac.getBindDn());
-    AssertJUnit.assertEquals("simple", ac.getAuthtype());
-    AssertJUnit.assertEquals(8000, ac.getTimeout());
-    AssertJUnit.assertTrue(ac.isTlsEnabled());
-    AssertJUnit.assertEquals(1, ac.getProviderProperties().size());
+      "ldap://ed-auth.middleware.vt.edu:14389", authLcc.getLdapUrl());
+    AssertJUnit.assertEquals("uid=1,ou=test,dc=vt,dc=edu", authLcc.getBindDn());
+    AssertJUnit.assertEquals("simple", authLcc.getAuthtype());
+    AssertJUnit.assertEquals(8000, authLcc.getTimeout());
+    AssertJUnit.assertTrue(authLcc.isTlsEnabled());
+    AssertJUnit.assertEquals(1, authLcc.getProviderProperties().size());
     AssertJUnit.assertEquals(
-      "true", ac.getProviderProperties().get("java.naming.authoritative"));
+      "true", authLcc.getProviderProperties().get("java.naming.authoritative"));
   }
 
 
@@ -161,14 +163,14 @@ public class PropertiesTest
 
     LdapConnectionConfig lcc = null;
     SearchRequest sr = null;
-    AuthenticatorConfig ac = null;
+    Authenticator auth = null;
     for (Object o : lc.getSubject().getPublicCredentials()) {
       if (o instanceof LdapConnection) {
         lcc = ((LdapConnection) o).getLdapConnectionConfig();
       } else if (o instanceof SearchRequest) {
         sr = (SearchRequest) o;
       } else if (o instanceof Authenticator) {
-        ac = ((Authenticator) o).getAuthenticatorConfig();
+        auth = (Authenticator) o;
       } else {
         throw new Exception("Unknown public credential found: " + o);
       }
@@ -221,20 +223,23 @@ public class PropertiesTest
     AssertJUnit.assertEquals(
       ResultCode.PARTIAL_RESULTS, sr.getSearchIgnoreResultCodes()[1]);
 
+    final LdapConnectionConfig authLcc =
+      ((SearchDnResolver) auth.getDnResolver()).getLdapConnectionConfig();
     AssertJUnit.assertEquals(
-      "ldap://ed-dev.middleware.vt.edu:14389", ac.getLdapUrl());
-    AssertJUnit.assertEquals("uid=1,ou=test,dc=vt,dc=edu", ac.getBindDn());
-    AssertJUnit.assertEquals("simple", ac.getAuthtype());
-    AssertJUnit.assertEquals(8000, ac.getTimeout());
-    AssertJUnit.assertTrue(ac.isTlsEnabled());
-    AssertJUnit.assertEquals(1, ac.getProviderProperties().size());
+      "ldap://ed-dev.middleware.vt.edu:14389", authLcc.getLdapUrl());
+    AssertJUnit.assertEquals("uid=1,ou=test,dc=vt,dc=edu", authLcc.getBindDn());
+    AssertJUnit.assertEquals("simple", authLcc.getAuthtype());
+    AssertJUnit.assertEquals(8000, authLcc.getTimeout());
+    AssertJUnit.assertTrue(authLcc.isTlsEnabled());
+    AssertJUnit.assertEquals(1, authLcc.getProviderProperties().size());
     AssertJUnit.assertEquals(
-      "true", ac.getProviderProperties().get("java.naming.authoritative"));
+      "true", authLcc.getProviderProperties().get("java.naming.authoritative"));
+
     AssertJUnit.assertEquals(
       edu.vt.middleware.ldap.auth.handler.CompareAuthenticationHandler.class,
-      ac.getAuthenticationHandler().getClass());
+      auth.getAuthenticationHandler().getClass());
     AssertJUnit.assertEquals(
-      edu.vt.middleware.ldap.auth.NoopDnResolver.class,
-      ac.getDnResolver().getClass());
+      edu.vt.middleware.ldap.auth.PersistentSearchDnResolver.class,
+      auth.getDnResolver().getClass());
   }
 }

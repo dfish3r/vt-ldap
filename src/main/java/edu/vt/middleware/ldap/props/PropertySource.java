@@ -24,15 +24,46 @@ package edu.vt.middleware.ldap.props;
 public interface PropertySource<T>
 {
 
-
   /**
-   * Returns whether the supplied property exists for this object.
-   *
-   * @param  name  of the property to check
-   *
-   * @return  whether the supplied property name exists
+   * Enum to define the domain for properties.
    */
-  boolean hasProperty(String name);
+  public enum PropertyDomain
+  {
+
+    /** ldap property domain. */
+    LDAP("edu.vt.middleware.ldap."),
+
+    /** auth property domain. */
+    AUTH("edu.vt.middleware.ldap.auth."),
+
+    /** pool property domain. */
+    POOL("edu.vt.middleware.ldap.pool.");
+
+    /** properties domain. */
+    private String domain;
+
+
+    /**
+     * Creates a new property domain.
+     *
+     * @param  s  properties domain
+     */
+    PropertyDomain(final String s)
+    {
+      this.domain = s;
+    }
+
+
+    /**
+     * Returns the properties domain value.
+     *
+     * @return  properties domain
+     */
+    public String value()
+    {
+      return this.domain;
+    }
+  }
 
 
   /**

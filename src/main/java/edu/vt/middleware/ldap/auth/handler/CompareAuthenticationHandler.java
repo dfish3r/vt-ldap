@@ -17,12 +17,11 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import edu.vt.middleware.ldap.CompareRequest;
 import edu.vt.middleware.ldap.LdapAttribute;
+import edu.vt.middleware.ldap.LdapConnectionConfig;
 import edu.vt.middleware.ldap.LdapException;
 import edu.vt.middleware.ldap.LdapUtil;
 import edu.vt.middleware.ldap.auth.AuthenticationException;
-import edu.vt.middleware.ldap.auth.AuthenticatorConfig;
 import edu.vt.middleware.ldap.provider.Connection;
-import edu.vt.middleware.ldap.provider.ConnectionFactory;
 
 /**
  * Provides an LDAP authentication implementation that leverages a compare
@@ -49,11 +48,11 @@ public class CompareAuthenticationHandler extends AbstractAuthenticationHandler
   /**
    * Creates a new compare authentication handler.
    *
-   * @param  ac  authenticator config
+   * @param  lcc  ldap connection config
    */
-  public CompareAuthenticationHandler(final AuthenticatorConfig ac)
+  public CompareAuthenticationHandler(final LdapConnectionConfig lcc)
   {
-    this.setAuthenticatorConfig(ac);
+    this.setLdapConnectionConfig(lcc);
   }
 
 
@@ -80,9 +79,7 @@ public class CompareAuthenticationHandler extends AbstractAuthenticationHandler
 
 
   /** {@inheritDoc} */
-  public Connection authenticate(
-    final ConnectionFactory ch,
-    final AuthenticationCriteria ac)
+  public Connection authenticate(final AuthenticationCriteria ac)
     throws LdapException
   {
     byte[] hash = new byte[DIGEST_SIZE];
@@ -94,7 +91,7 @@ public class CompareAuthenticationHandler extends AbstractAuthenticationHandler
       throw new LdapException(e);
     }
 
-    final Connection conn = ch.create(
+    final Connection conn = this.config.getConnectionFactory().create(
       this.config.getBindDn(), this.config.getBindCredential());
     final LdapAttribute la = new LdapAttribute(
       "userPassword",
@@ -103,7 +100,7 @@ public class CompareAuthenticationHandler extends AbstractAuthenticationHandler
     final boolean success = conn.compare(new CompareRequest(ac.getDn(), la));
 
     if (!success) {
-      ch.destroy(conn);
+      this.config.getConnectionFactory().destroy(conn);
       throw new AuthenticationException("Compare authentication failed.");
     } else {
       return conn;

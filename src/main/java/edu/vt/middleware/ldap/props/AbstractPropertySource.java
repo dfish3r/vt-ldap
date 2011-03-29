@@ -36,9 +36,6 @@ public abstract class AbstractPropertySource<T> implements PropertySource<T>
   /** Default file to read properties from, value is {@value}. */
   public static final String PROPERTIES_FILE = "/ldap.properties";
 
-  /** Domain to look for ldap properties in, value is {@value}. */
-  public static final String BASE_PROPERTIES_DOMAIN = "edu.vt.middleware.ldap.";
-
   /** Log for this class. */
   protected final Log logger = LogFactory.getLog(this.getClass());
 
@@ -76,14 +73,17 @@ public abstract class AbstractPropertySource<T> implements PropertySource<T>
    * passed to a method called 'setProviderProperties(Map)', if one exists on
    * that object.
    *
+   * @param  <T>  type of object to invoke properties on
+   *
    * @param  invoker  to set properties on the object
-   * @param  object  to initialize
+   * @param  obj  to initialize
    * @param  domain  for properties on the object
    * @param  properties  to iterate over
+   * @return  initialized object
    */
-  protected void initializeObject(
+  protected static <T> T initializeObject(
     final PropertyInvoker invoker,
-    final T object,
+    final T obj,
     final String domain,
     final Properties properties)
   {
@@ -94,40 +94,46 @@ public abstract class AbstractPropertySource<T> implements PropertySource<T>
       while (en.hasMoreElements()) {
         final String name = (String) en.nextElement();
         final String value = (String) properties.get(name);
-        // if we have this property, set it last
-        if (this.hasProperty(name)) {
-          props.put(name, value);
         // add to provider specific properties if it isn't a vt-ldap property
-        } else if (!name.startsWith(BASE_PROPERTIES_DOMAIN)) {
+        if (!name.startsWith(PropertyDomain.LDAP.value())) {
           providerProps.put(name, value);
         } else {
+          // strip out the method name
+          final int split = name.lastIndexOf('.') + 1;
+          final String propName = name.substring(split);
+          final String propDomain = name.substring(0, split);
+          // if we have this property, set it last
+          if (domain.equals(propDomain)) {
+            if (invoker.hasProperty(propName)) {
+              props.put(propName, value);
+            }
           // check if this is a super class property
           // if it is, set it now, it may be overridden with the props map
-          final String newName =
-            domain + name.substring(BASE_PROPERTIES_DOMAIN.length());
-          if (this.hasProperty(newName)) {
-            invoker.setProperty(object, newName, value);
+          } else if (domain.startsWith(propDomain)) {
+            if (invoker.hasProperty(propName)) {
+              invoker.setProperty(obj, propName, value);
+            }
           }
         }
       }
       for (Map.Entry<String, String> entry : props.entrySet()) {
-        invoker.setProperty(object, entry.getKey(), entry.getValue());
+        invoker.setProperty(obj, entry.getKey(), entry.getValue());
       }
       // set provider specific properties
-      if (!providerProps.isEmpty()) {
-        if (this.hasProperty(domain + "providerProperties")) {
-          try {
-            SimplePropertyInvoker.invokeMethod(
-              object.getClass().getMethod(
-                "setProviderProperties", Map.class),
-              object,
-              providerProps);
-          } catch (NoSuchMethodException e) {
-            throw new IllegalArgumentException(e);
-          }
+      if (!providerProps.isEmpty() &&
+          invoker.hasProperty("providerProperties")) {
+        try {
+          SimplePropertyInvoker.invokeMethod(
+            obj.getClass().getMethod(
+              "setProviderProperties", Map.class),
+            obj,
+            providerProps);
+        } catch (NoSuchMethodException e) {
+          throw new IllegalArgumentException(e);
         }
       }
     }
+    return obj;
   }
 
 

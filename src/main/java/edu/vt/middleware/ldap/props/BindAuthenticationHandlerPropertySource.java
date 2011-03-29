@@ -16,69 +16,69 @@ package edu.vt.middleware.ldap.props;
 import java.io.InputStream;
 import java.util.Properties;
 import java.util.Set;
-import edu.vt.middleware.ldap.auth.AuthenticationRequest;
+import edu.vt.middleware.ldap.auth.handler.BindAuthenticationHandler;
 
 /**
- * Reads properties specific to {@link AuthenticationRequest} and returns an
+ * Reads properties specific to {@link BindAuthenticationHandler} and returns an
  * initialized object of that type.
  *
  * @author  Middleware Services
  * @version  $Revision$ $Date$
  */
-public final class AuthenticationRequestPropertySource
-  extends AbstractPropertySource<AuthenticationRequest>
+public final class BindAuthenticationHandlerPropertySource
+  extends AbstractPropertySource<BindAuthenticationHandler>
 {
 
-  /** Invoker for authentication request. */
+  /** Invoker for bind authentication handler. */
   private static final AdvancedPropertyInvoker INVOKER =
-    new AdvancedPropertyInvoker(AuthenticationRequest.class);
+    new AdvancedPropertyInvoker(BindAuthenticationHandler.class);
 
 
   /**
-   * Creates a new authentication request property source using the default
+   * Creates a new bind authentication handler property source using the default
    * properties file.
    */
-  public AuthenticationRequestPropertySource()
+  public BindAuthenticationHandlerPropertySource()
   {
     this(
-      AuthenticationRequestPropertySource.class.getResourceAsStream(
+      SearchDnResolverPropertySource.class.getResourceAsStream(
         PROPERTIES_FILE));
   }
 
 
   /**
-   * Creates a new authentication request property source.
+   * Creates a new bind authentication handler property source.
    *
    * @param  is  to read properties from
    */
-  public AuthenticationRequestPropertySource(final InputStream is)
+  public BindAuthenticationHandlerPropertySource(final InputStream is)
   {
     this(loadProperties(is));
   }
 
 
   /**
-   * Creates a new authentication request property source.
+   * Creates a new bind authentication handler property source.
    *
    * @param  props  to read properties from
    */
-  public AuthenticationRequestPropertySource(final Properties props)
+  public BindAuthenticationHandlerPropertySource(final Properties props)
   {
     this(PropertyDomain.AUTH, props);
   }
 
 
   /**
-   * Creates a new authentication request property source.
+   * Creates a new bind authentication handler property source.
    *
    * @param  domain  that properties are in
    * @param  props  to read properties from
    */
-  public AuthenticationRequestPropertySource(
+  public BindAuthenticationHandlerPropertySource(
     final PropertyDomain domain, final Properties props)
   {
     this.object = initializeObject(
-      INVOKER, new AuthenticationRequest(), domain.value(), props);
+      INVOKER, new BindAuthenticationHandler(), domain.value(), props);
   }
 
 

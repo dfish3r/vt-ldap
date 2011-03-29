@@ -14,6 +14,7 @@
 package edu.vt.middleware.ldap.auth;
 
 import edu.vt.middleware.ldap.LdapConnection;
+import edu.vt.middleware.ldap.LdapConnectionConfig;
 import edu.vt.middleware.ldap.LdapException;
 import edu.vt.middleware.ldap.LdapResult;
 import edu.vt.middleware.ldap.SearchFilter;
@@ -43,22 +44,22 @@ public class PersistentSearchDnResolver extends SearchDnResolver
   /**
    * Creates a new persistent search dn resolver.
    *
-   * @param  ac  authenticator config
+   * @param  lcc  ldap connection config
    */
-  public PersistentSearchDnResolver(final AuthenticatorConfig ac)
+  public PersistentSearchDnResolver(final LdapConnectionConfig lcc)
   {
-    this.setAuthenticatorConfig(ac);
+    this.setLdapConnectionConfig(lcc);
   }
 
 
   /**
-   * Sets the authenticator config.
+   * Sets the ldap connection config.
    *
-   * @param  ac  authenticator config
+   * @param  lcc  ldap connection config
    */
-  public void setAuthenticatorConfig(final AuthenticatorConfig ac)
+  public void setLdapConnectionConfig(final LdapConnectionConfig lcc)
   {
-    super.setAuthenticatorConfig(ac);
+    super.setLdapConnectionConfig(lcc);
     this.ldapConnection.setLdapConnectionConfig(this.config);
   }
 
@@ -79,10 +80,7 @@ public class PersistentSearchDnResolver extends SearchDnResolver
   protected LdapResult performLdapSearch(final SearchFilter filter)
     throws LdapException
   {
-    final SearchRequest request = new SearchRequest();
-    request.setSearchFilter(filter);
-    request.setReturnAttributes(new String[0]);
-
+    final SearchRequest request = this.createSearchRequest(filter);
     final SearchOperation op = new SearchOperation(this.ldapConnection);
     return op.execute(request).getResult();
   }

@@ -21,10 +21,9 @@ import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
 import edu.vt.middleware.ldap.auth.Authenticator;
-import edu.vt.middleware.ldap.auth.AuthenticatorConfig;
 import edu.vt.middleware.ldap.auth.NoopDnResolver;
 import edu.vt.middleware.ldap.ldif.LdifReader;
-import edu.vt.middleware.ldap.props.AuthenticatorConfigPropertySource;
+import edu.vt.middleware.ldap.props.AuthenticatorPropertySource;
 import edu.vt.middleware.ldap.props.LdapConnectionConfigPropertySource;
 import org.testng.annotations.DataProvider;
 
@@ -62,19 +61,18 @@ public final class TestUtil
 
   /**
    * @param  is  to read properties from, if null use default properties
-   * @return  authenticator config
+   * @return  authenticator
    */
-  public static AuthenticatorConfig readAuthenticatorConfig(
-    final InputStream is)
+  public static Authenticator readAuthenticator(final InputStream is)
   {
     if (is != null) {
-      final AuthenticatorConfigPropertySource acSource =
-        new AuthenticatorConfigPropertySource(is);
-      return acSource.get();
+      final AuthenticatorPropertySource aSource =
+        new AuthenticatorPropertySource(is);
+      return aSource.get();
     } else {
-      final AuthenticatorConfigPropertySource acSource =
-        new AuthenticatorConfigPropertySource();
-      return acSource.get();
+      final AuthenticatorPropertySource aSource =
+        new AuthenticatorPropertySource();
+      return aSource.get();
     }
   }
 
@@ -146,9 +144,8 @@ public final class TestUtil
   public static Authenticator createSSLAuthenticator()
     throws Exception
   {
-    return new Authenticator(
-      readAuthenticatorConfig(
-        TestUtil.class.getResourceAsStream("/ldap.ssl.properties")));
+    return readAuthenticator(
+      TestUtil.class.getResourceAsStream("/ldap.ssl.properties"));
   }
 
 
@@ -161,10 +158,9 @@ public final class TestUtil
   public static Authenticator createSSLDnAuthenticator()
     throws Exception
   {
-    final Authenticator auth = new Authenticator(
-      readAuthenticatorConfig(
-        TestUtil.class.getResourceAsStream("/ldap.ssl.properties")));
-    auth.getAuthenticatorConfig().setDnResolver(new NoopDnResolver());
+    final Authenticator auth = readAuthenticator(
+        TestUtil.class.getResourceAsStream("/ldap.ssl.properties"));
+    auth.setDnResolver(new NoopDnResolver());
     return auth;
   }
 
@@ -178,9 +174,8 @@ public final class TestUtil
   public static Authenticator createTLSAuthenticator()
     throws Exception
   {
-    return new Authenticator(
-      readAuthenticatorConfig(
-        TestUtil.class.getResourceAsStream("/ldap.tls.properties")));
+    return readAuthenticator(
+      TestUtil.class.getResourceAsStream("/ldap.tls.properties"));
   }
 
 
@@ -193,10 +188,9 @@ public final class TestUtil
   public static Authenticator createTLSDnAuthenticator()
     throws Exception
   {
-    final Authenticator auth = new Authenticator(
-      readAuthenticatorConfig(
-        TestUtil.class.getResourceAsStream("/ldap.tls.properties")));
-    auth.getAuthenticatorConfig().setDnResolver(new NoopDnResolver());
+    final Authenticator auth = readAuthenticator(
+      TestUtil.class.getResourceAsStream("/ldap.tls.properties"));
+    auth.setDnResolver(new NoopDnResolver());
     return auth;
   }
 
@@ -210,10 +204,9 @@ public final class TestUtil
   public static Authenticator createDigestMD5Authenticator()
     throws Exception
   {
-    final Authenticator auth = new Authenticator(
-      readAuthenticatorConfig(
-        TestUtil.class.getResourceAsStream("/ldap.digest-md5.properties")));
-    auth.getAuthenticatorConfig().setDnResolver(new NoopDnResolver());
+    final Authenticator auth = readAuthenticator(
+      TestUtil.class.getResourceAsStream("/ldap.digest-md5.properties"));
+    auth.setDnResolver(new NoopDnResolver());
     return auth;
   }
 
@@ -227,10 +220,9 @@ public final class TestUtil
   public static Authenticator createCramMD5Authenticator()
     throws Exception
   {
-    final Authenticator auth = new Authenticator(
-      readAuthenticatorConfig(
-        TestUtil.class.getResourceAsStream("/ldap.cram-md5.properties")));
-    auth.getAuthenticatorConfig().setDnResolver(new NoopDnResolver());
+    final Authenticator auth = readAuthenticator(
+      TestUtil.class.getResourceAsStream("/ldap.cram-md5.properties"));
+    auth.setDnResolver(new NoopDnResolver());
     return auth;
   }
 

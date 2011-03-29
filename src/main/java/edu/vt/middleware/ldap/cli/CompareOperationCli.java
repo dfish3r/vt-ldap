@@ -66,8 +66,7 @@ public class CompareOperationCli extends AbstractCli
     final Map<String, String> desc = this.getArgDesc(
       LdapConnectionConfig.class);
     for (String s : LdapConnectionConfigPropertySource.getProperties()) {
-      final String opt = s.substring(s.lastIndexOf(".") + 1);
-      this.options.addOption(new Option(opt, true, desc.get(opt)));
+      this.options.addOption(new Option(s, true, desc.get(s)));
     }
     super.initOptions();
   }

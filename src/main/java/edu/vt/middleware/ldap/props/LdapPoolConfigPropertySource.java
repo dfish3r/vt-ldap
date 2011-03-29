@@ -29,13 +29,9 @@ public final class LdapPoolConfigPropertySource
   extends AbstractPropertySource<LdapPoolConfig>
 {
 
-  /** Domain to look for ldap properties in, value is {@value}. */
-  public static final String PROPERTIES_DOMAIN =
-    BASE_PROPERTIES_DOMAIN + "pool.";
-
   /** Invoker for ldap pool config. */
-  private static final SimplePropertyInvoker POOL_CONFIG_INVOKER =
-    new SimplePropertyInvoker(LdapPoolConfig.class, PROPERTIES_DOMAIN);
+  private static final AdvancedPropertyInvoker INVOKER =
+    new AdvancedPropertyInvoker(LdapPoolConfig.class);
 
 
   /**
@@ -67,37 +63,31 @@ public final class LdapPoolConfigPropertySource
    */
   public LdapPoolConfigPropertySource(final Properties props)
   {
-    this.object = new LdapPoolConfig();
-    this.initializeObject(
-      POOL_CONFIG_INVOKER, this.object, getDomain(), props);
+    this(PropertyDomain.POOL, props);
   }
 
 
   /**
-   * Returns the properties domain for this invoker.
+   * Creates a new ldap pool config property source.
    *
-   * @return  properties domain
+   * @param  domain  that properties are in
+   * @param  props  to read properties from
    */
-  public static String getDomain()
+  public LdapPoolConfigPropertySource(
+    final PropertyDomain domain, final Properties props)
   {
-    return PROPERTIES_DOMAIN;
+    this.object = initializeObject(
+      INVOKER, new LdapPoolConfig(), domain.value(), props);
   }
 
 
   /**
-   * Returns the property names for this object.
+   * Returns the property names for this property source.
    *
    * @return  all property names
    */
   public static Set<String> getProperties()
   {
-    return POOL_CONFIG_INVOKER.getProperties();
-  }
-
-
-  /** {@inheritDoc} */
-  public boolean hasProperty(final String name)
-  {
-    return POOL_CONFIG_INVOKER.hasProperty(name);
+    return INVOKER.getProperties();
   }
 }

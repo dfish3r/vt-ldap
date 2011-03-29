@@ -70,9 +70,8 @@ public class AuthenticatorLoadTest extends AbstractTest
   public AuthenticatorLoadTest()
     throws Exception
   {
-    this.singleTLSAuth = new Authenticator(
-      TestUtil.readAuthenticatorConfig(
-        TestUtil.class.getResourceAsStream("/ldap.tls.load.properties")));
+    this.singleTLSAuth = TestUtil.readAuthenticator(
+      TestUtil.class.getResourceAsStream("/ldap.tls.load.properties"));
   }
 
 

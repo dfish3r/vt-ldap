@@ -23,6 +23,7 @@ import java.util.Properties;
 import edu.vt.middleware.ldap.Credential;
 import edu.vt.middleware.ldap.LdapConnectionConfig;
 import edu.vt.middleware.ldap.props.LdapConnectionConfigPropertySource;
+import edu.vt.middleware.ldap.props.PropertySource.PropertyDomain;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.GnuParser;
@@ -113,8 +114,7 @@ public abstract class AbstractCli
   {
     final LdapConnectionConfigPropertySource lccSource =
       new LdapConnectionConfigPropertySource(
-        this.getPropertiesFromOptions(
-          LdapConnectionConfigPropertySource.getDomain(), line));
+        this.getPropertiesFromOptions(PropertyDomain.LDAP.value(), line));
     final LdapConnectionConfig config = lccSource.get();
     if (config.getBindDn() != null && config.getBindCredential() == null) {
       // prompt the user to enter a password

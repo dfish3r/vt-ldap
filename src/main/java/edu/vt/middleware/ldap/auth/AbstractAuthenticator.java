@@ -24,55 +24,100 @@ import edu.vt.middleware.ldap.auth.handler.AuthenticationResultHandler;
 import edu.vt.middleware.ldap.auth.handler.AuthorizationHandler;
 import edu.vt.middleware.ldap.auth.handler.CompareAuthorizationHandler;
 import edu.vt.middleware.ldap.provider.Connection;
-import edu.vt.middleware.ldap.provider.ConnectionFactory;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 /**
  * Base class for authenticator implementations.
  *
- * @param  <T>  type of authenticator config
- *
  * @author  Middleware Services
  * @version  $Revision$ $Date$
  */
-public abstract class AbstractAuthenticator<T extends AuthenticatorConfig>
+public abstract class AbstractAuthenticator
 {
   /** Log for this class. */
   protected final Log logger = LogFactory.getLog(this.getClass());
 
-  /** Authenticator configuration environment. */
-  protected T config;
+  /** For finding user DNs. */
+  protected DnResolver dnResolver;
+
+  /** Handler to process authentication. */
+  protected AuthenticationHandler authenticationHandler;
+
+  /** Handlers to process authentication results. */
+  protected AuthenticationResultHandler[] authenticationResultHandlers;
 
 
   /**
-   * Returns the authenticator config.
+   * Returns the DN resolver.
    *
-   * @return  authenticator config
+   * @return  DN resolver
    */
-  public T getAuthenticatorConfig()
+  public DnResolver getDnResolver()
   {
-    return this.config;
+    return this.dnResolver;
   }
 
 
   /**
-   * Sets the authenticator config.
+   * Sets the DN resolver.
    *
-   * @param  ac  authenticator config
+   * @param  resolver  for finding DNs
    */
-  public void setAuthenticatorConfig(final T ac)
+  public void setDnResolver(final DnResolver resolver)
   {
-    if (this.config != null) {
-      this.config.checkImmutable();
-    }
-    this.config = ac;
+    this.dnResolver = resolver;
+  }
+
+
+  /**
+   * Returns the authentication handler.
+   *
+   * @return  authentication handler
+   */
+  public AuthenticationHandler getAuthenticationHandler()
+  {
+    return this.authenticationHandler;
+  }
+
+
+  /**
+   * Sets the authentication handler.
+   *
+   * @param  handler  for performing authentication
+   */
+  public void setAuthenticationHandler(final AuthenticationHandler handler)
+  {
+    this.authenticationHandler = handler;
+  }
+
+
+  /**
+   * Returns the authentication result handlers.
+   *
+   * @return  authentication result handlers
+   */
+  public AuthenticationResultHandler[] getAuthenticationResultHandlers()
+  {
+    return this.authenticationResultHandlers;
+  }
+
+
+  /**
+   * Sets the authentication result handlers.
+   *
+   * @param  arh  authentication result handlers
+   */
+  public void setAuthenticationResultHandlers(
+    final AuthenticationResultHandler[] arh)
+  {
+    this.authenticationResultHandlers = arh;
   }
 
 
   /**
    * This will attempt to find the DN for the supplied user. {@link
-   * AuthenticatorConfig#getDnResolver()} is invoked to perform this operation.
+   * DnResolver#resolve(String)} is invoked to perform this operation.
    *
    * @param  user  to find DN for
    *
@@ -83,7 +128,7 @@ public abstract class AbstractAuthenticator<T extends AuthenticatorConfig>
   public String resolveDn(final String user)
     throws LdapException
   {
-    return this.config.getDnResolver().resolve(user);
+    return this.dnResolver.resolve(user);
   }
 
 
@@ -94,7 +139,6 @@ public abstract class AbstractAuthenticator<T extends AuthenticatorConfig>
    *
    * @param  authHandler  to perform authentication
    * @param  authResultHandler  to process authentication failures
-   * @param  cf  connection factory to pass to the authentication handler
    * @param  ac  needed by both the authentication handler and the result
    * handlers
    * @return  ldap connection that the bind occurred on
@@ -104,13 +148,12 @@ public abstract class AbstractAuthenticator<T extends AuthenticatorConfig>
   protected Connection authenticate(
     final AuthenticationHandler authHandler,
     final AuthenticationResultHandler[] authResultHandler,
-    final ConnectionFactory cf,
     final AuthenticationCriteria ac)
     throws LdapException
   {
     Connection conn = null;
     try {
-      conn = authHandler.authenticate(cf, ac);
+      conn = authHandler.authenticate(ac);
       if (this.logger.isInfoEnabled()) {
         this.logger.info("Authentication succeeded for dn: " + ac.getDn());
       }
@@ -209,11 +252,10 @@ public abstract class AbstractAuthenticator<T extends AuthenticatorConfig>
    * added to the handlers.
    *
    * @param  request  containing authentication data
-   * @param  ac  configuration containing authentication data
    * @return  authorization handlers
    */
   protected AuthorizationHandler[] getAuthorizationHandlers(
-    final AuthenticationRequest request, final AuthenticatorConfig ac)
+    final AuthenticationRequest request)
   {
     SearchFilter filter = null;
     if (request.getAuthorizationFilter() != null) {

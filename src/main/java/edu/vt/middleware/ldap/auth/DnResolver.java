@@ -35,20 +35,4 @@ public interface DnResolver
    * @throws  LdapException  if an LDAP error occurs
    */
   String resolve(String user) throws LdapException;
-
-
-  /**
-   * Returns the authenticator config.
-   *
-   * @return  authenticator configuration
-   */
-  AuthenticatorConfig getAuthenticatorConfig();
-
-
-  /**
-   * Sets the authenticator config.
-   *
-   * @param  config  of authenticator
-   */
-  void setAuthenticatorConfig(AuthenticatorConfig config);
 }

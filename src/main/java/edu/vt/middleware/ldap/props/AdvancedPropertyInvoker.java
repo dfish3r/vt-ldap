@@ -45,20 +45,7 @@ public class AdvancedPropertyInvoker extends AbstractPropertyInvoker
    */
   public AdvancedPropertyInvoker(final Class<?> c)
   {
-    this.initialize(c, "");
-  }
-
-
-  /**
-   * Creates a new advanced property invoker for the supplied class.
-   *
-   * @param  c  class that has setter methods
-   * @param  propertiesDomain  to prepend to each setter name
-   */
-  public AdvancedPropertyInvoker(
-    final Class<?> c, final String propertiesDomain)
-  {
-    this.initialize(c, propertiesDomain);
+    this.initialize(c);
   }
 
 

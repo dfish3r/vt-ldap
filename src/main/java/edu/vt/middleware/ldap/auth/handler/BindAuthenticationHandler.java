@@ -13,10 +13,9 @@
 */
 package edu.vt.middleware.ldap.auth.handler;
 
+import edu.vt.middleware.ldap.LdapConnectionConfig;
 import edu.vt.middleware.ldap.LdapException;
-import edu.vt.middleware.ldap.auth.AuthenticatorConfig;
 import edu.vt.middleware.ldap.provider.Connection;
-import edu.vt.middleware.ldap.provider.ConnectionFactory;
 
 /**
  * Provides an LDAP authentication implementation that leverages the LDAP bind
@@ -36,21 +35,20 @@ public class BindAuthenticationHandler extends AbstractAuthenticationHandler
   /**
    * Creates a new bind authentication handler.
    *
-   * @param  ac  authenticator config
+   * @param  lcc  ldap connection config
    */
-  public BindAuthenticationHandler(final AuthenticatorConfig ac)
+  public BindAuthenticationHandler(final LdapConnectionConfig lcc)
   {
-    this.setAuthenticatorConfig(ac);
+    this.setLdapConnectionConfig(lcc);
   }
 
 
   /** {@inheritDoc} */
-  public Connection authenticate(
-    final ConnectionFactory cf,
-    final AuthenticationCriteria ac)
+  public Connection authenticate(final AuthenticationCriteria ac)
     throws LdapException
   {
-    return cf.create(ac.getDn(), ac.getCredential());
+    return this.config.getConnectionFactory().create(
+      ac.getDn(), ac.getCredential());
   }
 
 
@@ -58,5 +56,22 @@ public class BindAuthenticationHandler extends AbstractAuthenticationHandler
   public BindAuthenticationHandler newInstance()
   {
     return new BindAuthenticationHandler(this.config);
+  }
+
+
+  /**
+   * Provides a descriptive string representation of this instance.
+   *
+   * @return  string representation
+   */
+  @Override
+  public String toString()
+  {
+    return
+      String.format(
+        "%s@%d: config=%s",
+        this.getClass().getName(),
+        this.hashCode(),
+        this.config);
   }
 }

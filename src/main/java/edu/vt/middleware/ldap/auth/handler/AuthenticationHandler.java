@@ -13,10 +13,9 @@
 */
 package edu.vt.middleware.ldap.auth.handler;
 
+import edu.vt.middleware.ldap.LdapConnectionConfig;
 import edu.vt.middleware.ldap.LdapException;
-import edu.vt.middleware.ldap.auth.AuthenticatorConfig;
 import edu.vt.middleware.ldap.provider.Connection;
-import edu.vt.middleware.ldap.provider.ConnectionFactory;
 
 /**
  * Provides an interface for LDAP authentication implementations.
@@ -29,29 +28,47 @@ public interface AuthenticationHandler
 
 
   /**
-   * Sets the authenticator configuration.
-   *
-   * @param  ac  authenticator config
-   */
-  void setAuthenticatorConfig(AuthenticatorConfig ac);
-
-
-  /**
    * Perform an ldap authentication. Implementations should throw authentication
    * exception to indicate an authentication failure. The
    * resulting connection should be returned so that other operations can be
    * performed on it.
    *
-   * @param  cf  connection factory to create connection
    * @param  ac  to perform the authentication with
    *
-   * @return  connection created by the connection handler
+   * @return  connection created by the authentication operation
    *
    * @throws  AuthenticationException  if authentication fails
    * @throws  LdapException  if ldap operation fails
    */
-  Connection authenticate(ConnectionFactory cf, AuthenticationCriteria ac)
+  Connection authenticate(AuthenticationCriteria ac)
     throws LdapException;
+
+
+  /**
+   * Tear down a connection that was created by a call to
+   * {@link #authenticate(AuthenticationCriteria)}.
+   *
+   * @param  conn  connection to destroy
+   *
+   * @throws  LdapException  if an LDAP error occurs
+   */
+  void destroy(Connection conn) throws LdapException;
+
+
+  /**
+   * Returns the ldap connection configuration.
+   *
+   * @return  ldap connection configuration
+   */
+  LdapConnectionConfig getLdapConnectionConfig();
+
+
+  /**
+   * Sets the ldap connection configuration.
+   *
+   * @param  config  ldap connection config
+   */
+  void setLdapConnectionConfig(final LdapConnectionConfig config);
 
 
   /**
