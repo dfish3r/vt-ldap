@@ -111,11 +111,10 @@ public class LdapConnection
   /** This will close the connection to the LDAP. */
   public synchronized void close()
   {
-    if (this.providerConnection == null) {
-      throw new IllegalStateException("Connection not open");
-    }
     try {
-      this.connectionFactory.destroy(this.providerConnection);
+      if (this.connectionFactory != null) {
+        this.connectionFactory.destroy(this.providerConnection);
+      }
     } catch (LdapException e) {
       if (this.logger.isWarnEnabled()) {
         this.logger.warn("Error closing connection with the LDAP", e);
@@ -234,6 +233,27 @@ public class LdapConnection
   {
     final SearchOperation op = new SearchOperation(this);
     return op.execute(new SearchRequest(dn, filter, retAttrs)).getResult();
+  }
+
+
+
+
+  /**
+   * Provides a descriptive string representation of this instance.
+   *
+   * @return  string representation
+   */
+  @Override
+  public String toString()
+  {
+    return
+      String.format(
+        "%s@%d::config=%s, connectionFactory=%s, providerConnection=%s",
+        this.getClass().getName(),
+        this.hashCode(),
+        this.config,
+        this.connectionFactory,
+        this.providerConnection);
   }
 
 
