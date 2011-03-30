@@ -218,8 +218,9 @@ public class AuthenticatorTest extends AbstractTest
 
     final SearchDnResolver resolver = (SearchDnResolver) auth.getDnResolver();
 
-    // test construct dn
-    auth.setDnResolver(new ConstructDnResolver(resolver.getBaseDn()));
+    // test format dn
+    auth.setDnResolver(
+      new FormatDnResolver("uid=%s,%s", new Object[] {resolver.getBaseDn()}));
     AssertJUnit.assertEquals(testLdapEntry.getDn(), auth.resolveDn(uid));
     auth.setDnResolver(resolver);
 
