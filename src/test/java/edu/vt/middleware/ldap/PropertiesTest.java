@@ -93,6 +93,9 @@ public class PropertiesTest
     AssertJUnit.assertEquals(1, lcc.getProviderProperties().size());
     AssertJUnit.assertEquals(
       "true", lcc.getProviderProperties().get("java.naming.authoritative"));
+    AssertJUnit.assertEquals(7, lcc.getOperationRetry());
+    AssertJUnit.assertEquals(2000, lcc.getOperationRetryWait());
+    AssertJUnit.assertEquals(3, lcc.getOperationRetryBackoff());
 
     final SearchRequestPropertySource scSource =
       new SearchRequestPropertySource(
@@ -188,6 +191,9 @@ public class PropertiesTest
     AssertJUnit.assertEquals(1, lcc.getProviderProperties().size());
     AssertJUnit.assertEquals(
       "true", lcc.getProviderProperties().get("java.naming.authoritative"));
+    AssertJUnit.assertEquals(7, lcc.getOperationRetry());
+    AssertJUnit.assertEquals(2000, lcc.getOperationRetryWait());
+    AssertJUnit.assertEquals(3, lcc.getOperationRetryBackoff());
 
     AssertJUnit.assertEquals("ou=test,dc=vt,dc=edu", sr.getBaseDn());
     AssertJUnit.assertEquals(10, sr.getBatchSize());
