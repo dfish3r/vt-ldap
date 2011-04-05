@@ -317,9 +317,13 @@ public final class TestUtil
   public static LdapEntry convertLdifToEntry(final String ldif)
     throws Exception
   {
-    return
-      (new Ldif()).importLdifToLdapResult(new StringReader(ldif)).getEntries()
-        .iterator().next();
+    final LdapResult lr =
+      (new Ldif()).importLdifToLdapResult(new StringReader(ldif));
+    if (lr.size() == 1) {
+      return lr.getEntries().iterator().next();
+    } else {
+      return null;
+    }
   }
 
 
