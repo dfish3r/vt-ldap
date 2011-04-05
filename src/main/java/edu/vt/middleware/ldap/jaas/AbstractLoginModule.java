@@ -96,6 +96,9 @@ public abstract class AbstractLoginModule implements LoginModule
   /** Whether credentials should be stored in the shared state map. */
   protected boolean storePass;
 
+  /** Whether credentials should be removed from the shared state map. */
+  protected boolean clearPass;
+
   /** Whether ldap principal data should be set. */
   protected boolean setLdapPrincipal;
 
@@ -114,8 +117,11 @@ public abstract class AbstractLoginModule implements LoginModule
   /** Name of group to add all roles to. */
   protected String roleGroupName;
 
-  /** Whether authentication was successful. */
-  protected boolean success;
+  /** Whether login was successful. */
+  protected boolean loginSuccess;
+
+  /** Whether commit was successful. */
+  protected boolean commitSuccess;
 
   /** Principals to add to the subject. */
   protected Set<Principal> principals;
@@ -151,6 +157,8 @@ public abstract class AbstractLoginModule implements LoginModule
         this.tryFirstPass = Boolean.valueOf(value);
       } else if (key.equalsIgnoreCase("storePass")) {
         this.storePass = Boolean.valueOf(value);
+      } else if (key.equalsIgnoreCase("clearPass")) {
+        this.clearPass = Boolean.valueOf(value);
       } else if (key.equalsIgnoreCase("setLdapPrincipal")) {
         this.setLdapPrincipal = Boolean.valueOf(value);
       } else if (key.equalsIgnoreCase("setLdapDnPrincipal")) {
@@ -172,6 +180,7 @@ public abstract class AbstractLoginModule implements LoginModule
       this.logger.debug("useFirstPass = " + this.useFirstPass);
       this.logger.debug("tryFirstPass = " + this.tryFirstPass);
       this.logger.debug("storePass = " + this.storePass);
+      this.logger.debug("clearPass = " + this.clearPass);
       this.logger.debug("setLdapPrincipal = " + this.setLdapPrincipal);
       this.logger.debug("setLdapDnPrincipal = " + this.setLdapDnPrincipal);
       this.logger.debug("setLdapCredential = " + this.setLdapCredential);
@@ -198,70 +207,85 @@ public abstract class AbstractLoginModule implements LoginModule
     if (this.logger.isTraceEnabled()) {
       this.logger.trace("Begin commit");
     }
-    if (this.success) {
-      if (this.subject.isReadOnly()) {
-        throw new LoginException("Subject is read-only.");
+    if (!this.loginSuccess) {
+      if (this.logger.isDebugEnabled()) {
+        this.logger.debug("Login failed");
       }
-      this.subject.getPrincipals().addAll(this.principals);
+      return false;
+    }
+
+    if (this.subject.isReadOnly()) {
+      this.clearState();
+      throw new LoginException("Subject is read-only.");
+    }
+    this.subject.getPrincipals().addAll(this.principals);
+    if (this.logger.isDebugEnabled()) {
+      this.logger.debug(
+        "Committed the following principals: " + this.principals);
+    }
+    this.subject.getPrivateCredentials().addAll(this.credentials);
+    this.subject.getPrincipals().addAll(this.roles);
+    if (this.logger.isDebugEnabled()) {
+      this.logger.debug("Committed the following roles: " + this.roles);
+    }
+    if (this.principalGroupName != null) {
+      final LdapGroup group = new LdapGroup(this.principalGroupName);
+      for (Principal principal : this.principals) {
+        group.addMember(principal);
+      }
+      subject.getPrincipals().add(group);
       if (this.logger.isDebugEnabled()) {
         this.logger.debug(
-          "Committed the following principals: " + this.principals);
-      }
-      this.subject.getPrivateCredentials().addAll(this.credentials);
-      this.subject.getPrincipals().addAll(this.roles);
-      if (this.logger.isDebugEnabled()) {
-        this.logger.debug("Committed the following roles: " + this.roles);
-      }
-      if (this.principalGroupName != null) {
-        final LdapGroup group = new LdapGroup(this.principalGroupName);
-        for (Principal principal : this.principals) {
-          group.addMember(principal);
-        }
-        subject.getPrincipals().add(group);
-        if (this.logger.isDebugEnabled()) {
-          this.logger.debug(
-            "Committed the following principal group: " + group);
-        }
-      }
-      if (this.roleGroupName != null) {
-        final LdapGroup group = new LdapGroup(this.roleGroupName);
-        for (Principal role : this.roles) {
-          group.addMember(role);
-        }
-        subject.getPrincipals().add(group);
-        if (this.logger.isDebugEnabled()) {
-          this.logger.debug("Committed the following role group: " + group);
-        }
+          "Committed the following principal group: " + group);
       }
     }
-    this.principals.clear();
-    this.credentials.clear();
-    this.roles.clear();
+    if (this.roleGroupName != null) {
+      final LdapGroup group = new LdapGroup(this.roleGroupName);
+      for (Principal role : this.roles) {
+        group.addMember(role);
+      }
+      subject.getPrincipals().add(group);
+      if (this.logger.isDebugEnabled()) {
+        this.logger.debug("Committed the following role group: " + group);
+      }
+    }
+
+    this.clearState();
+    this.commitSuccess = true;
     return true;
   }
 
 
   /** {@inheritDoc} */
   public boolean abort()
+    throws LoginException
   {
     if (this.logger.isTraceEnabled()) {
       this.logger.trace("Begin abort");
     }
-    this.success = false;
-    logout();
+    if (!this.loginSuccess) {
+      return false;
+    } else if (this.loginSuccess && !this.commitSuccess) {
+      this.loginSuccess = false;
+      this.clearState();
+    } else {
+      this.logout();
+    }
     return true;
   }
 
 
   /** {@inheritDoc} */
   public boolean logout()
+    throws LoginException
   {
     if (this.logger.isTraceEnabled()) {
       this.logger.trace("Begin logout");
     }
-    this.principals.clear();
-    this.credentials.clear();
-    this.roles.clear();
+    if (this.subject.isReadOnly()) {
+      this.clearState();
+      throw new LoginException("Subject is read-only.");
+    }
 
     final Iterator<LdapPrincipal> prinIter = this.subject.getPrincipals(
       LdapPrincipal.class).iterator();
@@ -293,6 +317,9 @@ public abstract class AbstractLoginModule implements LoginModule
       this.subject.getPrivateCredentials().remove(credIter.next());
     }
 
+    this.clearState();
+    this.loginSuccess = false;
+    this.commitSuccess = false;
     return true;
   }
 
@@ -347,6 +374,23 @@ public abstract class AbstractLoginModule implements LoginModule
 
 
   /**
+   * Removes any stateful principals, credentials, or roles stored by login.
+   * Also removes shared state name, dn, and password if clearPass is set.
+   */
+  protected void clearState()
+  {
+    this.principals.clear();
+    this.credentials.clear();
+    this.roles.clear();
+    if (this.clearPass) {
+      this.sharedState.remove(LOGIN_NAME);
+      this.sharedState.remove(LOGIN_PASSWORD);
+      this.sharedState.remove(LOGIN_DN);
+    }
+  }
+
+
+  /**
    * This attempts to retrieve credentials for the supplied name and password
    * callbacks. If useFirstPass or tryFirstPass is set, then name and password
    * data is retrieved from shared state. Otherwise a callback handler is used
@@ -392,13 +436,13 @@ public abstract class AbstractLoginModule implements LoginModule
       if (this.logger.isErrorEnabled()) {
         this.logger.error("Error reading data from callback handler", e);
       }
-      this.success = false;
+      this.loginSuccess = false;
       throw new LoginException(e.getMessage());
     } catch (UnsupportedCallbackException e) {
       if (this.logger.isErrorEnabled()) {
         this.logger.error("Unsupported callback", e);
       }
-      this.success = false;
+      this.loginSuccess = false;
       throw new LoginException(e.getMessage());
     }
   }

@@ -95,28 +95,28 @@ public class LdapDnAuthorizationModule extends AbstractLoginModule
       final String loginName = nameCb.getName();
       if (loginName != null && this.setLdapPrincipal) {
         this.principals.add(new LdapPrincipal(loginName));
-        this.success = true;
+        this.loginSuccess = true;
       }
 
       final String loginDn = this.auth.getDn(nameCb.getName());
       if (loginDn == null && this.noResultsIsError) {
-        this.success = false;
+        this.loginSuccess = false;
         throw new LoginException("Could not find DN for " + nameCb.getName());
       }
       if (loginDn != null && this.setLdapDnPrincipal) {
         this.principals.add(new LdapDnPrincipal(loginDn));
-        this.success = true;
+        this.loginSuccess = true;
       }
       if (this.defaultRole != null && !this.defaultRole.isEmpty()) {
         this.roles.addAll(this.defaultRole);
-        this.success = true;
+        this.loginSuccess = true;
       }
       this.storeCredentials(nameCb, passCb, loginDn);
     } catch (NamingException e) {
       if (this.logger.isDebugEnabled()) {
         this.logger.debug("Error occured attempting DN lookup", e);
       }
-      this.success = false;
+      this.loginSuccess = false;
       throw new LoginException(e.getMessage());
     } finally {
       this.auth.close();

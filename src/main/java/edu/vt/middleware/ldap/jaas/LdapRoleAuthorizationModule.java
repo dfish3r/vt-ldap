@@ -115,13 +115,13 @@ public class LdapRoleAuthorizationModule extends AbstractLoginModule
       final String loginName = nameCb.getName();
       if (loginName != null && this.setLdapPrincipal) {
         this.principals.add(new LdapPrincipal(loginName));
-        this.success = true;
+        this.loginSuccess = true;
       }
 
       final String loginDn = (String) this.sharedState.get(LOGIN_DN);
       if (loginDn != null && this.setLdapDnPrincipal) {
         this.principals.add(new LdapDnPrincipal(loginDn));
-        this.success = true;
+        this.loginSuccess = true;
       }
 
       if (this.roleFilter != null) {
@@ -130,7 +130,7 @@ public class LdapRoleAuthorizationModule extends AbstractLoginModule
           new SearchFilter(this.roleFilter, filterArgs),
           this.roleAttribute);
         if (!results.hasNext() && this.noResultsIsError) {
-          this.success = false;
+          this.loginSuccess = false;
           throw new LoginException(
             "Could not find roles using " + this.roleFilter);
         }
@@ -143,14 +143,14 @@ public class LdapRoleAuthorizationModule extends AbstractLoginModule
         this.roles.addAll(this.defaultRole);
       }
       if (!this.roles.isEmpty()) {
-        this.success = true;
+        this.loginSuccess = true;
       }
       this.storeCredentials(nameCb, passCb, null);
     } catch (NamingException e) {
       if (this.logger.isDebugEnabled()) {
         this.logger.debug("Error occured attempting role lookup", e);
       }
-      this.success = false;
+      this.loginSuccess = false;
       throw new LoginException(e.getMessage());
     } finally {
       this.ldap.close();
