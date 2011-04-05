@@ -44,6 +44,9 @@
   <parameter name="createGroup9"
              value="/edu/vt/middleware/ldap/createGroupEntry-9.ldif"/>
 
+  <parameter name="createSpecialCharsEntry"
+             value="/edu/vt/middleware/ldap/specialChars.ldif"/>
+
   <parameter name="multipleLdifResultsIn"
              value="/edu/vt/middleware/ldap/multipleEntriesIn.ldif"/>
   <parameter name="multipleLdifResultsOut"
@@ -137,6 +140,11 @@
   <parameter name="searchExceptionDn" value="ou=test,dc=vt,dc=edu"/>
   <parameter name="searchExceptionFilter" value="(|(uugid=group2)(uugid=group3)(uugid=group4))"/>
   <parameter name="searchExceptionResultsSize" value="3"/>
+
+  <parameter name="specialCharSearchDn" value="ou=test,dc=vt,dc=edu"/>
+  <parameter name="specialCharSearchFilter" value="(uid=17893)"/>
+  <parameter name="specialCharSearchResults"
+             value="/edu/vt/middleware/ldap/specialChars.ldif"/>
 
   <parameter name="listDn" value="ou=test,dc=vt,dc=edu"/>
   <parameter name="listResults" value="uid=1|uid=2"/>

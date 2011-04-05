@@ -72,6 +72,9 @@ public class LdapTest
   /** Entry created for ldap tests. */
   private static LdapEntry testLdapEntry;
 
+  /** Entry created for ldap tests. */
+  private static LdapEntry specialCharsLdapEntry;
+
   /** Entries for group tests. */
   private static Map<String, LdapEntry[]> groupEntries =
     new HashMap<String, LdapEntry[]>();
@@ -208,6 +211,35 @@ public class LdapTest
 
 
   /**
+   * @param  ldifFile  to create.
+   *
+   * @throws  Exception  On test failure.
+   */
+  @Parameters({ "createSpecialCharsEntry" })
+  @BeforeClass(groups = {"ldaptest"})
+  public void createSpecialCharsEntry(final String ldifFile)
+    throws Exception
+  {
+    final String ldif = TestUtil.readFileIntoString(ldifFile);
+    specialCharsLdapEntry = TestUtil.convertLdifToEntry(ldif);
+
+    Ldap ldap = TestUtil.createSetupLdap();
+    ldap.create(
+      specialCharsLdapEntry.getDn(),
+      specialCharsLdapEntry.getLdapAttributes().toAttributes());
+    ldap.close();
+    ldap = TestUtil.createLdap();
+    while (
+      !ldap.compare(
+        specialCharsLdapEntry.getDn(),
+          new SearchFilter(specialCharsLdapEntry.getDn().split(",")[0]))) {
+      Thread.sleep(100);
+    }
+    ldap.close();
+  }
+
+
+  /**
    * @param  oldDn  to rename.
    * @param  newDn  to rename to.
    *
@@ -256,6 +288,7 @@ public class LdapTest
   {
     final Ldap ldap = TestUtil.createSetupLdap();
     ldap.delete(testLdapEntry.getDn());
+    ldap.delete(specialCharsLdapEntry.getDn());
     ldap.delete(groupEntries.get("2")[0].getDn());
     ldap.delete(groupEntries.get("3")[0].getDn());
     ldap.delete(groupEntries.get("4")[0].getDn());
@@ -978,6 +1011,41 @@ public class LdapTest
 
     final LdapEntry entry = TestUtil.convertLdifToEntry(expected);
     entry.setDn(entry.getDn().substring(0, entry.getDn().indexOf(",")));
+    AssertJUnit.assertEquals(
+      entry,
+      TestUtil.convertLdifToEntry((new Ldif()).createLdif(iter)));
+  }
+
+
+  /**
+   * @param  dn  to search on.
+   * @param  filter  to search with.
+   * @param  ldifFile  to compare with
+   *
+   * @throws  Exception  On test failure.
+   */
+  @Parameters(
+    {
+      "specialCharSearchDn",
+      "specialCharSearchFilter",
+      "specialCharSearchResults"
+    }
+  )
+  @Test(groups = {"ldaptest"})
+  public void searchSpecialChars(
+    final String dn,
+    final String filter,
+    final String ldifFile)
+    throws Exception
+  {
+    final String expected = TestUtil.readFileIntoString(ldifFile);
+    final LdapEntry entry = TestUtil.convertLdifToEntry(expected);
+    entry.setDn(entry.getDn().replaceAll("\\\\", ""));
+
+    final Ldap ldap = this.createLdap(false);
+
+    final Iterator<SearchResult> iter = ldap.search(
+      dn, new SearchFilter(filter));
     AssertJUnit.assertEquals(
       entry,
       TestUtil.convertLdifToEntry((new Ldif()).createLdif(iter)));

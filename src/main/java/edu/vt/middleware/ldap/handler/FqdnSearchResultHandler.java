@@ -14,6 +14,8 @@
 package edu.vt.middleware.ldap.handler;
 
 import java.net.URI;
+import javax.naming.CompositeName;
+import javax.naming.InvalidNameException;
 import javax.naming.directory.SearchResult;
 
 /**
@@ -65,24 +67,45 @@ public class FqdnSearchResultHandler extends CopySearchResultHandler
       if (sr.isRelative()) {
         if (sc.getDn() != null) {
           if (!"".equals(resultName)) {
-            fqName = new StringBuffer(resultName).append(",").append(
-              sc.getDn());
+            fqName = new StringBuffer(readCompositeName(resultName)).append(
+              ",").append(sc.getDn());
           } else {
             fqName = new StringBuffer(sc.getDn());
           }
         } else {
-          fqName = new StringBuffer(resultName);
+          fqName = new StringBuffer(readCompositeName(resultName));
         }
       } else {
         if (this.removeUrls) {
           fqName = new StringBuffer(
-            URI.create(resultName).getPath().substring(1));
+            URI.create(readCompositeName(resultName)).getPath().substring(1));
         } else {
-          fqName = new StringBuffer(resultName);
+          fqName = new StringBuffer(readCompositeName(resultName));
         }
       }
       newDn = fqName.toString();
     }
     return newDn;
+  }
+
+
+  /**
+   * Uses a <code>CompositeName</code> to parse the supplied string.
+   *
+   * @param  s  <code>String</code> composite name to read
+   * @return  <code>String</code> ldap name
+   */
+  private String readCompositeName(final String s)
+  {
+    String name = "";
+    try {
+      final CompositeName cName = new CompositeName(s);
+      name = cName.get(0);
+    } catch (InvalidNameException e) {
+      if (this.logger.isErrorEnabled()) {
+        this.logger.error("Error formatting name: " + s, e);
+      }
+    }
+    return name;
   }
 }
