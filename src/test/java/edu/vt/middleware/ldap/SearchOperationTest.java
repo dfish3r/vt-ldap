@@ -45,6 +45,9 @@ public class SearchOperationTest extends AbstractTest
   /** Entry created for ldap tests. */
   private static LdapEntry testLdapEntry;
 
+  /** Entry created for ldap tests. */
+  private static LdapEntry specialCharsLdapEntry;
+
   /** Entries for group tests. */
   private static Map<String, LdapEntry[]> groupEntries =
     new HashMap<String, LdapEntry[]>();
@@ -169,12 +172,29 @@ public class SearchOperationTest extends AbstractTest
   }
 
 
+  /**
+   * @param  ldifFile  to create.
+   *
+   * @throws  Exception  On test failure.
+   */
+  @Parameters({ "createSpecialCharsEntry" })
+  @BeforeClass(groups = {"searchtest"})
+  public void createSpecialCharsEntry(final String ldifFile)
+    throws Exception
+  {
+    final String ldif = TestUtil.readFileIntoString(ldifFile);
+    specialCharsLdapEntry = TestUtil.convertLdifToResult(ldif).getEntry();
+    super.createLdapEntry(specialCharsLdapEntry);
+  }
+
+
   /** @throws  Exception  On test failure. */
   @AfterClass(groups = {"searchtest"})
   public void deleteLdapEntry()
     throws Exception
   {
     super.deleteLdapEntry(testLdapEntry.getDn());
+    super.deleteLdapEntry(specialCharsLdapEntry.getDn());
     super.deleteLdapEntry(groupEntries.get("2")[0].getDn());
     super.deleteLdapEntry(groupEntries.get("3")[0].getDn());
     super.deleteLdapEntry(groupEntries.get("4")[0].getDn());
@@ -653,6 +673,44 @@ public class SearchOperationTest extends AbstractTest
     AssertJUnit.assertEquals(ucNamesChangeResult, result);
 
     conn.close();
+  }
+
+
+  /**
+   * @param  dn  to search on.
+   * @param  filter  to search with.
+   * @param  ldifFile  to compare with
+   *
+   * @throws  Exception  On test failure.
+   */
+  @Parameters(
+    {
+      "specialCharSearchDn",
+      "specialCharSearchFilter",
+      "specialCharSearchResults"
+    }
+  )
+  @Test(groups = {"searchtest"})
+  public void specialCharsSearch(
+    final String dn,
+    final String filter,
+    final String ldifFile)
+    throws Exception
+  {
+    final SearchOperation search = new SearchOperation(
+      this.createLdapConnection(false));
+    final String expected = TestUtil.readFileIntoString(ldifFile);
+    final LdapResult specialCharsResult = TestUtil.convertLdifToResult(
+      expected);
+    specialCharsResult.getEntry().setDn(
+      specialCharsResult.getEntry().getDn().replaceAll("\\\\", ""));
+
+    // test special character searching
+    final LdapResult result = search.execute(
+      new SearchRequest(
+        dn,
+        new SearchFilter(filter))).getResult();
+    AssertJUnit.assertEquals(specialCharsResult, result);
   }
 
 

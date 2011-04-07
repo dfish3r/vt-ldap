@@ -50,6 +50,9 @@
   <parameter name="createGroup9"
              value="/edu/vt/middleware/ldap/createGroupEntry-9.ldif"/>
 
+  <parameter name="createSpecialCharsEntry"
+             value="/edu/vt/middleware/ldap/specialChars.ldif"/>
+
   <parameter name="multipleLdifResultsIn"
              value="/edu/vt/middleware/ldap/multipleEntriesIn.ldif"/>
   <parameter name="multipleLdifResultsOut"
@@ -133,6 +136,11 @@
   <parameter name="binarySearchReturnAttr" value="jpegPhoto"/>
   <parameter name="binarySearchResult"
              value="/9j/4AAQSkZJRgABAQEASABIAAD//gATQ3JlYXRlZCB3aXRoIEdJTVD/2wBDAFA3PEY8MlBGQUZaVVBfeMiCeG5uePWvuZHI////////////////////////////////////////////////////2wBDAVVaWnhpeOuCguv/////////////////////////////////////////////////////////////////////////wAARCAANABcDASIAAhEBAxEB/8QAGAAAAwEBAAAAAAAAAAAAAAAAAAIEAQP/xAAiEAEAAgIABQUAAAAAAAAAAAABAAMCEQQSMUFxISIjMnP/xAAUAQEAAAAAAAAAAAAAAAAAAAAA/8QAFBEBAAAAAAAAAAAAAAAAAAAAAP/aAAwDAQACEQMRAD8A71fHZZW+ge48MWqvG0bLMRcnZvsdpnGH0R0ryvhlAAAdCBPRTXkZ7wHWaEI/D9LP0yhA/9k="/>
+
+  <parameter name="specialCharSearchDn" value="ou=test,dc=vt,dc=edu"/>
+  <parameter name="specialCharSearchFilter" value="(uid=17893)"/>
+  <parameter name="specialCharSearchResults"
+             value="/edu/vt/middleware/ldap/specialChars.ldif"/>
 
   <parameter name="searchExceptionDn" value="ou=test,dc=vt,dc=edu"/>
   <parameter name="searchExceptionFilter" value="(|(uugid=group2)(uugid=group3)(uugid=group4))"/>

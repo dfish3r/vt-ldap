@@ -15,6 +15,8 @@ package edu.vt.middleware.ldap.provider.jndi;
 
 import java.io.IOException;
 import java.net.URI;
+import javax.naming.CompositeName;
+import javax.naming.InvalidNameException;
 import javax.naming.NamingEnumeration;
 import javax.naming.NamingException;
 import javax.naming.directory.SearchControls;
@@ -554,8 +556,10 @@ public class JndiConnection implements Connection
    * @param  sr  to determine DN for
    * @param  baseDn  that search was performed on
    * @return  fully qualified DN
+   * @throws  NamingException  if search result name cannot be formatted as a DN
    */
   protected String formatDn(final SearchResult sr, final String baseDn)
+    throws NamingException
   {
     String newDn = null;
     final String resultName = sr.getName();
@@ -564,24 +568,42 @@ public class JndiConnection implements Connection
       if (sr.isRelative()) {
         if (baseDn != null) {
           if (!"".equals(resultName)) {
-            fqName = new StringBuilder(resultName).append(",").append(baseDn);
+            fqName = new StringBuilder(
+              this.readCompositeName(resultName)).append(",").append(baseDn);
           } else {
             fqName = new StringBuilder(baseDn);
           }
         } else {
-          fqName = new StringBuilder(resultName);
+          fqName = new StringBuilder(this.readCompositeName(resultName));
         }
       } else {
         if (this.removeDnUrls) {
           fqName = new StringBuilder(
-            URI.create(resultName).getPath().substring(1));
+            URI.create(
+              this.readCompositeName(resultName)).getPath().substring(1));
         } else {
-          fqName = new StringBuilder(resultName);
+          fqName = new StringBuilder(this.readCompositeName(resultName));
         }
       }
       newDn = fqName.toString();
     }
     return newDn;
+  }
+
+
+  /**
+   * Uses a composite name to parse the supplied string.
+   *
+   * @param  s  composite name to read
+   * @return  ldap name
+   * @throws  InvalidNameException  if the supplied string is not a valid
+   * composite name
+   */
+  private String readCompositeName(final String s)
+    throws InvalidNameException
+  {
+    final CompositeName cName = new CompositeName(s);
+    return cName.get(0);
   }
 
 
