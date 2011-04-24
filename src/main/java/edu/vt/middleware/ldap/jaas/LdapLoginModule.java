@@ -119,7 +119,7 @@ public class LdapLoginModule extends AbstractLoginModule implements LoginModule
             this.roles.addAll(this.defaultRole);
           }
         }
-        this.success = true;
+        this.loginSuccess = true;
       } catch (AuthenticationException e) {
         if (this.tryFirstPass) {
           this.getCredentials(nameCb, passCb, true);
@@ -132,17 +132,17 @@ public class LdapLoginModule extends AbstractLoginModule implements LoginModule
             if (this.defaultRole != null && !this.defaultRole.isEmpty()) {
               this.roles.addAll(this.defaultRole);
             }
-            this.success = true;
+            this.loginSuccess = true;
           } catch (AuthenticationException e2) {
             authEx = e;
-            this.success = false;
+            this.loginSuccess = false;
           }
         } else {
           authEx = e;
-          this.success = false;
+          this.loginSuccess = false;
         }
       }
-      if (!this.success) {
+      if (!this.loginSuccess) {
         if (this.logger.isDebugEnabled()) {
           this.logger.debug("Authentication failed", authEx);
         }
@@ -176,7 +176,7 @@ public class LdapLoginModule extends AbstractLoginModule implements LoginModule
       if (this.logger.isDebugEnabled()) {
         this.logger.debug("Error occured attempting authentication", e);
       }
-      this.success = false;
+      this.loginSuccess = false;
       throw new LoginException(
         e != null ? e.getMessage() : "Authentication Error");
     }

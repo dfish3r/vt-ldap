@@ -94,28 +94,28 @@ public class LdapDnAuthorizationModule extends AbstractLoginModule
       final String loginName = nameCb.getName();
       if (loginName != null && this.setLdapPrincipal) {
         this.principals.add(new LdapPrincipal(loginName));
-        this.success = true;
+        this.loginSuccess = true;
       }
 
       final String loginDn = auth.resolveDn(nameCb.getName());
       if (loginDn == null && this.noResultsIsError) {
-        this.success = false;
+        this.loginSuccess = false;
         throw new LoginException("Could not find DN for " + nameCb.getName());
       }
       if (loginDn != null && this.setLdapDnPrincipal) {
         this.principals.add(new LdapDnPrincipal(loginDn));
-        this.success = true;
+        this.loginSuccess = true;
       }
       if (this.defaultRole != null && !this.defaultRole.isEmpty()) {
         this.roles.addAll(this.defaultRole);
-        this.success = true;
+        this.loginSuccess = true;
       }
       this.storeCredentials(nameCb, passCb, loginDn);
     } catch (LdapException e) {
       if (this.logger.isDebugEnabled()) {
         this.logger.debug("Error occured attempting DN lookup", e);
       }
-      this.success = false;
+      this.loginSuccess = false;
       throw new LoginException(
         e != null ? e.getMessage() : "DN resolution error");
     }

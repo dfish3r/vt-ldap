@@ -76,7 +76,7 @@ public class PropsLoginModule extends AbstractLoginModule
   /** {@inheritDoc} */
   public boolean abort()
   {
-    this.success = false;
+    this.loginSuccess = false;
     return true;
   }
 
