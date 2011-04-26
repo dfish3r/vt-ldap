@@ -97,4 +97,12 @@ public interface Connection
    * @throws  LdapException  if an error occurs
    */
   LdapResult search(SearchRequest request) throws LdapException;
+
+
+  /**
+   * Tear down this connection to an LDAP.
+   *
+   * @throws  LdapException  if an LDAP error occurs
+   */
+  void close() throws LdapException;
 }

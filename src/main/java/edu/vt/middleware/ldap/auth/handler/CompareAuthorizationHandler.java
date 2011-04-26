@@ -15,12 +15,13 @@ package edu.vt.middleware.ldap.auth.handler;
 
 import java.util.ArrayList;
 import java.util.List;
+import edu.vt.middleware.ldap.LdapConnection;
 import edu.vt.middleware.ldap.LdapException;
 import edu.vt.middleware.ldap.LdapResult;
 import edu.vt.middleware.ldap.SearchFilter;
+import edu.vt.middleware.ldap.SearchOperation;
 import edu.vt.middleware.ldap.SearchRequest;
 import edu.vt.middleware.ldap.auth.AuthorizationException;
-import edu.vt.middleware.ldap.provider.Connection;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -81,7 +82,8 @@ public class CompareAuthorizationHandler implements AuthorizationHandler
 
 
   /** {@inheritDoc} */
-  public void process(final AuthenticationCriteria ac, final Connection conn)
+  public void process(
+    final AuthenticationCriteria ac, final LdapConnection conn)
     throws LdapException
   {
     final SearchFilter filter = new SearchFilter(this.searchFilter.getFilter());
@@ -93,9 +95,10 @@ public class CompareAuthorizationHandler implements AuthorizationHandler
     filter.setFilterArgs(filterArgs);
 
     // perform ldap object level operation
+    final SearchOperation search = new SearchOperation(conn);
     final SearchRequest sr = SearchRequest.newObjectScopeSearchRequest(
       ac.getDn(), new String[0], filter);
-    final LdapResult lr = conn.search(sr);
+    final LdapResult lr = search.execute(sr).getResult();
     if (lr.size() != 1) {
       throw new AuthorizationException("Compare failed");
     }

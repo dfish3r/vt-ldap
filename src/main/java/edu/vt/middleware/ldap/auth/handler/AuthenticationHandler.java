@@ -13,9 +13,9 @@
 */
 package edu.vt.middleware.ldap.auth.handler;
 
+import edu.vt.middleware.ldap.LdapConnection;
 import edu.vt.middleware.ldap.LdapConnectionConfig;
 import edu.vt.middleware.ldap.LdapException;
-import edu.vt.middleware.ldap.provider.Connection;
 
 /**
  * Provides an interface for LDAP authentication implementations.
@@ -40,19 +40,8 @@ public interface AuthenticationHandler
    * @throws  AuthenticationException  if authentication fails
    * @throws  LdapException  if ldap operation fails
    */
-  Connection authenticate(AuthenticationCriteria ac)
+  LdapConnection authenticate(AuthenticationCriteria ac)
     throws LdapException;
-
-
-  /**
-   * Tear down a connection that was created by a call to
-   * {@link #authenticate(AuthenticationCriteria)}.
-   *
-   * @param  conn  connection to destroy
-   *
-   * @throws  LdapException  if an LDAP error occurs
-   */
-  void destroy(Connection conn) throws LdapException;
 
 
   /**
@@ -69,12 +58,4 @@ public interface AuthenticationHandler
    * @param  config  ldap connection config
    */
   void setLdapConnectionConfig(final LdapConnectionConfig config);
-
-
-  /**
-   * Returns a separate instance of this authentication handler.
-   *
-   * @return  authentication handler
-   */
-  AuthenticationHandler newInstance();
 }

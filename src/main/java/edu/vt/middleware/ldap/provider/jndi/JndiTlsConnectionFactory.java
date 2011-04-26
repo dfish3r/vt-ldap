@@ -27,7 +27,6 @@ import edu.vt.middleware.ldap.LdapConnectionConfig;
 import edu.vt.middleware.ldap.LdapException;
 import edu.vt.middleware.ldap.ResultCode;
 import edu.vt.middleware.ldap.auth.AuthenticationException;
-import edu.vt.middleware.ldap.provider.Connection;
 import edu.vt.middleware.ldap.provider.ConnectionException;
 
 /**
@@ -44,12 +43,6 @@ public class JndiTlsConnectionFactory extends AbstractJndiConnectionFactory
 
   /** hostname verifier for TLS connections. */
   protected HostnameVerifier hostnameVerifier;
-
-  /**
-   * Whether to call {@link StartTlsResponse#close()} when {@link #close()} is
-   * called.
-   */
-  private boolean stopTlsOnClose;
 
 
   /**
@@ -110,33 +103,6 @@ public class JndiTlsConnectionFactory extends AbstractJndiConnectionFactory
   }
 
 
-  /**
-   * Returns whether to call {@link StartTlsResponse#close()} when {@link
-   * #close()} is called.
-   *
-   * @return  stop TLS on close
-   */
-  public boolean getStopTlsOnClose()
-  {
-    return this.stopTlsOnClose;
-  }
-
-
-  /**
-   * Sets whether to call {@link StartTlsResponse#close()} when {@link #close()}
-   * is called.
-   *
-   * @param  b  stop TLS on close
-   */
-  public void setStopTlsOnClose(final boolean b)
-  {
-    if (this.logger.isTraceEnabled()) {
-      this.logger.trace("setting stopTlsOnClose: " + b);
-    }
-    this.stopTlsOnClose = b;
-  }
-
-
   /** {@inheritDoc} */
   protected JndiTlsConnection createInternal(
     final String url, final String dn, final Credential credential)
@@ -192,7 +158,9 @@ public class JndiTlsConnectionFactory extends AbstractJndiConnectionFactory
           this.operationRetryResultCodes));
     } catch (javax.naming.AuthenticationException e) {
       try {
-        this.destroy(conn);
+        if (conn != null) {
+          conn.close();
+        }
       } catch (LdapException e2) {
         if (this.logger.isDebugEnabled()) {
           this.logger.debug("Problem tearing down connection", e2);
@@ -201,7 +169,9 @@ public class JndiTlsConnectionFactory extends AbstractJndiConnectionFactory
       throw new AuthenticationException(e, ResultCode.INVALID_CREDENTIALS);
     } catch (NamingException e) {
       try {
-        this.destroy(conn);
+        if (conn != null) {
+          conn.close();
+        }
       } catch (LdapException e2) {
         if (this.logger.isDebugEnabled()) {
           this.logger.debug("Problem tearing down connection", e2);
@@ -211,7 +181,9 @@ public class JndiTlsConnectionFactory extends AbstractJndiConnectionFactory
         e, NamingExceptionUtil.getResultCode(e.getClass()));
     } catch (IOException e) {
       try {
-        this.destroy(conn);
+        if (conn != null) {
+          conn.close();
+        }
       } catch (LdapException e2) {
         if (this.logger.isDebugEnabled()) {
           this.logger.debug("Problem tearing down connection", e2);
@@ -220,7 +192,9 @@ public class JndiTlsConnectionFactory extends AbstractJndiConnectionFactory
       throw new ConnectionException(e);
     } catch (RuntimeException e) {
       try {
-        this.destroy(conn);
+        if (conn != null) {
+          conn.close();
+        }
       } catch (LdapException e2) {
         if (this.logger.isDebugEnabled()) {
           this.logger.debug("Problem tearing down connection", e2);
@@ -229,27 +203,6 @@ public class JndiTlsConnectionFactory extends AbstractJndiConnectionFactory
       throw e;
     }
     return conn;
-  }
-
-
-  /** {@inheritDoc} */
-  public void destroy(final Connection conn)
-    throws LdapException
-  {
-    if (conn != null) {
-      final JndiTlsConnection jndiConn = (JndiTlsConnection) conn;
-      try {
-        if (this.stopTlsOnClose) {
-          this.stopTls(jndiConn.getStartTlsResponse());
-        }
-      } catch (IOException e) {
-        if (this.logger.isErrorEnabled()) {
-          this.logger.error("Error stopping TLS", e);
-        }
-      } finally {
-        super.destroy(conn);
-      }
-    }
   }
 
 
@@ -287,23 +240,6 @@ public class JndiTlsConnectionFactory extends AbstractJndiConnectionFactory
       tls.negotiate();
     }
     return tls;
-  }
-
-
-  /**
-   * This will attempt to StopTLS with the supplied start tls response.
-   *
-   * @param  tls  start tls response
-   *
-   * @throws  IOException  if an error occurs while closing the TLS
-   * connection
-   */
-  public void stopTls(final StartTlsResponse tls)
-    throws IOException
-  {
-    if (tls != null) {
-      tls.close();
-    }
   }
 
 

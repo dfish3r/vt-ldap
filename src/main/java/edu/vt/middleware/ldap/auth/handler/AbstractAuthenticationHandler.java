@@ -14,8 +14,6 @@
 package edu.vt.middleware.ldap.auth.handler;
 
 import edu.vt.middleware.ldap.LdapConnectionConfig;
-import edu.vt.middleware.ldap.LdapException;
-import edu.vt.middleware.ldap.provider.Connection;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -33,7 +31,7 @@ public abstract class AbstractAuthenticationHandler
   /** Log for this class. */
   protected final Log logger = LogFactory.getLog(this.getClass());
 
-  /** Ldap connection configuration. */
+  /** LDAP connection configuration. */
   protected LdapConnectionConfig config;
 
 
@@ -48,13 +46,5 @@ public abstract class AbstractAuthenticationHandler
   public void setLdapConnectionConfig(final LdapConnectionConfig lcc)
   {
     this.config = lcc;
-  }
-
-
-  /** {@inheritDoc} */
-  public void destroy(final Connection conn)
-    throws LdapException
-  {
-    this.config.getConnectionFactory().destroy(conn);
   }
 }

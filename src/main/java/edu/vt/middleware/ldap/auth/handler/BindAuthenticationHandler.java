@@ -13,9 +13,9 @@
 */
 package edu.vt.middleware.ldap.auth.handler;
 
+import edu.vt.middleware.ldap.LdapConnection;
 import edu.vt.middleware.ldap.LdapConnectionConfig;
 import edu.vt.middleware.ldap.LdapException;
-import edu.vt.middleware.ldap.provider.Connection;
 
 /**
  * Provides an LDAP authentication implementation that leverages the LDAP bind
@@ -44,18 +44,12 @@ public class BindAuthenticationHandler extends AbstractAuthenticationHandler
 
 
   /** {@inheritDoc} */
-  public Connection authenticate(final AuthenticationCriteria ac)
+  public LdapConnection authenticate(final AuthenticationCriteria ac)
     throws LdapException
   {
-    return this.config.getConnectionFactory().create(
-      ac.getDn(), ac.getCredential());
-  }
-
-
-  /** {@inheritDoc} */
-  public BindAuthenticationHandler newInstance()
-  {
-    return new BindAuthenticationHandler(this.config);
+    final LdapConnection conn = new LdapConnection(this.config);
+    conn.open(ac.getDn(), ac.getCredential());
+    return conn;
   }
 
 

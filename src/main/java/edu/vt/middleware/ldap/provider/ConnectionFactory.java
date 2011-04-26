@@ -69,14 +69,4 @@ public interface ConnectionFactory
    * @throws  LdapException  if an LDAP error occurs
    */
   Connection create(String dn, Credential credential) throws LdapException;
-
-
-  /**
-   * Tear down a connection to an LDAP.
-   *
-   * @param  conn  connection to destroy
-   *
-   * @throws  LdapException  if an LDAP error occurs
-   */
-  void destroy(Connection conn) throws LdapException;
 }

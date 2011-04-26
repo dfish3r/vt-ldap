@@ -164,12 +164,20 @@ public class JndiConnection implements Connection
   }
 
 
-  /**
-   * Makes the underlying ldap context available for garbage collection.
-   */
-  public void clear()
+  /** {@inheritDoc} */
+  public void close()
+    throws LdapException
   {
-    this.context = null;
+    try {
+      if (this.context != null) {
+        this.context.close();
+      }
+    } catch (NamingException e) {
+      throw new LdapException(
+        e, NamingExceptionUtil.getResultCode(e.getClass()));
+    } finally {
+      this.context = null;
+    }
   }
 
 

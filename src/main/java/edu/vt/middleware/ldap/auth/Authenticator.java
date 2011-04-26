@@ -15,6 +15,7 @@ package edu.vt.middleware.ldap.auth;
 
 import java.util.Arrays;
 import edu.vt.middleware.ldap.Credential;
+import edu.vt.middleware.ldap.LdapConnection;
 import edu.vt.middleware.ldap.LdapConnectionConfig;
 import edu.vt.middleware.ldap.LdapEntry;
 import edu.vt.middleware.ldap.LdapException;
@@ -25,7 +26,6 @@ import edu.vt.middleware.ldap.auth.handler.AuthenticationHandler;
 import edu.vt.middleware.ldap.auth.handler.AuthenticationResultHandler;
 import edu.vt.middleware.ldap.auth.handler.AuthorizationHandler;
 import edu.vt.middleware.ldap.auth.handler.BindAuthenticationHandler;
-import edu.vt.middleware.ldap.provider.Connection;
 
 /**
  * Provides functionality to authenticate users against an ldap directory.
@@ -136,16 +136,14 @@ public class Authenticator extends AbstractAuthenticator
 
     LdapResult result = null;
 
-    AuthenticationHandler authHandler = null;
-    Connection conn = null;
+    LdapConnection conn = null;
     try {
       final AuthenticationCriteria ac = new AuthenticationCriteria(dn);
       ac.setCredential(request.getCredential());
-      authHandler = this.authenticationHandler.newInstance();
 
       // attempt to bind as this dn
       conn = this.authenticate(
-        authHandler, this.authenticationResultHandlers, ac);
+        this.authenticationHandler, this.authenticationResultHandlers, ac);
 
       // authentication succeeded, perform authorization if supplied
       final AuthorizationHandler[] authzHandler =
@@ -167,8 +165,8 @@ public class Authenticator extends AbstractAuthenticator
         }
       }
     } finally {
-      if (authHandler != null) {
-        authHandler.destroy(conn);
+      if (conn != null) {
+        conn.close();
       }
     }
 

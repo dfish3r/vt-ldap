@@ -16,12 +16,9 @@ package edu.vt.middleware.ldap.provider.jndi;
 import java.io.PrintStream;
 import java.util.Hashtable;
 import java.util.Map;
-import javax.naming.NamingException;
 import edu.vt.middleware.ldap.LdapConnectionConfig;
-import edu.vt.middleware.ldap.LdapException;
 import edu.vt.middleware.ldap.ResultCode;
 import edu.vt.middleware.ldap.provider.AbstractConnectionFactory;
-import edu.vt.middleware.ldap.provider.Connection;
 
 /**
  * Base class for JNDI connection factory implementations.
@@ -244,26 +241,6 @@ public abstract class AbstractJndiConnectionFactory
   public void setOperationRetryResultCodes(final ResultCode[] codes)
   {
     this.operationRetryResultCodes = codes;
-  }
-
-
-  /** {@inheritDoc} */
-  public void destroy(final Connection conn)
-    throws LdapException
-  {
-    if (conn != null) {
-      final JndiConnection jndiConn = (JndiConnection) conn;
-      try {
-        if (jndiConn.getLdapContext() != null) {
-          jndiConn.getLdapContext().close();
-        }
-      } catch (NamingException e) {
-        throw new LdapException(
-          e, NamingExceptionUtil.getResultCode(e.getClass()));
-      } finally {
-        jndiConn.clear();
-      }
-    }
   }
 
 

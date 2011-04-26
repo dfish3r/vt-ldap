@@ -15,13 +15,14 @@ package edu.vt.middleware.ldap.auth.handler;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import edu.vt.middleware.ldap.CompareOperation;
 import edu.vt.middleware.ldap.CompareRequest;
 import edu.vt.middleware.ldap.LdapAttribute;
+import edu.vt.middleware.ldap.LdapConnection;
 import edu.vt.middleware.ldap.LdapConnectionConfig;
 import edu.vt.middleware.ldap.LdapException;
 import edu.vt.middleware.ldap.LdapUtil;
 import edu.vt.middleware.ldap.auth.AuthenticationException;
-import edu.vt.middleware.ldap.provider.Connection;
 
 /**
  * Provides an LDAP authentication implementation that leverages a compare
@@ -79,7 +80,7 @@ public class CompareAuthenticationHandler extends AbstractAuthenticationHandler
 
 
   /** {@inheritDoc} */
-  public Connection authenticate(final AuthenticationCriteria ac)
+  public LdapConnection authenticate(final AuthenticationCriteria ac)
     throws LdapException
   {
     byte[] hash = new byte[DIGEST_SIZE];
@@ -91,27 +92,24 @@ public class CompareAuthenticationHandler extends AbstractAuthenticationHandler
       throw new LdapException(e);
     }
 
-    final Connection conn = this.config.getConnectionFactory().create(
-      this.config.getBindDn(), this.config.getBindCredential());
+    final LdapConnection conn = new LdapConnection(this.config);
+    conn.open();
     final LdapAttribute la = new LdapAttribute(
       "userPassword",
       String.format(
         "{%s}%s", this.passwordScheme, LdapUtil.base64Encode(hash)).getBytes());
-    final boolean success = conn.compare(new CompareRequest(ac.getDn(), la));
+    final CompareOperation compare = new CompareOperation(conn);
+    final boolean success = compare.execute(
+      new CompareRequest(ac.getDn(), la)).getResult();
 
     if (!success) {
-      this.config.getConnectionFactory().destroy(conn);
+      if (conn != null) {
+        conn.close();
+      }
       throw new AuthenticationException("Compare authentication failed.");
     } else {
       return conn;
     }
-  }
-
-
-  /** {@inheritDoc} */
-  public CompareAuthenticationHandler newInstance()
-  {
-    return new CompareAuthenticationHandler(this.config);
   }
 
 

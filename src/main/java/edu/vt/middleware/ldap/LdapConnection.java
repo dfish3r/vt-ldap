@@ -19,6 +19,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 /**
+ * Class for managing an LDAP connection.
  *
  * @author  Middleware Services
  * @version  $Revision: 1330 $ $Date: 2010-05-23 18:10:53 -0400 (Sun, 23 May 2010) $
@@ -31,8 +32,8 @@ public class LdapConnection
   /** LDAP connection configuration. */
   protected LdapConnectionConfig config;
 
-  /** LDAP connection handler. */
-  protected ConnectionFactory connectionFactory;
+  /** LDAP connection factory. */
+  protected ConnectionFactory providerConnectionFactory;
 
   /** LDAP connection. */
   protected Connection providerConnection;
@@ -49,7 +50,7 @@ public class LdapConnection
    */
   public LdapConnection(final String ldapUrl)
   {
-    this.setLdapConnectionConfig(new LdapConnectionConfig(ldapUrl));
+    this(new LdapConnectionConfig(ldapUrl));
   }
 
 
@@ -87,6 +88,20 @@ public class LdapConnection
 
 
   /**
+   * Prepares this ldap connection for use. This method should only be invoked
+   * if provider connection factory needs to be modified before the connection
+   * is opened.
+   */
+  public synchronized void initialize()
+  {
+    if (this.providerConnectionFactory == null) {
+      this.providerConnectionFactory =
+        this.config.getLdapProvider().getConnectionFactory(this.config);
+    }
+  }
+
+
+  /**
    * This will establish a connection if one does not already exist by binding
    * to the LDAP using parameters given by
    * {@link LdapConnectionConfig#getBindDn()} and
@@ -99,12 +114,30 @@ public class LdapConnection
   public synchronized void open()
     throws LdapException
   {
+    this.open(this.config.getBindDn(), this.config.getBindCredential());
+  }
+
+
+  /**
+   * This will establish a connection if one does not already exist by binding
+   * to the LDAP using the supplied dn and credential. This connection should be
+   * closed using {@link #close()}.
+   *
+   * @param  bindDn  to bind to the LDAP as
+   * @param  bindCredential  to bind to the LDAP with
+   *
+   * @throws  LdapException  if the LDAP cannot be reached
+   */
+  public synchronized void open(
+    final String bindDn, final Credential bindCredential)
+    throws LdapException
+  {
     if (this.providerConnection != null) {
       throw new IllegalStateException("Connection already open");
     }
-    this.connectionFactory = this.config.getConnectionFactory();
-    this.providerConnection = this.connectionFactory.create(
-      this.config.getBindDn(), this.config.getBindCredential());
+    this.initialize();
+    this.providerConnection = this.providerConnectionFactory.create(
+      bindDn, bindCredential);
   }
 
 
@@ -112,8 +145,8 @@ public class LdapConnection
   public synchronized void close()
   {
     try {
-      if (this.connectionFactory != null) {
-        this.connectionFactory.destroy(this.providerConnection);
+      if (this.providerConnection != null) {
+        this.providerConnection.close();
       }
     } catch (LdapException e) {
       if (this.logger.isWarnEnabled()) {
@@ -121,7 +154,6 @@ public class LdapConnection
       }
     } finally {
       this.providerConnection = null;
-      this.connectionFactory = null;
     }
   }
 
@@ -138,6 +170,21 @@ public class LdapConnection
       throw new IllegalStateException("Connection is not open");
     }
     return this.providerConnection;
+  }
+
+
+  /**
+   * Returns the provider specific connection factory. Must be called after a
+   * successful call to {@link #initialize()}.
+   *
+   * @return  provider connection
+   */
+  public ConnectionFactory getProviderConnectionFactory()
+  {
+    if (this.providerConnectionFactory == null) {
+      throw new IllegalStateException("Connection is not initialized");
+    }
+    return this.providerConnectionFactory;
   }
 
 
@@ -236,8 +283,6 @@ public class LdapConnection
   }
 
 
-
-
   /**
    * Provides a descriptive string representation of this instance.
    *
@@ -248,11 +293,11 @@ public class LdapConnection
   {
     return
       String.format(
-        "%s@%d::config=%s, connectionFactory=%s, providerConnection=%s",
+        "%s@%d::config=%s, providerConnectionFactory=%s, providerConnection=%s",
         this.getClass().getName(),
         this.hashCode(),
         this.config,
-        this.connectionFactory,
+        this.providerConnectionFactory,
         this.providerConnection);
   }
 

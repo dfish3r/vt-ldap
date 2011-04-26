@@ -14,16 +14,17 @@
 package edu.vt.middleware.ldap.auth;
 
 import java.util.Arrays;
+import edu.vt.middleware.ldap.LdapConnection;
 import edu.vt.middleware.ldap.LdapException;
 import edu.vt.middleware.ldap.LdapResult;
 import edu.vt.middleware.ldap.SearchFilter;
+import edu.vt.middleware.ldap.SearchOperation;
 import edu.vt.middleware.ldap.SearchRequest;
 import edu.vt.middleware.ldap.auth.handler.AuthenticationCriteria;
 import edu.vt.middleware.ldap.auth.handler.AuthenticationHandler;
 import edu.vt.middleware.ldap.auth.handler.AuthenticationResultHandler;
 import edu.vt.middleware.ldap.auth.handler.AuthorizationHandler;
 import edu.vt.middleware.ldap.auth.handler.CompareAuthorizationHandler;
-import edu.vt.middleware.ldap.provider.Connection;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -145,13 +146,13 @@ public abstract class AbstractAuthenticator
    * @throws  AuthenticationException  if the bind fails
    * @throws  LdapException  if an LDAP error occurs
    */
-  protected Connection authenticate(
+  protected LdapConnection authenticate(
     final AuthenticationHandler authHandler,
     final AuthenticationResultHandler[] authResultHandler,
     final AuthenticationCriteria ac)
     throws LdapException
   {
-    Connection conn = null;
+    LdapConnection conn = null;
     try {
       conn = authHandler.authenticate(ac);
       if (this.logger.isInfoEnabled()) {
@@ -188,7 +189,7 @@ public abstract class AbstractAuthenticator
   protected void authorize(
     final AuthorizationHandler[] authzHandler,
     final AuthenticationResultHandler[] authResultHandler,
-    final Connection conn,
+    final LdapConnection conn,
     final AuthenticationCriteria ac)
     throws LdapException
   {
@@ -229,7 +230,9 @@ public abstract class AbstractAuthenticator
    * @throws  LdapException  if an LDAP error occurs
    */
   protected LdapResult getLdapEntry(
-    final String dn, final AuthenticationRequest request, final Connection conn)
+    final String dn,
+    final AuthenticationRequest request,
+    final LdapConnection conn)
     throws LdapException
   {
     if (this.logger.isDebugEnabled()) {
@@ -239,8 +242,9 @@ public abstract class AbstractAuthenticator
         (request.getReturnAttributes() == null ?
           "all attributes" : Arrays.toString(request.getReturnAttributes())));
     }
-    return conn.search(SearchRequest.newObjectScopeSearchRequest(
-      dn, request.getReturnAttributes()));
+    final SearchOperation search = new SearchOperation(conn);
+    return search.execute(SearchRequest.newObjectScopeSearchRequest(
+      dn, request.getReturnAttributes())).getResult();
   }
 
 

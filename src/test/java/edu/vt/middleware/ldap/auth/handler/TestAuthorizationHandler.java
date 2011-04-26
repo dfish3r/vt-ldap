@@ -15,9 +15,9 @@ package edu.vt.middleware.ldap.auth.handler;
 
 import java.util.ArrayList;
 import java.util.List;
+import edu.vt.middleware.ldap.LdapConnection;
 import edu.vt.middleware.ldap.LdapException;
 import edu.vt.middleware.ldap.auth.AuthorizationException;
-import edu.vt.middleware.ldap.provider.Connection;
 
 /**
  * Class for testing that authorization handlers are firing.
@@ -36,7 +36,8 @@ public class TestAuthorizationHandler implements AuthorizationHandler
 
 
   /** {@inheritDoc} */
-  public void process(final AuthenticationCriteria ac, final Connection conn)
+  public void process(
+    final AuthenticationCriteria ac, final LdapConnection conn)
     throws LdapException
   {
     if (!succeed) {

@@ -786,10 +786,11 @@ public class SearchOperationTest extends AbstractTest
     throws Exception
   {
     final LdapConnection conn = this.createLdapConnection(true);
+    conn.initialize();
 
     final ResultCode retryResultCode = ResultCode.valueOf(resultCode);
-    conn.getLdapConnectionConfig().getConnectionFactory()
-      .setOperationRetryResultCodes(new ResultCode[] {retryResultCode, });
+    conn.getProviderConnectionFactory().setOperationRetryResultCodes(
+      new ResultCode[] {retryResultCode, });
 
     conn.open();
     final RetrySearchOperation search = new RetrySearchOperation(conn);
@@ -824,8 +825,7 @@ public class SearchOperationTest extends AbstractTest
     search.reset();
     search.setOperationRetry(1);
 
-    conn.getLdapConnectionConfig().getConnectionFactory()
-      .setOperationRetryResultCodes(null);
+    conn.getProviderConnectionFactory().setOperationRetryResultCodes(null);
 
     conn.open();
     try {
@@ -844,8 +844,8 @@ public class SearchOperationTest extends AbstractTest
     search.setOperationRetry(3);
     search.setOperationRetryWait(1000);
 
-    conn.getLdapConnectionConfig().getConnectionFactory()
-      .setOperationRetryResultCodes(new ResultCode[] {retryResultCode, });
+    conn.getProviderConnectionFactory().setOperationRetryResultCodes(
+      new ResultCode[] {retryResultCode, });
 
     conn.open();
     try {

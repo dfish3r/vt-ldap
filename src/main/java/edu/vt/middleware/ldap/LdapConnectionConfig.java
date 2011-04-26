@@ -17,7 +17,6 @@ import java.util.HashMap;
 import java.util.Map;
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLSocketFactory;
-import edu.vt.middleware.ldap.provider.ConnectionFactory;
 import edu.vt.middleware.ldap.provider.ConnectionStrategy;
 import edu.vt.middleware.ldap.provider.LdapProvider;
 import edu.vt.middleware.ldap.provider.jndi.JndiProvider;
@@ -32,14 +31,11 @@ import org.apache.commons.logging.LogFactory;
  */
 public class LdapConnectionConfig extends AbstractConfig
 {
-  /** ldap provider class name. */
+  /** Ldap provider class name. */
   public static final String LDAP_PROVIDER = "edu.vt.middleware.ldap.provider";
 
   /** Ldap provider implementation. */
   private LdapProvider ldapProvider = getDefaultLdapProvider();
-
-  /** Default connection handler. */
-  private ConnectionFactory connectionFactory;
 
   /** Default ldap socket factory used for SSL and TLS. */
   private SSLSocketFactory sslSocketFactory;
@@ -163,35 +159,6 @@ public class LdapConnectionConfig extends AbstractConfig
       this.logger.trace("setting ldapProvider: " + lp);
     }
     this.ldapProvider = lp;
-  }
-
-
-  /**
-   * Returns the connection factory.
-   *
-   * @return  connection factory
-   */
-  public ConnectionFactory getConnectionFactory()
-  {
-    if (this.connectionFactory == null) {
-      this.connectionFactory = this.ldapProvider.getConnectionFactory(this);
-    }
-    return this.connectionFactory;
-  }
-
-
-  /**
-   * Sets the connection factory.
-   *
-   * @param  cf  connection factory
-   */
-  public void setConnectionFactory(final ConnectionFactory cf)
-  {
-    checkImmutable();
-    if (this.logger.isTraceEnabled()) {
-      this.logger.trace("setting connectionFactory: " + cf);
-    }
-    this.connectionFactory = cf;
   }
 
 
@@ -632,7 +599,7 @@ public class LdapConnectionConfig extends AbstractConfig
   {
     return
       String.format(
-        "%s@%d::ldapProvider=%s, connectionFactory=%s, sslSocketFactory=%s, " +
+        "%s@%d::ldapProvider=%s, sslSocketFactory=%s, " +
         "hostnameVerifier=%s, ldapUrl=%s, timeout=%s, bindDn=%s, " +
         "bindCredential=%s, authtype=%s, operationRetry=%s, " +
         "operationRetryWait=%s, operationRetryBackoff=%s, " +
@@ -641,7 +608,6 @@ public class LdapConnectionConfig extends AbstractConfig
         this.getClass().getName(),
         this.hashCode(),
         this.ldapProvider,
-        this.connectionFactory,
         this.sslSocketFactory,
         this.hostnameVerifier,
         this.ldapUrl,

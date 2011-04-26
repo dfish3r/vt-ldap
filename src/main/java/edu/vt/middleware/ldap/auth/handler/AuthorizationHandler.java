@@ -13,8 +13,8 @@
 */
 package edu.vt.middleware.ldap.auth.handler;
 
+import edu.vt.middleware.ldap.LdapConnection;
 import edu.vt.middleware.ldap.LdapException;
-import edu.vt.middleware.ldap.provider.Connection;
 
 /**
  * Provides processing of authorization queries after authentication has
@@ -38,6 +38,6 @@ public interface AuthorizationHandler
    * @throws  AuthorizationException  if authorization fails
    * @throws  LdapException  if ldap operation fails
    */
-  void process(AuthenticationCriteria ac, Connection conn)
+  void process(AuthenticationCriteria ac, LdapConnection conn)
     throws LdapException;
 }
