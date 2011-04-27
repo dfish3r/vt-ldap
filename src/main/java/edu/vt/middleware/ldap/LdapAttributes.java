@@ -307,9 +307,7 @@ public class LdapAttributes extends AbstractLdapBean
   {
     int hc = HASH_CODE_SEED;
     for (LdapAttribute a : this.attributes.values()) {
-      if (a != null) {
-        hc += a.hashCode();
-      }
+      hc += a != null ? a.hashCode() : 0;
     }
     return hc;
   }

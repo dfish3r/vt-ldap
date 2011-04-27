@@ -124,10 +124,8 @@ public class LdapEntry extends AbstractLdapBean
   public int hashCode()
   {
     int hc = HASH_CODE_SEED;
-    if (this.getDn() != null) {
-      hc += this.getDn().hashCode();
-    }
-    hc += this.getLdapAttributes().hashCode();
+    hc += dn != null ? dn.hashCode() : 0;
+    hc += ldapAttributes != null ? ldapAttributes.hashCode() : 0;
     return hc;
   }
 

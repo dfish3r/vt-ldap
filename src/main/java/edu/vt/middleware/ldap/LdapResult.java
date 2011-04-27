@@ -184,9 +184,7 @@ public class LdapResult extends AbstractLdapBean
   {
     int hc = HASH_CODE_SEED;
     for (LdapEntry e : this.entries.values()) {
-      if (e != null) {
-        hc += e.hashCode();
-      }
+      hc += e != null ? e.hashCode() : 0;
     }
     return hc;
   }
