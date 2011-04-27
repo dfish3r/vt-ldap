@@ -27,6 +27,9 @@ import org.apache.commons.codec.binary.Hex;
 public class SearchFilter
 {
 
+  /** hash code seed. */
+  protected static final int HASH_CODE_SEED = 89;
+
   /** filter. */
   private String filter;
 
@@ -224,6 +227,36 @@ public class SearchFilter
       }
     }
     return sb.toString();
+  }
+
+
+  /**
+   * Returns whether the supplied object contains the same data as this filter.
+   * Delegates to {@link #hashCode()} implementation.
+   *
+   * @param  o  to compare for equality
+   *
+   * @return  equality result
+   */
+  public boolean equals(final Object o)
+  {
+    if (o == null) {
+      return false;
+    }
+    return
+      o == this ||
+        (this.getClass() == o.getClass() && o.hashCode() == this.hashCode());
+  }
+
+
+  /** {@inheritDoc} */
+  public int hashCode()
+  {
+    int hc = HASH_CODE_SEED;
+    hc += filter != null ? filter.hashCode() : 0;
+    hc += filterArgs != null && !filterArgs.isEmpty() ?
+      filterArgs.hashCode() : 0;
+    return hc;
   }
 
 

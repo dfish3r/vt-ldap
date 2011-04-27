@@ -24,6 +24,9 @@ import edu.vt.middleware.ldap.handler.LdapResultHandler;
  */
 public class SearchRequest implements LdapRequest
 {
+  /** hash code seed. */
+  protected static final int HASH_CODE_SEED = 93;
+
   /** DN to search. */
   protected String baseDn = "";
 
@@ -561,6 +564,48 @@ public class SearchRequest implements LdapRequest
 
 
   /**
+   * Returns whether the supplied object contains the same data as this request.
+   * Delegates to {@link #hashCode()} implementation.
+   *
+   * @param  o  to compare for equality
+   *
+   * @return  equality result
+   */
+  public boolean equals(final Object o)
+  {
+    if (o == null) {
+      return false;
+    }
+    return
+      o == this ||
+        (this.getClass() == o.getClass() && o.hashCode() == this.hashCode());
+  }
+
+
+  /** {@inheritDoc} */
+  public int hashCode()
+  {
+    int hc = HASH_CODE_SEED;
+    hc += baseDn != null ? baseDn.hashCode() : 0;
+    hc += filter != null ? filter.hashCode() : 0;
+    hc += retAttrs != null ? Arrays.hashCode(retAttrs) : 0;
+    hc += scope != null ? scope.hashCode() : 0;
+    hc += timeLimit;
+    hc += countLimit;
+    hc += batchSize;
+    hc += derefAliases != null ? derefAliases.hashCode() : 0;
+    hc += referralBehavior != null ? referralBehavior.hashCode() : 0;
+    hc += Boolean.valueOf(typesOnly).hashCode();
+    hc += binaryAttrs != null ? Arrays.hashCode(binaryAttrs) : 0;
+    hc += sortBehavior != null ? sortBehavior.hashCode() : 0;
+    hc += handlers != null ? Arrays.hashCode(handlers) : 0;
+    hc += searchIgnoreResultCodes != null ?
+      Arrays.hashCode(searchIgnoreResultCodes) : 0;
+    return hc;
+  }
+
+
+  /**
    * Provides a descriptive string representation of this instance.
    *
    * @return  string representation
@@ -573,7 +618,8 @@ public class SearchRequest implements LdapRequest
         "%s@%d::baseDn=%s, searchFilter=%s, returnAttributes=%s, " +
         "searchScope=%s, timeLimit=%s, countLimit=%s, batchSize=%s, " +
         "derefAliases=%s, referralBehavior=%s, typesOnly=%s, " +
-        "binaryAttributes=%s, sortBehavior=%s, searchResultHandler=%s",
+        "binaryAttributes=%s, sortBehavior=%s, searchResultHandler=%s, " +
+        "searchIgnoreResultCodes=%s",
         this.getClass().getName(),
         this.hashCode(),
         this.baseDn,
@@ -588,6 +634,8 @@ public class SearchRequest implements LdapRequest
         this.typesOnly,
         this.binaryAttrs != null ? Arrays.asList(this.binaryAttrs) : null,
         this.sortBehavior,
-        this.handlers != null ? Arrays.asList(this.handlers) : null);
+        this.handlers != null ? Arrays.asList(this.handlers) : null,
+        this.searchIgnoreResultCodes != null ?
+          Arrays.asList(this.searchIgnoreResultCodes) : null);
   }
 }

@@ -13,9 +13,6 @@
 */
 package edu.vt.middleware.ldap;
 
-import edu.vt.middleware.ldap.handler.LdapResultHandler;
-import edu.vt.middleware.ldap.handler.SearchCriteria;
-
 /**
  * Executes a paged ldap search operation.
  *
@@ -40,21 +37,13 @@ public class PagedSearchOperation
 
 
   /** {@inheritDoc} */
-  protected LdapResponse<LdapResult> invoke(final PagedSearchRequest request)
+  protected LdapResult executeSearch(final PagedSearchRequest request)
     throws LdapException
   {
     final LdapResult lr =
       this.ldapConnection.getProviderConnection().pagedSearch(request);
-    final LdapResultHandler[] handler = request.getLdapResultHandlers();
-    if (handler != null && handler.length > 0) {
-      final SearchCriteria sc = new SearchCriteria(request);
-      for (int i = 0; i < handler.length; i++) {
-        if (handler[i] != null) {
-          handler[i].process(sc, lr);
-        }
-      }
-    }
-    return new LdapResponse<LdapResult>(lr);
+    this.executeLdapResultHandlers(request, lr);
+    return lr;
   }
 
 

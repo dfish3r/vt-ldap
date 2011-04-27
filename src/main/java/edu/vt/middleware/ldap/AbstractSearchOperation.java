@@ -13,15 +13,17 @@
 */
 package edu.vt.middleware.ldap;
 
+import edu.vt.middleware.ldap.cache.Cache;
 import edu.vt.middleware.ldap.handler.ExtendedLdapAttributeHandler;
 import edu.vt.middleware.ldap.handler.ExtendedLdapResultHandler;
 import edu.vt.middleware.ldap.handler.LdapAttributeHandler;
 import edu.vt.middleware.ldap.handler.LdapResultHandler;
+import edu.vt.middleware.ldap.handler.SearchCriteria;
 
 /**
  * Provides common implementation to ldap search operations.
  *
- * @param  <Q>  type of ldap request
+ * @param  <Q>  type of search request
  *
  * @author  Middleware Services
  * @version  $Revision: 1330 $ $Date: 2010-05-23 18:10:53 -0400 (Sun, 23 May 2010) $
@@ -29,6 +31,9 @@ import edu.vt.middleware.ldap.handler.LdapResultHandler;
 public abstract class AbstractSearchOperation<Q extends SearchRequest>
   extends AbstractLdapOperation<Q, LdapResult>
 {
+
+  /** Cache to use when performing searches. */
+  protected Cache<Q> cache;
 
 
   /** {@inheritDoc} */
@@ -70,5 +75,57 @@ public abstract class AbstractSearchOperation<Q extends SearchRequest>
       }
     }
     return handler;
+  }
+
+
+  /**
+   * Performs the ldap search.
+   *
+   * @param  request  to invoke search with
+   * @return  ldap result
+   * @throws LdapException if an error occurs
+   */
+  protected abstract LdapResult executeSearch(final Q request)
+    throws LdapException;
+
+
+  /** {@inheritDoc} */
+  protected LdapResponse<LdapResult> invoke(final Q request)
+    throws LdapException
+  {
+    LdapResult lr = null;
+    if (this.cache != null) {
+      lr = this.cache.get(request);
+      if (lr == null) {
+        lr = this.executeSearch(request);
+        this.cache.put(request, lr);
+      }
+    } else {
+      lr = this.executeSearch(request);
+    }
+    return new LdapResponse<LdapResult>(lr);
+  }
+
+
+  /**
+   * Processes each ldap result handler after a search has been performed.
+   *
+   * @param  request  the search was performed with
+   * @param  lr  ldap result of the search
+   * @throws LdapException if an error occurs processing a handler
+   */
+  protected void executeLdapResultHandlers(
+    final SearchRequest request, final LdapResult lr)
+    throws LdapException
+  {
+    final LdapResultHandler[] handler = request.getLdapResultHandlers();
+    if (handler != null && handler.length > 0) {
+      final SearchCriteria sc = new SearchCriteria(request);
+      for (int i = 0; i < handler.length; i++) {
+        if (handler[i] != null) {
+          handler[i].process(sc, lr);
+        }
+      }
+    }
   }
 }

@@ -305,6 +305,7 @@
         <include name="dsmltest" />
         <include name="ldiftest" />
         <include name="ssltest" />
+        <include name="cachetest" />
       <!--
         <include name="wikitest" />
       -->
