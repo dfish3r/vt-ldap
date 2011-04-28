@@ -36,6 +36,30 @@ public abstract class AbstractSearchOperation<Q extends SearchRequest>
   protected Cache<Q> cache;
 
 
+  /**
+   * Returns the cache to check when performing search operations. When a cache
+   * is provided it will be populated as new searches are performed and used
+   * when a search request hits the cache.
+   *
+   * @return  cache
+   */
+  public Cache<Q> getCache()
+  {
+    return this.cache;
+  }
+
+
+  /**
+   * Sets the cache.
+   *
+   * @param  c  cache to set
+   */
+  public void setCache(final Cache<Q> c)
+  {
+    this.cache = c;
+  }
+
+
   /** {@inheritDoc} */
   protected void initializeRequest(
     final Q request, final LdapConnectionConfig lc)

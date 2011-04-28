@@ -13,6 +13,8 @@
 */
 package edu.vt.middleware.ldap;
 
+import edu.vt.middleware.ldap.cache.Cache;
+
 /**
  * Executes an ldap search operation.
  *
@@ -31,6 +33,20 @@ public class SearchOperation extends AbstractSearchOperation<SearchRequest>
   public SearchOperation(final LdapConnection lc)
   {
     this.ldapConnection = lc;
+    this.initialize(lc.getLdapConnectionConfig());
+  }
+
+
+  /**
+   * Creates a new search operation.
+   *
+   * @param  lc  ldap connection
+   * @param  c  cache
+   */
+  public SearchOperation(final LdapConnection lc, final Cache<SearchRequest> c)
+  {
+    this.ldapConnection = lc;
+    this.cache = c;
     this.initialize(lc.getLdapConnectionConfig());
   }
 

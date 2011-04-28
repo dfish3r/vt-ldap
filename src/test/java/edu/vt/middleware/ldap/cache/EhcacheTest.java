@@ -17,23 +17,28 @@ import edu.vt.middleware.ldap.LdapEntry;
 import edu.vt.middleware.ldap.LdapResult;
 import edu.vt.middleware.ldap.SearchFilter;
 import edu.vt.middleware.ldap.SearchRequest;
+import net.sf.ehcache.CacheManager;
+import net.sf.ehcache.config.CacheConfiguration;
+import net.sf.ehcache.store.MemoryStoreEvictionPolicy;
 import org.testng.AssertJUnit;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 /**
- * Unit test for {@link LRUCache}.
+ * Unit test for {@link Ehcache}.
  *
  * @author  Middleware Services
  * @version  $Revision: 1858 $
  */
-public class LRUCacheTest
+public class EhcacheTest
 {
 
+  /** Ehcache cache manager. */
+  private CacheManager manager = CacheManager.create();
+
   /** Cache for testing. */
-  private LRUCache<SearchRequest> cache =
-    new LRUCache<SearchRequest>(5, 15, 3);
+  private Ehcache<SearchRequest> cache;
 
 
   /**
@@ -43,6 +48,17 @@ public class LRUCacheTest
   public void initialize()
     throws Exception
   {
+    final net.sf.ehcache.Cache ehcache = new net.sf.ehcache.Cache(
+      new CacheConfiguration("test", 5)
+        .memoryStoreEvictionPolicy(MemoryStoreEvictionPolicy.LRU)
+        .overflowToDisk(false)
+        .eternal(false)
+        .timeToLiveSeconds(15)
+        .timeToIdleSeconds(0)
+        .diskPersistent(false)
+        .diskExpiryThreadIntervalSeconds(3));
+    this.manager.addCache(ehcache);
+    this.cache = new Ehcache<SearchRequest>(ehcache);
     this.fillCache();
   }
 
@@ -58,6 +74,7 @@ public class LRUCacheTest
     AssertJUnit.assertEquals(5, this.cache.size());
     this.cache.clear();
     AssertJUnit.assertEquals(0, this.cache.size());
+    this.manager.shutdown();
   }
 
 

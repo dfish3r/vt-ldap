@@ -13,6 +13,8 @@
 */
 package edu.vt.middleware.ldap;
 
+import edu.vt.middleware.ldap.cache.Cache;
+
 /**
  * Executes a paged ldap search operation.
  *
@@ -32,6 +34,21 @@ public class PagedSearchOperation
   public PagedSearchOperation(final LdapConnection lc)
   {
     this.ldapConnection = lc;
+    this.initialize(lc.getLdapConnectionConfig());
+  }
+
+
+  /**
+   * Creates a new paged search operation.
+   *
+   * @param  lc  ldap connection
+   * @param  c  cache
+   */
+  public PagedSearchOperation(
+    final LdapConnection lc, final Cache<PagedSearchRequest> c)
+  {
+    this.ldapConnection = lc;
+    this.cache = c;
     this.initialize(lc.getLdapConnectionConfig());
   }
 
