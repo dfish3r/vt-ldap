@@ -146,15 +146,19 @@ public class SearchFilter
    */
   public static String format(final SearchFilter filter)
   {
-    final List<Object> args = filter.getFilterArgs();
-    if (args.size() == 0) {
-      return filter.getFilter();
-    }
     String s = filter.getFilter();
-    int i = 0;
-    for (Object o : args) {
-      s = s.replaceAll("\\{" + i + "\\}", encode(o));
-      i++;
+
+    // put '(' and ')' around filter if missing
+    if (!s.startsWith("(")) {
+      s = String.format("(%s)", s);
+    }
+
+    final List<Object> args = filter.getFilterArgs();
+    if (args.size() > 0) {
+      int i = 0;
+      for (Object o : args) {
+        s = s.replaceAll("\\{" + i++ + "\\}", encode(o));
+      }
     }
     return s;
   }
