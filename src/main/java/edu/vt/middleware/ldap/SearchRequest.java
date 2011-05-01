@@ -37,7 +37,7 @@ public class SearchRequest implements LdapRequest
   protected String[] retAttrs;
 
   /** Search scope.*/
-  protected SearchScope scope;
+  protected SearchScope scope = SearchScope.SUBTREE;
 
   /** Time search operation will block. */
   protected long timeLimit;
