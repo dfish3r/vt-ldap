@@ -23,6 +23,7 @@ import javax.naming.directory.SearchControls;
 import javax.naming.directory.SearchResult;
 import javax.naming.ldap.Control;
 import javax.naming.ldap.LdapContext;
+import javax.naming.ldap.LdapName;
 import javax.naming.ldap.PagedResultsControl;
 import javax.naming.ldap.PagedResultsResponseControl;
 import edu.vt.middleware.ldap.AddRequest;
@@ -191,7 +192,7 @@ public class JndiConnection implements Connection
         ctx = this.context.newInstance(null);
         final BeanUtil bu = new BeanUtil();
         ctx.createSubcontext(
-          request.getDn(),
+          new LdapName(request.getDn()),
           bu.fromLdapAttributes(request.getLdapAttributes())).close();
       } finally {
         if (ctx != null) {
@@ -215,7 +216,7 @@ public class JndiConnection implements Connection
       try {
         ctx = this.context.newInstance(null);
         en = ctx.search(
-          request.getDn(),
+          new LdapName(request.getDn()),
           String.format("(%s={0})", request.getAttribute().getName()),
           new Object[] {request.getAttribute().getValue()},
           getCompareSearchControls());
@@ -246,7 +247,7 @@ public class JndiConnection implements Connection
       LdapContext ctx = null;
       try {
         ctx = this.context.newInstance(null);
-        ctx.destroySubcontext(request.getDn());
+        ctx.destroySubcontext(new LdapName(request.getDn()));
       } finally {
         if (ctx != null) {
           ctx.close();
@@ -268,7 +269,7 @@ public class JndiConnection implements Connection
         ctx = this.context.newInstance(null);
         final BeanUtil bu = new BeanUtil();
         ctx.modifyAttributes(
-          request.getDn(),
+          new LdapName(request.getDn()),
           bu.fromAttributeModification(request.getAttributeModifications()));
       } finally {
         if (ctx != null) {
@@ -289,7 +290,9 @@ public class JndiConnection implements Connection
       LdapContext ctx = null;
       try {
         ctx = this.context.newInstance(null);
-        ctx.rename(request.getDn(), request.getNewDn());
+        ctx.rename(
+          new LdapName(request.getDn()),
+          new LdapName(request.getNewDn()));
       } finally {
         if (ctx != null) {
           ctx.close();
@@ -321,7 +324,7 @@ public class JndiConnection implements Connection
         final SearchControls controls = getSearchControls(request);
         do {
           en = ctx.search(
-            request.getBaseDn(),
+            new LdapName(request.getBaseDn()),
             request.getSearchFilter() != null ?
               request.getSearchFilter().getFilter() : null,
             request.getSearchFilter() != null ?
@@ -392,7 +395,7 @@ public class JndiConnection implements Connection
         this.initializeSearchContext(ctx, request);
         final SearchControls controls = getSearchControls(request);
         en = ctx.search(
-          request.getBaseDn(),
+          new LdapName(request.getBaseDn()),
           request.getSearchFilter() != null ?
             request.getSearchFilter().getFilter() : null,
           request.getSearchFilter() != null ?
@@ -628,7 +631,10 @@ public class JndiConnection implements Connection
   {
     final SearchControls ctls = new SearchControls();
     ctls.setReturningAttributes(sr.getReturnAttributes());
-    ctls.setSearchScope(getSearchScope(sr.getSearchScope()));
+    final int searchScope = getSearchScope(sr.getSearchScope());
+    if (searchScope != -1) {
+      ctls.setSearchScope(searchScope);
+    }
     ctls.setTimeLimit(Long.valueOf(sr.getTimeLimit()).intValue());
     ctls.setCountLimit(sr.getCountLimit());
     ctls.setDerefLinkFlag(false);
