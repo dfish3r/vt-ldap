@@ -228,7 +228,7 @@ public class LdapAttribute extends AbstractLdapBean
   public int hashCode()
   {
     int hc = HASH_CODE_SEED;
-    hc += name != null ? name.hashCode() : 0;
+    hc += name != null ? name.toLowerCase().hashCode() : 0;
     for (Object o : this.getValues()) {
       if (o != null) {
         if (o instanceof String) {

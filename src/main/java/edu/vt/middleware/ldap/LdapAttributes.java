@@ -160,7 +160,10 @@ public class LdapAttributes extends AbstractLdapBean
    */
   public LdapAttribute getAttribute(final String name)
   {
-    return this.attributes.get(name);
+    if (name != null) {
+      return this.attributes.get(name.toLowerCase());
+    }
+    return null;
   }
 
 
@@ -171,8 +174,12 @@ public class LdapAttributes extends AbstractLdapBean
    */
   public String[] getAttributeNames()
   {
-    return this.attributes.keySet().toArray(
-      new String[this.attributes.keySet().size()]);
+    final String[] names = new String[this.attributes.size()];
+    int i = 0;
+    for (LdapAttribute la : this.attributes.values()) {
+      names[i++] = la.getName();
+    }
+    return names;
   }
 
 
@@ -183,7 +190,7 @@ public class LdapAttributes extends AbstractLdapBean
    */
   public void addAttribute(final LdapAttribute a)
   {
-    this.attributes.put(a.getName(), a);
+    this.attributes.put(a.getName().toLowerCase(), a);
   }
 
 
@@ -254,7 +261,7 @@ public class LdapAttributes extends AbstractLdapBean
    */
   public void removeAttribute(final LdapAttribute a)
   {
-    this.attributes.remove(a.getName());
+    this.attributes.remove(a.getName().toLowerCase());
   }
 
 
@@ -265,7 +272,7 @@ public class LdapAttributes extends AbstractLdapBean
    */
   public void removeAttribute(final String name)
   {
-    this.attributes.remove(name);
+    this.attributes.remove(name.toLowerCase());
   }
 
 
