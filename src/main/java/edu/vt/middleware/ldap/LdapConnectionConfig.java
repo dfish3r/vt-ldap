@@ -613,7 +613,7 @@ public class LdapConnectionConfig extends AbstractConfig
         this.ldapUrl,
         this.timeout,
         this.bindDn,
-        this.bindCredential,
+        this.logCredentials ? this.bindCredential : "<suppressed>",
         this.authtype,
         this.operationRetry,
         this.operationRetryWait,
