@@ -324,7 +324,7 @@ public class JndiConnection implements Connection
         final SearchControls controls = getSearchControls(request);
         do {
           en = ctx.search(
-            new LdapName(request.getBaseDn()),
+            request.getBaseDn(),
             request.getSearchFilter() != null ?
               request.getSearchFilter().getFilter() : null,
             request.getSearchFilter() != null ?
@@ -395,7 +395,7 @@ public class JndiConnection implements Connection
         this.initializeSearchContext(ctx, request);
         final SearchControls controls = getSearchControls(request);
         en = ctx.search(
-          new LdapName(request.getBaseDn()),
+          request.getBaseDn(),
           request.getSearchFilter() != null ?
             request.getSearchFilter().getFilter() : null,
           request.getSearchFilter() != null ?
