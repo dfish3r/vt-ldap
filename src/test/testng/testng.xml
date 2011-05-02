@@ -107,12 +107,6 @@
   <parameter name="searchResults"
              value="/edu/vt/middleware/ldap/searchResults-2.ldif"/>
 
-  <parameter name="searchAttributesDn" value="ou=test,dc=vt,dc=edu"/>
-  <parameter name="searchAttributesFilter" value="mail=jadams@vt.edu"/>
-  <parameter name="searchAttributesReturnAttrs" value="departmentNumber|givenName|sn"/>
-  <parameter name="searchAttributesResults"
-             value="/edu/vt/middleware/ldap/searchAttributesResults-2.ldif"/>
-
   <parameter name="recursiveSearchDn" value="ou=test,dc=vt,dc=edu"/>
   <parameter name="recursiveSearchFilter" value="(uugid={0})"/>
   <parameter name="recursiveSearchFilterArgs" value="group2"/>
