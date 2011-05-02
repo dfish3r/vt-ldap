@@ -111,7 +111,7 @@ public class JndiTlsConnectionFactory extends AbstractJndiConnectionFactory
     if (this.logger.isDebugEnabled()) {
       this.logger.debug("Bind with the following parameters:");
       this.logger.debug("  url = " + url);
-      this.logger.debug("  authtype = " + this.authentication);
+      this.logger.debug("  authenticationType = " + this.authenticationType);
       this.logger.debug("  dn = " + dn);
       if (this.logCredentials) {
         if (this.logger.isDebugEnabled()) {
@@ -143,7 +143,7 @@ public class JndiTlsConnectionFactory extends AbstractJndiConnectionFactory
       // if the credential is null the provider will automatically revert the
       // authentication to none
       conn.getLdapContext().addToEnvironment(
-        AUTHENTICATION, this.authentication);
+        AUTHENTICATION, this.getAuthenticationType(this.authenticationType));
       if (dn != null) {
         conn.getLdapContext().addToEnvironment(PRINCIPAL, dn);
         if (credential != null) {
@@ -255,7 +255,7 @@ public class JndiTlsConnectionFactory extends AbstractJndiConnectionFactory
   {
     final JndiTlsConnectionFactory cf = new JndiTlsConnectionFactory(
       lcc.getLdapUrl());
-    cf.setAuthentication(lcc.getAuthtype());
+    cf.setAuthenticationType(lcc.getAuthenticationType());
     cf.setEnvironment(createEnvironment(lcc));
     cf.setLogCredentials(lcc.getLogCredentials());
     cf.setSslSocketFactory(lcc.getSslSocketFactory());

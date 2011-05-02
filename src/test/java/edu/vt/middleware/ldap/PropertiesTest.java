@@ -87,7 +87,8 @@ public class PropertiesTest
     AssertJUnit.assertEquals(
       "ldap://ed-dev.middleware.vt.edu:14389", lcc.getLdapUrl());
     AssertJUnit.assertEquals("uid=1,ou=test,dc=vt,dc=edu", lcc.getBindDn());
-    AssertJUnit.assertEquals("simple", lcc.getAuthtype());
+    AssertJUnit.assertEquals(
+      AuthenticationType.SIMPLE, lcc.getAuthenticationType());
     AssertJUnit.assertEquals(8000, lcc.getTimeout());
     AssertJUnit.assertFalse(lcc.isTlsEnabled());
     AssertJUnit.assertEquals(1, lcc.getProviderProperties().size());
@@ -146,7 +147,8 @@ public class PropertiesTest
     AssertJUnit.assertEquals(
       "ldap://ed-auth.middleware.vt.edu:14389", authLcc.getLdapUrl());
     AssertJUnit.assertEquals("uid=1,ou=test,dc=vt,dc=edu", authLcc.getBindDn());
-    AssertJUnit.assertEquals("simple", authLcc.getAuthtype());
+    AssertJUnit.assertEquals(
+      AuthenticationType.SIMPLE, authLcc.getAuthenticationType());
     AssertJUnit.assertEquals(8000, authLcc.getTimeout());
     AssertJUnit.assertTrue(authLcc.isTlsEnabled());
     AssertJUnit.assertEquals(1, authLcc.getProviderProperties().size());
@@ -185,7 +187,8 @@ public class PropertiesTest
     AssertJUnit.assertEquals(
       "ldap://ed-dev.middleware.vt.edu:14389", lcc.getLdapUrl());
     AssertJUnit.assertEquals("uid=1,ou=test,dc=vt,dc=edu", lcc.getBindDn());
-    AssertJUnit.assertEquals("simple", lcc.getAuthtype());
+    AssertJUnit.assertEquals(
+      AuthenticationType.SIMPLE, lcc.getAuthenticationType());
     AssertJUnit.assertEquals(8000, lcc.getTimeout());
     AssertJUnit.assertTrue(lcc.isTlsEnabled());
     AssertJUnit.assertEquals(1, lcc.getProviderProperties().size());
@@ -234,7 +237,8 @@ public class PropertiesTest
     AssertJUnit.assertEquals(
       "ldap://ed-dev.middleware.vt.edu:14389", authLcc.getLdapUrl());
     AssertJUnit.assertEquals("uid=1,ou=test,dc=vt,dc=edu", authLcc.getBindDn());
-    AssertJUnit.assertEquals("simple", authLcc.getAuthtype());
+    AssertJUnit.assertEquals(
+      AuthenticationType.SIMPLE, authLcc.getAuthenticationType());
     AssertJUnit.assertEquals(8000, authLcc.getTimeout());
     AssertJUnit.assertTrue(authLcc.isTlsEnabled());
     AssertJUnit.assertEquals(1, authLcc.getProviderProperties().size());

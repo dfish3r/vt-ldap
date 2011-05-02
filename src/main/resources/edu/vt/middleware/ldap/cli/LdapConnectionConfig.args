@@ -1,4 +1,4 @@
-authtype:type of authentication (none|simple|strong)
+authenticationType:type of authentication (ANONYMPUS|SIMPLE|STRONG)
 bindCredential:password for the bindDn
 bindDn:fully qualified dn to bind as
 connectionFactory:fully qualified class name that implements edu.vt.middleware.ldap.provider.ConnectionFactory

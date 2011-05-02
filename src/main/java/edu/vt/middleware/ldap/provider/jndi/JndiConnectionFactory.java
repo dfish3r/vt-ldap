@@ -55,7 +55,7 @@ public class JndiConnectionFactory extends AbstractJndiConnectionFactory
     if (this.logger.isDebugEnabled()) {
       this.logger.debug("Bind with the following parameters:");
       this.logger.debug("  url = " + url);
-      this.logger.debug("  authentication = " + this.authentication);
+      this.logger.debug("  authenticationType = " + this.authenticationType);
       this.logger.debug("  dn = " + dn);
       if (this.logCredentials) {
         if (this.logger.isDebugEnabled()) {
@@ -78,11 +78,11 @@ public class JndiConnectionFactory extends AbstractJndiConnectionFactory
       env.put(TRACE, this.tracePackets);
     }
 
-
     // note that when using simple authentication (the default),
     // if the credential is null the provider will automatically revert the
     // authentication to none
-    env.put(AUTHENTICATION, this.authentication);
+    env.put(
+      AUTHENTICATION, this.getAuthenticationType(this.authenticationType));
     if (dn != null) {
       env.put(PRINCIPAL, dn);
       if (credential != null) {
@@ -119,7 +119,7 @@ public class JndiConnectionFactory extends AbstractJndiConnectionFactory
   {
     final JndiConnectionFactory cf = new JndiConnectionFactory(
       lcc.getLdapUrl());
-    cf.setAuthentication(lcc.getAuthtype());
+    cf.setAuthenticationType(lcc.getAuthenticationType());
     cf.setEnvironment(createEnvironment(lcc));
     cf.setLogCredentials(lcc.getLogCredentials());
     if (lcc.getConnectionStrategy() != null) {

@@ -16,6 +16,7 @@ package edu.vt.middleware.ldap.provider.jndi;
 import java.io.PrintStream;
 import java.util.Hashtable;
 import java.util.Map;
+import edu.vt.middleware.ldap.AuthenticationType;
 import edu.vt.middleware.ldap.LdapConnectionConfig;
 import edu.vt.middleware.ldap.ResultCode;
 import edu.vt.middleware.ldap.provider.AbstractConnectionFactory;
@@ -95,14 +96,8 @@ public abstract class AbstractJndiConnectionFactory
    */
   public static final String VERSION = "java.naming.ldap.version";
 
-  /** Authentication mechanism. */
-  protected String authentication;
-
   /** Environment properties. */
   protected Hashtable<String, Object> environment;
-
-  /** Whether to log authentication credentials. */
-  protected boolean logCredentials;
 
   /** Stream to print LDAP ASN.1 BER packets. */
   protected PrintStream tracePackets;
@@ -110,31 +105,13 @@ public abstract class AbstractJndiConnectionFactory
   /** Whether to remove the URL from any DNs which are not relative. */
   protected boolean removeDnUrls = true;
 
-  /** Result codes indicating that an operation should be retried. */
-  protected ResultCode[] operationRetryResultCodes = new ResultCode[] {
-    ResultCode.PROTOCOL_ERROR, ResultCode.BUSY, ResultCode.UNAVAILABLE,
-  };
 
-
-  /**
-   * Returns the value to use for java.naming.security.authentication.
-   *
-   * @return  authentication mechanism
-   */
-  public String getAuthentication()
+  /** Default constructor. */
+  public AbstractJndiConnectionFactory()
   {
-    return this.authentication;
-  }
-
-
-  /**
-   * Sets the value to use for java.naming.security.authentication.
-   *
-   * @param  auth  authentication mechanism
-   */
-  public void setAuthentication(final String auth)
-  {
-    this.authentication = auth;
+    this.operationRetryResultCodes = new ResultCode[] {
+      ResultCode.PROTOCOL_ERROR, ResultCode.BUSY, ResultCode.UNAVAILABLE,
+    };
   }
 
 
@@ -159,28 +136,6 @@ public abstract class AbstractJndiConnectionFactory
   public void setEnvironment(final Hashtable<String, Object> env)
   {
     this.environment = env;
-  }
-
-
-  /**
-   * Returns whether authentication credentials will be logged.
-   *
-   * @return  whether authentication credentials will be logged
-   */
-  public boolean getLogCredentials()
-  {
-    return this.logCredentials;
-  }
-
-
-  /**
-   * Sets whether authentication credentials will be logged.
-   *
-   * @param  b  whether authentication credentials will be logged
-   */
-  public void setLogCredentials(final boolean b)
-  {
-    this.logCredentials = b;
   }
 
 
@@ -230,20 +185,6 @@ public abstract class AbstractJndiConnectionFactory
   }
 
 
-  /** {@inheritDoc} */
-  public ResultCode[] getOperationRetryResultCodes()
-  {
-    return this.operationRetryResultCodes;
-  }
-
-
-  /** {@inheritDoc} */
-  public void setOperationRetryResultCodes(final ResultCode[] codes)
-  {
-    this.operationRetryResultCodes = codes;
-  }
-
-
   /**
    * Returns the configuration environment for a JNDI ldap context using the
    * properties found in the supplied ldap connection config.
@@ -275,5 +216,45 @@ public abstract class AbstractJndiConnectionFactory
     }
 
     return env;
+  }
+
+
+  /**
+   * Returns the JNDI authentication string for the supplied authentication
+   * type.
+   *
+   * @param  type  authentication type
+   * @return  JNDI authentication string
+   */
+  protected static String getAuthenticationType(final AuthenticationType type)
+  {
+    String s = null;
+    switch (type) {
+    case ANONYMOUS:
+      s = "none";
+      break;
+    case SIMPLE:
+      s = "simple";
+      break;
+    case STRONG:
+      s = "strong";
+      break;
+    case EXTERNAL:
+      s = "EXTERNAL";
+      break;
+    case DIGEST_MD5:
+      s = "DIGEST-MD5";
+      break;
+    case CRAM_MD5:
+      s = "CRAM-MD5";
+      break;
+    case GSSAPI:
+      s = "GSSAPI";
+      break;
+    default:
+      throw new IllegalArgumentException(
+        "Unknown authentication type: " + type);
+    }
+    return s;
   }
 }

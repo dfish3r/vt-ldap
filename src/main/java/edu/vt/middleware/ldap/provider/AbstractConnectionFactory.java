@@ -17,8 +17,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.StringTokenizer;
+import edu.vt.middleware.ldap.AuthenticationType;
 import edu.vt.middleware.ldap.Credential;
 import edu.vt.middleware.ldap.LdapException;
+import edu.vt.middleware.ldap.ResultCode;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -37,8 +39,17 @@ public abstract class AbstractConnectionFactory implements ConnectionFactory
   /** Ldap connection strategy. */
   protected ConnectionStrategy connectionStrategy = ConnectionStrategy.DEFAULT;
 
+  /** Result codes indicating that an operation should be retried. */
+  protected ResultCode[] operationRetryResultCodes;
+
   /** LDAP URL for connections. */
   protected String ldapUrl;
+
+  /** Authentication type. */
+  protected AuthenticationType authenticationType;
+
+  /** Whether to log authentication credentials. */
+  protected boolean logCredentials;
 
   /** Number of connections made. */
   private ConnectionCount connectionCount = new ConnectionCount();
@@ -80,6 +91,64 @@ public abstract class AbstractConnectionFactory implements ConnectionFactory
       this.logger.trace("setting connectionStrategy: " + strategy);
     }
     this.connectionStrategy = strategy;
+  }
+
+
+  /** {@inheritDoc} */
+  public ResultCode[] getOperationRetryResultCodes()
+  {
+    return this.operationRetryResultCodes;
+  }
+
+
+  /** {@inheritDoc} */
+  public void setOperationRetryResultCodes(final ResultCode[] codes)
+  {
+    this.operationRetryResultCodes = codes;
+  }
+
+
+  /**
+   * Returns the authentication type.
+   *
+   * @return  authentication type
+   */
+  public AuthenticationType getAuthenticationType()
+  {
+    return this.authenticationType;
+  }
+
+
+  /**
+   * Sets the authentication type.
+   *
+   * @param  type  authentication type
+   */
+  public void setAuthenticationType(final AuthenticationType type)
+  {
+    this.authenticationType = type;
+  }
+
+
+  /**
+   * Returns whether authentication credentials will be logged.
+   *
+   * @return  whether authentication credentials will be logged
+   */
+  public boolean getLogCredentials()
+  {
+    return this.logCredentials;
+  }
+
+
+  /**
+   * Sets whether authentication credentials will be logged.
+   *
+   * @param  b  whether authentication credentials will be logged
+   */
+  public void setLogCredentials(final boolean b)
+  {
+    this.logCredentials = b;
   }
 
 

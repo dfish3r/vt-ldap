@@ -55,8 +55,8 @@ public class LdapConnectionConfig extends AbstractConfig
   /** Credential for the bind DN. */
   private Credential bindCredential;
 
-  /** Authentication mechanism to use when binding to the LDAP. */
-  private String authtype = "simple";
+  /** Authentication type to use when binding to the LDAP. */
+  private AuthenticationType authenticationType = AuthenticationType.SIMPLE;
 
   /** Number of times to retry ldap operations on exception. */
   private int operationRetry = 1;
@@ -331,25 +331,24 @@ public class LdapConnectionConfig extends AbstractConfig
    *
    * @return  authentication type
    */
-  public String getAuthtype()
+  public AuthenticationType getAuthenticationType()
   {
-    return this.authtype;
+    return this.authenticationType;
   }
 
 
   /**
-   * This sets the authentication type.
+   * Sets the authentication type.
    *
    * @param  type  of authentication to use
    */
-  public void setAuthtype(final String type)
+  public void setAuthenticationType(final AuthenticationType type)
   {
     checkImmutable();
-    checkStringInput(type, false);
     if (this.logger.isTraceEnabled()) {
-      this.logger.trace("setting authtype: " + type);
+      this.logger.trace("setting authenticationType: " + type);
     }
-    this.authtype = type;
+    this.authenticationType = type;
   }
 
 
@@ -601,7 +600,7 @@ public class LdapConnectionConfig extends AbstractConfig
       String.format(
         "%s@%d::ldapProvider=%s, sslSocketFactory=%s, " +
         "hostnameVerifier=%s, ldapUrl=%s, timeout=%s, bindDn=%s, " +
-        "bindCredential=%s, authtype=%s, operationRetry=%s, " +
+        "bindCredential=%s, authenticationType=%s, operationRetry=%s, " +
         "operationRetryWait=%s, operationRetryBackoff=%s, " +
         "providerProperties=%s, logCredentials=%s, ssl=%s, tls=%s, " +
         "connectionStrategy=%s",
@@ -614,7 +613,7 @@ public class LdapConnectionConfig extends AbstractConfig
         this.timeout,
         this.bindDn,
         this.logCredentials ? this.bindCredential : "<suppressed>",
-        this.authtype,
+        this.authenticationType,
         this.operationRetry,
         this.operationRetryWait,
         this.operationRetryBackoff,
