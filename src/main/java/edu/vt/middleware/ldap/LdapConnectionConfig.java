@@ -34,8 +34,11 @@ public class LdapConnectionConfig extends AbstractConfig
   /** Ldap provider class name. */
   public static final String LDAP_PROVIDER = "edu.vt.middleware.ldap.provider";
 
+  /** Static reference to the default ldap provider. */
+  private static final LdapProvider DEFAULT_LDAP_PROVIDER;
+
   /** Ldap provider implementation. */
-  private LdapProvider ldapProvider = getDefaultLdapProvider();
+  private LdapProvider ldapProvider = DEFAULT_LDAP_PROVIDER;
 
   /** Default ldap socket factory used for SSL and TLS. */
   private SSLSocketFactory sslSocketFactory;
@@ -83,6 +86,32 @@ public class LdapConnectionConfig extends AbstractConfig
   /** Ldap connection strategy. */
   private ConnectionStrategy connectionStrategy = ConnectionStrategy.DEFAULT;
 
+  /** Initialize the default ldap provider. The {@link #LDAP_PROVIDER} property
+   * is checked and that class is loaded if provided. Otherwise the JNDI
+   * provider is returned.
+   */
+  static {
+    final String ldapProviderClass = System.getProperty(LDAP_PROVIDER);
+    if (ldapProviderClass != null) {
+      final Log log = LogFactory.getLog(LdapConnectionConfig.class);
+      try {
+        if (log.isInfoEnabled()) {
+          log.info("Setting ldap provider to " + ldapProviderClass);
+        }
+        DEFAULT_LDAP_PROVIDER =
+          (LdapProvider) Class.forName(ldapProviderClass).newInstance();
+      } catch (Exception e) {
+        if (log.isErrorEnabled()) {
+          log.error("Error instantiating " + ldapProviderClass, e);
+        }
+        throw new IllegalStateException(e);
+      }
+    } else {
+      // set the default ldap provider to JNDI
+      DEFAULT_LDAP_PROVIDER = new JndiProvider();
+    }
+  }
+
 
   /** Default constructor. */
   public LdapConnectionConfig() {}
@@ -97,42 +126,6 @@ public class LdapConnectionConfig extends AbstractConfig
   {
     this();
     this.setLdapUrl(ldapUrl);
-  }
-
-
-  /**
-   * Returns the default ldap provider. The {@link #LDAP_PROVIDER} property
-   * is checked and that class is loaded if provided. Otherwise the JNDI
-   * provider is returned.
-   *
-   * @return  default ldap provider
-   */
-  protected static LdapProvider getDefaultLdapProvider()
-  {
-    final String ldapProviderClass = System.getProperty(LDAP_PROVIDER);
-    if (ldapProviderClass != null) {
-      final Log log = LogFactory.getLog(LdapConnectionConfig.class);
-      try {
-        if (log.isInfoEnabled()) {
-          log.info("Setting ldap provider to " + ldapProviderClass);
-        }
-        return (LdapProvider) Class.forName(ldapProviderClass).newInstance();
-      } catch (ClassNotFoundException e) {
-        if (log.isErrorEnabled()) {
-          log.error("Error instantiating " + ldapProviderClass, e);
-        }
-      } catch (InstantiationException e) {
-        if (log.isErrorEnabled()) {
-          log.error("Error instantiating " + ldapProviderClass, e);
-        }
-      } catch (IllegalAccessException e) {
-        if (log.isErrorEnabled()) {
-          log.error("Error instantiating " + ldapProviderClass, e);
-        }
-      }
-    }
-    // set the default ldap provider to JNDI
-    return new JndiProvider();
   }
 
 

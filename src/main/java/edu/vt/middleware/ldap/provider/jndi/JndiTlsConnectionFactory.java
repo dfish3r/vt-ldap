@@ -136,6 +136,7 @@ public class JndiTlsConnectionFactory extends AbstractJndiConnectionFactory
 
     JndiTlsConnection conn = null;
     env.put(VERSION, "3");
+    boolean closeConn = false;
     try {
       conn = new JndiTlsConnection(new InitialLdapContext(env, null));
       conn.setStartTlsResponse(this.startTls(conn.getLdapContext()));
@@ -143,7 +144,7 @@ public class JndiTlsConnectionFactory extends AbstractJndiConnectionFactory
       // if the credential is null the provider will automatically revert the
       // authentication to none
       conn.getLdapContext().addToEnvironment(
-        AUTHENTICATION, this.getAuthenticationType(this.authenticationType));
+        AUTHENTICATION, getAuthenticationType(this.authenticationType));
       if (dn != null) {
         conn.getLdapContext().addToEnvironment(PRINCIPAL, dn);
         if (credential != null) {
@@ -157,50 +158,30 @@ public class JndiTlsConnectionFactory extends AbstractJndiConnectionFactory
         NamingExceptionUtil.getNamingExceptions(
           this.operationRetryResultCodes));
     } catch (javax.naming.AuthenticationException e) {
-      try {
-        if (conn != null) {
-          conn.close();
-        }
-      } catch (LdapException e2) {
-        if (this.logger.isDebugEnabled()) {
-          this.logger.debug("Problem tearing down connection", e2);
-        }
-      }
+      closeConn = true;
       throw new AuthenticationException(e, ResultCode.INVALID_CREDENTIALS);
     } catch (NamingException e) {
-      try {
-        if (conn != null) {
-          conn.close();
-        }
-      } catch (LdapException e2) {
-        if (this.logger.isDebugEnabled()) {
-          this.logger.debug("Problem tearing down connection", e2);
-        }
-      }
+      closeConn = true;
       throw new ConnectionException(
         e, NamingExceptionUtil.getResultCode(e.getClass()));
     } catch (IOException e) {
-      try {
-        if (conn != null) {
-          conn.close();
-        }
-      } catch (LdapException e2) {
-        if (this.logger.isDebugEnabled()) {
-          this.logger.debug("Problem tearing down connection", e2);
-        }
-      }
+      closeConn = true;
       throw new ConnectionException(e);
     } catch (RuntimeException e) {
-      try {
-        if (conn != null) {
-          conn.close();
-        }
-      } catch (LdapException e2) {
-        if (this.logger.isDebugEnabled()) {
-          this.logger.debug("Problem tearing down connection", e2);
+      closeConn = true;
+      throw e;
+    } finally {
+      if (closeConn) {
+        try {
+          if (conn != null) {
+            conn.close();
+          }
+        } catch (LdapException e) {
+          if (this.logger.isDebugEnabled()) {
+            this.logger.debug("Problem tearing down connection", e);
+          }
         }
       }
-      throw e;
     }
     return conn;
   }

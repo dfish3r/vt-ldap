@@ -81,8 +81,7 @@ public class JndiConnectionFactory extends AbstractJndiConnectionFactory
     // note that when using simple authentication (the default),
     // if the credential is null the provider will automatically revert the
     // authentication to none
-    env.put(
-      AUTHENTICATION, this.getAuthenticationType(this.authenticationType));
+    env.put(AUTHENTICATION, getAuthenticationType(this.authenticationType));
     if (dn != null) {
       env.put(PRINCIPAL, dn);
       if (credential != null) {
