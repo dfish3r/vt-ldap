@@ -539,22 +539,23 @@ public class SearchOperationTest extends AbstractTest
       this.createLdapConnection(false));
 
     // test binary searching
-    LdapResult result = search.execute(
-      new SearchRequest(
-        dn,
-        new SearchFilter(filter),
-        new String[] {returnAttr})).getResult();
+    SearchRequest request = new SearchRequest(
+      dn,
+      new SearchFilter(filter),
+      new String[] {returnAttr});
+    request.setBinaryAttributes(new String[]{returnAttr});
+    LdapResult result = search.execute(request).getResult();
     AssertJUnit.assertNotSame(
       base64Value,
       result.getEntry().getLdapAttributes().getAttribute().getStringValue());
 
-    result = search.execute(
-      new SearchRequest(
-        dn,
-        new SearchFilter(filter),
-        new String[] {returnAttr},
-        new LdapResultHandler[]{
-          new BinaryResultHandler(), })).getResult();
+    request = new SearchRequest(
+      dn,
+      new SearchFilter(filter),
+      new String[] {returnAttr},
+      new LdapResultHandler[]{new BinaryResultHandler(), });
+    request.setBinaryAttributes(new String[]{returnAttr});
+    result = search.execute(request).getResult();
     AssertJUnit.assertEquals(
       base64Value,
       result.getEntry().getLdapAttributes().getAttribute().getStringValue());
@@ -797,11 +798,13 @@ public class SearchOperationTest extends AbstractTest
 
     // test defaults
     try {
-      search.execute(new SearchRequest(new SearchFilter("((")));
+      search.execute(
+        new SearchRequest(
+          "ou=dne,dc=vt,dc=edu", new SearchFilter("(objectclass=*)")));
       AssertJUnit.fail("Should have thrown LdapException");
     } catch (LdapException e) {
       AssertJUnit.assertEquals(
-        ResultCode.INAPPROPRIATE_MATCHING, e.getResultCode());
+        ResultCode.NO_SUCH_OBJECT, e.getResultCode());
     }
     AssertJUnit.assertEquals(1, search.getRetryCount());
     AssertJUnit.assertTrue(search.getRunTime() > 0);
@@ -811,11 +814,13 @@ public class SearchOperationTest extends AbstractTest
     search.setOperationRetry(0);
 
     try {
-      search.execute(new SearchRequest(new SearchFilter("((")));
+      search.execute(
+        new SearchRequest(
+          "ou=dne,dc=vt,dc=edu", new SearchFilter("(objectclass=*)")));
       AssertJUnit.fail("Should have thrown LdapException");
     } catch (LdapException e) {
       AssertJUnit.assertEquals(
-        ResultCode.INAPPROPRIATE_MATCHING, e.getResultCode());
+        ResultCode.NO_SUCH_OBJECT, e.getResultCode());
     }
     AssertJUnit.assertEquals(0, search.getRetryCount());
     AssertJUnit.assertEquals(0, search.getRunTime());
@@ -829,11 +834,13 @@ public class SearchOperationTest extends AbstractTest
 
     conn.open();
     try {
-      search.execute(new SearchRequest(new SearchFilter("((")));
+      search.execute(
+        new SearchRequest(
+          "ou=dne,dc=vt,dc=edu", new SearchFilter("(objectclass=*)")));
       AssertJUnit.fail("Should have thrown LdapException");
     } catch (LdapException e) {
       AssertJUnit.assertEquals(
-        ResultCode.INAPPROPRIATE_MATCHING, e.getResultCode());
+        ResultCode.NO_SUCH_OBJECT, e.getResultCode());
     }
     AssertJUnit.assertEquals(0, search.getRetryCount());
     AssertJUnit.assertEquals(0, search.getRunTime());
@@ -849,11 +856,13 @@ public class SearchOperationTest extends AbstractTest
 
     conn.open();
     try {
-      search.execute(new SearchRequest(new SearchFilter("((")));
+      search.execute(
+        new SearchRequest(
+          "ou=dne,dc=vt,dc=edu", new SearchFilter("(objectclass=*)")));
       AssertJUnit.fail("Should have thrown LdapException");
     } catch (LdapException e) {
       AssertJUnit.assertEquals(
-        ResultCode.INAPPROPRIATE_MATCHING, e.getResultCode());
+        ResultCode.NO_SUCH_OBJECT, e.getResultCode());
     }
     AssertJUnit.assertEquals(3, search.getRetryCount());
     AssertJUnit.assertTrue(search.getRunTime() > 0);
@@ -862,11 +871,13 @@ public class SearchOperationTest extends AbstractTest
     search.reset();
     search.setOperationRetryBackoff(2);
     try {
-      search.execute(new SearchRequest(new SearchFilter("((")));
+      search.execute(
+        new SearchRequest(
+          "ou=dne,dc=vt,dc=edu", new SearchFilter("(objectclass=*)")));
       AssertJUnit.fail("Should have thrown LdapException");
     } catch (LdapException e) {
       AssertJUnit.assertEquals(
-        ResultCode.INAPPROPRIATE_MATCHING, e.getResultCode());
+        ResultCode.NO_SUCH_OBJECT, e.getResultCode());
     }
     AssertJUnit.assertEquals(3, search.getRetryCount());
     AssertJUnit.assertTrue(search.getRunTime() > 0);
@@ -876,11 +887,13 @@ public class SearchOperationTest extends AbstractTest
     search.setStopCount(10);
     search.setOperationRetry(-1);
     try {
-      search.execute(new SearchRequest(new SearchFilter("((")));
+      search.execute(
+        new SearchRequest(
+          "ou=dne,dc=vt,dc=edu", new SearchFilter("(objectclass=*)")));
       AssertJUnit.fail("Should have thrown LdapException");
     } catch (LdapException e) {
       AssertJUnit.assertEquals(
-        ResultCode.INAPPROPRIATE_MATCHING, e.getResultCode());
+        ResultCode.NO_SUCH_OBJECT, e.getResultCode());
     }
     AssertJUnit.assertEquals(10, search.getRetryCount());
     AssertJUnit.assertTrue(search.getRunTime() > 0);
@@ -951,6 +964,7 @@ public class SearchOperationTest extends AbstractTest
     final SearchOperation search = new SearchOperation(conn);
     final SearchRequest request = SearchRequest.newObjectScopeSearchRequest(
       dn, returnAttrs.split("\\|"));
+    request.setBinaryAttributes(new String[]{"jpegPhoto"});
     request.setLdapResultHandlers(
       new LdapResultHandler[] {new BinaryResultHandler()});
     final LdapResult result = search.execute(request).getResult();
