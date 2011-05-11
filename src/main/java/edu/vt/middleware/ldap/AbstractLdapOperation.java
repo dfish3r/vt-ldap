@@ -13,8 +13,8 @@
 */
 package edu.vt.middleware.ldap;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Provides common implementation to other ldap operations
@@ -29,8 +29,8 @@ public abstract class AbstractLdapOperation<Q extends LdapRequest, S>
   implements LdapOperation<Q, S>
 {
 
-  /** Log for this class. */
-  protected final Log logger = LogFactory.getLog(this.getClass());
+  /** Logger for this class. */
+  protected final Logger logger = LoggerFactory.getLogger(this.getClass());
 
   /** Ldap connection to perform operation. */
   protected LdapConnection ldapConnection;
@@ -157,11 +157,8 @@ public abstract class AbstractLdapOperation<Q extends LdapRequest, S>
   public LdapResponse<S> execute(final Q request)
     throws LdapException
   {
-    if (this.logger.isDebugEnabled()) {
-      this.logger.debug(
-        String.format(
-          "request=%s, connection=%s", request, this.ldapConnection));
-    }
+    this.logger.debug(
+      "request={}, connection={}", request, this.ldapConnection);
 
     LdapResponse<S> response = null;
     this.initializeRequest(
@@ -195,12 +192,8 @@ public abstract class AbstractLdapOperation<Q extends LdapRequest, S>
     throws LdapException
   {
     if (count < this.operationRetry || this.operationRetry == -1) {
-      if (this.logger.isWarnEnabled()) {
-        this.logger.warn(
-          "Error performing LDAP operation, " +
-          "retrying (attempt " + count + ")",
-          e);
-      }
+      this.logger.warn(
+        "Error performing LDAP operation, retrying (attempt {})", count, e);
       this.ldapConnection.close();
       if (this.operationRetryWait > 0) {
         long sleepTime = this.operationRetryWait;
@@ -210,9 +203,7 @@ public abstract class AbstractLdapOperation<Q extends LdapRequest, S>
         try {
           Thread.sleep(sleepTime);
         } catch (InterruptedException ie) {
-          if (this.logger.isDebugEnabled()) {
-            this.logger.debug("Operation retry wait interrupted", ie);
-          }
+          this.logger.debug("Operation retry wait interrupted", ie);
         }
       }
       this.ldapConnection.open();

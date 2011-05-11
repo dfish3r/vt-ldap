@@ -20,8 +20,8 @@ import javax.net.ssl.SSLSocketFactory;
 import edu.vt.middleware.ldap.provider.ConnectionStrategy;
 import edu.vt.middleware.ldap.provider.LdapProvider;
 import edu.vt.middleware.ldap.provider.jndi.JndiProvider;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Contains all the configuration data needed to control LDAP connections.
@@ -93,16 +93,16 @@ public class LdapConnectionConfig extends AbstractConfig
   static {
     final String ldapProviderClass = System.getProperty(LDAP_PROVIDER);
     if (ldapProviderClass != null) {
-      final Log log = LogFactory.getLog(LdapConnectionConfig.class);
+      final Logger l = LoggerFactory.getLogger(LdapConnectionConfig.class);
       try {
-        if (log.isInfoEnabled()) {
-          log.info("Setting ldap provider to " + ldapProviderClass);
+        if (l.isInfoEnabled()) {
+          l.info("Setting ldap provider to " + ldapProviderClass);
         }
         DEFAULT_LDAP_PROVIDER =
           (LdapProvider) Class.forName(ldapProviderClass).newInstance();
       } catch (Exception e) {
-        if (log.isErrorEnabled()) {
-          log.error("Error instantiating " + ldapProviderClass, e);
+        if (l.isErrorEnabled()) {
+          l.error("Error instantiating " + ldapProviderClass, e);
         }
         throw new IllegalStateException(e);
       }
@@ -148,9 +148,7 @@ public class LdapConnectionConfig extends AbstractConfig
   public void setLdapProvider(final LdapProvider lp)
   {
     checkImmutable();
-    if (this.logger.isTraceEnabled()) {
-      this.logger.trace("setting ldapProvider: " + lp);
-    }
+    this.logger.trace("setting ldapProvider: {}", lp);
     this.ldapProvider = lp;
   }
 
@@ -174,9 +172,7 @@ public class LdapConnectionConfig extends AbstractConfig
   public void setSslSocketFactory(final SSLSocketFactory sf)
   {
     checkImmutable();
-    if (this.logger.isTraceEnabled()) {
-      this.logger.trace("setting sslSocketFactory: " + sf);
-    }
+    this.logger.trace("setting sslSocketFactory: {}", sf);
     this.sslSocketFactory = sf;
   }
 
@@ -200,9 +196,7 @@ public class LdapConnectionConfig extends AbstractConfig
   public void setHostnameVerifier(final HostnameVerifier hv)
   {
     checkImmutable();
-    if (this.logger.isTraceEnabled()) {
-      this.logger.trace("setting hostnameVerifier: " + hv);
-    }
+    this.logger.trace("setting hostnameVerifier: {}", hv);
     this.hostnameVerifier = hv;
   }
 
@@ -227,9 +221,7 @@ public class LdapConnectionConfig extends AbstractConfig
   {
     checkImmutable();
     checkStringInput(url, true);
-    if (this.logger.isTraceEnabled()) {
-      this.logger.trace("setting ldapUrl: " + url);
-    }
+    this.logger.trace("setting ldapUrl: {}", url);
     this.ldapUrl = url;
   }
 
@@ -255,9 +247,7 @@ public class LdapConnectionConfig extends AbstractConfig
   public void setTimeout(final long l)
   {
     checkImmutable();
-    if (this.logger.isTraceEnabled()) {
-      this.logger.trace("setting timeout: " + l);
-    }
+    this.logger.trace("setting timeout: {}", l);
     this.timeout = l;
   }
 
@@ -282,9 +272,7 @@ public class LdapConnectionConfig extends AbstractConfig
   {
     checkImmutable();
     checkStringInput(dn, true);
-    if (this.logger.isTraceEnabled()) {
-      this.logger.trace("setting bindDn: " + dn);
-    }
+    this.logger.trace("setting bindDn: {}", dn);
     this.bindDn = dn;
   }
 
@@ -308,12 +296,10 @@ public class LdapConnectionConfig extends AbstractConfig
   public void setBindCredential(final Credential credential)
   {
     checkImmutable();
-    if (this.logger.isTraceEnabled()) {
-      if (this.getLogCredentials()) {
-        this.logger.trace("setting bindCredential: " + credential);
-      } else {
-        this.logger.trace("setting bindCredential: <suppressed>");
-      }
+    if (this.getLogCredentials()) {
+      this.logger.trace("setting bindCredential: {}", credential);
+    } else {
+      this.logger.trace("setting bindCredential: <suppressed>");
     }
     this.bindCredential = credential;
   }
@@ -338,9 +324,7 @@ public class LdapConnectionConfig extends AbstractConfig
   public void setAuthenticationType(final AuthenticationType type)
   {
     checkImmutable();
-    if (this.logger.isTraceEnabled()) {
-      this.logger.trace("setting authenticationType: " + type);
-    }
+    this.logger.trace("setting authenticationType: {}", type);
     this.authenticationType = type;
   }
 
@@ -366,9 +350,7 @@ public class LdapConnectionConfig extends AbstractConfig
   public void setOperationRetry(final int i)
   {
     checkImmutable();
-    if (this.logger.isTraceEnabled()) {
-      this.logger.trace("setting operationRetry: " + i);
-    }
+    this.logger.trace("setting operationRetry: {}", i);
     this.operationRetry = i;
   }
 
@@ -393,9 +375,7 @@ public class LdapConnectionConfig extends AbstractConfig
   public void setOperationRetryWait(final long l)
   {
     checkImmutable();
-    if (this.logger.isTraceEnabled()) {
-      this.logger.trace("setting operationRetryWait: " + l);
-    }
+    this.logger.trace("setting operationRetryWait: {}", l);
     this.operationRetryWait = l;
   }
 
@@ -422,9 +402,7 @@ public class LdapConnectionConfig extends AbstractConfig
   public void setOperationRetryBackoff(final int backoff)
   {
     checkImmutable();
-    if (this.logger.isTraceEnabled()) {
-      this.logger.trace("setting operationRetryBackoff: " + backoff);
-    }
+    this.logger.trace("setting operationRetryBackoff: {}", backoff);
     this.operationRetryBackoff = backoff;
   }
 
@@ -448,9 +426,7 @@ public class LdapConnectionConfig extends AbstractConfig
   public void setProviderProperties(final Map<String, Object> props)
   {
     checkImmutable();
-    if (this.logger.isTraceEnabled()) {
-      this.logger.trace("setting provider properties " + props);
-    }
+    this.logger.trace("setting provider properties {}", props);
     this.providerProperties = props;
   }
 
@@ -474,9 +450,7 @@ public class LdapConnectionConfig extends AbstractConfig
   public void setLogCredentials(final boolean b)
   {
     checkImmutable();
-    if (this.logger.isTraceEnabled()) {
-      this.logger.trace("setting logCredentials: " + b);
-    }
+    this.logger.trace("setting logCredentials: {}", b);
     this.logCredentials = b;
   }
 
@@ -511,9 +485,7 @@ public class LdapConnectionConfig extends AbstractConfig
   public void setSsl(final boolean b)
   {
     checkImmutable();
-    if (this.logger.isTraceEnabled()) {
-      this.logger.trace("setting ssl: " + b);
-    }
+    this.logger.trace("setting ssl: {}", b);
     this.ssl = b;
   }
 
@@ -548,9 +520,7 @@ public class LdapConnectionConfig extends AbstractConfig
   public void setTls(final boolean b)
   {
     checkImmutable();
-    if (this.logger.isTraceEnabled()) {
-      this.logger.trace("setting tls: " + b);
-    }
+    this.logger.trace("setting tls: {}", b);
     this.tls = b;
   }
 
@@ -574,9 +544,7 @@ public class LdapConnectionConfig extends AbstractConfig
   public void setConnectionStrategy(final ConnectionStrategy strategy)
   {
     checkImmutable();
-    if (this.logger.isTraceEnabled()) {
-      this.logger.trace("setting connectionStrategy: " + strategy);
-    }
+    this.logger.trace("setting connectionStrategy: {}", strategy);
     this.connectionStrategy = strategy;
   }
 

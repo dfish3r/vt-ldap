@@ -16,8 +16,7 @@ package edu.vt.middleware.ldap.ssl;
 import java.security.GeneralSecurityException;
 import javax.net.SocketFactory;
 import javax.net.ssl.SSLContext;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.LoggerFactory;
 
 /**
  * <code>TLSSocketFactory</code> is an extension of SSLSocketFactory. Note that
@@ -85,10 +84,8 @@ public class TLSSocketFactory extends AbstractTLSSocketFactory
     try {
       sf.initialize();
     } catch (GeneralSecurityException e) {
-      final Log logger = LogFactory.getLog(TLSSocketFactory.class);
-      if (logger.isErrorEnabled()) {
-        logger.error("Error initializing socket factory", e);
-      }
+      LoggerFactory.getLogger(TLSSocketFactory.class).error(
+        "Error initializing socket factory", e);
     }
     return sf;
   }

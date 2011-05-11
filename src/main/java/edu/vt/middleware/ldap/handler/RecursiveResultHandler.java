@@ -261,11 +261,10 @@ public class RecursiveResultHandler extends CopyLdapResultHandler
         final LdapResult result = search.execute(sr).getResult();
         newAttrs = result.getEntry(dn).getLdapAttributes();
       } catch (LdapException e) {
-        if (this.logger.isWarnEnabled()) {
-          this.logger.warn(
-            "Error retreiving attribute(s): " + Arrays.toString(this.retAttrs),
-            e);
-        }
+        this.logger.warn(
+          "Error retreiving attribute(s): {}",
+          Arrays.toString(this.retAttrs),
+          e);
       }
       searchedDns.add(dn);
 

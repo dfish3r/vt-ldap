@@ -15,8 +15,8 @@ package edu.vt.middleware.ldap.pool;
 
 import java.util.TimerTask;
 import edu.vt.middleware.ldap.LdapConnection;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * <code>PrunePoolTask</code> is a periodic task that removes available ldap
@@ -32,8 +32,8 @@ import org.apache.commons.logging.LogFactory;
 public class PrunePoolTask<T extends LdapConnection> extends TimerTask
 {
 
-  /** Log for this class. */
-  protected final Log logger = LogFactory.getLog(this.getClass());
+  /** Logger for this class. */
+  protected final Logger logger = LoggerFactory.getLogger(this.getClass());
 
   /** Pool to clean. */
   private LdapPool<T> pool;
@@ -56,12 +56,8 @@ public class PrunePoolTask<T extends LdapConnection> extends TimerTask
    */
   public void run()
   {
-    if (this.logger.isDebugEnabled()) {
-      this.logger.debug("Begin prune task for " + this.pool);
-    }
+    this.logger.debug("Begin prune task for {}", this.pool);
     this.pool.prune();
-    if (this.logger.isDebugEnabled()) {
-      this.logger.debug("End prune task for " + this.pool);
-    }
+    this.logger.debug("End prune task for {}", this.pool);
   }
 }

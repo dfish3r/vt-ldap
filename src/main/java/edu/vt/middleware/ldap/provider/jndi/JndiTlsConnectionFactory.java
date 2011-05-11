@@ -108,24 +108,15 @@ public class JndiTlsConnectionFactory extends AbstractJndiConnectionFactory
     final String url, final String dn, final Credential credential)
     throws LdapException
   {
-    if (this.logger.isDebugEnabled()) {
-      this.logger.debug("Bind with the following parameters:");
-      this.logger.debug("  url = " + url);
-      this.logger.debug("  authenticationType = " + this.authenticationType);
-      this.logger.debug("  dn = " + dn);
-      if (this.logCredentials) {
-        if (this.logger.isDebugEnabled()) {
-          this.logger.debug("  credential = " + credential);
-        }
-      } else {
-        if (this.logger.isDebugEnabled()) {
-          this.logger.debug("  credential = <suppressed>");
-        }
-      }
-      if (this.logger.isTraceEnabled()) {
-        this.logger.trace("  env = " + this.environment);
-      }
-    }
+    this.logger.debug(
+      "Bind with the following parameters: url = {}, " +
+      "authenticationType = {}, dn = {}, credential = {}, env = {}",
+      new Object[] {
+        url,
+        this.authenticationType,
+        dn,
+        this.logCredentials ? credential : "<suppressed>",
+        this.environment, });
 
     final Hashtable<String, Object> env = new Hashtable<String, Object>(
       this.environment);
@@ -177,9 +168,7 @@ public class JndiTlsConnectionFactory extends AbstractJndiConnectionFactory
             conn.close();
           }
         } catch (LdapException e) {
-          if (this.logger.isDebugEnabled()) {
-            this.logger.debug("Problem tearing down connection", e);
-          }
+          this.logger.debug("Problem tearing down connection", e);
         }
       }
     }
@@ -205,17 +194,11 @@ public class JndiTlsConnectionFactory extends AbstractJndiConnectionFactory
     final StartTlsResponse tls = (StartTlsResponse) ctx.extendedOperation(
       new StartTlsRequest());
     if (this.hostnameVerifier != null) {
-      if (this.logger.isTraceEnabled()) {
-        this.logger.trace(
-          "TLS hostnameVerifier = " + this.hostnameVerifier);
-      }
+      this.logger.trace("TLS hostnameVerifier = {}", this.hostnameVerifier);
       tls.setHostnameVerifier(this.hostnameVerifier);
     }
     if (this.sslSocketFactory != null) {
-      if (this.logger.isTraceEnabled()) {
-        this.logger.trace(
-          "TLS sslSocketFactory = " + this.sslSocketFactory);
-      }
+      this.logger.trace("TLS sslSocketFactory = {}", this.sslSocketFactory);
       tls.negotiate(this.sslSocketFactory);
     } else {
       tls.negotiate();

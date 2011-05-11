@@ -15,8 +15,7 @@ package edu.vt.middleware.ldap.ssl;
 
 import java.security.GeneralSecurityException;
 import javax.net.SocketFactory;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.LoggerFactory;
 
 /**
  * TLSSocketFactory implementation that uses a static SSLContextInitializer.
@@ -36,10 +35,8 @@ public class SingletonTLSSocketFactory extends TLSSocketFactory
   public void setSSLContextInitializer(final SSLContextInitializer initializer)
   {
     if (staticContextInitializer != null) {
-      final Log logger = LogFactory.getLog(SingletonTLSSocketFactory.class);
-      if (logger.isWarnEnabled()) {
-        logger.warn("SSLContextInitializer is being overridden");
-      }
+      LoggerFactory.getLogger(SingletonTLSSocketFactory.class).warn(
+        "SSLContextInitializer is being overridden");
     }
     staticContextInitializer = initializer;
   }
@@ -65,10 +62,8 @@ public class SingletonTLSSocketFactory extends TLSSocketFactory
     try {
       sf.initialize();
     } catch (GeneralSecurityException e) {
-      final Log logger = LogFactory.getLog(SingletonTLSSocketFactory.class);
-      if (logger.isErrorEnabled()) {
-        logger.error("Error initializing socket factory", e);
-      }
+      LoggerFactory.getLogger(SingletonTLSSocketFactory.class).error(
+        "Error initializing socket factory", e);
     }
     return sf;
   }

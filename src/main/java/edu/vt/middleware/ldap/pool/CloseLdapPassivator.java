@@ -14,8 +14,6 @@
 package edu.vt.middleware.ldap.pool;
 
 import edu.vt.middleware.ldap.LdapConnection;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
 /**
  * <code>CloseLdapPassivator</code> passivates an ldap object by attempting to
@@ -26,9 +24,6 @@ import org.apache.commons.logging.LogFactory;
  */
 public class CloseLdapPassivator implements LdapPassivator<LdapConnection>
 {
-
-  /** Log for this class. */
-  protected final Log logger = LogFactory.getLog(this.getClass());
 
 
   /** {@inheritDoc} */

@@ -77,21 +77,15 @@ public class LdapLoginModule extends AbstractLoginModule implements LoginModule
       }
     }
 
-    if (this.logger.isDebugEnabled()) {
-      this.logger.debug(
-        "userRoleAttribute = " + Arrays.toString(this.userRoleAttribute));
-    }
+    this.logger.trace(
+      "userRoleAttribute = {}", Arrays.toString(this.userRoleAttribute));
 
     this.auth = createAuthenticator(options);
-    if (this.logger.isDebugEnabled()) {
-      this.logger.debug("Created authenticator: " + this.auth);
-    }
+    this.logger.debug("Created authenticator: {}", this.auth);
 
     this.authRequest = createAuthenticationRequest(options);
     this.authRequest.setReturnAttributes(this.userRoleAttribute);
-    if (this.logger.isDebugEnabled()) {
-      this.logger.debug("Created authentication request: " + this.authRequest);
-    }
+    this.logger.debug("Created authentication request: {}", this.authRequest);
   }
 
 
@@ -143,9 +137,7 @@ public class LdapLoginModule extends AbstractLoginModule implements LoginModule
         }
       }
       if (!this.loginSuccess) {
-        if (this.logger.isDebugEnabled()) {
-          this.logger.debug("Authentication failed", authEx);
-        }
+        this.logger.debug("Authentication failed", authEx);
         throw new LoginException(
           authEx != null ? authEx.getMessage() : "Authentication failed");
       } else {
@@ -173,9 +165,7 @@ public class LdapLoginModule extends AbstractLoginModule implements LoginModule
         this.storeCredentials(nameCb, passCb, loginDn);
       }
     } catch (LdapException e) {
-      if (this.logger.isDebugEnabled()) {
-        this.logger.debug("Error occured attempting authentication", e);
-      }
+      this.logger.debug("Error occured attempting authentication", e);
       this.loginSuccess = false;
       throw new LoginException(
         e != null ? e.getMessage() : "Authentication Error");

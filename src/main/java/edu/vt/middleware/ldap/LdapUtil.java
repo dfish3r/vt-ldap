@@ -19,8 +19,7 @@ import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import org.apache.commons.codec.binary.Base64;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.LoggerFactory;
 
 /**
  * Provides utility methods for this package.
@@ -58,10 +57,8 @@ public final class LdapUtil
       try {
         encodedValue = new String(Base64.encodeBase64(value), UTF8_CHARSET);
       } catch (UnsupportedEncodingException e) {
-        final Log logger = LogFactory.getLog(LdapUtil.class);
-        if (logger.isErrorEnabled()) {
-          logger.error("Could not encode value using " + UTF8_CHARSET, e);
-        }
+        LoggerFactory.getLogger(LdapUtil.class).error(
+          "Could not encode value using {}", UTF8_CHARSET, e);
       }
     }
     return encodedValue;
@@ -83,10 +80,8 @@ public final class LdapUtil
       try {
         encodedValue = base64Encode(value.getBytes(UTF8_CHARSET));
       } catch (UnsupportedEncodingException e) {
-        final Log logger = LogFactory.getLog(LdapUtil.class);
-        if (logger.isErrorEnabled()) {
-          logger.error("Could not encode value using " + UTF8_CHARSET, e);
-        }
+        LoggerFactory.getLogger(LdapUtil.class).error(
+          "Could not encode value using {}", UTF8_CHARSET, e);
       }
     }
     return encodedValue;
@@ -108,10 +103,8 @@ public final class LdapUtil
       try {
         encodedValue = value.getBytes(UTF8_CHARSET);
       } catch (UnsupportedEncodingException e) {
-        final Log logger = LogFactory.getLog(LdapUtil.class);
-        if (logger.isErrorEnabled()) {
-          logger.error("Could not encode value using " + UTF8_CHARSET, e);
-        }
+        LoggerFactory.getLogger(LdapUtil.class).error(
+          "Could not encode value using {}", UTF8_CHARSET, e);
       }
     }
     return encodedValue;

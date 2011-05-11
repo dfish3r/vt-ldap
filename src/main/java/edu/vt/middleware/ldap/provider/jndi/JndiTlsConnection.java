@@ -81,9 +81,7 @@ public class JndiTlsConnection extends JndiConnection
    */
   public void setStopTlsOnClose(final boolean b)
   {
-    if (this.logger.isTraceEnabled()) {
-      this.logger.trace("setting stopTlsOnClose: " + b);
-    }
+    this.logger.trace("setting stopTlsOnClose: {}", b);
     this.stopTlsOnClose = b;
   }
 
@@ -121,9 +119,7 @@ public class JndiTlsConnection extends JndiConnection
         }
       }
     } catch (IOException e) {
-      if (this.logger.isErrorEnabled()) {
-        this.logger.error("Error stopping TLS", e);
-      }
+      this.logger.error("Error stopping TLS", e);
     } finally {
       this.startTlsResponse = null;
       super.close();

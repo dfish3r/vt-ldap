@@ -17,8 +17,8 @@ import edu.vt.middleware.ldap.LdapAttribute;
 import edu.vt.middleware.ldap.LdapEntry;
 import edu.vt.middleware.ldap.LdapException;
 import edu.vt.middleware.ldap.LdapResult;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Base class for result handlers which simply returns values unaltered.
@@ -29,7 +29,7 @@ import org.apache.commons.logging.LogFactory;
 public class CopyLdapResultHandler implements LdapResultHandler
 {
   /** Log for this class. */
-  protected final Log logger = LogFactory.getLog(this.getClass());
+  protected final Logger logger = LoggerFactory.getLogger(this.getClass());
 
   /** Attribute handler. */
   private LdapAttributeHandler[] ldapAttributeHandler;

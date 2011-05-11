@@ -15,8 +15,8 @@ package edu.vt.middleware.ldap;
 
 import edu.vt.middleware.ldap.provider.Connection;
 import edu.vt.middleware.ldap.provider.ConnectionFactory;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Class for managing an LDAP connection.
@@ -26,8 +26,8 @@ import org.apache.commons.logging.LogFactory;
  */
 public class LdapConnection
 {
-  /** Log for this class. */
-  protected final Log logger = LogFactory.getLog(this.getClass());
+  /** Logger for this class. */
+  protected final Logger logger = LoggerFactory.getLogger(this.getClass());
 
   /** LDAP connection configuration. */
   protected LdapConnectionConfig config;
@@ -149,9 +149,7 @@ public class LdapConnection
         this.providerConnection.close();
       }
     } catch (LdapException e) {
-      if (this.logger.isWarnEnabled()) {
-        this.logger.warn("Error closing connection with the LDAP", e);
-      }
+      this.logger.warn("Error closing connection with the LDAP", e);
     } finally {
       this.providerConnection = null;
     }

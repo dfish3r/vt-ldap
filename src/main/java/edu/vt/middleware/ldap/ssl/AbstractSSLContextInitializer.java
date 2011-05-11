@@ -15,8 +15,6 @@ package edu.vt.middleware.ldap.ssl;
 
 import java.security.GeneralSecurityException;
 import javax.net.ssl.SSLContext;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
 /**
  * Provides common implementation for <code>SSLContextInitializer</code>.
@@ -27,9 +25,6 @@ import org.apache.commons.logging.LogFactory;
 public abstract class AbstractSSLContextInitializer
   implements SSLContextInitializer
 {
-
-  /** Log for this class. */
-  protected final Log logger = LogFactory.getLog(this.getClass());
 
 
   /** {@inheritDoc} */

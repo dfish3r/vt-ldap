@@ -20,8 +20,8 @@ import edu.vt.middleware.ldap.SearchFilter;
 import edu.vt.middleware.ldap.SearchOperation;
 import edu.vt.middleware.ldap.SearchRequest;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Convenience class which leverages an ldap pool for searching.
@@ -32,8 +32,8 @@ import org.apache.commons.logging.LogFactory;
 public class LdapSearch
 {
 
-  /** Log for this class. */
-  protected final Log logger = LogFactory.getLog(this.getClass());
+  /** Logger for this class. */
+  protected final Logger logger = LoggerFactory.getLogger(this.getClass());
 
   /** Pool of ldap connections. */
   protected LdapPool<LdapConnection> pool;
@@ -76,9 +76,7 @@ public class LdapSearch
           this.pool.checkIn(conn);
         }
       } catch (LdapPoolException e) {
-        if (this.logger.isErrorEnabled()) {
-          this.logger.error("Error using LDAP pool", e);
-        }
+        this.logger.error("Error using LDAP pool", e);
       }
     }
     return result;

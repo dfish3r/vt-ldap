@@ -42,8 +42,8 @@ import edu.vt.middleware.ldap.props.AuthenticatorPropertySource;
 import edu.vt.middleware.ldap.props.LdapConnectionConfigPropertySource;
 import edu.vt.middleware.ldap.props.PropertySource.PropertyDomain;
 import edu.vt.middleware.ldap.props.SearchRequestPropertySource;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Provides functionality common to ldap based JAAS login modules.
@@ -72,8 +72,8 @@ public abstract class AbstractLoginModule implements LoginModule
     "defaultRole|principalGroupName|roleGroupName|" +
     "userRoleAttribute|roleFilter|roleAttribute|noResultsIsError";
 
-  /** Log for this class. */
-  protected final Log logger = LogFactory.getLog(this.getClass());
+  /** Logger for this class. */
+  protected final Logger logger = LoggerFactory.getLogger(this.getClass());
 
   /** Initialized subject. */
   protected Subject subject;
@@ -140,9 +140,7 @@ public abstract class AbstractLoginModule implements LoginModule
     final Map<String, ?> state,
     final Map<String, ?> options)
   {
-    if (this.logger.isTraceEnabled()) {
-      this.logger.trace("Begin initialize");
-    }
+    this.logger.trace("Begin initialize");
     this.subject = subj;
     this.callbackHandler = cbh;
     this.sharedState = state;
@@ -176,18 +174,22 @@ public abstract class AbstractLoginModule implements LoginModule
       }
     }
 
-    if (this.logger.isDebugEnabled()) {
-      this.logger.debug("useFirstPass = " + this.useFirstPass);
-      this.logger.debug("tryFirstPass = " + this.tryFirstPass);
-      this.logger.debug("storePass = " + this.storePass);
-      this.logger.debug("clearPass = " + this.clearPass);
-      this.logger.debug("setLdapPrincipal = " + this.setLdapPrincipal);
-      this.logger.debug("setLdapDnPrincipal = " + this.setLdapDnPrincipal);
-      this.logger.debug("setLdapCredential = " + this.setLdapCredential);
-      this.logger.debug("defaultRole = " + this.defaultRole);
-      this.logger.debug("principalGroupName = " + this.principalGroupName);
-      this.logger.debug("roleGroupName = " + this.roleGroupName);
-    }
+    this.logger.debug(
+      "useFirstPass = {}, tryFirstPass = {}, storePass = {}, clearPass = {}, " +
+      "setLdapPrincipal = {}, setLdapDnPrincipal = {}, " +
+      "setLdapCredential = {}, defaultRole = {}, principalGroupName = {}, " +
+      "roleGroupName = {}",
+      new Object[] {
+        Boolean.toString(this.useFirstPass),
+        Boolean.toString(this.tryFirstPass),
+        Boolean.toString(this.storePass),
+        Boolean.toString(this.clearPass),
+        Boolean.toString(this.setLdapPrincipal),
+        Boolean.toString(this.setLdapDnPrincipal),
+        Boolean.toString(this.setLdapCredential),
+        this.defaultRole,
+        this.principalGroupName,
+        this.roleGroupName, });
 
     this.principals = new TreeSet<Principal>();
     this.credentials = new HashSet<LdapCredential>();
@@ -199,13 +201,9 @@ public abstract class AbstractLoginModule implements LoginModule
   public boolean commit()
     throws LoginException
   {
-    if (this.logger.isTraceEnabled()) {
-      this.logger.trace("Begin commit");
-    }
+    this.logger.trace("Begin commit");
     if (!this.loginSuccess) {
-      if (this.logger.isDebugEnabled()) {
-        this.logger.debug("Login failed");
-      }
+      this.logger.debug("Login failed");
       return false;
     }
 
@@ -214,25 +212,18 @@ public abstract class AbstractLoginModule implements LoginModule
       throw new LoginException("Subject is read-only.");
     }
     this.subject.getPrincipals().addAll(this.principals);
-    if (this.logger.isDebugEnabled()) {
-      this.logger.debug(
-        "Committed the following principals: " + this.principals);
-    }
+    this.logger.debug(
+      "Committed the following principals: {}", this.principals);
     this.subject.getPrivateCredentials().addAll(this.credentials);
     this.subject.getPrincipals().addAll(this.roles);
-    if (this.logger.isDebugEnabled()) {
-      this.logger.debug("Committed the following roles: " + this.roles);
-    }
+    this.logger.debug("Committed the following roles: {}", this.roles);
     if (this.principalGroupName != null) {
       final LdapGroup group = new LdapGroup(this.principalGroupName);
       for (Principal principal : this.principals) {
         group.addMember(principal);
       }
       this.subject.getPrincipals().add(group);
-      if (this.logger.isDebugEnabled()) {
-        this.logger.debug(
-          "Committed the following principal group: " + group);
-      }
+      this.logger.debug("Committed the following principal group: {}", group);
     }
     if (this.roleGroupName != null) {
       final LdapGroup group = new LdapGroup(this.roleGroupName);
@@ -240,9 +231,7 @@ public abstract class AbstractLoginModule implements LoginModule
         group.addMember(role);
       }
       this.subject.getPrincipals().add(group);
-      if (this.logger.isDebugEnabled()) {
-        this.logger.debug("Committed the following role group: " + group);
-      }
+      this.logger.debug("Committed the following role group: {}", group);
     }
     this.clearState();
     this.commitSuccess = true;
@@ -254,9 +243,7 @@ public abstract class AbstractLoginModule implements LoginModule
   public boolean abort()
     throws LoginException
   {
-    if (this.logger.isTraceEnabled()) {
-      this.logger.trace("Begin abort");
-    }
+    this.logger.trace("Begin abort");
     if (!this.loginSuccess) {
       return false;
     } else if (this.loginSuccess && !this.commitSuccess) {
@@ -273,9 +260,7 @@ public abstract class AbstractLoginModule implements LoginModule
   public boolean logout()
     throws LoginException
   {
-    if (this.logger.isTraceEnabled()) {
-      this.logger.trace("Begin logout");
-    }
+    this.logger.trace("Begin logout");
     if (this.subject.isReadOnly()) {
       this.clearState();
       throw new LoginException("Subject is read-only.");
@@ -444,19 +429,17 @@ public abstract class AbstractLoginModule implements LoginModule
     final boolean useCallback)
     throws LoginException
   {
-    if (this.logger.isTraceEnabled()) {
-      this.logger.trace("Begin getCredentials");
-      this.logger.trace("  useFistPass = " + this.useFirstPass);
-      this.logger.trace("  tryFistPass = " + this.tryFirstPass);
-      this.logger.trace("  useCallback = " + useCallback);
-      this.logger.trace(
-        "  callbackhandler class = " +
-        this.callbackHandler.getClass().getName());
-      this.logger.trace(
-        "  name callback class = " + nameCb.getClass().getName());
-      this.logger.trace(
-        "  password callback class = " + passCb.getClass().getName());
-    }
+    this.logger.trace(
+      "Begin getCredentials: useFistPass = {}, tryFistPass = {}, " +
+      "useCallback = {}, callbackhandler class = {}, " +
+      "name callback class = {}, password callback class = {}",
+      new Object[] {
+        Boolean.toString(this.useFirstPass),
+        Boolean.toString(this.tryFirstPass),
+        Boolean.toString(useCallback),
+        this.callbackHandler.getClass().getName(),
+        nameCb.getClass().getName(),
+        passCb.getClass().getName(), });
     try {
       if ((this.useFirstPass || this.tryFirstPass) && !useCallback) {
         nameCb.setName((String) this.sharedState.get(LOGIN_NAME));
@@ -469,15 +452,11 @@ public abstract class AbstractLoginModule implements LoginModule
           "Set useFirstPass, tryFirstPass, or provide a CallbackHandler");
       }
     } catch (IOException e) {
-      if (this.logger.isErrorEnabled()) {
-        this.logger.error("Error reading data from callback handler", e);
-      }
+      this.logger.error("Error reading data from callback handler", e);
       this.loginSuccess = false;
       throw new LoginException(e.getMessage());
     } catch (UnsupportedCallbackException e) {
-      if (this.logger.isErrorEnabled()) {
-        this.logger.error("Unsupported callback", e);
-      }
+      this.logger.error("Unsupported callback", e);
       this.loginSuccess = false;
       throw new LoginException(e.getMessage());
     }

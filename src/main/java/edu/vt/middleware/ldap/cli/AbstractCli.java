@@ -31,8 +31,6 @@ import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
 /**
  * Abstract base class for all CLI classes.
@@ -48,9 +46,6 @@ public abstract class AbstractCli
 
   /** option for provider properties. */
   protected static final String OPT_PROVIDER_PROPERTIES = "providerProperties";
-
-  /** log for this class. */
-  protected final Log logger = LogFactory.getLog(getClass());
 
   /** command line options. */
   protected Options options = new Options();

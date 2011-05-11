@@ -113,9 +113,7 @@ public final class AttributeServlet extends AbstractServlet
       }
 
     } catch (Exception e) {
-      if (this.logger.isErrorEnabled()) {
-        this.logger.error("Error performing search", e);
-      }
+      this.logger.error("Error performing search", e);
       throw new ServletException(e.getMessage());
     }
   }

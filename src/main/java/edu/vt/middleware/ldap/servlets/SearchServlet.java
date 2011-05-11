@@ -92,9 +92,7 @@ public final class SearchServlet extends AbstractServlet
     if (outputType == null) {
       outputType = DEFAULT_OUTPUT_FORMAT;
     }
-    if (this.logger.isDebugEnabled()) {
-      this.logger.debug(OUTPUT_FORMAT + " = " + outputType);
-    }
+    this.logger.debug("{} = {}", OUTPUT_FORMAT, outputType);
     this.output = OutputType.valueOf(outputType);
   }
 
@@ -113,11 +111,10 @@ public final class SearchServlet extends AbstractServlet
     final HttpServletResponse response)
     throws ServletException, IOException
   {
-    if (this.logger.isInfoEnabled()) {
-      this.logger.info(
-        "Performing search: " + request.getParameter("query") +
-        " for attributes: " + request.getParameter("attrs"));
-    }
+    this.logger.info(
+      "Performing search: {} for attributes: {}",
+      request.getParameter("query"),
+      request.getParameter("attrs"));
     try {
       final LdapResult result = this.search(
         request.getParameter("query"),
@@ -142,9 +139,7 @@ public final class SearchServlet extends AbstractServlet
         writer.write(result);
       }
     } catch (Exception e) {
-      if (this.logger.isErrorEnabled()) {
-        this.logger.error("Error performing search", e);
-      }
+      this.logger.error("Error performing search", e);
       throw new ServletException(e);
     }
   }

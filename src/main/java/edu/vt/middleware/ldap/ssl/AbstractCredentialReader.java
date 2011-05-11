@@ -19,8 +19,8 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.security.GeneralSecurityException;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Base class for all credential readers. It provides support for loading files
@@ -49,8 +49,8 @@ public abstract class AbstractCredentialReader<T> implements CredentialReader<T>
   /** Start index of path specification when given a file resource. */
   private static final int FILE_START_INDEX = FILE_PREFIX.length();
 
-  /** Log for this class. */
-  protected final Log logger = LogFactory.getLog(this.getClass());
+  /** Logger for this class. */
+  protected final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 
   /** {@inheritDoc} */
@@ -72,15 +72,11 @@ public abstract class AbstractCredentialReader<T> implements CredentialReader<T>
       try {
         return read(is, params);
       } finally {
-        if (this.logger.isDebugEnabled()) {
-          this.logger.debug("Successfully loaded " + path);
-        }
+        this.logger.debug("Successfully loaded {}", path);
         is.close();
       }
     } else {
-      if (this.logger.isDebugEnabled()) {
-        this.logger.debug("Failed to load " + path);
-      }
+      this.logger.debug("Failed to load {}", path);
       return null;
     }
   }

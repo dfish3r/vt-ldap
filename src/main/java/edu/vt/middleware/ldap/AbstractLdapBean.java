@@ -13,9 +13,6 @@
 */
 package edu.vt.middleware.ldap;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 /**
  * Provides common implementations for other ldap beans.
  *
@@ -24,9 +21,6 @@ import org.apache.commons.logging.LogFactory;
  */
 public abstract class AbstractLdapBean
 {
-
-  /** Log for this class. */
-  protected final Log logger = LogFactory.getLog(getClass());
 
   /** Sort behavior. */
   protected SortBehavior sortBehavior;

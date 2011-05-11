@@ -15,8 +15,8 @@ package edu.vt.middleware.ldap.pool;
 
 import java.util.TimerTask;
 import edu.vt.middleware.ldap.LdapConnection;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * <code>ValidatePoolTask</code> is a periodic task that checks that every ldap
@@ -30,8 +30,8 @@ import org.apache.commons.logging.LogFactory;
 public class ValidatePoolTask<T extends LdapConnection> extends TimerTask
 {
 
-  /** Log for this class. */
-  protected final Log logger = LogFactory.getLog(this.getClass());
+  /** Logger for this class. */
+  protected final Logger logger = LoggerFactory.getLogger(this.getClass());
 
   /** Pool to clean. */
   private LdapPool<T> pool;
@@ -54,12 +54,8 @@ public class ValidatePoolTask<T extends LdapConnection> extends TimerTask
    */
   public void run()
   {
-    if (this.logger.isDebugEnabled()) {
-      this.logger.debug("Begin validate task for " + this.pool);
-    }
+    this.logger.debug("Begin validate task for {}", this.pool);
     this.pool.validate();
-    if (this.logger.isDebugEnabled()) {
-      this.logger.debug("End validate task for " + this.pool);
-    }
+    this.logger.debug("End validate task for {}", this.pool);
   }
 }

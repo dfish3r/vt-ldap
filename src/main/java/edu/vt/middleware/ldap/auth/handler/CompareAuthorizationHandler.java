@@ -22,8 +22,6 @@ import edu.vt.middleware.ldap.SearchFilter;
 import edu.vt.middleware.ldap.SearchOperation;
 import edu.vt.middleware.ldap.SearchRequest;
 import edu.vt.middleware.ldap.auth.AuthorizationException;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
 /**
  * Performs a compare operation with a custom filter. The DN of the
@@ -35,10 +33,6 @@ import org.apache.commons.logging.LogFactory;
  */
 public class CompareAuthorizationHandler implements AuthorizationHandler
 {
-
-  /** Log for this class. */
-  protected final Log logger = LogFactory.getLog(this.getClass());
-
 
   /** Search filter. */
   private SearchFilter searchFilter;

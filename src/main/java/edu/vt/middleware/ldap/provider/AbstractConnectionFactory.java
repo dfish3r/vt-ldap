@@ -21,8 +21,8 @@ import edu.vt.middleware.ldap.AuthenticationType;
 import edu.vt.middleware.ldap.Credential;
 import edu.vt.middleware.ldap.LdapException;
 import edu.vt.middleware.ldap.ResultCode;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Provides a basic implementation for other connection handlers to inherit.
@@ -33,8 +33,8 @@ import org.apache.commons.logging.LogFactory;
 public abstract class AbstractConnectionFactory implements ConnectionFactory
 {
 
-  /** Log for this class. */
-  protected final Log logger = LogFactory.getLog(this.getClass());
+  /** Logger for this class. */
+  protected final Logger logger = LoggerFactory.getLogger(this.getClass());
 
   /** Ldap connection strategy. */
   protected ConnectionStrategy connectionStrategy = ConnectionStrategy.DEFAULT;
@@ -87,9 +87,7 @@ public abstract class AbstractConnectionFactory implements ConnectionFactory
   /** {@inheritDoc} */
   public void setConnectionStrategy(final ConnectionStrategy strategy)
   {
-    if (this.logger.isTraceEnabled()) {
-      this.logger.trace("setting connectionStrategy: " + strategy);
-    }
+    this.logger.trace("setting connectionStrategy: {}", strategy);
     this.connectionStrategy = strategy;
   }
 
@@ -162,20 +160,19 @@ public abstract class AbstractConnectionFactory implements ConnectionFactory
     Connection conn = null;
     for (String url : urls) {
       try {
-        if (this.logger.isTraceEnabled()) {
-          this.logger.trace(
-            "{" + this.connectionCount + "} Attempting connection to " + url +
-            " for strategy " + this.connectionStrategy);
-        }
+        this.logger.trace(
+          "[{}] Attempting connection to {} for strategy {}",
+          new Object[] {
+            this.connectionCount,
+            url,
+            this.connectionStrategy, });
         conn = this.createInternal(url, dn, credential);
         this.connectionCount.incrementCount();
         lastThrown = null;
         break;
       } catch (ConnectionException e) {
         lastThrown = e;
-        if (this.logger.isDebugEnabled()) {
-          this.logger.debug("Error connecting to LDAP URL: " + url, e);
-        }
+        this.logger.debug("Error connecting to LDAP URL: {}", url, e);
       }
     }
     if (lastThrown != null) {

@@ -63,24 +63,18 @@ public class SoftLimitLdapPool extends BlockingLdapPool
     throws LdapPoolException
   {
     LdapConnection lc = null;
-    if (this.logger.isTraceEnabled()) {
-      this.logger.trace(
-        "waiting on pool lock for check out " + this.poolLock.getQueueLength());
-    }
+    this.logger.trace(
+      "waiting on pool lock for check out {}", this.poolLock.getQueueLength());
     this.poolLock.lock();
     try {
       // if an available object exists, use it
       // if no available objects, attempt to create
       if (this.available.size() > 0) {
         try {
-          if (this.logger.isTraceEnabled()) {
-            this.logger.trace("retrieve available ldap object");
-          }
+          this.logger.trace("retrieve available ldap object");
           lc = this.retrieveAvailable();
         } catch (NoSuchElementException e) {
-          if (this.logger.isErrorEnabled()) {
-            this.logger.error("could not remove ldap object from list", e);
-          }
+          this.logger.error("could not remove ldap object from list", e);
           throw new IllegalStateException("Pool is empty", e);
         }
       }
@@ -91,30 +85,20 @@ public class SoftLimitLdapPool extends BlockingLdapPool
     if (lc == null) {
       // no object was available, create a new one
       lc = this.createActive();
-      if (this.logger.isTraceEnabled()) {
-        this.logger.trace("created new active ldap connection: " + lc);
-      }
+      this.logger.trace("created new active ldap connection: {}", lc);
       if (lc == null) {
         // create failed, block until an object is available
-        if (this.logger.isDebugEnabled()) {
-          this.logger.debug(
-            "created failed, block until an object " +
-            "is available");
-        }
+        this.logger.debug("created failed, block until an object is available");
         lc = this.blockAvailable();
       } else {
-        if (this.logger.isTraceEnabled()) {
-          this.logger.trace("created new active ldap connection: " + lc);
-        }
+        this.logger.trace("created new active ldap connection: {}", lc);
       }
     }
 
     if (lc != null) {
       this.activateAndValidate(lc);
     } else {
-      if (this.logger.isErrorEnabled()) {
-        this.logger.error("Could not service check out request");
-      }
+      this.logger.error("Could not service check out request");
       throw new LdapPoolExhaustedException(
         "Pool is empty and object creation failed");
     }

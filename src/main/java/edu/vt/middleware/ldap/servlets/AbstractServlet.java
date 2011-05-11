@@ -33,8 +33,8 @@ import edu.vt.middleware.ldap.pool.SoftLimitLdapPool;
 import edu.vt.middleware.ldap.props.LdapConnectionConfigPropertySource;
 import edu.vt.middleware.ldap.props.LdapPoolConfigPropertySource;
 import edu.vt.middleware.ldap.props.SearchRequestPropertySource;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Base class for ldap search servlets.
@@ -76,8 +76,8 @@ public abstract class AbstractServlet extends HttpServlet
     SHARED
   }
 
-  /** Log for this class. */
-  protected final Log logger = LogFactory.getLog(SearchServlet.class);
+  /** Logger for this class. */
+  protected final Logger logger = LoggerFactory.getLogger(this.getClass());
 
   /** Pool for searching. */
   private LdapPool<LdapConnection> ldapPool;
@@ -99,9 +99,7 @@ public abstract class AbstractServlet extends HttpServlet
     super.init(config);
 
     final String propertiesFile = getInitParameter(PROPERTIES_FILE);
-    if (this.logger.isDebugEnabled()) {
-      this.logger.debug(PROPERTIES_FILE + " = " + propertiesFile);
-    }
+    this.logger.debug("{} = {}", PROPERTIES_FILE, propertiesFile);
 
     final LdapConnectionConfigPropertySource lccSource =
       new LdapConnectionConfigPropertySource(
@@ -112,9 +110,7 @@ public abstract class AbstractServlet extends HttpServlet
       SearchServlet.class.getResourceAsStream(propertiesFile));
 
     final String poolPropertiesFile = getInitParameter(POOL_PROPERTIES_FILE);
-    if (this.logger.isDebugEnabled()) {
-      this.logger.debug(POOL_PROPERTIES_FILE + " = " + poolPropertiesFile);
-    }
+    this.logger.debug("{} = {}", POOL_PROPERTIES_FILE, poolPropertiesFile);
 
     final LdapPoolConfigPropertySource lpcSource =
       new LdapPoolConfigPropertySource(
@@ -122,9 +118,7 @@ public abstract class AbstractServlet extends HttpServlet
     final LdapPoolConfig lpc = lpcSource.get();
 
     final String poolType = getInitParameter(POOL_TYPE);
-    if (this.logger.isDebugEnabled()) {
-      this.logger.debug(POOL_TYPE + " = " + poolType);
-    }
+    this.logger.debug("{} = {}", POOL_TYPE, poolType);
     if (PoolType.BLOCKING == PoolType.valueOf(poolType)) {
       this.ldapPool = new BlockingLdapPool(lpc, new DefaultLdapFactory(lcc));
     } else if (PoolType.SOFTLIMIT == PoolType.valueOf(poolType)) {
@@ -167,9 +161,7 @@ public abstract class AbstractServlet extends HttpServlet
           this.ldapPool.checkIn(conn);
         }
       } catch (LdapPoolException e) {
-        if (this.logger.isErrorEnabled()) {
-          this.logger.error("Error using LDAP pool", e);
-        }
+        this.logger.error("Error using LDAP pool", e);
       }
     }
     return result;

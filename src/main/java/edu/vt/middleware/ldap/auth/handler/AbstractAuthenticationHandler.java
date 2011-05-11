@@ -14,8 +14,6 @@
 package edu.vt.middleware.ldap.auth.handler;
 
 import edu.vt.middleware.ldap.LdapConnectionConfig;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
 /**
  * AbstractAuthenticationHandler provides a base implementation for
@@ -27,9 +25,6 @@ import org.apache.commons.logging.LogFactory;
 public abstract class AbstractAuthenticationHandler
   implements AuthenticationHandler
 {
-
-  /** Log for this class. */
-  protected final Log logger = LogFactory.getLog(this.getClass());
 
   /** LDAP connection configuration. */
   protected LdapConnectionConfig config;

@@ -19,8 +19,6 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
 /**
  * Provides methods common to object properties implementations.
@@ -35,9 +33,6 @@ public abstract class AbstractPropertySource<T> implements PropertySource<T>
 
   /** Default file to read properties from, value is {@value}. */
   public static final String PROPERTIES_FILE = "/ldap.properties";
-
-  /** Log for this class. */
-  protected final Log logger = LogFactory.getLog(this.getClass());
 
   /** Object that is created an initialized with properties. */
   protected T object;

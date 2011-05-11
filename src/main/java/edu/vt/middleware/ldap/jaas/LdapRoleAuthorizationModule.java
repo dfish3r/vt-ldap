@@ -88,23 +88,19 @@ public class LdapRoleAuthorizationModule extends AbstractLoginModule
       }
     }
 
-    if (this.logger.isDebugEnabled()) {
-      this.logger.debug("roleFilter = " + this.roleFilter);
-      this.logger.debug(
-        "roleAttribute = " + Arrays.toString(this.roleAttribute));
-      this.logger.debug("noResultsIsError = " + this.noResultsIsError);
-    }
+    this.logger.trace(
+      "roleFilter = {}, roleAttribute = {}, noResultsIsError = {}",
+      new Object[] {
+        this.roleFilter,
+        Arrays.toString(this.roleAttribute),
+        this.noResultsIsError, });
 
     this.ldapConn = createLdapConnection(options);
-    if (this.logger.isDebugEnabled()) {
-      this.logger.debug("Created ldap connection: " + this.ldapConn);
-    }
+    this.logger.debug("Created ldap connection: {}", this.ldapConn);
 
     this.searchRequest = createSearchRequest(options);
     this.searchRequest.setReturnAttributes(this.roleAttribute);
-    if (this.logger.isDebugEnabled()) {
-      this.logger.debug("Created search request: " + this.searchRequest);
-    }
+    this.logger.debug("Created search request: {}", this.searchRequest);
   }
 
 
@@ -160,9 +156,7 @@ public class LdapRoleAuthorizationModule extends AbstractLoginModule
       }
       this.storeCredentials(nameCb, passCb, null);
     } catch (LdapException e) {
-      if (this.logger.isDebugEnabled()) {
-        this.logger.debug("Error occured attempting role lookup", e);
-      }
+      this.logger.debug("Error occured attempting role lookup", e);
       this.loginSuccess = false;
       throw new LoginException(e.getMessage());
     } finally {

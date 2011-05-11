@@ -65,14 +65,10 @@ public class LdapDnAuthorizationModule extends AbstractLoginModule
       }
     }
 
-    if (this.logger.isDebugEnabled()) {
-      this.logger.debug("noResultsIsError = " + this.noResultsIsError);
-    }
+    this.logger.trace("noResultsIsError = {}", this.noResultsIsError);
 
     this.auth = createAuthenticator(options);
-    if (this.logger.isDebugEnabled()) {
-      this.logger.debug("Created authenticator: " + this.auth);
-    }
+    this.logger.debug("Created authenticator: {}", this.auth);
   }
 
 
@@ -112,9 +108,7 @@ public class LdapDnAuthorizationModule extends AbstractLoginModule
       }
       this.storeCredentials(nameCb, passCb, loginDn);
     } catch (LdapException e) {
-      if (this.logger.isDebugEnabled()) {
-        this.logger.debug("Error occured attempting DN lookup", e);
-      }
+      this.logger.debug("Error occured attempting DN lookup", e);
       this.loginSuccess = false;
       throw new LoginException(
         e != null ? e.getMessage() : "DN resolution error");

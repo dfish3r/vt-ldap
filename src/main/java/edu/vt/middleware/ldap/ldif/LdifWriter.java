@@ -19,8 +19,8 @@ import edu.vt.middleware.ldap.LdapAttribute;
 import edu.vt.middleware.ldap.LdapEntry;
 import edu.vt.middleware.ldap.LdapResult;
 import edu.vt.middleware.ldap.LdapUtil;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Writes an LDIF to a {@link Writer} using an {@link LdapResult}.
@@ -55,8 +55,8 @@ public class LdifWriter
   private static final String LINE_SEPARATOR = System.getProperty(
     "line.separator");
 
-  /** Log for this class. */
-  protected final Log logger = LogFactory.getLog(this.getClass());
+  /** Logger for this class. */
+  protected final Logger logger = LoggerFactory.getLogger(this.getClass());
 
   /** Writer to write to. */
   protected final Writer ldifWriter;
@@ -144,11 +144,8 @@ public class LdifWriter
           } else if (attrValue instanceof byte[]) {
             encodedAttrValue = LdapUtil.base64Encode((byte[]) attrValue);
           } else {
-            if (this.logger.isWarnEnabled()) {
-              this.logger.warn(
-                "Could not cast attribute value as a byte[]" +
-                " or a String");
-            }
+            this.logger.warn(
+              "Could not cast attribute value as a byte[]  or a String");
           }
           if (encodedAttrValue != null) {
             entry.append(attrName).append(":: ").append(encodedAttrValue)

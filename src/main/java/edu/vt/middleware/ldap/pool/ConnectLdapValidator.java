@@ -15,8 +15,8 @@ package edu.vt.middleware.ldap.pool;
 
 import edu.vt.middleware.ldap.LdapConnection;
 import edu.vt.middleware.ldap.LdapException;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * <code>ConnectLdapValidator</code> validates an ldap connection is healthy by
@@ -28,8 +28,8 @@ import org.apache.commons.logging.LogFactory;
 public class ConnectLdapValidator implements LdapValidator<LdapConnection>
 {
 
-  /** Log for this class. */
-  protected final Log logger = LogFactory.getLog(this.getClass());
+  /** Logger for this class. */
+  protected final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 
   /** {@inheritDoc} */
@@ -41,9 +41,7 @@ public class ConnectLdapValidator implements LdapValidator<LdapConnection>
         lc.open();
         success = true;
       } catch (LdapException e) {
-        if (this.logger.isDebugEnabled()) {
-          this.logger.debug("validation failed for " + lc, e);
-        }
+        this.logger.debug("validation failed for {}", lc, e);
       }
     }
     return success;

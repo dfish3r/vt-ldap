@@ -27,8 +27,8 @@ import edu.vt.middleware.ldap.SearchFilter;
 import edu.vt.middleware.ldap.SearchOperation;
 import edu.vt.middleware.ldap.SearchRequest;
 import edu.vt.middleware.ldap.SearchScope;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Looks up a user's DN using an LDAP search.
@@ -42,8 +42,8 @@ public class SearchDnResolver implements DnResolver, Serializable
   /** serial version uid. */
   private static final long serialVersionUID = -7615995272176088807L;
 
-  /** Log for this class. */
-  protected final Log logger = LogFactory.getLog(this.getClass());
+  /** Logger for this class. */
+  protected final Logger logger = LoggerFactory.getLogger(this.getClass());
 
   /** Ldap connection config. */
   protected LdapConnectionConfig config;
@@ -119,9 +119,7 @@ public class SearchDnResolver implements DnResolver, Serializable
    */
   public void setBaseDn(final String dn)
   {
-    if (this.logger.isTraceEnabled()) {
-      this.logger.trace("setting baseDn: " + dn);
-    }
+    this.logger.trace("setting baseDn: {}", dn);
     this.baseDn = dn;
   }
 
@@ -144,9 +142,7 @@ public class SearchDnResolver implements DnResolver, Serializable
    */
   public void setUserFilter(final String filter)
   {
-    if (this.logger.isTraceEnabled()) {
-      this.logger.trace("setting userFilter: " + filter);
-    }
+    this.logger.trace("setting userFilter: {}", filter);
     this.userFilter = filter;
   }
 
@@ -169,10 +165,8 @@ public class SearchDnResolver implements DnResolver, Serializable
    */
   public void setUserFilterArgs(final Object[] filterArgs)
   {
-    if (this.logger.isTraceEnabled()) {
-      this.logger.trace(
-        "setting userFilterArgs: " + Arrays.toString(filterArgs));
-    }
+    this.logger.trace(
+      "setting userFilterArgs: {}", Arrays.toString(filterArgs));
     this.userFilterArgs = filterArgs;
   }
 
@@ -198,9 +192,7 @@ public class SearchDnResolver implements DnResolver, Serializable
    */
   public void setAllowMultipleDns(final boolean b)
   {
-    if (this.logger.isTraceEnabled()) {
-      this.logger.trace("setting allowMultipleDns: " + b);
-    }
+    this.logger.trace("setting allowMultipleDns: {}", b);
     this.allowMultipleDns = b;
   }
 
@@ -225,9 +217,7 @@ public class SearchDnResolver implements DnResolver, Serializable
    */
   public void setSubtreeSearch(final boolean b)
   {
-    if (this.logger.isTraceEnabled()) {
-      this.logger.trace("setting subtreeSearch: " + b);
-    }
+    this.logger.trace("setting subtreeSearch: {}", b);
     this.subtreeSearch = b;
   }
 
@@ -261,30 +251,24 @@ public class SearchDnResolver implements DnResolver, Serializable
         if (answer != null && answer.hasNext()) {
           dn = answer.next().getDn();
           if (answer.hasNext()) {
-            if (this.logger.isDebugEnabled()) {
-              this.logger.debug(
-                "Multiple results found for user: " + user + " using filter: " +
-                filter);
-            }
+            this.logger.debug(
+              "Multiple results found for user: {} using filter: {}",
+              user,
+              filter);
             if (!this.allowMultipleDns) {
               throw new LdapException("Found more than (1) DN for: " + user);
             }
           }
         } else {
-          if (this.logger.isInfoEnabled()) {
-            this.logger.info(
-              "Search for user: " + user + " failed using filter: " + filter);
-          }
+          this.logger.info(
+            "Search for user: {} failed using filter: {}", user, filter);
         }
       } else {
-        if (this.logger.isErrorEnabled()) {
-          this.logger.error("DN search filter not found, no search performed");
-        }
+        this.logger.error("DN search filter not found, no search performed");
       }
     } else {
-      if (this.logger.isDebugEnabled()) {
-        this.logger.debug("User input was empty or null");
-      }
+      this.logger.warn(
+        "DN resolution cannot occur, user input was empty or null");
     }
     return dn;
   }
@@ -302,9 +286,7 @@ public class SearchDnResolver implements DnResolver, Serializable
   {
     final SearchFilter filter = new SearchFilter();
     if (this.userFilter != null) {
-      if (this.logger.isDebugEnabled()) {
-        this.logger.debug("Looking up DN using userFilter");
-      }
+      this.logger.debug("Looking up DN using userFilter");
       filter.setFilter(this.userFilter);
       filter.setFilterArgs(this.userFilterArgs);
 
@@ -315,9 +297,7 @@ public class SearchDnResolver implements DnResolver, Serializable
       filter.setFilterArgs(filterArgs);
 
     } else {
-      if (this.logger.isErrorEnabled()) {
-        this.logger.error("Invalid userFilter, cannot be null or empty.");
-      }
+      this.logger.error("Invalid userFilter, cannot be null or empty.");
     }
     return filter;
   }

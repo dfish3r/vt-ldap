@@ -32,8 +32,8 @@ import edu.vt.middleware.ldap.LdapAttributes;
 import edu.vt.middleware.ldap.LdapEntry;
 import edu.vt.middleware.ldap.LdapResult;
 import edu.vt.middleware.ldap.LdapUtil;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.DOMImplementation;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -55,8 +55,8 @@ public class Dsmlv1Writer
   protected static final TransformerFactory TRANSFORMER_FACTORY =
     TransformerFactory.newInstance();
 
-  /** Log for this class. */
-  protected final Log logger = LogFactory.getLog(this.getClass());
+  /** Logger for this class. */
+  protected final Logger logger = LoggerFactory.getLogger(this.getClass());
 
   /** Writer to write to. */
   protected final Writer dsmlWriter;
@@ -239,11 +239,8 @@ public class Dsmlv1Writer
       value = LdapUtil.base64Encode((byte[]) o);
       isBase64 = true;
     } else {
-      if (this.logger.isWarnEnabled()) {
-        this.logger.warn(
-          "Could not cast attribute value as a byte[]" +
-          " or a String");
-      }
+      this.logger.warn(
+        "Could not cast attribute value as a byte[] or a String");
     }
     if (value != null) {
       valueElement.appendChild(doc.createTextNode(value));

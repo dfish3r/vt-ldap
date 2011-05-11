@@ -25,8 +25,8 @@ import edu.vt.middleware.ldap.auth.handler.AuthenticationHandler;
 import edu.vt.middleware.ldap.auth.handler.AuthenticationResultHandler;
 import edu.vt.middleware.ldap.auth.handler.AuthorizationHandler;
 import edu.vt.middleware.ldap.auth.handler.CompareAuthorizationHandler;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Base class for authenticator implementations.
@@ -36,8 +36,8 @@ import org.apache.commons.logging.LogFactory;
  */
 public abstract class AbstractAuthenticator
 {
-  /** Log for this class. */
-  protected final Log logger = LogFactory.getLog(this.getClass());
+  /** Logger for this class. */
+  protected final Logger logger = LoggerFactory.getLogger(this.getClass());
 
   /** For finding user DNs. */
   protected DnResolver dnResolver;
@@ -155,13 +155,9 @@ public abstract class AbstractAuthenticator
     LdapConnection conn = null;
     try {
       conn = authHandler.authenticate(ac);
-      if (this.logger.isInfoEnabled()) {
-        this.logger.info("Authentication succeeded for dn: " + ac.getDn());
-      }
+      this.logger.info("Authentication succeeded for dn: {}", ac.getDn());
     } catch (AuthenticationException e) {
-      if (this.logger.isInfoEnabled()) {
-        this.logger.info("Authentication failed for dn: " + ac.getDn());
-      }
+      this.logger.info("Authentication failed for dn: {}", ac.getDn());
       if (authResultHandler != null && authResultHandler.length > 0) {
         for (AuthenticationResultHandler ah : authResultHandler) {
           ah.process(ac, false);
@@ -197,17 +193,15 @@ public abstract class AbstractAuthenticator
       for (AuthorizationHandler azh : authzHandler) {
         try {
           azh.process(ac, conn);
-          if (this.logger.isInfoEnabled()) {
-            this.logger.info(
-              "Authorization succeeded for dn: " + ac.getDn() +
-              " with handler: " + azh);
-          }
+          this.logger.info(
+            "Authorization succeeded for dn: {} with handler: {}",
+            ac.getDn(),
+            azh);
         } catch (AuthorizationException e) {
-          if (this.logger.isInfoEnabled()) {
-            this.logger.info(
-              "Authorization failed for dn: " + ac.getDn() +
-              " with handler: " + azh);
-          }
+          this.logger.info(
+            "Authorization failed for dn: {} with handler: {}",
+            ac.getDn(),
+            azh);
           if (authResultHandler != null && authResultHandler.length > 0) {
             for (AuthenticationResultHandler ah : authResultHandler) {
               ah.process(ac, false);
@@ -235,13 +229,10 @@ public abstract class AbstractAuthenticator
     final LdapConnection conn)
     throws LdapException
   {
-    if (this.logger.isDebugEnabled()) {
-      this.logger.debug("Returning attributes: ");
-      this.logger.debug(
-        "    " +
-        (request.getReturnAttributes() == null ?
-          "all attributes" : Arrays.toString(request.getReturnAttributes())));
-    }
+    this.logger.debug(
+      "Returning attributes: {}",
+      request.getReturnAttributes() == null ?
+        "all attributes" : Arrays.toString(request.getReturnAttributes()));
     final SearchOperation search = new SearchOperation(conn);
     return search.execute(SearchRequest.newObjectScopeSearchRequest(
       dn, request.getReturnAttributes())).getResult();

@@ -14,8 +14,8 @@
 package edu.vt.middleware.ldap.pool;
 
 import edu.vt.middleware.ldap.LdapConnection;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * <code>AbstractLdapFactory</code> provides a basic implementation of an ldap
@@ -30,8 +30,8 @@ public abstract class AbstractLdapFactory<T extends LdapConnection>
   implements LdapFactory<T>
 {
 
-  /** Log for this class. */
-  protected final Log logger = LogFactory.getLog(this.getClass());
+  /** Logger for this class. */
+  protected final Logger logger = LoggerFactory.getLogger(this.getClass());
 
   /** For activating ldap objects. */
   protected LdapActivator<T> activator;
@@ -115,14 +115,10 @@ public abstract class AbstractLdapFactory<T extends LdapConnection>
     boolean success = false;
     if (this.activator == null) {
       success = true;
-      if (this.logger.isTraceEnabled()) {
-        this.logger.trace("no activator configured");
-      }
+      this.logger.trace("no activator configured");
     } else {
       success = this.activator.activate(t);
-      if (this.logger.isTraceEnabled()) {
-        this.logger.trace("activation for " + t + " = " + success);
-      }
+      this.logger.trace("activation for {} = {}", t, success);
     }
     return success;
   }
@@ -134,14 +130,10 @@ public abstract class AbstractLdapFactory<T extends LdapConnection>
     boolean success = false;
     if (this.passivator == null) {
       success = true;
-      if (this.logger.isTraceEnabled()) {
-        this.logger.trace("no passivator configured");
-      }
+      this.logger.trace("no passivator configured");
     } else {
       success = this.passivator.passivate(t);
-      if (this.logger.isTraceEnabled()) {
-        this.logger.trace("passivation for " + t + " = " + success);
-      }
+      this.logger.trace("passivation for {} = {}", t, success);
     }
     return success;
   }
@@ -153,14 +145,10 @@ public abstract class AbstractLdapFactory<T extends LdapConnection>
     boolean success = false;
     if (this.validator == null) {
       success = true;
-      if (this.logger.isWarnEnabled()) {
-        this.logger.warn("validate called, but no validator configured");
-      }
+      this.logger.warn("validate called, but no validator configured");
     } else {
       success = this.validator.validate(t);
-      if (this.logger.isTraceEnabled()) {
-        this.logger.trace("validation for " + t + " = " + success);
-      }
+      this.logger.trace("validation for {} = {}", t, success);
     }
     return success;
   }

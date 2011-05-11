@@ -13,8 +13,8 @@
 */
 package edu.vt.middleware.ldap;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Provides common implementations for ldap configuration objects.
@@ -25,8 +25,8 @@ import org.apache.commons.logging.LogFactory;
 public abstract class AbstractConfig
 {
 
-  /** Log for this class. */
-  protected final Log logger = LogFactory.getLog(this.getClass());
+  /** Logger for this class. */
+  protected final Logger logger = LoggerFactory.getLogger(this.getClass());
 
   /** Whether this config has been marked immutable. */
   private boolean immutable;

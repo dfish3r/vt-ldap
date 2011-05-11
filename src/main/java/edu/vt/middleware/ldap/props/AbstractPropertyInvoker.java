@@ -21,8 +21,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
 /**
  * Provides methods common to property invokers.
@@ -36,9 +34,6 @@ public abstract class AbstractPropertyInvoker implements PropertyInvoker
   /** Cache of properties. */
   protected static final Map<String, Map<String, Method[]>> PROPERTIES_CACHE =
     new HashMap<String, Map<String, Method[]>>();
-
-  /** Log for this class. */
-  protected final Log logger = LogFactory.getLog(this.getClass());
 
   /** Class to invoke methods on. */
   protected Class<?> clazz;

@@ -13,8 +13,8 @@
 */
 package edu.vt.middleware.ldap;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Enum to define how ldap result, entries, and attribute data should be sorted.
@@ -40,8 +40,9 @@ public enum SortBehavior
   public static final String SORT_BEHAVIOR =
     "edu.vt.middleware.ldap.sortBehavior";
 
-  /** Log for this class. */
-  private static final Log LOG = LogFactory.getLog(SortBehavior.class);
+  /** Logger for this class. */
+  private static final Logger LOGGER = LoggerFactory.getLogger(
+    SortBehavior.class);
 
   /** Default sort behavior. */
   private static SortBehavior defaultSortBehavior;
@@ -53,22 +54,14 @@ public enum SortBehavior
       try {
         final SortBehavior sortBehavior = (SortBehavior) Class.forName(sb)
           .newInstance();
-        if (LOG.isInfoEnabled()) {
-          LOG.info("Set default sort behavior to " + sortBehavior);
-        }
+        LOGGER.info("Set default sort behavior to {}", sortBehavior);
         defaultSortBehavior = sortBehavior;
       } catch (ClassNotFoundException e) {
-        if (LOG.isErrorEnabled()) {
-          LOG.error("Error instantiating " + sb, e);
-        }
+        LOGGER.error("Error instantiating {}", sb, e);
       } catch (InstantiationException e) {
-        if (LOG.isErrorEnabled()) {
-          LOG.error("Error instantiating " + sb, e);
-        }
+        LOGGER.error("Error instantiating {}", sb, e);
       } catch (IllegalAccessException e) {
-        if (LOG.isErrorEnabled()) {
-          LOG.error("Error instantiating " + sb, e);
-        }
+        LOGGER.error("Error instantiating {}", sb, e);
       }
     }
     if (defaultSortBehavior == null) {

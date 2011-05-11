@@ -41,8 +41,8 @@ import edu.vt.middleware.ldap.SearchRequest;
 import edu.vt.middleware.ldap.SearchScope;
 import edu.vt.middleware.ldap.SortBehavior;
 import edu.vt.middleware.ldap.provider.Connection;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * JNDI provider implementation of ldap operations.
@@ -84,8 +84,8 @@ public class JndiConnection implements Connection
    */
   public static final String TYPES_ONLY = "java.naming.ldap.typesOnly";
 
-  /** Log for this class. */
-  protected final Log logger = LogFactory.getLog(this.getClass());
+  /** Logger for this class. */
+  protected final Logger logger = LoggerFactory.getLogger(this.getClass());
 
   /** Ldap context. */
   protected LdapContext context;
@@ -363,9 +363,7 @@ public class JndiConnection implements Connection
 
         } while (cookie != null);
       } catch (IOException e) {
-        if (this.logger.isErrorEnabled()) {
-          this.logger.error("Could not encode page size into control", e);
-        }
+        this.logger.error("Could not encode page size into control", e);
         throw new NamingException(e.getMessage());
       } finally {
         if (en != null) {
@@ -541,9 +539,7 @@ public class JndiConnection implements Connection
           if (ignore != null && ignore.length > 0) {
             for (ResultCode rc : ignore) {
               if (NamingExceptionUtil.matches(e.getClass(), rc)) {
-                if (this.logger.isDebugEnabled()) {
-                  this.logger.debug("Ignoring naming exception", e);
-                }
+                this.logger.debug("Ignoring naming exception", e);
                 ignoreException = true;
                 break;
               }

@@ -15,8 +15,8 @@ package edu.vt.middleware.ldap.auth;
 
 import java.io.Serializable;
 import edu.vt.middleware.ldap.LdapException;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Returns a DN by applying a formatter. See {@link java.util.Formatter}.
@@ -31,7 +31,7 @@ public class FormatDnResolver implements DnResolver, Serializable
   private static final long serialVersionUID = -6508789359608064771L;
 
   /** log for this class. */
-  protected final Log logger = LogFactory.getLog(this.getClass());
+  protected final Logger logger = LoggerFactory.getLogger(this.getClass());
 
   /** format of DN. */
   protected String format;
@@ -126,9 +126,7 @@ public class FormatDnResolver implements DnResolver, Serializable
   {
     String dn = null;
     if (user != null && !"".equals(user)) {
-      if (this.logger.isDebugEnabled()) {
-        this.logger.debug("Formatting DN with " + this.format);
-      }
+      this.logger.debug("Formatting DN with {}", this.format);
       if (this.formatArgs != null && this.formatArgs.length > 0) {
         final Object[] args = new Object[this.formatArgs.length + 1];
         args[0] = user;
@@ -138,9 +136,7 @@ public class FormatDnResolver implements DnResolver, Serializable
         dn = String.format(this.format, user);
       }
     } else {
-      if (this.logger.isDebugEnabled()) {
-        this.logger.debug("User input was empty or null");
-      }
+      this.logger.debug("User input was empty or null");
     }
     return dn;
   }

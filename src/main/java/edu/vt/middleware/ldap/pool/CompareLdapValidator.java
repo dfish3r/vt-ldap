@@ -19,8 +19,8 @@ import edu.vt.middleware.ldap.LdapResult;
 import edu.vt.middleware.ldap.SearchFilter;
 import edu.vt.middleware.ldap.SearchOperation;
 import edu.vt.middleware.ldap.SearchRequest;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * <code>CompareLdapValidator</code> validates an ldap connection is healthy by
@@ -32,8 +32,8 @@ import org.apache.commons.logging.LogFactory;
 public class CompareLdapValidator implements LdapValidator<LdapConnection>
 {
 
-  /** Log for this class. */
-  protected final Log logger = LogFactory.getLog(this.getClass());
+  /** Logger for this class. */
+  protected final Logger logger = LoggerFactory.getLogger(this.getClass());
 
   /** DN for validating connections. Default value is {@value}. */
   private String validateDn = "";
@@ -116,11 +116,8 @@ public class CompareLdapValidator implements LdapValidator<LdapConnection>
             this.validateDn, this.validateFilter)).getResult();
         success = lr.size() == 1;
       } catch (LdapException e) {
-        if (this.logger.isDebugEnabled()) {
-          this.logger.debug(
-            "validation failed for compare " + this.validateFilter,
-            e);
-        }
+        this.logger.debug(
+          "validation failed for compare {}", this.validateFilter, e);
       }
     }
     return success;

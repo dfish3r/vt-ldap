@@ -15,8 +15,8 @@ package edu.vt.middleware.ldap.pool;
 
 import edu.vt.middleware.ldap.LdapConnection;
 import edu.vt.middleware.ldap.LdapException;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * <code>ConnectLdapActivator</code> activates an ldap object by attempting to
@@ -28,8 +28,8 @@ import org.apache.commons.logging.LogFactory;
 public class ConnectLdapActivator implements LdapActivator<LdapConnection>
 {
 
-  /** Log for this class. */
-  protected final Log logger = LogFactory.getLog(this.getClass());
+  /** Logger for this class. */
+  protected final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 
   /** {@inheritDoc} */
@@ -41,9 +41,7 @@ public class ConnectLdapActivator implements LdapActivator<LdapConnection>
         lc.open();
         success = true;
       } catch (LdapException e) {
-        if (this.logger.isErrorEnabled()) {
-          this.logger.error("unabled to connect to the ldap", e);
-        }
+        this.logger.error("unabled to connect to the ldap", e);
       }
     }
     return success;

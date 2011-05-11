@@ -157,11 +157,8 @@ public class RecursiveAttributeHandler extends CopyLdapAttributeHandler
         attrs = result.getEntry(dn).getLdapAttributes();
         results.add(dn);
       } catch (LdapException e) {
-        if (this.logger.isWarnEnabled()) {
-          this.logger.warn(
-            "Error retreiving attribute: " + this.attributeName,
-            e);
-        }
+        this.logger.warn(
+          "Error retreiving attribute: {}", this.attributeName, e);
       }
       searchedDns.add(dn);
       if (attrs != null) {

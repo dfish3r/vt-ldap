@@ -80,9 +80,7 @@ public class DefaultLdapFactory extends AbstractLdapFactory<LdapConnection>
       try {
         conn.open();
       } catch (LdapException e) {
-        if (this.logger.isErrorEnabled()) {
-          this.logger.error("unabled to connect to the ldap", e);
-        }
+        this.logger.error("unabled to connect to the ldap", e);
         conn = null;
       }
     }
@@ -94,8 +92,6 @@ public class DefaultLdapFactory extends AbstractLdapFactory<LdapConnection>
   public void destroy(final LdapConnection lc)
   {
     lc.close();
-    if (this.logger.isTraceEnabled()) {
-      this.logger.trace("destroyed ldap connection: " + lc);
-    }
+    this.logger.trace("destroyed ldap connection: {}", lc);
   }
 }

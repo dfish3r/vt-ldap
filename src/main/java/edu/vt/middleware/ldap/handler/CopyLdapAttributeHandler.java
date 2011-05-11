@@ -17,8 +17,8 @@ import java.util.ArrayList;
 import java.util.List;
 import edu.vt.middleware.ldap.LdapAttribute;
 import edu.vt.middleware.ldap.LdapException;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Base class for attribute handlers which simply returns values unaltered.
@@ -29,7 +29,7 @@ import org.apache.commons.logging.LogFactory;
 public class CopyLdapAttributeHandler implements LdapAttributeHandler
 {
   /** Log for this class. */
-  protected final Log logger = LogFactory.getLog(this.getClass());
+  protected final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 
   /** {@inheritDoc} */

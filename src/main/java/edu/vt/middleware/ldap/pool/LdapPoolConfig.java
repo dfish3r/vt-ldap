@@ -192,9 +192,7 @@ public class LdapPoolConfig extends AbstractConfig
   {
     checkImmutable();
     if (size >= 0) {
-      if (this.logger.isTraceEnabled()) {
-        this.logger.trace("setting minPoolSize: " + size);
-      }
+      this.logger.trace("setting minPoolSize: {}", size);
       this.minPoolSize = size;
     }
   }
@@ -209,9 +207,7 @@ public class LdapPoolConfig extends AbstractConfig
   {
     checkImmutable();
     if (size >= 0) {
-      if (this.logger.isTraceEnabled()) {
-        this.logger.trace("setting maxPoolSize: " + size);
-      }
+      this.logger.trace("setting maxPoolSize: {}", size);
       this.maxPoolSize = size;
     }
   }
@@ -226,9 +222,7 @@ public class LdapPoolConfig extends AbstractConfig
   public void setValidateOnCheckIn(final boolean b)
   {
     checkImmutable();
-    if (this.logger.isTraceEnabled()) {
-      this.logger.trace("setting validateOnCheckIn: " + b);
-    }
+    this.logger.trace("setting validateOnCheckIn: {}", b);
     this.validateOnCheckIn = b;
   }
 
@@ -242,9 +236,7 @@ public class LdapPoolConfig extends AbstractConfig
   public void setValidateOnCheckOut(final boolean b)
   {
     checkImmutable();
-    if (this.logger.isTraceEnabled()) {
-      this.logger.trace("setting validateOnCheckOut: " + b);
-    }
+    this.logger.trace("setting validateOnCheckOut: {}", b);
     this.validateOnCheckOut = b;
   }
 
@@ -258,9 +250,7 @@ public class LdapPoolConfig extends AbstractConfig
   public void setValidatePeriodically(final boolean b)
   {
     checkImmutable();
-    if (this.logger.isTraceEnabled()) {
-      this.logger.trace("setting validatePeriodically: " + b);
-    }
+    this.logger.trace("setting validatePeriodically: {}", b);
     this.validatePeriodically = b;
   }
 
@@ -274,9 +264,7 @@ public class LdapPoolConfig extends AbstractConfig
   {
     checkImmutable();
     if (time >= 0) {
-      if (this.logger.isTraceEnabled()) {
-        this.logger.trace("setting pruneTimerPeriod: " + time);
-      }
+      this.logger.trace("setting pruneTimerPeriod: {}", time);
       this.pruneTimerPeriod = time;
     }
   }
@@ -291,9 +279,7 @@ public class LdapPoolConfig extends AbstractConfig
   {
     checkImmutable();
     if (time >= 0) {
-      if (this.logger.isTraceEnabled()) {
-        this.logger.trace("setting validateTimerPeriod: " + time);
-      }
+      this.logger.trace("setting validateTimerPeriod: {}", time);
       this.validateTimerPeriod = time;
     }
   }
@@ -309,9 +295,7 @@ public class LdapPoolConfig extends AbstractConfig
   {
     checkImmutable();
     if (time >= 0) {
-      if (this.logger.isTraceEnabled()) {
-        this.logger.trace("setting expirationTime: " + time);
-      }
+      this.logger.trace("setting expirationTime: {}", time);
       this.expirationTime = time;
     }
   }
