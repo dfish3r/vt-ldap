@@ -43,11 +43,11 @@ public class LdapPrincipal
   /**
    * Creates a new ldap principal with the supplied name.
    *
-   * @param  name  of this principal
+   * @param  s  name of this principal
    */
-  public LdapPrincipal(final String name)
+  public LdapPrincipal(final String s)
   {
-    this.name = name;
+    name = s;
   }
 
 
@@ -58,7 +58,7 @@ public class LdapPrincipal
    */
   public String getName()
   {
-    return this.name;
+    return name;
   }
 
 
@@ -69,7 +69,7 @@ public class LdapPrincipal
    */
   public LdapAttributes getLdapAttributes()
   {
-    return this.attributes;
+    return attributes;
   }
 
 
@@ -87,7 +87,7 @@ public class LdapPrincipal
     }
     return
       o == this ||
-        (this.getClass() == o.getClass() && o.hashCode() == this.hashCode());
+        (getClass() == o.getClass() && o.hashCode() == hashCode());
   }
 
 
@@ -99,8 +99,8 @@ public class LdapPrincipal
   public int hashCode()
   {
     int hc = HASH_CODE_SEED;
-    if (this.name != null) {
-      hc += this.name.hashCode();
+    if (name != null) {
+      hc += name.hashCode();
     }
     return hc;
   }
@@ -116,10 +116,10 @@ public class LdapPrincipal
   {
     return String.format(
       "%s@%d::%s%s",
-      this.getClass().getName(),
-      this.hashCode(),
-      this.name,
-      this.attributes);
+      getClass().getName(),
+      hashCode(),
+      name,
+      attributes);
   }
 
 
@@ -134,6 +134,6 @@ public class LdapPrincipal
    */
   public int compareTo(final Principal p)
   {
-    return this.name.compareTo(p.getName());
+    return name.compareTo(p.getName());
   }
 }

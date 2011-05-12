@@ -31,7 +31,7 @@ public class ValidatePoolTask<T extends LdapConnection> extends TimerTask
 {
 
   /** Logger for this class. */
-  protected final Logger logger = LoggerFactory.getLogger(this.getClass());
+  protected final Logger logger = LoggerFactory.getLogger(getClass());
 
   /** Pool to clean. */
   private LdapPool<T> pool;
@@ -44,7 +44,7 @@ public class ValidatePoolTask<T extends LdapConnection> extends TimerTask
    */
   public ValidatePoolTask(final LdapPool<T> lp)
   {
-    this.pool = lp;
+    pool = lp;
   }
 
 
@@ -54,8 +54,8 @@ public class ValidatePoolTask<T extends LdapConnection> extends TimerTask
    */
   public void run()
   {
-    this.logger.debug("Begin validate task for {}", this.pool);
-    this.pool.validate();
-    this.logger.debug("End validate task for {}", this.pool);
+    logger.debug("Begin validate task for {}", pool);
+    pool.validate();
+    logger.debug("End validate task for {}", pool);
   }
 }

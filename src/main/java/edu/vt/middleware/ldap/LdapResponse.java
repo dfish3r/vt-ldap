@@ -38,7 +38,7 @@ public class LdapResponse<T>
    */
   public LdapResponse(final T t)
   {
-    this.result = t;
+    result = t;
   }
 
 
@@ -49,6 +49,6 @@ public class LdapResponse<T>
    */
   public T getResult()
   {
-    return this.result;
+    return result;
   }
 }

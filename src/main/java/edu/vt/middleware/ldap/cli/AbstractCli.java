@@ -62,14 +62,14 @@ public abstract class AbstractCli
    */
   public final void performAction(final String[] args)
   {
-    this.initOptions();
+    initOptions();
     try {
       if (args.length > 0) {
         final CommandLineParser parser = new GnuParser();
-        final CommandLine line = parser.parse(this.options, args, false);
-        this.dispatch(line);
+        final CommandLine line = parser.parse(options, args, false);
+        dispatch(line);
       } else {
-        this.printExamples();
+        printExamples();
       }
     } catch (ParseException pex) {
       System.err.println(
@@ -90,7 +90,7 @@ public abstract class AbstractCli
   /** Initialize CLI options. */
   protected void initOptions()
   {
-    this.options.addOption(new Option(OPT_HELP, false, "display all options"));
+    options.addOption(new Option(OPT_HELP, false, "display all options"));
   }
 
 
@@ -109,7 +109,7 @@ public abstract class AbstractCli
   {
     final LdapConnectionConfigPropertySource lccSource =
       new LdapConnectionConfigPropertySource(
-        this.getPropertiesFromOptions(PropertyDomain.LDAP.value(), line));
+        getPropertiesFromOptions(PropertyDomain.LDAP.value(), line));
     final LdapConnectionConfig config = lccSource.get();
     if (config.getBindDn() != null && config.getBindCredential() == null) {
       // prompt the user to enter a password
@@ -146,15 +146,15 @@ public abstract class AbstractCli
   protected void printHelp()
   {
     final HelpFormatter formatter = new HelpFormatter();
-    formatter.printHelp(getCommandName(), this.options);
+    formatter.printHelp(getCommandName(), options);
   }
 
 
   /** Prints CLI usage examples. */
   protected void printExamples()
   {
-    final String name = this.getClass().getSimpleName();
-    final InputStream in = this.getClass().getResourceAsStream(
+    final String name = getClass().getSimpleName();
+    final InputStream in = getClass().getResourceAsStream(
       name + ".examples");
     if (in != null) {
       final BufferedReader reader = new BufferedReader(
@@ -193,7 +193,7 @@ public abstract class AbstractCli
     final Map<String, String> args = new HashMap<String, String>();
     for (Class<?> c : classes) {
       final String name = c.getSimpleName();
-      final InputStream in = this.getClass().getResourceAsStream(
+      final InputStream in = getClass().getResourceAsStream(
         name + ".args");
       if (in != null) {
         final BufferedReader reader = new BufferedReader(

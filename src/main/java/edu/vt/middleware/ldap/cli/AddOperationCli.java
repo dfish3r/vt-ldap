@@ -54,27 +54,29 @@ public class AddOperationCli extends AbstractCli
 
 
   /** {@inheritDoc} */
+  @Override
   protected void initOptions()
   {
-    this.options.addOption(new Option(OPT_FILE, true, "LDIF file"));
-    final Map<String, String> desc = this.getArgDesc(
+    options.addOption(new Option(OPT_FILE, true, "LDIF file"));
+    final Map<String, String> desc = getArgDesc(
       LdapConnectionConfig.class);
     for (String s : LdapConnectionConfigPropertySource.getProperties()) {
-      this.options.addOption(new Option(s, true, desc.get(s)));
+      options.addOption(new Option(s, true, desc.get(s)));
     }
     super.initOptions();
   }
 
 
   /** {@inheritDoc} */
+  @Override
   protected void dispatch(final CommandLine line)
     throws Exception
   {
     if (line.hasOption(OPT_HELP)) {
       printHelp();
     } else {
-      this.add(
-        this.initLdapConnectionConfig(line), line.getOptionValue(OPT_FILE));
+      add(
+        initLdapConnectionConfig(line), line.getOptionValue(OPT_FILE));
     }
   }
 
@@ -105,6 +107,7 @@ public class AddOperationCli extends AbstractCli
 
 
   /** {@inheritDoc} */
+  @Override
   protected String getCommandName()
   {
     return COMMAND_NAME;

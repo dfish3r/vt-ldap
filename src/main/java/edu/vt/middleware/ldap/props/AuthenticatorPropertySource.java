@@ -79,18 +79,18 @@ public final class AuthenticatorPropertySource
   public AuthenticatorPropertySource(
     final PropertyDomain domain, final Properties props)
   {
-    this.object = initializeObject(
+    object = initializeObject(
       INVOKER, new Authenticator(), domain.value(), props);
 
     LdapConnectionConfigPropertySource lccPropSource = null;
 
     // initialize a SearchDnResolver by default
-    DnResolver resolver = this.object.getDnResolver();
+    DnResolver resolver = object.getDnResolver();
     if (resolver == null) {
       final SearchDnResolverPropertySource drPropSource =
         new SearchDnResolverPropertySource(domain, props);
       resolver = drPropSource.get();
-      this.object.setDnResolver(resolver);
+      object.setDnResolver(resolver);
     }
     if (resolver instanceof SearchDnResolver) {
       final SearchDnResolver sdr = (SearchDnResolver) resolver;
@@ -101,12 +101,12 @@ public final class AuthenticatorPropertySource
     }
 
     // initialize a BindAuthenticationHandler by default
-    AuthenticationHandler authHandler = this.object.getAuthenticationHandler();
+    AuthenticationHandler authHandler = object.getAuthenticationHandler();
     if (authHandler == null) {
       final BindAuthenticationHandlerPropertySource ahPropSource =
         new BindAuthenticationHandlerPropertySource(domain, props);
       authHandler = ahPropSource.get();
-      this.object.setAuthenticationHandler(authHandler);
+      object.setAuthenticationHandler(authHandler);
     }
     if (authHandler.getLdapConnectionConfig() == null) {
       if (lccPropSource == null) {

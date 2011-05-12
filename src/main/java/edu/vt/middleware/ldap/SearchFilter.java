@@ -48,7 +48,7 @@ public class SearchFilter
    */
   public SearchFilter(final String s)
   {
-    this.filter = s;
+    filter = s;
   }
 
 
@@ -60,8 +60,8 @@ public class SearchFilter
    */
   public SearchFilter(final String s, final List<Object> o)
   {
-    this.setFilter(s);
-    this.setFilterArgs(o);
+    setFilter(s);
+    setFilterArgs(o);
   }
 
 
@@ -73,8 +73,8 @@ public class SearchFilter
    */
   public SearchFilter(final String s, final Object[] o)
   {
-    this.setFilter(s);
-    this.setFilterArgs(o);
+    setFilter(s);
+    setFilterArgs(o);
   }
 
 
@@ -85,7 +85,7 @@ public class SearchFilter
    */
   public String getFilter()
   {
-    return this.filter;
+    return filter;
   }
 
 
@@ -96,7 +96,7 @@ public class SearchFilter
    */
   public void setFilter(final String s)
   {
-    this.filter = s;
+    filter = s;
   }
 
 
@@ -107,7 +107,7 @@ public class SearchFilter
    */
   public List<Object> getFilterArgs()
   {
-    return this.filterArgs;
+    return filterArgs;
   }
 
 
@@ -119,7 +119,7 @@ public class SearchFilter
   public void setFilterArgs(final List<Object> o)
   {
     if (o != null) {
-      this.filterArgs = o;
+      filterArgs = o;
     }
   }
 
@@ -132,7 +132,7 @@ public class SearchFilter
   public void setFilterArgs(final Object[] o)
   {
     if (o != null) {
-      this.filterArgs = Arrays.asList(o);
+      filterArgs = Arrays.asList(o);
     }
   }
 
@@ -249,11 +249,12 @@ public class SearchFilter
     }
     return
       o == this ||
-        (this.getClass() == o.getClass() && o.hashCode() == this.hashCode());
+        (getClass() == o.getClass() && o.hashCode() == hashCode());
   }
 
 
   /** {@inheritDoc} */
+  @Override
   public int hashCode()
   {
     int hc = HASH_CODE_SEED;
@@ -273,6 +274,6 @@ public class SearchFilter
   public String toString()
   {
     return
-      String.format("filter=%s, filterArgs=%s", this.filter, this.filterArgs);
+      String.format("filter=%s, filterArgs=%s", filter, filterArgs);
   }
 }

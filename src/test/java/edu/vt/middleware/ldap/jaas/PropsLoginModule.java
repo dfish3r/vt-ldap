@@ -41,6 +41,7 @@ public class PropsLoginModule extends AbstractLoginModule
 
 
   /** {@inheritDoc} */
+  @Override
   public void initialize(
     final Subject subject,
     final CallbackHandler callbackHandler,
@@ -48,13 +49,14 @@ public class PropsLoginModule extends AbstractLoginModule
     final Map<String, ?> options)
   {
     super.initialize(subject, callbackHandler, sharedState, options);
-    this.conn = createLdapConnection(options);
-    this.sr = createSearchRequest(options);
-    this.auth = createAuthenticator(options);
+    conn = createLdapConnection(options);
+    sr = createSearchRequest(options);
+    auth = createAuthenticator(options);
   }
 
 
   /** {@inheritDoc} */
+  @Override
   public boolean login()
     throws LoginException
   {
@@ -63,25 +65,28 @@ public class PropsLoginModule extends AbstractLoginModule
 
 
   /** {@inheritDoc} */
+  @Override
   public boolean commit()
     throws LoginException
   {
-    this.subject.getPublicCredentials().add(this.conn);
-    this.subject.getPublicCredentials().add(this.sr);
-    this.subject.getPublicCredentials().add(this.auth);
+    subject.getPublicCredentials().add(conn);
+    subject.getPublicCredentials().add(sr);
+    subject.getPublicCredentials().add(auth);
     return true;
   }
 
 
   /** {@inheritDoc} */
+  @Override
   public boolean abort()
   {
-    this.loginSuccess = false;
+    loginSuccess = false;
     return true;
   }
 
 
   /** {@inheritDoc} */
+  @Override
   public boolean logout()
   {
     return true;

@@ -49,7 +49,7 @@ public class CompareAuthorizationHandler implements AuthorizationHandler
    */
   public CompareAuthorizationHandler(final SearchFilter sf)
   {
-    this.searchFilter = sf;
+    searchFilter = sf;
   }
 
 
@@ -60,7 +60,7 @@ public class CompareAuthorizationHandler implements AuthorizationHandler
    */
   public SearchFilter getSearchFilter()
   {
-    return this.searchFilter;
+    return searchFilter;
   }
 
 
@@ -71,21 +71,22 @@ public class CompareAuthorizationHandler implements AuthorizationHandler
    */
   public void setSearchFilter(final SearchFilter sf)
   {
-    this.searchFilter = sf;
+    searchFilter = sf;
   }
 
 
   /** {@inheritDoc} */
+  @Override
   public void process(
     final AuthenticationCriteria ac, final LdapConnection conn)
     throws LdapException
   {
-    final SearchFilter filter = new SearchFilter(this.searchFilter.getFilter());
+    final SearchFilter filter = new SearchFilter(searchFilter.getFilter());
 
     // make DN the first filter arg
     final List<Object> filterArgs = new ArrayList<Object>();
     filterArgs.add(ac.getDn());
-    filterArgs.addAll(this.searchFilter.getFilterArgs());
+    filterArgs.addAll(searchFilter.getFilterArgs());
     filter.setFilterArgs(filterArgs);
 
     // perform ldap object level operation
@@ -110,8 +111,8 @@ public class CompareAuthorizationHandler implements AuthorizationHandler
     return
       String.format(
         "%s@%d: searchFilter=%s",
-        this.getClass().getName(),
-        this.hashCode(),
-        this.searchFilter);
+        getClass().getName(),
+        hashCode(),
+        searchFilter);
   }
 }

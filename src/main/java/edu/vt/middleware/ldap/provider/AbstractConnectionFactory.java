@@ -34,7 +34,7 @@ public abstract class AbstractConnectionFactory implements ConnectionFactory
 {
 
   /** Logger for this class. */
-  protected final Logger logger = LoggerFactory.getLogger(this.getClass());
+  protected final Logger logger = LoggerFactory.getLogger(getClass());
 
   /** Ldap connection strategy. */
   protected ConnectionStrategy connectionStrategy = ConnectionStrategy.DEFAULT;
@@ -62,7 +62,7 @@ public abstract class AbstractConnectionFactory implements ConnectionFactory
    */
   protected ConnectionCount getConnectionCount()
   {
-    return this.connectionCount;
+    return connectionCount;
   }
 
 
@@ -73,36 +73,40 @@ public abstract class AbstractConnectionFactory implements ConnectionFactory
    */
   protected void setConnectionCount(final ConnectionCount cc)
   {
-    this.connectionCount = cc;
+    connectionCount = cc;
   }
 
 
   /** {@inheritDoc} */
+  @Override
   public ConnectionStrategy getConnectionStrategy()
   {
-    return this.connectionStrategy;
+    return connectionStrategy;
   }
 
 
   /** {@inheritDoc} */
+  @Override
   public void setConnectionStrategy(final ConnectionStrategy strategy)
   {
-    this.logger.trace("setting connectionStrategy: {}", strategy);
-    this.connectionStrategy = strategy;
+    logger.trace("setting connectionStrategy: {}", strategy);
+    connectionStrategy = strategy;
   }
 
 
   /** {@inheritDoc} */
+  @Override
   public ResultCode[] getOperationRetryResultCodes()
   {
-    return this.operationRetryResultCodes;
+    return operationRetryResultCodes;
   }
 
 
   /** {@inheritDoc} */
+  @Override
   public void setOperationRetryResultCodes(final ResultCode[] codes)
   {
-    this.operationRetryResultCodes = codes;
+    operationRetryResultCodes = codes;
   }
 
 
@@ -113,7 +117,7 @@ public abstract class AbstractConnectionFactory implements ConnectionFactory
    */
   public AuthenticationType getAuthenticationType()
   {
-    return this.authenticationType;
+    return authenticationType;
   }
 
 
@@ -124,7 +128,7 @@ public abstract class AbstractConnectionFactory implements ConnectionFactory
    */
   public void setAuthenticationType(final AuthenticationType type)
   {
-    this.authenticationType = type;
+    authenticationType = type;
   }
 
 
@@ -135,7 +139,7 @@ public abstract class AbstractConnectionFactory implements ConnectionFactory
    */
   public boolean getLogCredentials()
   {
-    return this.logCredentials;
+    return logCredentials;
   }
 
 
@@ -146,33 +150,34 @@ public abstract class AbstractConnectionFactory implements ConnectionFactory
    */
   public void setLogCredentials(final boolean b)
   {
-    this.logCredentials = b;
+    logCredentials = b;
   }
 
 
   /** {@inheritDoc} */
+  @Override
   public Connection create(final String dn, final Credential credential)
     throws LdapException
   {
     LdapException lastThrown = null;
-    final String[] urls = this.parseLdapUrl(
-      this.ldapUrl, this.connectionStrategy);
+    final String[] urls = parseLdapUrl(
+      ldapUrl, connectionStrategy);
     Connection conn = null;
     for (String url : urls) {
       try {
-        this.logger.trace(
+        logger.trace(
           "[{}] Attempting connection to {} for strategy {}",
           new Object[] {
-            this.connectionCount,
+            connectionCount,
             url,
-            this.connectionStrategy, });
-        conn = this.createInternal(url, dn, credential);
-        this.connectionCount.incrementCount();
+            connectionStrategy, });
+        conn = createInternal(url, dn, credential);
+        connectionCount.incrementCount();
         lastThrown = null;
         break;
       } catch (ConnectionException e) {
         lastThrown = e;
-        this.logger.debug("Error connecting to LDAP URL: {}", url, e);
+        logger.debug("Error connecting to LDAP URL: {}", url, e);
       }
     }
     if (lastThrown != null) {
@@ -201,29 +206,28 @@ public abstract class AbstractConnectionFactory implements ConnectionFactory
    * Parses the supplied ldap url and splits it into separate URLs if it is
    * space delimited.
    *
-   * @param  ldapUrl  to parse
+   * @param  url  to parse
    * @param  strategy  of ordered array to return
    *
    * @return  array of ldap URLs
    */
   protected String[] parseLdapUrl(
-    final String ldapUrl,
-    final ConnectionStrategy strategy)
+    final String url, final ConnectionStrategy strategy)
   {
     String[] urls = null;
     if (strategy == ConnectionStrategy.DEFAULT) {
-      urls = new String[] {ldapUrl};
+      urls = new String[] {url};
     } else if (strategy == ConnectionStrategy.ACTIVE_PASSIVE) {
-      final List<String> l = this.splitLdapUrl(ldapUrl);
+      final List<String> l = splitLdapUrl(url);
       urls = l.toArray(new String[l.size()]);
     } else if (strategy == ConnectionStrategy.ROUND_ROBIN) {
-      final List<String> l = this.splitLdapUrl(ldapUrl);
-      for (int i = 0; i < this.connectionCount.getCount() % l.size(); i++) {
+      final List<String> l = splitLdapUrl(url);
+      for (int i = 0; i < connectionCount.getCount() % l.size(); i++) {
         l.add(l.remove(0));
       }
       urls = l.toArray(new String[l.size()]);
     } else if (strategy == ConnectionStrategy.RANDOM) {
-      final List<String> l = this.splitLdapUrl(ldapUrl);
+      final List<String> l = splitLdapUrl(url);
       Collections.shuffle(l);
       urls = l.toArray(new String[l.size()]);
     }
@@ -270,17 +274,17 @@ public abstract class AbstractConnectionFactory implements ConnectionFactory
      */
     public int getCount()
     {
-      return this.count;
+      return count;
     }
 
 
     /** Increments the connection count. */
     public void incrementCount()
     {
-      this.count++;
+      count++;
       // reset the count if it exceeds the size of an integer
-      if (this.count < 0) {
-        this.count = 0;
+      if (count < 0) {
+        count = 0;
       }
     }
 
@@ -293,7 +297,7 @@ public abstract class AbstractConnectionFactory implements ConnectionFactory
     @Override
     public String toString()
     {
-      return Integer.toString(this.count);
+      return Integer.toString(count);
     }
   }
 }

@@ -72,10 +72,10 @@ public class AuthenticatorTest extends AbstractTest
   public AuthenticatorTest()
     throws Exception
   {
-    this.singleTLSAuth = TestUtil.createTLSAuthenticator();
-    this.singleSSLAuth = TestUtil.createSSLAuthenticator();
-    this.singleTLSDnAuth = TestUtil.createTLSDnAuthenticator();
-    this.singleSSLDnAuth = TestUtil.createSSLDnAuthenticator();
+    singleTLSAuth = TestUtil.createTLSAuthenticator();
+    singleSSLAuth = TestUtil.createSSLAuthenticator();
+    singleTLSDnAuth = TestUtil.createTLSDnAuthenticator();
+    singleSSLDnAuth = TestUtil.createSSLDnAuthenticator();
   }
 
 
@@ -84,7 +84,7 @@ public class AuthenticatorTest extends AbstractTest
    *
    * @throws  Exception  On test failure.
    */
-  @Parameters({ "createEntry6" })
+  @Parameters("createEntry6")
   @BeforeClass(groups = {"authtest"})
   public void createAuthEntry(final String ldifFile)
     throws Exception
@@ -210,7 +210,7 @@ public class AuthenticatorTest extends AbstractTest
     final String duplicateFilter)
     throws Exception
   {
-    final Authenticator auth = this.createTLSAuthenticator(true);
+    final Authenticator auth = createTLSAuthenticator(true);
 
     // test input
     AssertJUnit.assertNull(auth.resolveDn(null));
@@ -279,7 +279,7 @@ public class AuthenticatorTest extends AbstractTest
     throws Exception
   {
     // test plain auth
-    final Authenticator auth = this.createTLSDnAuthenticator(false);
+    final Authenticator auth = createTLSDnAuthenticator(false);
     try {
       auth.authenticate(
         new AuthenticationRequest(dn, new Credential(INVALID_PASSWD)));
@@ -330,7 +330,7 @@ public class AuthenticatorTest extends AbstractTest
     throws Exception
   {
     // test plain auth
-    final Authenticator auth = this.createSSLDnAuthenticator(false);
+    final Authenticator auth = createSSLDnAuthenticator(false);
     try {
       auth.authenticate(
         new AuthenticationRequest(dn, new Credential(INVALID_PASSWD)));
@@ -386,7 +386,7 @@ public class AuthenticatorTest extends AbstractTest
     final String ldifFile)
     throws Exception
   {
-    final Authenticator auth = this.createTLSDnAuthenticator(false);
+    final Authenticator auth = createTLSDnAuthenticator(false);
 
     // test plain auth
     try {
@@ -454,7 +454,7 @@ public class AuthenticatorTest extends AbstractTest
     final String filterArgs)
     throws Exception
   {
-    final Authenticator auth = this.createTLSDnAuthenticator(true);
+    final Authenticator auth = createTLSDnAuthenticator(true);
 
     final TestAuthenticationResultHandler authHandler =
       new TestAuthenticationResultHandler();
@@ -590,7 +590,7 @@ public class AuthenticatorTest extends AbstractTest
     final String ldifFile)
     throws Exception
   {
-    final Authenticator auth = this.createTLSAuthenticator(false);
+    final Authenticator auth = createTLSAuthenticator(false);
 
     // test plain auth
     try {
@@ -645,7 +645,7 @@ public class AuthenticatorTest extends AbstractTest
     final String ldifFile)
     throws Exception
   {
-    final Authenticator auth = this.createSSLAuthenticator(false);
+    final Authenticator auth = createSSLAuthenticator(false);
 
     // test plain auth
     try {
@@ -702,7 +702,7 @@ public class AuthenticatorTest extends AbstractTest
     final String ldifFile)
     throws Exception
   {
-    final Authenticator auth = this.createTLSAuthenticator(false);
+    final Authenticator auth = createTLSAuthenticator(false);
 
     // test plain auth
     try {
@@ -782,7 +782,7 @@ public class AuthenticatorTest extends AbstractTest
     final String ldifFile)
     throws Exception
   {
-    final Authenticator auth = this.createTLSAuthenticator(true);
+    final Authenticator auth = createTLSAuthenticator(true);
     final LdapConnectionConfig authLcc =
       auth.getAuthenticationHandler().getLdapConnectionConfig();
     auth.setAuthenticationHandler(new CompareAuthenticationHandler(authLcc));
@@ -851,7 +851,7 @@ public class AuthenticatorTest extends AbstractTest
     final String returnAttrs)
     throws Exception
   {
-    final Authenticator auth = this.createTLSAuthenticator(true);
+    final Authenticator auth = createTLSAuthenticator(true);
 
     try {
       auth.authenticate(

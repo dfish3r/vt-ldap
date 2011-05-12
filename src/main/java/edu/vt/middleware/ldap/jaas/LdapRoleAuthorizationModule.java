@@ -63,6 +63,7 @@ public class LdapRoleAuthorizationModule extends AbstractLoginModule
 
 
   /** {@inheritDoc} */
+  @Override
   public void initialize(
     final Subject subject,
     final CallbackHandler callbackHandler,
@@ -76,35 +77,36 @@ public class LdapRoleAuthorizationModule extends AbstractLoginModule
       final String key = i.next();
       final String value = (String) options.get(key);
       if (key.equalsIgnoreCase("roleFilter")) {
-        this.roleFilter = value;
+        roleFilter = value;
       } else if (key.equalsIgnoreCase("roleAttribute")) {
         if ("*".equals(value)) {
-          this.roleAttribute = null;
+          roleAttribute = null;
         } else {
-          this.roleAttribute = value.split(",");
+          roleAttribute = value.split(",");
         }
       } else if (key.equalsIgnoreCase("noResultsIsError")) {
-        this.noResultsIsError = Boolean.valueOf(value);
+        noResultsIsError = Boolean.valueOf(value);
       }
     }
 
-    this.logger.trace(
+    logger.trace(
       "roleFilter = {}, roleAttribute = {}, noResultsIsError = {}",
       new Object[] {
-        this.roleFilter,
-        Arrays.toString(this.roleAttribute),
-        this.noResultsIsError, });
+        roleFilter,
+        Arrays.toString(roleAttribute),
+        noResultsIsError, });
 
-    this.ldapConn = createLdapConnection(options);
-    this.logger.debug("Created ldap connection: {}", this.ldapConn);
+    ldapConn = createLdapConnection(options);
+    logger.debug("Created ldap connection: {}", ldapConn);
 
-    this.searchRequest = createSearchRequest(options);
-    this.searchRequest.setReturnAttributes(this.roleAttribute);
-    this.logger.debug("Created search request: {}", this.searchRequest);
+    searchRequest = createSearchRequest(options);
+    searchRequest.setReturnAttributes(roleAttribute);
+    logger.debug("Created search request: {}", searchRequest);
   }
 
 
   /** {@inheritDoc} */
+  @Override
   public boolean login()
     throws LoginException
   {
@@ -113,54 +115,54 @@ public class LdapRoleAuthorizationModule extends AbstractLoginModule
       final PasswordCallback passCb = new PasswordCallback(
         "Enter user password: ",
         false);
-      this.getCredentials(nameCb, passCb, false);
+      getCredentials(nameCb, passCb, false);
 
-      if (nameCb.getName() == null && this.tryFirstPass) {
-        this.getCredentials(nameCb, passCb, true);
+      if (nameCb.getName() == null && tryFirstPass) {
+        getCredentials(nameCb, passCb, true);
       }
 
       final String loginName = nameCb.getName();
-      if (loginName != null && this.setLdapPrincipal) {
-        this.principals.add(new LdapPrincipal(loginName));
-        this.loginSuccess = true;
+      if (loginName != null && setLdapPrincipal) {
+        principals.add(new LdapPrincipal(loginName));
+        loginSuccess = true;
       }
 
-      final String loginDn = (String) this.sharedState.get(LOGIN_DN);
-      if (loginDn != null && this.setLdapDnPrincipal) {
-        this.principals.add(new LdapDnPrincipal(loginDn));
-        this.loginSuccess = true;
+      final String loginDn = (String) sharedState.get(LOGIN_DN);
+      if (loginDn != null && setLdapDnPrincipal) {
+        principals.add(new LdapDnPrincipal(loginDn));
+        loginSuccess = true;
       }
 
-      if (this.roleFilter != null) {
+      if (roleFilter != null) {
         final Object[] filterArgs = new Object[] {loginDn, loginName, };
-        this.ldapConn.open();
-        final SearchOperation search = new SearchOperation(this.ldapConn);
-        this.searchRequest.setSearchFilter(
-          new SearchFilter(this.roleFilter, filterArgs));
+        ldapConn.open();
+        final SearchOperation search = new SearchOperation(ldapConn);
+        searchRequest.setSearchFilter(
+          new SearchFilter(roleFilter, filterArgs));
         final LdapResult result = search.execute(
-          this.searchRequest).getResult();
-        if (result.size() == 0 && this.noResultsIsError) {
-          this.loginSuccess = false;
+          searchRequest).getResult();
+        if (result.size() == 0 && noResultsIsError) {
+          loginSuccess = false;
           throw new LoginException(
-            "Could not find roles using " + this.roleFilter);
+            "Could not find roles using " + roleFilter);
         }
         for (LdapEntry le : result.getEntries()) {
-          this.roles.addAll(this.attributesToRoles(le.getLdapAttributes()));
+          roles.addAll(attributesToRoles(le.getLdapAttributes()));
         }
       }
-      if (this.defaultRole != null && !this.defaultRole.isEmpty()) {
-        this.roles.addAll(this.defaultRole);
+      if (defaultRole != null && !defaultRole.isEmpty()) {
+        roles.addAll(defaultRole);
       }
-      if (!this.roles.isEmpty()) {
-        this.loginSuccess = true;
+      if (!roles.isEmpty()) {
+        loginSuccess = true;
       }
-      this.storeCredentials(nameCb, passCb, null);
+      storeCredentials(nameCb, passCb, null);
     } catch (LdapException e) {
-      this.logger.debug("Error occured attempting role lookup", e);
-      this.loginSuccess = false;
+      logger.debug("Error occured attempting role lookup", e);
+      loginSuccess = false;
       throw new LoginException(e.getMessage());
     } finally {
-      this.ldapConn.close();
+      ldapConn.close();
     }
     return true;
   }

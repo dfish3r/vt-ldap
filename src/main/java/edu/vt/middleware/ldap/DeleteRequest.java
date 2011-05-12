@@ -36,7 +36,7 @@ public class DeleteRequest implements LdapRequest
    */
   public DeleteRequest(final String dn)
   {
-    this.setDn(dn);
+    setDn(dn);
   }
 
 
@@ -47,7 +47,7 @@ public class DeleteRequest implements LdapRequest
    */
   public String getDn()
   {
-    return this.deleteDn;
+    return deleteDn;
   }
 
 
@@ -58,7 +58,7 @@ public class DeleteRequest implements LdapRequest
    */
   public void setDn(final String dn)
   {
-    this.deleteDn = dn;
+    deleteDn = dn;
   }
 
 
@@ -73,8 +73,8 @@ public class DeleteRequest implements LdapRequest
     return
       String.format(
         "%s@%d: deleteDn=%s",
-        this.getClass().getName(),
-        this.hashCode(),
-        this.deleteDn);
+        getClass().getName(),
+        hashCode(),
+        deleteDn);
   }
 }

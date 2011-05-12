@@ -75,11 +75,11 @@ public class Dsmlv1Reader
    */
   public Dsmlv1Reader(final Reader reader, final SortBehavior sb)
   {
-    this.dsmlReader = reader;
+    dsmlReader = reader;
     if (sb == null) {
       throw new IllegalArgumentException("Sort behavior cannot be null");
     }
-    this.sortBehavior = sb;
+    sortBehavior = sb;
   }
 
 
@@ -94,7 +94,7 @@ public class Dsmlv1Reader
   {
     try {
       final DocumentBuilder db = DOC_BUILDER_FACTORY.newDocumentBuilder();
-      final Document dsml = db.parse(new InputSource(this.dsmlReader));
+      final Document dsml = db.parse(new InputSource(dsmlReader));
       return createLdapResult(dsml);
     } catch (ParserConfigurationException e) {
       throw new IOException(e);
@@ -113,12 +113,12 @@ public class Dsmlv1Reader
    */
   protected LdapResult createLdapResult(final Document doc)
   {
-    final LdapResult result = new LdapResult(this.sortBehavior);
+    final LdapResult result = new LdapResult(sortBehavior);
 
     if (doc != null && doc.hasChildNodes()) {
       final NodeList nodes = doc.getElementsByTagName("dsml:entry");
       for (int i = 0; i < nodes.getLength(); i++) {
-        final LdapEntry le = this.createLdapEntry((Element) nodes.item(i));
+        final LdapEntry le = createLdapEntry((Element) nodes.item(i));
         if (result != null) {
           result.addEntry(le);
         }
@@ -137,7 +137,7 @@ public class Dsmlv1Reader
    */
   protected LdapEntry createLdapEntry(final Element entryElement)
   {
-    final LdapEntry ldapEntry = new LdapEntry(this.sortBehavior);
+    final LdapEntry ldapEntry = new LdapEntry(sortBehavior);
     ldapEntry.setDn("");
 
     if (entryElement != null) {
@@ -155,7 +155,7 @@ public class Dsmlv1Reader
           final Element ocElement = (Element) ocNodes.item(0);
           if (ocElement != null && ocElement.hasChildNodes()) {
             final LdapAttribute ldapAttribute = new LdapAttribute(
-              this.sortBehavior);
+              sortBehavior);
             ldapAttribute.setName("objectClass");
 
             final NodeList ocValueNodes = ocElement.getElementsByTagName(
@@ -163,7 +163,7 @@ public class Dsmlv1Reader
             for (int j = 0; j < ocValueNodes.getLength(); j++) {
               final Element valueElement = (Element) ocValueNodes.item(j);
               if (valueElement != null) {
-                this.setAttrValue(valueElement, ldapAttribute);
+                setAttrValue(valueElement, ldapAttribute);
               }
             }
             ldapEntry.getLdapAttributes().addAttribute(ldapAttribute);
@@ -179,7 +179,7 @@ public class Dsmlv1Reader
               attrElement.getAttribute("name") : null;
           if (attrName != null && attrElement.hasChildNodes()) {
             final LdapAttribute ldapAttribute = new LdapAttribute(
-              this.sortBehavior);
+              sortBehavior);
             ldapAttribute.setName(attrName);
 
             final NodeList valueNodes = attrElement.getElementsByTagName(
@@ -187,7 +187,7 @@ public class Dsmlv1Reader
             for (int j = 0; j < valueNodes.getLength(); j++) {
               final Element valueElement = (Element) valueNodes.item(j);
               if (valueElement != null) {
-                this.setAttrValue(valueElement, ldapAttribute);
+                setAttrValue(valueElement, ldapAttribute);
               }
             }
             ldapEntry.getLdapAttributes().addAttribute(ldapAttribute);

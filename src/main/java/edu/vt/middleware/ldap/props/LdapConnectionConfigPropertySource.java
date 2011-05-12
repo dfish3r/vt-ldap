@@ -77,7 +77,7 @@ public final class LdapConnectionConfigPropertySource
   public LdapConnectionConfigPropertySource(
     final PropertyDomain domain, final Properties props)
   {
-    this.object = initializeObject(
+    object = initializeObject(
       INVOKER, new LdapConnectionConfig(), domain.value(), props);
   }
 

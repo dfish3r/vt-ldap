@@ -33,7 +33,7 @@ public class CompareLdapValidator implements LdapValidator<LdapConnection>
 {
 
   /** Logger for this class. */
-  protected final Logger logger = LoggerFactory.getLogger(this.getClass());
+  protected final Logger logger = LoggerFactory.getLogger(getClass());
 
   /** DN for validating connections. Default value is {@value}. */
   private String validateDn = "";
@@ -55,8 +55,8 @@ public class CompareLdapValidator implements LdapValidator<LdapConnection>
    */
   public CompareLdapValidator(final String dn, final SearchFilter filter)
   {
-    this.validateDn = dn;
-    this.validateFilter = filter;
+    validateDn = dn;
+    validateFilter = filter;
   }
 
 
@@ -67,7 +67,7 @@ public class CompareLdapValidator implements LdapValidator<LdapConnection>
    */
   public String getValidateDn()
   {
-    return this.validateDn;
+    return validateDn;
   }
 
 
@@ -78,7 +78,7 @@ public class CompareLdapValidator implements LdapValidator<LdapConnection>
    */
   public SearchFilter getValidateFilter()
   {
-    return this.validateFilter;
+    return validateFilter;
   }
 
 
@@ -89,7 +89,7 @@ public class CompareLdapValidator implements LdapValidator<LdapConnection>
    */
   public void setValidateDn(final String s)
   {
-    this.validateDn = s;
+    validateDn = s;
   }
 
 
@@ -100,11 +100,12 @@ public class CompareLdapValidator implements LdapValidator<LdapConnection>
    */
   public void setValidateFilter(final SearchFilter filter)
   {
-    this.validateFilter = filter;
+    validateFilter = filter;
   }
 
 
   /** {@inheritDoc} */
+  @Override
   public boolean validate(final LdapConnection lc)
   {
     boolean success = false;
@@ -113,11 +114,11 @@ public class CompareLdapValidator implements LdapValidator<LdapConnection>
         final SearchOperation search = new SearchOperation(lc);
         final LdapResult lr = search.execute(
           new SearchRequest(
-            this.validateDn, this.validateFilter)).getResult();
+            validateDn, validateFilter)).getResult();
         success = lr.size() == 1;
       } catch (LdapException e) {
-        this.logger.debug(
-          "validation failed for compare {}", this.validateFilter, e);
+        logger.debug(
+          "validation failed for compare {}", validateFilter, e);
       }
     }
     return success;

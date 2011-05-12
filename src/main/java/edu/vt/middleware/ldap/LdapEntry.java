@@ -46,33 +46,33 @@ public class LdapEntry extends AbstractLdapBean
   public LdapEntry(final SortBehavior sb)
   {
     super(sb);
-    this.ldapAttributes = new LdapAttributes(sb);
+    ldapAttributes = new LdapAttributes(sb);
   }
 
 
   /**
    * Creates a new ldap entry.
    *
-   * @param  dn  for this entry
+   * @param  s  dn for this entry
    */
-  public LdapEntry(final String dn)
+  public LdapEntry(final String s)
   {
     this();
-    this.setDn(dn);
+    setDn(s);
   }
 
 
   /**
    * Creates a new ldap entry.
    *
-   * @param  dn  for this entry
+   * @param  s  dn for this entry
    * @param  la  ldap attributes for this entry
    */
-  public LdapEntry(final String dn, final LdapAttributes la)
+  public LdapEntry(final String s, final LdapAttributes la)
   {
     this();
-    this.setDn(dn);
-    this.setLdapAttributes(la);
+    setDn(s);
+    setLdapAttributes(la);
   }
 
 
@@ -83,18 +83,18 @@ public class LdapEntry extends AbstractLdapBean
    */
   public String getDn()
   {
-    return this.dn;
+    return dn;
   }
 
 
   /**
    * Sets the DN.
    *
-   * @param  dn  to set
+   * @param  s  dn to set
    */
-  public void setDn(final String dn)
+  public void setDn(final String s)
   {
-    this.dn = dn;
+    dn = s;
   }
 
 
@@ -105,7 +105,7 @@ public class LdapEntry extends AbstractLdapBean
    */
   public LdapAttributes getLdapAttributes()
   {
-    return this.ldapAttributes;
+    return ldapAttributes;
   }
 
 
@@ -116,11 +116,12 @@ public class LdapEntry extends AbstractLdapBean
    */
   public void setLdapAttributes(final LdapAttributes la)
   {
-    this.ldapAttributes = la;
+    ldapAttributes = la;
   }
 
 
   /** {@inheritDoc} */
+  @Override
   public int hashCode()
   {
     int hc = HASH_CODE_SEED;
@@ -138,6 +139,6 @@ public class LdapEntry extends AbstractLdapBean
   @Override
   public String toString()
   {
-    return String.format("dn=>%s%s", this.dn, this.ldapAttributes);
+    return String.format("dn=>%s%s", dn, ldapAttributes);
   }
 }

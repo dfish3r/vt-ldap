@@ -56,7 +56,7 @@ public class Dsmlv1Writer
     TransformerFactory.newInstance();
 
   /** Logger for this class. */
-  protected final Logger logger = LoggerFactory.getLogger(this.getClass());
+  protected final Logger logger = LoggerFactory.getLogger(getClass());
 
   /** Writer to write to. */
   protected final Writer dsmlWriter;
@@ -75,7 +75,7 @@ public class Dsmlv1Writer
    */
   public Dsmlv1Writer(final Writer writer)
   {
-    this.dsmlWriter = writer;
+    dsmlWriter = writer;
   }
 
 
@@ -94,10 +94,10 @@ public class Dsmlv1Writer
       transformer.setOutputProperty(
         "{http://xml.apache.org/xslt}indent-amount", "2");
 
-      final StreamResult sr = new StreamResult(this.dsmlWriter);
-      final DOMSource source = new DOMSource(this.createDsml(result));
+      final StreamResult sr = new StreamResult(dsmlWriter);
+      final DOMSource source = new DOMSource(createDsml(result));
       transformer.transform(source, sr);
-      this.dsmlWriter.flush();
+      dsmlWriter.flush();
     } catch (ParserConfigurationException e) {
       throw new IOException(e);
     } catch (TransformerException e) {
@@ -136,7 +136,7 @@ public class Dsmlv1Writer
           entryElement.setAttribute("dn", le.getDn());
         }
         for (Element e :
-             this.createDsmlAttributes(doc, le.getLdapAttributes())) {
+             createDsmlAttributes(doc, le.getLdapAttributes())) {
           entryElement.appendChild(e);
         }
         entriesElement.appendChild(entryElement);
@@ -163,12 +163,12 @@ public class Dsmlv1Writer
       final Set<?> attrValues = attr.getValues();
       Element attrElement = null;
       if (attrName.equalsIgnoreCase("objectclass")) {
-        attrElement = this.createObjectclassElement(doc, attrValues);
+        attrElement = createObjectclassElement(doc, attrValues);
         if (attrElement.hasChildNodes()) {
           attrElements.add(0, attrElement);
         }
       } else {
-        attrElement = this.createAttrElement(doc, attrName, attrValues);
+        attrElement = createAttrElement(doc, attrName, attrValues);
         if (attrElement.hasChildNodes()) {
           attrElements.add(attrElement);
         }
@@ -194,7 +194,7 @@ public class Dsmlv1Writer
     for (Object o : values) {
       final Element valueElement = doc.createElement("dsml:value");
       attrElement.appendChild(valueElement);
-      this.setAttrValue(doc, valueElement, o);
+      setAttrValue(doc, valueElement, o);
     }
     return attrElement;
   }
@@ -214,7 +214,7 @@ public class Dsmlv1Writer
     for (Object o : values) {
       final Element ocValueElement = doc.createElement("dsml:oc-value");
       ocElement.appendChild(ocValueElement);
-      this.setAttrValue(doc, ocValueElement, o);
+      setAttrValue(doc, ocValueElement, o);
     }
     return ocElement;
   }
@@ -239,7 +239,7 @@ public class Dsmlv1Writer
       value = LdapUtil.base64Encode((byte[]) o);
       isBase64 = true;
     } else {
-      this.logger.warn(
+      logger.warn(
         "Could not cast attribute value as a byte[] or a String");
     }
     if (value != null) {

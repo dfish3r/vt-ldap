@@ -55,7 +55,7 @@ public class PrivateKeyCredentialReader
 
     final KeyFactory kf = KeyFactory.getInstance(algorithm);
     final PKCS8EncodedKeySpec spec = new PKCS8EncodedKeySpec(
-      LdapUtil.readInputStream(this.getBufferedInputStream(is)));
+      LdapUtil.readInputStream(getBufferedInputStream(is)));
     return kf.generatePrivate(spec);
   }
 }

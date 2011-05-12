@@ -31,11 +31,12 @@ public class X509CertificateCredentialReader
 {
 
   /** {@inheritDoc} */
+  @Override
   public X509Certificate read(final InputStream is, final String... params)
     throws IOException, GeneralSecurityException
   {
     final CertificateFactory cf = CertificateFactory.getInstance("X.509");
     return
-      (X509Certificate) cf.generateCertificate(this.getBufferedInputStream(is));
+      (X509Certificate) cf.generateCertificate(getBufferedInputStream(is));
   }
 }

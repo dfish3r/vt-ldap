@@ -42,8 +42,8 @@ public class ModifyRequest implements LdapRequest
    */
   public ModifyRequest(final String dn, final AttributeModification mod)
   {
-    this.setDn(dn);
-    this.setAttributeModifications(new AttributeModification[] {mod});
+    setDn(dn);
+    setAttributeModifications(new AttributeModification[] {mod});
   }
 
 
@@ -55,8 +55,8 @@ public class ModifyRequest implements LdapRequest
    */
   public ModifyRequest(final String dn, final AttributeModification[] mods)
   {
-    this.setDn(dn);
-    this.setAttributeModifications(mods);
+    setDn(dn);
+    setAttributeModifications(mods);
   }
 
 
@@ -67,7 +67,7 @@ public class ModifyRequest implements LdapRequest
    */
   public String getDn()
   {
-    return this.modifyDn;
+    return modifyDn;
   }
 
 
@@ -78,7 +78,7 @@ public class ModifyRequest implements LdapRequest
    */
   public void setDn(final String dn)
   {
-    this.modifyDn = dn;
+    modifyDn = dn;
   }
 
 
@@ -89,7 +89,7 @@ public class ModifyRequest implements LdapRequest
    */
   public AttributeModification[] getAttributeModifications()
   {
-    return this.attrMods;
+    return attrMods;
   }
 
 
@@ -100,7 +100,7 @@ public class ModifyRequest implements LdapRequest
    */
   public void setAttributeModifications(final AttributeModification[] mods)
   {
-    this.attrMods = mods;
+    attrMods = mods;
   }
 
 
@@ -115,9 +115,9 @@ public class ModifyRequest implements LdapRequest
     return
       String.format(
         "%s@%d::modifyDn=%s, attrMods=%s",
-        this.getClass().getName(),
-        this.hashCode(),
-        this.modifyDn,
-        this.attrMods != null ? Arrays.asList(this.attrMods) : null);
+        getClass().getName(),
+        hashCode(),
+        modifyDn,
+        attrMods != null ? Arrays.asList(attrMods) : null);
   }
 }

@@ -37,7 +37,7 @@ public class RenameOperationTest extends AbstractTest
    *
    * @throws  Exception  On test failure.
    */
-  @Parameters({ "createEntry5" })
+  @Parameters("createEntry5")
   @BeforeClass(groups = {"renametest"})
   public void createLdapEntry(final String ldifFile)
     throws Exception

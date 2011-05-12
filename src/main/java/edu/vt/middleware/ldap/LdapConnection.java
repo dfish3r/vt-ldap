@@ -27,7 +27,7 @@ import org.slf4j.LoggerFactory;
 public class LdapConnection
 {
   /** Logger for this class. */
-  protected final Logger logger = LoggerFactory.getLogger(this.getClass());
+  protected final Logger logger = LoggerFactory.getLogger(getClass());
 
   /** LDAP connection configuration. */
   protected LdapConnectionConfig config;
@@ -61,7 +61,7 @@ public class LdapConnection
    */
   public LdapConnection(final LdapConnectionConfig lcc)
   {
-    this.setLdapConnectionConfig(lcc);
+    setLdapConnectionConfig(lcc);
   }
 
 
@@ -72,7 +72,7 @@ public class LdapConnection
    */
   public LdapConnectionConfig getLdapConnectionConfig()
   {
-    return this.config;
+    return config;
   }
 
 
@@ -83,7 +83,7 @@ public class LdapConnection
    */
   public void setLdapConnectionConfig(final LdapConnectionConfig lcc)
   {
-    this.config = lcc;
+    config = lcc;
   }
 
 
@@ -94,9 +94,9 @@ public class LdapConnection
    */
   public synchronized void initialize()
   {
-    if (this.providerConnectionFactory == null) {
-      this.providerConnectionFactory =
-        this.config.getLdapProvider().getConnectionFactory(this.config);
+    if (providerConnectionFactory == null) {
+      providerConnectionFactory =
+        config.getLdapProvider().getConnectionFactory(config);
     }
   }
 
@@ -114,7 +114,7 @@ public class LdapConnection
   public synchronized void open()
     throws LdapException
   {
-    this.open(this.config.getBindDn(), this.config.getBindCredential());
+    open(config.getBindDn(), config.getBindCredential());
   }
 
 
@@ -132,11 +132,11 @@ public class LdapConnection
     final String bindDn, final Credential bindCredential)
     throws LdapException
   {
-    if (this.providerConnection != null) {
+    if (providerConnection != null) {
       throw new IllegalStateException("Connection already open");
     }
-    this.initialize();
-    this.providerConnection = this.providerConnectionFactory.create(
+    initialize();
+    providerConnection = providerConnectionFactory.create(
       bindDn, bindCredential);
   }
 
@@ -145,13 +145,13 @@ public class LdapConnection
   public synchronized void close()
   {
     try {
-      if (this.providerConnection != null) {
-        this.providerConnection.close();
+      if (providerConnection != null) {
+        providerConnection.close();
       }
     } catch (LdapException e) {
-      this.logger.warn("Error closing connection with the LDAP", e);
+      logger.warn("Error closing connection with the LDAP", e);
     } finally {
-      this.providerConnection = null;
+      providerConnection = null;
     }
   }
 
@@ -164,10 +164,10 @@ public class LdapConnection
    */
   public Connection getProviderConnection()
   {
-    if (this.providerConnection == null) {
+    if (providerConnection == null) {
       throw new IllegalStateException("Connection is not open");
     }
-    return this.providerConnection;
+    return providerConnection;
   }
 
 
@@ -179,10 +179,10 @@ public class LdapConnection
    */
   public ConnectionFactory getProviderConnectionFactory()
   {
-    if (this.providerConnectionFactory == null) {
+    if (providerConnectionFactory == null) {
       throw new IllegalStateException("Connection is not initialized");
     }
-    return this.providerConnectionFactory;
+    return providerConnectionFactory;
   }
 
 
@@ -292,11 +292,11 @@ public class LdapConnection
     return
       String.format(
         "%s@%d::config=%s, providerConnectionFactory=%s, providerConnection=%s",
-        this.getClass().getName(),
-        this.hashCode(),
-        this.config,
-        this.providerConnectionFactory,
-        this.providerConnection);
+        getClass().getName(),
+        hashCode(),
+        config,
+        providerConnectionFactory,
+        providerConnection);
   }
 
 
@@ -309,7 +309,7 @@ public class LdapConnection
     throws Throwable
   {
     try {
-      this.close();
+      close();
     } finally {
       super.finalize();
     }

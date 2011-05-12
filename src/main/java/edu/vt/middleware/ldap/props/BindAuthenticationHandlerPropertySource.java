@@ -77,7 +77,7 @@ public final class BindAuthenticationHandlerPropertySource
   public BindAuthenticationHandlerPropertySource(
     final PropertyDomain domain, final Properties props)
   {
-    this.object = initializeObject(
+    object = initializeObject(
       INVOKER, new BindAuthenticationHandler(), domain.value(), props);
   }
 

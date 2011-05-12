@@ -37,7 +37,7 @@ import org.slf4j.LoggerFactory;
 public abstract class AbstractAuthenticator
 {
   /** Logger for this class. */
-  protected final Logger logger = LoggerFactory.getLogger(this.getClass());
+  protected final Logger logger = LoggerFactory.getLogger(getClass());
 
   /** For finding user DNs. */
   protected DnResolver dnResolver;
@@ -56,7 +56,7 @@ public abstract class AbstractAuthenticator
    */
   public DnResolver getDnResolver()
   {
-    return this.dnResolver;
+    return dnResolver;
   }
 
 
@@ -67,7 +67,7 @@ public abstract class AbstractAuthenticator
    */
   public void setDnResolver(final DnResolver resolver)
   {
-    this.dnResolver = resolver;
+    dnResolver = resolver;
   }
 
 
@@ -78,7 +78,7 @@ public abstract class AbstractAuthenticator
    */
   public AuthenticationHandler getAuthenticationHandler()
   {
-    return this.authenticationHandler;
+    return authenticationHandler;
   }
 
 
@@ -89,7 +89,7 @@ public abstract class AbstractAuthenticator
    */
   public void setAuthenticationHandler(final AuthenticationHandler handler)
   {
-    this.authenticationHandler = handler;
+    authenticationHandler = handler;
   }
 
 
@@ -100,7 +100,7 @@ public abstract class AbstractAuthenticator
    */
   public AuthenticationResultHandler[] getAuthenticationResultHandlers()
   {
-    return this.authenticationResultHandlers;
+    return authenticationResultHandlers;
   }
 
 
@@ -112,7 +112,7 @@ public abstract class AbstractAuthenticator
   public void setAuthenticationResultHandlers(
     final AuthenticationResultHandler[] arh)
   {
-    this.authenticationResultHandlers = arh;
+    authenticationResultHandlers = arh;
   }
 
 
@@ -129,7 +129,7 @@ public abstract class AbstractAuthenticator
   public String resolveDn(final String user)
     throws LdapException
   {
-    return this.dnResolver.resolve(user);
+    return dnResolver.resolve(user);
   }
 
 
@@ -155,9 +155,9 @@ public abstract class AbstractAuthenticator
     LdapConnection conn = null;
     try {
       conn = authHandler.authenticate(ac);
-      this.logger.info("Authentication succeeded for dn: {}", ac.getDn());
+      logger.info("Authentication succeeded for dn: {}", ac.getDn());
     } catch (AuthenticationException e) {
-      this.logger.info("Authentication failed for dn: {}", ac.getDn());
+      logger.info("Authentication failed for dn: {}", ac.getDn());
       if (authResultHandler != null && authResultHandler.length > 0) {
         for (AuthenticationResultHandler ah : authResultHandler) {
           ah.process(ac, false);
@@ -193,12 +193,12 @@ public abstract class AbstractAuthenticator
       for (AuthorizationHandler azh : authzHandler) {
         try {
           azh.process(ac, conn);
-          this.logger.info(
+          logger.info(
             "Authorization succeeded for dn: {} with handler: {}",
             ac.getDn(),
             azh);
         } catch (AuthorizationException e) {
-          this.logger.info(
+          logger.info(
             "Authorization failed for dn: {} with handler: {}",
             ac.getDn(),
             azh);
@@ -229,7 +229,7 @@ public abstract class AbstractAuthenticator
     final LdapConnection conn)
     throws LdapException
   {
-    this.logger.debug(
+    logger.debug(
       "Returning attributes: {}",
       request.getReturnAttributes() == null ?
         "all attributes" : Arrays.toString(request.getReturnAttributes()));

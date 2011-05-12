@@ -43,7 +43,7 @@ public class SearchDnResolver implements DnResolver, Serializable
   private static final long serialVersionUID = -7615995272176088807L;
 
   /** Logger for this class. */
-  protected final Logger logger = LoggerFactory.getLogger(this.getClass());
+  protected final Logger logger = LoggerFactory.getLogger(getClass());
 
   /** Ldap connection config. */
   protected LdapConnectionConfig config;
@@ -75,7 +75,7 @@ public class SearchDnResolver implements DnResolver, Serializable
    */
   public SearchDnResolver(final LdapConnectionConfig lcc)
   {
-    this.setLdapConnectionConfig(lcc);
+    setLdapConnectionConfig(lcc);
   }
 
 
@@ -86,7 +86,7 @@ public class SearchDnResolver implements DnResolver, Serializable
    */
   public LdapConnectionConfig getLdapConnectionConfig()
   {
-    return this.config;
+    return config;
   }
 
 
@@ -97,7 +97,7 @@ public class SearchDnResolver implements DnResolver, Serializable
    */
   public void setLdapConnectionConfig(final LdapConnectionConfig lcc)
   {
-    this.config = lcc;
+    config = lcc;
   }
 
 
@@ -108,7 +108,7 @@ public class SearchDnResolver implements DnResolver, Serializable
    */
   public String getBaseDn()
   {
-    return this.baseDn;
+    return baseDn;
   }
 
 
@@ -119,8 +119,8 @@ public class SearchDnResolver implements DnResolver, Serializable
    */
   public void setBaseDn(final String dn)
   {
-    this.logger.trace("setting baseDn: {}", dn);
-    this.baseDn = dn;
+    logger.trace("setting baseDn: {}", dn);
+    baseDn = dn;
   }
 
 
@@ -131,7 +131,7 @@ public class SearchDnResolver implements DnResolver, Serializable
    */
   public String getUserFilter()
   {
-    return this.userFilter;
+    return userFilter;
   }
 
 
@@ -142,8 +142,8 @@ public class SearchDnResolver implements DnResolver, Serializable
    */
   public void setUserFilter(final String filter)
   {
-    this.logger.trace("setting userFilter: {}", filter);
-    this.userFilter = filter;
+    logger.trace("setting userFilter: {}", filter);
+    userFilter = filter;
   }
 
 
@@ -154,7 +154,7 @@ public class SearchDnResolver implements DnResolver, Serializable
    */
   public Object[] getUserFilterArgs()
   {
-    return this.userFilterArgs;
+    return userFilterArgs;
   }
 
 
@@ -165,9 +165,9 @@ public class SearchDnResolver implements DnResolver, Serializable
    */
   public void setUserFilterArgs(final Object[] filterArgs)
   {
-    this.logger.trace(
+    logger.trace(
       "setting userFilterArgs: {}", Arrays.toString(filterArgs));
-    this.userFilterArgs = filterArgs;
+    userFilterArgs = filterArgs;
   }
 
 
@@ -178,7 +178,7 @@ public class SearchDnResolver implements DnResolver, Serializable
    */
   public boolean getAllowMultipleDns()
   {
-    return this.allowMultipleDns;
+    return allowMultipleDns;
   }
 
 
@@ -192,8 +192,8 @@ public class SearchDnResolver implements DnResolver, Serializable
    */
   public void setAllowMultipleDns(final boolean b)
   {
-    this.logger.trace("setting allowMultipleDns: {}", b);
-    this.allowMultipleDns = b;
+    logger.trace("setting allowMultipleDns: {}", b);
+    allowMultipleDns = b;
   }
 
 
@@ -204,7 +204,7 @@ public class SearchDnResolver implements DnResolver, Serializable
    */
   public boolean getSubtreeSearch()
   {
-    return this.subtreeSearch;
+    return subtreeSearch;
   }
 
 
@@ -217,8 +217,8 @@ public class SearchDnResolver implements DnResolver, Serializable
    */
   public void setSubtreeSearch(final boolean b)
   {
-    this.logger.trace("setting subtreeSearch: {}", b);
-    this.subtreeSearch = b;
+    logger.trace("setting subtreeSearch: {}", b);
+    subtreeSearch = b;
   }
 
 
@@ -241,33 +241,33 @@ public class SearchDnResolver implements DnResolver, Serializable
     String dn = null;
     if (user != null && !"".equals(user)) {
       // create the search filter
-      final SearchFilter filter = this.createSearchFilter(user);
+      final SearchFilter filter = createSearchFilter(user);
 
       if (filter.getFilter() != null) {
-        final LdapResult result = this.performLdapSearch(filter);
+        final LdapResult result = performLdapSearch(filter);
         final Iterator<LdapEntry> answer = result.getEntries().iterator();
 
         // return first match, otherwise user doesn't exist
         if (answer != null && answer.hasNext()) {
           dn = answer.next().getDn();
           if (answer.hasNext()) {
-            this.logger.debug(
+            logger.debug(
               "Multiple results found for user: {} using filter: {}",
               user,
               filter);
-            if (!this.allowMultipleDns) {
+            if (!allowMultipleDns) {
               throw new LdapException("Found more than (1) DN for: " + user);
             }
           }
         } else {
-          this.logger.info(
+          logger.info(
             "Search for user: {} failed using filter: {}", user, filter);
         }
       } else {
-        this.logger.error("DN search filter not found, no search performed");
+        logger.error("DN search filter not found, no search performed");
       }
     } else {
-      this.logger.warn(
+      logger.warn(
         "DN resolution cannot occur, user input was empty or null");
     }
     return dn;
@@ -285,10 +285,10 @@ public class SearchDnResolver implements DnResolver, Serializable
   protected SearchFilter createSearchFilter(final String user)
   {
     final SearchFilter filter = new SearchFilter();
-    if (this.userFilter != null) {
-      this.logger.debug("Looking up DN using userFilter");
-      filter.setFilter(this.userFilter);
-      filter.setFilterArgs(this.userFilterArgs);
+    if (userFilter != null) {
+      logger.debug("Looking up DN using userFilter");
+      filter.setFilter(userFilter);
+      filter.setFilterArgs(userFilterArgs);
 
       // make user the first filter arg
       final List<Object> filterArgs = new ArrayList<Object>();
@@ -297,7 +297,7 @@ public class SearchDnResolver implements DnResolver, Serializable
       filter.setFilterArgs(filterArgs);
 
     } else {
-      this.logger.error("Invalid userFilter, cannot be null or empty.");
+      logger.error("Invalid userFilter, cannot be null or empty.");
     }
     return filter;
   }
@@ -313,10 +313,10 @@ public class SearchDnResolver implements DnResolver, Serializable
   protected SearchRequest createSearchRequest(final SearchFilter filter)
   {
     final SearchRequest request = new SearchRequest();
-    request.setBaseDn(this.baseDn);
+    request.setBaseDn(baseDn);
     request.setSearchFilter(filter);
     request.setReturnAttributes(new String[0]);
-    if (this.subtreeSearch) {
+    if (subtreeSearch) {
       request.setSearchScope(SearchScope.SUBTREE);
     } else {
       request.setSearchScope(SearchScope.ONELEVEL);
@@ -335,8 +335,8 @@ public class SearchDnResolver implements DnResolver, Serializable
   protected LdapResult performLdapSearch(final SearchFilter filter)
     throws LdapException
   {
-    final SearchRequest request = this.createSearchRequest(filter);
-    final LdapConnection conn = new LdapConnection(this.config);
+    final SearchRequest request = createSearchRequest(filter);
+    final LdapConnection conn = new LdapConnection(config);
     try {
       conn.open();
       final SearchOperation op = new SearchOperation(conn);
@@ -359,13 +359,13 @@ public class SearchDnResolver implements DnResolver, Serializable
       String.format(
         "%s@%d: baseDn=%s, userFilter=%s, userFilterArgs=%s, " +
         "allowMultipleDns=%s, subtreeSearch=%s, config=%s",
-        this.getClass().getName(),
-        this.hashCode(),
-        this.baseDn,
-        this.userFilter,
-        this.userFilterArgs != null ? Arrays.asList(this.userFilterArgs) : null,
-        this.allowMultipleDns,
-        this.subtreeSearch,
-        this.config);
+        getClass().getName(),
+        hashCode(),
+        baseDn,
+        userFilter,
+        userFilterArgs != null ? Arrays.asList(userFilterArgs) : null,
+        allowMultipleDns,
+        subtreeSearch,
+        config);
   }
 }

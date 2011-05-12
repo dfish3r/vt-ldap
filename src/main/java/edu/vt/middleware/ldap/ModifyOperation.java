@@ -30,21 +30,23 @@ public class ModifyOperation extends AbstractLdapOperation<ModifyRequest, Void>
    */
   public ModifyOperation(final LdapConnection lc)
   {
-    this.ldapConnection = lc;
-    this.initialize(lc.getLdapConnectionConfig());
+    ldapConnection = lc;
+    initialize(lc.getLdapConnectionConfig());
   }
 
 
   /** {@inheritDoc} */
+  @Override
   protected LdapResponse<Void> invoke(final ModifyRequest request)
     throws LdapException
   {
-    this.ldapConnection.getProviderConnection().modify(request);
+    ldapConnection.getProviderConnection().modify(request);
     return new LdapResponse<Void>();
   }
 
 
   /** {@inheritDoc} */
+  @Override
   protected void initializeRequest(
     final ModifyRequest request, final LdapConnectionConfig config) {}
 }

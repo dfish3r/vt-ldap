@@ -72,8 +72,8 @@ public class CaseChangeResultHandler extends CopyLdapResultHandler
   /** Default constructor. */
   public CaseChangeResultHandler()
   {
-    this.setAttributeHandler(
-      new LdapAttributeHandler[] {this.attributeHandler});
+    setAttributeHandler(
+      new LdapAttributeHandler[] {attributeHandler});
   }
 
 
@@ -84,7 +84,7 @@ public class CaseChangeResultHandler extends CopyLdapResultHandler
    */
   public CaseChange getDnCaseChange()
   {
-    return this.dnCaseChange;
+    return dnCaseChange;
   }
 
 
@@ -95,7 +95,7 @@ public class CaseChangeResultHandler extends CopyLdapResultHandler
    */
   public void setDnCaseChange(final CaseChange cc)
   {
-    this.dnCaseChange = cc;
+    dnCaseChange = cc;
   }
 
 
@@ -106,7 +106,7 @@ public class CaseChangeResultHandler extends CopyLdapResultHandler
    */
   public CaseChange getAttributeNameCaseChange()
   {
-    return this.attributeHandler.getAttributeNameCaseChange();
+    return attributeHandler.getAttributeNameCaseChange();
   }
 
 
@@ -117,7 +117,7 @@ public class CaseChangeResultHandler extends CopyLdapResultHandler
    */
   public void setAttributeNameCaseChange(final CaseChange cc)
   {
-    this.attributeHandler.setAttributeNameCaseChange(cc);
+    attributeHandler.setAttributeNameCaseChange(cc);
   }
 
 
@@ -128,7 +128,7 @@ public class CaseChangeResultHandler extends CopyLdapResultHandler
    */
   public CaseChange getAttributeValueCaseChange()
   {
-    return this.attributeHandler.getAttributeValueCaseChange();
+    return attributeHandler.getAttributeValueCaseChange();
   }
 
 
@@ -139,13 +139,14 @@ public class CaseChangeResultHandler extends CopyLdapResultHandler
    */
   public void setAttributeValueCaseChange(final CaseChange cc)
   {
-    this.attributeHandler.setAttributeValueCaseChange(cc);
+    attributeHandler.setAttributeValueCaseChange(cc);
   }
 
 
   /** {@inheritDoc} */
+  @Override
   protected String processDn(final SearchCriteria sc, final LdapEntry le)
   {
-    return CaseChange.perform(this.dnCaseChange, le.getDn());
+    return CaseChange.perform(dnCaseChange, le.getDn());
   }
 }

@@ -37,7 +37,7 @@ public class ModifyOperationTest extends AbstractTest
    *
    * @throws  Exception  On test failure.
    */
-  @Parameters({ "createEntry4" })
+  @Parameters("createEntry4")
   @BeforeClass(groups = {"modifytest"})
   public void createLdapEntry(final String ldifFile)
     throws Exception

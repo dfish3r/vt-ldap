@@ -36,10 +36,11 @@ public class DefaultSSLContextInitializer extends AbstractSSLContextInitializer
 
 
   /** {@inheritDoc} */
+  @Override
   public TrustManager[] getTrustManagers()
     throws GeneralSecurityException
   {
-    return this.trustManagers;
+    return trustManagers;
   }
 
 
@@ -50,15 +51,16 @@ public class DefaultSSLContextInitializer extends AbstractSSLContextInitializer
    */
   public void setTrustManagers(final TrustManager[] tm)
   {
-    this.trustManagers = tm;
+    trustManagers = tm;
   }
 
 
   /** {@inheritDoc} */
+  @Override
   public KeyManager[] getKeyManagers()
     throws GeneralSecurityException
   {
-    return this.keyManagers;
+    return keyManagers;
   }
 
 
@@ -69,6 +71,6 @@ public class DefaultSSLContextInitializer extends AbstractSSLContextInitializer
    */
   public void setKeyManagers(final KeyManager[] km)
   {
-    this.keyManagers = km;
+    keyManagers = km;
   }
 }

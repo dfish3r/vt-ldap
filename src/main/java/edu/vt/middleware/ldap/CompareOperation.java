@@ -31,21 +31,23 @@ public class CompareOperation
    */
   public CompareOperation(final LdapConnection lc)
   {
-    this.ldapConnection = lc;
-    this.initialize(lc.getLdapConnectionConfig());
+    ldapConnection = lc;
+    initialize(lc.getLdapConnectionConfig());
   }
 
 
   /** {@inheritDoc} */
+  @Override
   protected LdapResponse<Boolean> invoke(final CompareRequest request)
     throws LdapException
   {
     return new LdapResponse<Boolean>(
-      this.ldapConnection.getProviderConnection().compare(request));
+      ldapConnection.getProviderConnection().compare(request));
   }
 
 
   /** {@inheritDoc} */
+  @Override
   protected void initializeRequest(
     final CompareRequest request, final LdapConnectionConfig config) {}
 }

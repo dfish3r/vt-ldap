@@ -39,7 +39,7 @@ public class MergeResultHandler extends CopyLdapResultHandler
    */
   public boolean getAllowDuplicates()
   {
-    return this.allowDuplicates;
+    return allowDuplicates;
   }
 
 
@@ -50,17 +50,18 @@ public class MergeResultHandler extends CopyLdapResultHandler
    */
   public void setAllowDuplicates(final boolean b)
   {
-    this.allowDuplicates = b;
+    allowDuplicates = b;
   }
 
 
   /** {@inheritDoc} */
+  @Override
   public void process(final SearchCriteria sc, final LdapResult lr)
     throws LdapException
   {
     if (lr != null) {
       super.process(sc, lr);
-      this.mergeResults(lr);
+      mergeResults(lr);
     }
   }
 
@@ -88,7 +89,7 @@ public class MergeResultHandler extends CopyLdapResultHandler
             mergedEntry.getLdapAttributes().addAttribute(la);
           } else {
             for (Object o : la.getValues()) {
-              if (this.allowDuplicates) {
+              if (allowDuplicates) {
                 oldAttr.getValues().add(o);
               } else {
                 boolean add = true;

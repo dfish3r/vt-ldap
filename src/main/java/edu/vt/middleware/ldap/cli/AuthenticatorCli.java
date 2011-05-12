@@ -61,26 +61,27 @@ public class AuthenticatorCli extends AbstractCli
 
 
   /** {@inheritDoc} */
+  @Override
   protected void initOptions()
   {
-    this.options.addOption(
+    options.addOption(
       new Option(OPT_DSMLV1, false, "output results in DSML v1"));
-    final Map<String, String> desc = this.getArgDesc(
+    final Map<String, String> desc = getArgDesc(
       LdapConnectionConfig.class,
       Authenticator.class,
       SearchDnResolver.class,
       AuthenticationRequest.class);
     for (String s : LdapConnectionConfigPropertySource.getProperties()) {
-      this.options.addOption(new Option(s, true, desc.get(s)));
+      options.addOption(new Option(s, true, desc.get(s)));
     }
     for (String s : AuthenticatorPropertySource.getProperties()) {
-      this.options.addOption(new Option(s, true, desc.get(s)));
+      options.addOption(new Option(s, true, desc.get(s)));
     }
     for (String s : SearchDnResolverPropertySource.getProperties()) {
-      this.options.addOption(new Option(s, true, desc.get(s)));
+      options.addOption(new Option(s, true, desc.get(s)));
     }
     for (String s : AuthenticationRequestPropertySource.getProperties()) {
-      this.options.addOption(new Option(s, true, desc.get(s)));
+      options.addOption(new Option(s, true, desc.get(s)));
     }
     super.initOptions();
   }
@@ -100,7 +101,7 @@ public class AuthenticatorCli extends AbstractCli
   {
     final AuthenticatorPropertySource aSource =
       new AuthenticatorPropertySource(
-        this.getPropertiesFromOptions(PropertyDomain.AUTH.value(), line));
+        getPropertiesFromOptions(PropertyDomain.AUTH.value(), line));
     final Authenticator auth = aSource.get();
     return auth;
   }
@@ -121,7 +122,7 @@ public class AuthenticatorCli extends AbstractCli
   {
     final AuthenticationRequestPropertySource arSource =
       new AuthenticationRequestPropertySource(
-        this.getPropertiesFromOptions(PropertyDomain.AUTH.value(), line));
+        getPropertiesFromOptions(PropertyDomain.AUTH.value(), line));
     final AuthenticationRequest request = arSource.get();
     if (request.getUser() == null) {
       // prompt for a user name
@@ -141,18 +142,19 @@ public class AuthenticatorCli extends AbstractCli
 
 
   /** {@inheritDoc} */
+  @Override
   protected void dispatch(final CommandLine line)
     throws Exception
   {
     if (line.hasOption(OPT_DSMLV1)) {
-      this.outputDsmlv1 = true;
+      outputDsmlv1 = true;
     }
     if (line.hasOption(OPT_HELP)) {
-      this.printHelp();
+      printHelp();
     } else {
-      this.authenticate(
-        this.initAuthenticator(line),
-        this.initAuthenticationRequest(line));
+      authenticate(
+        initAuthenticator(line),
+        initAuthenticationRequest(line));
     }
   }
 
@@ -177,7 +179,7 @@ public class AuthenticatorCli extends AbstractCli
     }
     final LdapEntry entry = auth.authenticate(request).getResult();
     if (entry != null) {
-      if (this.outputDsmlv1) {
+      if (outputDsmlv1) {
         final Dsmlv1Writer writer = new Dsmlv1Writer(
           new BufferedWriter(new OutputStreamWriter(System.out)));
         writer.write(new LdapResult(entry));
@@ -191,6 +193,7 @@ public class AuthenticatorCli extends AbstractCli
 
 
   /** {@inheritDoc} */
+  @Override
   protected String getCommandName()
   {
     return COMMAND_NAME;

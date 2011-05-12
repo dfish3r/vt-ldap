@@ -65,8 +65,8 @@ public class SearchServletTest extends AbstractTest
     testLdapEntry = TestUtil.convertLdifToResult(ldif).getEntry();
     super.createLdapEntry(testLdapEntry);
 
-    this.ldifServletRunner = new ServletRunner(new File(webXml));
-    this.dsmlServletRunner = new ServletRunner(new File(webXml));
+    ldifServletRunner = new ServletRunner(new File(webXml));
+    dsmlServletRunner = new ServletRunner(new File(webXml));
   }
 
 
@@ -102,7 +102,7 @@ public class SearchServletTest extends AbstractTest
   {
     final String expected = TestUtil.readFileIntoString(ldifFile);
 
-    final ServletUnitClient sc = this.ldifServletRunner.newClient();
+    final ServletUnitClient sc = ldifServletRunner.newClient();
     final WebRequest request = new PostMethodWebRequest(
       "http://servlets.ldap.middleware.vt.edu/LdifSearch");
     request.setParameter("query", query);
@@ -147,7 +147,7 @@ public class SearchServletTest extends AbstractTest
     d1w.write(result);
     final String dsmlv1 = s1w.toString();
 
-    final ServletUnitClient sc = this.dsmlServletRunner.newClient();
+    final ServletUnitClient sc = dsmlServletRunner.newClient();
     // test basic dsml query
     WebRequest request = new PostMethodWebRequest(
       "http://servlets.ldap.middleware.vt.edu/DsmlSearch");

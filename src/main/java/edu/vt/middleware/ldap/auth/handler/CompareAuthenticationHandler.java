@@ -53,7 +53,7 @@ public class CompareAuthenticationHandler extends AbstractAuthenticationHandler
    */
   public CompareAuthenticationHandler(final LdapConnectionConfig lcc)
   {
-    this.setLdapConnectionConfig(lcc);
+    setLdapConnectionConfig(lcc);
   }
 
 
@@ -64,7 +64,7 @@ public class CompareAuthenticationHandler extends AbstractAuthenticationHandler
    */
   public String getPasswordScheme()
   {
-    return this.passwordScheme;
+    return passwordScheme;
   }
 
 
@@ -75,29 +75,30 @@ public class CompareAuthenticationHandler extends AbstractAuthenticationHandler
    */
   public void setPasswordScheme(final String s)
   {
-    this.passwordScheme = s;
+    passwordScheme = s;
   }
 
 
   /** {@inheritDoc} */
+  @Override
   public LdapConnection authenticate(final AuthenticationCriteria ac)
     throws LdapException
   {
     byte[] hash = new byte[DIGEST_SIZE];
     try {
-      final MessageDigest md = MessageDigest.getInstance(this.passwordScheme);
+      final MessageDigest md = MessageDigest.getInstance(passwordScheme);
       md.update(ac.getCredential().getBytes());
       hash = md.digest();
     } catch (NoSuchAlgorithmException e) {
       throw new LdapException(e);
     }
 
-    final LdapConnection conn = new LdapConnection(this.config);
+    final LdapConnection conn = new LdapConnection(config);
     conn.open();
     final LdapAttribute la = new LdapAttribute(
       "userPassword",
       String.format(
-        "{%s}%s", this.passwordScheme, LdapUtil.base64Encode(hash)).getBytes());
+        "{%s}%s", passwordScheme, LdapUtil.base64Encode(hash)).getBytes());
     final CompareOperation compare = new CompareOperation(conn);
     final boolean success = compare.execute(
       new CompareRequest(ac.getDn(), la)).getResult();
@@ -124,8 +125,8 @@ public class CompareAuthenticationHandler extends AbstractAuthenticationHandler
     return
       String.format(
         "%s@%d: passwordScheme=%s",
-        this.getClass().getName(),
-        this.hashCode(),
-        this.passwordScheme);
+        getClass().getName(),
+        hashCode(),
+        passwordScheme);
   }
 }

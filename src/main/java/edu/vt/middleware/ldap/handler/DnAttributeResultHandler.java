@@ -46,7 +46,7 @@ public class DnAttributeResultHandler extends CopyLdapResultHandler
    */
   public String getDnAttributeName()
   {
-    return this.dnAttributeName;
+    return dnAttributeName;
   }
 
 
@@ -57,7 +57,7 @@ public class DnAttributeResultHandler extends CopyLdapResultHandler
    */
   public void setDnAttributeName(final String name)
   {
-    this.dnAttributeName = name;
+    dnAttributeName = name;
   }
 
 
@@ -68,7 +68,7 @@ public class DnAttributeResultHandler extends CopyLdapResultHandler
    */
   public boolean isAddIfExists()
   {
-    return this.addIfExists;
+    return addIfExists;
   }
 
 
@@ -80,19 +80,20 @@ public class DnAttributeResultHandler extends CopyLdapResultHandler
    */
   public void setAddIfExists(final boolean b)
   {
-    this.addIfExists = b;
+    addIfExists = b;
   }
 
 
   /** {@inheritDoc} */
+  @Override
   protected void processAttributes(final SearchCriteria sc, final LdapEntry le)
     throws LdapException
   {
     final LdapAttributes attrs = le.getLdapAttributes();
-    if (attrs.getAttribute(this.dnAttributeName) == null) {
-      attrs.addAttribute(this.dnAttributeName, le.getDn());
-    } else if (this.addIfExists) {
-      attrs.getAttribute(this.dnAttributeName).getValues().add(le.getDn());
+    if (attrs.getAttribute(dnAttributeName) == null) {
+      attrs.addAttribute(dnAttributeName, le.getDn());
+    } else if (addIfExists) {
+      attrs.getAttribute(dnAttributeName).getValues().add(le.getDn());
     }
   }
 }

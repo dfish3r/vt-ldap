@@ -76,8 +76,8 @@ public class Authenticator extends AbstractAuthenticator
     final DnResolver dr,
     final AuthenticationHandler ah)
   {
-    this.setDnResolver(dr);
-    this.setAuthenticationHandler(ah);
+    setDnResolver(dr);
+    setAuthenticationHandler(ah);
   }
 
 
@@ -95,7 +95,7 @@ public class Authenticator extends AbstractAuthenticator
     throws LdapException
   {
     return new LdapResponse<LdapEntry>(
-      this.authenticate(this.resolveDn(request.getUser()), request));
+      authenticate(resolveDn(request.getUser()), request));
   }
 
 
@@ -142,25 +142,25 @@ public class Authenticator extends AbstractAuthenticator
       ac.setCredential(request.getCredential());
 
       // attempt to bind as this dn
-      conn = this.authenticate(
-        this.authenticationHandler, this.authenticationResultHandlers, ac);
+      conn = authenticate(
+        authenticationHandler, authenticationResultHandlers, ac);
 
       // authentication succeeded, perform authorization if supplied
       final AuthorizationHandler[] authzHandler =
-        this.getAuthorizationHandlers(request);
-      this.authorize(authzHandler, this.authenticationResultHandlers, conn, ac);
+        getAuthorizationHandlers(request);
+      authorize(authzHandler, authenticationResultHandlers, conn, ac);
 
       // retrieve requested attributes
       if (request.getReturnAttributes() == null ||
           request.getReturnAttributes().length > 0) {
-        result = this.getLdapEntry(dn, request, conn);
+        result = getLdapEntry(dn, request, conn);
       }
 
       // authentication and authorization succeeded, report result
-      if (this.authenticationResultHandlers != null &&
-          this.authenticationResultHandlers.length > 0) {
+      if (authenticationResultHandlers != null &&
+          authenticationResultHandlers.length > 0) {
         for (AuthenticationResultHandler ah :
-             this.authenticationResultHandlers) {
+             authenticationResultHandlers) {
           ah.process(ac, true);
         }
       }
@@ -190,11 +190,11 @@ public class Authenticator extends AbstractAuthenticator
       String.format(
         "%s@%d: dnResolver=%s, authenticationHandler=%s, " +
         "authenticationResultHandlers=%s",
-        this.getClass().getName(),
-        this.hashCode(),
-        this.dnResolver,
-        this.authenticationHandler,
-        this.authenticationResultHandlers != null ?
-          Arrays.asList(this.authenticationResultHandlers) : null);
+        getClass().getName(),
+        hashCode(),
+        dnResolver,
+        authenticationHandler,
+        authenticationResultHandlers != null ?
+          Arrays.asList(authenticationResultHandlers) : null);
   }
 }

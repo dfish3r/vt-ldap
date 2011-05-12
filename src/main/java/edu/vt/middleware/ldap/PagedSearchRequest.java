@@ -134,7 +134,7 @@ public class PagedSearchRequest extends SearchRequest
    */
   public Integer getPagedResultsSize()
   {
-    return this.pagedResultsSize;
+    return pagedResultsSize;
   }
 
 
@@ -145,7 +145,7 @@ public class PagedSearchRequest extends SearchRequest
    */
   public void setPagedResultsSize(final int i)
   {
-    this.pagedResultsSize = i;
+    pagedResultsSize = i;
   }
 
 
@@ -163,21 +163,21 @@ public class PagedSearchRequest extends SearchRequest
       "timeLimit=%s, countLimit=%s, batchSize=%s, derefAliases=%s, " +
       "referralBehavior=%s, typesOnly=%s, binaryAttributes=%s, " +
       "sortBehavior=%s, searchResultHandler=%s, pagedResultsSize=%s",
-      this.getClass().getName(),
-      this.hashCode(),
-      this.baseDn,
-      this.filter,
-      this.retAttrs != null ? Arrays.asList(this.retAttrs) : null,
-      this.scope,
-      this.timeLimit,
-      this.countLimit,
-      this.batchSize,
-      this.derefAliases,
-      this.referralBehavior,
-      this.typesOnly,
-      this.binaryAttrs != null ? Arrays.asList(this.binaryAttrs) : null,
-      this.sortBehavior,
-      this.handlers != null ? Arrays.asList(this.handlers) : null,
-      this.pagedResultsSize);
+      getClass().getName(),
+      hashCode(),
+      baseDn,
+      filter,
+      retAttrs != null ? Arrays.asList(retAttrs) : null,
+      scope,
+      timeLimit,
+      countLimit,
+      batchSize,
+      derefAliases,
+      referralBehavior,
+      typesOnly,
+      binaryAttrs != null ? Arrays.asList(binaryAttrs) : null,
+      sortBehavior,
+      handlers != null ? Arrays.asList(handlers) : null,
+      pagedResultsSize);
   }
 }

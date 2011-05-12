@@ -215,7 +215,7 @@ public enum ResultCode
    */
   ResultCode(final int i)
   {
-    this.code = i;
+    code = i;
   }
 
 
@@ -226,7 +226,7 @@ public enum ResultCode
    */
   public int value()
   {
-    return this.code;
+    return code;
   }
 
 

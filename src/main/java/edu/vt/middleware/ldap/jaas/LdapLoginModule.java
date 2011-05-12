@@ -53,14 +53,15 @@ public class LdapLoginModule extends AbstractLoginModule implements LoginModule
 
 
   /** {@inheritDoc} */
+  @Override
   public void initialize(
     final Subject subject,
     final CallbackHandler callbackHandler,
     final Map<String, ?> sharedState,
     final Map<String, ?> options)
   {
-    this.setLdapPrincipal = true;
-    this.setLdapCredential = true;
+    setLdapPrincipal = true;
+    setLdapCredential = true;
 
     super.initialize(subject, callbackHandler, sharedState, options);
 
@@ -70,26 +71,27 @@ public class LdapLoginModule extends AbstractLoginModule implements LoginModule
       final String value = (String) options.get(key);
       if (key.equalsIgnoreCase("userRoleAttribute")) {
         if ("*".equals(value)) {
-          this.userRoleAttribute = null;
+          userRoleAttribute = null;
         } else {
-          this.userRoleAttribute = value.split(",");
+          userRoleAttribute = value.split(",");
         }
       }
     }
 
-    this.logger.trace(
-      "userRoleAttribute = {}", Arrays.toString(this.userRoleAttribute));
+    logger.trace(
+      "userRoleAttribute = {}", Arrays.toString(userRoleAttribute));
 
-    this.auth = createAuthenticator(options);
-    this.logger.debug("Created authenticator: {}", this.auth);
+    auth = createAuthenticator(options);
+    logger.debug("Created authenticator: {}", auth);
 
-    this.authRequest = createAuthenticationRequest(options);
-    this.authRequest.setReturnAttributes(this.userRoleAttribute);
-    this.logger.debug("Created authentication request: {}", this.authRequest);
+    authRequest = createAuthenticationRequest(options);
+    authRequest.setReturnAttributes(userRoleAttribute);
+    logger.debug("Created authentication request: {}", authRequest);
   }
 
 
   /** {@inheritDoc} */
+  @Override
   public boolean login()
     throws LoginException
   {
@@ -98,75 +100,75 @@ public class LdapLoginModule extends AbstractLoginModule implements LoginModule
       final PasswordCallback passCb = new PasswordCallback(
         "Enter user password: ",
         false);
-      this.getCredentials(nameCb, passCb, false);
-      this.authRequest.setUser(nameCb.getName());
-      this.authRequest.setCredential(new Credential(passCb.getPassword()));
+      getCredentials(nameCb, passCb, false);
+      authRequest.setUser(nameCb.getName());
+      authRequest.setCredential(new Credential(passCb.getPassword()));
 
       LdapException authEx = null;
       LdapEntry entry = null;
       try {
-        entry = this.auth.authenticate(this.authRequest).getResult();
+        entry = auth.authenticate(authRequest).getResult();
         if (entry != null) {
-          this.roles.addAll(
-            this.attributesToRoles(entry.getLdapAttributes()));
-          if (this.defaultRole != null && !this.defaultRole.isEmpty()) {
-            this.roles.addAll(this.defaultRole);
+          roles.addAll(
+            attributesToRoles(entry.getLdapAttributes()));
+          if (defaultRole != null && !defaultRole.isEmpty()) {
+            roles.addAll(defaultRole);
           }
         }
-        this.loginSuccess = true;
+        loginSuccess = true;
       } catch (AuthenticationException e) {
-        if (this.tryFirstPass) {
-          this.getCredentials(nameCb, passCb, true);
+        if (tryFirstPass) {
+          getCredentials(nameCb, passCb, true);
           try {
-            entry = this.auth.authenticate(this.authRequest).getResult();
+            entry = auth.authenticate(authRequest).getResult();
             if (entry != null) {
-              this.roles.addAll(
-                this.attributesToRoles(entry.getLdapAttributes()));
+              roles.addAll(
+                attributesToRoles(entry.getLdapAttributes()));
             }
-            if (this.defaultRole != null && !this.defaultRole.isEmpty()) {
-              this.roles.addAll(this.defaultRole);
+            if (defaultRole != null && !defaultRole.isEmpty()) {
+              roles.addAll(defaultRole);
             }
-            this.loginSuccess = true;
+            loginSuccess = true;
           } catch (AuthenticationException e2) {
             authEx = e;
-            this.loginSuccess = false;
+            loginSuccess = false;
           }
         } else {
           authEx = e;
-          this.loginSuccess = false;
+          loginSuccess = false;
         }
       }
-      if (!this.loginSuccess) {
-        this.logger.debug("Authentication failed", authEx);
+      if (!loginSuccess) {
+        logger.debug("Authentication failed", authEx);
         throw new LoginException(
           authEx != null ? authEx.getMessage() : "Authentication failed");
       } else {
-        if (this.setLdapPrincipal) {
+        if (setLdapPrincipal) {
           final LdapPrincipal lp = new LdapPrincipal(nameCb.getName());
           if (entry != null) {
             lp.getLdapAttributes().addAttributes(
               entry.getLdapAttributes().getAttributes());
           }
-          this.principals.add(lp);
+          principals.add(lp);
         }
 
-        final String loginDn = this.auth.resolveDn(nameCb.getName());
-        if (loginDn != null && this.setLdapDnPrincipal) {
+        final String loginDn = auth.resolveDn(nameCb.getName());
+        if (loginDn != null && setLdapDnPrincipal) {
           final LdapDnPrincipal lp = new LdapDnPrincipal(loginDn);
           if (entry != null) {
             lp.getLdapAttributes().addAttributes(
               entry.getLdapAttributes().getAttributes());
           }
-          this.principals.add(lp);
+          principals.add(lp);
         }
-        if (this.setLdapCredential) {
-          this.credentials.add(new LdapCredential(passCb.getPassword()));
+        if (setLdapCredential) {
+          credentials.add(new LdapCredential(passCb.getPassword()));
         }
-        this.storeCredentials(nameCb, passCb, loginDn);
+        storeCredentials(nameCb, passCb, loginDn);
       }
     } catch (LdapException e) {
-      this.logger.debug("Error occured attempting authentication", e);
-      this.loginSuccess = false;
+      logger.debug("Error occured attempting authentication", e);
+      loginSuccess = false;
       throw new LoginException(
         e != null ? e.getMessage() : "Authentication Error");
     }

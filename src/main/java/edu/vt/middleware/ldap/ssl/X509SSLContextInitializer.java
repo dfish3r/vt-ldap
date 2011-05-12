@@ -50,7 +50,7 @@ public class X509SSLContextInitializer extends AbstractSSLContextInitializer
    */
   public X509Certificate[] getTrustCertificates()
   {
-    return this.trustCerts;
+    return trustCerts;
   }
 
 
@@ -61,7 +61,7 @@ public class X509SSLContextInitializer extends AbstractSSLContextInitializer
    */
   public void setTrustCertificates(final X509Certificate[] certs)
   {
-    this.trustCerts = certs;
+    trustCerts = certs;
   }
 
 
@@ -72,7 +72,7 @@ public class X509SSLContextInitializer extends AbstractSSLContextInitializer
    */
   public X509Certificate getAuthenticationCertificate()
   {
-    return this.authenticationCert;
+    return authenticationCert;
   }
 
 
@@ -83,7 +83,7 @@ public class X509SSLContextInitializer extends AbstractSSLContextInitializer
    */
   public void setAuthenticationCertificate(final X509Certificate cert)
   {
-    this.authenticationCert = cert;
+    authenticationCert = cert;
   }
 
 
@@ -94,7 +94,7 @@ public class X509SSLContextInitializer extends AbstractSSLContextInitializer
    */
   public PrivateKey getAuthenticationKey()
   {
-    return this.authenticationKey;
+    return authenticationKey;
   }
 
 
@@ -105,24 +105,25 @@ public class X509SSLContextInitializer extends AbstractSSLContextInitializer
    */
   public void setAuthenticationKey(final PrivateKey key)
   {
-    this.authenticationKey = key;
+    authenticationKey = key;
   }
 
 
   /** {@inheritDoc} */
+  @Override
   public TrustManager[] getTrustManagers()
     throws GeneralSecurityException
   {
     TrustManager[] tm = null;
-    if (this.trustCerts != null && this.trustCerts.length > 0) {
+    if (trustCerts != null && trustCerts.length > 0) {
       final KeyStore ks = KeyStore.getInstance(KeyStore.getDefaultType());
       try {
         ks.load(null, null);
       } catch (IOException e) {
         throw new GeneralSecurityException(e);
       }
-      for (int i = 0; i < this.trustCerts.length; i++) {
-        ks.setCertificateEntry("ldap_trust_" + i, this.trustCerts[i]);
+      for (int i = 0; i < trustCerts.length; i++) {
+        ks.setCertificateEntry("ldap_trust_" + i, trustCerts[i]);
       }
 
       final TrustManagerFactory tmf = TrustManagerFactory.getInstance(
@@ -135,11 +136,12 @@ public class X509SSLContextInitializer extends AbstractSSLContextInitializer
 
 
   /** {@inheritDoc} */
+  @Override
   public KeyManager[] getKeyManagers()
     throws GeneralSecurityException
   {
     KeyManager[] km = null;
-    if (this.authenticationCert != null && this.authenticationKey != null) {
+    if (authenticationCert != null && authenticationKey != null) {
       final KeyStore ks = KeyStore.getInstance(KeyStore.getDefaultType());
       try {
         ks.load(null, null);
@@ -148,9 +150,9 @@ public class X509SSLContextInitializer extends AbstractSSLContextInitializer
       }
       ks.setKeyEntry(
         "ldap_client_auth",
-        this.authenticationKey,
+        authenticationKey,
         "changeit".toCharArray(),
-        new X509Certificate[] {this.authenticationCert});
+        new X509Certificate[] {authenticationCert});
 
       final KeyManagerFactory kmf = KeyManagerFactory.getInstance(
         KeyManagerFactory.getDefaultAlgorithm());

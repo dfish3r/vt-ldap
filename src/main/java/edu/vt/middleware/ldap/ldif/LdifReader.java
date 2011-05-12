@@ -57,11 +57,11 @@ public class LdifReader
    */
   public LdifReader(final Reader reader, final SortBehavior sb)
   {
-    this.ldifReader = reader;
+    ldifReader = reader;
     if (sb == null) {
       throw new IllegalArgumentException("Sort behavior cannot be null");
     }
-    this.sortBehavior = sb;
+    sortBehavior = sb;
   }
 
 
@@ -74,8 +74,8 @@ public class LdifReader
   public LdapResult read()
     throws IOException
   {
-    final LdapResult ldapResult = new LdapResult(this.sortBehavior);
-    final BufferedReader br = new BufferedReader(this.ldifReader);
+    final LdapResult ldapResult = new LdapResult(sortBehavior);
+    final BufferedReader br = new BufferedReader(ldifReader);
     String line = null;
     int lineCount = 0;
     LdapEntry ldapEntry = null;
@@ -85,7 +85,7 @@ public class LdifReader
       lineCount++;
       if (line.startsWith("dn:")) {
         lineValue.append(line);
-        ldapEntry = new LdapEntry(this.sortBehavior);
+        ldapEntry = new LdapEntry(sortBehavior);
         break;
       }
     }
@@ -100,7 +100,7 @@ public class LdifReader
       if (!line.startsWith("#")) {
         if (line.startsWith("dn:")) {
           ldapResult.addEntry(ldapEntry);
-          ldapEntry = new LdapEntry(this.sortBehavior);
+          ldapEntry = new LdapEntry(sortBehavior);
         }
         if (line.startsWith(" ")) {
           lineValue.append(line.substring(1));
@@ -128,7 +128,7 @@ public class LdifReader
               LdapAttribute ldapAttr = ldapEntry.getLdapAttributes()
                   .getAttribute(attrName);
               if (ldapAttr == null) {
-                ldapAttr = new LdapAttribute(this.sortBehavior);
+                ldapAttr = new LdapAttribute(sortBehavior);
                 ldapAttr.setName(attrName);
                 ldapEntry.getLdapAttributes().addAttribute(ldapAttr);
               }

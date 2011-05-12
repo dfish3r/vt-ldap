@@ -32,8 +32,8 @@ public class SearchOperation extends AbstractSearchOperation<SearchRequest>
    */
   public SearchOperation(final LdapConnection lc)
   {
-    this.ldapConnection = lc;
-    this.initialize(lc.getLdapConnectionConfig());
+    ldapConnection = lc;
+    initialize(lc.getLdapConnectionConfig());
   }
 
 
@@ -45,19 +45,20 @@ public class SearchOperation extends AbstractSearchOperation<SearchRequest>
    */
   public SearchOperation(final LdapConnection lc, final Cache<SearchRequest> c)
   {
-    this.ldapConnection = lc;
-    this.cache = c;
-    this.initialize(lc.getLdapConnectionConfig());
+    ldapConnection = lc;
+    cache = c;
+    initialize(lc.getLdapConnectionConfig());
   }
 
 
   /** {@inheritDoc} */
+  @Override
   protected LdapResult executeSearch(final SearchRequest request)
     throws LdapException
   {
-    final LdapResult lr = this.ldapConnection.getProviderConnection().search(
+    final LdapResult lr = ldapConnection.getProviderConnection().search(
       request);
-    this.executeLdapResultHandlers(request, lr);
+    executeLdapResultHandlers(request, lr);
     return lr;
   }
 }

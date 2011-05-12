@@ -57,17 +57,18 @@ public class SearchOperationCli extends AbstractCli
 
 
   /** {@inheritDoc} */
+  @Override
   protected void initOptions()
   {
-    this.options.addOption(
+    options.addOption(
       new Option(OPT_DSMLV1, false, "output results in DSML v1"));
-    final Map<String, String> desc = this.getArgDesc(
+    final Map<String, String> desc = getArgDesc(
       LdapConnectionConfig.class, SearchRequest.class);
     for (String s : LdapConnectionConfigPropertySource.getProperties()) {
-      this.options.addOption(new Option(s, true, desc.get(s)));
+      options.addOption(new Option(s, true, desc.get(s)));
     }
     for (String s : SearchRequestPropertySource.getProperties()) {
-      this.options.addOption(new Option(s, true, desc.get(s)));
+      options.addOption(new Option(s, true, desc.get(s)));
     }
     super.initOptions();
   }
@@ -86,24 +87,25 @@ public class SearchOperationCli extends AbstractCli
     throws Exception
   {
     final SearchRequestPropertySource reader = new SearchRequestPropertySource(
-      this.getPropertiesFromOptions(PropertyDomain.LDAP.value(), line));
+      getPropertiesFromOptions(PropertyDomain.LDAP.value(), line));
     return reader.get();
   }
 
 
   /** {@inheritDoc} */
+  @Override
   protected void dispatch(final CommandLine line)
     throws Exception
   {
     if (line.hasOption(OPT_DSMLV1)) {
-      this.outputDsmlv1 = true;
+      outputDsmlv1 = true;
     }
     if (line.hasOption(OPT_HELP)) {
-      this.printHelp();
+      printHelp();
     } else {
-      this.search(
-        this.initLdapConnectionConfig(line),
-        this.initSearchRequest(line));
+      search(
+        initLdapConnectionConfig(line),
+        initSearchRequest(line));
     }
   }
 
@@ -124,7 +126,7 @@ public class SearchOperationCli extends AbstractCli
 
     final SearchOperation op = new SearchOperation(conn);
     final LdapResult result = op.execute(sr).getResult();
-    if (this.outputDsmlv1) {
+    if (outputDsmlv1) {
       final Dsmlv1Writer writer = new Dsmlv1Writer(
         new BufferedWriter(new OutputStreamWriter(System.out)));
       writer.write(result);
@@ -138,6 +140,7 @@ public class SearchOperationCli extends AbstractCli
 
 
   /** {@inheritDoc} */
+  @Override
   protected String getCommandName()
   {
     return COMMAND_NAME;

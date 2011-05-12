@@ -57,8 +57,8 @@ public class AuthenticationRequest implements LdapRequest
    */
   public AuthenticationRequest(final String id, final Credential c)
   {
-    this.setUser(id);
-    this.setCredential(c);
+    setUser(id);
+    setCredential(c);
   }
 
 
@@ -72,9 +72,9 @@ public class AuthenticationRequest implements LdapRequest
   public AuthenticationRequest(
     final String id, final Credential c, final String[] attrs)
   {
-    this.setUser(id);
-    this.setCredential(c);
-    this.setReturnAttributes(attrs);
+    setUser(id);
+    setCredential(c);
+    setReturnAttributes(attrs);
   }
 
 
@@ -90,9 +90,9 @@ public class AuthenticationRequest implements LdapRequest
     final Credential c,
     final AuthorizationHandler[] ah)
   {
-    this.setUser(id);
-    this.setCredential(c);
-    this.setAuthorizationHandlers(ah);
+    setUser(id);
+    setCredential(c);
+    setAuthorizationHandlers(ah);
   }
 
 
@@ -110,10 +110,10 @@ public class AuthenticationRequest implements LdapRequest
     final String[] attrs,
     final AuthorizationHandler[] ah)
   {
-    this.setUser(id);
-    this.setCredential(c);
-    this.setReturnAttributes(attrs);
-    this.setAuthorizationHandlers(ah);
+    setUser(id);
+    setCredential(c);
+    setReturnAttributes(attrs);
+    setAuthorizationHandlers(ah);
   }
 
 
@@ -124,7 +124,7 @@ public class AuthenticationRequest implements LdapRequest
    */
   public String getUser()
   {
-    return this.user;
+    return user;
   }
 
 
@@ -134,7 +134,7 @@ public class AuthenticationRequest implements LdapRequest
    */
   public void setUser(final String id)
   {
-    this.user = id;
+    user = id;
   }
 
 
@@ -145,7 +145,7 @@ public class AuthenticationRequest implements LdapRequest
    */
   public Credential getCredential()
   {
-    return this.credential;
+    return credential;
   }
 
 
@@ -156,7 +156,7 @@ public class AuthenticationRequest implements LdapRequest
    */
   public void setCredential(final Credential c)
   {
-    this.credential = c;
+    credential = c;
   }
 
 
@@ -167,7 +167,7 @@ public class AuthenticationRequest implements LdapRequest
    */
   public String[] getReturnAttributes()
   {
-    return this.retAttrs;
+    return retAttrs;
   }
 
 
@@ -178,7 +178,7 @@ public class AuthenticationRequest implements LdapRequest
    */
   public void setReturnAttributes(final String[] attrs)
   {
-    this.retAttrs = attrs;
+    retAttrs = attrs;
   }
 
 
@@ -189,7 +189,7 @@ public class AuthenticationRequest implements LdapRequest
    */
   public String getAuthorizationFilter()
   {
-    return this.authzFilter;
+    return authzFilter;
   }
 
 
@@ -201,7 +201,7 @@ public class AuthenticationRequest implements LdapRequest
    */
   public void setAuthorizationFilter(final String filter)
   {
-    this.authzFilter = filter;
+    authzFilter = filter;
   }
 
 
@@ -212,7 +212,7 @@ public class AuthenticationRequest implements LdapRequest
    */
   public Object[] getAuthorizationFilterArgs()
   {
-    return this.authzFilterArgs;
+    return authzFilterArgs;
   }
 
 
@@ -223,7 +223,7 @@ public class AuthenticationRequest implements LdapRequest
    */
   public void setAuthorizationFilterArgs(final Object[] filterArgs)
   {
-    this.authzFilterArgs = filterArgs;
+    authzFilterArgs = filterArgs;
   }
 
 
@@ -234,7 +234,7 @@ public class AuthenticationRequest implements LdapRequest
    */
   public AuthorizationHandler[] getAuthorizationHandlers()
   {
-    return this.authzHandlers;
+    return authzHandlers;
   }
 
 
@@ -245,7 +245,7 @@ public class AuthenticationRequest implements LdapRequest
    */
   public void setAuthorizationHandlers(final AuthorizationHandler[] ah)
   {
-    this.authzHandlers = ah;
+    authzHandlers = ah;
   }
 
 
@@ -261,14 +261,14 @@ public class AuthenticationRequest implements LdapRequest
       String.format(
         "%s@%d: user=%s, credential=%s, retAttrs=%s, authzFilter=%s, " +
         "authzFilterArgs=%s, authzHandlers=%s",
-        this.getClass().getName(),
-        this.hashCode(),
-        this.user,
-        this.credential,
-        this.retAttrs != null ? Arrays.asList(this.retAttrs) : null,
-        this.authzFilter,
-        this.authzFilterArgs != null ?
-          Arrays.asList(this.authzFilterArgs) : null,
-        this.authzHandlers != null ? Arrays.asList(this.authzHandlers) : null);
+        getClass().getName(),
+        hashCode(),
+        user,
+        credential,
+        retAttrs != null ? Arrays.asList(retAttrs) : null,
+        authzFilter,
+        authzFilterArgs != null ?
+          Arrays.asList(authzFilterArgs) : null,
+        authzHandlers != null ? Arrays.asList(authzHandlers) : null);
   }
 }

@@ -48,7 +48,7 @@ public class BeanUtil
   /** Default constructor. */
   public BeanUtil()
   {
-    this.sortBehavior = SortBehavior.getDefaultSortBehavior();
+    sortBehavior = SortBehavior.getDefaultSortBehavior();
   }
 
 
@@ -59,7 +59,7 @@ public class BeanUtil
    */
   public BeanUtil(final SortBehavior sb)
   {
-    this.sortBehavior = sb;
+    sortBehavior = sb;
   }
 
 
@@ -91,7 +91,7 @@ public class BeanUtil
   public LdapAttribute toLdapAttribute(final Attribute a)
     throws NamingException
   {
-    final LdapAttribute la = new LdapAttribute(this.sortBehavior);
+    final LdapAttribute la = new LdapAttribute(sortBehavior);
     la.setName(a.getID());
 
     final NamingEnumeration<?> ne = a.getAll();
@@ -113,7 +113,7 @@ public class BeanUtil
   {
     final Attributes attributes = new BasicAttributes(DEFAULT_IGNORE_CASE);
     for (LdapAttribute a : la.getAttributes()) {
-      attributes.put(this.fromLdapAttribute(a));
+      attributes.put(fromLdapAttribute(a));
     }
     return attributes;
   }
@@ -130,10 +130,10 @@ public class BeanUtil
   public LdapAttributes toLdapAttributes(final Attributes a)
     throws NamingException
   {
-    final LdapAttributes la = new LdapAttributes(this.sortBehavior);
+    final LdapAttributes la = new LdapAttributes(sortBehavior);
     final NamingEnumeration<? extends Attribute> ne = a.getAll();
     while (ne.hasMore()) {
-      la.addAttribute(this.toLdapAttribute(ne.next()));
+      la.addAttribute(toLdapAttribute(ne.next()));
     }
     return la;
   }
@@ -148,7 +148,7 @@ public class BeanUtil
   public SearchResult fromLdapEntry(final LdapEntry le)
   {
     return new SearchResult(
-      le.getDn(), null, this.fromLdapAttributes(le.getLdapAttributes()));
+      le.getDn(), null, fromLdapAttributes(le.getLdapAttributes()));
   }
 
 
@@ -163,9 +163,9 @@ public class BeanUtil
   public LdapEntry toLdapEntry(final SearchResult sr)
     throws NamingException
   {
-    final LdapEntry le = new LdapEntry(this.sortBehavior);
+    final LdapEntry le = new LdapEntry(sortBehavior);
     le.setDn(sr.getName());
-    le.setLdapAttributes(this.toLdapAttributes(sr.getAttributes()));
+    le.setLdapAttributes(toLdapAttributes(sr.getAttributes()));
     return le;
   }
 
@@ -183,7 +183,7 @@ public class BeanUtil
     for (int i = 0; i < am.length; i++) {
       mods[i] = new ModificationItem(
         getAttributeModification(am[i].getAttributeModificationType()),
-        this.fromLdapAttribute(am[i].getAttribute()));
+        fromLdapAttribute(am[i].getAttribute()));
     }
     return mods;
   }

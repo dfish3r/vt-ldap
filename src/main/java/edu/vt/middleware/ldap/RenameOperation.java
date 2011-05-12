@@ -30,21 +30,23 @@ public class RenameOperation extends AbstractLdapOperation<RenameRequest, Void>
    */
   public RenameOperation(final LdapConnection lc)
   {
-    this.ldapConnection = lc;
-    this.initialize(lc.getLdapConnectionConfig());
+    ldapConnection = lc;
+    initialize(lc.getLdapConnectionConfig());
   }
 
 
   /** {@inheritDoc} */
+  @Override
   protected LdapResponse<Void> invoke(final RenameRequest request)
     throws LdapException
   {
-    this.ldapConnection.getProviderConnection().rename(request);
+    ldapConnection.getProviderConnection().rename(request);
     return new LdapResponse<Void>();
   }
 
 
   /** {@inheritDoc} */
+  @Override
   protected void initializeRequest(
     final RenameRequest request, final LdapConnectionConfig config) {}
 }

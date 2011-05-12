@@ -45,7 +45,7 @@ public abstract class AbstractSearchOperation<Q extends SearchRequest>
    */
   public Cache<Q> getCache()
   {
-    return this.cache;
+    return cache;
   }
 
 
@@ -56,16 +56,17 @@ public abstract class AbstractSearchOperation<Q extends SearchRequest>
    */
   public void setCache(final Cache<Q> c)
   {
-    this.cache = c;
+    cache = c;
   }
 
 
   /** {@inheritDoc} */
+  @Override
   protected void initializeRequest(
     final Q request, final LdapConnectionConfig lc)
   {
     request.setLdapResultHandlers(
-      this.initializeLdapResultHandlers(request, this.ldapConnection));
+      initializeLdapResultHandlers(request, ldapConnection));
   }
 
 
@@ -114,18 +115,19 @@ public abstract class AbstractSearchOperation<Q extends SearchRequest>
 
 
   /** {@inheritDoc} */
+  @Override
   protected LdapResponse<LdapResult> invoke(final Q request)
     throws LdapException
   {
     LdapResult lr = null;
-    if (this.cache != null) {
-      lr = this.cache.get(request);
+    if (cache != null) {
+      lr = cache.get(request);
       if (lr == null) {
-        lr = this.executeSearch(request);
-        this.cache.put(request, lr);
+        lr = executeSearch(request);
+        cache.put(request, lr);
       }
     } else {
-      lr = this.executeSearch(request);
+      lr = executeSearch(request);
     }
     return new LdapResponse<LdapResult>(lr);
   }

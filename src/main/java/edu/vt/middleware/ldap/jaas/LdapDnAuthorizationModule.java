@@ -48,6 +48,7 @@ public class LdapDnAuthorizationModule extends AbstractLoginModule
 
 
   /** {@inheritDoc} */
+  @Override
   public void initialize(
     final Subject subject,
     final CallbackHandler callbackHandler,
@@ -61,18 +62,19 @@ public class LdapDnAuthorizationModule extends AbstractLoginModule
       final String key = i.next();
       final String value = (String) options.get(key);
       if (key.equalsIgnoreCase("noResultsIsError")) {
-        this.noResultsIsError = Boolean.valueOf(value);
+        noResultsIsError = Boolean.valueOf(value);
       }
     }
 
-    this.logger.trace("noResultsIsError = {}", this.noResultsIsError);
+    logger.trace("noResultsIsError = {}", noResultsIsError);
 
-    this.auth = createAuthenticator(options);
-    this.logger.debug("Created authenticator: {}", this.auth);
+    auth = createAuthenticator(options);
+    logger.debug("Created authenticator: {}", auth);
   }
 
 
   /** {@inheritDoc} */
+  @Override
   public boolean login()
     throws LoginException
   {
@@ -81,35 +83,35 @@ public class LdapDnAuthorizationModule extends AbstractLoginModule
       final PasswordCallback passCb = new PasswordCallback(
         "Enter user password: ",
         false);
-      this.getCredentials(nameCb, passCb, false);
+      getCredentials(nameCb, passCb, false);
 
-      if (nameCb.getName() == null && this.tryFirstPass) {
-        this.getCredentials(nameCb, passCb, true);
+      if (nameCb.getName() == null && tryFirstPass) {
+        getCredentials(nameCb, passCb, true);
       }
 
       final String loginName = nameCb.getName();
-      if (loginName != null && this.setLdapPrincipal) {
-        this.principals.add(new LdapPrincipal(loginName));
-        this.loginSuccess = true;
+      if (loginName != null && setLdapPrincipal) {
+        principals.add(new LdapPrincipal(loginName));
+        loginSuccess = true;
       }
 
       final String loginDn = auth.resolveDn(nameCb.getName());
-      if (loginDn == null && this.noResultsIsError) {
-        this.loginSuccess = false;
+      if (loginDn == null && noResultsIsError) {
+        loginSuccess = false;
         throw new LoginException("Could not find DN for " + nameCb.getName());
       }
-      if (loginDn != null && this.setLdapDnPrincipal) {
-        this.principals.add(new LdapDnPrincipal(loginDn));
-        this.loginSuccess = true;
+      if (loginDn != null && setLdapDnPrincipal) {
+        principals.add(new LdapDnPrincipal(loginDn));
+        loginSuccess = true;
       }
-      if (this.defaultRole != null && !this.defaultRole.isEmpty()) {
-        this.roles.addAll(this.defaultRole);
-        this.loginSuccess = true;
+      if (defaultRole != null && !defaultRole.isEmpty()) {
+        roles.addAll(defaultRole);
+        loginSuccess = true;
       }
-      this.storeCredentials(nameCb, passCb, loginDn);
+      storeCredentials(nameCb, passCb, loginDn);
     } catch (LdapException e) {
-      this.logger.debug("Error occured attempting DN lookup", e);
-      this.loginSuccess = false;
+      logger.debug("Error occured attempting DN lookup", e);
+      loginSuccess = false;
       throw new LoginException(
         e != null ? e.getMessage() : "DN resolution error");
     }

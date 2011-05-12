@@ -39,7 +39,7 @@ public class CaseChangeAttributeHandler extends CopyLdapAttributeHandler
    */
   public CaseChange getAttributeNameCaseChange()
   {
-    return this.attributeNameCaseChange;
+    return attributeNameCaseChange;
   }
 
 
@@ -50,7 +50,7 @@ public class CaseChangeAttributeHandler extends CopyLdapAttributeHandler
    */
   public void setAttributeNameCaseChange(final CaseChange cc)
   {
-    this.attributeNameCaseChange = cc;
+    attributeNameCaseChange = cc;
   }
 
 
@@ -61,7 +61,7 @@ public class CaseChangeAttributeHandler extends CopyLdapAttributeHandler
    */
   public CaseChange getAttributeValueCaseChange()
   {
-    return this.attributeValueCaseChange;
+    return attributeValueCaseChange;
   }
 
 
@@ -72,22 +72,24 @@ public class CaseChangeAttributeHandler extends CopyLdapAttributeHandler
    */
   public void setAttributeValueCaseChange(final CaseChange cc)
   {
-    this.attributeValueCaseChange = cc;
+    attributeValueCaseChange = cc;
   }
 
 
   /** {@inheritDoc} */
+  @Override
   protected String processName(final SearchCriteria sc, final String name)
   {
-    return CaseChange.perform(this.attributeNameCaseChange, name);
+    return CaseChange.perform(attributeNameCaseChange, name);
   }
 
 
   /** {@inheritDoc} */
+  @Override
   protected Object processValue(final SearchCriteria sc, final Object value)
   {
     if (value instanceof String) {
-      return CaseChange.perform(this.attributeValueCaseChange, (String) value);
+      return CaseChange.perform(attributeValueCaseChange, (String) value);
     } else {
       return value;
     }

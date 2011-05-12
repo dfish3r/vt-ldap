@@ -31,7 +31,7 @@ public abstract class AbstractLdapFactory<T extends LdapConnection>
 {
 
   /** Logger for this class. */
-  protected final Logger logger = LoggerFactory.getLogger(this.getClass());
+  protected final Logger logger = LoggerFactory.getLogger(getClass());
 
   /** For activating ldap objects. */
   protected LdapActivator<T> activator;
@@ -50,7 +50,7 @@ public abstract class AbstractLdapFactory<T extends LdapConnection>
    */
   public void setLdapActivator(final LdapActivator<T> la)
   {
-    this.activator = la;
+    activator = la;
   }
 
 
@@ -61,7 +61,7 @@ public abstract class AbstractLdapFactory<T extends LdapConnection>
    */
   public LdapActivator<T> getLdapActivator()
   {
-    return this.activator;
+    return activator;
   }
 
 
@@ -72,7 +72,7 @@ public abstract class AbstractLdapFactory<T extends LdapConnection>
    */
   public void setLdapPassivator(final LdapPassivator<T> lp)
   {
-    this.passivator = lp;
+    passivator = lp;
   }
 
 
@@ -83,7 +83,7 @@ public abstract class AbstractLdapFactory<T extends LdapConnection>
    */
   public LdapPassivator<T> getLdapPassivator()
   {
-    return this.passivator;
+    return passivator;
   }
 
 
@@ -94,7 +94,7 @@ public abstract class AbstractLdapFactory<T extends LdapConnection>
    */
   public void setLdapValidator(final LdapValidator<T> lv)
   {
-    this.validator = lv;
+    validator = lv;
   }
 
 
@@ -105,50 +105,53 @@ public abstract class AbstractLdapFactory<T extends LdapConnection>
    */
   public LdapValidator<T> getLdapValidator()
   {
-    return this.validator;
+    return validator;
   }
 
 
   /** {@inheritDoc} */
+  @Override
   public boolean activate(final T t)
   {
     boolean success = false;
-    if (this.activator == null) {
+    if (activator == null) {
       success = true;
-      this.logger.trace("no activator configured");
+      logger.trace("no activator configured");
     } else {
-      success = this.activator.activate(t);
-      this.logger.trace("activation for {} = {}", t, success);
+      success = activator.activate(t);
+      logger.trace("activation for {} = {}", t, success);
     }
     return success;
   }
 
 
   /** {@inheritDoc} */
+  @Override
   public boolean passivate(final T t)
   {
     boolean success = false;
-    if (this.passivator == null) {
+    if (passivator == null) {
       success = true;
-      this.logger.trace("no passivator configured");
+      logger.trace("no passivator configured");
     } else {
-      success = this.passivator.passivate(t);
-      this.logger.trace("passivation for {} = {}", t, success);
+      success = passivator.passivate(t);
+      logger.trace("passivation for {} = {}", t, success);
     }
     return success;
   }
 
 
   /** {@inheritDoc} */
+  @Override
   public boolean validate(final T t)
   {
     boolean success = false;
-    if (this.validator == null) {
+    if (validator == null) {
       success = true;
-      this.logger.warn("validate called, but no validator configured");
+      logger.warn("validate called, but no validator configured");
     } else {
-      success = this.validator.validate(t);
-      this.logger.trace("validation for {} = {}", t, success);
+      success = validator.validate(t);
+      logger.trace("validation for {} = {}", t, success);
     }
     return success;
   }

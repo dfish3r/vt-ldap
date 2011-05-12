@@ -26,7 +26,7 @@ public abstract class AbstractConfig
 {
 
   /** Logger for this class. */
-  protected final Logger logger = LoggerFactory.getLogger(this.getClass());
+  protected final Logger logger = LoggerFactory.getLogger(getClass());
 
   /** Whether this config has been marked immutable. */
   private boolean immutable;
@@ -35,7 +35,7 @@ public abstract class AbstractConfig
   /** Make this property config immutable. */
   public void makeImmutable()
   {
-    this.immutable = true;
+    immutable = true;
   }
 
 
@@ -46,7 +46,7 @@ public abstract class AbstractConfig
    */
   public void checkImmutable()
   {
-    if (this.immutable) {
+    if (immutable) {
       throw new IllegalStateException("Cannot modify immutable object");
     }
   }

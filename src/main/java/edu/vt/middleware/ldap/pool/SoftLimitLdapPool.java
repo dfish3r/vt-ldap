@@ -59,46 +59,47 @@ public class SoftLimitLdapPool extends BlockingLdapPool
 
 
   /** {@inheritDoc} */
+  @Override
   public LdapConnection checkOut()
     throws LdapPoolException
   {
     LdapConnection lc = null;
-    this.logger.trace(
-      "waiting on pool lock for check out {}", this.poolLock.getQueueLength());
-    this.poolLock.lock();
+    logger.trace(
+      "waiting on pool lock for check out {}", poolLock.getQueueLength());
+    poolLock.lock();
     try {
       // if an available object exists, use it
       // if no available objects, attempt to create
-      if (this.available.size() > 0) {
+      if (available.size() > 0) {
         try {
-          this.logger.trace("retrieve available ldap object");
-          lc = this.retrieveAvailable();
+          logger.trace("retrieve available ldap object");
+          lc = retrieveAvailable();
         } catch (NoSuchElementException e) {
-          this.logger.error("could not remove ldap object from list", e);
+          logger.error("could not remove ldap object from list", e);
           throw new IllegalStateException("Pool is empty", e);
         }
       }
     } finally {
-      this.poolLock.unlock();
+      poolLock.unlock();
     }
 
     if (lc == null) {
       // no object was available, create a new one
-      lc = this.createActive();
-      this.logger.trace("created new active ldap connection: {}", lc);
+      lc = createActive();
+      logger.trace("created new active ldap connection: {}", lc);
       if (lc == null) {
         // create failed, block until an object is available
-        this.logger.debug("created failed, block until an object is available");
-        lc = this.blockAvailable();
+        logger.debug("created failed, block until an object is available");
+        lc = blockAvailable();
       } else {
-        this.logger.trace("created new active ldap connection: {}", lc);
+        logger.trace("created new active ldap connection: {}", lc);
       }
     }
 
     if (lc != null) {
-      this.activateAndValidate(lc);
+      activateAndValidate(lc);
     } else {
-      this.logger.error("Could not service check out request");
+      logger.error("Could not service check out request");
       throw new LdapPoolExhaustedException(
         "Pool is empty and object creation failed");
     }

@@ -57,7 +57,7 @@ public class JndiTlsConnection extends JndiConnection
     final LdapContext lc, final StartTlsResponse tlsResponse)
   {
     super(lc);
-    this.startTlsResponse = tlsResponse;
+    startTlsResponse = tlsResponse;
   }
 
 
@@ -69,7 +69,7 @@ public class JndiTlsConnection extends JndiConnection
    */
   public boolean getStopTlsOnClose()
   {
-    return this.stopTlsOnClose;
+    return stopTlsOnClose;
   }
 
 
@@ -81,8 +81,8 @@ public class JndiTlsConnection extends JndiConnection
    */
   public void setStopTlsOnClose(final boolean b)
   {
-    this.logger.trace("setting stopTlsOnClose: {}", b);
-    this.stopTlsOnClose = b;
+    logger.trace("setting stopTlsOnClose: {}", b);
+    stopTlsOnClose = b;
   }
 
 
@@ -93,7 +93,7 @@ public class JndiTlsConnection extends JndiConnection
    */
   public StartTlsResponse getStartTlsResponse()
   {
-    return this.startTlsResponse;
+    return startTlsResponse;
   }
 
 
@@ -104,24 +104,25 @@ public class JndiTlsConnection extends JndiConnection
    */
   public void setStartTlsResponse(final StartTlsResponse str)
   {
-    this.startTlsResponse = str;
+    startTlsResponse = str;
   }
 
 
   /** {@inheritDoc} */
+  @Override
   public void close()
     throws LdapException
   {
     try {
-      if (this.stopTlsOnClose) {
-        if (this.startTlsResponse != null) {
-          this.startTlsResponse.close();
+      if (stopTlsOnClose) {
+        if (startTlsResponse != null) {
+          startTlsResponse.close();
         }
       }
     } catch (IOException e) {
-      this.logger.error("Error stopping TLS", e);
+      logger.error("Error stopping TLS", e);
     } finally {
-      this.startTlsResponse = null;
+      startTlsResponse = null;
       super.close();
     }
   }

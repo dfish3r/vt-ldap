@@ -31,7 +31,7 @@ public class FormatDnResolver implements DnResolver, Serializable
   private static final long serialVersionUID = -6508789359608064771L;
 
   /** log for this class. */
-  protected final Logger logger = LoggerFactory.getLogger(this.getClass());
+  protected final Logger logger = LoggerFactory.getLogger(getClass());
 
   /** format of DN. */
   protected String format;
@@ -51,7 +51,7 @@ public class FormatDnResolver implements DnResolver, Serializable
    */
   public FormatDnResolver(final String s)
   {
-    this.setFormat(s);
+    setFormat(s);
   }
 
 
@@ -63,8 +63,8 @@ public class FormatDnResolver implements DnResolver, Serializable
    */
   public FormatDnResolver(final String s, final Object[] o)
   {
-    this.setFormat(s);
-    this.setFormatArgs(o);
+    setFormat(s);
+    setFormatArgs(o);
   }
 
 
@@ -75,7 +75,7 @@ public class FormatDnResolver implements DnResolver, Serializable
    */
   public String getFormat()
   {
-    return this.format;
+    return format;
   }
 
 
@@ -86,7 +86,7 @@ public class FormatDnResolver implements DnResolver, Serializable
    */
   public void setFormat(final String s)
   {
-    this.format = s;
+    format = s;
   }
 
 
@@ -97,7 +97,7 @@ public class FormatDnResolver implements DnResolver, Serializable
    */
   public Object[] getFormatArgs()
   {
-    return this.formatArgs;
+    return formatArgs;
   }
 
 
@@ -108,7 +108,7 @@ public class FormatDnResolver implements DnResolver, Serializable
    */
   public void setFormatArgs(final Object[] o)
   {
-    this.formatArgs = o;
+    formatArgs = o;
   }
 
 
@@ -126,17 +126,17 @@ public class FormatDnResolver implements DnResolver, Serializable
   {
     String dn = null;
     if (user != null && !"".equals(user)) {
-      this.logger.debug("Formatting DN with {}", this.format);
-      if (this.formatArgs != null && this.formatArgs.length > 0) {
-        final Object[] args = new Object[this.formatArgs.length + 1];
+      logger.debug("Formatting DN with {}", format);
+      if (formatArgs != null && formatArgs.length > 0) {
+        final Object[] args = new Object[formatArgs.length + 1];
         args[0] = user;
-        System.arraycopy(this.formatArgs, 0, args, 1, this.formatArgs.length);
-        dn = String.format(this.format, args);
+        System.arraycopy(formatArgs, 0, args, 1, formatArgs.length);
+        dn = String.format(format, args);
       } else {
-        dn = String.format(this.format, user);
+        dn = String.format(format, user);
       }
     } else {
-      this.logger.debug("User input was empty or null");
+      logger.debug("User input was empty or null");
     }
     return dn;
   }

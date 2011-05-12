@@ -42,7 +42,7 @@ public class AuthenticationCriteria
    */
   public AuthenticationCriteria(final String s)
   {
-    this.dn = s;
+    dn = s;
   }
 
 
@@ -53,7 +53,7 @@ public class AuthenticationCriteria
    */
   public String getDn()
   {
-    return this.dn;
+    return dn;
   }
 
 
@@ -64,7 +64,7 @@ public class AuthenticationCriteria
    */
   public void setDn(final String s)
   {
-    this.dn = s;
+    dn = s;
   }
 
 
@@ -75,7 +75,7 @@ public class AuthenticationCriteria
    */
   public Credential getCredential()
   {
-    return this.credential;
+    return credential;
   }
 
 
@@ -86,7 +86,7 @@ public class AuthenticationCriteria
    */
   public void setCredential(final Credential c)
   {
-    this.credential = c;
+    credential = c;
   }
 
 
@@ -101,9 +101,9 @@ public class AuthenticationCriteria
     return
       String.format(
         "%s@%d: dn=%s, credential=%s",
-        this.getClass().getName(),
-        this.hashCode(),
-        this.dn,
-        this.credential);
+        getClass().getName(),
+        hashCode(),
+        dn,
+        credential);
   }
 }

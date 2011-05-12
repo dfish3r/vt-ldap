@@ -55,7 +55,7 @@ public class JndiTlsConnectionFactory extends AbstractJndiConnectionFactory
     if (url == null) {
       throw new IllegalArgumentException("LDAP URL cannot be null");
     }
-    this.ldapUrl = url;
+    ldapUrl = url;
   }
 
 
@@ -66,7 +66,7 @@ public class JndiTlsConnectionFactory extends AbstractJndiConnectionFactory
    */
   public SSLSocketFactory getSslSocketFactory()
   {
-    return this.sslSocketFactory;
+    return sslSocketFactory;
   }
 
 
@@ -77,7 +77,7 @@ public class JndiTlsConnectionFactory extends AbstractJndiConnectionFactory
    */
   public void setSslSocketFactory(final SSLSocketFactory sf)
   {
-    this.sslSocketFactory = sf;
+    sslSocketFactory = sf;
   }
 
 
@@ -88,7 +88,7 @@ public class JndiTlsConnectionFactory extends AbstractJndiConnectionFactory
    */
   public HostnameVerifier getHostnameVerifier()
   {
-    return this.hostnameVerifier;
+    return hostnameVerifier;
   }
 
 
@@ -99,30 +99,31 @@ public class JndiTlsConnectionFactory extends AbstractJndiConnectionFactory
    */
   public void setHostnameVerifier(final HostnameVerifier verifier)
   {
-    this.hostnameVerifier = verifier;
+    hostnameVerifier = verifier;
   }
 
 
   /** {@inheritDoc} */
+  @Override
   protected JndiTlsConnection createInternal(
     final String url, final String dn, final Credential credential)
     throws LdapException
   {
-    this.logger.debug(
+    logger.debug(
       "Bind with the following parameters: url = {}, " +
       "authenticationType = {}, dn = {}, credential = {}, env = {}",
       new Object[] {
         url,
-        this.authenticationType,
+        authenticationType,
         dn,
-        this.logCredentials ? credential : "<suppressed>",
-        this.environment, });
+        logCredentials ? credential : "<suppressed>",
+        environment, });
 
     final Hashtable<String, Object> env = new Hashtable<String, Object>(
-      this.environment);
+      environment);
     env.put(PROVIDER_URL, url);
-    if (this.tracePackets != null) {
-      env.put(TRACE, this.tracePackets);
+    if (tracePackets != null) {
+      env.put(TRACE, tracePackets);
     }
 
     JndiTlsConnection conn = null;
@@ -130,12 +131,12 @@ public class JndiTlsConnectionFactory extends AbstractJndiConnectionFactory
     boolean closeConn = false;
     try {
       conn = new JndiTlsConnection(new InitialLdapContext(env, null));
-      conn.setStartTlsResponse(this.startTls(conn.getLdapContext()));
+      conn.setStartTlsResponse(startTls(conn.getLdapContext()));
       // note that when using simple authentication (the default),
       // if the credential is null the provider will automatically revert the
       // authentication to none
       conn.getLdapContext().addToEnvironment(
-        AUTHENTICATION, getAuthenticationType(this.authenticationType));
+        AUTHENTICATION, getAuthenticationType(authenticationType));
       if (dn != null) {
         conn.getLdapContext().addToEnvironment(PRINCIPAL, dn);
         if (credential != null) {
@@ -144,10 +145,10 @@ public class JndiTlsConnectionFactory extends AbstractJndiConnectionFactory
         }
       }
       conn.getLdapContext().reconnect(null);
-      conn.setRemoveDnUrls(this.removeDnUrls);
+      conn.setRemoveDnUrls(removeDnUrls);
       conn.setOperationRetryExceptions(
         NamingExceptionUtil.getNamingExceptions(
-          this.operationRetryResultCodes));
+          operationRetryResultCodes));
     } catch (javax.naming.AuthenticationException e) {
       closeConn = true;
       throw new AuthenticationException(e, ResultCode.INVALID_CREDENTIALS);
@@ -168,7 +169,7 @@ public class JndiTlsConnectionFactory extends AbstractJndiConnectionFactory
             conn.close();
           }
         } catch (LdapException e) {
-          this.logger.debug("Problem tearing down connection", e);
+          logger.debug("Problem tearing down connection", e);
         }
       }
     }
@@ -193,13 +194,13 @@ public class JndiTlsConnectionFactory extends AbstractJndiConnectionFactory
   {
     final StartTlsResponse tls = (StartTlsResponse) ctx.extendedOperation(
       new StartTlsRequest());
-    if (this.hostnameVerifier != null) {
-      this.logger.trace("TLS hostnameVerifier = {}", this.hostnameVerifier);
-      tls.setHostnameVerifier(this.hostnameVerifier);
+    if (hostnameVerifier != null) {
+      logger.trace("TLS hostnameVerifier = {}", hostnameVerifier);
+      tls.setHostnameVerifier(hostnameVerifier);
     }
-    if (this.sslSocketFactory != null) {
-      this.logger.trace("TLS sslSocketFactory = {}", this.sslSocketFactory);
-      tls.negotiate(this.sslSocketFactory);
+    if (sslSocketFactory != null) {
+      logger.trace("TLS sslSocketFactory = {}", sslSocketFactory);
+      tls.negotiate(sslSocketFactory);
     } else {
       tls.negotiate();
     }

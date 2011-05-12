@@ -39,15 +39,16 @@ public class BindAuthenticationHandler extends AbstractAuthenticationHandler
    */
   public BindAuthenticationHandler(final LdapConnectionConfig lcc)
   {
-    this.setLdapConnectionConfig(lcc);
+    setLdapConnectionConfig(lcc);
   }
 
 
   /** {@inheritDoc} */
+  @Override
   public LdapConnection authenticate(final AuthenticationCriteria ac)
     throws LdapException
   {
-    final LdapConnection conn = new LdapConnection(this.config);
+    final LdapConnection conn = new LdapConnection(config);
     conn.open(ac.getDn(), ac.getCredential());
     return conn;
   }
@@ -64,8 +65,8 @@ public class BindAuthenticationHandler extends AbstractAuthenticationHandler
     return
       String.format(
         "%s@%d: config=%s",
-        this.getClass().getName(),
-        this.hashCode(),
-        this.config);
+        getClass().getName(),
+        hashCode(),
+        config);
   }
 }

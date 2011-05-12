@@ -43,7 +43,7 @@ public class LRUCacheTest
   public void initialize()
     throws Exception
   {
-    this.fillCache();
+    fillCache();
   }
 
 
@@ -54,10 +54,10 @@ public class LRUCacheTest
   public void clear()
     throws Exception
   {
-    this.fillCache();
-    AssertJUnit.assertEquals(5, this.cache.size());
-    this.cache.clear();
-    AssertJUnit.assertEquals(0, this.cache.size());
+    fillCache();
+    AssertJUnit.assertEquals(5, cache.size());
+    cache.clear();
+    AssertJUnit.assertEquals(0, cache.size());
   }
 
 
@@ -73,14 +73,14 @@ public class LRUCacheTest
   public void get()
     throws Exception
   {
-    LdapResult lr = this.cache.get(
+    LdapResult lr = cache.get(
       new SearchRequest(new SearchFilter("uid=3")));
     AssertJUnit.assertEquals(
       new LdapResult(new LdapEntry("uid=3,ou=test,dc=vt,dc=edu")), lr);
-    lr = this.cache.get(new SearchRequest(new SearchFilter("uid=4")));
+    lr = cache.get(new SearchRequest(new SearchFilter("uid=4")));
     AssertJUnit.assertEquals(
       new LdapResult(new LdapEntry("uid=4,ou=test,dc=vt,dc=edu")), lr);
-    lr = this.cache.get(new SearchRequest(new SearchFilter("uid=5")));
+    lr = cache.get(new SearchRequest(new SearchFilter("uid=5")));
     AssertJUnit.assertEquals(
       new LdapResult(new LdapEntry("uid=5,ou=test,dc=vt,dc=edu")), lr);
   }
@@ -93,25 +93,25 @@ public class LRUCacheTest
   public void put()
     throws Exception
   {
-    AssertJUnit.assertEquals(5, this.cache.size());
-    this.cache.put(
+    AssertJUnit.assertEquals(5, cache.size());
+    cache.put(
       new SearchRequest(new SearchFilter("uid=%s", new Object[]{"101"})),
       new LdapResult(new LdapEntry("uid=101,ou=test,dc=vt,dc=edu")));
-    this.cache.put(
+    cache.put(
       new SearchRequest(new SearchFilter("uid=102")),
       new LdapResult(new LdapEntry("uid=102,ou=test,dc=vt,dc=edu")));
-    AssertJUnit.assertEquals(5, this.cache.size());
+    AssertJUnit.assertEquals(5, cache.size());
 
-    LdapResult lr = this.cache.get(
+    LdapResult lr = cache.get(
       new SearchRequest(new SearchFilter("uid=%s", new Object[]{"101"})));
     AssertJUnit.assertEquals(
       new LdapResult(new LdapEntry("uid=101,ou=test,dc=vt,dc=edu")), lr);
-    lr = this.cache.get(
+    lr = cache.get(
       new SearchRequest(new SearchFilter("uid=102")));
     AssertJUnit.assertEquals(
       new LdapResult(new LdapEntry("uid=102,ou=test,dc=vt,dc=edu")), lr);
     AssertJUnit.assertNull(
-      this.cache.get(new SearchRequest(new SearchFilter("uid=1"))));
+      cache.get(new SearchRequest(new SearchFilter("uid=1"))));
   }
 
 
@@ -122,9 +122,9 @@ public class LRUCacheTest
   public void interval()
     throws Exception
   {
-    AssertJUnit.assertEquals(5, this.cache.size());
+    AssertJUnit.assertEquals(5, cache.size());
     Thread.sleep(20000);
-    AssertJUnit.assertEquals(0, this.cache.size());
+    AssertJUnit.assertEquals(0, cache.size());
   }
 
 
@@ -133,24 +133,24 @@ public class LRUCacheTest
    */
   private void fillCache()
   {
-    this.cache.put(
+    cache.put(
       new SearchRequest(new SearchFilter("uid=1")),
       new LdapResult(new LdapEntry("uid=1,ou=test,dc=vt,dc=edu")));
-    this.cache.put(
+    cache.put(
       new SearchRequest(new SearchFilter("uid=2")),
       new LdapResult(new LdapEntry("uid=2,ou=test,dc=vt,dc=edu")));
-    this.cache.put(
+    cache.put(
       new SearchRequest(new SearchFilter("uid=3")),
       new LdapResult(new LdapEntry("uid=3,ou=test,dc=vt,dc=edu")));
-    this.cache.put(
+    cache.put(
       new SearchRequest(new SearchFilter("uid=4")),
       new LdapResult(new LdapEntry("uid=4,ou=test,dc=vt,dc=edu")));
-    this.cache.put(
+    cache.put(
       new SearchRequest(new SearchFilter("uid=5")),
       new LdapResult(new LdapEntry("uid=5,ou=test,dc=vt,dc=edu")));
     // ensure uid=1 and uid=2 get evicted first
-    this.cache.get(new SearchRequest(new SearchFilter("uid=3")));
-    this.cache.get(new SearchRequest(new SearchFilter("uid=4")));
-    this.cache.get(new SearchRequest(new SearchFilter("uid=5")));
+    cache.get(new SearchRequest(new SearchFilter("uid=3")));
+    cache.get(new SearchRequest(new SearchFilter("uid=4")));
+    cache.get(new SearchRequest(new SearchFilter("uid=5")));
   }
 }

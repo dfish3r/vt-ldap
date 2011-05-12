@@ -62,7 +62,7 @@ public class AttributeServletTest extends AbstractTest
     testLdapEntry = TestUtil.convertLdifToResult(ldif).getEntry();
     super.createLdapEntry(testLdapEntry);
 
-    this.servletRunner = new ServletRunner(new File(webXml));
+    servletRunner = new ServletRunner(new File(webXml));
   }
 
 
@@ -96,7 +96,7 @@ public class AttributeServletTest extends AbstractTest
     final String attributeValue)
     throws Exception
   {
-    final ServletUnitClient sc = this.servletRunner.newClient();
+    final ServletUnitClient sc = servletRunner.newClient();
     final WebRequest request = new PostMethodWebRequest(
       "http://servlets.ldap.middleware.vt.edu/AttributeSearch");
     request.setParameter("query", query);

@@ -86,7 +86,7 @@ public class LdapPoolConfig extends AbstractConfig
    */
   public int getMinPoolSize()
   {
-    return this.minPoolSize;
+    return minPoolSize;
   }
 
 
@@ -99,7 +99,7 @@ public class LdapPoolConfig extends AbstractConfig
    */
   public int getMaxPoolSize()
   {
-    return this.maxPoolSize;
+    return maxPoolSize;
   }
 
 
@@ -112,7 +112,7 @@ public class LdapPoolConfig extends AbstractConfig
    */
   public boolean isValidateOnCheckIn()
   {
-    return this.validateOnCheckIn;
+    return validateOnCheckIn;
   }
 
 
@@ -125,7 +125,7 @@ public class LdapPoolConfig extends AbstractConfig
    */
   public boolean isValidateOnCheckOut()
   {
-    return this.validateOnCheckOut;
+    return validateOnCheckOut;
   }
 
 
@@ -138,7 +138,7 @@ public class LdapPoolConfig extends AbstractConfig
    */
   public boolean isValidatePeriodically()
   {
-    return this.validatePeriodically;
+    return validatePeriodically;
   }
 
 
@@ -151,7 +151,7 @@ public class LdapPoolConfig extends AbstractConfig
    */
   public long getPruneTimerPeriod()
   {
-    return this.pruneTimerPeriod;
+    return pruneTimerPeriod;
   }
 
 
@@ -164,7 +164,7 @@ public class LdapPoolConfig extends AbstractConfig
    */
   public long getValidateTimerPeriod()
   {
-    return this.validateTimerPeriod;
+    return validateTimerPeriod;
   }
 
 
@@ -179,7 +179,7 @@ public class LdapPoolConfig extends AbstractConfig
    */
   public long getExpirationTime()
   {
-    return this.expirationTime;
+    return expirationTime;
   }
 
 
@@ -192,8 +192,8 @@ public class LdapPoolConfig extends AbstractConfig
   {
     checkImmutable();
     if (size >= 0) {
-      this.logger.trace("setting minPoolSize: {}", size);
-      this.minPoolSize = size;
+      logger.trace("setting minPoolSize: {}", size);
+      minPoolSize = size;
     }
   }
 
@@ -207,8 +207,8 @@ public class LdapPoolConfig extends AbstractConfig
   {
     checkImmutable();
     if (size >= 0) {
-      this.logger.trace("setting maxPoolSize: {}", size);
-      this.maxPoolSize = size;
+      logger.trace("setting maxPoolSize: {}", size);
+      maxPoolSize = size;
     }
   }
 
@@ -222,8 +222,8 @@ public class LdapPoolConfig extends AbstractConfig
   public void setValidateOnCheckIn(final boolean b)
   {
     checkImmutable();
-    this.logger.trace("setting validateOnCheckIn: {}", b);
-    this.validateOnCheckIn = b;
+    logger.trace("setting validateOnCheckIn: {}", b);
+    validateOnCheckIn = b;
   }
 
 
@@ -236,8 +236,8 @@ public class LdapPoolConfig extends AbstractConfig
   public void setValidateOnCheckOut(final boolean b)
   {
     checkImmutable();
-    this.logger.trace("setting validateOnCheckOut: {}", b);
-    this.validateOnCheckOut = b;
+    logger.trace("setting validateOnCheckOut: {}", b);
+    validateOnCheckOut = b;
   }
 
 
@@ -250,8 +250,8 @@ public class LdapPoolConfig extends AbstractConfig
   public void setValidatePeriodically(final boolean b)
   {
     checkImmutable();
-    this.logger.trace("setting validatePeriodically: {}", b);
-    this.validatePeriodically = b;
+    logger.trace("setting validatePeriodically: {}", b);
+    validatePeriodically = b;
   }
 
 
@@ -264,8 +264,8 @@ public class LdapPoolConfig extends AbstractConfig
   {
     checkImmutable();
     if (time >= 0) {
-      this.logger.trace("setting pruneTimerPeriod: {}", time);
-      this.pruneTimerPeriod = time;
+      logger.trace("setting pruneTimerPeriod: {}", time);
+      pruneTimerPeriod = time;
     }
   }
 
@@ -279,8 +279,8 @@ public class LdapPoolConfig extends AbstractConfig
   {
     checkImmutable();
     if (time >= 0) {
-      this.logger.trace("setting validateTimerPeriod: {}", time);
-      this.validateTimerPeriod = time;
+      logger.trace("setting validateTimerPeriod: {}", time);
+      validateTimerPeriod = time;
     }
   }
 
@@ -295,8 +295,8 @@ public class LdapPoolConfig extends AbstractConfig
   {
     checkImmutable();
     if (time >= 0) {
-      this.logger.trace("setting expirationTime: {}", time);
-      this.expirationTime = time;
+      logger.trace("setting expirationTime: {}", time);
+      expirationTime = time;
     }
   }
 }

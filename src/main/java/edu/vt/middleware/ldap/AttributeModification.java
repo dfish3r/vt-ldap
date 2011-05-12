@@ -40,8 +40,8 @@ public class AttributeModification
   public AttributeModification(
     final AttributeModificationType mod, final LdapAttribute attr)
   {
-    this.setAttributeModificationType(mod);
-    this.setAttribute(attr);
+    setAttributeModificationType(mod);
+    setAttribute(attr);
   }
 
 
@@ -52,7 +52,7 @@ public class AttributeModification
    */
   public AttributeModificationType getAttributeModificationType()
   {
-    return this.attrMod;
+    return attrMod;
   }
 
 
@@ -63,7 +63,7 @@ public class AttributeModification
    */
   public void setAttributeModificationType(final AttributeModificationType amt)
   {
-    this.attrMod = amt;
+    attrMod = amt;
   }
 
 
@@ -74,7 +74,7 @@ public class AttributeModification
    */
   public LdapAttribute getAttribute()
   {
-    return this.attribute;
+    return attribute;
   }
 
 
@@ -85,7 +85,7 @@ public class AttributeModification
    */
   public void setAttribute(final LdapAttribute attr)
   {
-    this.attribute = attr;
+    attribute = attr;
   }
 
 
@@ -100,9 +100,9 @@ public class AttributeModification
     return
       String.format(
         "%s@%d::attrMod=%s, attribute=%s",
-        this.getClass().getName(),
-        this.hashCode(),
-        this.attrMod,
-        this.attribute);
+        getClass().getName(),
+        hashCode(),
+        attrMod,
+        attribute);
   }
 }

@@ -42,7 +42,7 @@ public class TLSSocketFactory extends AbstractTLSSocketFactory
    */
   public SSLContextInitializer getSSLContextInitializer()
   {
-    return this.contextInitializer;
+    return contextInitializer;
   }
 
 
@@ -53,7 +53,7 @@ public class TLSSocketFactory extends AbstractTLSSocketFactory
    */
   public void setSSLContextInitializer(final SSLContextInitializer initializer)
   {
-    this.contextInitializer = initializer;
+    contextInitializer = initializer;
   }
 
 
@@ -67,9 +67,9 @@ public class TLSSocketFactory extends AbstractTLSSocketFactory
   public void initialize()
     throws GeneralSecurityException
   {
-    final SSLContext ctx = this.contextInitializer.initSSLContext(
+    final SSLContext ctx = contextInitializer.initSSLContext(
       DEFAULT_PROTOCOL);
-    this.factory = ctx.getSocketFactory();
+    factory = ctx.getSocketFactory();
   }
 
 
@@ -103,11 +103,11 @@ public class TLSSocketFactory extends AbstractTLSSocketFactory
       String.format(
         "%s@%d::sslContextInitializer=%s,factory=%s," +
         "enabledCipherSuites=%s,enabledProtocols=%s",
-        this.getClass().getName(),
-        this.hashCode(),
-        this.getSSLContextInitializer(),
-        this.getFactory(),
-        this.getEnabledCipherSuites(),
-        this.getEnabledProtocols());
+        getClass().getName(),
+        hashCode(),
+        getSSLContextInitializer(),
+        getFactory(),
+        getEnabledCipherSuites(),
+        getEnabledProtocols());
   }
 }

@@ -64,7 +64,7 @@ public class KeyStoreCredentialReader extends AbstractCredentialReader<KeyStore>
 
     final KeyStore keystore = KeyStore.getInstance(type);
     if (is != null) {
-      keystore.load(this.getBufferedInputStream(is), password);
+      keystore.load(getBufferedInputStream(is), password);
       if (password != null) {
         Arrays.fill(password, '0');
       }

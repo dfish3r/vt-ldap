@@ -39,14 +39,14 @@ public class TestCallbackHandler implements CallbackHandler
   /** @param  s  to set name with */
   public void setName(final String s)
   {
-    this.name = s;
+    name = s;
   }
 
 
   /** @param  s  to set password with */
   public void setPassword(final String s)
   {
-    this.password = s;
+    password = s;
   }
 
 

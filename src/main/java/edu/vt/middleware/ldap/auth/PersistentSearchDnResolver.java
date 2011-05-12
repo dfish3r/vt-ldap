@@ -48,7 +48,7 @@ public class PersistentSearchDnResolver extends SearchDnResolver
    */
   public PersistentSearchDnResolver(final LdapConnectionConfig lcc)
   {
-    this.setLdapConnectionConfig(lcc);
+    setLdapConnectionConfig(lcc);
   }
 
 
@@ -60,7 +60,7 @@ public class PersistentSearchDnResolver extends SearchDnResolver
   public void setLdapConnectionConfig(final LdapConnectionConfig lcc)
   {
     super.setLdapConnectionConfig(lcc);
-    this.ldapConnection.setLdapConnectionConfig(this.config);
+    ldapConnection.setLdapConnectionConfig(config);
   }
 
 
@@ -72,16 +72,17 @@ public class PersistentSearchDnResolver extends SearchDnResolver
   public void open()
     throws LdapException
   {
-    this.ldapConnection.open();
+    ldapConnection.open();
   }
 
 
   /** {@inheritDoc} */
+  @Override
   protected LdapResult performLdapSearch(final SearchFilter filter)
     throws LdapException
   {
-    final SearchRequest request = this.createSearchRequest(filter);
-    final SearchOperation op = new SearchOperation(this.ldapConnection);
+    final SearchRequest request = createSearchRequest(filter);
+    final SearchOperation op = new SearchOperation(ldapConnection);
     return op.execute(request).getResult();
   }
 
@@ -91,6 +92,6 @@ public class PersistentSearchDnResolver extends SearchDnResolver
    */
   public void close()
   {
-    this.ldapConnection.close();
+    ldapConnection.close();
   }
 }

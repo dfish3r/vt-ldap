@@ -50,27 +50,29 @@ public class DeleteOperationCli extends AbstractCli
 
 
   /** {@inheritDoc} */
+  @Override
   protected void initOptions()
   {
-    this.options.addOption(new Option(OPT_DN, true, "entry DN"));
-    final Map<String, String> desc = this.getArgDesc(
+    options.addOption(new Option(OPT_DN, true, "entry DN"));
+    final Map<String, String> desc = getArgDesc(
       LdapConnectionConfig.class);
     for (String s : LdapConnectionConfigPropertySource.getProperties()) {
-      this.options.addOption(new Option(s, true, desc.get(s)));
+      options.addOption(new Option(s, true, desc.get(s)));
     }
     super.initOptions();
   }
 
 
   /** {@inheritDoc} */
+  @Override
   protected void dispatch(final CommandLine line)
     throws Exception
   {
     if (line.hasOption(OPT_HELP)) {
       printHelp();
     } else {
-      this.delete(
-        this.initLdapConnectionConfig(line), line.getOptionValues(OPT_DN));
+      delete(
+        initLdapConnectionConfig(line), line.getOptionValues(OPT_DN));
     }
   }
 
@@ -99,6 +101,7 @@ public class DeleteOperationCli extends AbstractCli
 
 
   /** {@inheritDoc} */
+  @Override
   protected String getCommandName()
   {
     return COMMAND_NAME;

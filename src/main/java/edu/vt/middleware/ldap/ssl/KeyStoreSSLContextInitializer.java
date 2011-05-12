@@ -47,7 +47,7 @@ public class KeyStoreSSLContextInitializer extends AbstractSSLContextInitializer
    */
   public void setTrustKeystore(final KeyStore ks)
   {
-    this.trustKeystore = ks;
+    trustKeystore = ks;
   }
 
 
@@ -58,7 +58,7 @@ public class KeyStoreSSLContextInitializer extends AbstractSSLContextInitializer
    */
   public void setAuthenticationKeystore(final KeyStore ks)
   {
-    this.authenticationKeystore = ks;
+    authenticationKeystore = ks;
   }
 
 
@@ -69,19 +69,20 @@ public class KeyStoreSSLContextInitializer extends AbstractSSLContextInitializer
    */
   public void setAuthenticationPassword(final char[] password)
   {
-    this.authenticationPassword = password;
+    authenticationPassword = password;
   }
 
 
   /** {@inheritDoc} */
+  @Override
   public TrustManager[] getTrustManagers()
     throws GeneralSecurityException
   {
     TrustManager[] tm = null;
-    if (this.trustKeystore != null) {
+    if (trustKeystore != null) {
       final TrustManagerFactory tmf = TrustManagerFactory.getInstance(
         TrustManagerFactory.getDefaultAlgorithm());
-      tmf.init(this.trustKeystore);
+      tmf.init(trustKeystore);
       tm = tmf.getTrustManagers();
     }
     return tm;
@@ -89,16 +90,17 @@ public class KeyStoreSSLContextInitializer extends AbstractSSLContextInitializer
 
 
   /** {@inheritDoc} */
+  @Override
   public KeyManager[] getKeyManagers()
     throws GeneralSecurityException
   {
     KeyManager[] km = null;
     if (
-      this.authenticationKeystore != null &&
-        this.authenticationPassword != null) {
+      authenticationKeystore != null &&
+        authenticationPassword != null) {
       final KeyManagerFactory kmf = KeyManagerFactory.getInstance(
         KeyManagerFactory.getDefaultAlgorithm());
-      kmf.init(this.authenticationKeystore, this.authenticationPassword);
+      kmf.init(authenticationKeystore, authenticationPassword);
       km = kmf.getKeyManagers();
     }
     return km;

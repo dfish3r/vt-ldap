@@ -36,7 +36,7 @@ public abstract class AbstractLdapBean
     if (sb == null) {
       throw new IllegalArgumentException("Sort behavior cannot be null");
     }
-    this.sortBehavior = sb;
+    sortBehavior = sb;
   }
 
 
@@ -47,7 +47,7 @@ public abstract class AbstractLdapBean
    */
   public SortBehavior getSortBehavior()
   {
-    return this.sortBehavior;
+    return sortBehavior;
   }
 
 
@@ -66,7 +66,7 @@ public abstract class AbstractLdapBean
     }
     return
       o == this ||
-        (this.getClass() == o.getClass() && o.hashCode() == this.hashCode());
+        (getClass() == o.getClass() && o.hashCode() == hashCode());
   }
 
 

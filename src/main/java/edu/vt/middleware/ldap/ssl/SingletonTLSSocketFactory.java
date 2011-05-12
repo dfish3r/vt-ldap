@@ -32,6 +32,7 @@ public class SingletonTLSSocketFactory extends TLSSocketFactory
 
 
   /** {@inheritDoc} */
+  @Override
   public void setSSLContextInitializer(final SSLContextInitializer initializer)
   {
     if (staticContextInitializer != null) {
@@ -43,6 +44,7 @@ public class SingletonTLSSocketFactory extends TLSSocketFactory
 
 
   /** {@inheritDoc} */
+  @Override
   public void initialize()
     throws GeneralSecurityException
   {

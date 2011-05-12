@@ -40,8 +40,8 @@ public class AddRequest implements LdapRequest
    */
   public AddRequest(final String dn, final LdapAttributes la)
   {
-    this.setDn(dn);
-    this.setLdapAttributes(la);
+    setDn(dn);
+    setLdapAttributes(la);
   }
 
 
@@ -52,7 +52,7 @@ public class AddRequest implements LdapRequest
    */
   public String getDn()
   {
-    return this.createDn;
+    return createDn;
   }
 
 
@@ -63,7 +63,7 @@ public class AddRequest implements LdapRequest
    */
   public void setDn(final String dn)
   {
-    this.createDn = dn;
+    createDn = dn;
   }
 
 
@@ -74,7 +74,7 @@ public class AddRequest implements LdapRequest
    */
   public LdapAttributes getLdapAttributes()
   {
-    return this.attributes;
+    return attributes;
   }
 
 
@@ -85,7 +85,7 @@ public class AddRequest implements LdapRequest
    */
   public void setLdapAttributes(final LdapAttributes la)
   {
-    this.attributes = la;
+    attributes = la;
   }
 
 
@@ -100,9 +100,9 @@ public class AddRequest implements LdapRequest
     return
       String.format(
         "%s@%d: createDn=%s, attributes=%s",
-        this.getClass().getName(),
-        this.hashCode(),
-        this.createDn,
-        this.attributes);
+        getClass().getName(),
+        hashCode(),
+        createDn,
+        attributes);
   }
 }

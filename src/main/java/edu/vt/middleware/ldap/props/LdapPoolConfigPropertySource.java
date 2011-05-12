@@ -76,7 +76,7 @@ public final class LdapPoolConfigPropertySource
   public LdapPoolConfigPropertySource(
     final PropertyDomain domain, final Properties props)
   {
-    this.object = initializeObject(
+    object = initializeObject(
       INVOKER, new LdapPoolConfig(), domain.value(), props);
   }
 

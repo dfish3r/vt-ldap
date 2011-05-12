@@ -37,7 +37,7 @@ public class CompareOperationTest extends AbstractTest
    *
    * @throws  Exception  On test failure.
    */
-  @Parameters({ "createEntry3" })
+  @Parameters("createEntry3")
   @BeforeClass(groups = {"comparetest"})
   public void createLdapEntry(final String ldifFile)
     throws Exception

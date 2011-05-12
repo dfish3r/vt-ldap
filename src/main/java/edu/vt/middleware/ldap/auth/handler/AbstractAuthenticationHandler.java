@@ -31,15 +31,17 @@ public abstract class AbstractAuthenticationHandler
 
 
   /** {@inheritDoc} */
+  @Override
   public LdapConnectionConfig getLdapConnectionConfig()
   {
-    return this.config;
+    return config;
   }
 
 
   /** {@inheritDoc} */
+  @Override
   public void setLdapConnectionConfig(final LdapConnectionConfig lcc)
   {
-    this.config = lcc;
+    config = lcc;
   }
 }

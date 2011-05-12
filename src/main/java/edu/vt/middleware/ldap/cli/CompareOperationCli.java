@@ -55,24 +55,26 @@ public class CompareOperationCli extends AbstractCli
 
 
   /** {@inheritDoc} */
+  @Override
   protected void initOptions()
   {
-    this.options.addOption(new Option(OPT_DN, true, "entry DN"));
-    this.options.addOption(
+    options.addOption(new Option(OPT_DN, true, "entry DN"));
+    options.addOption(
       new Option(
         OPT_ATTR,
         true,
         "colon delimited name value pair (attr:value|attr::b64value)"));
-    final Map<String, String> desc = this.getArgDesc(
+    final Map<String, String> desc = getArgDesc(
       LdapConnectionConfig.class);
     for (String s : LdapConnectionConfigPropertySource.getProperties()) {
-      this.options.addOption(new Option(s, true, desc.get(s)));
+      options.addOption(new Option(s, true, desc.get(s)));
     }
     super.initOptions();
   }
 
 
   /** {@inheritDoc} */
+  @Override
   protected void dispatch(final CommandLine line)
     throws Exception
   {
@@ -87,8 +89,8 @@ public class CompareOperationCli extends AbstractCli
       } else {
         la = new LdapAttribute(attr[0], attr[1]);
       }
-      this.compare(
-        this.initLdapConnectionConfig(line), line.getOptionValue(OPT_DN), la);
+      compare(
+        initLdapConnectionConfig(line), line.getOptionValue(OPT_DN), la);
     }
   }
 
@@ -116,6 +118,7 @@ public class CompareOperationCli extends AbstractCli
 
 
   /** {@inheritDoc} */
+  @Override
   protected String getCommandName()
   {
     return COMMAND_NAME;

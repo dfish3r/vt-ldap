@@ -39,7 +39,7 @@ public class Ehcache<Q extends SearchRequest> implements Cache<Q>
    */
   public Ehcache(final net.sf.ehcache.Cache c)
   {
-    this.cache = c;
+    cache = c;
   }
 
 
@@ -48,14 +48,15 @@ public class Ehcache<Q extends SearchRequest> implements Cache<Q>
    */
   public void clear()
   {
-    this.cache.removeAll();
+    cache.removeAll();
   }
 
 
   /** {@inheritDoc} */
+  @Override
   public LdapResult get(final Q request)
   {
-    final Element e = this.cache.get(request);
+    final Element e = cache.get(request);
     if (e == null) {
       return null;
     }
@@ -64,9 +65,10 @@ public class Ehcache<Q extends SearchRequest> implements Cache<Q>
 
 
   /** {@inheritDoc} */
+  @Override
   public void put(final Q request, final LdapResult lr)
   {
-    this.cache.put(new Element(request, lr));
+    cache.put(new Element(request, lr));
   }
 
 
@@ -77,6 +79,6 @@ public class Ehcache<Q extends SearchRequest> implements Cache<Q>
    */
   public int size()
   {
-    return this.cache.getKeysWithExpiryCheck().size();
+    return cache.getKeysWithExpiryCheck().size();
   }
 }

@@ -82,7 +82,7 @@ public class SearchRequest implements LdapRequest
    */
   public SearchRequest(final SearchFilter sf)
   {
-    this.setSearchFilter(sf);
+    setSearchFilter(sf);
   }
 
 
@@ -94,8 +94,8 @@ public class SearchRequest implements LdapRequest
    */
   public SearchRequest(final SearchFilter sf, final String[] attrs)
   {
-    this.setSearchFilter(sf);
-    this.setReturnAttributes(attrs);
+    setSearchFilter(sf);
+    setReturnAttributes(attrs);
   }
 
 
@@ -111,9 +111,9 @@ public class SearchRequest implements LdapRequest
     final String[] attrs,
     final LdapResultHandler[] srh)
   {
-    this.setSearchFilter(sf);
-    this.setReturnAttributes(attrs);
-    this.setLdapResultHandlers(srh);
+    setSearchFilter(sf);
+    setReturnAttributes(attrs);
+    setLdapResultHandlers(srh);
   }
 
 
@@ -124,7 +124,7 @@ public class SearchRequest implements LdapRequest
    */
   public SearchRequest(final String dn)
   {
-    this.setBaseDn(dn);
+    setBaseDn(dn);
   }
 
 
@@ -136,8 +136,8 @@ public class SearchRequest implements LdapRequest
    */
   public SearchRequest(final String dn, final SearchFilter sf)
   {
-    this.setBaseDn(dn);
-    this.setSearchFilter(sf);
+    setBaseDn(dn);
+    setSearchFilter(sf);
   }
 
 
@@ -151,9 +151,9 @@ public class SearchRequest implements LdapRequest
   public SearchRequest(
     final String dn, final SearchFilter sf, final String[] attrs)
   {
-    this.setBaseDn(dn);
-    this.setSearchFilter(sf);
-    this.setReturnAttributes(attrs);
+    setBaseDn(dn);
+    setSearchFilter(sf);
+    setReturnAttributes(attrs);
   }
 
 
@@ -171,10 +171,10 @@ public class SearchRequest implements LdapRequest
     final String[] attrs,
     final LdapResultHandler[] srh)
   {
-    this.setBaseDn(dn);
-    this.setSearchFilter(sf);
-    this.setReturnAttributes(attrs);
-    this.setLdapResultHandlers(srh);
+    setBaseDn(dn);
+    setSearchFilter(sf);
+    setReturnAttributes(attrs);
+    setLdapResultHandlers(srh);
   }
 
 
@@ -185,7 +185,7 @@ public class SearchRequest implements LdapRequest
    */
   public String getBaseDn()
   {
-    return this.baseDn;
+    return baseDn;
   }
 
 
@@ -196,7 +196,7 @@ public class SearchRequest implements LdapRequest
    */
   public void setBaseDn(final String dn)
   {
-    this.baseDn = dn;
+    baseDn = dn;
   }
 
 
@@ -207,7 +207,7 @@ public class SearchRequest implements LdapRequest
    */
   public SearchFilter getSearchFilter()
   {
-    return this.filter;
+    return filter;
   }
 
 
@@ -218,7 +218,7 @@ public class SearchRequest implements LdapRequest
    */
   public void setSearchFilter(final SearchFilter sf)
   {
-    this.filter = sf;
+    filter = sf;
   }
 
 
@@ -229,7 +229,7 @@ public class SearchRequest implements LdapRequest
    */
   public String[] getReturnAttributes()
   {
-    return this.retAttrs;
+    return retAttrs;
   }
 
 
@@ -240,7 +240,7 @@ public class SearchRequest implements LdapRequest
    */
   public void setReturnAttributes(final String[] attrs)
   {
-    this.retAttrs = attrs;
+    retAttrs = attrs;
   }
 
 
@@ -251,7 +251,7 @@ public class SearchRequest implements LdapRequest
    */
   public SearchScope getSearchScope()
   {
-    return this.scope;
+    return scope;
   }
 
 
@@ -262,7 +262,7 @@ public class SearchRequest implements LdapRequest
    */
   public void setSearchScope(final SearchScope ss)
   {
-    this.scope = ss;
+    scope = ss;
   }
 
 
@@ -273,7 +273,7 @@ public class SearchRequest implements LdapRequest
    */
   public long getTimeLimit()
   {
-    return this.timeLimit;
+    return timeLimit;
   }
 
 
@@ -284,7 +284,7 @@ public class SearchRequest implements LdapRequest
    */
   public void setTimeLimit(final long l)
   {
-    this.timeLimit = l;
+    timeLimit = l;
   }
 
 
@@ -295,7 +295,7 @@ public class SearchRequest implements LdapRequest
    */
   public long getCountLimit()
   {
-    return this.countLimit;
+    return countLimit;
   }
 
 
@@ -306,7 +306,7 @@ public class SearchRequest implements LdapRequest
    */
   public void setCountLimit(final long l)
   {
-    this.countLimit = l;
+    countLimit = l;
   }
 
 
@@ -317,7 +317,7 @@ public class SearchRequest implements LdapRequest
    */
   public int getBatchSize()
   {
-    return this.batchSize;
+    return batchSize;
   }
 
 
@@ -328,7 +328,7 @@ public class SearchRequest implements LdapRequest
    */
   public void setBatchSize(final int i)
   {
-    this.batchSize = i;
+    batchSize = i;
   }
 
 
@@ -339,7 +339,7 @@ public class SearchRequest implements LdapRequest
    */
   public DerefAliases getDerefAliases()
   {
-    return this.derefAliases;
+    return derefAliases;
   }
 
 
@@ -350,7 +350,7 @@ public class SearchRequest implements LdapRequest
    */
   public void setDerefAliases(final DerefAliases da)
   {
-    this.derefAliases = da;
+    derefAliases = da;
   }
 
 
@@ -361,7 +361,7 @@ public class SearchRequest implements LdapRequest
    */
   public ReferralBehavior getReferralBehavior()
   {
-    return this.referralBehavior;
+    return referralBehavior;
   }
 
 
@@ -372,7 +372,7 @@ public class SearchRequest implements LdapRequest
    */
   public void setReferralBehavior(final ReferralBehavior rb)
   {
-    this.referralBehavior = rb;
+    referralBehavior = rb;
   }
 
 
@@ -383,7 +383,7 @@ public class SearchRequest implements LdapRequest
    */
   public boolean getTypesOnly()
   {
-    return this.typesOnly;
+    return typesOnly;
   }
 
 
@@ -394,7 +394,7 @@ public class SearchRequest implements LdapRequest
    */
   public void setTypesOnly(final boolean b)
   {
-    this.typesOnly = b;
+    typesOnly = b;
   }
 
 
@@ -405,7 +405,7 @@ public class SearchRequest implements LdapRequest
    */
   public String[] getBinaryAttributes()
   {
-    return this.binaryAttrs;
+    return binaryAttrs;
   }
 
 
@@ -416,7 +416,7 @@ public class SearchRequest implements LdapRequest
    */
   public void setBinaryAttributes(final String[] s)
   {
-    this.binaryAttrs = s;
+    binaryAttrs = s;
   }
 
 
@@ -427,7 +427,7 @@ public class SearchRequest implements LdapRequest
    */
   public SortBehavior getSortBehavior()
   {
-    return this.sortBehavior;
+    return sortBehavior;
   }
 
 
@@ -438,7 +438,7 @@ public class SearchRequest implements LdapRequest
    */
   public void setSortBehavior(final SortBehavior sb)
   {
-    this.sortBehavior = sb;
+    sortBehavior = sb;
   }
 
 
@@ -449,7 +449,7 @@ public class SearchRequest implements LdapRequest
    */
   public LdapResultHandler[] getLdapResultHandlers()
   {
-    return this.handlers;
+    return handlers;
   }
 
 
@@ -460,7 +460,7 @@ public class SearchRequest implements LdapRequest
    */
   public void setLdapResultHandlers(final LdapResultHandler[] lrh)
   {
-    this.handlers = lrh;
+    handlers = lrh;
   }
 
 
@@ -471,7 +471,7 @@ public class SearchRequest implements LdapRequest
    */
   public ResultCode[] getSearchIgnoreResultCodes()
   {
-    return this.searchIgnoreResultCodes;
+    return searchIgnoreResultCodes;
   }
 
 
@@ -482,7 +482,7 @@ public class SearchRequest implements LdapRequest
    */
   public void setSearchIgnoreResultCodes(final ResultCode[] codes)
   {
-    this.searchIgnoreResultCodes = codes;
+    searchIgnoreResultCodes = codes;
   }
 
 
@@ -578,11 +578,12 @@ public class SearchRequest implements LdapRequest
     }
     return
       o == this ||
-        (this.getClass() == o.getClass() && o.hashCode() == this.hashCode());
+        (getClass() == o.getClass() && o.hashCode() == hashCode());
   }
 
 
   /** {@inheritDoc} */
+  @Override
   public int hashCode()
   {
     int hc = HASH_CODE_SEED;
@@ -620,22 +621,22 @@ public class SearchRequest implements LdapRequest
         "derefAliases=%s, referralBehavior=%s, typesOnly=%s, " +
         "binaryAttributes=%s, sortBehavior=%s, searchResultHandler=%s, " +
         "searchIgnoreResultCodes=%s",
-        this.getClass().getName(),
-        this.hashCode(),
-        this.baseDn,
-        this.filter,
-        this.retAttrs != null ? Arrays.asList(this.retAttrs) : null,
-        this.scope,
-        this.timeLimit,
-        this.countLimit,
-        this.batchSize,
-        this.derefAliases,
-        this.referralBehavior,
-        this.typesOnly,
-        this.binaryAttrs != null ? Arrays.asList(this.binaryAttrs) : null,
-        this.sortBehavior,
-        this.handlers != null ? Arrays.asList(this.handlers) : null,
-        this.searchIgnoreResultCodes != null ?
-          Arrays.asList(this.searchIgnoreResultCodes) : null);
+        getClass().getName(),
+        hashCode(),
+        baseDn,
+        filter,
+        retAttrs != null ? Arrays.asList(retAttrs) : null,
+        scope,
+        timeLimit,
+        countLimit,
+        batchSize,
+        derefAliases,
+        referralBehavior,
+        typesOnly,
+        binaryAttrs != null ? Arrays.asList(binaryAttrs) : null,
+        sortBehavior,
+        handlers != null ? Arrays.asList(handlers) : null,
+        searchIgnoreResultCodes != null ?
+          Arrays.asList(searchIgnoreResultCodes) : null);
   }
 }

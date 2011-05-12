@@ -27,6 +27,7 @@ public class CloseLdapPassivator implements LdapPassivator<LdapConnection>
 
 
   /** {@inheritDoc} */
+  @Override
   public boolean passivate(final LdapConnection lc)
   {
     boolean success = false;

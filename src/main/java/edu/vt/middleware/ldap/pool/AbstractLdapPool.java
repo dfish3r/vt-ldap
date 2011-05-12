@@ -55,7 +55,7 @@ public abstract class AbstractLdapPool<T extends LdapConnection>
   protected final ReentrantLock checkOutLock = new ReentrantLock();
 
   /** Logger for this class. */
-  protected final Logger logger = LoggerFactory.getLogger(this.getClass());
+  protected final Logger logger = LoggerFactory.getLogger(getClass());
 
   /** List of available ldap objects in the pool. */
   protected Queue<PooledLdapConnection<T>> available =
@@ -84,98 +84,102 @@ public abstract class AbstractLdapPool<T extends LdapConnection>
    */
   public AbstractLdapPool(final LdapPoolConfig lpc, final LdapFactory<T> lf)
   {
-    this.poolConfig = lpc;
-    this.poolConfig.makeImmutable();
-    this.ldapFactory = lf;
+    poolConfig = lpc;
+    poolConfig.makeImmutable();
+    ldapFactory = lf;
   }
 
 
   /** {@inheritDoc} */
+  @Override
   public LdapPoolConfig getLdapPoolConfig()
   {
-    return this.poolConfig;
+    return poolConfig;
   }
 
 
   /** {@inheritDoc} */
+  @Override
   public void setPoolTimer(final Timer t)
   {
-    this.poolTimer = t;
+    poolTimer = t;
   }
 
 
   /** {@inheritDoc} */
+  @Override
   public void initialize()
   {
-    this.logger.debug("beginning pool initialization");
+    logger.debug("beginning pool initialization");
 
-    this.poolTimer.scheduleAtFixedRate(
+    poolTimer.scheduleAtFixedRate(
       new PrunePoolTask<T>(this),
-      this.poolConfig.getPruneTimerPeriod(),
-      this.poolConfig.getPruneTimerPeriod());
-    this.logger.debug("prune pool task scheduled");
+      poolConfig.getPruneTimerPeriod(),
+      poolConfig.getPruneTimerPeriod());
+    logger.debug("prune pool task scheduled");
 
-    this.poolTimer.scheduleAtFixedRate(
+    poolTimer.scheduleAtFixedRate(
       new ValidatePoolTask<T>(this),
-      this.poolConfig.getValidateTimerPeriod(),
-      this.poolConfig.getValidateTimerPeriod());
-    this.logger.debug("validate pool task scheduled");
+      poolConfig.getValidateTimerPeriod(),
+      poolConfig.getValidateTimerPeriod());
+    logger.debug("validate pool task scheduled");
 
-    this.initializePool();
+    initializePool();
 
-    this.logger.debug("pool initialized to size " + this.available.size());
+    logger.debug("pool initialized to size " + available.size());
   }
 
 
   /** Attempts to fill the pool to its minimum size. */
   private void initializePool()
   {
-    this.logger.debug(
-      "checking ldap pool size >= {}", this.poolConfig.getMinPoolSize());
+    logger.debug(
+      "checking ldap pool size >= {}", poolConfig.getMinPoolSize());
 
     int count = 0;
-    this.poolLock.lock();
+    poolLock.lock();
     try {
       while (
-        this.available.size() < this.poolConfig.getMinPoolSize() &&
-          count < this.poolConfig.getMinPoolSize() * 2) {
-        final T t = this.createAvailable();
-        if (this.poolConfig.isValidateOnCheckIn()) {
-          if (this.ldapFactory.validate(t)) {
-            this.logger.trace(
+        available.size() < poolConfig.getMinPoolSize() &&
+          count < poolConfig.getMinPoolSize() * 2) {
+        final T t = createAvailable();
+        if (poolConfig.isValidateOnCheckIn()) {
+          if (ldapFactory.validate(t)) {
+            logger.trace(
               "ldap object passed initialize validation: {}", t);
           } else {
-            this.logger.warn("ldap object failed initialize validation: {}", t);
-            this.removeAvailable(t);
+            logger.warn("ldap object failed initialize validation: {}", t);
+            removeAvailable(t);
           }
         }
         count++;
       }
     } finally {
-      this.poolLock.unlock();
+      poolLock.unlock();
     }
   }
 
 
   /** {@inheritDoc} */
+  @Override
   public void close()
   {
-    this.poolLock.lock();
+    poolLock.lock();
     try {
-      while (this.available.size() > 0) {
-        final PooledLdapConnection<T> pl = this.available.remove();
-        this.ldapFactory.destroy(pl.getLdapConnection());
+      while (available.size() > 0) {
+        final PooledLdapConnection<T> pl = available.remove();
+        ldapFactory.destroy(pl.getLdapConnection());
       }
-      while (this.active.size() > 0) {
-        final PooledLdapConnection<T> pl = this.active.remove();
-        this.ldapFactory.destroy(pl.getLdapConnection());
+      while (active.size() > 0) {
+        final PooledLdapConnection<T> pl = active.remove();
+        ldapFactory.destroy(pl.getLdapConnection());
       }
-      this.logger.debug("pool closed");
+      logger.debug("pool closed");
     } finally {
-      this.poolLock.unlock();
+      poolLock.unlock();
     }
 
-    this.poolTimer.cancel();
+    poolTimer.cancel();
   }
 
 
@@ -186,17 +190,17 @@ public abstract class AbstractLdapPool<T extends LdapConnection>
    */
   protected T createAvailable()
   {
-    final T t = this.ldapFactory.create();
+    final T t = ldapFactory.create();
     if (t != null) {
       final PooledLdapConnection<T> pl = new PooledLdapConnection<T>(t);
-      this.poolLock.lock();
+      poolLock.lock();
       try {
-        this.available.add(pl);
+        available.add(pl);
       } finally {
-        this.poolLock.unlock();
+        poolLock.unlock();
       }
     } else {
-      this.logger.warn("unable to create available ldap object");
+      logger.warn("unable to create available ldap object");
     }
     return t;
   }
@@ -209,17 +213,17 @@ public abstract class AbstractLdapPool<T extends LdapConnection>
    */
   protected T createActive()
   {
-    final T t = this.ldapFactory.create();
+    final T t = ldapFactory.create();
     if (t != null) {
       final PooledLdapConnection<T> pl = new PooledLdapConnection<T>(t);
-      this.poolLock.lock();
+      poolLock.lock();
       try {
-        this.active.add(pl);
+        active.add(pl);
       } finally {
-        this.poolLock.unlock();
+        poolLock.unlock();
       }
     } else {
-      this.logger.warn("unable to create active ldap object");
+      logger.warn("unable to create active ldap object");
     }
     return t;
   }
@@ -233,18 +237,18 @@ public abstract class AbstractLdapPool<T extends LdapConnection>
    */
   protected T createAvailableAndActive()
   {
-    final T t = this.ldapFactory.create();
+    final T t = ldapFactory.create();
     if (t != null) {
       final PooledLdapConnection<T> pl = new PooledLdapConnection<T>(t);
-      this.poolLock.lock();
+      poolLock.lock();
       try {
-        this.available.add(pl);
-        this.active.add(pl);
+        available.add(pl);
+        active.add(pl);
       } finally {
-        this.poolLock.unlock();
+        poolLock.unlock();
       }
     } else {
-      this.logger.warn("unable to create available and active ldap object");
+      logger.warn("unable to create available and active ldap object");
     }
     return t;
   }
@@ -259,20 +263,20 @@ public abstract class AbstractLdapPool<T extends LdapConnection>
   {
     boolean destroy = false;
     final PooledLdapConnection<T> pl = new PooledLdapConnection<T>(t);
-    this.poolLock.lock();
+    poolLock.lock();
     try {
-      if (this.available.remove(pl)) {
+      if (available.remove(pl)) {
         destroy = true;
       } else {
-        this.logger.warn(
+        logger.warn(
           "attempt to remove unknown available ldap object: {}", t);
       }
     } finally {
-      this.poolLock.unlock();
+      poolLock.unlock();
     }
     if (destroy) {
-      this.logger.trace("removing available ldap object: {}", t);
-      this.ldapFactory.destroy(t);
+      logger.trace("removing available ldap object: {}", t);
+      ldapFactory.destroy(t);
     }
   }
 
@@ -286,19 +290,19 @@ public abstract class AbstractLdapPool<T extends LdapConnection>
   {
     boolean destroy = false;
     final PooledLdapConnection<T> pl = new PooledLdapConnection<T>(t);
-    this.poolLock.lock();
+    poolLock.lock();
     try {
-      if (this.active.remove(pl)) {
+      if (active.remove(pl)) {
         destroy = true;
       } else {
-        this.logger.warn("attempt to remove unknown active ldap object: {}", t);
+        logger.warn("attempt to remove unknown active ldap object: {}", t);
       }
     } finally {
-      this.poolLock.unlock();
+      poolLock.unlock();
     }
     if (destroy) {
-      this.logger.trace("removing active ldap object: {}", t);
-      this.ldapFactory.destroy(t);
+      logger.trace("removing active ldap object: {}", t);
+      ldapFactory.destroy(t);
     }
   }
 
@@ -313,26 +317,26 @@ public abstract class AbstractLdapPool<T extends LdapConnection>
   {
     boolean destroy = false;
     final PooledLdapConnection<T> pl = new PooledLdapConnection<T>(t);
-    this.poolLock.lock();
+    poolLock.lock();
     try {
-      if (this.available.remove(pl)) {
+      if (available.remove(pl)) {
         destroy = true;
       } else {
-        this.logger.debug(
+        logger.debug(
           "attempt to remove unknown available ldap object: {}", t);
       }
-      if (this.active.remove(pl)) {
+      if (active.remove(pl)) {
         destroy = true;
       } else {
-        this.logger.debug(
+        logger.debug(
           "attempt to remove unknown active ldap object: {}", t);
       }
     } finally {
-      this.poolLock.unlock();
+      poolLock.unlock();
     }
     if (destroy) {
-      this.logger.trace("removing active ldap object: {}", t);
-      this.ldapFactory.destroy(t);
+      logger.trace("removing active ldap object: {}", t);
+      ldapFactory.destroy(t);
     }
   }
 
@@ -350,16 +354,16 @@ public abstract class AbstractLdapPool<T extends LdapConnection>
   protected void activateAndValidate(final T t)
     throws LdapPoolException
   {
-    if (!this.ldapFactory.activate(t)) {
-      this.logger.warn("ldap object failed activation: {}", t);
-      this.removeAvailableAndActive(t);
+    if (!ldapFactory.activate(t)) {
+      logger.warn("ldap object failed activation: {}", t);
+      removeAvailableAndActive(t);
       throw new LdapActivationException("Activation of ldap object failed");
     }
     if (
-      this.poolConfig.isValidateOnCheckOut() &&
-        !this.ldapFactory.validate(t)) {
-      this.logger.warn("ldap object failed check out validation: {}", t);
-      this.removeAvailableAndActive(t);
+      poolConfig.isValidateOnCheckOut() &&
+        !ldapFactory.validate(t)) {
+      logger.warn("ldap object failed check out validation: {}", t);
+      removeAvailableAndActive(t);
       throw new LdapValidationException("Validation of ldap object failed");
     }
   }
@@ -376,107 +380,111 @@ public abstract class AbstractLdapPool<T extends LdapConnection>
   protected boolean validateAndPassivate(final T t)
   {
     boolean valid = false;
-    if (this.poolConfig.isValidateOnCheckIn()) {
-      if (!this.ldapFactory.validate(t)) {
-        this.logger.warn("ldap object failed check in validation: {}", t);
+    if (poolConfig.isValidateOnCheckIn()) {
+      if (!ldapFactory.validate(t)) {
+        logger.warn("ldap object failed check in validation: {}", t);
       } else {
         valid = true;
       }
     } else {
       valid = true;
     }
-    if (valid && !this.ldapFactory.passivate(t)) {
+    if (valid && !ldapFactory.passivate(t)) {
       valid = false;
-      this.logger.warn("ldap object failed activation: {}", t);
+      logger.warn("ldap object failed activation: {}", t);
     }
     return valid;
   }
 
 
   /** {@inheritDoc} */
+  @Override
   public void prune()
   {
-    this.logger.trace(
-      "waiting for pool lock to prune {}", this.poolLock.getQueueLength());
-    this.poolLock.lock();
+    logger.trace(
+      "waiting for pool lock to prune {}", poolLock.getQueueLength());
+    poolLock.lock();
     try {
-      if (this.active.size() == 0) {
-        this.logger.debug("pruning pool of size {}", this.available.size());
-        while (this.available.size() > this.poolConfig.getMinPoolSize()) {
-          PooledLdapConnection<T> pl = this.available.peek();
+      if (active.size() == 0) {
+        logger.debug("pruning pool of size {}", available.size());
+        while (available.size() > poolConfig.getMinPoolSize()) {
+          PooledLdapConnection<T> pl = available.peek();
           final long time = System.currentTimeMillis() - pl.getCreatedTime();
-          if (time > this.poolConfig.getExpirationTime()) {
-            pl = this.available.remove();
-            this.logger.trace(
+          if (time > poolConfig.getExpirationTime()) {
+            pl = available.remove();
+            logger.trace(
               "removing {} in the pool for {}ms", pl.getLdapConnection(), time);
-            this.ldapFactory.destroy(pl.getLdapConnection());
+            ldapFactory.destroy(pl.getLdapConnection());
           } else {
             break;
           }
         }
-        this.logger.debug("pool size pruned to {}", this.available.size());
+        logger.debug("pool size pruned to {}", available.size());
       } else {
-        this.logger.debug("pool is currently active, no objects pruned");
+        logger.debug("pool is currently active, no objects pruned");
       }
     } finally {
-      this.poolLock.unlock();
+      poolLock.unlock();
     }
   }
 
 
   /** {@inheritDoc} */
+  @Override
   public void validate()
   {
-    this.poolLock.lock();
+    poolLock.lock();
     try {
-      if (this.active.size() == 0) {
-        if (this.poolConfig.isValidatePeriodically()) {
-          this.logger.debug(
-            "validate for pool of size {}", this.available.size());
+      if (active.size() == 0) {
+        if (poolConfig.isValidatePeriodically()) {
+          logger.debug(
+            "validate for pool of size {}", available.size());
 
           final Queue<PooledLdapConnection<T>> remove =
             new LinkedList<PooledLdapConnection<T>>();
-          for (PooledLdapConnection<T> pl : this.available) {
-            this.logger.trace("validating {}", pl.getLdapConnection());
-            if (this.ldapFactory.validate(pl.getLdapConnection())) {
-              this.logger.trace(
+          for (PooledLdapConnection<T> pl : available) {
+            logger.trace("validating {}", pl.getLdapConnection());
+            if (ldapFactory.validate(pl.getLdapConnection())) {
+              logger.trace(
                 "ldap object passed validation: {}", pl.getLdapConnection());
             } else {
-              this.logger.warn(
+              logger.warn(
                 "ldap object failed validation: {}", pl.getLdapConnection());
               remove.add(pl);
             }
           }
           for (PooledLdapConnection<T> pl : remove) {
-            this.logger.trace(
+            logger.trace(
               "removing {} from the pool", pl.getLdapConnection());
-            this.available.remove(pl);
-            this.ldapFactory.destroy(pl.getLdapConnection());
+            available.remove(pl);
+            ldapFactory.destroy(pl.getLdapConnection());
           }
         }
-        this.initializePool();
-        this.logger.debug(
-          "pool size after validation is {}", this.available.size());
+        initializePool();
+        logger.debug(
+          "pool size after validation is {}", available.size());
       } else {
-        this.logger.debug("pool is currently active, no validation performed");
+        logger.debug("pool is currently active, no validation performed");
       }
     } finally {
-      this.poolLock.unlock();
+      poolLock.unlock();
     }
   }
 
 
   /** {@inheritDoc} */
+  @Override
   public int availableCount()
   {
-    return this.available.size();
+    return available.size();
   }
 
 
   /** {@inheritDoc} */
+  @Override
   public int activeCount()
   {
-    return this.active.size();
+    return active.size();
   }
 
 
@@ -490,7 +498,7 @@ public abstract class AbstractLdapPool<T extends LdapConnection>
     throws Throwable
   {
     try {
-      this.close();
+      close();
     } finally {
       super.finalize();
     }
@@ -524,8 +532,8 @@ public abstract class AbstractLdapPool<T extends LdapConnection>
      */
     public PooledLdapConnection(final T t)
     {
-      this.ldapConn = t;
-      this.createdTime = System.currentTimeMillis();
+      ldapConn = t;
+      createdTime = System.currentTimeMillis();
     }
 
 
@@ -536,7 +544,7 @@ public abstract class AbstractLdapPool<T extends LdapConnection>
      */
     public T getLdapConnection()
     {
-      return this.ldapConn;
+      return ldapConn;
     }
 
 
@@ -547,7 +555,7 @@ public abstract class AbstractLdapPool<T extends LdapConnection>
      */
     public long getCreatedTime()
     {
-      return this.createdTime;
+      return createdTime;
     }
 
 
@@ -566,8 +574,8 @@ public abstract class AbstractLdapPool<T extends LdapConnection>
       }
       return
         o == this ||
-          (this.getClass() == o.getClass() &&
-            o.hashCode() == this.hashCode());
+          (getClass() == o.getClass() &&
+            o.hashCode() == hashCode());
     }
 
 
@@ -579,8 +587,8 @@ public abstract class AbstractLdapPool<T extends LdapConnection>
     public int hashCode()
     {
       int hc = HASH_CODE_SEED;
-      if (this.ldapConn != null) {
-        hc += this.ldapConn.hashCode();
+      if (ldapConn != null) {
+        hc += ldapConn.hashCode();
       }
       return hc;
     }

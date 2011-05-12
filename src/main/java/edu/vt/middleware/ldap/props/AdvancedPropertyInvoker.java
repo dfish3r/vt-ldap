@@ -44,11 +44,12 @@ public class AdvancedPropertyInvoker extends AbstractPropertyInvoker
    */
   public AdvancedPropertyInvoker(final Class<?> c)
   {
-    this.initialize(c);
+    initialize(c);
   }
 
 
   /** {@inheritDoc} */
+  @Override
   protected Object convertValue(final Class<?> type, final String value)
   {
     Object newValue = value;
@@ -97,38 +98,38 @@ public class AdvancedPropertyInvoker extends AbstractPropertyInvoker
           }
         }
       } else if (LdapProvider.class.isAssignableFrom(type)) {
-        newValue = this.createTypeFromPropertyValue(
+        newValue = createTypeFromPropertyValue(
           LdapProvider.class,
           value);
       } else if (HostnameVerifier.class.isAssignableFrom(type)) {
-        newValue = this.createTypeFromPropertyValue(
+        newValue = createTypeFromPropertyValue(
           HostnameVerifier.class,
           value);
       } else if (AuthenticationHandler.class.isAssignableFrom(type)) {
-        newValue = this.createTypeFromPropertyValue(
+        newValue = createTypeFromPropertyValue(
           AuthenticationHandler.class,
           value);
       } else if (DnResolver.class.isAssignableFrom(type)) {
-        newValue = this.createTypeFromPropertyValue(DnResolver.class, value);
+        newValue = createTypeFromPropertyValue(DnResolver.class, value);
       } else if (LdapResultHandler[].class.isAssignableFrom(type)) {
-        newValue = this.createArrayTypeFromPropertyValue(
+        newValue = createArrayTypeFromPropertyValue(
           LdapResultHandler.class,
           value);
       } else if (AuthenticationResultHandler[].class.isAssignableFrom(type)) {
-        newValue = this.createArrayTypeFromPropertyValue(
+        newValue = createArrayTypeFromPropertyValue(
           AuthenticationResultHandler.class,
           value);
       } else if (AuthorizationHandler[].class.isAssignableFrom(type)) {
-        newValue = this.createArrayTypeFromPropertyValue(
+        newValue = createArrayTypeFromPropertyValue(
           AuthorizationHandler.class,
           value);
       } else if (ResultCode[].class.isAssignableFrom(type)) {
-        newValue = this.createArrayEnumFromPropertyValue(
+        newValue = createArrayEnumFromPropertyValue(
           ResultCode.class, value);
       } else if (Class.class.isAssignableFrom(type)) {
-        newValue = this.createTypeFromPropertyValue(Class.class, value);
+        newValue = createTypeFromPropertyValue(Class.class, value);
       } else if (Class[].class.isAssignableFrom(type)) {
-        newValue = this.createArrayTypeFromPropertyValue(Class.class, value);
+        newValue = createArrayTypeFromPropertyValue(Class.class, value);
       } else if (type.isEnum()) {
         newValue = getEnum(type, value);
       } else if (SearchFilter.class.isAssignableFrom(type)) {

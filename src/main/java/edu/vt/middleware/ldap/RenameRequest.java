@@ -40,8 +40,8 @@ public class RenameRequest implements LdapRequest
    */
   public RenameRequest(final String oldDn, final String newDn)
   {
-    this.setDn(oldDn);
-    this.setNewDn(newDn);
+    setDn(oldDn);
+    setNewDn(newDn);
   }
 
 
@@ -52,7 +52,7 @@ public class RenameRequest implements LdapRequest
    */
   public String getDn()
   {
-    return this.oldRenameDn;
+    return oldRenameDn;
   }
 
 
@@ -63,7 +63,7 @@ public class RenameRequest implements LdapRequest
    */
   public void setDn(final String dn)
   {
-    this.oldRenameDn = dn;
+    oldRenameDn = dn;
   }
 
 
@@ -74,7 +74,7 @@ public class RenameRequest implements LdapRequest
    */
   public String getNewDn()
   {
-    return this.newRenameDn;
+    return newRenameDn;
   }
 
 
@@ -85,7 +85,7 @@ public class RenameRequest implements LdapRequest
    */
   public void setNewDn(final String dn)
   {
-    this.newRenameDn = dn;
+    newRenameDn = dn;
   }
 
 
@@ -100,9 +100,9 @@ public class RenameRequest implements LdapRequest
     return
       String.format(
         "%s@%d: oldRenameDn=%s, newRenameDn=%s",
-        this.getClass().getName(),
-        this.hashCode(),
-        this.oldRenameDn,
-        this.newRenameDn);
+        getClass().getName(),
+        hashCode(),
+        oldRenameDn,
+        newRenameDn);
   }
 }

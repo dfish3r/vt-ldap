@@ -119,7 +119,7 @@ public class TLSSocketFactoryTest
   public void setEnabledCipherSuites()
     throws Exception
   {
-    final LdapConnection conn = this.createTLSLdapConnection();
+    final LdapConnection conn = createTLSLdapConnection();
     final TLSSocketFactory sf =
       (TLSSocketFactory) conn.getLdapConnectionConfig().getSslSocketFactory();
 
@@ -163,7 +163,7 @@ public class TLSSocketFactoryTest
   public void setEnabledProtocols()
     throws Exception
   {
-    final LdapConnection conn = this.createTLSLdapConnection();
+    final LdapConnection conn = createTLSLdapConnection();
     final TLSSocketFactory sf =
       (TLSSocketFactory) conn.getLdapConnectionConfig().getSslSocketFactory();
 

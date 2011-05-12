@@ -60,7 +60,7 @@ public abstract class AbstractTLSSocketFactory extends SSLSocketFactory
    */
   public SSLSocketFactory getFactory()
   {
-    return this.factory;
+    return factory;
   }
 
 
@@ -74,7 +74,7 @@ public abstract class AbstractTLSSocketFactory extends SSLSocketFactory
    */
   public String[] getEnabledCipherSuites()
   {
-    return this.cipherSuites;
+    return cipherSuites;
   }
 
 
@@ -88,7 +88,7 @@ public abstract class AbstractTLSSocketFactory extends SSLSocketFactory
    */
   public String[] getEnabledProtocols()
   {
-    return this.protocols;
+    return protocols;
   }
 
 
@@ -100,7 +100,7 @@ public abstract class AbstractTLSSocketFactory extends SSLSocketFactory
    */
   public void setEnabledCipherSuites(final String[] s)
   {
-    this.cipherSuites = s;
+    cipherSuites = s;
   }
 
 
@@ -112,7 +112,7 @@ public abstract class AbstractTLSSocketFactory extends SSLSocketFactory
    */
   public void setEnabledProtocols(final String[] s)
   {
-    this.protocols = s;
+    protocols = s;
   }
 
 
@@ -125,11 +125,11 @@ public abstract class AbstractTLSSocketFactory extends SSLSocketFactory
    */
   protected SSLSocket initSSLSocket(final SSLSocket s)
   {
-    if (this.cipherSuites != null) {
-      s.setEnabledCipherSuites(this.cipherSuites);
+    if (cipherSuites != null) {
+      s.setEnabledCipherSuites(cipherSuites);
     }
-    if (this.protocols != null) {
-      s.setEnabledProtocols(this.protocols);
+    if (protocols != null) {
+      s.setEnabledProtocols(protocols);
     }
     return s;
   }
@@ -157,9 +157,9 @@ public abstract class AbstractTLSSocketFactory extends SSLSocketFactory
     throws IOException
   {
     SSLSocket socket = null;
-    if (this.factory != null) {
-      socket = this.initSSLSocket(
-        (SSLSocket) this.factory.createSocket(s, host, port, autoClose));
+    if (factory != null) {
+      socket = initSSLSocket(
+        (SSLSocket) factory.createSocket(s, host, port, autoClose));
     }
     return socket;
   }
@@ -176,8 +176,8 @@ public abstract class AbstractTLSSocketFactory extends SSLSocketFactory
     throws IOException
   {
     SSLSocket socket = null;
-    if (this.factory != null) {
-      socket = this.initSSLSocket((SSLSocket) this.factory.createSocket());
+    if (factory != null) {
+      socket = initSSLSocket((SSLSocket) factory.createSocket());
     }
     return socket;
   }
@@ -198,9 +198,9 @@ public abstract class AbstractTLSSocketFactory extends SSLSocketFactory
     throws IOException
   {
     SSLSocket socket = null;
-    if (this.factory != null) {
-      socket = this.initSSLSocket(
-        (SSLSocket) this.factory.createSocket(host, port));
+    if (factory != null) {
+      socket = initSSLSocket(
+        (SSLSocket) factory.createSocket(host, port));
     }
     return socket;
   }
@@ -228,9 +228,9 @@ public abstract class AbstractTLSSocketFactory extends SSLSocketFactory
     throws IOException
   {
     SSLSocket socket = null;
-    if (this.factory != null) {
-      socket = this.initSSLSocket(
-        (SSLSocket) this.factory.createSocket(
+    if (factory != null) {
+      socket = initSSLSocket(
+        (SSLSocket) factory.createSocket(
           address,
           port,
           localAddress,
@@ -255,9 +255,9 @@ public abstract class AbstractTLSSocketFactory extends SSLSocketFactory
     throws IOException
   {
     SSLSocket socket = null;
-    if (this.factory != null) {
-      socket = this.initSSLSocket(
-        (SSLSocket) this.factory.createSocket(host, port));
+    if (factory != null) {
+      socket = initSSLSocket(
+        (SSLSocket) factory.createSocket(host, port));
     }
     return socket;
   }
@@ -285,9 +285,9 @@ public abstract class AbstractTLSSocketFactory extends SSLSocketFactory
     throws IOException
   {
     SSLSocket socket = null;
-    if (this.factory != null) {
-      socket = this.initSSLSocket(
-        (SSLSocket) this.factory.createSocket(
+    if (factory != null) {
+      socket = initSSLSocket(
+        (SSLSocket) factory.createSocket(
           host,
           port,
           localHost,
@@ -305,8 +305,8 @@ public abstract class AbstractTLSSocketFactory extends SSLSocketFactory
   public String[] getDefaultCipherSuites()
   {
     String[] ciphers = null;
-    if (this.factory != null) {
-      ciphers = this.factory.getDefaultCipherSuites();
+    if (factory != null) {
+      ciphers = factory.getDefaultCipherSuites();
     }
     return ciphers;
   }
@@ -321,8 +321,8 @@ public abstract class AbstractTLSSocketFactory extends SSLSocketFactory
   public String[] getSupportedCipherSuites()
   {
     String[] ciphers = null;
-    if (this.factory != null) {
-      ciphers = this.factory.getSupportedCipherSuites();
+    if (factory != null) {
+      ciphers = factory.getSupportedCipherSuites();
     }
     return ciphers;
   }

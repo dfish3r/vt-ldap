@@ -38,7 +38,7 @@ public class LdapConnectionTest
    *
    * @throws  Exception  On test failure.
    */
-  @Parameters({ "createEntry15" })
+  @Parameters("createEntry15")
   @BeforeClass(groups = {"ldapconntest"})
   public void add(final String ldifFile)
     throws Exception

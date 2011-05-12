@@ -55,7 +55,7 @@ public class X509CredentialConfig implements CredentialConfig
    */
   public String getTrustCertificates()
   {
-    return this.trustCertificates;
+    return trustCertificates;
   }
 
 
@@ -66,7 +66,7 @@ public class X509CredentialConfig implements CredentialConfig
    */
   public void setTrustCertificates(final String s)
   {
-    this.trustCertificates = s;
+    trustCertificates = s;
   }
 
 
@@ -77,7 +77,7 @@ public class X509CredentialConfig implements CredentialConfig
    */
   public String getAuthenticationCertificate()
   {
-    return this.authenticationCertificate;
+    return authenticationCertificate;
   }
 
 
@@ -88,7 +88,7 @@ public class X509CredentialConfig implements CredentialConfig
    */
   public void setAuthenticationCertificate(final String s)
   {
-    this.authenticationCertificate = s;
+    authenticationCertificate = s;
   }
 
 
@@ -99,7 +99,7 @@ public class X509CredentialConfig implements CredentialConfig
    */
   public String getAuthenticationKey()
   {
-    return this.authenticationKey;
+    return authenticationKey;
   }
 
 
@@ -110,27 +110,28 @@ public class X509CredentialConfig implements CredentialConfig
    */
   public void setAuthenticationKey(final String s)
   {
-    this.authenticationKey = s;
+    authenticationKey = s;
   }
 
 
   /** {@inheritDoc} */
+  @Override
   public SSLContextInitializer createSSLContextInitializer()
     throws GeneralSecurityException
   {
     final X509SSLContextInitializer sslInit = new X509SSLContextInitializer();
     try {
-      if (this.trustCertificates != null) {
+      if (trustCertificates != null) {
         sslInit.setTrustCertificates(
-          this.certsReader.read(this.trustCertificates));
+          certsReader.read(trustCertificates));
       }
-      if (this.authenticationCertificate != null) {
+      if (authenticationCertificate != null) {
         sslInit.setAuthenticationCertificate(
-          this.certReader.read(this.authenticationCertificate));
+          certReader.read(authenticationCertificate));
       }
-      if (this.authenticationKey != null) {
+      if (authenticationKey != null) {
         sslInit.setAuthenticationKey(
-          this.keyReader.read(this.authenticationKey));
+          keyReader.read(authenticationKey));
       }
     } catch (IOException e) {
       throw new GeneralSecurityException(e);

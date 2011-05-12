@@ -32,11 +32,12 @@ public class SimplePropertyInvoker extends AbstractPropertyInvoker
    */
   public SimplePropertyInvoker(final Class<?> c)
   {
-    this.initialize(c);
+    initialize(c);
   }
 
 
   /** {@inheritDoc} */
+  @Override
   protected Object convertValue(final Class<?> type, final String value)
   {
     Object newValue = value;

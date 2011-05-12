@@ -36,11 +36,11 @@ public class LdapRole implements Principal, Serializable, Comparable<Principal>
   /**
    * Creates a new ldap role with the supplied name.
    *
-   * @param  name  of this role
+   * @param  s  name of this role
    */
-  public LdapRole(final String name)
+  public LdapRole(final String s)
   {
-    this.name = name;
+    name = s;
   }
 
 
@@ -51,7 +51,7 @@ public class LdapRole implements Principal, Serializable, Comparable<Principal>
    */
   public String getName()
   {
-    return this.name;
+    return name;
   }
 
 
@@ -68,7 +68,7 @@ public class LdapRole implements Principal, Serializable, Comparable<Principal>
     if (o != null) {
       if (this != o) {
         if (o instanceof LdapRole) {
-          if (((LdapRole) o).getName().equals(this.name)) {
+          if (((LdapRole) o).getName().equals(name)) {
             b = true;
           }
         }
@@ -87,7 +87,7 @@ public class LdapRole implements Principal, Serializable, Comparable<Principal>
    */
   public int hashCode()
   {
-    return this.name.hashCode();
+    return name.hashCode();
   }
 
 
@@ -101,9 +101,9 @@ public class LdapRole implements Principal, Serializable, Comparable<Principal>
   {
     return String.format(
       "%s@%d::%s",
-      this.getClass().getName(),
-      this.hashCode(),
-      this.name);
+      getClass().getName(),
+      hashCode(),
+      name);
   }
 
 
@@ -118,6 +118,6 @@ public class LdapRole implements Principal, Serializable, Comparable<Principal>
    */
   public int compareTo(final Principal p)
   {
-    return this.name.compareTo(p.getName());
+    return name.compareTo(p.getName());
   }
 }

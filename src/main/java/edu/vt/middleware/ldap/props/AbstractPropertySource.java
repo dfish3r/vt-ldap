@@ -133,8 +133,9 @@ public abstract class AbstractPropertySource<T> implements PropertySource<T>
 
 
   /** {@inheritDoc} */
+  @Override
   public T get()
   {
-    return this.object;
+    return object;
   }
 }

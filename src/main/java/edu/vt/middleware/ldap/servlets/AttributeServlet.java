@@ -89,7 +89,7 @@ public final class AttributeServlet extends AbstractServlet
     }
 
     try {
-      final LdapResult result = this.search(
+      final LdapResult result = search(
         request.getParameter("query"),
         request.getParameterValues("attrs"));
       for (LdapEntry e : result.getEntries()) {
@@ -113,7 +113,7 @@ public final class AttributeServlet extends AbstractServlet
       }
 
     } catch (Exception e) {
-      this.logger.error("Error performing search", e);
+      logger.error("Error performing search", e);
       throw new ServletException(e.getMessage());
     }
   }

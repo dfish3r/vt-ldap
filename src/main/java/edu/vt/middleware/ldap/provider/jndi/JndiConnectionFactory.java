@@ -43,36 +43,37 @@ public class JndiConnectionFactory extends AbstractJndiConnectionFactory
     if (url == null) {
       throw new IllegalArgumentException("LDAP URL cannot be null");
     }
-    this.ldapUrl = url;
+    ldapUrl = url;
   }
 
 
   /** {@inheritDoc} */
+  @Override
   protected JndiConnection createInternal(
     final String url, final String dn, final Credential credential)
     throws LdapException
   {
-    this.logger.debug(
+    logger.debug(
       "Bind with the following parameters: url = {}, " +
       "authenticationType = {}, dn = {}, credential = {}, env = {}",
       new Object[] {
         url,
-        this.authenticationType,
+        authenticationType,
         dn,
-        this.logCredentials ? credential : "<suppressed>",
-        this.environment, });
+        logCredentials ? credential : "<suppressed>",
+        environment, });
 
     final Hashtable<String, Object> env = new Hashtable<String, Object>(
-      this.environment);
+      environment);
     env.put(PROVIDER_URL, url);
-    if (this.tracePackets != null) {
-      env.put(TRACE, this.tracePackets);
+    if (tracePackets != null) {
+      env.put(TRACE, tracePackets);
     }
 
     // note that when using simple authentication (the default),
     // if the credential is null the provider will automatically revert the
     // authentication to none
-    env.put(AUTHENTICATION, getAuthenticationType(this.authenticationType));
+    env.put(AUTHENTICATION, getAuthenticationType(authenticationType));
     if (dn != null) {
       env.put(PRINCIPAL, dn);
       if (credential != null) {
@@ -83,10 +84,10 @@ public class JndiConnectionFactory extends AbstractJndiConnectionFactory
     JndiConnection conn = null;
     try {
       conn = new JndiConnection(new InitialLdapContext(env, null));
-      conn.setRemoveDnUrls(this.removeDnUrls);
+      conn.setRemoveDnUrls(removeDnUrls);
       conn.setOperationRetryExceptions(
         NamingExceptionUtil.getNamingExceptions(
-          this.operationRetryResultCodes));
+          operationRetryResultCodes));
     } catch (javax.naming.AuthenticationException e) {
       throw new AuthenticationException(e, ResultCode.INVALID_CREDENTIALS);
     } catch (NamingException e) {

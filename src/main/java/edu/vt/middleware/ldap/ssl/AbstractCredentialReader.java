@@ -50,10 +50,11 @@ public abstract class AbstractCredentialReader<T> implements CredentialReader<T>
   private static final int FILE_START_INDEX = FILE_PREFIX.length();
 
   /** Logger for this class. */
-  protected final Logger logger = LoggerFactory.getLogger(this.getClass());
+  protected final Logger logger = LoggerFactory.getLogger(getClass());
 
 
   /** {@inheritDoc} */
+  @Override
   public T read(final String path, final String... params)
     throws IOException, GeneralSecurityException
   {
@@ -72,11 +73,11 @@ public abstract class AbstractCredentialReader<T> implements CredentialReader<T>
       try {
         return read(is, params);
       } finally {
-        this.logger.debug("Successfully loaded {}", path);
+        logger.debug("Successfully loaded {}", path);
         is.close();
       }
     } else {
-      this.logger.debug("Failed to load {}", path);
+      logger.debug("Failed to load {}", path);
       return null;
     }
   }

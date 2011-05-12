@@ -50,11 +50,11 @@ public class LdapResult extends AbstractLdapBean
   {
     super(sb);
     if (SortBehavior.UNORDERED == sb) {
-      this.entries = new HashMap<String, LdapEntry>();
+      entries = new HashMap<String, LdapEntry>();
     } else if (SortBehavior.ORDERED == sb) {
-      this.entries = new LinkedHashMap<String, LdapEntry>();
+      entries = new LinkedHashMap<String, LdapEntry>();
     } else if (SortBehavior.SORTED == sb) {
-      this.entries = new TreeMap<String, LdapEntry>(
+      entries = new TreeMap<String, LdapEntry>(
         String.CASE_INSENSITIVE_ORDER);
     }
   }
@@ -68,7 +68,7 @@ public class LdapResult extends AbstractLdapBean
   public LdapResult(final LdapEntry le)
   {
     this();
-    this.addEntry(le);
+    addEntry(le);
   }
 
 
@@ -80,7 +80,7 @@ public class LdapResult extends AbstractLdapBean
   public LdapResult(final Collection<LdapEntry> c)
   {
     this();
-    this.addEntries(c);
+    addEntries(c);
   }
 
 
@@ -91,7 +91,7 @@ public class LdapResult extends AbstractLdapBean
    */
   public Collection<LdapEntry> getEntries()
   {
-    return this.entries.values();
+    return entries.values();
   }
 
 
@@ -104,10 +104,10 @@ public class LdapResult extends AbstractLdapBean
    */
   public LdapEntry getEntry()
   {
-    if (this.entries.size() == 0) {
+    if (entries.size() == 0) {
       return null;
     }
-    return this.entries.values().iterator().next();
+    return entries.values().iterator().next();
   }
 
 
@@ -119,7 +119,7 @@ public class LdapResult extends AbstractLdapBean
    */
   public LdapEntry getEntry(final String dn)
   {
-    return this.entries.get(dn);
+    return entries.get(dn);
   }
 
 
@@ -130,8 +130,8 @@ public class LdapResult extends AbstractLdapBean
    */
   public String[] getEntryDns()
   {
-    return this.entries.keySet().toArray(
-      new String[this.entries.keySet().size()]);
+    return entries.keySet().toArray(
+      new String[entries.keySet().size()]);
   }
 
 
@@ -142,7 +142,7 @@ public class LdapResult extends AbstractLdapBean
    */
   public void addEntry(final LdapEntry le)
   {
-    this.entries.put(le.getDn(), le);
+    entries.put(le.getDn(), le);
   }
 
 
@@ -154,7 +154,7 @@ public class LdapResult extends AbstractLdapBean
   public void addEntries(final Collection<LdapEntry> c)
   {
     for (LdapEntry e : c) {
-      this.entries.put(e.getDn(), e);
+      entries.put(e.getDn(), e);
     }
   }
 
@@ -166,7 +166,7 @@ public class LdapResult extends AbstractLdapBean
    */
   public int size()
   {
-    return this.entries.size();
+    return entries.size();
   }
 
 
@@ -175,15 +175,16 @@ public class LdapResult extends AbstractLdapBean
    */
   public void clear()
   {
-    this.entries.clear();
+    entries.clear();
   }
 
 
   /** {@inheritDoc} */
+  @Override
   public int hashCode()
   {
     int hc = HASH_CODE_SEED;
-    for (LdapEntry e : this.entries.values()) {
+    for (LdapEntry e : entries.values()) {
       hc += e != null ? e.hashCode() : 0;
     }
     return hc;
@@ -198,6 +199,6 @@ public class LdapResult extends AbstractLdapBean
   @Override
   public String toString()
   {
-    return String.format("%s", this.entries.values());
+    return String.format("%s", entries.values());
   }
 }

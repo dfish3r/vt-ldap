@@ -53,12 +53,12 @@ public class LdapAttribute extends AbstractLdapBean
   public LdapAttribute(final SortBehavior sb)
   {
     super(sb);
-    if (SortBehavior.UNORDERED == this.sortBehavior) {
-      this.values = new HashSet<Object>();
-    } else if (SortBehavior.ORDERED == this.sortBehavior) {
-      this.values = new LinkedHashSet<Object>();
-    } else if (SortBehavior.SORTED == this.sortBehavior) {
-      this.values = new TreeSet<Object>();
+    if (SortBehavior.UNORDERED == sortBehavior) {
+      values = new HashSet<Object>();
+    } else if (SortBehavior.ORDERED == sortBehavior) {
+      values = new LinkedHashSet<Object>();
+    } else if (SortBehavior.SORTED == sortBehavior) {
+      values = new TreeSet<Object>();
     }
   }
 
@@ -66,41 +66,41 @@ public class LdapAttribute extends AbstractLdapBean
   /**
    * Creates a new ldap attribute.
    *
-   * @param  name  of this attribute
+   * @param  s  name of this attribute
    */
-  public LdapAttribute(final String name)
+  public LdapAttribute(final String s)
   {
     this();
-    this.setName(name);
+    setName(s);
   }
 
 
   /**
    * Creates a new ldap attribute.
    *
-   * @param  name  of this attribute
+   * @param  s  name of this attribute
    * @param  value  of this attribute
    */
-  public LdapAttribute(final String name, final Object value)
+  public LdapAttribute(final String s, final Object value)
   {
     this();
-    this.setName(name);
-    this.getValues().add(value);
+    setName(s);
+    getValues().add(value);
   }
 
 
   /**
    * Creates a new ldap attribute.
    *
-   * @param  name  of this attribute
-   * @param  values  of this attribute
+   * @param  s  name of this attribute
+   * @param  o  values of this attribute
    */
-  public LdapAttribute(final String name, final Object[] values)
+  public LdapAttribute(final String s, final Object[] o)
   {
     this();
-    this.setName(name);
-    for (Object o : values) {
-      this.getValues().add(o);
+    setName(s);
+    for (Object object : o) {
+      getValues().add(object);
     }
   }
 
@@ -108,14 +108,14 @@ public class LdapAttribute extends AbstractLdapBean
   /**
    * Creates a new ldap attribute.
    *
-   * @param  name  of this attribute
-   * @param  values  of this attribute
+   * @param  s  name of this attribute
+   * @param  o  values of this attribute
    */
-  public LdapAttribute(final String name, final Set<Object> values)
+  public LdapAttribute(final String s, final Set<Object> o)
   {
     this();
-    this.setName(name);
-    this.getValues().addAll(values);
+    setName(s);
+    getValues().addAll(o);
   }
 
 
@@ -126,18 +126,18 @@ public class LdapAttribute extends AbstractLdapBean
    */
   public String getName()
   {
-    return this.name;
+    return name;
   }
 
 
   /**
    * Sets the name of this attribute.
    *
-   * @param  name  to set
+   * @param  s  name to set
    */
-  public void setName(final String name)
+  public void setName(final String s)
   {
-    this.name = name;
+    name = s;
   }
 
 
@@ -148,7 +148,7 @@ public class LdapAttribute extends AbstractLdapBean
    */
   public Set<Object> getValues()
   {
-    return this.values;
+    return values;
   }
 
 
@@ -161,10 +161,10 @@ public class LdapAttribute extends AbstractLdapBean
    */
   public Object getValue()
   {
-    if (this.values.size() == 0) {
+    if (values.size() == 0) {
       return null;
     }
-    return this.values.iterator().next();
+    return values.iterator().next();
   }
 
 
@@ -176,7 +176,7 @@ public class LdapAttribute extends AbstractLdapBean
    */
   public Set<String> getStringValues()
   {
-    return Collections.unmodifiableSet(this.convertValuesToString());
+    return Collections.unmodifiableSet(convertValuesToString());
   }
 
 
@@ -188,7 +188,7 @@ public class LdapAttribute extends AbstractLdapBean
    */
   public String getStringValue()
   {
-    final Set<String> s = this.getStringValues();
+    final Set<String> s = getStringValues();
     if (s.size() == 0) {
       return null;
     }
@@ -204,7 +204,7 @@ public class LdapAttribute extends AbstractLdapBean
    */
   public Set<byte[]> getBinaryValues()
   {
-    return Collections.unmodifiableSet(this.convertValuesToByteArray());
+    return Collections.unmodifiableSet(convertValuesToByteArray());
   }
 
 
@@ -216,7 +216,7 @@ public class LdapAttribute extends AbstractLdapBean
    */
   public byte[] getBinaryValue()
   {
-    final Set<byte[]> s = this.getBinaryValues();
+    final Set<byte[]> s = getBinaryValues();
     if (s.size() == 0) {
       return null;
     }
@@ -225,11 +225,12 @@ public class LdapAttribute extends AbstractLdapBean
 
 
   /** {@inheritDoc} */
+  @Override
   public int hashCode()
   {
     int hc = HASH_CODE_SEED;
     hc += name != null ? name.toLowerCase().hashCode() : 0;
-    for (Object o : this.getValues()) {
+    for (Object o : getValues()) {
       if (o != null) {
         if (o instanceof String) {
           hc += o.hashCode();
@@ -253,7 +254,7 @@ public class LdapAttribute extends AbstractLdapBean
   @Override
   public String toString()
   {
-    return String.format("%s%s", this.name, this.values);
+    return String.format("%s%s", name, values);
   }
 
 
@@ -267,14 +268,14 @@ public class LdapAttribute extends AbstractLdapBean
   protected Set<String> convertValuesToString()
   {
     Set<String> s = null;
-    if (SortBehavior.UNORDERED == this.sortBehavior) {
+    if (SortBehavior.UNORDERED == sortBehavior) {
       s = new HashSet<String>();
-    } else if (SortBehavior.ORDERED == this.sortBehavior) {
+    } else if (SortBehavior.ORDERED == sortBehavior) {
       s = new LinkedHashSet<String>();
-    } else if (SortBehavior.SORTED == this.sortBehavior) {
+    } else if (SortBehavior.SORTED == sortBehavior) {
       s = new TreeSet<String>();
     }
-    for (Object o : this.values) {
+    for (Object o : values) {
       if (o != null) {
         if (o instanceof String) {
           s.add((String) o);
@@ -303,14 +304,14 @@ public class LdapAttribute extends AbstractLdapBean
   protected Set<byte[]> convertValuesToByteArray()
   {
     Set<byte[]> s = null;
-    if (SortBehavior.UNORDERED == this.sortBehavior) {
+    if (SortBehavior.UNORDERED == sortBehavior) {
       s = new HashSet<byte[]>();
-    } else if (SortBehavior.ORDERED == this.sortBehavior) {
+    } else if (SortBehavior.ORDERED == sortBehavior) {
       s = new LinkedHashSet<byte[]>();
-    } else if (SortBehavior.SORTED == this.sortBehavior) {
+    } else if (SortBehavior.SORTED == sortBehavior) {
       s = new TreeSet<byte[]>();
     }
-    for (Object o : this.values) {
+    for (Object o : values) {
       if (o != null) {
         if (o instanceof String) {
           final byte[] encodedValue = LdapUtil.utf8Encode((String) o);

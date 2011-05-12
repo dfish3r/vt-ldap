@@ -42,7 +42,7 @@ public class AuthenticatorCliTest extends AbstractTest
    *
    * @throws  Exception  On test failure.
    */
-  @Parameters({ "createEntry9" })
+  @Parameters("createEntry9")
   @BeforeClass(groups = {"authclitest"})
   public void createLdapEntry(final String ldifFile)
     throws Exception

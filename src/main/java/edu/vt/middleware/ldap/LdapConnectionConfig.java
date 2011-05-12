@@ -120,12 +120,12 @@ public class LdapConnectionConfig extends AbstractConfig
   /**
    * Creates a new ldap config.
    *
-   * @param  ldapUrl  to connect to
+   * @param  url  to connect to
    */
-  public LdapConnectionConfig(final String ldapUrl)
+  public LdapConnectionConfig(final String url)
   {
     this();
-    this.setLdapUrl(ldapUrl);
+    setLdapUrl(url);
   }
 
 
@@ -136,7 +136,7 @@ public class LdapConnectionConfig extends AbstractConfig
    */
   public LdapProvider getLdapProvider()
   {
-    return this.ldapProvider;
+    return ldapProvider;
   }
 
 
@@ -148,8 +148,8 @@ public class LdapConnectionConfig extends AbstractConfig
   public void setLdapProvider(final LdapProvider lp)
   {
     checkImmutable();
-    this.logger.trace("setting ldapProvider: {}", lp);
-    this.ldapProvider = lp;
+    logger.trace("setting ldapProvider: {}", lp);
+    ldapProvider = lp;
   }
 
 
@@ -160,7 +160,7 @@ public class LdapConnectionConfig extends AbstractConfig
    */
   public SSLSocketFactory getSslSocketFactory()
   {
-    return this.sslSocketFactory;
+    return sslSocketFactory;
   }
 
 
@@ -172,8 +172,8 @@ public class LdapConnectionConfig extends AbstractConfig
   public void setSslSocketFactory(final SSLSocketFactory sf)
   {
     checkImmutable();
-    this.logger.trace("setting sslSocketFactory: {}", sf);
-    this.sslSocketFactory = sf;
+    logger.trace("setting sslSocketFactory: {}", sf);
+    sslSocketFactory = sf;
   }
 
 
@@ -184,7 +184,7 @@ public class LdapConnectionConfig extends AbstractConfig
    */
   public HostnameVerifier getHostnameVerifier()
   {
-    return this.hostnameVerifier;
+    return hostnameVerifier;
   }
 
 
@@ -196,8 +196,8 @@ public class LdapConnectionConfig extends AbstractConfig
   public void setHostnameVerifier(final HostnameVerifier hv)
   {
     checkImmutable();
-    this.logger.trace("setting hostnameVerifier: {}", hv);
-    this.hostnameVerifier = hv;
+    logger.trace("setting hostnameVerifier: {}", hv);
+    hostnameVerifier = hv;
   }
 
 
@@ -208,7 +208,7 @@ public class LdapConnectionConfig extends AbstractConfig
    */
   public String getLdapUrl()
   {
-    return this.ldapUrl;
+    return ldapUrl;
   }
 
 
@@ -221,8 +221,8 @@ public class LdapConnectionConfig extends AbstractConfig
   {
     checkImmutable();
     checkStringInput(url, true);
-    this.logger.trace("setting ldapUrl: {}", url);
-    this.ldapUrl = url;
+    logger.trace("setting ldapUrl: {}", url);
+    ldapUrl = url;
   }
 
 
@@ -234,7 +234,7 @@ public class LdapConnectionConfig extends AbstractConfig
    */
   public long getTimeout()
   {
-    return this.timeout;
+    return timeout;
   }
 
 
@@ -247,8 +247,8 @@ public class LdapConnectionConfig extends AbstractConfig
   public void setTimeout(final long l)
   {
     checkImmutable();
-    this.logger.trace("setting timeout: {}", l);
-    this.timeout = l;
+    logger.trace("setting timeout: {}", l);
+    timeout = l;
   }
 
 
@@ -259,7 +259,7 @@ public class LdapConnectionConfig extends AbstractConfig
    */
   public String getBindDn()
   {
-    return this.bindDn;
+    return bindDn;
   }
 
 
@@ -272,8 +272,8 @@ public class LdapConnectionConfig extends AbstractConfig
   {
     checkImmutable();
     checkStringInput(dn, true);
-    this.logger.trace("setting bindDn: {}", dn);
-    this.bindDn = dn;
+    logger.trace("setting bindDn: {}", dn);
+    bindDn = dn;
   }
 
 
@@ -284,7 +284,7 @@ public class LdapConnectionConfig extends AbstractConfig
    */
   public Credential getBindCredential()
   {
-    return this.bindCredential;
+    return bindCredential;
   }
 
 
@@ -296,12 +296,12 @@ public class LdapConnectionConfig extends AbstractConfig
   public void setBindCredential(final Credential credential)
   {
     checkImmutable();
-    if (this.getLogCredentials()) {
-      this.logger.trace("setting bindCredential: {}", credential);
+    if (getLogCredentials()) {
+      logger.trace("setting bindCredential: {}", credential);
     } else {
-      this.logger.trace("setting bindCredential: <suppressed>");
+      logger.trace("setting bindCredential: <suppressed>");
     }
-    this.bindCredential = credential;
+    bindCredential = credential;
   }
 
 
@@ -312,7 +312,7 @@ public class LdapConnectionConfig extends AbstractConfig
    */
   public AuthenticationType getAuthenticationType()
   {
-    return this.authenticationType;
+    return authenticationType;
   }
 
 
@@ -324,8 +324,8 @@ public class LdapConnectionConfig extends AbstractConfig
   public void setAuthenticationType(final AuthenticationType type)
   {
     checkImmutable();
-    this.logger.trace("setting authenticationType: {}", type);
-    this.authenticationType = type;
+    logger.trace("setting authenticationType: {}", type);
+    authenticationType = type;
   }
 
 
@@ -337,7 +337,7 @@ public class LdapConnectionConfig extends AbstractConfig
    */
   public int getOperationRetry()
   {
-    return this.operationRetry;
+    return operationRetry;
   }
 
 
@@ -350,8 +350,8 @@ public class LdapConnectionConfig extends AbstractConfig
   public void setOperationRetry(final int i)
   {
     checkImmutable();
-    this.logger.trace("setting operationRetry: {}", i);
-    this.operationRetry = i;
+    logger.trace("setting operationRetry: {}", i);
+    operationRetry = i;
   }
 
 
@@ -362,7 +362,7 @@ public class LdapConnectionConfig extends AbstractConfig
    */
   public long getOperationRetryWait()
   {
-    return this.operationRetryWait;
+    return operationRetryWait;
   }
 
 
@@ -375,8 +375,8 @@ public class LdapConnectionConfig extends AbstractConfig
   public void setOperationRetryWait(final long l)
   {
     checkImmutable();
-    this.logger.trace("setting operationRetryWait: {}", l);
-    this.operationRetryWait = l;
+    logger.trace("setting operationRetryWait: {}", l);
+    operationRetryWait = l;
   }
 
 
@@ -390,7 +390,7 @@ public class LdapConnectionConfig extends AbstractConfig
    */
   public int getOperationRetryBackoff()
   {
-    return this.operationRetryBackoff;
+    return operationRetryBackoff;
   }
 
 
@@ -402,8 +402,8 @@ public class LdapConnectionConfig extends AbstractConfig
   public void setOperationRetryBackoff(final int backoff)
   {
     checkImmutable();
-    this.logger.trace("setting operationRetryBackoff: {}", backoff);
-    this.operationRetryBackoff = backoff;
+    logger.trace("setting operationRetryBackoff: {}", backoff);
+    operationRetryBackoff = backoff;
   }
 
 
@@ -414,7 +414,7 @@ public class LdapConnectionConfig extends AbstractConfig
    */
   public Map<String, Object> getProviderProperties()
   {
-    return this.providerProperties;
+    return providerProperties;
   }
 
 
@@ -426,8 +426,8 @@ public class LdapConnectionConfig extends AbstractConfig
   public void setProviderProperties(final Map<String, Object> props)
   {
     checkImmutable();
-    this.logger.trace("setting provider properties {}", props);
-    this.providerProperties = props;
+    logger.trace("setting provider properties {}", props);
+    providerProperties = props;
   }
 
 
@@ -438,7 +438,7 @@ public class LdapConnectionConfig extends AbstractConfig
    */
   public boolean getLogCredentials()
   {
-    return this.logCredentials;
+    return logCredentials;
   }
 
 
@@ -450,8 +450,8 @@ public class LdapConnectionConfig extends AbstractConfig
   public void setLogCredentials(final boolean b)
   {
     checkImmutable();
-    this.logger.trace("setting logCredentials: {}", b);
-    this.logCredentials = b;
+    logger.trace("setting logCredentials: {}", b);
+    logCredentials = b;
   }
 
 
@@ -462,7 +462,7 @@ public class LdapConnectionConfig extends AbstractConfig
    */
   public boolean getSsl()
   {
-    return this.isSslEnabled();
+    return isSslEnabled();
   }
 
 
@@ -473,7 +473,7 @@ public class LdapConnectionConfig extends AbstractConfig
    */
   public boolean isSslEnabled()
   {
-    return this.ssl;
+    return ssl;
   }
 
 
@@ -485,8 +485,8 @@ public class LdapConnectionConfig extends AbstractConfig
   public void setSsl(final boolean b)
   {
     checkImmutable();
-    this.logger.trace("setting ssl: {}", b);
-    this.ssl = b;
+    logger.trace("setting ssl: {}", b);
+    ssl = b;
   }
 
 
@@ -497,7 +497,7 @@ public class LdapConnectionConfig extends AbstractConfig
    */
   public boolean getTls()
   {
-    return this.isTlsEnabled();
+    return isTlsEnabled();
   }
 
 
@@ -508,7 +508,7 @@ public class LdapConnectionConfig extends AbstractConfig
    */
   public boolean isTlsEnabled()
   {
-    return this.tls;
+    return tls;
   }
 
 
@@ -520,8 +520,8 @@ public class LdapConnectionConfig extends AbstractConfig
   public void setTls(final boolean b)
   {
     checkImmutable();
-    this.logger.trace("setting tls: {}", b);
-    this.tls = b;
+    logger.trace("setting tls: {}", b);
+    tls = b;
   }
 
 
@@ -532,7 +532,7 @@ public class LdapConnectionConfig extends AbstractConfig
    */
   public ConnectionStrategy getConnectionStrategy()
   {
-    return this.connectionStrategy;
+    return connectionStrategy;
   }
 
 
@@ -544,8 +544,8 @@ public class LdapConnectionConfig extends AbstractConfig
   public void setConnectionStrategy(final ConnectionStrategy strategy)
   {
     checkImmutable();
-    this.logger.trace("setting connectionStrategy: {}", strategy);
-    this.connectionStrategy = strategy;
+    logger.trace("setting connectionStrategy: {}", strategy);
+    connectionStrategy = strategy;
   }
 
 
@@ -565,23 +565,23 @@ public class LdapConnectionConfig extends AbstractConfig
         "operationRetryWait=%s, operationRetryBackoff=%s, " +
         "providerProperties=%s, logCredentials=%s, ssl=%s, tls=%s, " +
         "connectionStrategy=%s",
-        this.getClass().getName(),
-        this.hashCode(),
-        this.ldapProvider,
-        this.sslSocketFactory,
-        this.hostnameVerifier,
-        this.ldapUrl,
-        this.timeout,
-        this.bindDn,
-        this.logCredentials ? this.bindCredential : "<suppressed>",
-        this.authenticationType,
-        this.operationRetry,
-        this.operationRetryWait,
-        this.operationRetryBackoff,
-        this.providerProperties,
-        this.logCredentials,
-        this.ssl,
-        this.tls,
-        this.connectionStrategy);
+        getClass().getName(),
+        hashCode(),
+        ldapProvider,
+        sslSocketFactory,
+        hostnameVerifier,
+        ldapUrl,
+        timeout,
+        bindDn,
+        logCredentials ? bindCredential : "<suppressed>",
+        authenticationType,
+        operationRetry,
+        operationRetryWait,
+        operationRetryBackoff,
+        providerProperties,
+        logCredentials,
+        ssl,
+        tls,
+        connectionStrategy);
   }
 }

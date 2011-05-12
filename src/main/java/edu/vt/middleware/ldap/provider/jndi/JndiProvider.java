@@ -28,6 +28,7 @@ public class JndiProvider implements LdapProvider
 
 
   /** {@inheritDoc} */
+  @Override
   public ConnectionFactory getConnectionFactory(final LdapConnectionConfig lcc)
   {
     ConnectionFactory cf = null;

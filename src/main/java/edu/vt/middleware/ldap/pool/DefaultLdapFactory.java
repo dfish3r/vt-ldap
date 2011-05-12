@@ -43,8 +43,8 @@ public class DefaultLdapFactory extends AbstractLdapFactory<LdapConnection>
    */
   public DefaultLdapFactory(final LdapConnectionConfig lcc)
   {
-    this.config = lcc;
-    this.config.makeImmutable();
+    config = lcc;
+    config.makeImmutable();
   }
 
 
@@ -56,7 +56,7 @@ public class DefaultLdapFactory extends AbstractLdapFactory<LdapConnection>
    */
   public boolean getConnectOnCreate()
   {
-    return this.connectOnCreate;
+    return connectOnCreate;
   }
 
 
@@ -68,19 +68,20 @@ public class DefaultLdapFactory extends AbstractLdapFactory<LdapConnection>
    */
   public void setConnectOnCreate(final boolean b)
   {
-    this.connectOnCreate = b;
+    connectOnCreate = b;
   }
 
 
   /** {@inheritDoc} */
+  @Override
   public LdapConnection create()
   {
-    LdapConnection conn = new LdapConnection(this.config);
-    if (this.connectOnCreate) {
+    LdapConnection conn = new LdapConnection(config);
+    if (connectOnCreate) {
       try {
         conn.open();
       } catch (LdapException e) {
-        this.logger.error("unabled to connect to the ldap", e);
+        logger.error("unabled to connect to the ldap", e);
         conn = null;
       }
     }
@@ -89,9 +90,10 @@ public class DefaultLdapFactory extends AbstractLdapFactory<LdapConnection>
 
 
   /** {@inheritDoc} */
+  @Override
   public void destroy(final LdapConnection lc)
   {
     lc.close();
-    this.logger.trace("destroyed ldap connection: {}", lc);
+    logger.trace("destroyed ldap connection: {}", lc);
   }
 }

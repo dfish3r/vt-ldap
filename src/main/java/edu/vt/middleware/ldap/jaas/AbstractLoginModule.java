@@ -73,7 +73,7 @@ public abstract class AbstractLoginModule implements LoginModule
     "userRoleAttribute|roleFilter|roleAttribute|noResultsIsError";
 
   /** Logger for this class. */
-  protected final Logger logger = LoggerFactory.getLogger(this.getClass());
+  protected final Logger logger = LoggerFactory.getLogger(getClass());
 
   /** Initialized subject. */
   protected Subject subject;
@@ -134,171 +134,175 @@ public abstract class AbstractLoginModule implements LoginModule
 
 
   /** {@inheritDoc} */
+  @Override
   public void initialize(
     final Subject subj,
     final CallbackHandler cbh,
     final Map<String, ?> state,
     final Map<String, ?> options)
   {
-    this.logger.trace("Begin initialize");
-    this.subject = subj;
-    this.callbackHandler = cbh;
-    this.sharedState = state;
+    logger.trace("Begin initialize");
+    subject = subj;
+    callbackHandler = cbh;
+    sharedState = state;
 
     final Iterator<String> i = options.keySet().iterator();
     while (i.hasNext()) {
       final String key = i.next();
       final String value = (String) options.get(key);
       if (key.equalsIgnoreCase("useFirstPass")) {
-        this.useFirstPass = Boolean.valueOf(value);
+        useFirstPass = Boolean.valueOf(value);
       } else if (key.equalsIgnoreCase("tryFirstPass")) {
-        this.tryFirstPass = Boolean.valueOf(value);
+        tryFirstPass = Boolean.valueOf(value);
       } else if (key.equalsIgnoreCase("storePass")) {
-        this.storePass = Boolean.valueOf(value);
+        storePass = Boolean.valueOf(value);
       } else if (key.equalsIgnoreCase("clearPass")) {
-        this.clearPass = Boolean.valueOf(value);
+        clearPass = Boolean.valueOf(value);
       } else if (key.equalsIgnoreCase("setLdapPrincipal")) {
-        this.setLdapPrincipal = Boolean.valueOf(value);
+        setLdapPrincipal = Boolean.valueOf(value);
       } else if (key.equalsIgnoreCase("setLdapDnPrincipal")) {
-        this.setLdapDnPrincipal = Boolean.valueOf(value);
+        setLdapDnPrincipal = Boolean.valueOf(value);
       } else if (key.equalsIgnoreCase("setLdapCredential")) {
-        this.setLdapCredential = Boolean.valueOf(value);
+        setLdapCredential = Boolean.valueOf(value);
       } else if (key.equalsIgnoreCase("defaultRole")) {
         for (String s : value.split(",")) {
-          this.defaultRole.add(new LdapRole(s.trim()));
+          defaultRole.add(new LdapRole(s.trim()));
         }
       } else if (key.equalsIgnoreCase("principalGroupName")) {
-        this.principalGroupName = value;
+        principalGroupName = value;
       } else if (key.equalsIgnoreCase("roleGroupName")) {
-        this.roleGroupName = value;
+        roleGroupName = value;
       }
     }
 
-    this.logger.debug(
+    logger.debug(
       "useFirstPass = {}, tryFirstPass = {}, storePass = {}, clearPass = {}, " +
       "setLdapPrincipal = {}, setLdapDnPrincipal = {}, " +
       "setLdapCredential = {}, defaultRole = {}, principalGroupName = {}, " +
       "roleGroupName = {}",
       new Object[] {
-        Boolean.toString(this.useFirstPass),
-        Boolean.toString(this.tryFirstPass),
-        Boolean.toString(this.storePass),
-        Boolean.toString(this.clearPass),
-        Boolean.toString(this.setLdapPrincipal),
-        Boolean.toString(this.setLdapDnPrincipal),
-        Boolean.toString(this.setLdapCredential),
-        this.defaultRole,
-        this.principalGroupName,
-        this.roleGroupName, });
+        Boolean.toString(useFirstPass),
+        Boolean.toString(tryFirstPass),
+        Boolean.toString(storePass),
+        Boolean.toString(clearPass),
+        Boolean.toString(setLdapPrincipal),
+        Boolean.toString(setLdapDnPrincipal),
+        Boolean.toString(setLdapCredential),
+        defaultRole,
+        principalGroupName,
+        roleGroupName, });
 
-    this.principals = new TreeSet<Principal>();
-    this.credentials = new HashSet<LdapCredential>();
-    this.roles = new TreeSet<Principal>();
+    principals = new TreeSet<Principal>();
+    credentials = new HashSet<LdapCredential>();
+    roles = new TreeSet<Principal>();
   }
 
 
   /** {@inheritDoc} */
+  @Override
   public boolean commit()
     throws LoginException
   {
-    this.logger.trace("Begin commit");
-    if (!this.loginSuccess) {
-      this.logger.debug("Login failed");
+    logger.trace("Begin commit");
+    if (!loginSuccess) {
+      logger.debug("Login failed");
       return false;
     }
 
-    if (this.subject.isReadOnly()) {
-      this.clearState();
+    if (subject.isReadOnly()) {
+      clearState();
       throw new LoginException("Subject is read-only.");
     }
-    this.subject.getPrincipals().addAll(this.principals);
-    this.logger.debug(
-      "Committed the following principals: {}", this.principals);
-    this.subject.getPrivateCredentials().addAll(this.credentials);
-    this.subject.getPrincipals().addAll(this.roles);
-    this.logger.debug("Committed the following roles: {}", this.roles);
-    if (this.principalGroupName != null) {
-      final LdapGroup group = new LdapGroup(this.principalGroupName);
-      for (Principal principal : this.principals) {
+    subject.getPrincipals().addAll(principals);
+    logger.debug(
+      "Committed the following principals: {}", principals);
+    subject.getPrivateCredentials().addAll(credentials);
+    subject.getPrincipals().addAll(roles);
+    logger.debug("Committed the following roles: {}", roles);
+    if (principalGroupName != null) {
+      final LdapGroup group = new LdapGroup(principalGroupName);
+      for (Principal principal : principals) {
         group.addMember(principal);
       }
-      this.subject.getPrincipals().add(group);
-      this.logger.debug("Committed the following principal group: {}", group);
+      subject.getPrincipals().add(group);
+      logger.debug("Committed the following principal group: {}", group);
     }
-    if (this.roleGroupName != null) {
-      final LdapGroup group = new LdapGroup(this.roleGroupName);
-      for (Principal role : this.roles) {
+    if (roleGroupName != null) {
+      final LdapGroup group = new LdapGroup(roleGroupName);
+      for (Principal role : roles) {
         group.addMember(role);
       }
-      this.subject.getPrincipals().add(group);
-      this.logger.debug("Committed the following role group: {}", group);
+      subject.getPrincipals().add(group);
+      logger.debug("Committed the following role group: {}", group);
     }
-    this.clearState();
-    this.commitSuccess = true;
+    clearState();
+    commitSuccess = true;
     return true;
   }
 
 
   /** {@inheritDoc} */
+  @Override
   public boolean abort()
     throws LoginException
   {
-    this.logger.trace("Begin abort");
-    if (!this.loginSuccess) {
+    logger.trace("Begin abort");
+    if (!loginSuccess) {
       return false;
-    } else if (this.loginSuccess && !this.commitSuccess) {
-      this.loginSuccess = false;
-      this.clearState();
+    } else if (loginSuccess && !commitSuccess) {
+      loginSuccess = false;
+      clearState();
     } else {
-      this.logout();
+      logout();
     }
     return true;
   }
 
 
   /** {@inheritDoc} */
+  @Override
   public boolean logout()
     throws LoginException
   {
-    this.logger.trace("Begin logout");
-    if (this.subject.isReadOnly()) {
-      this.clearState();
+    logger.trace("Begin logout");
+    if (subject.isReadOnly()) {
+      clearState();
       throw new LoginException("Subject is read-only.");
     }
 
-    final Iterator<LdapPrincipal> prinIter = this.subject.getPrincipals(
+    final Iterator<LdapPrincipal> prinIter = subject.getPrincipals(
       LdapPrincipal.class).iterator();
     while (prinIter.hasNext()) {
-      this.subject.getPrincipals().remove(prinIter.next());
+      subject.getPrincipals().remove(prinIter.next());
     }
 
-    final Iterator<LdapDnPrincipal> dnPrinIter = this.subject.getPrincipals(
+    final Iterator<LdapDnPrincipal> dnPrinIter = subject.getPrincipals(
       LdapDnPrincipal.class).iterator();
     while (dnPrinIter.hasNext()) {
-      this.subject.getPrincipals().remove(dnPrinIter.next());
+      subject.getPrincipals().remove(dnPrinIter.next());
     }
 
-    final Iterator<LdapRole> roleIter = this.subject.getPrincipals(
+    final Iterator<LdapRole> roleIter = subject.getPrincipals(
       LdapRole.class).iterator();
     while (roleIter.hasNext()) {
-      this.subject.getPrincipals().remove(roleIter.next());
+      subject.getPrincipals().remove(roleIter.next());
     }
 
-    final Iterator<LdapGroup> groupIter = this.subject.getPrincipals(
+    final Iterator<LdapGroup> groupIter = subject.getPrincipals(
       LdapGroup.class).iterator();
     while (groupIter.hasNext()) {
-      this.subject.getPrincipals().remove(groupIter.next());
+      subject.getPrincipals().remove(groupIter.next());
     }
 
-    final Iterator<LdapCredential> credIter = this.subject
+    final Iterator<LdapCredential> credIter = subject
         .getPrivateCredentials(LdapCredential.class).iterator();
     while (credIter.hasNext()) {
-      this.subject.getPrivateCredentials().remove(credIter.next());
+      subject.getPrivateCredentials().remove(credIter.next());
     }
 
-    this.clearState();
-    this.loginSuccess = false;
-    this.commitSuccess = false;
+    clearState();
+    loginSuccess = false;
+    commitSuccess = false;
     return true;
   }
 
@@ -400,13 +404,13 @@ public abstract class AbstractLoginModule implements LoginModule
    */
   protected void clearState()
   {
-    this.principals.clear();
-    this.credentials.clear();
-    this.roles.clear();
-    if (this.clearPass) {
-      this.sharedState.remove(LOGIN_NAME);
-      this.sharedState.remove(LOGIN_PASSWORD);
-      this.sharedState.remove(LOGIN_DN);
+    principals.clear();
+    credentials.clear();
+    roles.clear();
+    if (clearPass) {
+      sharedState.remove(LOGIN_NAME);
+      sharedState.remove(LOGIN_PASSWORD);
+      sharedState.remove(LOGIN_DN);
     }
   }
 
@@ -429,35 +433,35 @@ public abstract class AbstractLoginModule implements LoginModule
     final boolean useCallback)
     throws LoginException
   {
-    this.logger.trace(
+    logger.trace(
       "Begin getCredentials: useFistPass = {}, tryFistPass = {}, " +
       "useCallback = {}, callbackhandler class = {}, " +
       "name callback class = {}, password callback class = {}",
       new Object[] {
-        Boolean.toString(this.useFirstPass),
-        Boolean.toString(this.tryFirstPass),
+        Boolean.toString(useFirstPass),
+        Boolean.toString(tryFirstPass),
         Boolean.toString(useCallback),
-        this.callbackHandler.getClass().getName(),
+        callbackHandler.getClass().getName(),
         nameCb.getClass().getName(),
         passCb.getClass().getName(), });
     try {
-      if ((this.useFirstPass || this.tryFirstPass) && !useCallback) {
-        nameCb.setName((String) this.sharedState.get(LOGIN_NAME));
-        passCb.setPassword((char[]) this.sharedState.get(LOGIN_PASSWORD));
-      } else if (this.callbackHandler != null) {
-        this.callbackHandler.handle(new Callback[] {nameCb, passCb});
+      if ((useFirstPass || tryFirstPass) && !useCallback) {
+        nameCb.setName((String) sharedState.get(LOGIN_NAME));
+        passCb.setPassword((char[]) sharedState.get(LOGIN_PASSWORD));
+      } else if (callbackHandler != null) {
+        callbackHandler.handle(new Callback[] {nameCb, passCb});
       } else {
         throw new LoginException(
           "No CallbackHandler available. " +
           "Set useFirstPass, tryFirstPass, or provide a CallbackHandler");
       }
     } catch (IOException e) {
-      this.logger.error("Error reading data from callback handler", e);
-      this.loginSuccess = false;
+      logger.error("Error reading data from callback handler", e);
+      loginSuccess = false;
       throw new LoginException(e.getMessage());
     } catch (UnsupportedCallbackException e) {
-      this.logger.error("Unsupported callback", e);
-      this.loginSuccess = false;
+      logger.error("Unsupported callback", e);
+      loginSuccess = false;
       throw new LoginException(e.getMessage());
     }
   }
@@ -477,15 +481,15 @@ public abstract class AbstractLoginModule implements LoginModule
     final PasswordCallback passCb,
     final String loginDn)
   {
-    if (this.storePass) {
+    if (storePass) {
       if (nameCb != null && nameCb.getName() != null) {
-        this.sharedState.put(LOGIN_NAME, nameCb.getName());
+        sharedState.put(LOGIN_NAME, nameCb.getName());
       }
       if (passCb != null && passCb.getPassword() != null) {
-        this.sharedState.put(LOGIN_PASSWORD, passCb.getPassword());
+        sharedState.put(LOGIN_PASSWORD, passCb.getPassword());
       }
       if (loginDn != null) {
-        this.sharedState.put(LOGIN_DN, loginDn);
+        sharedState.put(LOGIN_DN, loginDn);
       }
     }
   }

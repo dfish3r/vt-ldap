@@ -30,7 +30,7 @@ public abstract class AbstractLdapOperation<Q extends LdapRequest, S>
 {
 
   /** Logger for this class. */
-  protected final Logger logger = LoggerFactory.getLogger(this.getClass());
+  protected final Logger logger = LoggerFactory.getLogger(getClass());
 
   /** Ldap connection to perform operation. */
   protected LdapConnection ldapConnection;
@@ -53,9 +53,9 @@ public abstract class AbstractLdapOperation<Q extends LdapRequest, S>
    */
   protected void initialize(final LdapConnectionConfig lcc)
   {
-    this.operationRetry = lcc.getOperationRetry();
-    this.operationRetryWait = lcc.getOperationRetryWait();
-    this.operationRetryBackoff = lcc.getOperationRetryBackoff();
+    operationRetry = lcc.getOperationRetry();
+    operationRetryWait = lcc.getOperationRetryWait();
+    operationRetryBackoff = lcc.getOperationRetryBackoff();
   }
 
 
@@ -68,7 +68,7 @@ public abstract class AbstractLdapOperation<Q extends LdapRequest, S>
    */
   public int getOperationRetry()
   {
-    return this.operationRetry;
+    return operationRetry;
   }
 
 
@@ -79,7 +79,7 @@ public abstract class AbstractLdapOperation<Q extends LdapRequest, S>
    */
   public void setOperationRetry(final int retry)
   {
-    this.operationRetry = retry;
+    operationRetry = retry;
   }
 
 
@@ -92,7 +92,7 @@ public abstract class AbstractLdapOperation<Q extends LdapRequest, S>
    */
   public long getOperationRetryWait()
   {
-    return this.operationRetryWait;
+    return operationRetryWait;
   }
 
 
@@ -103,7 +103,7 @@ public abstract class AbstractLdapOperation<Q extends LdapRequest, S>
    */
   public void setOperationRetryWait(final long wait)
   {
-    this.operationRetryWait = wait;
+    operationRetryWait = wait;
   }
 
 
@@ -116,7 +116,7 @@ public abstract class AbstractLdapOperation<Q extends LdapRequest, S>
    */
   public int getOperationRetryBackoff()
   {
-    return this.operationRetryBackoff;
+    return operationRetryBackoff;
   }
 
 
@@ -127,7 +127,7 @@ public abstract class AbstractLdapOperation<Q extends LdapRequest, S>
    */
   public void setOperationRetryBackoff(final int backoff)
   {
-    this.operationRetryBackoff = backoff;
+    operationRetryBackoff = backoff;
   }
 
 
@@ -154,23 +154,24 @@ public abstract class AbstractLdapOperation<Q extends LdapRequest, S>
 
 
   /** {@inheritDoc} */
+  @Override
   public LdapResponse<S> execute(final Q request)
     throws LdapException
   {
-    this.logger.debug(
-      "request={}, connection={}", request, this.ldapConnection);
+    logger.debug(
+      "request={}, connection={}", request, ldapConnection);
 
     LdapResponse<S> response = null;
-    this.initializeRequest(
-      request, this.ldapConnection.getLdapConnectionConfig());
+    initializeRequest(
+      request, ldapConnection.getLdapConnectionConfig());
     for (int i = 0;
-         i <= this.operationRetry || this.operationRetry == -1;
+         i <= operationRetry || operationRetry == -1;
          i++) {
       try {
-        response = this.invoke(request);
+        response = invoke(request);
         break;
       } catch (OperationException e) {
-        this.operationRetry(e, i);
+        operationRetry(e, i);
       }
     }
     return response;
@@ -191,22 +192,22 @@ public abstract class AbstractLdapOperation<Q extends LdapRequest, S>
   protected void operationRetry(final LdapException e, final int count)
     throws LdapException
   {
-    if (count < this.operationRetry || this.operationRetry == -1) {
-      this.logger.warn(
+    if (count < operationRetry || operationRetry == -1) {
+      logger.warn(
         "Error performing LDAP operation, retrying (attempt {})", count, e);
-      this.ldapConnection.close();
-      if (this.operationRetryWait > 0) {
-        long sleepTime = this.operationRetryWait;
-        if (this.operationRetryBackoff > 0 && count > 0) {
-          sleepTime = sleepTime * this.operationRetryBackoff * count;
+      ldapConnection.close();
+      if (operationRetryWait > 0) {
+        long sleepTime = operationRetryWait;
+        if (operationRetryBackoff > 0 && count > 0) {
+          sleepTime = sleepTime * operationRetryBackoff * count;
         }
         try {
           Thread.sleep(sleepTime);
         } catch (InterruptedException ie) {
-          this.logger.debug("Operation retry wait interrupted", ie);
+          logger.debug("Operation retry wait interrupted", ie);
         }
       }
-      this.ldapConnection.open();
+      ldapConnection.open();
     } else {
       throw e;
     }

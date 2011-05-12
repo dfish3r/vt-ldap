@@ -40,8 +40,8 @@ public class CompareRequest implements LdapRequest
    */
   public CompareRequest(final String dn, final LdapAttribute la)
   {
-    this.setDn(dn);
-    this.setAttribute(la);
+    setDn(dn);
+    setAttribute(la);
   }
 
 
@@ -52,7 +52,7 @@ public class CompareRequest implements LdapRequest
    */
   public String getDn()
   {
-    return this.compareDn;
+    return compareDn;
   }
 
 
@@ -63,7 +63,7 @@ public class CompareRequest implements LdapRequest
    */
   public void setDn(final String dn)
   {
-    this.compareDn = dn;
+    compareDn = dn;
   }
 
 
@@ -76,7 +76,7 @@ public class CompareRequest implements LdapRequest
    */
   public LdapAttribute getAttribute()
   {
-    return this.attribute;
+    return attribute;
   }
 
 
@@ -87,7 +87,7 @@ public class CompareRequest implements LdapRequest
    */
   public void setAttribute(final LdapAttribute la)
   {
-    this.attribute = la;
+    attribute = la;
   }
 
 
@@ -102,9 +102,9 @@ public class CompareRequest implements LdapRequest
     return
       String.format(
         "%s@%d: compareDn=%s, attribute=%s",
-        this.getClass().getName(),
-        this.hashCode(),
-        this.compareDn,
-        this.attribute);
+        getClass().getName(),
+        hashCode(),
+        compareDn,
+        attribute);
   }
 }

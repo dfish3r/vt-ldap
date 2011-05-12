@@ -50,7 +50,7 @@ public class LdapException extends Exception
   public LdapException(final String msg, final ResultCode rc)
   {
     super(msg);
-    this.resultCode = rc;
+    resultCode = rc;
   }
 
 
@@ -74,7 +74,7 @@ public class LdapException extends Exception
   public LdapException(final Exception e, final ResultCode rc)
   {
     super(e);
-    this.resultCode = rc;
+    resultCode = rc;
   }
 
 
@@ -100,7 +100,7 @@ public class LdapException extends Exception
   public LdapException(final String msg, final Exception e, final ResultCode rc)
   {
     super(msg, e);
-    this.resultCode = rc;
+    resultCode = rc;
   }
 
 
@@ -112,6 +112,6 @@ public class LdapException extends Exception
    */
   public ResultCode getResultCode()
   {
-    return this.resultCode;
+    return resultCode;
   }
 }

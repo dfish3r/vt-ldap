@@ -61,7 +61,7 @@ public class LdapPoolTest extends AbstractTest
   }
 
   /** Log for this class. */
-  protected final Log logger = LogFactory.getLog(this.getClass());
+  protected final Log logger = LogFactory.getLog(getClass());
 
   /** LdapPool instance for concurrency testing. */
   private SoftLimitLdapPool softLimitPool;
@@ -126,7 +126,7 @@ public class LdapPoolTest extends AbstractTest
     softLimitLpc.setPruneTimerPeriod(5000L);
     softLimitLpc.setExpirationTime(1000L);
     softLimitLpc.setValidateTimerPeriod(5000L);
-    this.softLimitPool = new SoftLimitLdapPool(softLimitLpc, factory);
+    softLimitPool = new SoftLimitLdapPool(softLimitLpc, factory);
 
     final LdapPoolConfig blockingLpc = new LdapPoolConfig();
     blockingLpc.setValidateOnCheckIn(true);
@@ -135,7 +135,7 @@ public class LdapPoolTest extends AbstractTest
     blockingLpc.setPruneTimerPeriod(5000L);
     blockingLpc.setExpirationTime(1000L);
     blockingLpc.setValidateTimerPeriod(5000L);
-    this.blockingPool = new BlockingLdapPool(blockingLpc, factory);
+    blockingPool = new BlockingLdapPool(blockingLpc, factory);
 
     final LdapPoolConfig blockingTimeoutLpc = new LdapPoolConfig();
     blockingTimeoutLpc.setValidateOnCheckIn(true);
@@ -144,8 +144,8 @@ public class LdapPoolTest extends AbstractTest
     blockingTimeoutLpc.setPruneTimerPeriod(5000L);
     blockingTimeoutLpc.setExpirationTime(1000L);
     blockingTimeoutLpc.setValidateTimerPeriod(5000L);
-    this.blockingTimeoutPool = new BlockingLdapPool(blockingLpc, factory);
-    this.blockingTimeoutPool.setBlockWaitTime(1000L);
+    blockingTimeoutPool = new BlockingLdapPool(blockingLpc, factory);
+    blockingTimeoutPool.setBlockWaitTime(1000L);
 
     final LdapPoolConfig sharedLpc = new LdapPoolConfig();
     sharedLpc.setValidateOnCheckIn(true);
@@ -154,7 +154,7 @@ public class LdapPoolTest extends AbstractTest
     sharedLpc.setPruneTimerPeriod(5000L);
     sharedLpc.setExpirationTime(1000L);
     sharedLpc.setValidateTimerPeriod(5000L);
-    this.sharedPool = new SharedLdapPool(sharedLpc, factory);
+    sharedPool = new SharedLdapPool(sharedLpc, factory);
 
     final LdapConnectionConfig connStrategyLcc =
       TestUtil.createLdapConnection().getLdapConnectionConfig();
@@ -163,14 +163,14 @@ public class LdapPoolTest extends AbstractTest
     connStrategyLcc.setConnectionStrategy(ConnectionStrategy.ROUND_ROBIN);
     final DefaultLdapFactory connStrategyFactory = new DefaultLdapFactory(
       connStrategyLcc);
-    this.connStrategyPool = new BlockingLdapPool(
+    connStrategyPool = new BlockingLdapPool(
       new LdapPoolConfig(), connStrategyFactory);
 
     // configure comparison pools
     final LdapPoolConfig vtComparisonLpc = new LdapPoolConfig();
     vtComparisonLpc.setValidateOnCheckIn(true);
     vtComparisonLpc.setValidateOnCheckOut(true);
-    this.vtComparisonPool = new BlockingLdapPool(vtComparisonLpc, factory);
+    vtComparisonPool = new BlockingLdapPool(vtComparisonLpc, factory);
 
     final DefaultLdapPoolableObjectFactory commonsFactory =
       new DefaultLdapPoolableObjectFactory(lcc);
@@ -178,9 +178,9 @@ public class LdapPoolTest extends AbstractTest
       new CompareLdapValidator(
         "ou=test,dc=vt,dc=edu",
         new SearchFilter("ou=test")));
-    this.commonsComparisonPool = new CommonsLdapPool(commonsFactory);
-    this.commonsComparisonPool.setTestOnReturn(true);
-    this.commonsComparisonPool.setTestOnBorrow(true);
+    commonsComparisonPool = new CommonsLdapPool(commonsFactory);
+    commonsComparisonPool.setTestOnReturn(true);
+    commonsComparisonPool.setTestOnBorrow(true);
   }
 
 
@@ -256,11 +256,11 @@ public class LdapPoolTest extends AbstractTest
       super.createLdapEntry(e.getValue()[0]);
     }
 
-    this.softLimitPool.initialize();
-    this.blockingPool.initialize();
-    this.blockingTimeoutPool.initialize();
-    this.sharedPool.initialize();
-    this.connStrategyPool.initialize();
+    softLimitPool.initialize();
+    blockingPool.initialize();
+    blockingTimeoutPool.initialize();
+    sharedPool.initialize();
+    connStrategyPool.initialize();
   }
 
 
@@ -359,32 +359,32 @@ public class LdapPoolTest extends AbstractTest
     super.deleteLdapEntry(entries.get("9")[0].getDn());
     super.deleteLdapEntry(entries.get("10")[0].getDn());
 
-    this.softLimitPool.close();
-    AssertJUnit.assertEquals(this.softLimitPool.availableCount(), 0);
-    AssertJUnit.assertEquals(this.softLimitPool.activeCount(), 0);
-    this.blockingPool.close();
-    AssertJUnit.assertEquals(this.blockingPool.availableCount(), 0);
-    AssertJUnit.assertEquals(this.blockingPool.activeCount(), 0);
-    this.blockingTimeoutPool.close();
-    AssertJUnit.assertEquals(this.blockingTimeoutPool.availableCount(), 0);
-    AssertJUnit.assertEquals(this.blockingTimeoutPool.activeCount(), 0);
-    this.sharedPool.close();
-    AssertJUnit.assertEquals(this.sharedPool.availableCount(), 0);
-    AssertJUnit.assertEquals(this.sharedPool.activeCount(), 0);
-    this.connStrategyPool.close();
-    AssertJUnit.assertEquals(this.connStrategyPool.availableCount(), 0);
-    AssertJUnit.assertEquals(this.connStrategyPool.activeCount(), 0);
-    this.vtComparisonPool.close();
-    AssertJUnit.assertEquals(this.vtComparisonPool.availableCount(), 0);
-    AssertJUnit.assertEquals(this.vtComparisonPool.activeCount(), 0);
-    this.commonsComparisonPool.clear();
-    this.commonsComparisonPool.close();
-    AssertJUnit.assertEquals(this.commonsComparisonPool.getNumActive(), 0);
-    AssertJUnit.assertEquals(this.commonsComparisonPool.getNumIdle(), 0);
+    softLimitPool.close();
+    AssertJUnit.assertEquals(softLimitPool.availableCount(), 0);
+    AssertJUnit.assertEquals(softLimitPool.activeCount(), 0);
+    blockingPool.close();
+    AssertJUnit.assertEquals(blockingPool.availableCount(), 0);
+    AssertJUnit.assertEquals(blockingPool.activeCount(), 0);
+    blockingTimeoutPool.close();
+    AssertJUnit.assertEquals(blockingTimeoutPool.availableCount(), 0);
+    AssertJUnit.assertEquals(blockingTimeoutPool.activeCount(), 0);
+    sharedPool.close();
+    AssertJUnit.assertEquals(sharedPool.availableCount(), 0);
+    AssertJUnit.assertEquals(sharedPool.activeCount(), 0);
+    connStrategyPool.close();
+    AssertJUnit.assertEquals(connStrategyPool.availableCount(), 0);
+    AssertJUnit.assertEquals(connStrategyPool.activeCount(), 0);
+    vtComparisonPool.close();
+    AssertJUnit.assertEquals(vtComparisonPool.availableCount(), 0);
+    AssertJUnit.assertEquals(vtComparisonPool.activeCount(), 0);
+    commonsComparisonPool.clear();
+    commonsComparisonPool.close();
+    AssertJUnit.assertEquals(commonsComparisonPool.getNumActive(), 0);
+    AssertJUnit.assertEquals(commonsComparisonPool.getNumIdle(), 0);
     // vt pool should be minimally faster
     AssertJUnit.assertEquals(
-      this.vtPoolRuntime,
-      Math.min(this.vtPoolRuntime, this.commonsPoolRuntime));
+      vtPoolRuntime,
+      Math.min(vtPoolRuntime, commonsPoolRuntime));
   }
 
 
@@ -471,7 +471,7 @@ public class LdapPoolTest extends AbstractTest
     throws Exception
   {
     try {
-      this.softLimitPool.getLdapPoolConfig().setMinPoolSize(8);
+      softLimitPool.getLdapPoolConfig().setMinPoolSize(8);
       AssertJUnit.fail("Expected illegalstateexception to be thrown");
     } catch (IllegalStateException e) {
       AssertJUnit.assertEquals(IllegalStateException.class, e.getClass());
@@ -479,7 +479,7 @@ public class LdapPoolTest extends AbstractTest
 
     LdapConnection conn = null;
     try {
-      conn = this.softLimitPool.checkOut();
+      conn = softLimitPool.checkOut();
       try {
         conn.setLdapConnectionConfig(new LdapConnectionConfig());
         AssertJUnit.fail("Expected illegalstateexception to be thrown");
@@ -493,7 +493,7 @@ public class LdapPoolTest extends AbstractTest
         AssertJUnit.assertEquals(IllegalStateException.class, e.getClass());
       }
     } finally {
-      this.softLimitPool.checkIn(conn);
+      softLimitPool.checkIn(conn);
     }
   }
 
@@ -516,8 +516,8 @@ public class LdapPoolTest extends AbstractTest
     final LdapEntry results)
     throws Exception
   {
-    this.softLimitRuntime += this.search(
-      this.softLimitPool,
+    softLimitRuntime += search(
+      softLimitPool,
       request,
       results);
   }
@@ -542,8 +542,8 @@ public class LdapPoolTest extends AbstractTest
     final LdapEntry results)
     throws Exception
   {
-    this.softLimitRuntime += this.search(
-      this.softLimitPool,
+    softLimitRuntime += search(
+      softLimitPool,
       request,
       results);
   }
@@ -558,10 +558,10 @@ public class LdapPoolTest extends AbstractTest
     throws Exception
   {
     Thread.sleep(10000);
-    AssertJUnit.assertEquals(0, this.softLimitPool.activeCount());
+    AssertJUnit.assertEquals(0, softLimitPool.activeCount());
     AssertJUnit.assertEquals(
       LdapPoolConfig.DEFAULT_MIN_POOL_SIZE,
-      this.softLimitPool.availableCount());
+      softLimitPool.availableCount());
   }
 
 
@@ -571,7 +571,7 @@ public class LdapPoolTest extends AbstractTest
     throws Exception
   {
     try {
-      this.blockingPool.getLdapPoolConfig().setMinPoolSize(8);
+      blockingPool.getLdapPoolConfig().setMinPoolSize(8);
       AssertJUnit.fail("Expected illegalstateexception to be thrown");
     } catch (IllegalStateException e) {
       AssertJUnit.assertEquals(IllegalStateException.class, e.getClass());
@@ -579,7 +579,7 @@ public class LdapPoolTest extends AbstractTest
 
     LdapConnection conn = null;
     try {
-      conn = this.blockingPool.checkOut();
+      conn = blockingPool.checkOut();
       try {
         conn.setLdapConnectionConfig(new LdapConnectionConfig());
         AssertJUnit.fail("Expected illegalstateexception to be thrown");
@@ -593,7 +593,7 @@ public class LdapPoolTest extends AbstractTest
         AssertJUnit.assertEquals(IllegalStateException.class, e.getClass());
       }
     } finally {
-      this.blockingPool.checkIn(conn);
+      blockingPool.checkIn(conn);
     }
   }
 
@@ -616,8 +616,8 @@ public class LdapPoolTest extends AbstractTest
     final LdapEntry results)
     throws Exception
   {
-    this.blockingRuntime += this.search(
-      this.blockingPool,
+    blockingRuntime += search(
+      blockingPool,
       request,
       results);
   }
@@ -642,8 +642,8 @@ public class LdapPoolTest extends AbstractTest
     final LdapEntry results)
     throws Exception
   {
-    this.blockingRuntime += this.search(
-      this.blockingPool,
+    blockingRuntime += search(
+      blockingPool,
       request,
       results);
   }
@@ -668,8 +668,8 @@ public class LdapPoolTest extends AbstractTest
     final LdapEntry results)
     throws Exception
   {
-    this.blockingRuntime += this.search(
-      this.blockingPool,
+    blockingRuntime += search(
+      blockingPool,
       request,
       results);
   }
@@ -684,10 +684,10 @@ public class LdapPoolTest extends AbstractTest
     throws Exception
   {
     Thread.sleep(10000);
-    AssertJUnit.assertEquals(0, this.blockingPool.activeCount());
+    AssertJUnit.assertEquals(0, blockingPool.activeCount());
     AssertJUnit.assertEquals(
       LdapPoolConfig.DEFAULT_MIN_POOL_SIZE,
-      this.blockingPool.availableCount());
+      blockingPool.availableCount());
   }
 
 
@@ -710,12 +710,12 @@ public class LdapPoolTest extends AbstractTest
     throws Exception
   {
     try {
-      this.blockingTimeoutRuntime += this.search(
-        this.blockingTimeoutPool,
+      blockingTimeoutRuntime += search(
+        blockingTimeoutPool,
         request,
         results);
     } catch (BlockingTimeoutException e) {
-      this.logger.info("block timeout exceeded");
+      logger.info("block timeout exceeded");
     }
   }
 
@@ -740,12 +740,12 @@ public class LdapPoolTest extends AbstractTest
     throws Exception
   {
     try {
-      this.blockingTimeoutRuntime += this.search(
-        this.blockingTimeoutPool,
+      blockingTimeoutRuntime += search(
+        blockingTimeoutPool,
         request,
         results);
     } catch (BlockingTimeoutException e) {
-      this.logger.info("block timeout exceeded");
+      logger.info("block timeout exceeded");
     }
   }
 
@@ -770,12 +770,12 @@ public class LdapPoolTest extends AbstractTest
     throws Exception
   {
     try {
-      this.blockingTimeoutRuntime += this.search(
-        this.blockingTimeoutPool,
+      blockingTimeoutRuntime += search(
+        blockingTimeoutPool,
         request,
         results);
     } catch (BlockingTimeoutException e) {
-      this.logger.info("block timeout exceeded");
+      logger.info("block timeout exceeded");
     }
   }
 
@@ -789,10 +789,10 @@ public class LdapPoolTest extends AbstractTest
     throws Exception
   {
     Thread.sleep(10000);
-    AssertJUnit.assertEquals(0, this.blockingTimeoutPool.activeCount());
+    AssertJUnit.assertEquals(0, blockingTimeoutPool.activeCount());
     AssertJUnit.assertEquals(
       LdapPoolConfig.DEFAULT_MIN_POOL_SIZE,
-      this.blockingTimeoutPool.availableCount());
+      blockingTimeoutPool.availableCount());
   }
 
 
@@ -802,7 +802,7 @@ public class LdapPoolTest extends AbstractTest
     throws Exception
   {
     try {
-      this.sharedPool.getLdapPoolConfig().setMinPoolSize(8);
+      sharedPool.getLdapPoolConfig().setMinPoolSize(8);
       AssertJUnit.fail("Expected illegalstateexception to be thrown");
     } catch (IllegalStateException e) {
       AssertJUnit.assertEquals(IllegalStateException.class, e.getClass());
@@ -810,7 +810,7 @@ public class LdapPoolTest extends AbstractTest
 
     LdapConnection conn = null;
     try {
-      conn = this.sharedPool.checkOut();
+      conn = sharedPool.checkOut();
       try {
         conn.setLdapConnectionConfig(new LdapConnectionConfig());
         AssertJUnit.fail("Expected illegalstateexception to be thrown");
@@ -824,7 +824,7 @@ public class LdapPoolTest extends AbstractTest
         AssertJUnit.assertEquals(IllegalStateException.class, e.getClass());
       }
     } finally {
-      this.sharedPool.checkIn(conn);
+      sharedPool.checkIn(conn);
     }
   }
 
@@ -847,8 +847,8 @@ public class LdapPoolTest extends AbstractTest
     final LdapEntry results)
     throws Exception
   {
-    this.sharedRuntime += this.search(
-      this.sharedPool,
+    sharedRuntime += search(
+      sharedPool,
       request,
       results);
   }
@@ -873,8 +873,8 @@ public class LdapPoolTest extends AbstractTest
     final LdapEntry results)
     throws Exception
   {
-    this.sharedRuntime += this.search(
-      this.sharedPool,
+    sharedRuntime += search(
+      sharedPool,
       request,
       results);
   }
@@ -899,8 +899,8 @@ public class LdapPoolTest extends AbstractTest
     final LdapEntry results)
     throws Exception
   {
-    this.sharedRuntime += this.search(
-      this.sharedPool,
+    sharedRuntime += search(
+      sharedPool,
       request,
       results);
   }
@@ -915,10 +915,10 @@ public class LdapPoolTest extends AbstractTest
     throws Exception
   {
     Thread.sleep(10000);
-    AssertJUnit.assertEquals(0, this.sharedPool.activeCount());
+    AssertJUnit.assertEquals(0, sharedPool.activeCount());
     AssertJUnit.assertEquals(
       LdapPoolConfig.DEFAULT_MIN_POOL_SIZE,
-      this.sharedPool.availableCount());
+      sharedPool.availableCount());
   }
 
 
@@ -940,7 +940,7 @@ public class LdapPoolTest extends AbstractTest
     final LdapEntry results)
     throws Exception
   {
-    this.search(this.connStrategyPool, request, results);
+    search(connStrategyPool, request, results);
   }
 
 
@@ -963,21 +963,21 @@ public class LdapPoolTest extends AbstractTest
     LdapConnection conn = null;
     LdapResult result = null;
     try {
-      if (this.logger.isTraceEnabled()) {
-        this.logger.trace("waiting for pool checkout");
+      if (logger.isTraceEnabled()) {
+        logger.trace("waiting for pool checkout");
       }
       conn = pool.checkOut();
-      if (this.logger.isTraceEnabled()) {
-        this.logger.trace("performing search");
+      if (logger.isTraceEnabled()) {
+        logger.trace("performing search");
       }
       final SearchOperation search = new SearchOperation(conn);
       result = search.execute(request).getResult();
-      if (this.logger.isTraceEnabled()) {
-        this.logger.trace("search completed");
+      if (logger.isTraceEnabled()) {
+        logger.trace("search completed");
       }
     } finally {
-      if (this.logger.isTraceEnabled()) {
-        this.logger.trace("returning ldap to pool");
+      if (logger.isTraceEnabled()) {
+        logger.trace("returning ldap to pool");
       }
       pool.checkIn(conn);
     }
@@ -1012,25 +1012,25 @@ public class LdapPoolTest extends AbstractTest
     final long startTime = System.currentTimeMillis();
     LdapConnection conn = null;
     try {
-      if (this.logger.isTraceEnabled()) {
-        this.logger.trace("waiting for pool checkout");
+      if (logger.isTraceEnabled()) {
+        logger.trace("waiting for pool checkout");
       }
-      conn = this.vtComparisonPool.checkOut();
-      if (this.logger.isTraceEnabled()) {
-        this.logger.trace("performing search");
+      conn = vtComparisonPool.checkOut();
+      if (logger.isTraceEnabled()) {
+        logger.trace("performing search");
       }
       final SearchOperation search = new SearchOperation(conn);
       search.execute(request);
-      if (this.logger.isTraceEnabled()) {
-        this.logger.trace("search completed");
+      if (logger.isTraceEnabled()) {
+        logger.trace("search completed");
       }
     } finally {
-      if (this.logger.isTraceEnabled()) {
-        this.logger.trace("returning ldap to pool");
+      if (logger.isTraceEnabled()) {
+        logger.trace("returning ldap to pool");
       }
-      this.vtComparisonPool.checkIn(conn);
+      vtComparisonPool.checkIn(conn);
     }
-    this.vtPoolRuntime += System.currentTimeMillis() - startTime;
+    vtPoolRuntime += System.currentTimeMillis() - startTime;
   }
 
 
@@ -1055,24 +1055,24 @@ public class LdapPoolTest extends AbstractTest
     final long startTime = System.currentTimeMillis();
     LdapConnection conn = null;
     try {
-      if (this.logger.isTraceEnabled()) {
-        this.logger.trace("waiting for pool checkout");
+      if (logger.isTraceEnabled()) {
+        logger.trace("waiting for pool checkout");
       }
-      conn = (LdapConnection) this.commonsComparisonPool.borrowObject();
-      if (this.logger.isTraceEnabled()) {
-        this.logger.trace("performing search");
+      conn = (LdapConnection) commonsComparisonPool.borrowObject();
+      if (logger.isTraceEnabled()) {
+        logger.trace("performing search");
       }
       final SearchOperation search = new SearchOperation(conn);
       search.execute(request);
-      if (this.logger.isTraceEnabled()) {
-        this.logger.trace("search completed");
+      if (logger.isTraceEnabled()) {
+        logger.trace("search completed");
       }
     } finally {
-      if (this.logger.isTraceEnabled()) {
-        this.logger.trace("returning ldap to pool");
+      if (logger.isTraceEnabled()) {
+        logger.trace("returning ldap to pool");
       }
-      this.commonsComparisonPool.returnObject(conn);
+      commonsComparisonPool.returnObject(conn);
     }
-    this.commonsPoolRuntime += System.currentTimeMillis() - startTime;
+    commonsPoolRuntime += System.currentTimeMillis() - startTime;
   }
 }

@@ -29,10 +29,11 @@ public class ConnectLdapValidator implements LdapValidator<LdapConnection>
 {
 
   /** Logger for this class. */
-  protected final Logger logger = LoggerFactory.getLogger(this.getClass());
+  protected final Logger logger = LoggerFactory.getLogger(getClass());
 
 
   /** {@inheritDoc} */
+  @Override
   public boolean validate(final LdapConnection lc)
   {
     boolean success = false;
@@ -41,7 +42,7 @@ public class ConnectLdapValidator implements LdapValidator<LdapConnection>
         lc.open();
         success = true;
       } catch (LdapException e) {
-        this.logger.debug("validation failed for {}", lc, e);
+        logger.debug("validation failed for {}", lc, e);
       }
     }
     return success;

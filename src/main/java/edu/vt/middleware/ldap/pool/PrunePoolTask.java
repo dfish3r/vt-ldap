@@ -33,7 +33,7 @@ public class PrunePoolTask<T extends LdapConnection> extends TimerTask
 {
 
   /** Logger for this class. */
-  protected final Logger logger = LoggerFactory.getLogger(this.getClass());
+  protected final Logger logger = LoggerFactory.getLogger(getClass());
 
   /** Pool to clean. */
   private LdapPool<T> pool;
@@ -46,7 +46,7 @@ public class PrunePoolTask<T extends LdapConnection> extends TimerTask
    */
   public PrunePoolTask(final LdapPool<T> lp)
   {
-    this.pool = lp;
+    pool = lp;
   }
 
 
@@ -56,8 +56,8 @@ public class PrunePoolTask<T extends LdapConnection> extends TimerTask
    */
   public void run()
   {
-    this.logger.debug("Begin prune task for {}", this.pool);
-    this.pool.prune();
-    this.logger.debug("End prune task for {}", this.pool);
+    logger.debug("Begin prune task for {}", pool);
+    pool.prune();
+    logger.debug("End prune task for {}", pool);
   }
 }

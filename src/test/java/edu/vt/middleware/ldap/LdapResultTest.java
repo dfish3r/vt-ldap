@@ -37,7 +37,7 @@ public class LdapResultTest extends AbstractTest
    *
    * @throws  Exception  On test failure.
    */
-  @Parameters({ "createEntry7" })
+  @Parameters("createEntry7")
   @BeforeClass(groups = {"beantest"})
   public void createLdapEntry(final String ldifFile)
     throws Exception

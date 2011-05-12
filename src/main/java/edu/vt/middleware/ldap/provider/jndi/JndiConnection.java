@@ -85,7 +85,7 @@ public class JndiConnection implements Connection
   public static final String TYPES_ONLY = "java.naming.ldap.typesOnly";
 
   /** Logger for this class. */
-  protected final Logger logger = LoggerFactory.getLogger(this.getClass());
+  protected final Logger logger = LoggerFactory.getLogger(getClass());
 
   /** Ldap context. */
   protected LdapContext context;
@@ -104,7 +104,7 @@ public class JndiConnection implements Connection
    */
   public JndiConnection(final LdapContext lc)
   {
-    this.context = lc;
+    context = lc;
   }
 
 
@@ -116,7 +116,7 @@ public class JndiConnection implements Connection
    */
   public boolean getRemoveDnUrls()
   {
-    return this.removeDnUrls;
+    return removeDnUrls;
   }
 
 
@@ -128,7 +128,7 @@ public class JndiConnection implements Connection
    */
   public void setRemoveDnUrls(final boolean b)
   {
-    this.removeDnUrls = b;
+    removeDnUrls = b;
   }
 
 
@@ -139,7 +139,7 @@ public class JndiConnection implements Connection
    */
   public Class<?>[] getOperationRetryExceptions()
   {
-    return this.operationRetryExceptions;
+    return operationRetryExceptions;
   }
 
 
@@ -150,7 +150,7 @@ public class JndiConnection implements Connection
    */
   public void setOperationRetryExceptions(final Class<?>[] exceptions)
   {
-    this.operationRetryExceptions = exceptions;
+    operationRetryExceptions = exceptions;
   }
 
 
@@ -161,35 +161,37 @@ public class JndiConnection implements Connection
    */
   public LdapContext getLdapContext()
   {
-    return this.context;
+    return context;
   }
 
 
   /** {@inheritDoc} */
+  @Override
   public void close()
     throws LdapException
   {
     try {
-      if (this.context != null) {
-        this.context.close();
+      if (context != null) {
+        context.close();
       }
     } catch (NamingException e) {
       throw new LdapException(
         e, NamingExceptionUtil.getResultCode(e.getClass()));
     } finally {
-      this.context = null;
+      context = null;
     }
   }
 
 
   /** {@inheritDoc} */
+  @Override
   public void add(final AddRequest request)
     throws LdapException
   {
     try {
       LdapContext ctx = null;
       try {
-        ctx = this.context.newInstance(null);
+        ctx = context.newInstance(null);
         final BeanUtil bu = new BeanUtil();
         ctx.createSubcontext(
           new LdapName(request.getDn()),
@@ -200,12 +202,13 @@ public class JndiConnection implements Connection
         }
       }
     } catch (NamingException e) {
-      this.throwOperationException(e);
+      throwOperationException(e);
     }
   }
 
 
   /** {@inheritDoc} */
+  @Override
   public boolean compare(final CompareRequest request)
     throws LdapException
   {
@@ -214,7 +217,7 @@ public class JndiConnection implements Connection
       LdapContext ctx = null;
       NamingEnumeration<SearchResult> en = null;
       try {
-        ctx = this.context.newInstance(null);
+        ctx = context.newInstance(null);
         en = ctx.search(
           new LdapName(request.getDn()),
           String.format("(%s={0})", request.getAttribute().getName()),
@@ -233,20 +236,21 @@ public class JndiConnection implements Connection
         }
       }
     } catch (NamingException e) {
-      this.throwOperationException(e);
+      throwOperationException(e);
     }
     return success;
   }
 
 
   /** {@inheritDoc} */
+  @Override
   public void delete(final DeleteRequest request)
     throws LdapException
   {
     try {
       LdapContext ctx = null;
       try {
-        ctx = this.context.newInstance(null);
+        ctx = context.newInstance(null);
         ctx.destroySubcontext(new LdapName(request.getDn()));
       } finally {
         if (ctx != null) {
@@ -254,19 +258,20 @@ public class JndiConnection implements Connection
         }
       }
     } catch (NamingException e) {
-      this.throwOperationException(e);
+      throwOperationException(e);
     }
   }
 
 
   /** {@inheritDoc} */
+  @Override
   public void modify(final ModifyRequest request)
     throws LdapException
   {
     try {
       LdapContext ctx = null;
       try {
-        ctx = this.context.newInstance(null);
+        ctx = context.newInstance(null);
         final BeanUtil bu = new BeanUtil();
         ctx.modifyAttributes(
           new LdapName(request.getDn()),
@@ -277,19 +282,20 @@ public class JndiConnection implements Connection
         }
       }
     } catch (NamingException e) {
-      this.throwOperationException(e);
+      throwOperationException(e);
     }
   }
 
 
   /** {@inheritDoc} */
+  @Override
   public void rename(final RenameRequest request)
     throws LdapException
   {
     try {
       LdapContext ctx = null;
       try {
-        ctx = this.context.newInstance(null);
+        ctx = context.newInstance(null);
         ctx.rename(
           new LdapName(request.getDn()),
           new LdapName(request.getNewDn()));
@@ -299,12 +305,13 @@ public class JndiConnection implements Connection
         }
       }
     } catch (NamingException e) {
-      this.throwOperationException(e);
+      throwOperationException(e);
     }
   }
 
 
   /** {@inheritDoc} */
+  @Override
   public LdapResult pagedSearch(final PagedSearchRequest request)
     throws LdapException
   {
@@ -314,7 +321,7 @@ public class JndiConnection implements Connection
       NamingEnumeration<SearchResult> en = null;
       try {
         byte[] cookie = null;
-        ctx = this.context.newInstance(null);
+        ctx = context.newInstance(null);
         ctx.setRequestControls(
           new Control[] {
             new PagedResultsControl(
@@ -331,8 +338,8 @@ public class JndiConnection implements Connection
               request.getSearchFilter().getFilterArgs().toArray() : null,
             controls);
 
-          request.setBaseDn(this.getSearchDn(request, ctx));
-          final LdapResult pagedResults = this.readSearchResults(
+          request.setBaseDn(getSearchDn(request, ctx));
+          final LdapResult pagedResults = readSearchResults(
             request.getBaseDn(),
             en,
             request.getSearchIgnoreResultCodes(),
@@ -363,7 +370,7 @@ public class JndiConnection implements Connection
 
         } while (cookie != null);
       } catch (IOException e) {
-        this.logger.error("Could not encode page size into control", e);
+        logger.error("Could not encode page size into control", e);
         throw new NamingException(e.getMessage());
       } finally {
         if (en != null) {
@@ -374,13 +381,14 @@ public class JndiConnection implements Connection
         }
       }
     } catch (NamingException e) {
-      this.throwOperationException(e);
+      throwOperationException(e);
     }
     return result;
   }
 
 
   /** {@inheritDoc} */
+  @Override
   public LdapResult search(final SearchRequest request)
     throws LdapException
   {
@@ -389,8 +397,8 @@ public class JndiConnection implements Connection
       LdapContext ctx = null;
       NamingEnumeration<SearchResult> en = null;
       try {
-        ctx = this.context.newInstance(null);
-        this.initializeSearchContext(ctx, request);
+        ctx = context.newInstance(null);
+        initializeSearchContext(ctx, request);
         final SearchControls controls = getSearchControls(request);
         en = ctx.search(
           request.getBaseDn(),
@@ -400,8 +408,8 @@ public class JndiConnection implements Connection
             request.getSearchFilter().getFilterArgs().toArray() : null,
           controls);
 
-        result = this.readSearchResults(
-          this.getSearchDn(request, ctx),
+        result = readSearchResults(
+          getSearchDn(request, ctx),
           en,
           request.getSearchIgnoreResultCodes(),
           request.getSortBehavior());
@@ -414,7 +422,7 @@ public class JndiConnection implements Connection
         }
       }
     } catch (NamingException e) {
-      this.throwOperationException(e);
+      throwOperationException(e);
     }
     return result;
   }
@@ -432,9 +440,9 @@ public class JndiConnection implements Connection
   protected void throwOperationException(final NamingException e)
     throws LdapException
   {
-    if (this.operationRetryExceptions != null &&
-        this.operationRetryExceptions.length > 0) {
-      for (Class<?> ne : this.operationRetryExceptions) {
+    if (operationRetryExceptions != null &&
+        operationRetryExceptions.length > 0) {
+      for (Class<?> ne : operationRetryExceptions) {
         if (ne.isInstance(e)) {
           throw new OperationException(
             e, NamingExceptionUtil.getResultCode(e.getClass()));
@@ -532,14 +540,14 @@ public class JndiConnection implements Connection
       while (en.hasMore()) {
         try {
           final SearchResult sr = en.next();
-          sr.setName(this.formatDn(sr, baseDn));
+          sr.setName(formatDn(sr, baseDn));
           ldapResult.addEntry(bu.toLdapEntry(sr));
         } catch (NamingException e) {
           boolean ignoreException = false;
           if (ignore != null && ignore.length > 0) {
             for (ResultCode rc : ignore) {
               if (NamingExceptionUtil.matches(e.getClass(), rc)) {
-                this.logger.debug("Ignoring naming exception", e);
+                logger.debug("Ignoring naming exception", e);
                 ignoreException = true;
                 break;
               }
@@ -576,20 +584,20 @@ public class JndiConnection implements Connection
         if (baseDn != null) {
           if (!"".equals(resultName)) {
             fqName = new StringBuilder(
-              this.readCompositeName(resultName)).append(",").append(baseDn);
+              readCompositeName(resultName)).append(",").append(baseDn);
           } else {
             fqName = new StringBuilder(baseDn);
           }
         } else {
-          fqName = new StringBuilder(this.readCompositeName(resultName));
+          fqName = new StringBuilder(readCompositeName(resultName));
         }
       } else {
-        if (this.removeDnUrls) {
+        if (removeDnUrls) {
           fqName = new StringBuilder(
             URI.create(
-              this.readCompositeName(resultName)).getPath().substring(1));
+              readCompositeName(resultName)).getPath().substring(1));
         } else {
-          fqName = new StringBuilder(this.readCompositeName(resultName));
+          fqName = new StringBuilder(readCompositeName(resultName));
         }
       }
       newDn = fqName.toString();

@@ -92,14 +92,14 @@ public class CredentialConfigParser
     Matcher m = null;
     if (fullMatcher.matches()) {
       int i = 1;
-      this.sslSocketFactoryClassName = fullMatcher.group(i++).trim();
-      this.credentialConfigClassName = fullMatcher.group(i++).trim();
+      sslSocketFactoryClassName = fullMatcher.group(i++).trim();
+      credentialConfigClassName = fullMatcher.group(i++).trim();
       if (!"".equals(fullMatcher.group(i).trim())) {
         m = PROPERTY_PATTERN.matcher(fullMatcher.group(i).trim());
       }
     } else if (credentialOnlyMatcher.matches()) {
       int i = 1;
-      this.credentialConfigClassName = credentialOnlyMatcher.group(i++).trim();
+      credentialConfigClassName = credentialOnlyMatcher.group(i++).trim();
       if (!"".equals(credentialOnlyMatcher.group(i).trim())) {
         m = PROPERTY_PATTERN.matcher(credentialOnlyMatcher.group(i).trim());
       }
@@ -114,7 +114,7 @@ public class CredentialConfigParser
         final String input = m.group().trim();
         if (input != null && !"".equals(input)) {
           final String[] s = input.split("=");
-          this.properties.put(s[0].trim(), s[1].trim());
+          properties.put(s[0].trim(), s[1].trim());
         }
       }
     }
@@ -128,7 +128,7 @@ public class CredentialConfigParser
    */
   public String getSslSocketFactoryClassName()
   {
-    return this.sslSocketFactoryClassName;
+    return sslSocketFactoryClassName;
   }
 
 
@@ -139,7 +139,7 @@ public class CredentialConfigParser
    */
   public String getCredentialConfigClassName()
   {
-    return this.credentialConfigClassName;
+    return credentialConfigClassName;
   }
 
 
@@ -150,7 +150,7 @@ public class CredentialConfigParser
    */
   public Map<String, String> getProperties()
   {
-    return this.properties;
+    return properties;
   }
 
 
@@ -180,11 +180,11 @@ public class CredentialConfigParser
   public Object initializeType()
   {
     final Class<?> c = SimplePropertyInvoker.createClass(
-      this.getCredentialConfigClassName());
+      getCredentialConfigClassName());
     final Object o = SimplePropertyInvoker.instantiateType(
       c,
-      this.getCredentialConfigClassName());
-    this.setProperties(c, o);
+      getCredentialConfigClassName());
+    setProperties(c, o);
     return o;
   }
 
@@ -198,7 +198,7 @@ public class CredentialConfigParser
   protected void setProperties(final Class<?> c, final Object o)
   {
     final SimplePropertyInvoker invoker = new SimplePropertyInvoker(c);
-    for (Map.Entry<String, String> entry : this.getProperties().entrySet()) {
+    for (Map.Entry<String, String> entry : getProperties().entrySet()) {
       invoker.setProperty(o, entry.getKey(), entry.getValue());
     }
   }

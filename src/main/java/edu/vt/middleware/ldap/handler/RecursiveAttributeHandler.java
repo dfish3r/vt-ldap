@@ -60,22 +60,24 @@ public class RecursiveAttributeHandler extends CopyLdapAttributeHandler
    */
   public RecursiveAttributeHandler(final LdapConnection lc, final String name)
   {
-    this.ldapConnection = lc;
-    this.attributeName = name;
+    ldapConnection = lc;
+    attributeName = name;
   }
 
 
   /** {@inheritDoc} */
+  @Override
   public LdapConnection getResultLdapConnection()
   {
-    return this.ldapConnection;
+    return ldapConnection;
   }
 
 
   /** {@inheritDoc} */
+  @Override
   public void setResultLdapConnection(final LdapConnection lc)
   {
-    this.ldapConnection = lc;
+    ldapConnection = lc;
   }
 
 
@@ -86,7 +88,7 @@ public class RecursiveAttributeHandler extends CopyLdapAttributeHandler
    */
   public String getAttributeName()
   {
-    return this.attributeName;
+    return attributeName;
   }
 
 
@@ -97,27 +99,28 @@ public class RecursiveAttributeHandler extends CopyLdapAttributeHandler
    */
   public void setAttributeName(final String name)
   {
-    this.attributeName = name;
+    attributeName = name;
   }
 
 
   /** {@inheritDoc} */
+  @Override
   public void process(final SearchCriteria sc, final LdapAttribute attr)
     throws LdapException
   {
     if (attr != null) {
-      attr.setName(this.processName(sc, attr.getName()));
-      if (attr.getName().equals(this.attributeName)) {
+      attr.setName(processName(sc, attr.getName()));
+      if (attr.getName().equals(attributeName)) {
         final List<Object> newValues =
           new ArrayList<Object>(attr.getValues().size());
         for (Object o : attr.getValues()) {
-          final Object rawValue = this.processValue(sc, o);
+          final Object rawValue = processValue(sc, o);
           if (rawValue instanceof String) {
-            final List<String> recursiveValues = this.recursiveSearch(
+            final List<String> recursiveValues = recursiveSearch(
               (String) rawValue,
               new ArrayList<String>());
             for (String s : recursiveValues) {
-              newValues.add(this.processValue(sc, s));
+              newValues.add(processValue(sc, s));
             }
           } else {
             newValues.add(rawValue);
@@ -150,24 +153,24 @@ public class RecursiveAttributeHandler extends CopyLdapAttributeHandler
 
       LdapAttributes attrs = null;
       try {
-        final SearchOperation search = new SearchOperation(this.ldapConnection);
+        final SearchOperation search = new SearchOperation(ldapConnection);
         final LdapResult result = search.execute(
           SearchRequest.newObjectScopeSearchRequest(
-            dn, new String[] {this.attributeName})).getResult();
+            dn, new String[] {attributeName})).getResult();
         attrs = result.getEntry(dn).getLdapAttributes();
         results.add(dn);
       } catch (LdapException e) {
-        this.logger.warn(
-          "Error retreiving attribute: {}", this.attributeName, e);
+        logger.warn(
+          "Error retreiving attribute: {}", attributeName, e);
       }
       searchedDns.add(dn);
       if (attrs != null) {
-        final LdapAttribute attr = attrs.getAttribute(this.attributeName);
+        final LdapAttribute attr = attrs.getAttribute(attributeName);
         if (attr != null) {
           for (Object rawValue : attr.getValues()) {
             if (rawValue instanceof String) {
               results.addAll(
-                this.recursiveSearch((String) rawValue, searchedDns));
+                recursiveSearch((String) rawValue, searchedDns));
             }
           }
         }

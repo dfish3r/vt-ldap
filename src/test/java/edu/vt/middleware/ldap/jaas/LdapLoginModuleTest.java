@@ -71,7 +71,7 @@ public class LdapLoginModuleTest extends AbstractTest
    *
    * @throws  Exception  On test failure.
    */
-  @Parameters({ "createEntry10" })
+  @Parameters("createEntry10")
   @BeforeClass(groups = {"jaastest"})
   public void createAuthEntry(final String ldifFile)
     throws Exception
@@ -193,7 +193,7 @@ public class LdapLoginModuleTest extends AbstractTest
     final String credential)
     throws Exception
   {
-    this.doContextTest("vt-ldap", dn, user, role, credential, false);
+    doContextTest("vt-ldap", dn, user, role, credential, false);
   }
 
 
@@ -219,7 +219,7 @@ public class LdapLoginModuleTest extends AbstractTest
     final String credential)
     throws Exception
   {
-    this.doContextTest("vt-ldap-ssl", dn, user, role, credential, false);
+    doContextTest("vt-ldap-ssl", dn, user, role, credential, false);
   }
 
 
@@ -245,7 +245,7 @@ public class LdapLoginModuleTest extends AbstractTest
     final String credential)
     throws Exception
   {
-    this.doContextTest("vt-ldap-authz", dn, user, role, credential, true);
+    doContextTest("vt-ldap-authz", dn, user, role, credential, true);
   }
 
 
@@ -271,7 +271,7 @@ public class LdapLoginModuleTest extends AbstractTest
     final String credential)
     throws Exception
   {
-    this.doContextTest("vt-ldap-random", dn, user, role, credential, true);
+    doContextTest("vt-ldap-random", dn, user, role, credential, true);
   }
 
 
@@ -295,7 +295,7 @@ public class LdapLoginModuleTest extends AbstractTest
     final String credential)
     throws Exception
   {
-    this.doContextTest("vt-ldap-filter", dn, user, "", credential, false);
+    doContextTest("vt-ldap-filter", dn, user, "", credential, false);
   }
 
 
@@ -353,7 +353,7 @@ public class LdapLoginModuleTest extends AbstractTest
     final String credential)
     throws Exception
   {
-    this.doContextTest("vt-ldap-roles", dn, user, role, credential, false);
+    doContextTest("vt-ldap-roles", dn, user, role, credential, false);
   }
 
 
@@ -378,7 +378,7 @@ public class LdapLoginModuleTest extends AbstractTest
     final String credential)
     throws Exception
   {
-    this.doContextTest(
+    doContextTest(
       "vt-ldap-roles-recursive",
       dn,
       user,
@@ -405,7 +405,7 @@ public class LdapLoginModuleTest extends AbstractTest
     final String credential)
     throws Exception
   {
-    this.doContextTest("vt-ldap-use-first", dn, user, role, credential, false);
+    doContextTest("vt-ldap-use-first", dn, user, role, credential, false);
   }
 
 
@@ -426,7 +426,7 @@ public class LdapLoginModuleTest extends AbstractTest
     final String credential)
     throws Exception
   {
-    this.doContextTest("vt-ldap-try-first", dn, user, role, credential, false);
+    doContextTest("vt-ldap-try-first", dn, user, role, credential, false);
   }
 
 
@@ -447,7 +447,7 @@ public class LdapLoginModuleTest extends AbstractTest
     final String credential)
     throws Exception
   {
-    this.doContextTest("vt-ldap-sufficient", dn, user, role, credential, false);
+    doContextTest("vt-ldap-sufficient", dn, user, role, credential, false);
   }
 
 
@@ -573,7 +573,7 @@ public class LdapLoginModuleTest extends AbstractTest
     final String role)
     throws Exception
   {
-    this.doRolesContextTest("vt-ldap-roles-only", dn, user, role);
+    doRolesContextTest("vt-ldap-roles-only", dn, user, role);
   }
 
 
@@ -597,7 +597,7 @@ public class LdapLoginModuleTest extends AbstractTest
     final String role)
     throws Exception
   {
-    this.doRolesContextTest("vt-ldap-dn-roles-only", dn, user, role);
+    doRolesContextTest("vt-ldap-dn-roles-only", dn, user, role);
   }
 
 

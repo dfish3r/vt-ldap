@@ -36,6 +36,7 @@ public class TestAuthorizationHandler implements AuthorizationHandler
 
 
   /** {@inheritDoc} */
+  @Override
   public void process(
     final AuthenticationCriteria ac, final LdapConnection conn)
     throws LdapException
@@ -43,7 +44,7 @@ public class TestAuthorizationHandler implements AuthorizationHandler
     if (!succeed) {
       throw new AuthorizationException("Succeed is false");
     }
-    this.results.add(ac.getDn());
+    results.add(ac.getDn());
   }
 
 
@@ -54,7 +55,7 @@ public class TestAuthorizationHandler implements AuthorizationHandler
    */
   public List<String> getResults()
   {
-    return this.results;
+    return results;
   }
 
 

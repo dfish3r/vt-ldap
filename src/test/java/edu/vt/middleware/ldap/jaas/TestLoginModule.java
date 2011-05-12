@@ -47,20 +47,22 @@ public class TestLoginModule implements LoginModule
 
 
   /** {@inheritDoc} */
+  @Override
   public void initialize(
-    final Subject subject,
-    final CallbackHandler callbackHandler,
-    final Map<String, ?> sharedState,
+    final Subject s,
+    final CallbackHandler ch,
+    final Map<String, ?> ss,
     final Map<String, ?> options)
   {
-    this.subject = subject;
-    this.callbackHandler = callbackHandler;
-    this.sharedState = sharedState;
+    subject = s;
+    callbackHandler = ch;
+    sharedState = ss;
   }
 
 
   /** {@inheritDoc} */
   @SuppressWarnings("unchecked")
+  @Override
   public boolean login()
     throws LoginException
   {
@@ -69,18 +71,18 @@ public class TestLoginModule implements LoginModule
       final PasswordCallback passCb = new PasswordCallback(
         "Enter user password: ",
         false);
-      this.callbackHandler.handle(new Callback[] {nameCb, passCb});
+      callbackHandler.handle(new Callback[] {nameCb, passCb});
 
-      this.sharedState.put(LdapLoginModule.LOGIN_NAME, nameCb.getName());
-      this.sharedState.put(
+      sharedState.put(LdapLoginModule.LOGIN_NAME, nameCb.getName());
+      sharedState.put(
         LdapLoginModule.LOGIN_PASSWORD,
         passCb.getPassword());
-      this.success = true;
+      success = true;
     } catch (IOException e) {
-      this.success = false;
+      success = false;
       throw new LoginException(e.toString());
     } catch (UnsupportedCallbackException e) {
-      this.success = false;
+      success = false;
       throw new LoginException(e.toString());
     }
     return true;
@@ -88,6 +90,7 @@ public class TestLoginModule implements LoginModule
 
 
   /** {@inheritDoc} */
+  @Override
   public boolean commit()
     throws LoginException
   {
@@ -96,14 +99,16 @@ public class TestLoginModule implements LoginModule
 
 
   /** {@inheritDoc} */
+  @Override
   public boolean abort()
   {
-    this.success = false;
+    success = false;
     return true;
   }
 
 
   /** {@inheritDoc} */
+  @Override
   public boolean logout()
   {
     return true;

@@ -109,7 +109,7 @@ public abstract class AbstractJndiConnectionFactory
   /** Default constructor. */
   public AbstractJndiConnectionFactory()
   {
-    this.operationRetryResultCodes = new ResultCode[] {
+    operationRetryResultCodes = new ResultCode[] {
       ResultCode.PROTOCOL_ERROR, ResultCode.BUSY, ResultCode.UNAVAILABLE,
     };
   }
@@ -123,7 +123,7 @@ public abstract class AbstractJndiConnectionFactory
    */
   public Hashtable<String, Object> getEnvironment()
   {
-    return this.environment;
+    return environment;
   }
 
 
@@ -135,7 +135,7 @@ public abstract class AbstractJndiConnectionFactory
    */
   public void setEnvironment(final Hashtable<String, Object> env)
   {
-    this.environment = env;
+    environment = env;
   }
 
 
@@ -146,7 +146,7 @@ public abstract class AbstractJndiConnectionFactory
    */
   public PrintStream getTracePackets()
   {
-    return this.tracePackets;
+    return tracePackets;
   }
 
 
@@ -157,7 +157,7 @@ public abstract class AbstractJndiConnectionFactory
    */
   public void setTracePackets(final PrintStream stream)
   {
-    this.tracePackets = stream;
+    tracePackets = stream;
   }
 
 
@@ -169,7 +169,7 @@ public abstract class AbstractJndiConnectionFactory
    */
   public boolean getRemoveDnUrls()
   {
-    return this.removeDnUrls;
+    return removeDnUrls;
   }
 
 
@@ -181,7 +181,7 @@ public abstract class AbstractJndiConnectionFactory
    */
   public void setRemoveDnUrls(final boolean b)
   {
-    this.removeDnUrls = b;
+    removeDnUrls = b;
   }
 
 

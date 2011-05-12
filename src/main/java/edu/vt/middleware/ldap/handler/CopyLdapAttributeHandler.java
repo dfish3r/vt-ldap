@@ -29,19 +29,20 @@ import org.slf4j.LoggerFactory;
 public class CopyLdapAttributeHandler implements LdapAttributeHandler
 {
   /** Log for this class. */
-  protected final Logger logger = LoggerFactory.getLogger(this.getClass());
+  protected final Logger logger = LoggerFactory.getLogger(getClass());
 
 
   /** {@inheritDoc} */
+  @Override
   public void process(final SearchCriteria sc, final LdapAttribute attr)
     throws LdapException
   {
     if (attr != null) {
-      attr.setName(this.processName(sc, attr.getName()));
+      attr.setName(processName(sc, attr.getName()));
       final List<Object> newValues =
         new ArrayList<Object>(attr.getValues().size());
       for (Object o : attr.getValues()) {
-        newValues.add(this.processValue(sc, o));
+        newValues.add(processValue(sc, o));
       }
       attr.getValues().clear();
       attr.getValues().addAll(newValues);

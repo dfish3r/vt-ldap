@@ -31,9 +31,10 @@ public class TestAuthenticationResultHandler
 
 
   /** {@inheritDoc} */
+  @Override
   public void process(final AuthenticationCriteria ac, final boolean success)
   {
-    this.results.put(ac.getDn(), Boolean.valueOf(success));
+    results.put(ac.getDn(), Boolean.valueOf(success));
   }
 
 
@@ -44,6 +45,6 @@ public class TestAuthenticationResultHandler
    */
   public Map<String, Boolean> getResults()
   {
-    return this.results;
+    return results;
   }
 }

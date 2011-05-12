@@ -49,7 +49,7 @@ public class DsmlTest extends AbstractTest
    *
    * @throws  Exception  On test failure.
    */
-  @Parameters({ "createEntry13" })
+  @Parameters("createEntry13")
   @BeforeClass(groups = {"dsmltest"})
   public void createLdapEntry(final String ldifFile)
     throws Exception

@@ -38,7 +38,7 @@ public class LdapOperationCliTest extends AbstractTest
    *
    * @throws  Exception  On test failure
    */
-  @Parameters({ "cliAddArgs" })
+  @Parameters("cliAddArgs")
   @BeforeClass(groups = {"ldapclitest"})
   public void createLdapEntry(final String args)
     throws Exception
@@ -61,7 +61,7 @@ public class LdapOperationCliTest extends AbstractTest
    *
    * @throws  Exception  On test failure
    */
-  @Parameters({ "cliDeleteArgs" })
+  @Parameters("cliDeleteArgs")
   @AfterClass(groups = {"ldapclitest"})
   public void deleteLdapEntry(final String args)
     throws Exception
@@ -112,7 +112,7 @@ public class LdapOperationCliTest extends AbstractTest
    *
    * @throws  Exception  On test failure.
    */
-  @Parameters({ "cliCompareArgs" })
+  @Parameters("cliCompareArgs")
   @Test(groups = {"ldapclitest"})
   public void compare(final String args)
     throws Exception

@@ -28,11 +28,12 @@ public abstract class AbstractSSLContextInitializer
 
 
   /** {@inheritDoc} */
+  @Override
   public SSLContext initSSLContext(final String protocol)
     throws GeneralSecurityException
   {
     final SSLContext ctx = SSLContext.getInstance(protocol);
-    ctx.init(this.getKeyManagers(), this.getTrustManagers(), null);
+    ctx.init(getKeyManagers(), getTrustManagers(), null);
     return ctx;
   }
 }

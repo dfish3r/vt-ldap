@@ -48,7 +48,7 @@ public class LdifTest extends AbstractTest
    *
    * @throws  Exception  On test failure.
    */
-  @Parameters({ "createEntry14" })
+  @Parameters("createEntry14")
   @BeforeClass(groups = {"ldiftest"})
   public void createLdapEntry(final String ldifFile)
     throws Exception

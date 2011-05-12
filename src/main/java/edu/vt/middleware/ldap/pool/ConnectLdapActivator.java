@@ -29,10 +29,11 @@ public class ConnectLdapActivator implements LdapActivator<LdapConnection>
 {
 
   /** Logger for this class. */
-  protected final Logger logger = LoggerFactory.getLogger(this.getClass());
+  protected final Logger logger = LoggerFactory.getLogger(getClass());
 
 
   /** {@inheritDoc} */
+  @Override
   public boolean activate(final LdapConnection lc)
   {
     boolean success = false;
@@ -41,7 +42,7 @@ public class ConnectLdapActivator implements LdapActivator<LdapConnection>
         lc.open();
         success = true;
       } catch (LdapException e) {
-        this.logger.error("unabled to connect to the ldap", e);
+        logger.error("unabled to connect to the ldap", e);
       }
     }
     return success;

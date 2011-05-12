@@ -43,11 +43,11 @@ public class LdapGroup implements Group, Serializable
   /**
    * Creates a new ldap group with the supplied name.
    *
-   * @param  name  of the group
+   * @param  s  name of the group
    */
-  public LdapGroup(final String name)
+  public LdapGroup(final String s)
   {
-    this.name = name;
+    name = s;
   }
 
 
@@ -58,28 +58,31 @@ public class LdapGroup implements Group, Serializable
    */
   public String getName()
   {
-    return this.name;
+    return name;
   }
 
 
   /** {@inheritDoc} */
+  @Override
   public boolean addMember(final Principal user)
   {
-    return this.members.add(user);
+    return members.add(user);
   }
 
 
   /** {@inheritDoc} */
+  @Override
   public boolean removeMember(final Principal user)
   {
-    return this.members.remove(user);
+    return members.remove(user);
   }
 
 
   /** {@inheritDoc} */
+  @Override
   public boolean isMember(final Principal member)
   {
-    for (Principal p : this.members) {
+    for (Principal p : members) {
       if (p.getName() != null && p.getName().equals(member.getName())) {
         return true;
       }
@@ -89,9 +92,10 @@ public class LdapGroup implements Group, Serializable
 
 
   /** {@inheritDoc} */
+  @Override
   public Enumeration<? extends Principal> members()
   {
-    return Collections.enumeration(this.members);
+    return Collections.enumeration(members);
   }
 
 
@@ -102,7 +106,7 @@ public class LdapGroup implements Group, Serializable
    */
   public Set<Principal> getMembers()
   {
-    return Collections.unmodifiableSet(this.members);
+    return Collections.unmodifiableSet(members);
   }
 
 
@@ -116,9 +120,9 @@ public class LdapGroup implements Group, Serializable
   {
     return String.format(
       "%s@%d::%s%s",
-      this.getClass().getName(),
-      this.hashCode(),
-      this.name,
-      this.members);
+      getClass().getName(),
+      hashCode(),
+      name,
+      members);
   }
 }

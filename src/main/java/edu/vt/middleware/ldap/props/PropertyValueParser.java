@@ -57,7 +57,7 @@ public class PropertyValueParser
   {
     final Matcher matcher = CONFIG_PATTERN.matcher(config);
     if (matcher.matches()) {
-      this.className = matcher.group(1).trim();
+      className = matcher.group(1).trim();
 
       final String props = matcher.group(2).trim();
       final Matcher m = PROPERTY_PATTERN.matcher(props);
@@ -65,7 +65,7 @@ public class PropertyValueParser
         final String input = m.group().trim();
         if (input != null && !"".equals(input)) {
           final String[] s = input.split("=", 2);
-          this.properties.put(s[0].trim(), s[1].trim());
+          properties.put(s[0].trim(), s[1].trim());
         }
       }
     }
@@ -79,7 +79,7 @@ public class PropertyValueParser
    */
   public String getClassName()
   {
-    return this.className;
+    return className;
   }
 
 
@@ -90,7 +90,7 @@ public class PropertyValueParser
    */
   public Map<String, String> getProperties()
   {
-    return this.properties;
+    return properties;
   }
 
 
@@ -115,11 +115,11 @@ public class PropertyValueParser
    */
   public Object initializeType()
   {
-    final Class<?> c = SimplePropertyInvoker.createClass(this.getClassName());
+    final Class<?> c = SimplePropertyInvoker.createClass(getClassName());
     final Object o = SimplePropertyInvoker.instantiateType(
       c,
-      this.getClassName());
-    this.setProperties(c, o);
+      getClassName());
+    setProperties(c, o);
     return o;
   }
 
@@ -133,7 +133,7 @@ public class PropertyValueParser
   protected void setProperties(final Class<?> c, final Object o)
   {
     final SimplePropertyInvoker invoker = new SimplePropertyInvoker(c);
-    for (Map.Entry<String, String> entry : this.getProperties().entrySet()) {
+    for (Map.Entry<String, String> entry : getProperties().entrySet()) {
       invoker.setProperty(o, entry.getKey(), entry.getValue());
     }
     if (invoker.getProperties().contains("initialize")) {

@@ -50,7 +50,7 @@ public interface PropertySource<T>
      */
     PropertyDomain(final String s)
     {
-      this.domain = s;
+      domain = s;
     }
 
 
@@ -61,7 +61,7 @@ public interface PropertySource<T>
      */
     public String value()
     {
-      return this.domain;
+      return domain;
     }
   }
 

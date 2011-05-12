@@ -70,7 +70,7 @@ public class AuthenticatorLoadTest extends AbstractTest
   public AuthenticatorLoadTest()
     throws Exception
   {
-    this.singleTLSAuth = TestUtil.readAuthenticator(
+    singleTLSAuth = TestUtil.readAuthenticator(
       TestUtil.class.getResourceAsStream("/ldap.tls.load.properties"));
   }
 
@@ -270,7 +270,7 @@ public class AuthenticatorLoadTest extends AbstractTest
   {
     // test auth with return attributes
     final String expected = TestUtil.readFileIntoString(ldifFile);
-    final LdapEntry entry = this.singleTLSAuth.authenticate(
+    final LdapEntry entry = singleTLSAuth.authenticate(
       new AuthenticationRequest(
         user,
         new Credential(credential),

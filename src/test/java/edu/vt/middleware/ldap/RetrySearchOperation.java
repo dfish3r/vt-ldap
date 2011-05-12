@@ -53,7 +53,7 @@ public class RetrySearchOperation extends SearchOperation
    */
   public int getRetryCount()
   {
-    return this.retryCount;
+    return retryCount;
   }
 
 
@@ -64,7 +64,7 @@ public class RetrySearchOperation extends SearchOperation
    */
   public long getRunTime()
   {
-    return this.runTime;
+    return runTime;
   }
 
 
@@ -75,31 +75,32 @@ public class RetrySearchOperation extends SearchOperation
    */
   public void setStopCount(final int i)
   {
-    this.stopCount = i;
+    stopCount = i;
   }
 
 
   /** Resets all the counters. */
   public void reset()
   {
-    this.retryCount = 0;
-    this.runTime = 0;
-    this.stopCount = 0;
+    retryCount = 0;
+    runTime = 0;
+    stopCount = 0;
   }
 
 
   /** {@inheritDoc} */
+  @Override
   protected void operationRetry(
     final LdapException e,
     final int count)
     throws LdapException
   {
-    this.retryCount = count;
+    retryCount = count;
 
     final long t = System.currentTimeMillis();
     super.operationRetry(e, count);
-    this.runTime += System.currentTimeMillis() - t;
-    if (this.stopCount > 0 && this.retryCount == this.stopCount) {
+    runTime += System.currentTimeMillis() - t;
+    if (stopCount > 0 && retryCount == stopCount) {
       throw e;
     }
   }

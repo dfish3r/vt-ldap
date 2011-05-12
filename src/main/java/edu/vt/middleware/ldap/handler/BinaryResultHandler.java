@@ -26,7 +26,7 @@ public class BinaryResultHandler extends CopyLdapResultHandler
   /** Default constructor. */
   public BinaryResultHandler()
   {
-    this.setAttributeHandler(
+    setAttributeHandler(
       new LdapAttributeHandler[] {new BinaryAttributeHandler()});
   }
 }

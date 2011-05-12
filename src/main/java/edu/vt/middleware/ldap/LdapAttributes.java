@@ -52,11 +52,11 @@ public class LdapAttributes extends AbstractLdapBean
   {
     super(sb);
     if (SortBehavior.UNORDERED == sb) {
-      this.attributes = new HashMap<String, LdapAttribute>();
+      attributes = new HashMap<String, LdapAttribute>();
     } else if (SortBehavior.ORDERED == sb) {
-      this.attributes = new LinkedHashMap<String, LdapAttribute>();
+      attributes = new LinkedHashMap<String, LdapAttribute>();
     } else if (SortBehavior.SORTED == sb) {
-      this.attributes = new TreeMap<String, LdapAttribute>(
+      attributes = new TreeMap<String, LdapAttribute>(
         String.CASE_INSENSITIVE_ORDER);
     }
   }
@@ -70,7 +70,7 @@ public class LdapAttributes extends AbstractLdapBean
   public LdapAttributes(final LdapAttribute a)
   {
     this();
-    this.addAttribute(a);
+    addAttribute(a);
   }
 
 
@@ -82,7 +82,7 @@ public class LdapAttributes extends AbstractLdapBean
   public LdapAttributes(final Collection<LdapAttribute> c)
   {
     this();
-    this.addAttributes(c);
+    addAttributes(c);
   }
 
 
@@ -95,7 +95,7 @@ public class LdapAttributes extends AbstractLdapBean
   public LdapAttributes(final String name, final Object value)
   {
     this();
-    this.addAttribute(name, value);
+    addAttribute(name, value);
   }
 
 
@@ -108,7 +108,7 @@ public class LdapAttributes extends AbstractLdapBean
   public LdapAttributes(final String name, final Object[] values)
   {
     this();
-    this.addAttribute(name, values);
+    addAttribute(name, values);
   }
 
 
@@ -121,7 +121,7 @@ public class LdapAttributes extends AbstractLdapBean
   public LdapAttributes(final String name, final List<?> values)
   {
     this();
-    this.addAttribute(name, values);
+    addAttribute(name, values);
   }
 
 
@@ -132,7 +132,7 @@ public class LdapAttributes extends AbstractLdapBean
    */
   public Collection<LdapAttribute> getAttributes()
   {
-    return this.attributes.values();
+    return attributes.values();
   }
 
 
@@ -145,10 +145,10 @@ public class LdapAttributes extends AbstractLdapBean
    */
   public LdapAttribute getAttribute()
   {
-    if (this.attributes.size() == 0) {
+    if (attributes.size() == 0) {
       return null;
     }
-    return this.attributes.values().iterator().next();
+    return attributes.values().iterator().next();
   }
 
 
@@ -161,7 +161,7 @@ public class LdapAttributes extends AbstractLdapBean
   public LdapAttribute getAttribute(final String name)
   {
     if (name != null) {
-      return this.attributes.get(name.toLowerCase());
+      return attributes.get(name.toLowerCase());
     }
     return null;
   }
@@ -174,9 +174,9 @@ public class LdapAttributes extends AbstractLdapBean
    */
   public String[] getAttributeNames()
   {
-    final String[] names = new String[this.attributes.size()];
+    final String[] names = new String[attributes.size()];
     int i = 0;
-    for (LdapAttribute la : this.attributes.values()) {
+    for (LdapAttribute la : attributes.values()) {
       names[i++] = la.getName();
     }
     return names;
@@ -190,7 +190,7 @@ public class LdapAttributes extends AbstractLdapBean
    */
   public void addAttribute(final LdapAttribute a)
   {
-    this.attributes.put(a.getName().toLowerCase(), a);
+    attributes.put(a.getName().toLowerCase(), a);
   }
 
 
@@ -202,10 +202,10 @@ public class LdapAttributes extends AbstractLdapBean
    */
   public void addAttribute(final String name, final Object value)
   {
-    final LdapAttribute la = new LdapAttribute(this.sortBehavior);
+    final LdapAttribute la = new LdapAttribute(sortBehavior);
     la.setName(name);
     la.getValues().add(value);
-    this.addAttribute(la);
+    addAttribute(la);
   }
 
 
@@ -217,12 +217,12 @@ public class LdapAttributes extends AbstractLdapBean
    */
   public void addAttribute(final String name, final Object[] values)
   {
-    final LdapAttribute la = new LdapAttribute(this.sortBehavior);
+    final LdapAttribute la = new LdapAttribute(sortBehavior);
     la.setName(name);
     for (Object o : values) {
       la.getValues().add(o);
     }
-    this.addAttribute(la);
+    addAttribute(la);
   }
 
 
@@ -234,10 +234,10 @@ public class LdapAttributes extends AbstractLdapBean
    */
   public void addAttribute(final String name, final List<?> values)
   {
-    final LdapAttribute la = new LdapAttribute(this.sortBehavior);
+    final LdapAttribute la = new LdapAttribute(sortBehavior);
     la.setName(name);
     la.getValues().addAll(values);
-    this.addAttribute(la);
+    addAttribute(la);
   }
 
 
@@ -249,7 +249,7 @@ public class LdapAttributes extends AbstractLdapBean
   public void addAttributes(final Collection<LdapAttribute> c)
   {
     for (LdapAttribute la : c) {
-      this.addAttribute(la);
+      addAttribute(la);
     }
   }
 
@@ -261,7 +261,7 @@ public class LdapAttributes extends AbstractLdapBean
    */
   public void removeAttribute(final LdapAttribute a)
   {
-    this.attributes.remove(a.getName().toLowerCase());
+    attributes.remove(a.getName().toLowerCase());
   }
 
 
@@ -272,7 +272,7 @@ public class LdapAttributes extends AbstractLdapBean
    */
   public void removeAttribute(final String name)
   {
-    this.attributes.remove(name.toLowerCase());
+    attributes.remove(name.toLowerCase());
   }
 
 
@@ -284,7 +284,7 @@ public class LdapAttributes extends AbstractLdapBean
   public void removeAttributes(final Collection<LdapAttribute> c)
   {
     for (LdapAttribute la : c) {
-      this.removeAttribute(la);
+      removeAttribute(la);
     }
   }
 
@@ -296,7 +296,7 @@ public class LdapAttributes extends AbstractLdapBean
    */
   public int size()
   {
-    return this.attributes.size();
+    return attributes.size();
   }
 
 
@@ -305,15 +305,16 @@ public class LdapAttributes extends AbstractLdapBean
    */
   public void clear()
   {
-    this.attributes.clear();
+    attributes.clear();
   }
 
 
   /** {@inheritDoc} */
+  @Override
   public int hashCode()
   {
     int hc = HASH_CODE_SEED;
-    for (LdapAttribute a : this.attributes.values()) {
+    for (LdapAttribute a : attributes.values()) {
       hc += a != null ? a.hashCode() : 0;
     }
     return hc;
@@ -328,6 +329,6 @@ public class LdapAttributes extends AbstractLdapBean
   @Override
   public String toString()
   {
-    return String.format("%s", this.attributes.values());
+    return String.format("%s", attributes.values());
   }
 }

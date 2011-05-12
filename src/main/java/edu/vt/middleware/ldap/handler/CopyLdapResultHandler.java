@@ -29,34 +29,37 @@ import org.slf4j.LoggerFactory;
 public class CopyLdapResultHandler implements LdapResultHandler
 {
   /** Log for this class. */
-  protected final Logger logger = LoggerFactory.getLogger(this.getClass());
+  protected final Logger logger = LoggerFactory.getLogger(getClass());
 
   /** Attribute handler. */
   private LdapAttributeHandler[] ldapAttributeHandler;
 
 
   /** {@inheritDoc} */
+  @Override
   public LdapAttributeHandler[] getAttributeHandler()
   {
-    return this.ldapAttributeHandler;
+    return ldapAttributeHandler;
   }
 
 
   /** {@inheritDoc} */
+  @Override
   public void setAttributeHandler(final LdapAttributeHandler[] ah)
   {
-    this.ldapAttributeHandler = ah;
+    ldapAttributeHandler = ah;
   }
 
 
   /** {@inheritDoc} */
+  @Override
   public void process(final SearchCriteria sc, final LdapResult lr)
     throws LdapException
   {
     if (lr != null) {
       for (LdapEntry le : lr.getEntries()) {
-        le.setDn(this.processDn(sc, le));
-        this.processAttributes(sc, le);
+        le.setDn(processDn(sc, le));
+        processAttributes(sc, le);
       }
     }
   }
@@ -87,9 +90,9 @@ public class CopyLdapResultHandler implements LdapResultHandler
   protected void processAttributes(final SearchCriteria sc, final LdapEntry le)
     throws LdapException
   {
-    if (this.ldapAttributeHandler != null &&
-        this.ldapAttributeHandler.length > 0) {
-      for (LdapAttributeHandler ah : this.ldapAttributeHandler) {
+    if (ldapAttributeHandler != null &&
+        ldapAttributeHandler.length > 0) {
+      for (LdapAttributeHandler ah : ldapAttributeHandler) {
         for (LdapAttribute la : le.getLdapAttributes().getAttributes()) {
           ah.process(sc, la);
         }

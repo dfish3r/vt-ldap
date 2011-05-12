@@ -56,7 +56,7 @@ public class KeyStoreCredentialConfig implements CredentialConfig
    */
   public String getTrustStore()
   {
-    return this.trustStore;
+    return trustStore;
   }
 
 
@@ -67,7 +67,7 @@ public class KeyStoreCredentialConfig implements CredentialConfig
    */
   public void setTrustStore(final String s)
   {
-    this.trustStore = s;
+    trustStore = s;
   }
 
 
@@ -78,7 +78,7 @@ public class KeyStoreCredentialConfig implements CredentialConfig
    */
   public String getTrustStorePassword()
   {
-    return this.trustStorePassword;
+    return trustStorePassword;
   }
 
 
@@ -89,7 +89,7 @@ public class KeyStoreCredentialConfig implements CredentialConfig
    */
   public void setTrustStorePassword(final String s)
   {
-    this.trustStorePassword = s;
+    trustStorePassword = s;
   }
 
 
@@ -100,7 +100,7 @@ public class KeyStoreCredentialConfig implements CredentialConfig
    */
   public String getTrustStoreType()
   {
-    return this.trustStoreType;
+    return trustStoreType;
   }
 
 
@@ -111,7 +111,7 @@ public class KeyStoreCredentialConfig implements CredentialConfig
    */
   public void setTrustStoreType(final String s)
   {
-    this.trustStoreType = s;
+    trustStoreType = s;
   }
 
 
@@ -122,7 +122,7 @@ public class KeyStoreCredentialConfig implements CredentialConfig
    */
   public String getKeyStore()
   {
-    return this.keyStore;
+    return keyStore;
   }
 
 
@@ -133,7 +133,7 @@ public class KeyStoreCredentialConfig implements CredentialConfig
    */
   public void setKeyStore(final String s)
   {
-    this.keyStore = s;
+    keyStore = s;
   }
 
 
@@ -144,7 +144,7 @@ public class KeyStoreCredentialConfig implements CredentialConfig
    */
   public String getKeyStorePassword()
   {
-    return this.keyStorePassword;
+    return keyStorePassword;
   }
 
 
@@ -155,7 +155,7 @@ public class KeyStoreCredentialConfig implements CredentialConfig
    */
   public void setKeyStorePassword(final String s)
   {
-    this.keyStorePassword = s;
+    keyStorePassword = s;
   }
 
 
@@ -166,7 +166,7 @@ public class KeyStoreCredentialConfig implements CredentialConfig
    */
   public String getKeyStoreType()
   {
-    return this.keyStoreType;
+    return keyStoreType;
   }
 
 
@@ -177,32 +177,33 @@ public class KeyStoreCredentialConfig implements CredentialConfig
    */
   public void setKeyStoreType(final String s)
   {
-    this.keyStoreType = s;
+    keyStoreType = s;
   }
 
 
   /** {@inheritDoc} */
+  @Override
   public SSLContextInitializer createSSLContextInitializer()
     throws GeneralSecurityException
   {
     final KeyStoreSSLContextInitializer sslInit =
       new KeyStoreSSLContextInitializer();
     try {
-      if (this.trustStore != null) {
+      if (trustStore != null) {
         sslInit.setTrustKeystore(
-          this.keyStoreReader.read(
-            this.trustStore,
-            this.trustStorePassword,
-            this.trustStoreType));
+          keyStoreReader.read(
+            trustStore,
+            trustStorePassword,
+            trustStoreType));
       }
-      if (this.keyStore != null) {
+      if (keyStore != null) {
         sslInit.setAuthenticationKeystore(
-          this.keyStoreReader.read(
-            this.keyStore,
-            this.keyStorePassword,
-            this.keyStoreType));
+          keyStoreReader.read(
+            keyStore,
+            keyStorePassword,
+            keyStoreType));
         sslInit.setAuthenticationPassword(
-          this.keyStorePassword != null ? this.keyStorePassword.toCharArray()
+          keyStorePassword != null ? keyStorePassword.toCharArray()
                                         : null);
       }
     } catch (IOException e) {

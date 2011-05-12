@@ -52,13 +52,14 @@ public class LRUCache<Q extends SearchRequest> implements Cache<Q>
    */
   public LRUCache(final int size, final long timeToLive, final long interval)
   {
-    this.cache = new LinkedHashMap<Q, Item>(INITIAL_CAPACITY, LOAD_FACTOR, true)
+    cache = new LinkedHashMap<Q, Item>(INITIAL_CAPACITY, LOAD_FACTOR, true)
     {
       /** serialVersionUID. */
       private static final long serialVersionUID = -4082551016104288539L;
 
 
       /** {@inheritDoc} */
+      @Override
       protected boolean removeEldestEntry(final Map.Entry<Q, Item> entry)
       {
         return size() > size;
@@ -91,18 +92,19 @@ public class LRUCache<Q extends SearchRequest> implements Cache<Q>
    */
   public void clear()
   {
-    synchronized (this.cache) {
-      this.cache.clear();
+    synchronized (cache) {
+      cache.clear();
     }
   }
 
 
   /** {@inheritDoc} */
+  @Override
   public LdapResult get(final Q request)
   {
-    synchronized (this.cache) {
-      if (this.cache.containsKey(request)) {
-        return this.cache.get(request).result;
+    synchronized (cache) {
+      if (cache.containsKey(request)) {
+        return cache.get(request).result;
       } else {
         return null;
       }
@@ -111,10 +113,11 @@ public class LRUCache<Q extends SearchRequest> implements Cache<Q>
 
 
   /** {@inheritDoc} */
+  @Override
   public void put(final Q request, final LdapResult lr)
   {
-    synchronized (this.cache) {
-      this.cache.put(request, new Item(lr));
+    synchronized (cache) {
+      cache.put(request, new Item(lr));
     }
   }
 
@@ -126,8 +129,8 @@ public class LRUCache<Q extends SearchRequest> implements Cache<Q>
    */
   public int size()
   {
-    synchronized (this.cache) {
-      return this.cache.size();
+    synchronized (cache) {
+      return cache.size();
     }
   }
 
@@ -152,8 +155,8 @@ public class LRUCache<Q extends SearchRequest> implements Cache<Q>
      */
     public Item(final LdapResult lr)
     {
-      this.result = lr;
-      this.creationTime = System.currentTimeMillis();
+      result = lr;
+      creationTime = System.currentTimeMillis();
     }
   }
 }

@@ -58,31 +58,32 @@ public class SharedLdapPool extends AbstractLdapPool<LdapConnection>
 
 
   /** {@inheritDoc} */
+  @Override
   public LdapConnection checkOut()
     throws LdapPoolException
   {
     LdapConnection lc = null;
     boolean create = false;
-    this.logger.trace(
-      "waiting on pool lock for check out {}", this.poolLock.getQueueLength());
-    this.poolLock.lock();
+    logger.trace(
+      "waiting on pool lock for check out {}", poolLock.getQueueLength());
+    poolLock.lock();
     try {
       // if an available object exists, use it
       // if no available objects and the pool can grow, attempt to create
       // otherwise the pool is full, return a shared object
-      if (this.active.size() < this.available.size()) {
-        this.logger.trace("retrieve available ldap object");
-        lc = this.retrieveAvailable();
-      } else if (this.active.size() < this.poolConfig.getMaxPoolSize()) {
-        this.logger.trace("pool can grow, attempt to create ldap object");
+      if (active.size() < available.size()) {
+        logger.trace("retrieve available ldap object");
+        lc = retrieveAvailable();
+      } else if (active.size() < poolConfig.getMaxPoolSize()) {
+        logger.trace("pool can grow, attempt to create ldap object");
         create = true;
       } else {
-        this.logger.trace(
+        logger.trace(
           "pool is full, attempt to retrieve available ldap object");
-        lc = this.retrieveAvailable();
+        lc = retrieveAvailable();
       }
     } finally {
-      this.poolLock.unlock();
+      poolLock.unlock();
     }
 
     if (create) {
@@ -90,35 +91,35 @@ public class SharedLdapPool extends AbstractLdapPool<LdapConnection>
       // block here until create occurs without locking the whole pool
       // if the pool is already maxed or creates are failing,
       // return a shared object
-      this.checkOutLock.lock();
+      checkOutLock.lock();
       try {
         boolean b = true;
-        this.poolLock.lock();
+        poolLock.lock();
         try {
-          if (this.available.size() == this.poolConfig.getMaxPoolSize()) {
+          if (available.size() == poolConfig.getMaxPoolSize()) {
             b = false;
           }
         } finally {
-          this.poolLock.unlock();
+          poolLock.unlock();
         }
         if (b) {
-          lc = this.createAvailableAndActive();
-          this.logger.trace(
+          lc = createAvailableAndActive();
+          logger.trace(
             "created new available and active ldap connection: {}", lc);
         }
       } finally {
-        this.checkOutLock.unlock();
+        checkOutLock.unlock();
       }
       if (lc == null) {
-        this.logger.debug("create failed, retrieve available ldap object");
-        lc = this.retrieveAvailable();
+        logger.debug("create failed, retrieve available ldap object");
+        lc = retrieveAvailable();
       }
     }
 
     if (lc != null) {
-      this.activateAndValidate(lc);
+      activateAndValidate(lc);
     } else {
-      this.logger.error("Could not service check out request");
+      logger.error("Could not service check out request");
       throw new LdapPoolExhaustedException(
         "Pool is empty and object creation failed");
     }
@@ -139,52 +140,53 @@ public class SharedLdapPool extends AbstractLdapPool<LdapConnection>
   protected LdapConnection retrieveAvailable()
   {
     LdapConnection lc = null;
-    this.logger.trace(
+    logger.trace(
       "waiting on pool lock for retrieve available {}",
-      this.poolLock.getQueueLength());
-    this.poolLock.lock();
+      poolLock.getQueueLength());
+    poolLock.lock();
     try {
       try {
-        final PooledLdapConnection<LdapConnection> pl = this.available.remove();
-        this.active.add(
+        final PooledLdapConnection<LdapConnection> pl = available.remove();
+        active.add(
           new PooledLdapConnection<LdapConnection>(pl.getLdapConnection()));
-        this.available.add(
+        available.add(
           new PooledLdapConnection<LdapConnection>(pl.getLdapConnection()));
         lc = pl.getLdapConnection();
-        this.logger.trace("retrieved available ldap connection: {}", lc);
+        logger.trace("retrieved available ldap connection: {}", lc);
       } catch (NoSuchElementException e) {
-        this.logger.error("could not remove ldap object from list", e);
+        logger.error("could not remove ldap object from list", e);
         throw new IllegalStateException("Pool is empty", e);
       }
     } finally {
-      this.poolLock.unlock();
+      poolLock.unlock();
     }
     return lc;
   }
 
 
   /** {@inheritDoc} */
+  @Override
   public void checkIn(final LdapConnection lc)
   {
-    final boolean valid = this.validateAndPassivate(lc);
+    final boolean valid = validateAndPassivate(lc);
     final PooledLdapConnection<LdapConnection> pl =
       new PooledLdapConnection<LdapConnection>(lc);
-    this.logger.trace(
-      "waiting on pool lock for check in {}", this.poolLock.getQueueLength());
-    this.poolLock.lock();
+    logger.trace(
+      "waiting on pool lock for check in {}", poolLock.getQueueLength());
+    poolLock.lock();
     try {
-      if (this.active.remove(pl)) {
-        this.logger.debug("returned active ldap connection: {}", lc);
-      } else if (this.available.contains(pl)) {
-        this.logger.warn("returned available ldap connection: {}", lc);
+      if (active.remove(pl)) {
+        logger.debug("returned active ldap connection: {}", lc);
+      } else if (available.contains(pl)) {
+        logger.warn("returned available ldap connection: {}", lc);
       } else {
-        this.logger.warn("attempt to return unknown ldap connection: {}", lc);
+        logger.warn("attempt to return unknown ldap connection: {}", lc);
       }
       if (!valid) {
-        this.available.remove(pl);
+        available.remove(pl);
       }
     } finally {
-      this.poolLock.unlock();
+      poolLock.unlock();
     }
   }
 }

@@ -36,7 +36,7 @@ public class Credential
   public Credential(final String password)
   {
     try {
-      this.bytes = password.getBytes("UTF-8");
+      bytes = password.getBytes("UTF-8");
     } catch (UnsupportedEncodingException e) {
       throw new IllegalArgumentException(
         "Could not encode password as UTF-8", e);
@@ -52,7 +52,7 @@ public class Credential
   public Credential(final char[] password)
   {
     try {
-      this.bytes = new String(password).getBytes("UTF-8");
+      bytes = new String(password).getBytes("UTF-8");
     } catch (UnsupportedEncodingException e) {
       throw new IllegalArgumentException(
         "Could not encode password as UTF-8", e);
@@ -67,7 +67,7 @@ public class Credential
    */
   public Credential(final byte[] password)
   {
-    this.bytes = password;
+    bytes = password;
   }
 
 
@@ -78,7 +78,7 @@ public class Credential
    */
   public byte[] getBytes()
   {
-    return this.bytes;
+    return bytes;
   }
 
 
@@ -90,7 +90,7 @@ public class Credential
   public String getString()
   {
     try {
-      return new String(this.bytes, "UTF-8");
+      return new String(bytes, "UTF-8");
     } catch (UnsupportedEncodingException e) {
       throw new IllegalStateException(
         "Could not encode password as UTF-8", e);
@@ -105,7 +105,7 @@ public class Credential
    */
   public char[] getChars()
   {
-    return this.getString().toCharArray();
+    return getString().toCharArray();
   }
 
 
@@ -120,8 +120,8 @@ public class Credential
     return
       String.format(
         "%s@%d::bytes=%s",
-        this.getClass().getName(),
-        this.hashCode(),
-        new String(this.bytes));
+        getClass().getName(),
+        hashCode(),
+        new String(bytes));
   }
 }

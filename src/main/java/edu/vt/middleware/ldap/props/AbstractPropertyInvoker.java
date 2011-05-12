@@ -53,10 +53,10 @@ public abstract class AbstractPropertyInvoker implements PropertyInvoker
   {
     final String cacheKey = c.getName();
     if (PROPERTIES_CACHE.containsKey(cacheKey)) {
-      this.properties = PROPERTIES_CACHE.get(cacheKey);
+      properties = PROPERTIES_CACHE.get(cacheKey);
     } else {
-      this.properties = new HashMap<String, Method[]>();
-      PROPERTIES_CACHE.put(cacheKey, this.properties);
+      properties = new HashMap<String, Method[]>();
+      PROPERTIES_CACHE.put(cacheKey, properties);
       for (Method method : c.getMethods()) {
         if (
           method.getName().startsWith("set") &&
@@ -65,12 +65,12 @@ public abstract class AbstractPropertyInvoker implements PropertyInvoker
           final String pName = new StringBuilder(
             mName.substring(0, 1).toLowerCase()).append(
               mName.substring(1, mName.length())).toString();
-          if (this.properties.containsKey(pName)) {
-            final Method[] m = this.properties.get(pName);
+          if (properties.containsKey(pName)) {
+            final Method[] m = properties.get(pName);
             m[1] = method;
-            this.properties.put(pName, m);
+            properties.put(pName, m);
           } else {
-            this.properties.put(pName, new Method[] {null, method});
+            properties.put(pName, new Method[] {null, method});
           }
         } else if (
           method.getName().startsWith("get") &&
@@ -79,22 +79,22 @@ public abstract class AbstractPropertyInvoker implements PropertyInvoker
           final String pName = new StringBuilder(
             mName.substring(0, 1).toLowerCase()).append(
               mName.substring(1, mName.length())).toString();
-          if (this.properties.containsKey(pName)) {
-            final Method[] m = this.properties.get(pName);
+          if (properties.containsKey(pName)) {
+            final Method[] m = properties.get(pName);
             m[0] = method;
-            this.properties.put(pName, m);
+            properties.put(pName, m);
           } else {
-            this.properties.put(pName, new Method[] {method, null});
+            properties.put(pName, new Method[] {method, null});
           }
         } else if (
           "initialize".equals(method.getName()) &&
             method.getParameterTypes().length == 0) {
           final String pName = new StringBuilder(method.getName()).toString();
-          this.properties.put(pName, new Method[] {method, method});
+          properties.put(pName, new Method[] {method, method});
         }
       }
       // remove any properties that don't have both getters and setters
-      final Iterator<Method[]> i = this.properties.values().iterator();
+      final Iterator<Method[]> i = properties.values().iterator();
       while (i.hasNext()) {
         final Method[] m = i.next();
         if (m[0] == null || m[1] == null) {
@@ -102,7 +102,7 @@ public abstract class AbstractPropertyInvoker implements PropertyInvoker
         }
       }
     }
-    this.clazz = c;
+    clazz = c;
   }
 
 
@@ -121,32 +121,32 @@ public abstract class AbstractPropertyInvoker implements PropertyInvoker
     final String name,
     final String value)
   {
-    if (!this.clazz.isInstance(object)) {
+    if (!clazz.isInstance(object)) {
       throw new IllegalArgumentException(
-        "Illegal attempt to set property for class " + this.clazz.getName() +
+        "Illegal attempt to set property for class " + clazz.getName() +
         " on object of type " + object.getClass().getName());
     }
 
-    final Method getter = this.properties.get(name) != null
-      ? this.properties.get(name)[0] : null;
+    final Method getter = properties.get(name) != null
+      ? properties.get(name)[0] : null;
     if (getter == null) {
       throw new IllegalArgumentException(
         "No getter method found for " + name + " on object " +
-        this.clazz.getName());
+        clazz.getName());
     }
 
-    final Method setter = this.properties.get(name) != null
-      ? this.properties.get(name)[1] : null;
+    final Method setter = properties.get(name) != null
+      ? properties.get(name)[1] : null;
     if (setter == null) {
       throw new IllegalArgumentException(
         "No setter method found for " + name + " on object " +
-        this.clazz.getName());
+        clazz.getName());
     }
 
     invokeMethod(
       setter,
       object,
-      this.convertValue(getter.getReturnType(), value));
+      convertValue(getter.getReturnType(), value));
   }
 
 
@@ -173,7 +173,7 @@ public abstract class AbstractPropertyInvoker implements PropertyInvoker
    */
   public boolean hasProperty(final String name)
   {
-    return this.properties.containsKey(name);
+    return properties.containsKey(name);
   }
 
 
@@ -184,7 +184,7 @@ public abstract class AbstractPropertyInvoker implements PropertyInvoker
    */
   public Set<String> getProperties()
   {
-    return Collections.unmodifiableSet(this.properties.keySet());
+    return Collections.unmodifiableSet(properties.keySet());
   }
 
 

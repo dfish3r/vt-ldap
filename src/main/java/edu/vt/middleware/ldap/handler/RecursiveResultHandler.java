@@ -103,24 +103,26 @@ public class RecursiveResultHandler extends CopyLdapResultHandler
     final String searchAttr,
     final String[] mergeAttrs)
   {
-    this.ldapConnection = lc;
-    this.searchAttribute = searchAttr;
-    this.mergeAttributes = mergeAttrs;
-    this.initalizeReturnAttributes();
+    ldapConnection = lc;
+    searchAttribute = searchAttr;
+    mergeAttributes = mergeAttrs;
+    initalizeReturnAttributes();
   }
 
 
   /** {@inheritDoc} */
+  @Override
   public LdapConnection getResultLdapConnection()
   {
-    return this.ldapConnection;
+    return ldapConnection;
   }
 
 
   /** {@inheritDoc} */
+  @Override
   public void setResultLdapConnection(final LdapConnection lc)
   {
-    this.ldapConnection = lc;
+    ldapConnection = lc;
   }
 
 
@@ -131,7 +133,7 @@ public class RecursiveResultHandler extends CopyLdapResultHandler
    */
   public String getSearchAttribute()
   {
-    return this.searchAttribute;
+    return searchAttribute;
   }
 
 
@@ -142,8 +144,8 @@ public class RecursiveResultHandler extends CopyLdapResultHandler
    */
   public void setSearchAttribute(final String name)
   {
-    this.searchAttribute = name;
-    this.initalizeReturnAttributes();
+    searchAttribute = name;
+    initalizeReturnAttributes();
   }
 
 
@@ -154,7 +156,7 @@ public class RecursiveResultHandler extends CopyLdapResultHandler
    */
   public String[] getMergeAttributes()
   {
-    return this.mergeAttributes;
+    return mergeAttributes;
   }
 
 
@@ -165,8 +167,8 @@ public class RecursiveResultHandler extends CopyLdapResultHandler
    */
   public void setMergeAttributes(final String[] mergeAttrs)
   {
-    this.mergeAttributes = mergeAttrs;
-    this.initalizeReturnAttributes();
+    mergeAttributes = mergeAttrs;
+    initalizeReturnAttributes();
   }
 
 
@@ -176,21 +178,22 @@ public class RecursiveResultHandler extends CopyLdapResultHandler
    */
   protected void initalizeReturnAttributes()
   {
-    if (this.mergeAttributes != null && this.searchAttribute != null) {
+    if (mergeAttributes != null && searchAttribute != null) {
       // return attributes must include the search attribute
-      this.retAttrs = new String[this.mergeAttributes.length + 1];
+      retAttrs = new String[mergeAttributes.length + 1];
       System.arraycopy(
-        this.mergeAttributes,
+        mergeAttributes,
         0,
-        this.retAttrs,
+        retAttrs,
         0,
-        this.mergeAttributes.length);
-      this.retAttrs[this.retAttrs.length - 1] = this.searchAttribute;
+        mergeAttributes.length);
+      retAttrs[retAttrs.length - 1] = searchAttribute;
     }
   }
 
 
   /** {@inheritDoc} */
+  @Override
   public void process(final SearchCriteria sc, final LdapResult lr)
     throws LdapException
   {
@@ -198,11 +201,11 @@ public class RecursiveResultHandler extends CopyLdapResultHandler
     // the existing search result set.
     for (LdapEntry le : lr.getEntries()) {
       final List<String> searchedDns = new ArrayList<String>();
-      if (le.getLdapAttributes().getAttribute(this.searchAttribute) != null) {
+      if (le.getLdapAttributes().getAttribute(searchAttribute) != null) {
         searchedDns.add(le.getDn());
-        this.readSearchAttribute(le.getLdapAttributes(), searchedDns);
+        readSearchAttribute(le.getLdapAttributes(), searchedDns);
       } else {
-        this.recursiveSearch(le.getDn(), le.getLdapAttributes(), searchedDns);
+        recursiveSearch(le.getDn(), le.getLdapAttributes(), searchedDns);
       }
     }
   }
@@ -223,11 +226,11 @@ public class RecursiveResultHandler extends CopyLdapResultHandler
     throws LdapException
   {
     if (attrs != null) {
-      final LdapAttribute attr = attrs.getAttribute(this.searchAttribute);
+      final LdapAttribute attr = attrs.getAttribute(searchAttribute);
       if (attr != null) {
         for (Object rawValue : attr.getValues()) {
           if (rawValue instanceof String) {
-            this.recursiveSearch((String) rawValue, attrs, searchedDns);
+            recursiveSearch((String) rawValue, attrs, searchedDns);
           }
         }
       }
@@ -255,25 +258,25 @@ public class RecursiveResultHandler extends CopyLdapResultHandler
 
       LdapAttributes newAttrs = null;
       try {
-        final SearchOperation search = new SearchOperation(this.ldapConnection);
+        final SearchOperation search = new SearchOperation(ldapConnection);
         final SearchRequest sr = SearchRequest.newObjectScopeSearchRequest(
-          dn, this.retAttrs);
+          dn, retAttrs);
         final LdapResult result = search.execute(sr).getResult();
         newAttrs = result.getEntry(dn).getLdapAttributes();
       } catch (LdapException e) {
-        this.logger.warn(
+        logger.warn(
           "Error retreiving attribute(s): {}",
-          Arrays.toString(this.retAttrs),
+          Arrays.toString(retAttrs),
           e);
       }
       searchedDns.add(dn);
 
       if (newAttrs != null) {
         // recursively search new attributes
-        this.readSearchAttribute(newAttrs, searchedDns);
+        readSearchAttribute(newAttrs, searchedDns);
 
         // merge new attribute values
-        for (String s : this.mergeAttributes) {
+        for (String s : mergeAttributes) {
           final LdapAttribute newAttr = newAttrs.getAttribute(s);
           if (newAttr != null) {
             final LdapAttribute oldAttr = attrs.getAttribute(s);

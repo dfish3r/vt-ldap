@@ -75,7 +75,7 @@ public final class SearchRequestPropertySource
   public SearchRequestPropertySource(
     final PropertyDomain domain, final Properties props)
   {
-    this.object = initializeObject(
+    object = initializeObject(
       INVOKER, new SearchRequest(), domain.value(), props);
   }
 

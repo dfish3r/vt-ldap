@@ -33,7 +33,7 @@ public class LdapSearch
 {
 
   /** Logger for this class. */
-  protected final Logger logger = LoggerFactory.getLogger(this.getClass());
+  protected final Logger logger = LoggerFactory.getLogger(getClass());
 
   /** Pool of ldap connections. */
   protected LdapPool<LdapConnection> pool;
@@ -46,7 +46,7 @@ public class LdapSearch
    */
   public LdapSearch(final LdapPool<LdapConnection> lp)
   {
-    this.pool = lp;
+    pool = lp;
   }
 
 
@@ -68,15 +68,15 @@ public class LdapSearch
       try {
         LdapConnection conn = null;
         try {
-          conn = this.pool.checkOut();
+          conn = pool.checkOut();
           final SearchOperation search = new SearchOperation(conn);
           result = search.execute(
             new SearchRequest(new SearchFilter(query), attrs)).getResult();
         } finally {
-          this.pool.checkIn(conn);
+          pool.checkIn(conn);
         }
       } catch (LdapPoolException e) {
-        this.logger.error("Error using LDAP pool", e);
+        logger.error("Error using LDAP pool", e);
       }
     }
     return result;
@@ -89,7 +89,7 @@ public class LdapSearch
    */
   public void close()
   {
-    this.pool.close();
+    pool.close();
   }
 
 
@@ -102,7 +102,7 @@ public class LdapSearch
     throws Throwable
   {
     try {
-      this.close();
+      close();
     } finally {
       super.finalize();
     }

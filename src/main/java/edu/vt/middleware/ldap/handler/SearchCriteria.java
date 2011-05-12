@@ -48,7 +48,7 @@ public class SearchCriteria
    */
   public SearchCriteria(final String s)
   {
-    this.dn = s;
+    dn = s;
   }
 
 
@@ -59,12 +59,12 @@ public class SearchCriteria
    */
   public SearchCriteria(final SearchRequest request)
   {
-    this.setDn(request.getBaseDn());
+    setDn(request.getBaseDn());
     if (request.getSearchFilter() != null) {
-      this.setFilter(request.getSearchFilter().getFilter());
-      this.setFilterArgs(request.getSearchFilter().getFilterArgs().toArray());
+      setFilter(request.getSearchFilter().getFilter());
+      setFilterArgs(request.getSearchFilter().getFilterArgs().toArray());
     }
-    this.setReturnAttrs(request.getReturnAttributes());
+    setReturnAttrs(request.getReturnAttributes());
   }
 
 
@@ -75,7 +75,7 @@ public class SearchCriteria
    */
   public String getDn()
   {
-    return this.dn;
+    return dn;
   }
 
 
@@ -86,7 +86,7 @@ public class SearchCriteria
    */
   public void setDn(final String s)
   {
-    this.dn = s;
+    dn = s;
   }
 
 
@@ -97,7 +97,7 @@ public class SearchCriteria
    */
   public String getFilter()
   {
-    return this.filter;
+    return filter;
   }
 
 
@@ -108,7 +108,7 @@ public class SearchCriteria
    */
   public void setFilter(final String s)
   {
-    this.filter = s;
+    filter = s;
   }
 
 
@@ -119,7 +119,7 @@ public class SearchCriteria
    */
   public Object[] getFilterArgs()
   {
-    return this.filterArgs;
+    return filterArgs;
   }
 
 
@@ -130,7 +130,7 @@ public class SearchCriteria
    */
   public void setFilterArgs(final Object[] o)
   {
-    this.filterArgs = o;
+    filterArgs = o;
   }
 
 
@@ -141,7 +141,7 @@ public class SearchCriteria
    */
   public String[] getReturnAttrs()
   {
-    return this.returnAttrs;
+    return returnAttrs;
   }
 
 
@@ -152,7 +152,7 @@ public class SearchCriteria
    */
   public void setReturnAttrs(final String[] s)
   {
-    this.returnAttrs = s;
+    returnAttrs = s;
   }
 
 
@@ -167,11 +167,11 @@ public class SearchCriteria
     return
       String.format(
         "%s@%d: dn=%s, filter=%s, filterArgs=%s, returnAttrs=%s",
-        this.getClass().getName(),
-        this.hashCode(),
-        this.dn,
-        this.filter,
-        this.filterArgs,
-        this.returnAttrs);
+        getClass().getName(),
+        hashCode(),
+        dn,
+        filter,
+        filterArgs,
+        returnAttrs);
   }
 }

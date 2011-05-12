@@ -56,7 +56,7 @@ public class LdifWriter
     "line.separator");
 
   /** Logger for this class. */
-  protected final Logger logger = LoggerFactory.getLogger(this.getClass());
+  protected final Logger logger = LoggerFactory.getLogger(getClass());
 
   /** Writer to write to. */
   protected final Writer ldifWriter;
@@ -69,7 +69,7 @@ public class LdifWriter
    */
   public LdifWriter(final Writer writer)
   {
-    this.ldifWriter = writer;
+    ldifWriter = writer;
   }
 
 
@@ -82,8 +82,8 @@ public class LdifWriter
   public void write(final LdapResult result)
     throws IOException
   {
-    this.ldifWriter.write(createLdif(result));
-    this.ldifWriter.flush();
+    ldifWriter.write(createLdif(result));
+    ldifWriter.flush();
   }
 
 
@@ -144,7 +144,7 @@ public class LdifWriter
           } else if (attrValue instanceof byte[]) {
             encodedAttrValue = LdapUtil.base64Encode((byte[]) attrValue);
           } else {
-            this.logger.warn(
+            logger.warn(
               "Could not cast attribute value as a byte[]  or a String");
           }
           if (encodedAttrValue != null) {

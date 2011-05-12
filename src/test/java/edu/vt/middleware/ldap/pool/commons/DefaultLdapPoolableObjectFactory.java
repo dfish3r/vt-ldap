@@ -42,36 +42,41 @@ public class DefaultLdapPoolableObjectFactory extends DefaultLdapFactory
 
 
   /** {@inheritDoc} */
+  @Override
   public void activateObject(final Object obj)
   {
-    this.activate((LdapConnection) obj);
+    activate((LdapConnection) obj);
   }
 
 
   /** {@inheritDoc} */
+  @Override
   public void destroyObject(final Object obj)
   {
-    this.destroy((LdapConnection) obj);
+    destroy((LdapConnection) obj);
   }
 
 
   /** {@inheritDoc} */
+  @Override
   public Object makeObject()
   {
-    return this.create();
+    return create();
   }
 
 
   /** {@inheritDoc} */
+  @Override
   public void passivateObject(final Object obj)
   {
-    this.passivate((LdapConnection) obj);
+    passivate((LdapConnection) obj);
   }
 
 
   /** {@inheritDoc} */
+  @Override
   public boolean validateObject(final Object obj)
   {
-    return this.validate((LdapConnection) obj);
+    return validate((LdapConnection) obj);
   }
 }

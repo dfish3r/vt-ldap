@@ -37,11 +37,11 @@ public class LdapCredential implements Serializable
   /**
    * Creates a new ldap credential with the supplied credential.
    *
-   * @param  credential  to store
+   * @param  o  credential to store
    */
-  public LdapCredential(final Object credential)
+  public LdapCredential(final Object o)
   {
-    this.credential = credential;
+    credential = o;
   }
 
 
@@ -52,7 +52,7 @@ public class LdapCredential implements Serializable
    */
   public Object getCredential()
   {
-    return this.credential;
+    return credential;
   }
 
 
@@ -70,7 +70,7 @@ public class LdapCredential implements Serializable
     }
     return
       o == this ||
-        (this.getClass() == o.getClass() && o.hashCode() == this.hashCode());
+        (getClass() == o.getClass() && o.hashCode() == hashCode());
   }
 
 
@@ -82,8 +82,8 @@ public class LdapCredential implements Serializable
   public int hashCode()
   {
     int hc = HASH_CODE_SEED;
-    if (this.credential != null) {
-      hc += this.credential.hashCode();
+    if (credential != null) {
+      hc += credential.hashCode();
     }
     return hc;
   }
@@ -99,8 +99,8 @@ public class LdapCredential implements Serializable
   {
     return String.format(
         "%s@%d::%s",
-        this.getClass().getName(),
-        this.hashCode(),
-        this.credential);
+        getClass().getName(),
+        hashCode(),
+        credential);
   }
 }
