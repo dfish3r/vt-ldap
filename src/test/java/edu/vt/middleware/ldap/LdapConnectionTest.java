@@ -60,7 +60,8 @@ public class LdapConnectionTest
     final LdapConnection conn = TestUtil.createLdapConnection();
     conn.open();
     AssertJUnit.assertTrue(conn.compare(
-      testLdapEntry.getDn(), testLdapEntry.getLdapAttributes().getAttribute()));
+      testLdapEntry.getDn(),
+      testLdapEntry.getLdapAttributes().getAttribute("mail")));
     conn.close();
   }
 
