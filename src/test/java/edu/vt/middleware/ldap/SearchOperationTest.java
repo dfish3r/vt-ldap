@@ -257,9 +257,8 @@ public class SearchOperationTest extends AbstractTest
     final String expected = TestUtil.readFileIntoString(ldifFile);
 
     final LdapResult entryDnResult = TestUtil.convertLdifToResult(expected);
-    entryDnResult.getEntry().getLdapAttributes().addAttribute(
-      "entryDN",
-      entryDnResult.getEntry().getDn());
+    entryDnResult.getEntry().addAttribute(
+      new LdapAttribute("entryDN", entryDnResult.getEntry().getDn()));
 
     // test searching
     LdapResult result = search.execute(
@@ -547,7 +546,7 @@ public class SearchOperationTest extends AbstractTest
     LdapResult result = search.execute(request).getResult();
     AssertJUnit.assertNotSame(
       base64Value,
-      result.getEntry().getLdapAttributes().getAttribute().getStringValue());
+      result.getEntry().getAttribute().getStringValue());
 
     request = new SearchRequest(
       dn,
@@ -558,7 +557,7 @@ public class SearchOperationTest extends AbstractTest
     result = search.execute(request).getResult();
     AssertJUnit.assertEquals(
       base64Value,
-      result.getEntry().getLdapAttributes().getAttribute().getStringValue());
+      result.getEntry().getAttribute().getStringValue());
   }
 
 
@@ -610,8 +609,7 @@ public class SearchOperationTest extends AbstractTest
     srh.setAttributeValueCaseChange(CaseChange.LOWER);
     final LdapResult lcValuesChangeResult = TestUtil.convertLdifToResult(
       expected);
-    for (LdapAttribute la :
-         lcValuesChangeResult.getEntry().getLdapAttributes().getAttributes()) {
+    for (LdapAttribute la : lcValuesChangeResult.getEntry().getAttributes()) {
       final Set<Object> s = new HashSet<Object>();
       for (Object o : la.getValues()) {
         if (o instanceof String) {
@@ -634,8 +632,7 @@ public class SearchOperationTest extends AbstractTest
     srh.setAttributeNameCaseChange(CaseChange.UPPER);
     final LdapResult ucNamesChangeResult = TestUtil.convertLdifToResult(
       expected);
-    for (LdapAttribute la :
-         ucNamesChangeResult.getEntry().getLdapAttributes().getAttributes()) {
+    for (LdapAttribute la : ucNamesChangeResult.getEntry().getAttributes()) {
       la.setName(la.getName().toUpperCase());
     }
     result = search.execute(
@@ -651,8 +648,7 @@ public class SearchOperationTest extends AbstractTest
     srh.setAttributeNameCaseChange(CaseChange.LOWER);
     srh.setDnCaseChange(CaseChange.LOWER);
     final LdapResult lcAllChangeResult = TestUtil.convertLdifToResult(expected);
-    for (LdapAttribute la :
-         ucNamesChangeResult.getEntry().getLdapAttributes().getAttributes()) {
+    for (LdapAttribute la : ucNamesChangeResult.getEntry().getAttributes()) {
       lcAllChangeResult.getEntry().setDn(
         lcAllChangeResult.getEntry().getDn().toLowerCase());
       la.setName(la.getName().toLowerCase());
@@ -933,8 +929,7 @@ public class SearchOperationTest extends AbstractTest
       SearchRequest.newObjectScopeSearchRequest(
         dn, returnAttrs.split("\\|"))).getResult();
     AssertJUnit.assertEquals(
-      TestUtil.convertStringToAttributes(results),
-      result.getEntry().getLdapAttributes());
+      TestUtil.convertStringToEntry(dn, results), result.getEntry());
   }
 
 
@@ -969,8 +964,7 @@ public class SearchOperationTest extends AbstractTest
       new LdapResultHandler[] {new BinaryResultHandler()});
     final LdapResult result = search.execute(request).getResult();
     AssertJUnit.assertEquals(
-      TestUtil.convertStringToAttributes(results),
-      result.getEntry().getLdapAttributes());
+      TestUtil.convertStringToEntry(dn, results), result.getEntry());
     conn.close();
   }
 
@@ -986,7 +980,7 @@ public class SearchOperationTest extends AbstractTest
     final LdapResult result = search.execute(
       SearchRequest.newObjectScopeSearchRequest(
         "", new String[] {"supportedSASLMechanisms"})).getResult();
-    AssertJUnit.assertTrue(result.getEntry().getLdapAttributes().size() > 0);
+    AssertJUnit.assertTrue(result.getEntry().getAttributes().size() > 0);
     conn.close();
   }
 
@@ -1002,7 +996,7 @@ public class SearchOperationTest extends AbstractTest
     final LdapResult result = search.execute(
       SearchRequest.newObjectScopeSearchRequest(
         "", new String[] {"supportedcontrol"})).getResult();
-    AssertJUnit.assertTrue(result.getEntry().getLdapAttributes().size() > 0);
+    AssertJUnit.assertTrue(result.getEntry().getAttributes().size() > 0);
     conn.close();
   }
 

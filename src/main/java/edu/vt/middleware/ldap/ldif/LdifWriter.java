@@ -134,7 +134,7 @@ public class LdifWriter
       }
     }
 
-    for (LdapAttribute attr : le.getLdapAttributes().getAttributes()) {
+    for (LdapAttribute attr : le.getAttributes()) {
       final String attrName = attr.getName();
       for (Object attrValue : attr.getValues()) {
         if (encodeData(attrValue)) {

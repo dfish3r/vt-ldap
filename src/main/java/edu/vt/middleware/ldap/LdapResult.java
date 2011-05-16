@@ -119,7 +119,7 @@ public class LdapResult extends AbstractLdapBean
    */
   public LdapEntry getEntry(final String dn)
   {
-    return entries.get(dn);
+    return entries.get(dn.toLowerCase());
   }
 
 
@@ -142,7 +142,7 @@ public class LdapResult extends AbstractLdapBean
    */
   public void addEntry(final LdapEntry le)
   {
-    entries.put(le.getDn(), le);
+    entries.put(le.getDn().toLowerCase(), le);
   }
 
 
@@ -154,7 +154,7 @@ public class LdapResult extends AbstractLdapBean
   public void addEntries(final Collection<LdapEntry> c)
   {
     for (LdapEntry e : c) {
-      entries.put(e.getDn(), e);
+      addEntry(e);
     }
   }
 

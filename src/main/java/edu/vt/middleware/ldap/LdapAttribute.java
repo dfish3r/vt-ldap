@@ -85,7 +85,7 @@ public class LdapAttribute extends AbstractLdapBean
   {
     this();
     setName(s);
-    getValues().add(value);
+    values.add(value);
   }
 
 
@@ -100,7 +100,7 @@ public class LdapAttribute extends AbstractLdapBean
     this();
     setName(s);
     for (Object object : o) {
-      getValues().add(object);
+      values.add(object);
     }
   }
 
@@ -115,7 +115,7 @@ public class LdapAttribute extends AbstractLdapBean
   {
     this();
     setName(s);
-    getValues().addAll(o);
+    values.addAll(o);
   }
 
 
@@ -230,7 +230,7 @@ public class LdapAttribute extends AbstractLdapBean
   {
     int hc = HASH_CODE_SEED;
     hc += name != null ? name.toLowerCase().hashCode() : 0;
-    for (Object o : getValues()) {
+    for (Object o : values) {
       if (o != null) {
         if (o instanceof String) {
           hc += o.hashCode();

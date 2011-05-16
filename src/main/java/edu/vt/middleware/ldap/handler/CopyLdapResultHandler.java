@@ -93,7 +93,7 @@ public class CopyLdapResultHandler implements LdapResultHandler
     if (ldapAttributeHandler != null &&
         ldapAttributeHandler.length > 0) {
       for (LdapAttributeHandler ah : ldapAttributeHandler) {
-        for (LdapAttribute la : le.getLdapAttributes().getAttributes()) {
+        for (LdapAttribute la : le.getAttributes()) {
           ah.process(sc, la);
         }
       }

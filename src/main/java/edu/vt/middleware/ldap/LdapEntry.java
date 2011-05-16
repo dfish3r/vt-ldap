@@ -13,6 +13,12 @@
 */
 package edu.vt.middleware.ldap;
 
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.TreeMap;
+
 /**
  * Simple bean for an ldap entry. Contains a DN and ldap attributes.
  *
@@ -27,8 +33,8 @@ public class LdapEntry extends AbstractLdapBean
   /** Distinguished name for this entry. */
   protected String dn;
 
-  /** Attributes contained in this entry. */
-  protected LdapAttributes ldapAttributes;
+  /** Attributes contained in this bean. */
+  protected Map<String, LdapAttribute> ldapAttributes;
 
 
   /** Default constructor. */
@@ -46,7 +52,14 @@ public class LdapEntry extends AbstractLdapBean
   public LdapEntry(final SortBehavior sb)
   {
     super(sb);
-    ldapAttributes = new LdapAttributes(sb);
+    if (SortBehavior.UNORDERED == sb) {
+      ldapAttributes = new HashMap<String, LdapAttribute>();
+    } else if (SortBehavior.ORDERED == sb) {
+      ldapAttributes = new LinkedHashMap<String, LdapAttribute>();
+    } else if (SortBehavior.SORTED == sb) {
+      ldapAttributes = new TreeMap<String, LdapAttribute>(
+        String.CASE_INSENSITIVE_ORDER);
+    }
   }
 
 
@@ -66,13 +79,27 @@ public class LdapEntry extends AbstractLdapBean
    * Creates a new ldap entry.
    *
    * @param  s  dn for this entry
-   * @param  la  ldap attributes for this entry
+   * @param  a  ldap attribute for this entry
    */
-  public LdapEntry(final String s, final LdapAttributes la)
+  public LdapEntry(final String s, final LdapAttribute a)
   {
     this();
     setDn(s);
-    setLdapAttributes(la);
+    addAttribute(a);
+  }
+
+
+  /**
+   * Creates a new ldap entry.
+   *
+   * @param  s  dn for this entry
+   * @param  c  collection of attributes to add
+   */
+  public LdapEntry(final String s, final Collection<LdapAttribute> c)
+  {
+    this();
+    setDn(s);
+    addAttributes(c);
   }
 
 
@@ -99,24 +126,139 @@ public class LdapEntry extends AbstractLdapBean
 
 
   /**
-   * Returns the ldap attributes.
+   * Returns a collection of ldap attribute.
    *
-   * @return  ldap attributes
+   * @return  collection of ldap attribute
    */
-  public LdapAttributes getLdapAttributes()
+  public Collection<LdapAttribute> getAttributes()
   {
-    return ldapAttributes;
+    return ldapAttributes.values();
   }
 
 
   /**
-   * Sets the ldap attributes.
+   * Returns a single attribute of this attributes. If multiple attributes exist
+   * the first attribute returned by the underlying iterator is used. If no
+   * attributes exist null is returned.
    *
-   * @param  la  ldap attributes
+   * @return  single attribute
    */
-  public void setLdapAttributes(final LdapAttributes la)
+  public LdapAttribute getAttribute()
   {
-    ldapAttributes = la;
+    if (ldapAttributes.size() == 0) {
+      return null;
+    }
+    return ldapAttributes.values().iterator().next();
+  }
+
+
+  /**
+   * Returns the attribute with the supplied name.
+   *
+   * @param  name  of the attribute to return
+   * @return  ldap attribute
+   */
+  public LdapAttribute getAttribute(final String name)
+  {
+    if (name != null) {
+      return ldapAttributes.get(name.toLowerCase());
+    }
+    return null;
+  }
+
+
+  /**
+   * Returns the attribute names in this ldap attributes.
+   *
+   * @return  string array of attribute names
+   */
+  public String[] getAttributeNames()
+  {
+    final String[] names = new String[ldapAttributes.size()];
+    int i = 0;
+    for (LdapAttribute la : ldapAttributes.values()) {
+      names[i++] = la.getName();
+    }
+    return names;
+  }
+
+
+  /**
+   * Adds an attribute to this ldap attributes.
+   *
+   * @param  a  attribute to add
+   */
+  public void addAttribute(final LdapAttribute a)
+  {
+    ldapAttributes.put(a.getName().toLowerCase(), a);
+  }
+
+
+  /**
+   * Adds attribute(s) to this ldap attributes.
+   *
+   * @param  c  collection of attributes to add
+   */
+  public void addAttributes(final Collection<LdapAttribute> c)
+  {
+    for (LdapAttribute la : c) {
+      addAttribute(la);
+    }
+  }
+
+
+  /**
+   * Removes an attribute from this ldap attributes.
+   *
+   * @param  a  attribute to remove
+   */
+  public void removeAttribute(final LdapAttribute a)
+  {
+    ldapAttributes.remove(a.getName().toLowerCase());
+  }
+
+
+  /**
+   * Removes the attribute of the supplied name from this ldap attributes.
+   *
+   * @param  name  of attribute to remove
+   */
+  public void removeAttribute(final String name)
+  {
+    ldapAttributes.remove(name.toLowerCase());
+  }
+
+
+  /**
+   * Removes the attribute(s) from this ldap attributes.
+   *
+   * @param  c  collection of ldap attributes to remove
+   */
+  public void removeAttributes(final Collection<LdapAttribute> c)
+  {
+    for (LdapAttribute la : c) {
+      removeAttribute(la);
+    }
+  }
+
+
+  /**
+   * Returns the number of attributes in this ldap attributes.
+   *
+   * @return  number of attributes in this ldap attributes
+   */
+  public int size()
+  {
+    return ldapAttributes.size();
+  }
+
+
+  /**
+   * Removes all the attributes in this ldap attributes.
+   */
+  public void clear()
+  {
+    ldapAttributes.clear();
   }
 
 
@@ -125,8 +267,12 @@ public class LdapEntry extends AbstractLdapBean
   public int hashCode()
   {
     int hc = HASH_CODE_SEED;
-    hc += dn != null ? dn.hashCode() : 0;
-    hc += ldapAttributes != null ? ldapAttributes.hashCode() : 0;
+    hc += dn != null ? dn.toLowerCase().hashCode() : 0;
+    for (LdapAttribute la : ldapAttributes.values()) {
+      if (la != null) {
+        hc += la.hashCode();
+      }
+    }
     return hc;
   }
 

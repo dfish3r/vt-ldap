@@ -13,6 +13,7 @@
 */
 package edu.vt.middleware.ldap;
 
+import java.util.Collection;
 import edu.vt.middleware.ldap.provider.Connection;
 import edu.vt.middleware.ldap.provider.ConnectionFactory;
 import org.slf4j.Logger;
@@ -193,7 +194,7 @@ public class LdapConnection
    * @param  attrs  to add
    * @throws  LdapException  if an error occurs
    */
-  public void add(final String dn, final LdapAttributes attrs)
+  public void add(final String dn, final Collection<LdapAttribute> attrs)
     throws LdapException
   {
     final AddOperation op = new AddOperation(this);

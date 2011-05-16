@@ -166,7 +166,7 @@ public class Dsmlv1Reader
                 setAttrValue(valueElement, ldapAttribute);
               }
             }
-            ldapEntry.getLdapAttributes().addAttribute(ldapAttribute);
+            ldapEntry.addAttribute(ldapAttribute);
           }
         }
 
@@ -190,7 +190,7 @@ public class Dsmlv1Reader
                 setAttrValue(valueElement, ldapAttribute);
               }
             }
-            ldapEntry.getLdapAttributes().addAttribute(ldapAttribute);
+            ldapEntry.addAttribute(ldapAttribute);
           }
         }
       }

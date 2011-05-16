@@ -36,7 +36,7 @@ public abstract class AbstractTest
     LdapConnection conn = TestUtil.createSetupLdapConnection();
     conn.open();
     final AddOperation create = new AddOperation(conn);
-    create.execute(new AddRequest(entry.getDn(), entry.getLdapAttributes()));
+    create.execute(new AddRequest(entry.getDn(), entry.getAttributes()));
     conn.close();
     conn = TestUtil.createLdapConnection();
     conn.open();

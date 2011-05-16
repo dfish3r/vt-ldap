@@ -13,6 +13,8 @@
 */
 package edu.vt.middleware.ldap;
 
+import java.util.Collection;
+
 /**
  * Contains the data required to perform an ldap add operation.
  *
@@ -25,7 +27,7 @@ public class AddRequest implements LdapRequest
   protected String createDn;
 
   /** Attributes to add to the newly created entry. */
-  protected LdapAttributes attributes;
+  protected Collection<LdapAttribute> attributes;
 
 
   /** Default constructor. */
@@ -38,7 +40,7 @@ public class AddRequest implements LdapRequest
    * @param  dn  to create
    * @param  la  attributes to add
    */
-  public AddRequest(final String dn, final LdapAttributes la)
+  public AddRequest(final String dn, final Collection<LdapAttribute> la)
   {
     setDn(dn);
     setLdapAttributes(la);
@@ -72,7 +74,7 @@ public class AddRequest implements LdapRequest
    *
    * @return  attributes
    */
-  public LdapAttributes getLdapAttributes()
+  public Collection<LdapAttribute> getLdapAttributes()
   {
     return attributes;
   }
@@ -83,7 +85,7 @@ public class AddRequest implements LdapRequest
    *
    * @param  la  to add
    */
-  public void setLdapAttributes(final LdapAttributes la)
+  public void setLdapAttributes(final Collection<LdapAttribute> la)
   {
     attributes = la;
   }

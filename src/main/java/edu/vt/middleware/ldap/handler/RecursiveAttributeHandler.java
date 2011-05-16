@@ -16,8 +16,8 @@ package edu.vt.middleware.ldap.handler;
 import java.util.ArrayList;
 import java.util.List;
 import edu.vt.middleware.ldap.LdapAttribute;
-import edu.vt.middleware.ldap.LdapAttributes;
 import edu.vt.middleware.ldap.LdapConnection;
+import edu.vt.middleware.ldap.LdapEntry;
 import edu.vt.middleware.ldap.LdapException;
 import edu.vt.middleware.ldap.LdapResult;
 import edu.vt.middleware.ldap.SearchOperation;
@@ -151,21 +151,21 @@ public class RecursiveAttributeHandler extends CopyLdapAttributeHandler
     final List<String> results = new ArrayList<String>();
     if (!searchedDns.contains(dn)) {
 
-      LdapAttributes attrs = null;
+      LdapEntry entry = null;
       try {
         final SearchOperation search = new SearchOperation(ldapConnection);
         final LdapResult result = search.execute(
           SearchRequest.newObjectScopeSearchRequest(
             dn, new String[] {attributeName})).getResult();
-        attrs = result.getEntry(dn).getLdapAttributes();
+        entry = result.getEntry(dn);
         results.add(dn);
       } catch (LdapException e) {
         logger.warn(
           "Error retreiving attribute: {}", attributeName, e);
       }
       searchedDns.add(dn);
-      if (attrs != null) {
-        final LdapAttribute attr = attrs.getAttribute(attributeName);
+      if (entry != null) {
+        final LdapAttribute attr = entry.getAttribute(attributeName);
         if (attr != null) {
           for (Object rawValue : attr.getValues()) {
             if (rawValue instanceof String) {

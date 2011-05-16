@@ -99,7 +99,7 @@ public class AddOperationCli extends AbstractCli
     final LdapResult lr = reader.read();
     for (LdapEntry le : lr.getEntries()) {
       final AddOperation op = new AddOperation(conn);
-      op.execute(new AddRequest(le.getDn(), le.getLdapAttributes()));
+      op.execute(new AddRequest(le.getDn(), le.getAttributes()));
       System.out.println(String.format("Added entry: %s", le));
     }
     conn.close();

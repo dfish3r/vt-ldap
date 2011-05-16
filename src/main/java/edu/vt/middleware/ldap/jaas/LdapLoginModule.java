@@ -109,8 +109,7 @@ public class LdapLoginModule extends AbstractLoginModule implements LoginModule
       try {
         entry = auth.authenticate(authRequest).getResult();
         if (entry != null) {
-          roles.addAll(
-            attributesToRoles(entry.getLdapAttributes()));
+          roles.addAll(entryToRoles(entry));
           if (defaultRole != null && !defaultRole.isEmpty()) {
             roles.addAll(defaultRole);
           }
@@ -122,8 +121,7 @@ public class LdapLoginModule extends AbstractLoginModule implements LoginModule
           try {
             entry = auth.authenticate(authRequest).getResult();
             if (entry != null) {
-              roles.addAll(
-                attributesToRoles(entry.getLdapAttributes()));
+              roles.addAll(entryToRoles(entry));
             }
             if (defaultRole != null && !defaultRole.isEmpty()) {
               roles.addAll(defaultRole);
@@ -144,21 +142,13 @@ public class LdapLoginModule extends AbstractLoginModule implements LoginModule
           authEx != null ? authEx.getMessage() : "Authentication failed");
       } else {
         if (setLdapPrincipal) {
-          final LdapPrincipal lp = new LdapPrincipal(nameCb.getName());
-          if (entry != null) {
-            lp.getLdapAttributes().addAttributes(
-              entry.getLdapAttributes().getAttributes());
-          }
+          final LdapPrincipal lp = new LdapPrincipal(nameCb.getName(), entry);
           principals.add(lp);
         }
 
         final String loginDn = auth.resolveDn(nameCb.getName());
         if (loginDn != null && setLdapDnPrincipal) {
-          final LdapDnPrincipal lp = new LdapDnPrincipal(loginDn);
-          if (entry != null) {
-            lp.getLdapAttributes().addAttributes(
-              entry.getLdapAttributes().getAttributes());
-          }
+          final LdapDnPrincipal lp = new LdapDnPrincipal(loginDn, entry);
           principals.add(lp);
         }
         if (setLdapCredential) {

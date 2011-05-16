@@ -47,7 +47,7 @@ public class LdapConnectionTest
     testLdapEntry = TestUtil.convertLdifToResult(ldif).getEntry();
     final LdapConnection conn = TestUtil.createLdapConnection();
     conn.open();
-    conn.add(testLdapEntry.getDn(), testLdapEntry.getLdapAttributes());
+    conn.add(testLdapEntry.getDn(), testLdapEntry.getAttributes());
     conn.close();
   }
 
@@ -60,8 +60,7 @@ public class LdapConnectionTest
     final LdapConnection conn = TestUtil.createLdapConnection();
     conn.open();
     AssertJUnit.assertTrue(conn.compare(
-      testLdapEntry.getDn(),
-      testLdapEntry.getLdapAttributes().getAttribute("mail")));
+      testLdapEntry.getDn(), testLdapEntry.getAttribute("mail")));
     conn.close();
   }
 

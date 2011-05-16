@@ -17,7 +17,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import edu.vt.middleware.ldap.LdapAttribute;
-import edu.vt.middleware.ldap.LdapAttributes;
 import edu.vt.middleware.ldap.LdapConnection;
 import edu.vt.middleware.ldap.LdapEntry;
 import edu.vt.middleware.ldap.LdapException;
@@ -201,11 +200,11 @@ public class RecursiveResultHandler extends CopyLdapResultHandler
     // the existing search result set.
     for (LdapEntry le : lr.getEntries()) {
       final List<String> searchedDns = new ArrayList<String>();
-      if (le.getLdapAttributes().getAttribute(searchAttribute) != null) {
+      if (le.getAttribute(searchAttribute) != null) {
         searchedDns.add(le.getDn());
-        readSearchAttribute(le.getLdapAttributes(), searchedDns);
+        readSearchAttribute(le, searchedDns);
       } else {
-        recursiveSearch(le.getDn(), le.getLdapAttributes(), searchedDns);
+        recursiveSearch(le.getDn(), le, searchedDns);
       }
     }
   }
@@ -215,22 +214,22 @@ public class RecursiveResultHandler extends CopyLdapResultHandler
    * Reads the values of {@link #searchAttribute} from the supplied attributes
    * and calls {@link #recursiveSearch} for each.
    *
-   * @param  attrs  to read
+   * @param  entry  to read
    * @param  searchedDns  list of DNs whose attributes have been read
    *
    * @throws  LdapException  if a search error occurs
    */
   private void readSearchAttribute(
-    final LdapAttributes attrs,
+    final LdapEntry entry,
     final List<String> searchedDns)
     throws LdapException
   {
-    if (attrs != null) {
-      final LdapAttribute attr = attrs.getAttribute(searchAttribute);
+    if (entry != null) {
+      final LdapAttribute attr = entry.getAttribute(searchAttribute);
       if (attr != null) {
         for (Object rawValue : attr.getValues()) {
           if (rawValue instanceof String) {
-            recursiveSearch((String) rawValue, attrs, searchedDns);
+            recursiveSearch((String) rawValue, entry, searchedDns);
           }
         }
       }
@@ -243,26 +242,26 @@ public class RecursiveResultHandler extends CopyLdapResultHandler
    * dn and adds the values to the supplied attributes.
    *
    * @param  dn  to get attribute(s) for
-   * @param  attrs  to merge with
+   * @param  entry  to merge with
    * @param  searchedDns  list of DNs that have been searched for
    *
    * @throws  LdapException  if a search error occurs
    */
   private void recursiveSearch(
     final String dn,
-    final LdapAttributes attrs,
+    final LdapEntry entry,
     final List<String> searchedDns)
     throws LdapException
   {
     if (!searchedDns.contains(dn)) {
 
-      LdapAttributes newAttrs = null;
+      LdapEntry newEntry = null;
       try {
         final SearchOperation search = new SearchOperation(ldapConnection);
         final SearchRequest sr = SearchRequest.newObjectScopeSearchRequest(
           dn, retAttrs);
         final LdapResult result = search.execute(sr).getResult();
-        newAttrs = result.getEntry(dn).getLdapAttributes();
+        newEntry = result.getEntry(dn);
       } catch (LdapException e) {
         logger.warn(
           "Error retreiving attribute(s): {}",
@@ -271,17 +270,17 @@ public class RecursiveResultHandler extends CopyLdapResultHandler
       }
       searchedDns.add(dn);
 
-      if (newAttrs != null) {
+      if (newEntry != null) {
         // recursively search new attributes
-        readSearchAttribute(newAttrs, searchedDns);
+        readSearchAttribute(newEntry, searchedDns);
 
         // merge new attribute values
         for (String s : mergeAttributes) {
-          final LdapAttribute newAttr = newAttrs.getAttribute(s);
+          final LdapAttribute newAttr = newEntry.getAttribute(s);
           if (newAttr != null) {
-            final LdapAttribute oldAttr = attrs.getAttribute(s);
+            final LdapAttribute oldAttr = entry.getAttribute(s);
             if (oldAttr == null) {
-              attrs.addAttribute(newAttr);
+              entry.addAttribute(newAttr);
             } else {
               for (Object o : newAttr.getValues()) {
                 oldAttr.getValues().add(o);

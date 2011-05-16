@@ -123,13 +123,13 @@ public class LdapRoleAuthorizationModule extends AbstractLoginModule
 
       final String loginName = nameCb.getName();
       if (loginName != null && setLdapPrincipal) {
-        principals.add(new LdapPrincipal(loginName));
+        principals.add(new LdapPrincipal(loginName, null));
         loginSuccess = true;
       }
 
       final String loginDn = (String) sharedState.get(LOGIN_DN);
       if (loginDn != null && setLdapDnPrincipal) {
-        principals.add(new LdapDnPrincipal(loginDn));
+        principals.add(new LdapDnPrincipal(loginDn, null));
         loginSuccess = true;
       }
 
@@ -147,7 +147,7 @@ public class LdapRoleAuthorizationModule extends AbstractLoginModule
             "Could not find roles using " + roleFilter);
         }
         for (LdapEntry le : result.getEntries()) {
-          roles.addAll(attributesToRoles(le.getLdapAttributes()));
+          roles.addAll(entryToRoles(le));
         }
       }
       if (defaultRole != null && !defaultRole.isEmpty()) {

@@ -68,7 +68,7 @@ public class ModifyOperationTest extends AbstractTest
   public void addAttribute(final String dn, final String attrs)
     throws Exception
   {
-    final LdapAttributes expected = TestUtil.convertStringToAttributes(attrs);
+    final LdapEntry expected = TestUtil.convertStringToEntry(dn, attrs);
     final LdapConnection conn = TestUtil.createLdapConnection();
     conn.open();
     final ModifyOperation modify = new ModifyOperation(conn);
@@ -83,8 +83,7 @@ public class ModifyOperationTest extends AbstractTest
       SearchRequest.newObjectScopeSearchRequest(
         dn, new String[] {expected.getAttribute().getName()})).getResult();
     AssertJUnit.assertEquals(
-      expected.getAttribute(),
-      result.getEntry().getLdapAttributes().getAttribute());
+      expected.getAttribute(), result.getEntry().getAttribute());
     conn.close();
   }
 
@@ -100,7 +99,7 @@ public class ModifyOperationTest extends AbstractTest
   public void addAttributes(final String dn, final String attrs)
     throws Exception
   {
-    final LdapAttributes expected = TestUtil.convertStringToAttributes(attrs);
+    final LdapEntry expected = TestUtil.convertStringToEntry(dn, attrs);
     final LdapConnection conn = TestUtil.createLdapConnection();
     conn.open();
     final ModifyOperation modify = new ModifyOperation(conn);
@@ -117,7 +116,7 @@ public class ModifyOperationTest extends AbstractTest
     final LdapResult result = search.execute(
       SearchRequest.newObjectScopeSearchRequest(
         dn, expected.getAttributeNames())).getResult();
-    AssertJUnit.assertEquals(expected, result.getEntry().getLdapAttributes());
+    AssertJUnit.assertEquals(expected, result.getEntry());
     conn.close();
   }
 
@@ -136,7 +135,7 @@ public class ModifyOperationTest extends AbstractTest
   public void replaceAttribute(final String dn, final String attrs)
     throws Exception
   {
-    final LdapAttributes expected = TestUtil.convertStringToAttributes(attrs);
+    final LdapEntry expected = TestUtil.convertStringToEntry(dn, attrs);
     final LdapConnection conn = TestUtil.createLdapConnection();
     conn.open();
     final ModifyOperation modify = new ModifyOperation(conn);
@@ -149,9 +148,7 @@ public class ModifyOperationTest extends AbstractTest
     final LdapResult result = search.execute(
       SearchRequest.newObjectScopeSearchRequest(
         dn, new String[] {expected.getAttribute().getName()})).getResult();
-    AssertJUnit.assertEquals(
-      expected.getAttribute(),
-      result.getEntry().getLdapAttributes().getAttribute());
+    AssertJUnit.assertEquals(expected, result.getEntry());
     conn.close();
   }
 
@@ -170,7 +167,7 @@ public class ModifyOperationTest extends AbstractTest
   public void replaceAttributes(final String dn, final String attrs)
     throws Exception
   {
-    final LdapAttributes expected = TestUtil.convertStringToAttributes(attrs);
+    final LdapEntry expected = TestUtil.convertStringToEntry(dn, attrs);
     final LdapConnection conn = TestUtil.createLdapConnection();
     conn.open();
     final ModifyOperation modify = new ModifyOperation(conn);
@@ -188,7 +185,7 @@ public class ModifyOperationTest extends AbstractTest
     final LdapResult result = search.execute(
       SearchRequest.newObjectScopeSearchRequest(
         dn, expected.getAttributeNames())).getResult();
-    AssertJUnit.assertEquals(expected, result.getEntry().getLdapAttributes());
+    AssertJUnit.assertEquals(expected, result.getEntry());
     conn.close();
   }
 
@@ -207,8 +204,8 @@ public class ModifyOperationTest extends AbstractTest
   public void removeAttribute(final String dn, final String attrs)
     throws Exception
   {
-    final LdapAttributes expected = TestUtil.convertStringToAttributes(attrs);
-    final LdapAttributes remove = TestUtil.convertStringToAttributes(attrs);
+    final LdapEntry expected = TestUtil.convertStringToEntry(dn, attrs);
+    final LdapEntry remove = TestUtil.convertStringToEntry(dn, attrs);
     remove.getAttribute().getValues().remove("Unit Test User");
     expected.getAttribute().getValues().remove("Best Test User");
 
@@ -225,8 +222,7 @@ public class ModifyOperationTest extends AbstractTest
       SearchRequest.newObjectScopeSearchRequest(
         dn, new String[] {expected.getAttribute().getName()})).getResult();
     AssertJUnit.assertEquals(
-      expected.getAttribute(),
-      result.getEntry().getLdapAttributes().getAttribute());
+      expected.getAttribute(), result.getEntry().getAttribute());
     conn.close();
   }
 
@@ -245,8 +241,8 @@ public class ModifyOperationTest extends AbstractTest
   public void removeAttributes(final String dn, final String attrs)
     throws Exception
   {
-    final LdapAttributes expected = TestUtil.convertStringToAttributes(attrs);
-    final LdapAttributes remove = TestUtil.convertStringToAttributes(attrs);
+    final LdapEntry expected = TestUtil.convertStringToEntry(dn, attrs);
+    final LdapEntry remove = TestUtil.convertStringToEntry(dn, attrs);
 
     final String[] attrsName = remove.getAttributeNames();
     remove.getAttributes().remove(remove.getAttribute(attrsName[0]));
@@ -268,7 +264,7 @@ public class ModifyOperationTest extends AbstractTest
     final LdapResult result = search.execute(
       SearchRequest.newObjectScopeSearchRequest(
         dn, expected.getAttributeNames())).getResult();
-    AssertJUnit.assertEquals(expected, result.getEntry().getLdapAttributes());
+    AssertJUnit.assertEquals(expected, result.getEntry());
     conn.close();
   }
 }

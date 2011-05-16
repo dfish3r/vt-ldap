@@ -497,7 +497,7 @@ public class LdapLoginModuleTest extends AbstractTest
     final LdapPrincipal p = principals.iterator().next();
     AssertJUnit.assertEquals(p.getName(), user);
     if (!"".equals(role)) {
-      AssertJUnit.assertTrue(p.getLdapAttributes().size() > 0);
+      AssertJUnit.assertTrue(p.getLdapEntry().getAttributes().size() > 0);
     }
 
     final Set<LdapDnPrincipal> dnPrincipals = lc.getSubject().getPrincipals(
@@ -508,7 +508,7 @@ public class LdapLoginModuleTest extends AbstractTest
       final LdapDnPrincipal dnP = dnPrincipals.iterator().next();
       AssertJUnit.assertEquals(dnP.getName(), dn);
       if (!"".equals(role)) {
-        AssertJUnit.assertTrue(dnP.getLdapAttributes().size() > 0);
+        AssertJUnit.assertTrue(dnP.getLdapEntry().getAttributes().size() > 0);
       }
     } else {
       AssertJUnit.assertEquals(0, dnPrincipals.size());

@@ -13,6 +13,7 @@
 */
 package edu.vt.middleware.ldap.provider.jndi;
 
+import java.util.Collection;
 import javax.naming.NamingEnumeration;
 import javax.naming.NamingException;
 import javax.naming.directory.Attribute;
@@ -25,7 +26,6 @@ import javax.naming.ldap.LdapContext;
 import edu.vt.middleware.ldap.AttributeModification;
 import edu.vt.middleware.ldap.AttributeModificationType;
 import edu.vt.middleware.ldap.LdapAttribute;
-import edu.vt.middleware.ldap.LdapAttributes;
 import edu.vt.middleware.ldap.LdapEntry;
 import edu.vt.middleware.ldap.SortBehavior;
 
@@ -109,33 +109,13 @@ public class BeanUtil
    * @param  la  ldap attributes
    * @return  jndi attributes
    */
-  public Attributes fromLdapAttributes(final LdapAttributes la)
+  public Attributes fromLdapAttributes(final Collection<LdapAttribute> c)
   {
     final Attributes attributes = new BasicAttributes(DEFAULT_IGNORE_CASE);
-    for (LdapAttribute a : la.getAttributes()) {
+    for (LdapAttribute a : c) {
       attributes.put(fromLdapAttribute(a));
     }
     return attributes;
-  }
-
-
-  /**
-   * Returns an ldap attributes using the supplied jndi attributes.
-   *
-   * @param  a  jndi attributes
-   * @return  ldap attributes
-   *
-   * @throws  NamingException  if the attributes cannot be read
-   */
-  public LdapAttributes toLdapAttributes(final Attributes a)
-    throws NamingException
-  {
-    final LdapAttributes la = new LdapAttributes(sortBehavior);
-    final NamingEnumeration<? extends Attribute> ne = a.getAll();
-    while (ne.hasMore()) {
-      la.addAttribute(toLdapAttribute(ne.next()));
-    }
-    return la;
   }
 
 
@@ -148,7 +128,7 @@ public class BeanUtil
   public SearchResult fromLdapEntry(final LdapEntry le)
   {
     return new SearchResult(
-      le.getDn(), null, fromLdapAttributes(le.getLdapAttributes()));
+      le.getDn(), null, fromLdapAttributes(le.getAttributes()));
   }
 
 
@@ -165,7 +145,11 @@ public class BeanUtil
   {
     final LdapEntry le = new LdapEntry(sortBehavior);
     le.setDn(sr.getName());
-    le.setLdapAttributes(toLdapAttributes(sr.getAttributes()));
+    final Attributes a = sr.getAttributes();
+    final NamingEnumeration<? extends Attribute> ne = a.getAll();
+    while (ne.hasMore()) {
+      le.addAttribute(toLdapAttribute(ne.next()));
+    }
     return le;
   }
 

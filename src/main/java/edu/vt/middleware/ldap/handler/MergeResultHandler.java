@@ -82,11 +82,11 @@ public class MergeResultHandler extends CopyLdapResultHandler
       if (mergedEntry == null) {
         mergedEntry = le;
       } else {
-        for (LdapAttribute la : le.getLdapAttributes().getAttributes()) {
+        for (LdapAttribute la : le.getAttributes()) {
           final LdapAttribute oldAttr =
-            mergedEntry.getLdapAttributes().getAttribute(la.getName());
+            mergedEntry.getAttribute(la.getName());
           if (oldAttr == null) {
-            mergedEntry.getLdapAttributes().addAttribute(la);
+            mergedEntry.addAttribute(la);
           } else {
             for (Object o : la.getValues()) {
               if (allowDuplicates) {

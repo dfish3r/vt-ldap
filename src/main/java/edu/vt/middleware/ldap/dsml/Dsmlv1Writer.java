@@ -16,6 +16,7 @@ package edu.vt.middleware.ldap.dsml;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 import javax.xml.parsers.DocumentBuilder;
@@ -28,7 +29,6 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import edu.vt.middleware.ldap.LdapAttribute;
-import edu.vt.middleware.ldap.LdapAttributes;
 import edu.vt.middleware.ldap.LdapEntry;
 import edu.vt.middleware.ldap.LdapResult;
 import edu.vt.middleware.ldap.LdapUtil;
@@ -135,8 +135,7 @@ public class Dsmlv1Writer
         if (le.getDn() != null) {
           entryElement.setAttribute("dn", le.getDn());
         }
-        for (Element e :
-             createDsmlAttributes(doc, le.getLdapAttributes())) {
+        for (Element e : createDsmlAttributes(doc, le.getAttributes())) {
           entryElement.appendChild(e);
         }
         entriesElement.appendChild(entryElement);
@@ -155,10 +154,10 @@ public class Dsmlv1Writer
    * @return  list of elements contains attributes
    */
   protected List<Element> createDsmlAttributes(
-    final Document doc, final LdapAttributes ldapAttributes)
+    final Document doc, final Collection<LdapAttribute> ldapAttributes)
   {
     final List<Element> attrElements = new ArrayList<Element>();
-    for (LdapAttribute attr : ldapAttributes.getAttributes()) {
+    for (LdapAttribute attr : ldapAttributes) {
       final String attrName = attr.getName();
       final Set<?> attrValues = attr.getValues();
       Element attrElement = null;

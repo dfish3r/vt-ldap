@@ -32,8 +32,8 @@ import javax.security.auth.callback.UnsupportedCallbackException;
 import javax.security.auth.login.LoginException;
 import javax.security.auth.spi.LoginModule;
 import edu.vt.middleware.ldap.LdapAttribute;
-import edu.vt.middleware.ldap.LdapAttributes;
 import edu.vt.middleware.ldap.LdapConnection;
+import edu.vt.middleware.ldap.LdapEntry;
 import edu.vt.middleware.ldap.SearchRequest;
 import edu.vt.middleware.ldap.auth.AuthenticationRequest;
 import edu.vt.middleware.ldap.auth.Authenticator;
@@ -498,15 +498,15 @@ public abstract class AbstractLoginModule implements LoginModule
   /**
    * Parses the supplied attributes and returns them as a list of ldap roles.
    *
-   * @param  attributes  to parse
+   * @param  entry  to parse
    *
    * @return  list of ldap roles
    */
-  protected List<LdapRole> attributesToRoles(final LdapAttributes attributes)
+  protected List<LdapRole> entryToRoles(final LdapEntry entry)
   {
     final List<LdapRole> r = new ArrayList<LdapRole>();
-    if (attributes != null) {
-      for (LdapAttribute ldapAttr : attributes.getAttributes()) {
+    if (entry != null) {
+      for (LdapAttribute ldapAttr : entry.getAttributes()) {
         for (String attrValue : ldapAttr.getStringValues()) {
           r.add(new LdapRole(attrValue));
         }

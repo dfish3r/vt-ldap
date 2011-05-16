@@ -91,7 +91,7 @@ public class LdapDnAuthorizationModule extends AbstractLoginModule
 
       final String loginName = nameCb.getName();
       if (loginName != null && setLdapPrincipal) {
-        principals.add(new LdapPrincipal(loginName));
+        principals.add(new LdapPrincipal(loginName, null));
         loginSuccess = true;
       }
 
@@ -101,7 +101,7 @@ public class LdapDnAuthorizationModule extends AbstractLoginModule
         throw new LoginException("Could not find DN for " + nameCb.getName());
       }
       if (loginDn != null && setLdapDnPrincipal) {
-        principals.add(new LdapDnPrincipal(loginDn));
+        principals.add(new LdapDnPrincipal(loginDn, null));
         loginSuccess = true;
       }
       if (defaultRole != null && !defaultRole.isEmpty()) {

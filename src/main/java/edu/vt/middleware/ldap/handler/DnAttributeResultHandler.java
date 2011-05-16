@@ -13,7 +13,7 @@
 */
 package edu.vt.middleware.ldap.handler;
 
-import edu.vt.middleware.ldap.LdapAttributes;
+import edu.vt.middleware.ldap.LdapAttribute;
 import edu.vt.middleware.ldap.LdapEntry;
 import edu.vt.middleware.ldap.LdapException;
 
@@ -89,11 +89,10 @@ public class DnAttributeResultHandler extends CopyLdapResultHandler
   protected void processAttributes(final SearchCriteria sc, final LdapEntry le)
     throws LdapException
   {
-    final LdapAttributes attrs = le.getLdapAttributes();
-    if (attrs.getAttribute(dnAttributeName) == null) {
-      attrs.addAttribute(dnAttributeName, le.getDn());
+    if (le.getAttribute(dnAttributeName) == null) {
+      le.addAttribute(new LdapAttribute(dnAttributeName, le.getDn()));
     } else if (addIfExists) {
-      attrs.getAttribute(dnAttributeName).getValues().add(le.getDn());
+      le.getAttribute(dnAttributeName).getValues().add(le.getDn());
     }
   }
 }

@@ -125,12 +125,11 @@ public class LdifReader
             if ("dn".equals(attrName)) {
               ldapEntry.setDn(attrValue);
             } else {
-              LdapAttribute ldapAttr = ldapEntry.getLdapAttributes()
-                  .getAttribute(attrName);
+              LdapAttribute ldapAttr = ldapEntry.getAttribute(attrName);
               if (ldapAttr == null) {
                 ldapAttr = new LdapAttribute(sortBehavior);
                 ldapAttr.setName(attrName);
-                ldapEntry.getLdapAttributes().addAttribute(ldapAttr);
+                ldapEntry.addAttribute(ldapAttr);
               }
               if (isBinary) {
                 ldapAttr.getValues().add(LdapUtil.base64Decode(attrValue));

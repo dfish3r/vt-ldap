@@ -15,7 +15,7 @@ package edu.vt.middleware.ldap.jaas;
 
 import java.io.Serializable;
 import java.security.Principal;
-import edu.vt.middleware.ldap.LdapAttributes;
+import edu.vt.middleware.ldap.LdapEntry;
 
 /**
  * Provides a custom implementation for adding LDAP principals to a subject.
@@ -36,18 +36,20 @@ public class LdapPrincipal
   /** LDAP user name. */
   private String name;
 
-  /** User attributes. */
-  private LdapAttributes attributes = new LdapAttributes();
+  /** User ldap entry. */
+  private LdapEntry entry = new LdapEntry();
 
 
   /**
    * Creates a new ldap principal with the supplied name.
    *
    * @param  s  name of this principal
+   * @param  le  ldap entry associated with this principal
    */
-  public LdapPrincipal(final String s)
+  public LdapPrincipal(final String s, final LdapEntry le)
   {
     name = s;
+    entry = le;
   }
 
 
@@ -63,13 +65,13 @@ public class LdapPrincipal
 
 
   /**
-   * Returns the ldap attributes for this ldap principal.
+   * Returns the ldap entry for this ldap principal.
    *
-   * @return  ldap attributes
+   * @return  ldap entry
    */
-  public LdapAttributes getLdapAttributes()
+  public LdapEntry getLdapEntry()
   {
-    return attributes;
+    return entry;
   }
 
 
@@ -119,7 +121,7 @@ public class LdapPrincipal
       getClass().getName(),
       hashCode(),
       name,
-      attributes);
+      entry != null ? entry : "");
   }
 
 

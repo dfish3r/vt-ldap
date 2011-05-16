@@ -290,25 +290,28 @@ public final class TestUtil
 
   /**
    * Converts a string of the form: givenName=John|sn=Doe into a ldap attributes
-   * object.
+   * and stores them in an ldap entry.
    *
+   * @param  dn  of the entry
    * @param  attrs  to convert.
    *
-   * @return  ldap attributes.
+   * @return  ldap entry with attributes but no dn.
    */
-  public static LdapAttributes convertStringToAttributes(final String attrs)
+  public static LdapEntry convertStringToEntry(
+    final String dn, final String attrs)
   {
-    final LdapAttributes la = new LdapAttributes();
+    final LdapEntry le = new LdapEntry(dn);
     final String[] s = attrs.split("\\|");
     for (int i = 0; i < s.length; i++) {
       final String[] nameValuePairs = s[i].trim().split("=", 2);
-      if (la.getAttribute(nameValuePairs[0]) != null) {
-        la.getAttribute(nameValuePairs[0]).getValues().add(nameValuePairs[1]);
+      if (le.getAttribute(nameValuePairs[0]) != null) {
+        le.getAttribute(nameValuePairs[0]).getValues().add(nameValuePairs[1]);
       } else {
-        la.addAttribute(nameValuePairs[0], nameValuePairs[1]);
+        le.addAttribute(
+          new LdapAttribute(nameValuePairs[0], nameValuePairs[1]));
       }
     }
-    return la;
+    return le;
   }
 
 
