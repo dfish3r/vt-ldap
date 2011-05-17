@@ -192,7 +192,7 @@ public class JndiConnection implements Connection
       LdapContext ctx = null;
       try {
         ctx = context.newInstance(null);
-        final BeanUtil bu = new BeanUtil();
+        final JndiUtil bu = new JndiUtil();
         ctx.createSubcontext(
           new LdapName(request.getDn()),
           bu.fromLdapAttributes(request.getLdapAttributes())).close();
@@ -274,7 +274,7 @@ public class JndiConnection implements Connection
       LdapContext ctx = null;
       try {
         ctx = context.newInstance(null);
-        final BeanUtil bu = new BeanUtil();
+        final JndiUtil bu = new JndiUtil();
         ctx.modifyAttributes(
           new LdapName(request.getDn()),
           bu.fromAttributeModification(request.getAttributeModifications()));
@@ -536,7 +536,7 @@ public class JndiConnection implements Connection
     final SortBehavior sortBehavior)
     throws NamingException
   {
-    final BeanUtil bu = new BeanUtil(sortBehavior);
+    final JndiUtil bu = new JndiUtil(sortBehavior);
     final LdapResult ldapResult = new LdapResult(sortBehavior);
     if (en != null) {
       while (en.hasMore()) {

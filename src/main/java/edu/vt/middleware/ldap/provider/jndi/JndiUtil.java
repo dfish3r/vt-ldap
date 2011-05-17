@@ -38,7 +38,7 @@ import edu.vt.middleware.ldap.SortBehavior;
  * @author  Middleware Services
  * @version  $Revision: 1330 $ $Date: 2010-05-23 18:10:53 -0400 (Sun, 23 May 2010) $
  */
-public class BeanUtil
+public class JndiUtil
 {
   /** Whether to ignore case when creating basic attributes. */
   public static final boolean DEFAULT_IGNORE_CASE = true;
@@ -48,7 +48,7 @@ public class BeanUtil
 
 
   /** Default constructor. */
-  public BeanUtil()
+  public JndiUtil()
   {
     sortBehavior = SortBehavior.getDefaultSortBehavior();
   }
@@ -59,7 +59,7 @@ public class BeanUtil
    *
    * @param  sb  sort behavior of vt-ldap beans
    */
-  public BeanUtil(final SortBehavior sb)
+  public JndiUtil(final SortBehavior sb)
   {
     sortBehavior = sb;
   }
