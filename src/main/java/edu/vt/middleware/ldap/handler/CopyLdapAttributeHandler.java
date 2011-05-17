@@ -13,8 +13,8 @@
 */
 package edu.vt.middleware.ldap.handler;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 import edu.vt.middleware.ldap.LdapAttribute;
 import edu.vt.middleware.ldap.LdapException;
 import org.slf4j.Logger;
@@ -39,13 +39,23 @@ public class CopyLdapAttributeHandler implements LdapAttributeHandler
   {
     if (attr != null) {
       attr.setName(processName(sc, attr.getName()));
-      final List<Object> newValues =
-        new ArrayList<Object>(attr.getValues().size());
-      for (Object o : attr.getValues()) {
-        newValues.add(processValue(sc, o));
+      if (attr.isBinary()) {
+        final Set<byte[]> newValues =
+          new HashSet<byte[]>(attr.size());
+        for (byte[] b : attr.getBinaryValues()) {
+          newValues.add(processValue(sc, b));
+        }
+        attr.clear();
+        attr.addBinaryValues(newValues);
+      } else {
+        final Set<String> newValues =
+          new HashSet<String>(attr.size());
+        for (String s : attr.getStringValues()) {
+          newValues.add(processValue(sc, s));
+        }
+        attr.clear();
+        attr.addStringValues(newValues);
       }
-      attr.getValues().clear();
-      attr.getValues().addAll(newValues);
     }
   }
 
@@ -72,7 +82,21 @@ public class CopyLdapAttributeHandler implements LdapAttributeHandler
    *
    * @return  processed value
    */
-  protected Object processValue(final SearchCriteria sc, final Object value)
+  protected String processValue(final SearchCriteria sc, final String value)
+  {
+    return value;
+  }
+
+
+  /**
+   * Returns the supplied value unaltered.
+   *
+   * @param  sc  search criteria
+   * @param  value  to process
+   *
+   * @return  processed value
+   */
+  protected byte[] processValue(final SearchCriteria sc, final byte[] value)
   {
     return value;
   }

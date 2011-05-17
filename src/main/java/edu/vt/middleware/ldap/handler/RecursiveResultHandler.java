@@ -226,11 +226,9 @@ public class RecursiveResultHandler extends CopyLdapResultHandler
   {
     if (entry != null) {
       final LdapAttribute attr = entry.getAttribute(searchAttribute);
-      if (attr != null) {
-        for (Object rawValue : attr.getValues()) {
-          if (rawValue instanceof String) {
-            recursiveSearch((String) rawValue, entry, searchedDns);
-          }
+      if (attr != null && !attr.isBinary()) {
+        for (String s : attr.getStringValues()) {
+          recursiveSearch(s, entry, searchedDns);
         }
       }
     }
@@ -282,8 +280,14 @@ public class RecursiveResultHandler extends CopyLdapResultHandler
             if (oldAttr == null) {
               entry.addAttribute(newAttr);
             } else {
-              for (Object o : newAttr.getValues()) {
-                oldAttr.getValues().add(o);
+              if (newAttr.isBinary()) {
+                for (byte[] value : newAttr.getBinaryValues()) {
+                  oldAttr.addBinaryValue(value);
+                }
+              } else {
+                for (String value : newAttr.getStringValues()) {
+                  oldAttr.addStringValue(value);
+                }
               }
             }
           }

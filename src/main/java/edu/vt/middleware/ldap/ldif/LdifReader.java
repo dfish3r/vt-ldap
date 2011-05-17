@@ -127,16 +127,16 @@ public class LdifReader
             } else {
               LdapAttribute ldapAttr = ldapEntry.getAttribute(attrName);
               if (ldapAttr == null) {
-                ldapAttr = new LdapAttribute(sortBehavior);
+                ldapAttr = new LdapAttribute(sortBehavior, isBinary || isUrl);
                 ldapAttr.setName(attrName);
                 ldapEntry.addAttribute(ldapAttr);
               }
               if (isBinary) {
-                ldapAttr.getValues().add(LdapUtil.base64Decode(attrValue));
+                ldapAttr.addBinaryValue(LdapUtil.base64Decode(attrValue));
               } else if (isUrl) {
-                ldapAttr.getValues().add(LdapUtil.readURL(new URL(attrValue)));
+                ldapAttr.addBinaryValue(LdapUtil.readURL(new URL(attrValue)));
               } else {
-                ldapAttr.getValues().add(attrValue);
+                ldapAttr.addStringValue(attrValue);
               }
             }
           }

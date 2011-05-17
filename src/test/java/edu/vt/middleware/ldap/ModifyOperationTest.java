@@ -206,8 +206,8 @@ public class ModifyOperationTest extends AbstractTest
   {
     final LdapEntry expected = TestUtil.convertStringToEntry(dn, attrs);
     final LdapEntry remove = TestUtil.convertStringToEntry(dn, attrs);
-    remove.getAttribute().getValues().remove("Unit Test User");
-    expected.getAttribute().getValues().remove("Best Test User");
+    remove.getAttribute().removeStringValue("Unit Test User");
+    expected.getAttribute().removeStringValue("Best Test User");
 
     final LdapConnection conn = TestUtil.createLdapConnection();
     conn.open();

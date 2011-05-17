@@ -65,10 +65,12 @@ public class LdapResult extends AbstractLdapBean
    *
    * @param  le  ldap entry
    */
-  public LdapResult(final LdapEntry le)
+  public LdapResult(final LdapEntry ... le)
   {
     this();
-    addEntry(le);
+    for (LdapEntry e : le) {
+      addEntry(e);
+    }
   }
 
 
@@ -140,9 +142,11 @@ public class LdapResult extends AbstractLdapBean
    *
    * @param  le  entry to add
    */
-  public void addEntry(final LdapEntry le)
+  public void addEntry(final LdapEntry ... le)
   {
-    entries.put(le.getDn().toLowerCase(), le);
+    for (LdapEntry e : le) {
+      entries.put(e.getDn().toLowerCase(), e);
+    }
   }
 
 

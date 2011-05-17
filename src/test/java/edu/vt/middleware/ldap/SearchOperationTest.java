@@ -17,7 +17,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import edu.vt.middleware.ldap.handler.BinaryResultHandler;
 import edu.vt.middleware.ldap.handler.CaseChangeResultHandler;
 import edu.vt.middleware.ldap.handler.CaseChangeResultHandler.CaseChange;
 import edu.vt.middleware.ldap.handler.CopyLdapResultHandler;
@@ -495,7 +494,6 @@ public class SearchOperationTest extends AbstractTest
 
     // test merge searching
     final MergeResultHandler handler = new MergeResultHandler();
-    handler.setAllowDuplicates(true);
 
     final SearchRequest sr = new SearchRequest(
       dn,
@@ -549,10 +547,7 @@ public class SearchOperationTest extends AbstractTest
       result.getEntry().getAttribute().getStringValue());
 
     request = new SearchRequest(
-      dn,
-      new SearchFilter(filter),
-      new String[] {returnAttr},
-      new LdapResultHandler[]{new BinaryResultHandler(), });
+      dn, new SearchFilter(filter), new String[] {returnAttr});
     request.setBinaryAttributes(new String[]{returnAttr});
     result = search.execute(request).getResult();
     AssertJUnit.assertEquals(
@@ -610,14 +605,12 @@ public class SearchOperationTest extends AbstractTest
     final LdapResult lcValuesChangeResult = TestUtil.convertLdifToResult(
       expected);
     for (LdapAttribute la : lcValuesChangeResult.getEntry().getAttributes()) {
-      final Set<Object> s = new HashSet<Object>();
-      for (Object o : la.getValues()) {
-        if (o instanceof String) {
-          s.add(((String) o).toLowerCase());
-        }
+      final Set<String> s = new HashSet<String>();
+      for (String value : la.getStringValues()) {
+        s.add(value.toLowerCase());
       }
-      la.getValues().clear();
-      la.getValues().addAll(s);
+      la.clear();
+      la.addStringValues(s);
     }
     result = search.execute(
       new SearchRequest(
@@ -652,14 +645,12 @@ public class SearchOperationTest extends AbstractTest
       lcAllChangeResult.getEntry().setDn(
         lcAllChangeResult.getEntry().getDn().toLowerCase());
       la.setName(la.getName().toLowerCase());
-      final Set<Object> s = new HashSet<Object>();
-      for (Object o : la.getValues()) {
-        if (o instanceof String) {
-          s.add(((String) o).toLowerCase());
-        }
+      final Set<String> s = new HashSet<String>();
+      for (String value : la.getStringValues()) {
+        s.add(value.toLowerCase());
       }
-      la.getValues().clear();
-      la.getValues().addAll(s);
+      la.clear();
+      la.addStringValues(s);
     }
     result = search.execute(
       new SearchRequest(
@@ -960,11 +951,11 @@ public class SearchOperationTest extends AbstractTest
     final SearchRequest request = SearchRequest.newObjectScopeSearchRequest(
       dn, returnAttrs.split("\\|"));
     request.setBinaryAttributes(new String[]{"jpegPhoto"});
-    request.setLdapResultHandlers(
-      new LdapResultHandler[] {new BinaryResultHandler()});
     final LdapResult result = search.execute(request).getResult();
     AssertJUnit.assertEquals(
-      TestUtil.convertStringToEntry(dn, results), result.getEntry());
+      TestUtil.convertStringToEntry(
+        dn, results).getAttribute("jpegPhoto").getStringValue(),
+      result.getEntry().getAttribute("jpegPhoto").getStringValue());
     conn.close();
   }
 

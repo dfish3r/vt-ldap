@@ -305,7 +305,7 @@ public final class TestUtil
     for (int i = 0; i < s.length; i++) {
       final String[] nameValuePairs = s[i].trim().split("=", 2);
       if (le.getAttribute(nameValuePairs[0]) != null) {
-        le.getAttribute(nameValuePairs[0]).getValues().add(nameValuePairs[1]);
+        le.getAttribute(nameValuePairs[0]).addStringValue(nameValuePairs[1]);
       } else {
         le.addAttribute(
           new LdapAttribute(nameValuePairs[0], nameValuePairs[1]));

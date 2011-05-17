@@ -79,13 +79,15 @@ public class LdapEntry extends AbstractLdapBean
    * Creates a new ldap entry.
    *
    * @param  s  dn for this entry
-   * @param  a  ldap attribute for this entry
+   * @param  la  ldap attribute for this entry
    */
-  public LdapEntry(final String s, final LdapAttribute a)
+  public LdapEntry(final String s, final LdapAttribute ... la)
   {
     this();
     setDn(s);
-    addAttribute(a);
+    for (LdapAttribute a : la) {
+      addAttribute(a);
+    }
   }
 
 
@@ -186,11 +188,13 @@ public class LdapEntry extends AbstractLdapBean
   /**
    * Adds an attribute to this ldap attributes.
    *
-   * @param  a  attribute to add
+   * @param  la  attribute to add
    */
-  public void addAttribute(final LdapAttribute a)
+  public void addAttribute(final LdapAttribute ... la)
   {
-    ldapAttributes.put(a.getName().toLowerCase(), a);
+    for (LdapAttribute a : la) {
+      ldapAttributes.put(a.getName().toLowerCase(), a);
+    }
   }
 
 
@@ -210,11 +214,13 @@ public class LdapEntry extends AbstractLdapBean
   /**
    * Removes an attribute from this ldap attributes.
    *
-   * @param  a  attribute to remove
+   * @param  la  attribute to remove
    */
-  public void removeAttribute(final LdapAttribute a)
+  public void removeAttribute(final LdapAttribute ... la)
   {
-    ldapAttributes.remove(a.getName().toLowerCase());
+    for (LdapAttribute a : la) {
+      ldapAttributes.remove(a.getName().toLowerCase());
+    }
   }
 
 

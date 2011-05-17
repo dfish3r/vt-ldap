@@ -18,7 +18,6 @@ import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Set;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -31,7 +30,6 @@ import javax.xml.transform.stream.StreamResult;
 import edu.vt.middleware.ldap.LdapAttribute;
 import edu.vt.middleware.ldap.LdapEntry;
 import edu.vt.middleware.ldap.LdapResult;
-import edu.vt.middleware.ldap.LdapUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.DOMImplementation;
@@ -159,15 +157,14 @@ public class Dsmlv1Writer
     final List<Element> attrElements = new ArrayList<Element>();
     for (LdapAttribute attr : ldapAttributes) {
       final String attrName = attr.getName();
-      final Set<?> attrValues = attr.getValues();
       Element attrElement = null;
       if (attrName.equalsIgnoreCase("objectclass")) {
-        attrElement = createObjectclassElement(doc, attrValues);
+        attrElement = createObjectclassElement(doc, attr);
         if (attrElement.hasChildNodes()) {
           attrElements.add(0, attrElement);
         }
       } else {
-        attrElement = createAttrElement(doc, attrName, attrValues);
+        attrElement = createAttrElement(doc, attr);
         if (attrElement.hasChildNodes()) {
           attrElements.add(attrElement);
         }
@@ -178,69 +175,60 @@ public class Dsmlv1Writer
 
 
   /**
-   * Returns a <dsml:attr/> element for the supplied name and values.
+   * Returns a <dsml:attr/> element for the supplied ldap attribute.
    *
    * @param  doc  to source elements from
-   * @param  name  of the attribute to add
-   * @param  values  of the attribute to add
+   * @param  attr  ldap attribute to add
    * @return  element containing the attribute
    */
   protected Element createAttrElement(
-    final Document doc, final String name, final Set<?> values)
+    final Document doc, final LdapAttribute attr)
   {
     final Element attrElement = doc.createElement("dsml:attr");
-    attrElement.setAttribute("name", name);
-    for (Object o : values) {
+    attrElement.setAttribute("name", attr.getName());
+    for (String s : attr.getStringValues()) {
       final Element valueElement = doc.createElement("dsml:value");
       attrElement.appendChild(valueElement);
-      setAttrValue(doc, valueElement, o);
+      setAttrValue(doc, valueElement, s, attr.isBinary());
     }
     return attrElement;
   }
 
 
   /**
-   * Returns a <dsml:objectclass/> element for the supplied values.
+   * Returns a <dsml:objectclass/> element for the supplied ldap attribute.
    *
    * @param  doc  to source elements from
-   * @param  values  of the attribute to add
+   * @param  attr  ldap attribute to add
    * @return  element containing the attribute values
    */
   protected Element createObjectclassElement(
-    final Document doc, final Set<?> values)
+    final Document doc, final LdapAttribute attr)
   {
     final Element ocElement = doc.createElement("dsml:objectclass");
-    for (Object o : values) {
+    for (String s : attr.getStringValues()) {
       final Element ocValueElement = doc.createElement("dsml:oc-value");
       ocElement.appendChild(ocValueElement);
-      setAttrValue(doc, ocValueElement, o);
+      setAttrValue(doc, ocValueElement, s, attr.isBinary());
     }
     return ocElement;
   }
 
 
   /**
-   * Adds the supplied object to the value element taking into account whether
-   * the object needs to be base64 encoded.
+   * Adds the supplied string to the value element.
    *
    * @param  doc  to create nodes with
    * @param  valueElement  to append value to
-   * @param  o  to create node for
+   * @param  value  to create node for
+   * @param  isBase64  whether the value is base64 encoded
    */
   protected void setAttrValue(
-    final Document doc, final Element valueElement, final Object o)
+    final Document doc,
+    final Element valueElement,
+    final String value,
+    final boolean isBase64)
   {
-    String value = null;
-    boolean isBase64 = false;
-    if (o instanceof String) {
-      value = (String) o;
-    } else if (o instanceof byte[]) {
-      value = LdapUtil.base64Encode((byte[]) o);
-      isBase64 = true;
-    } else {
-      logger.warn(
-        "Could not cast attribute value as a byte[] or a String");
-    }
     if (value != null) {
       valueElement.appendChild(doc.createTextNode(value));
       if (isBase64) {

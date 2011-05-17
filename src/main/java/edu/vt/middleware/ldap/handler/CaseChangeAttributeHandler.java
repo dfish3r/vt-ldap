@@ -86,12 +86,16 @@ public class CaseChangeAttributeHandler extends CopyLdapAttributeHandler
 
   /** {@inheritDoc} */
   @Override
-  protected Object processValue(final SearchCriteria sc, final Object value)
+  protected String processValue(final SearchCriteria sc, final String value)
   {
-    if (value instanceof String) {
-      return CaseChange.perform(attributeValueCaseChange, (String) value);
-    } else {
-      return value;
-    }
+    return CaseChange.perform(attributeValueCaseChange, value);
+  }
+
+
+  /** {@inheritDoc} */
+  @Override
+  protected byte[] processValue(final SearchCriteria sc, final byte[] value)
+  {
+    return value;
   }
 }

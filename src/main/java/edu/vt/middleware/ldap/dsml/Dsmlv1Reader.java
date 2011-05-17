@@ -15,6 +15,8 @@ package edu.vt.middleware.ldap.dsml;
 
 import java.io.IOException;
 import java.io.Reader;
+import java.util.HashSet;
+import java.util.Set;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -154,18 +156,8 @@ public class Dsmlv1Reader
         if (ocNodes.getLength() > 0) {
           final Element ocElement = (Element) ocNodes.item(0);
           if (ocElement != null && ocElement.hasChildNodes()) {
-            final LdapAttribute ldapAttribute = new LdapAttribute(
-              sortBehavior);
-            ldapAttribute.setName("objectClass");
-
-            final NodeList ocValueNodes = ocElement.getElementsByTagName(
-              "dsml:oc-value");
-            for (int j = 0; j < ocValueNodes.getLength(); j++) {
-              final Element valueElement = (Element) ocValueNodes.item(j);
-              if (valueElement != null) {
-                setAttrValue(valueElement, ldapAttribute);
-              }
-            }
+            final LdapAttribute ldapAttribute = createLdapAttribute(
+              "objectClass", ocElement.getElementsByTagName("dsml:oc-value"));
             ldapEntry.addAttribute(ldapAttribute);
           }
         }
@@ -178,18 +170,8 @@ public class Dsmlv1Reader
             attrElement.hasAttribute("name") ?
               attrElement.getAttribute("name") : null;
           if (attrName != null && attrElement.hasChildNodes()) {
-            final LdapAttribute ldapAttribute = new LdapAttribute(
-              sortBehavior);
-            ldapAttribute.setName(attrName);
-
-            final NodeList valueNodes = attrElement.getElementsByTagName(
-              "dsml:value");
-            for (int j = 0; j < valueNodes.getLength(); j++) {
-              final Element valueElement = (Element) valueNodes.item(j);
-              if (valueElement != null) {
-                setAttrValue(valueElement, ldapAttribute);
-              }
-            }
+            final LdapAttribute ldapAttribute = createLdapAttribute(
+              attrName, attrElement.getElementsByTagName("dsml:value"));
             ldapEntry.addAttribute(ldapAttribute);
           }
         }
@@ -201,24 +183,48 @@ public class Dsmlv1Reader
 
 
   /**
-   * Adds the value of the supplied element to the ldap attribute taking into
-   * account whether the value needs to be base64 decoded.
+   * Returns an ldap attribute derived from the supplied node list.
+   *
+   * @param  name  of the ldap attribute
+   * @param  nodes  to parse
+   * @return  ldap attribute
+   */
+  protected LdapAttribute createLdapAttribute(
+    final String name, final NodeList nodes)
+  {
+    boolean isBase64 = false;
+    final Set<Object> values = new HashSet<Object>();
+    for (int i = 0; i < nodes.getLength(); i++) {
+      final Element valueElement = (Element) nodes.item(i);
+      if (valueElement != null) {
+        if (valueElement.hasAttribute("encoding") &&
+            "base64".equals(valueElement.getAttribute("encoding"))) {
+          isBase64 = true;
+        }
+        values.add(getAttrValue(valueElement, isBase64));
+      }
+    }
+    return LdapAttribute.createLdapAttribute(sortBehavior, name, values);
+  }
+
+
+  /**
+   * Returns the value of the supplied element taking into account whether the
+   * value needs to be base64 decoded.
    *
    * @param  valueElement  to read value from
-   * @param  attr  to add value to
+   * @param  base64  whether to base64 decode the value
+   *
+   * @return  String or byte[] depending on the base64 flag
    */
-  protected void setAttrValue(
-    final Element valueElement, final LdapAttribute attr)
+  protected Object getAttrValue(
+    final Element valueElement, final boolean base64)
   {
     final String value =
       valueElement.getChildNodes().item(0).getNodeValue();
-    if (value != null) {
-      if (valueElement.hasAttribute("encoding") &&
-          "base64".equals(valueElement.getAttribute("encoding"))) {
-        attr.getValues().add(LdapUtil.base64Decode(value));
-      } else {
-        attr.getValues().add(value);
-      }
+    if (base64) {
+      return LdapUtil.base64Decode(value);
     }
+    return value;
   }
 }

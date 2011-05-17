@@ -92,7 +92,7 @@ public class DnAttributeResultHandler extends CopyLdapResultHandler
     if (le.getAttribute(dnAttributeName) == null) {
       le.addAttribute(new LdapAttribute(dnAttributeName, le.getDn()));
     } else if (addIfExists) {
-      le.getAttribute(dnAttributeName).getValues().add(le.getDn());
+      le.getAttribute(dnAttributeName).addStringValue(le.getDn());
     }
   }
 }

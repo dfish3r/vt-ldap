@@ -82,13 +82,13 @@ public class CompareOperationTest extends AbstractTest
     final CompareOperation compare = new CompareOperation(conn);
     LdapAttribute la = new LdapAttribute();
     la.setName("cn");
-    la.getValues().add("not-a-name");
+    la.addStringValue("not-a-name");
     AssertJUnit.assertFalse(
       compare.execute(new CompareRequest(dn, la)).getResult());
 
     la = new LdapAttribute();
     la.setName(attrName);
-    la.getValues().add(attrValue);
+    la.addStringValue(attrValue);
     AssertJUnit.assertTrue(
       compare.execute(new CompareRequest(dn, la)).getResult());
     conn.close();

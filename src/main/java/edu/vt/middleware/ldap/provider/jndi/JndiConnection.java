@@ -221,7 +221,9 @@ public class JndiConnection implements Connection
         en = ctx.search(
           new LdapName(request.getDn()),
           String.format("(%s={0})", request.getAttribute().getName()),
-          new Object[] {request.getAttribute().getValue()},
+          request.getAttribute().isBinary() ?
+            new Object[] {request.getAttribute().getBinaryValue()} :
+            new Object[] {request.getAttribute().getStringValue()},
           getCompareSearchControls());
 
         if (en.hasMore()) {

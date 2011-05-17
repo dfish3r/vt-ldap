@@ -14,6 +14,8 @@
 package edu.vt.middleware.ldap.provider.jndi;
 
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 import javax.naming.NamingEnumeration;
 import javax.naming.NamingException;
 import javax.naming.directory.Attribute;
@@ -73,8 +75,14 @@ public class BeanUtil
   public Attribute fromLdapAttribute(final LdapAttribute la)
   {
     final Attribute attribute = new BasicAttribute(la.getName());
-    for (Object o : la.getValues()) {
-      attribute.add(o);
+    if (la.isBinary()) {
+      for (byte[] value : la.getBinaryValues()) {
+        attribute.add(value);
+      }
+    } else {
+      for (String value : la.getStringValues()) {
+        attribute.add(value);
+      }
     }
     return attribute;
   }
@@ -91,14 +99,12 @@ public class BeanUtil
   public LdapAttribute toLdapAttribute(final Attribute a)
     throws NamingException
   {
-    final LdapAttribute la = new LdapAttribute(sortBehavior);
-    la.setName(a.getID());
-
+    final Set<Object> values = new HashSet<Object>();
     final NamingEnumeration<?> ne = a.getAll();
     while (ne.hasMore()) {
-      la.getValues().add(ne.next());
+      values.add(ne.next());
     }
-    return la;
+    return LdapAttribute.createLdapAttribute(sortBehavior, a.getID(), values);
   }
 
 
@@ -106,7 +112,7 @@ public class BeanUtil
    * Returns a jndi attributes that represents the values in the supplied ldap
    * attributes.
    *
-   * @param  la  ldap attributes
+   * @param  c  ldap attributes
    * @return  jndi attributes
    */
   public Attributes fromLdapAttributes(final Collection<LdapAttribute> c)

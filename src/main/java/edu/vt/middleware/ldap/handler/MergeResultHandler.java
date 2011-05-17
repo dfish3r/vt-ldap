@@ -28,31 +28,6 @@ import edu.vt.middleware.ldap.LdapResult;
 public class MergeResultHandler extends CopyLdapResultHandler
 {
 
-  /** Whether to allow duplicate attribute values. */
-  private boolean allowDuplicates;
-
-
-  /**
-   * Returns whether to allow duplicate attribute values.
-   *
-   * @return  whether to allow duplicate attribute values
-   */
-  public boolean getAllowDuplicates()
-  {
-    return allowDuplicates;
-  }
-
-
-  /**
-   * Sets whether to allow duplicate attribute values.
-   *
-   * @param  b  whether to allow duplicate attribute values
-   */
-  public void setAllowDuplicates(final boolean b)
-  {
-    allowDuplicates = b;
-  }
-
 
   /** {@inheritDoc} */
   @Override
@@ -88,21 +63,10 @@ public class MergeResultHandler extends CopyLdapResultHandler
           if (oldAttr == null) {
             mergedEntry.addAttribute(la);
           } else {
-            for (Object o : la.getValues()) {
-              if (allowDuplicates) {
-                oldAttr.getValues().add(o);
-              } else {
-                boolean add = true;
-                for (Object existing : oldAttr.getValues()) {
-                  if (existing.equals(o)) {
-                    add = false;
-                    break;
-                  }
-                }
-                if (add) {
-                  oldAttr.getValues().add(o);
-                }
-              }
+            if (oldAttr.isBinary()) {
+              oldAttr.addBinaryValues(la.getBinaryValues());
+            } else {
+              oldAttr.addStringValues(la.getStringValues());
             }
           }
         }

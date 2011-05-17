@@ -17,7 +17,6 @@ import java.util.Arrays;
 import javax.security.auth.login.LoginContext;
 import edu.vt.middleware.ldap.auth.Authenticator;
 import edu.vt.middleware.ldap.auth.SearchDnResolver;
-import edu.vt.middleware.ldap.handler.BinaryResultHandler;
 import edu.vt.middleware.ldap.handler.DnAttributeResultHandler;
 import edu.vt.middleware.ldap.handler.LdapResultHandler;
 import edu.vt.middleware.ldap.handler.MergeResultHandler;
@@ -119,9 +118,6 @@ public class PropertiesTest
           Arrays.asList(h.getMergeAttributes()));
       } else if (MergeResultHandler.class.isInstance(srh)) {
         final MergeResultHandler h = (MergeResultHandler) srh;
-        AssertJUnit.assertTrue(h.getAllowDuplicates());
-      } else if (BinaryResultHandler.class.isInstance(srh)) {
-        final BinaryResultHandler h = (BinaryResultHandler) srh;
         AssertJUnit.assertNotNull(h);
       } else if (DnAttributeResultHandler.class.isInstance(srh)) {
         final DnAttributeResultHandler h = (DnAttributeResultHandler) srh;
@@ -214,9 +210,6 @@ public class PropertiesTest
           Arrays.asList(h.getMergeAttributes()));
       } else if (MergeResultHandler.class.isInstance(srh)) {
         final MergeResultHandler h = (MergeResultHandler) srh;
-        AssertJUnit.assertTrue(h.getAllowDuplicates());
-      } else if (BinaryResultHandler.class.isInstance(srh)) {
-        final BinaryResultHandler h = (BinaryResultHandler) srh;
         AssertJUnit.assertNotNull(h);
       } else if (DnAttributeResultHandler.class.isInstance(srh)) {
         final DnAttributeResultHandler h = (DnAttributeResultHandler) srh;

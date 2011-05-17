@@ -13,8 +13,8 @@
 */
 package edu.vt.middleware.ldap.handler;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 import edu.vt.middleware.ldap.LdapAttribute;
 import edu.vt.middleware.ldap.LdapConnection;
 import edu.vt.middleware.ldap.LdapEntry;
@@ -111,23 +111,25 @@ public class RecursiveAttributeHandler extends CopyLdapAttributeHandler
     if (attr != null) {
       attr.setName(processName(sc, attr.getName()));
       if (attr.getName().equals(attributeName)) {
-        final List<Object> newValues =
-          new ArrayList<Object>(attr.getValues().size());
-        for (Object o : attr.getValues()) {
-          final Object rawValue = processValue(sc, o);
-          if (rawValue instanceof String) {
-            final List<String> recursiveValues = recursiveSearch(
-              (String) rawValue,
-              new ArrayList<String>());
+        if (attr.isBinary()) {
+          final Set<byte[]> newValues = new HashSet<byte[]>(attr.size());
+          for (byte[] value : attr.getBinaryValues()) {
+            newValues.add(processValue(sc, value));
+          }
+          attr.clear();
+          attr.addBinaryValues(newValues);
+        } else {
+          final Set<String> newValues = new HashSet<String>(attr.size());
+          for (String value : attr.getStringValues()) {
+            final Set<String> recursiveValues = recursiveSearch(
+              processValue(sc, value), new HashSet<String>());
             for (String s : recursiveValues) {
               newValues.add(processValue(sc, s));
             }
-          } else {
-            newValues.add(rawValue);
           }
+          attr.clear();
+          attr.addStringValues(newValues);
         }
-        attr.getValues().clear();
-        attr.getValues().addAll(newValues);
       }
     }
   }
@@ -139,16 +141,16 @@ public class RecursiveAttributeHandler extends CopyLdapAttributeHandler
    * @param  dn  to get attribute for
    * @param  searchedDns  list of DNs that have been searched for
    *
-   * @return  list of attribute values found by recursively searching
+   * @return  set of attribute values found by recursively searching
    *
    * @throws  LdapException  if a search error occurs
    */
-  private List<String> recursiveSearch(
+  private Set<String> recursiveSearch(
     final String dn,
-    final List<String> searchedDns)
+    final Set<String> searchedDns)
     throws LdapException
   {
-    final List<String> results = new ArrayList<String>();
+    final Set<String> results = new HashSet<String>();
     if (!searchedDns.contains(dn)) {
 
       LdapEntry entry = null;
@@ -166,12 +168,9 @@ public class RecursiveAttributeHandler extends CopyLdapAttributeHandler
       searchedDns.add(dn);
       if (entry != null) {
         final LdapAttribute attr = entry.getAttribute(attributeName);
-        if (attr != null) {
-          for (Object rawValue : attr.getValues()) {
-            if (rawValue instanceof String) {
-              results.addAll(
-                recursiveSearch((String) rawValue, searchedDns));
-            }
+        if (attr != null && !attr.isBinary()) {
+          for (String s : attr.getStringValues()) {
+            results.addAll(recursiveSearch(s, searchedDns));
           }
         }
       }

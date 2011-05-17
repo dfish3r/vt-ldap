@@ -136,21 +136,13 @@ public class LdifWriter
 
     for (LdapAttribute attr : le.getAttributes()) {
       final String attrName = attr.getName();
-      for (Object attrValue : attr.getValues()) {
-        if (encodeData(attrValue)) {
-          String encodedAttrValue = null;
-          if (attrValue instanceof String) {
-            encodedAttrValue = LdapUtil.base64Encode((String) attrValue);
-          } else if (attrValue instanceof byte[]) {
-            encodedAttrValue = LdapUtil.base64Encode((byte[]) attrValue);
-          } else {
-            logger.warn(
-              "Could not cast attribute value as a byte[]  or a String");
-          }
-          if (encodedAttrValue != null) {
-            entry.append(attrName).append(":: ").append(encodedAttrValue)
-              .append(LINE_SEPARATOR);
-          }
+      for (String attrValue : attr.getStringValues()) {
+        if (attr.isBinary()) {
+          entry.append(attrName).append(":: ").append(attrValue)
+            .append(LINE_SEPARATOR);
+        } else if (encodeData(attrValue)) {
+          entry.append(attrName).append(":: ").append(LdapUtil.base64Encode(
+            attrValue)).append(LINE_SEPARATOR);
         } else {
           entry.append(attrName).append(": ").append(attrValue).append(
             LINE_SEPARATOR);
@@ -173,41 +165,36 @@ public class LdifWriter
    *
    * @return  whether the data should be base64 encoded
    */
-  private boolean encodeData(final Object data)
+  private boolean encodeData(final String data)
   {
     boolean encode = false;
-    if (data instanceof String) {
-      final String stringData = (String) data;
-      final char[] dataCharArray = stringData.toCharArray();
-      for (int i = 0; i < dataCharArray.length; i++) {
-        final int charInt = (int) dataCharArray[i];
-        // check for NUL
-        if (charInt == NUL_CHAR) {
-          encode = true;
-          // check for LF
-        } else if (charInt == LF_CHAR) {
-          encode = true;
-          // check for CR
-        } else if (charInt == CR_CHAR) {
-          encode = true;
-          // check for SP at beginning or end of string
-        } else if (
-          charInt == SP_CHAR &&
-            (i == 0 || i == dataCharArray.length - 1)) {
-          encode = true;
-          // check for colon(:) at beginning of string
-        } else if (charInt == COLON_CHAR && i == 0) {
-          encode = true;
-          // check for left arrow(<) at beginning of string
-        } else if (charInt == LA_CHAR && i == 0) {
-          encode = true;
-          // check for any character above 127
-        } else if (charInt > MAX_ASCII_CHAR) {
-          encode = true;
-        }
+    final char[] dataCharArray = data.toCharArray();
+    for (int i = 0; i < dataCharArray.length; i++) {
+      final int charInt = (int) dataCharArray[i];
+      // check for NUL
+      if (charInt == NUL_CHAR) {
+        encode = true;
+        // check for LF
+      } else if (charInt == LF_CHAR) {
+        encode = true;
+        // check for CR
+      } else if (charInt == CR_CHAR) {
+        encode = true;
+        // check for SP at beginning or end of string
+      } else if (
+        charInt == SP_CHAR &&
+          (i == 0 || i == dataCharArray.length - 1)) {
+        encode = true;
+        // check for colon(:) at beginning of string
+      } else if (charInt == COLON_CHAR && i == 0) {
+        encode = true;
+        // check for left arrow(<) at beginning of string
+      } else if (charInt == LA_CHAR && i == 0) {
+        encode = true;
+        // check for any character above 127
+      } else if (charInt > MAX_ASCII_CHAR) {
+        encode = true;
       }
-    } else {
-      encode = true;
     }
     return encode;
   }

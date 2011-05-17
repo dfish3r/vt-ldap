@@ -92,16 +92,11 @@ public final class AttributeServlet extends AbstractServlet
       final LdapResult result = search(
         request.getParameter("query"),
         request.getParameterValues("attrs"));
-      for (LdapEntry e : result.getEntries()) {
+      final LdapEntry e = result.getEntry();
+      if (e != null && e.size() > 0) {
         final LdapAttribute a = e.getAttribute(attribute);
-        if (a != null && a.getValues().size() > 0) {
-          final Object rawValue = a.getValues().iterator().next();
-          if (rawValue instanceof String) {
-            final String stringValue = (String) rawValue;
-            value = stringValue.getBytes();
-          } else {
-            value = (byte[]) rawValue;
-          }
+        if (a != null && a.size() > 0) {
+          value = a.getBinaryValue();
         }
       }
 
