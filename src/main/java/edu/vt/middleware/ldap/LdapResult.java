@@ -164,6 +164,43 @@ public class LdapResult extends AbstractLdapBean
 
 
   /**
+   * Removes an entry from this ldap result.
+   *
+   * @param  le  entry to remove
+   */
+  public void removeEntry(final LdapEntry ... le)
+  {
+    for (LdapEntry e : le) {
+      entries.remove(e.getDn().toLowerCase());
+    }
+  }
+
+
+  /**
+   * Removes the entry with the supplied dn from this ldap result.
+   *
+   * @param  dn  of entry to remove
+   */
+  public void removeEntry(final String dn)
+  {
+    entries.remove(dn.toLowerCase());
+  }
+
+
+  /**
+   * Removes the entry(s) from this ldap result.
+   *
+   * @param  c  collection of ldap entries to remove
+   */
+  public void removeEntries(final Collection<LdapEntry> c)
+  {
+    for (LdapEntry le : c) {
+      removeEntry(le);
+    }
+  }
+
+
+  /**
    * Returns the number of entries in this ldap result.
    *
    * @return  number of entries in this ldap result
