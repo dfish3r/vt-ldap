@@ -516,20 +516,13 @@ public class LdapAttribute extends AbstractLdapBean
      *
      * @param  o  to add
      *
-     * @throws  IllegalArgumentException if o is null
-     * @throws  IllegalStateException if o is not the correct type
+     * @throws  IllegalArgumentException if o is null or if o is not the correct
+     * type
      */
     @SuppressWarnings("unchecked")
     public void add(final Object o)
     {
-      if (o == null) {
-        throw new IllegalArgumentException("Value cannot be null");
-      }
-      if (!isType(o.getClass())) {
-        throw new IllegalStateException(
-          String.format(
-            "Attribute %s does not support values of type %s", name, type));
-      }
+      checkValue(o);
       values.add((T) o);
     }
 
@@ -539,21 +532,35 @@ public class LdapAttribute extends AbstractLdapBean
      *
      * @param  o  to remove
      *
-     * @throws  IllegalArgumentException if o is null
-     * @throws  IllegalStateException if o is not the correct type
+     * @throws  IllegalArgumentException if o is null or if o is not the correct
+     * type
      */
     @SuppressWarnings("unchecked")
     public void remove(final Object o)
+    {
+      checkValue(o);
+      values.remove((T) o);
+    }
+
+
+    /**
+     * Determines if the supplied object is acceptable to use in this values.
+     *
+     * @param  o  object to check
+     *
+     * @throws  IllegalArgumentException if o is null or if o is not the correct
+     * type
+     */
+    private void checkValue(final Object o)
     {
       if (o == null) {
         throw new IllegalArgumentException("Value cannot be null");
       }
       if (!isType(o.getClass())) {
-        throw new IllegalStateException(
+        throw new IllegalArgumentException(
           String.format(
             "Attribute %s does not support values of type %s", name, type));
       }
-      values.remove((T) o);
     }
 
 

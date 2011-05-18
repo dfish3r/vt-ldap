@@ -246,6 +246,18 @@ public class LdapBeanTest
       Arrays.equals("William".getBytes(), la.getBinaryValue()));
     AssertJUnit.assertEquals(1, la.size());
     AssertJUnit.assertEquals(la, new LdapAttribute("givenName", "William"));
+    try {
+      la.addStringValue((String) null);
+      AssertJUnit.fail("Should have thrown IllegalArgumentException");
+    } catch (Exception e) {
+      AssertJUnit.assertEquals(IllegalArgumentException.class, e.getClass());
+    }
+    try {
+      la.addBinaryValue("Bill".getBytes());
+      AssertJUnit.fail("Should have thrown IllegalArgumentException");
+    } catch (Exception e) {
+      AssertJUnit.assertEquals(IllegalArgumentException.class, e.getClass());
+    }
     la.clear();
     AssertJUnit.assertEquals(0, la.size());
 
@@ -269,6 +281,18 @@ public class LdapBeanTest
     AssertJUnit.assertEquals(1, la.getStringValues().size());
     AssertJUnit.assertEquals(
       la, new LdapAttribute("jpegPhoto", "image".getBytes()));
+    try {
+      la.addBinaryValue((byte[]) null);
+      AssertJUnit.fail("Should have thrown IllegalArgumentException");
+    } catch (Exception e) {
+      AssertJUnit.assertEquals(IllegalArgumentException.class, e.getClass());
+    }
+    try {
+      la.addStringValue("Bill");
+      AssertJUnit.fail("Should have thrown IllegalArgumentException");
+    } catch (Exception e) {
+      AssertJUnit.assertEquals(IllegalArgumentException.class, e.getClass());
+    }
     la.clear();
     AssertJUnit.assertEquals(0, la.size());
   }
