@@ -35,17 +35,25 @@ public class LdapAttribute extends AbstractLdapBean
   /** Name for this attribute. */
   protected String name;
 
-  /** String values for this attribute. */
-  protected Set<String> stringValues;
-
-  /** byte[] values for this attribute. */
-  protected Set<byte[]> binaryValues;
+  /** Values for this attribute. */
+  protected LdapAttributeValues<?> attributeValues;
 
 
   /** Default constructor. */
   public LdapAttribute()
   {
     this(SortBehavior.getDefaultSortBehavior(), false);
+  }
+
+
+  /**
+   * Creates a new ldap attribute.
+   *
+   * @param  sb  sort behavior of this attribute
+   */
+  public LdapAttribute(final SortBehavior sb)
+  {
+    this(sb, false);
   }
 
 
@@ -70,21 +78,9 @@ public class LdapAttribute extends AbstractLdapBean
   {
     super(sb);
     if (binary) {
-      if (SortBehavior.UNORDERED == sortBehavior) {
-        binaryValues = new HashSet<byte[]>();
-      } else if (SortBehavior.ORDERED == sortBehavior) {
-        binaryValues = new LinkedHashSet<byte[]>();
-      } else if (SortBehavior.SORTED == sortBehavior) {
-        binaryValues = new TreeSet<byte[]>();
-      }
+      attributeValues = new LdapAttributeValues<byte[]>(byte[].class);
     } else {
-      if (SortBehavior.UNORDERED == sortBehavior) {
-        stringValues = new HashSet<String>();
-      } else if (SortBehavior.ORDERED == sortBehavior) {
-        stringValues = new LinkedHashSet<String>();
-      } else if (SortBehavior.SORTED == sortBehavior) {
-        stringValues = new TreeSet<String>();
-      }
+      attributeValues = new LdapAttributeValues<String>(String.class);
     }
   }
 
@@ -164,7 +160,7 @@ public class LdapAttribute extends AbstractLdapBean
    */
   public Set<String> getStringValues()
   {
-    return Collections.unmodifiableSet(convertValuesToString());
+    return attributeValues.getStringValues();
   }
 
 
@@ -193,7 +189,7 @@ public class LdapAttribute extends AbstractLdapBean
    */
   public Set<byte[]> getBinaryValues()
   {
-    return Collections.unmodifiableSet(convertValuesToByteArray());
+    return attributeValues.getBinaryValues();
   }
 
 
@@ -220,7 +216,7 @@ public class LdapAttribute extends AbstractLdapBean
    */
   public boolean isBinary()
   {
-    return binaryValues != null;
+    return attributeValues.isType(byte[].class);
   }
 
 
@@ -233,10 +229,7 @@ public class LdapAttribute extends AbstractLdapBean
   public void addStringValue(final String ... value)
   {
     for (String s : value) {
-      if (s == null) {
-        throw new NullPointerException("Value cannot be null");
-      }
-      stringValues.add(s);
+      attributeValues.add(s);
     }
   }
 
@@ -264,10 +257,7 @@ public class LdapAttribute extends AbstractLdapBean
   public void addBinaryValue(final byte[] ... value)
   {
     for (byte[] b : value) {
-      if (b == null) {
-        throw new NullPointerException("Value cannot be null");
-      }
-      binaryValues.add(b);
+      attributeValues.add(b);
     }
   }
 
@@ -294,7 +284,7 @@ public class LdapAttribute extends AbstractLdapBean
   public void removeStringValue(final String ... value)
   {
     for (String s : value) {
-      stringValues.remove(s);
+      attributeValues.remove(s);
     }
   }
 
@@ -321,7 +311,7 @@ public class LdapAttribute extends AbstractLdapBean
   public void removeBinaryValue(final byte[] ... value)
   {
     for (byte[] b : value) {
-      binaryValues.remove(b);
+      attributeValues.remove(b);
     }
   }
 
@@ -347,11 +337,7 @@ public class LdapAttribute extends AbstractLdapBean
    */
   public int size()
   {
-    if (binaryValues != null) {
-      return binaryValues.size();
-    } else {
-      return stringValues.size();
-    }
+    return attributeValues.size();
   }
 
 
@@ -360,11 +346,7 @@ public class LdapAttribute extends AbstractLdapBean
    */
   public void clear()
   {
-    if (binaryValues != null) {
-      binaryValues.clear();
-    } else {
-      stringValues.clear();
-    }
+    attributeValues.clear();
   }
 
 
@@ -374,15 +356,7 @@ public class LdapAttribute extends AbstractLdapBean
   {
     int hc = HASH_CODE_SEED;
     hc += name != null ? name.toLowerCase().hashCode() : 0;
-    if (binaryValues != null) {
-      for (byte[] b : binaryValues) {
-        hc += b != null ? Arrays.hashCode(b) : 0;
-      }
-    } else {
-      for (String s : stringValues) {
-        hc += s != null ? s.hashCode() : 0;
-      }
-    }
+    hc += attributeValues.hashCode();
     return hc;
   }
 
@@ -395,11 +369,7 @@ public class LdapAttribute extends AbstractLdapBean
   @Override
   public String toString()
   {
-    if (binaryValues != null) {
-      return String.format("%s%s", name, binaryValues);
-    } else {
-      return String.format("%s%s", name, stringValues);
-    }
+    return String.format("%s%s", name, attributeValues);
   }
 
 
@@ -446,53 +416,229 @@ public class LdapAttribute extends AbstractLdapBean
 
 
   /**
-   * Converts the underlying set of values to a set of strings. Objects of type
-   * byte[] are base64 encoded.
+   * Returns an implementation of set for the sort behavior of this bean.
    *
-   * @return  set of string values
+   * @param  <T>  type contained in the set
+   *
+   * @return  set
    */
-  protected Set<String> convertValuesToString()
+  private <T> Set<T> createSortBehaviorSet()
   {
-    if (stringValues != null) {
-      return stringValues;
-    }
-    Set<String> s = null;
+    Set<T> s = null;
     if (SortBehavior.UNORDERED == sortBehavior) {
-      s = new HashSet<String>();
+      s = new HashSet<T>();
     } else if (SortBehavior.ORDERED == sortBehavior) {
-      s = new LinkedHashSet<String>();
+      s = new LinkedHashSet<T>();
     } else if (SortBehavior.SORTED == sortBehavior) {
-      s = new TreeSet<String>();
-    }
-    for (byte[] value : binaryValues) {
-      s.add(LdapUtil.base64Encode(value));
+      s = new TreeSet<T>();
     }
     return s;
   }
 
 
   /**
-   * Converts the underlying set of values to a set of byte[]. Objects of type
-   * String are UTF-8 encoded.
+   * Simple bean for ldap attribute values.
    *
-   * @return  set of byte array values
+   * @author  Middleware Services
+   * @version  $Revision: 1330 $ $Date: 2010-05-23 18:10:53 -0400 (Sun, 23 May 2010) $
    */
-  protected Set<byte[]> convertValuesToByteArray()
+  private class LdapAttributeValues<T>
   {
-    if (binaryValues != null) {
-      return binaryValues;
+    /** Type of values. */
+    private Class<T> type;
+
+    /** Set of values. */
+    private Set<T> values;
+
+
+    /**
+     * Creates a new ldap attribute values.
+     *
+     * @param  t  type of values
+     */
+    public LdapAttributeValues(final Class<T> t)
+    {
+      type = t;
+      values = createSortBehaviorSet();
     }
-    Set<byte[]> s = null;
-    if (SortBehavior.UNORDERED == sortBehavior) {
-      s = new HashSet<byte[]>();
-    } else if (SortBehavior.ORDERED == sortBehavior) {
-      s = new LinkedHashSet<byte[]>();
-    } else if (SortBehavior.SORTED == sortBehavior) {
-      s = new TreeSet<byte[]>();
+
+
+    /**
+     * Returns whether this ldap attribute values is of the supplied type.
+     *
+     * @param  c  type to check
+     * @return  whether this ldap attribute values is of the supplied type
+     */
+    public boolean isType(final Class<?> c)
+    {
+      return type.isAssignableFrom(c);
     }
-    for (String value : stringValues) {
-      s.add(LdapUtil.utf8Encode(value));
+
+
+    /**
+     * Returns the values in string format. If the type of this values is
+     * String, values are returned as is. If the type of this values is byte[],
+     * values are base64 encoded. See {@link #convertValuesToString(Set)}.
+     *
+     * @return  unmodifiable set
+     */
+    @SuppressWarnings("unchecked")
+    public Set<String> getStringValues()
+    {
+      if (isType(String.class)) {
+        return Collections.unmodifiableSet((Set<String>) values);
+      }
+      return Collections.unmodifiableSet(
+        convertValuesToString((Set<byte[]>) values));
     }
-    return s;
+
+
+    /**
+     * Returns the values in binary format. If the type of this values is
+     * byte[], values are returned as is. If the type of this values is String,
+     * values are UTF-8 encoded. See {@link #convertValuesToByteArray(Set)}.
+     *
+     * @return  unmodifiable set
+     */
+    @SuppressWarnings("unchecked")
+    public Set<byte[]> getBinaryValues()
+    {
+      if (isType(byte[].class)) {
+        return Collections.unmodifiableSet((Set<byte[]>) values);
+      }
+      return Collections.unmodifiableSet(
+        convertValuesToByteArray((Set<String>) values));
+    }
+
+
+    /**
+     * Adds the supplied object to this values.
+     *
+     * @param  o  to add
+     *
+     * @throws  IllegalArgumentException if o is null
+     * @throws  IllegalStateException if o is not the correct type
+     */
+    @SuppressWarnings("unchecked")
+    public void add(final Object o)
+    {
+      if (o == null) {
+        throw new IllegalArgumentException("Value cannot be null");
+      }
+      if (!isType(o.getClass())) {
+        throw new IllegalStateException(
+          String.format(
+            "Attribute %s does not support values of type %s", name, type));
+      }
+      values.add((T) o);
+    }
+
+
+    /**
+     * Removes the supplied object from this values if it exists.
+     *
+     * @param  o  to remove
+     *
+     * @throws  IllegalArgumentException if o is null
+     * @throws  IllegalStateException if o is not the correct type
+     */
+    @SuppressWarnings("unchecked")
+    public void remove(final Object o)
+    {
+      if (o == null) {
+        throw new IllegalArgumentException("Value cannot be null");
+      }
+      if (!isType(o.getClass())) {
+        throw new IllegalStateException(
+          String.format(
+            "Attribute %s does not support values of type %s", name, type));
+      }
+      values.remove((T) o);
+    }
+
+
+    /**
+     * Returns the number of values.
+     *
+     * @return  number of values
+     */
+    public int size()
+    {
+      return values.size();
+    }
+
+
+    /**
+     * Removes all the values.
+     */
+    public void clear()
+    {
+      values.clear();
+    }
+
+
+    /** {@inheritDoc} */
+    @SuppressWarnings("unchecked")
+    @Override
+    public int hashCode()
+    {
+      int hc = 0;
+      if (isType(byte[].class)) {
+        for (byte[] b : (Set<byte[]>) values) {
+          hc += b != null ? Arrays.hashCode(b) : 0;
+        }
+      } else {
+        for (String s : (Set<String>) values) {
+          hc += s != null ? s.hashCode() : 0;
+        }
+      }
+      return hc;
+    }
+
+
+    /**
+     * Provides a descriptive string representation of this instance.
+     *
+     * @return  string representation
+     */
+    @Override
+    public String toString()
+    {
+      return values.toString();
+    }
+
+
+    /**
+     * Base64 encodes the supplied set of values.
+     *
+     * @param  v  values to encode
+     *
+     * @return  set of string values
+     */
+    protected Set<String> convertValuesToString(final Set<byte[]> v)
+    {
+      final Set<String> s = createSortBehaviorSet();
+      for (byte[] value : v) {
+        s.add(LdapUtil.base64Encode(value));
+      }
+      return s;
+    }
+
+
+    /**
+     * UTF-8 encodes the supplied set of values.
+     *
+     * @param  v  values to encode
+     *
+     * @return  set of byte array values
+     */
+    protected Set<byte[]> convertValuesToByteArray(final Set<String> v)
+    {
+      final Set<byte[]> s = createSortBehaviorSet();
+      for (String value : v) {
+        s.add(LdapUtil.utf8Encode(value));
+      }
+      return s;
+    }
   }
 }

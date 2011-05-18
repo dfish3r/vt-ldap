@@ -286,6 +286,7 @@
   <test name="coretests" parallel="methods" thread-count="12">
     <groups>
       <run>
+        <include name="beantest" />
         <include name="propstest" />
         <include name="searchtest" />
         <include name="comparetest" />
