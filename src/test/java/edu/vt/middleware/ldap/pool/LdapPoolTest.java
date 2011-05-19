@@ -29,8 +29,8 @@ import edu.vt.middleware.ldap.ldif.LdifWriter;
 import edu.vt.middleware.ldap.pool.commons.CommonsLdapPool;
 import edu.vt.middleware.ldap.pool.commons.DefaultLdapPoolableObjectFactory;
 import edu.vt.middleware.ldap.provider.ConnectionStrategy;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.testng.AssertJUnit;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
@@ -60,8 +60,8 @@ public class LdapPoolTest extends AbstractTest
     }
   }
 
-  /** Log for this class. */
-  protected final Log logger = LogFactory.getLog(getClass());
+  /** Logger for this class. */
+  protected final Logger logger = LoggerFactory.getLogger(getClass());
 
   /** LdapPool instance for concurrency testing. */
   private SoftLimitLdapPool softLimitPool;
@@ -123,37 +123,37 @@ public class LdapPoolTest extends AbstractTest
     softLimitLpc.setValidateOnCheckIn(true);
     softLimitLpc.setValidateOnCheckOut(true);
     softLimitLpc.setValidatePeriodically(true);
-    softLimitLpc.setPruneTimerPeriod(5000L);
-    softLimitLpc.setExpirationTime(1000L);
-    softLimitLpc.setValidateTimerPeriod(5000L);
+    softLimitLpc.setPrunePeriod(5L);
+    softLimitLpc.setExpirationTime(1L);
+    softLimitLpc.setValidatePeriod(5L);
     softLimitPool = new SoftLimitLdapPool(softLimitLpc, factory);
 
     final LdapPoolConfig blockingLpc = new LdapPoolConfig();
     blockingLpc.setValidateOnCheckIn(true);
     blockingLpc.setValidateOnCheckOut(true);
     blockingLpc.setValidatePeriodically(true);
-    blockingLpc.setPruneTimerPeriod(5000L);
-    blockingLpc.setExpirationTime(1000L);
-    blockingLpc.setValidateTimerPeriod(5000L);
+    blockingLpc.setPrunePeriod(5L);
+    blockingLpc.setExpirationTime(1L);
+    blockingLpc.setValidatePeriod(5L);
     blockingPool = new BlockingLdapPool(blockingLpc, factory);
 
     final LdapPoolConfig blockingTimeoutLpc = new LdapPoolConfig();
     blockingTimeoutLpc.setValidateOnCheckIn(true);
     blockingTimeoutLpc.setValidateOnCheckOut(true);
     blockingTimeoutLpc.setValidatePeriodically(true);
-    blockingTimeoutLpc.setPruneTimerPeriod(5000L);
-    blockingTimeoutLpc.setExpirationTime(1000L);
-    blockingTimeoutLpc.setValidateTimerPeriod(5000L);
-    blockingTimeoutPool = new BlockingLdapPool(blockingLpc, factory);
+    blockingTimeoutLpc.setPrunePeriod(5L);
+    blockingTimeoutLpc.setExpirationTime(1L);
+    blockingTimeoutLpc.setValidatePeriod(5L);
+    blockingTimeoutPool = new BlockingLdapPool(blockingTimeoutLpc, factory);
     blockingTimeoutPool.setBlockWaitTime(1000L);
 
     final LdapPoolConfig sharedLpc = new LdapPoolConfig();
     sharedLpc.setValidateOnCheckIn(true);
     sharedLpc.setValidateOnCheckOut(true);
     sharedLpc.setValidatePeriodically(true);
-    sharedLpc.setPruneTimerPeriod(5000L);
-    sharedLpc.setExpirationTime(1000L);
-    sharedLpc.setValidateTimerPeriod(5000L);
+    sharedLpc.setPrunePeriod(5L);
+    sharedLpc.setExpirationTime(1L);
+    sharedLpc.setValidatePeriod(5L);
     sharedPool = new SharedLdapPool(sharedLpc, factory);
 
     final LdapConnectionConfig connStrategyLcc =
@@ -444,7 +444,8 @@ public class LdapPoolTest extends AbstractTest
           new SearchRequest(
             "ou=test,dc=vt,dc=edu",
             new SearchFilter("mail=mvburen@vt.edu"),
-            new String[] {"departmentNumber", "givenName", "sn", }),
+            new String[] {
+              "departmentNumber", "givenName", "sn", "jpegPhoto", }),
           entries.get("8")[1],
         },
         {
@@ -715,7 +716,7 @@ public class LdapPoolTest extends AbstractTest
         request,
         results);
     } catch (BlockingTimeoutException e) {
-      logger.info("block timeout exceeded");
+      logger.warn("block timeout exceeded for small search", e);
     }
   }
 
@@ -745,7 +746,7 @@ public class LdapPoolTest extends AbstractTest
         request,
         results);
     } catch (BlockingTimeoutException e) {
-      logger.info("block timeout exceeded");
+      logger.warn("block timeout exceeded for medium search", e);
     }
   }
 
@@ -775,7 +776,7 @@ public class LdapPoolTest extends AbstractTest
         request,
         results);
     } catch (BlockingTimeoutException e) {
-      logger.info("block timeout exceeded");
+      logger.warn("block timeout exceeded for large search", e);
     }
   }
 
@@ -963,22 +964,14 @@ public class LdapPoolTest extends AbstractTest
     LdapConnection conn = null;
     LdapResult result = null;
     try {
-      if (logger.isTraceEnabled()) {
-        logger.trace("waiting for pool checkout");
-      }
+      logger.trace("waiting for pool checkout");
       conn = pool.checkOut();
-      if (logger.isTraceEnabled()) {
-        logger.trace("performing search");
-      }
+      logger.trace("performing search: {}", request);
       final SearchOperation search = new SearchOperation(conn);
       result = search.execute(request).getResult();
-      if (logger.isTraceEnabled()) {
-        logger.trace("search completed");
-      }
+      logger.trace("search completed: {}", result);
     } finally {
-      if (logger.isTraceEnabled()) {
-        logger.trace("returning ldap to pool");
-      }
+      logger.trace("returning ldap to pool");
       pool.checkIn(conn);
     }
     final StringWriter sw = new StringWriter();
@@ -986,7 +979,7 @@ public class LdapPoolTest extends AbstractTest
     lw.write(result);
     AssertJUnit.assertEquals(
       results,
-      TestUtil.convertLdifToResult(sw.toString()));
+      TestUtil.convertLdifToResult(sw.toString()).getEntry());
     return System.currentTimeMillis() - startTime;
   }
 
@@ -1012,22 +1005,14 @@ public class LdapPoolTest extends AbstractTest
     final long startTime = System.currentTimeMillis();
     LdapConnection conn = null;
     try {
-      if (logger.isTraceEnabled()) {
-        logger.trace("waiting for pool checkout");
-      }
+      logger.trace("waiting for pool checkout");
       conn = vtComparisonPool.checkOut();
-      if (logger.isTraceEnabled()) {
-        logger.trace("performing search");
-      }
+      logger.trace("performing search: {}", request);
       final SearchOperation search = new SearchOperation(conn);
       search.execute(request);
-      if (logger.isTraceEnabled()) {
-        logger.trace("search completed");
-      }
+      logger.trace("search completed");
     } finally {
-      if (logger.isTraceEnabled()) {
-        logger.trace("returning ldap to pool");
-      }
+      logger.trace("returning ldap to pool");
       vtComparisonPool.checkIn(conn);
     }
     vtPoolRuntime += System.currentTimeMillis() - startTime;
@@ -1055,22 +1040,14 @@ public class LdapPoolTest extends AbstractTest
     final long startTime = System.currentTimeMillis();
     LdapConnection conn = null;
     try {
-      if (logger.isTraceEnabled()) {
-        logger.trace("waiting for pool checkout");
-      }
+      logger.trace("waiting for pool checkout");
       conn = (LdapConnection) commonsComparisonPool.borrowObject();
-      if (logger.isTraceEnabled()) {
-        logger.trace("performing search");
-      }
+      logger.trace("performing search: {}", request);
       final SearchOperation search = new SearchOperation(conn);
       search.execute(request);
-      if (logger.isTraceEnabled()) {
-        logger.trace("search completed");
-      }
+      logger.trace("search completed");
     } finally {
-      if (logger.isTraceEnabled()) {
-        logger.trace("returning ldap to pool");
-      }
+      logger.trace("returning ldap to pool");
       commonsComparisonPool.returnObject(conn);
     }
     commonsPoolRuntime += System.currentTimeMillis() - startTime;

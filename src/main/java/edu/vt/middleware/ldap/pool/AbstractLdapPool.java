@@ -15,7 +15,10 @@ package edu.vt.middleware.ldap.pool;
 
 import java.util.LinkedList;
 import java.util.Queue;
-import java.util.Timer;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
 import edu.vt.middleware.ldap.LdapConnection;
@@ -71,8 +74,17 @@ public abstract class AbstractLdapPool<T extends LdapConnection>
   /** Factory to create ldap objects. */
   protected LdapFactory<T> ldapFactory;
 
-  /** Timer for scheduling pool tasks. */
-  private Timer poolTimer = new Timer(true);
+  /** Executor for scheduling pool tasks. */
+  protected ScheduledExecutorService poolExecutor =
+    Executors.newSingleThreadScheduledExecutor(
+      new ThreadFactory() {
+        public Thread newThread(final Runnable r)
+        {
+          final Thread t = new Thread(r);
+          t.setDaemon(true);
+          return t;
+        }
+      });
 
 
   /**
@@ -100,28 +112,38 @@ public abstract class AbstractLdapPool<T extends LdapConnection>
 
   /** {@inheritDoc} */
   @Override
-  public void setPoolTimer(final Timer t)
-  {
-    poolTimer = t;
-  }
-
-
-  /** {@inheritDoc} */
-  @Override
   public void initialize()
   {
     logger.debug("beginning pool initialization");
 
-    poolTimer.scheduleAtFixedRate(
-      new PrunePoolTask<T>(this),
-      poolConfig.getPruneTimerPeriod(),
-      poolConfig.getPruneTimerPeriod());
+    final Runnable prune = new Runnable() {
+      public void run()
+      {
+        logger.debug("Begin prune task for {}", this);
+        prune();
+        logger.debug("End prune task for {}", this);
+      }
+    };
+    poolExecutor.scheduleAtFixedRate(
+      prune,
+      poolConfig.getPrunePeriod(),
+      poolConfig.getPrunePeriod(),
+      TimeUnit.SECONDS);
     logger.debug("prune pool task scheduled");
 
-    poolTimer.scheduleAtFixedRate(
-      new ValidatePoolTask<T>(this),
-      poolConfig.getValidateTimerPeriod(),
-      poolConfig.getValidateTimerPeriod());
+    final Runnable validate = new Runnable() {
+      public void run()
+      {
+        logger.debug("Begin validate task for {}", this);
+        validate();
+        logger.debug("End validate task for {}", this);
+      }
+    };
+    poolExecutor.scheduleAtFixedRate(
+      validate,
+      poolConfig.getValidatePeriod(),
+      poolConfig.getValidatePeriod(),
+      TimeUnit.SECONDS);
     logger.debug("validate pool task scheduled");
 
     initializePool();
@@ -179,7 +201,9 @@ public abstract class AbstractLdapPool<T extends LdapConnection>
       poolLock.unlock();
     }
 
-    poolTimer.cancel();
+    logger.debug("shutting down executor");
+    poolExecutor.shutdown();
+    logger.debug("executor shutdown");
   }
 
 
@@ -410,7 +434,8 @@ public abstract class AbstractLdapPool<T extends LdapConnection>
         while (available.size() > poolConfig.getMinPoolSize()) {
           PooledLdapConnection<T> pl = available.peek();
           final long time = System.currentTimeMillis() - pl.getCreatedTime();
-          if (time > poolConfig.getExpirationTime()) {
+          if (time >
+              TimeUnit.SECONDS.toMillis(poolConfig.getExpirationTime())) {
             pl = available.remove();
             logger.trace(
               "removing {} in the pool for {}ms", pl.getLdapConnection(), time);

@@ -20,12 +20,12 @@ import edu.vt.middleware.ldap.LdapConnection;
  * <code>SoftLimitLdapPool</code> implements a pool of ldap objects that has a
  * set minimum and maximum size. The pool will grow beyond it's maximum size as
  * necessary based on it's current load. Pool size will return to it's minimum
- * based on the configuration of the prune timer. See {@link
- * LdapPoolConfig#setPruneTimerPeriod} and {@link
- * LdapPoolConfig#setExpirationTime}. This implementation should be used when
- * you have some flexibility in the number of ldap connections that can be
- * created to handle spikes in load. See {@link AbstractLdapPool}. Note that
- * this pool will begin blocking if it cannot create new ldap connections.
+ * based on the configuration of the prune period. See {@link
+ * LdapPoolConfig#setPrunePeriod} and {@link LdapPoolConfig#setExpirationTime}.
+ * This implementation should be used when you have some flexibility in the
+ * number of ldap connections that can be created to handle spikes in load. See
+ * {@link AbstractLdapPool}. Note that this pool will begin blocking if it
+ * cannot create new ldap connections.
  *
  * @author  Middleware Services
  * @version  $Revision$ $Date$

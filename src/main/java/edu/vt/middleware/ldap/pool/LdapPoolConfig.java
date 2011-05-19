@@ -39,14 +39,14 @@ public class LdapPoolConfig extends AbstractConfig
   /** Default validate periodically, value is {@value}. */
   public static final boolean DEFAULT_VALIDATE_PERIODICALLY = false;
 
-  /** Default validate timer period, value is {@value}. */
-  public static final long DEFAULT_VALIDATE_TIMER_PERIOD = 1800000;
+  /** Default validate period, value is {@value}. */
+  public static final long DEFAULT_VALIDATE_PERIOD = 1800;
 
-  /** Default prune timer period, value is {@value}. */
-  public static final long DEFAULT_PRUNE_TIMER_PERIOD = 300000;
+  /** Default prune period, value is {@value}. */
+  public static final long DEFAULT_PRUNE_PERIOD = 300;
 
   /** Default expiration time, value is {@value}. */
-  public static final long DEFAULT_EXPIRATION_TIME = 600000;
+  public static final long DEFAULT_EXPIRATION_TIME = 600;
 
   /** Min pool size. */
   private int minPoolSize = DEFAULT_MIN_POOL_SIZE;
@@ -63,13 +63,13 @@ public class LdapPoolConfig extends AbstractConfig
   /** Whether the pool should be validated periodically. */
   private boolean validatePeriodically = DEFAULT_VALIDATE_PERIODICALLY;
 
-  /** Time in milliseconds that the validate pool timer should repeat. */
-  private long validateTimerPeriod = DEFAULT_VALIDATE_TIMER_PERIOD;
+  /** Time in seconds that the validate pool should repeat. */
+  private long validatePeriod = DEFAULT_VALIDATE_PERIOD;
 
-  /** Time in milliseconds that the prune pool timer should repeat. */
-  private long pruneTimerPeriod = DEFAULT_PRUNE_TIMER_PERIOD;
+  /** Time in seconds that the prune pool should repeat. */
+  private long prunePeriod = DEFAULT_PRUNE_PERIOD;
 
-  /** Time in milliseconds that ldap objects should be considered expired. */
+  /** Time in seconds that ldap objects should be considered expired. */
   private long expirationTime = DEFAULT_EXPIRATION_TIME;
 
 
@@ -80,7 +80,7 @@ public class LdapPoolConfig extends AbstractConfig
   /**
    * This returns the min pool size for the <code>LdapPoolConfig</code>. Default
    * value is {@link #DEFAULT_MIN_POOL_SIZE}. This value represents the size of
-   * the pool after the prune timer has run.
+   * the pool after a prune has occurred.
    *
    * @return  <code>int</code> - min pool size
    */
@@ -143,28 +143,26 @@ public class LdapPoolConfig extends AbstractConfig
 
 
   /**
-   * This returns the prune timer period for the <code>LdapPoolConfig</code>.
-   * Default value is {@link #DEFAULT_PRUNE_TIMER_PERIOD}. The prune timer
-   * attempts to execute {@link LdapPool#prune()}.
+   * This returns the prune period for the <code>LdapPoolConfig</code>.
+   * Default value is {@link #DEFAULT_PRUNE_PERIOD}..
    *
-   * @return  <code>long</code> - prune timer period in milliseconds
+   * @return  <code>long</code> - prune period in seconds
    */
-  public long getPruneTimerPeriod()
+  public long getPrunePeriod()
   {
-    return pruneTimerPeriod;
+    return prunePeriod;
   }
 
 
   /**
-   * This returns the validate timer period for the <code>LdapPoolConfig</code>.
-   * Default value is {@link #DEFAULT_VALIDATE_TIMER_PERIOD}. The validate timer
-   * attempts to execute {@link LdapPool#validate()}.
+   * This returns the validate period for the <code>LdapPoolConfig</code>.
+   * Default value is {@link #DEFAULT_VALIDATE_PERIOD}.
    *
-   * @return  <code>long</code> - validate timer period in milliseconds
+   * @return  <code>long</code> - validate period in seconds
    */
-  public long getValidateTimerPeriod()
+  public long getValidatePeriod()
   {
-    return validateTimerPeriod;
+    return validatePeriod;
   }
 
 
@@ -175,7 +173,7 @@ public class LdapPoolConfig extends AbstractConfig
    * considered stale. This value does not apply to objects in the pool if the
    * pool has only a minimum number of objects available.
    *
-   * @return  <code>long</code> - expiration time in milliseconds
+   * @return  <code>long</code> - expiration time in seconds
    */
   public long getExpirationTime()
   {
@@ -256,31 +254,31 @@ public class LdapPoolConfig extends AbstractConfig
 
 
   /**
-   * Sets the period for which the prune pool timer will run.
+   * Sets the period for which the pool will be pruned.
    *
-   * @param  time  in milliseconds
+   * @param  time  in seconds
    */
-  public void setPruneTimerPeriod(final long time)
+  public void setPrunePeriod(final long time)
   {
     checkImmutable();
     if (time >= 0) {
-      logger.trace("setting pruneTimerPeriod: {}", time);
-      pruneTimerPeriod = time;
+      logger.trace("setting prunePeriod: {}", time);
+      prunePeriod = time;
     }
   }
 
 
   /**
-   * Sets the period for which the validate pool timer will run.
+   * Sets the period for which the pool will be validated.
    *
-   * @param  time  in milliseconds
+   * @param  time  in seconds
    */
-  public void setValidateTimerPeriod(final long time)
+  public void setValidatePeriod(final long time)
   {
     checkImmutable();
     if (time >= 0) {
-      logger.trace("setting validateTimerPeriod: {}", time);
-      validateTimerPeriod = time;
+      logger.trace("setting validatePeriod: {}", time);
+      validatePeriod = time;
     }
   }
 
@@ -289,7 +287,7 @@ public class LdapPoolConfig extends AbstractConfig
    * Sets the time that an ldap object should be considered stale and ready for
    * removal from the pool.
    *
-   * @param  time  in milliseconds
+   * @param  time  in seconds
    */
   public void setExpirationTime(final long time)
   {
