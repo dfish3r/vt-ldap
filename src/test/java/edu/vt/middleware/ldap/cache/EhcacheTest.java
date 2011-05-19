@@ -53,7 +53,7 @@ public class EhcacheTest
         .memoryStoreEvictionPolicy(MemoryStoreEvictionPolicy.LRU)
         .overflowToDisk(false)
         .eternal(false)
-        .timeToLiveSeconds(15)
+        .timeToLiveSeconds(60)
         .timeToIdleSeconds(0)
         .diskPersistent(false)
         .diskExpiryThreadIntervalSeconds(3));
@@ -140,7 +140,7 @@ public class EhcacheTest
     throws Exception
   {
     AssertJUnit.assertEquals(5, cache.size());
-    Thread.sleep(20000);
+    Thread.sleep(65000);
     AssertJUnit.assertEquals(0, cache.size());
   }
 

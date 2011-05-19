@@ -33,7 +33,7 @@ public class LRUCacheTest
 
   /** Cache for testing. */
   private LRUCache<SearchRequest> cache =
-    new LRUCache<SearchRequest>(5, 15, 3);
+    new LRUCache<SearchRequest>(5, 60, 3);
 
 
   /**
@@ -124,7 +124,7 @@ public class LRUCacheTest
     throws Exception
   {
     AssertJUnit.assertEquals(5, cache.size());
-    Thread.sleep(20000);
+    Thread.sleep(65000);
     AssertJUnit.assertEquals(0, cache.size());
   }
 
