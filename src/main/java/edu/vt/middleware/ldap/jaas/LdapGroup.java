@@ -119,7 +119,7 @@ public class LdapGroup implements Group, Serializable
   public String toString()
   {
     return String.format(
-      "%s@%d::%s%s",
+      "[%s@%d::%s%s]",
       getClass().getName(),
       hashCode(),
       name,

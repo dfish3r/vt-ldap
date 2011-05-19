@@ -616,11 +616,11 @@ public class SearchRequest implements LdapRequest
   {
     return
       String.format(
-        "%s@%d::baseDn=%s, searchFilter=%s, returnAttributes=%s, " +
+        "[%s@%d::baseDn=%s, searchFilter=%s, returnAttributes=%s, " +
         "searchScope=%s, timeLimit=%s, countLimit=%s, batchSize=%s, " +
         "derefAliases=%s, referralBehavior=%s, typesOnly=%s, " +
         "binaryAttributes=%s, sortBehavior=%s, searchResultHandler=%s, " +
-        "searchIgnoreResultCodes=%s",
+        "searchIgnoreResultCodes=%s]",
         getClass().getName(),
         hashCode(),
         baseDn,

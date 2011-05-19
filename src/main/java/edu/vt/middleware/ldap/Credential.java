@@ -119,7 +119,7 @@ public class Credential
   {
     return
       String.format(
-        "%s@%d::bytes=%s",
+        "[%s@%d::bytes=%s]",
         getClass().getName(),
         hashCode(),
         new String(bytes));

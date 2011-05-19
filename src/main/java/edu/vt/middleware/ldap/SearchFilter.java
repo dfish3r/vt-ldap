@@ -274,6 +274,11 @@ public class SearchFilter
   public String toString()
   {
     return
-      String.format("filter=%s, filterArgs=%s", filter, filterArgs);
+      String.format(
+        "[%s@%d::filter=%s, filterArgs=%s]",
+        getClass().getName(),
+        hashCode(),
+        filter,
+        filterArgs);
   }
 }

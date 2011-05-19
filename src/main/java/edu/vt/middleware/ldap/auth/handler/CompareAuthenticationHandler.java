@@ -124,7 +124,7 @@ public class CompareAuthenticationHandler extends AbstractAuthenticationHandler
   {
     return
       String.format(
-        "%s@%d: passwordScheme=%s",
+        "[%s@%d::passwordScheme=%s]",
         getClass().getName(),
         hashCode(),
         passwordScheme);

@@ -114,7 +114,7 @@ public class ModifyRequest implements LdapRequest
   {
     return
       String.format(
-        "%s@%d::modifyDn=%s, attrMods=%s",
+        "[%s@%d::modifyDn=%s, attrMods=%s]",
         getClass().getName(),
         hashCode(),
         modifyDn,

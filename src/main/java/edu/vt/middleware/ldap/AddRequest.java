@@ -101,7 +101,7 @@ public class AddRequest implements LdapRequest
   {
     return
       String.format(
-        "%s@%d: createDn=%s, attributes=%s",
+        "[%s@%d::createDn=%s, attributes=%s]",
         getClass().getName(),
         hashCode(),
         createDn,

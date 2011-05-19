@@ -259,8 +259,8 @@ public class AuthenticationRequest implements LdapRequest
   {
     return
       String.format(
-        "%s@%d: user=%s, credential=%s, retAttrs=%s, authzFilter=%s, " +
-        "authzFilterArgs=%s, authzHandlers=%s",
+        "[%s@%d::user=%s, credential=%s, retAttrs=%s, authzFilter=%s, " +
+        "authzFilterArgs=%s, authzHandlers=%s]",
         getClass().getName(),
         hashCode(),
         user,

@@ -72,7 +72,7 @@ public class DeleteRequest implements LdapRequest
   {
     return
       String.format(
-        "%s@%d: deleteDn=%s",
+        "[%s@%d::deleteDn=%s]",
         getClass().getName(),
         hashCode(),
         deleteDn);

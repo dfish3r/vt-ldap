@@ -166,7 +166,7 @@ public class SearchCriteria
   {
     return
       String.format(
-        "%s@%d: dn=%s, filter=%s, filterArgs=%s, returnAttrs=%s",
+        "[%s@%d::dn=%s, filter=%s, filterArgs=%s, returnAttrs=%s]",
         getClass().getName(),
         hashCode(),
         dn,

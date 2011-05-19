@@ -101,8 +101,8 @@ public class TLSSocketFactory extends AbstractTLSSocketFactory
   {
     return
       String.format(
-        "%s@%d::sslContextInitializer=%s,factory=%s," +
-        "enabledCipherSuites=%s,enabledProtocols=%s",
+        "[%s@%d::sslContextInitializer=%s, factory=%s, " +
+        "enabledCipherSuites=%s, enabledProtocols=%s]",
         getClass().getName(),
         hashCode(),
         getSSLContextInitializer(),

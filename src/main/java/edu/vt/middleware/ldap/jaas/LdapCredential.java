@@ -98,7 +98,7 @@ public class LdapCredential implements Serializable
   public String toString()
   {
     return String.format(
-        "%s@%d::%s",
+        "[%s@%d::%s]",
         getClass().getName(),
         hashCode(),
         credential);

@@ -84,6 +84,10 @@ public class LdapConnection
    */
   public void setLdapConnectionConfig(final LdapConnectionConfig lcc)
   {
+    if (providerConnectionFactory != null) {
+      throw new IllegalStateException(
+        "Cannot set configuration after connection has been initialized");
+    }
     config = lcc;
   }
 
@@ -292,7 +296,8 @@ public class LdapConnection
   {
     return
       String.format(
-        "%s@%d::config=%s, providerConnectionFactory=%s, providerConnection=%s",
+        "[%s@%d::config=%s, providerConnectionFactory=%s, " +
+        "providerConnection=%s]",
         getClass().getName(),
         hashCode(),
         config,

@@ -369,7 +369,7 @@ public class LdapAttribute extends AbstractLdapBean
   @Override
   public String toString()
   {
-    return String.format("%s%s", name, attributeValues);
+    return String.format("[%s%s]", name, attributeValues);
   }
 
 

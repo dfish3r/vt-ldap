@@ -100,7 +100,7 @@ public class LdapRole implements Principal, Serializable, Comparable<Principal>
   public String toString()
   {
     return String.format(
-      "%s@%d::%s",
+      "[%s@%d::%s]",
       getClass().getName(),
       hashCode(),
       name);

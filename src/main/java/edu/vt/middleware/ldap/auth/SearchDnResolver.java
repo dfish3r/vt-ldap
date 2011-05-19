@@ -357,8 +357,8 @@ public class SearchDnResolver implements DnResolver, Serializable
   {
     return
       String.format(
-        "%s@%d: baseDn=%s, userFilter=%s, userFilterArgs=%s, " +
-        "allowMultipleDns=%s, subtreeSearch=%s, config=%s",
+        "[%s@%d::baseDn=%s, userFilter=%s, userFilterArgs=%s, " +
+        "allowMultipleDns=%s, subtreeSearch=%s, config=%s]",
         getClass().getName(),
         hashCode(),
         baseDn,

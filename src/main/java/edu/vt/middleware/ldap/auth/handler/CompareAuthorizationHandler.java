@@ -110,7 +110,7 @@ public class CompareAuthorizationHandler implements AuthorizationHandler
   {
     return
       String.format(
-        "%s@%d: searchFilter=%s",
+        "[%s@%d::searchFilter=%s]",
         getClass().getName(),
         hashCode(),
         searchFilter);

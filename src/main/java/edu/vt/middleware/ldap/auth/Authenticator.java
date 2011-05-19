@@ -188,8 +188,8 @@ public class Authenticator extends AbstractAuthenticator
   {
     return
       String.format(
-        "%s@%d: dnResolver=%s, authenticationHandler=%s, " +
-        "authenticationResultHandlers=%s",
+        "[%s@%d::dnResolver=%s, authenticationHandler=%s, " +
+        "authenticationResultHandlers=%s]",
         getClass().getName(),
         hashCode(),
         dnResolver,

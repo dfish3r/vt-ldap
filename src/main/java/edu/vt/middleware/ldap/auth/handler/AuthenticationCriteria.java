@@ -100,7 +100,7 @@ public class AuthenticationCriteria
   {
     return
       String.format(
-        "%s@%d: dn=%s, credential=%s",
+        "[%s@%d::dn=%s, credential=%s]",
         getClass().getName(),
         hashCode(),
         dn,

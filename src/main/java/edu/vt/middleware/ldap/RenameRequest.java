@@ -99,7 +99,7 @@ public class RenameRequest implements LdapRequest
   {
     return
       String.format(
-        "%s@%d: oldRenameDn=%s, newRenameDn=%s",
+        "[%s@%d::oldRenameDn=%s, newRenameDn=%s]",
         getClass().getName(),
         hashCode(),
         oldRenameDn,

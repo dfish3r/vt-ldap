@@ -99,7 +99,7 @@ public class AttributeModification
   {
     return
       String.format(
-        "%s@%d::attrMod=%s, attribute=%s",
+        "[%s@%d::attrMod=%s, attribute=%s]",
         getClass().getName(),
         hashCode(),
         attrMod,

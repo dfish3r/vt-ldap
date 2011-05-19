@@ -291,6 +291,6 @@ public class LdapEntry extends AbstractLdapBean
   @Override
   public String toString()
   {
-    return String.format("dn=>%s%s", dn, ldapAttributes);
+    return String.format("[dn=%s%s]", dn, ldapAttributes);
   }
 }

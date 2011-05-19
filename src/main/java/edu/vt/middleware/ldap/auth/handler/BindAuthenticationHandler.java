@@ -64,7 +64,7 @@ public class BindAuthenticationHandler extends AbstractAuthenticationHandler
   {
     return
       String.format(
-        "%s@%d: config=%s",
+        "[%s@%d::config=%s]",
         getClass().getName(),
         hashCode(),
         config);

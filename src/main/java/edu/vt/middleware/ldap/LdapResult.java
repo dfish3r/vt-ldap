@@ -240,6 +240,6 @@ public class LdapResult extends AbstractLdapBean
   @Override
   public String toString()
   {
-    return String.format("%s", entries.values());
+    return String.format("[%s]", entries.values());
   }
 }

@@ -101,7 +101,7 @@ public class CompareRequest implements LdapRequest
   {
     return
       String.format(
-        "%s@%d: compareDn=%s, attribute=%s",
+        "[%s@%d::compareDn=%s, attribute=%s]",
         getClass().getName(),
         hashCode(),
         compareDn,

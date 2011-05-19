@@ -559,12 +559,12 @@ public class LdapConnectionConfig extends AbstractConfig
   {
     return
       String.format(
-        "%s@%d::ldapProvider=%s, sslSocketFactory=%s, " +
+        "[%s@%d::ldapProvider=%s, sslSocketFactory=%s, " +
         "hostnameVerifier=%s, ldapUrl=%s, timeout=%s, bindDn=%s, " +
         "bindCredential=%s, authenticationType=%s, operationRetry=%s, " +
         "operationRetryWait=%s, operationRetryBackoff=%s, " +
         "providerProperties=%s, logCredentials=%s, ssl=%s, tls=%s, " +
-        "connectionStrategy=%s",
+        "connectionStrategy=%s]",
         getClass().getName(),
         hashCode(),
         ldapProvider,

@@ -159,10 +159,10 @@ public class PagedSearchRequest extends SearchRequest
   {
     return
     String.format(
-      "%s@%d::dn=%s, searchFilter=%s, returnAttributes=%s, searchScope=%s, " +
+      "[%s@%d::dn=%s, searchFilter=%s, returnAttributes=%s, searchScope=%s, " +
       "timeLimit=%s, countLimit=%s, batchSize=%s, derefAliases=%s, " +
       "referralBehavior=%s, typesOnly=%s, binaryAttributes=%s, " +
-      "sortBehavior=%s, searchResultHandler=%s, pagedResultsSize=%s",
+      "sortBehavior=%s, searchResultHandler=%s, pagedResultsSize=%s]",
       getClass().getName(),
       hashCode(),
       baseDn,
