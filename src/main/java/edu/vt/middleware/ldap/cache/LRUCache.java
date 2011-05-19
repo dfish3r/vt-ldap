@@ -18,6 +18,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 import edu.vt.middleware.ldap.LdapResult;
 import edu.vt.middleware.ldap.SearchRequest;
@@ -41,6 +42,18 @@ public class LRUCache<Q extends SearchRequest> implements Cache<Q>
 
   /** Map to cache search results. */
   protected Map<Q, Item> cache;
+
+  /** Executor for performing eviction. */
+  protected ScheduledExecutorService executor =
+    Executors.newSingleThreadScheduledExecutor(
+      new ThreadFactory() {
+        public Thread newThread(final Runnable r)
+        {
+          final Thread t = new Thread(r);
+          t.setDaemon(true);
+          return t;
+        }
+      });
 
 
   /**
@@ -81,8 +94,6 @@ public class LRUCache<Q extends SearchRequest> implements Cache<Q>
         }
       }
     };
-    final ScheduledExecutorService executor =
-      Executors.newSingleThreadScheduledExecutor();
     executor.scheduleAtFixedRate(expire, interval, interval, TimeUnit.SECONDS);
   }
 
@@ -132,6 +143,16 @@ public class LRUCache<Q extends SearchRequest> implements Cache<Q>
     synchronized (cache) {
       return cache.size();
     }
+  }
+
+
+  /**
+   * Frees any resources associated with this cache.
+   */
+  public void close()
+  {
+    executor.shutdown();
+    cache = null;
   }
 
 

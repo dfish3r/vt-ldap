@@ -58,6 +58,7 @@ public class LRUCacheTest
     AssertJUnit.assertEquals(5, cache.size());
     cache.clear();
     AssertJUnit.assertEquals(0, cache.size());
+    cache.close();
   }
 
 
