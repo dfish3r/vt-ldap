@@ -11,7 +11,7 @@ set LIBDIR=%VTLDAP_HOME%\lib
 
 set JAAS_OPTS=-Djava.security.auth.login.config=%VTLDAP_HOME%\properties\ldap_jaas.config
 
-set CLASSPATH=%LIBDIR%\commons-cli-1.2.jar;%LIBDIR%\commons-codec-1.4.jar;%LIBDIR%\commons-logging-1.1.1.jar;%LDAP_JAR%
+set CLASSPATH=%LIBDIR%\commons-cli-1.2.jar;%LIBDIR%\commons-codec-1.4.jar;%LDAP_JAR%
 
 call "%JAVA%" "%JAAS_OPTS%" -cp "%CLASSPATH%" edu.vt.middleware.ldap.jaas.LdapLoginModule %*
 goto end

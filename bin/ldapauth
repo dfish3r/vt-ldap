@@ -6,10 +6,7 @@ JAVA=java
 
 #TRUSTSTORE_OPTS="-Djavax.net.ssl.trustStore= -Djavax.net.ssl.trustStorePassword=changeit -Djavax.net.ssl.trustStoreType=BKS"
 
-# uncomment for debug logging
-#LOGGING_OPTS="-Dorg.apache.commons.logging.Log=org.apache.commons.logging.impl.SimpleLog -Dorg.apache.commons.logging.simplelog.log.edu.vt.middleware.ldap=debug"
-
-JAVA_OPTS="${JAVA_OPTS} ${KEYSTORE_OPTS} ${TRUSTSTORE_OPTS} ${LOGGING_OPTS}"
+JAVA_OPTS="${JAVA_OPTS} ${KEYSTORE_OPTS} ${TRUSTSTORE_OPTS}"
 
 if [ "x$VTLDAP_HOME" = "x" ]; then
   PREFIX=`dirname $0`/..
