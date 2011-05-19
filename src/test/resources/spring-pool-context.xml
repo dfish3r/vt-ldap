@@ -21,9 +21,9 @@ http://www.springframework.org/schema/util http://www.springframework.org/schema
         p:minPoolSize="5"
         p:maxPoolSize="20"
         p:validatePeriodically="true"
-        p:validateTimerPeriod="30000"
-        p:expirationTime="600000"
-        p:pruneTimerPeriod="60000"
+        p:validatePeriod="30"
+        p:expirationTime="600"
+        p:prunePeriod="60"
       />
     </constructor-arg>
     <constructor-arg index="1" ref="ldapFactory"/>
