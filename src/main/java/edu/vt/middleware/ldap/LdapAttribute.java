@@ -416,27 +416,6 @@ public class LdapAttribute extends AbstractLdapBean
 
 
   /**
-   * Returns an implementation of set for the sort behavior of this bean.
-   *
-   * @param  <T>  type contained in the set
-   *
-   * @return  set
-   */
-  private <T> Set<T> createSortBehaviorSet()
-  {
-    Set<T> s = null;
-    if (SortBehavior.UNORDERED == sortBehavior) {
-      s = new HashSet<T>();
-    } else if (SortBehavior.ORDERED == sortBehavior) {
-      s = new LinkedHashSet<T>();
-    } else if (SortBehavior.SORTED == sortBehavior) {
-      s = new TreeSet<T>();
-    }
-    return s;
-  }
-
-
-  /**
    * Simple bean for ldap attribute values.
    *
    * @author  Middleware Services
@@ -455,11 +434,18 @@ public class LdapAttribute extends AbstractLdapBean
      * Creates a new ldap attribute values.
      *
      * @param  t  type of values
+     *
+     * @throws  IllegalArgumentException if t is not a String or byte[]
      */
     public LdapAttributeValues(final Class<T> t)
     {
+      if (!(t.isAssignableFrom(String.class) ||
+          t.isAssignableFrom(byte[].class))) {
+        throw new IllegalArgumentException(
+          "Only String and byte[] values are supported");
+      }
       type = t;
-      values = createSortBehaviorSet();
+      values = createSortBehaviorSet(type);
     }
 
 
@@ -519,11 +505,10 @@ public class LdapAttribute extends AbstractLdapBean
      * @throws  IllegalArgumentException if o is null or if o is not the correct
      * type
      */
-    @SuppressWarnings("unchecked")
     public void add(final Object o)
     {
       checkValue(o);
-      values.add((T) o);
+      values.add(type.cast(o));
     }
 
 
@@ -535,11 +520,10 @@ public class LdapAttribute extends AbstractLdapBean
      * @throws  IllegalArgumentException if o is null or if o is not the correct
      * type
      */
-    @SuppressWarnings("unchecked")
     public void remove(final Object o)
     {
       checkValue(o);
-      values.remove((T) o);
+      values.remove(type.cast(o));
     }
 
 
@@ -624,7 +608,7 @@ public class LdapAttribute extends AbstractLdapBean
      */
     protected Set<String> convertValuesToString(final Set<byte[]> v)
     {
-      final Set<String> s = createSortBehaviorSet();
+      final Set<String> s = createSortBehaviorSet(String.class);
       for (byte[] value : v) {
         s.add(LdapUtil.base64Encode(value));
       }
@@ -641,9 +625,32 @@ public class LdapAttribute extends AbstractLdapBean
      */
     protected Set<byte[]> convertValuesToByteArray(final Set<String> v)
     {
-      final Set<byte[]> s = createSortBehaviorSet();
+      final Set<byte[]> s = createSortBehaviorSet(byte[].class);
       for (String value : v) {
         s.add(LdapUtil.utf8Encode(value));
+      }
+      return s;
+    }
+
+
+    /**
+     * Returns an implementation of set for the sort behavior of this bean.
+     *
+     * @param  <E>  type contained in the set
+     *
+     * @param  c  type of set to create
+     *
+     * @return  set
+     */
+    private <E> Set<E> createSortBehaviorSet(Class<E> c)
+    {
+      Set<E> s = null;
+      if (SortBehavior.UNORDERED == sortBehavior) {
+        s = new HashSet<E>();
+      } else if (SortBehavior.ORDERED == sortBehavior) {
+        s = new LinkedHashSet<E>();
+      } else if (SortBehavior.SORTED == sortBehavior) {
+        s = new TreeSet<E>();
       }
       return s;
     }
