@@ -206,7 +206,9 @@ public abstract class AbstractJndiConnectionFactory
       }
     }
 
-    env.put(TIMEOUT, Long.toString(lcc.getTimeout()));
+    if (lcc.getTimeout() > 0) {
+      env.put(TIMEOUT, Long.toString(lcc.getTimeout()));
+    }
 
     if (!lcc.getProviderProperties().isEmpty()) {
       for (Map.Entry<String, Object> entry :
