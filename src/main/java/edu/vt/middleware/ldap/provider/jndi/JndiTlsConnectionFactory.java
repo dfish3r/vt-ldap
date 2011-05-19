@@ -116,7 +116,7 @@ public class JndiTlsConnectionFactory extends AbstractJndiConnectionFactory
         url,
         authenticationType,
         dn,
-        logCredentials ? credential : "<suppressed>",
+        logCredentials || credential == null ? credential : "<suppressed>",
         environment, });
 
     final Hashtable<String, Object> env = new Hashtable<String, Object>(

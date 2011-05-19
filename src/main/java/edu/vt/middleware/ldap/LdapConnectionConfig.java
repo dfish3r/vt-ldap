@@ -296,7 +296,7 @@ public class LdapConnectionConfig extends AbstractConfig
   public void setBindCredential(final Credential credential)
   {
     checkImmutable();
-    if (getLogCredentials()) {
+    if (getLogCredentials() || credential == null) {
       logger.trace("setting bindCredential: {}", credential);
     } else {
       logger.trace("setting bindCredential: <suppressed>");
@@ -573,7 +573,8 @@ public class LdapConnectionConfig extends AbstractConfig
         ldapUrl,
         timeout,
         bindDn,
-        logCredentials ? bindCredential : "<suppressed>",
+        logCredentials || bindCredential == null ?
+          bindCredential : "<suppressed>",
         authenticationType,
         operationRetry,
         operationRetryWait,
