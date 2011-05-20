@@ -15,8 +15,8 @@ package edu.vt.middleware.ldap.handler;
 
 import java.util.HashSet;
 import java.util.Set;
+import edu.vt.middleware.ldap.Connection;
 import edu.vt.middleware.ldap.LdapAttribute;
-import edu.vt.middleware.ldap.LdapConnection;
 import edu.vt.middleware.ldap.LdapEntry;
 import edu.vt.middleware.ldap.LdapException;
 import edu.vt.middleware.ldap.LdapResult;
@@ -35,7 +35,7 @@ public class RecursiveAttributeHandler extends CopyLdapAttributeHandler
 {
 
   /** Ldap connection to use for searching. */
-  private LdapConnection ldapConnection;
+  private Connection connection;
 
   /** Attribute name to search for. */
   private String attributeName;
@@ -58,26 +58,26 @@ public class RecursiveAttributeHandler extends CopyLdapAttributeHandler
    * @param  lc  ldap connection
    * @param  name  of the attribute
    */
-  public RecursiveAttributeHandler(final LdapConnection lc, final String name)
+  public RecursiveAttributeHandler(final Connection lc, final String name)
   {
-    ldapConnection = lc;
+    connection = lc;
     attributeName = name;
   }
 
 
   /** {@inheritDoc} */
   @Override
-  public LdapConnection getResultLdapConnection()
+  public Connection getResultConnection()
   {
-    return ldapConnection;
+    return connection;
   }
 
 
   /** {@inheritDoc} */
   @Override
-  public void setResultLdapConnection(final LdapConnection lc)
+  public void setResultConnection(final Connection lc)
   {
-    ldapConnection = lc;
+    connection = lc;
   }
 
 
@@ -155,7 +155,7 @@ public class RecursiveAttributeHandler extends CopyLdapAttributeHandler
 
       LdapEntry entry = null;
       try {
-        final SearchOperation search = new SearchOperation(ldapConnection);
+        final SearchOperation search = new SearchOperation(connection);
         final LdapResult result = search.execute(
           SearchRequest.newObjectScopeSearchRequest(
             dn, new String[] {attributeName})).getResult();

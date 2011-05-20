@@ -22,12 +22,12 @@ import org.testng.annotations.Parameters;
 import org.testng.annotations.Test;
 
 /**
- * Unit test for {@link LdapConnection}.
+ * Unit test for {@link Connection}.
  *
  * @author  Middleware Services
  * @version  $Revision: 1633 $
  */
-public class LdapConnectionTest
+public class ConnectionTest
 {
   /** Entry created for ldap tests. */
   private static LdapEntry testLdapEntry;
@@ -45,7 +45,7 @@ public class LdapConnectionTest
   {
     final String ldif = TestUtil.readFileIntoString(ldifFile);
     testLdapEntry = TestUtil.convertLdifToResult(ldif).getEntry();
-    final LdapConnection conn = TestUtil.createLdapConnection();
+    final Connection conn = TestUtil.createConnection();
     conn.open();
     conn.add(testLdapEntry.getDn(), testLdapEntry.getAttributes());
     conn.close();
@@ -57,7 +57,7 @@ public class LdapConnectionTest
   public void compare()
     throws Exception
   {
-    final LdapConnection conn = TestUtil.createLdapConnection();
+    final Connection conn = TestUtil.createConnection();
     conn.open();
     AssertJUnit.assertTrue(conn.compare(
       testLdapEntry.getDn(), testLdapEntry.getAttribute("mail")));
@@ -70,7 +70,7 @@ public class LdapConnectionTest
   public void delete()
     throws Exception
   {
-    final LdapConnection conn = TestUtil.createLdapConnection();
+    final Connection conn = TestUtil.createConnection();
     conn.open();
     conn.delete(testLdapEntry.getDn());
     conn.close();
@@ -82,7 +82,7 @@ public class LdapConnectionTest
   public void modify()
     throws Exception
   {
-    final LdapConnection conn = TestUtil.createLdapConnection();
+    final Connection conn = TestUtil.createConnection();
     conn.open();
     conn.modify(
       testLdapEntry.getDn(),
@@ -99,7 +99,7 @@ public class LdapConnectionTest
   public void rename()
     throws Exception
   {
-    final LdapConnection conn = TestUtil.createLdapConnection();
+    final Connection conn = TestUtil.createConnection();
     conn.open();
     conn.rename(testLdapEntry.getDn(), "uid=1500,ou=test,dc=vt,dc=edu");
     conn.rename("uid=1500,ou=test,dc=vt,dc=edu", testLdapEntry.getDn());
@@ -112,7 +112,7 @@ public class LdapConnectionTest
   public void search()
     throws Exception
   {
-    final LdapConnection conn = TestUtil.createLdapConnection();
+    final Connection conn = TestUtil.createConnection();
     conn.open();
     final LdapResult lr = conn.search(
       "ou=test,dc=vt,dc=edu", new SearchFilter("uid=15"), null);
@@ -126,7 +126,7 @@ public class LdapConnectionTest
   public void saslExternalConnect()
     throws Exception
   {
-    final LdapConnection conn = TestUtil.createSaslExternalLdapConnection();
+    final Connection conn = TestUtil.createSaslExternalConnection();
     conn.open();
     conn.close();
   }
@@ -137,10 +137,10 @@ public class LdapConnectionTest
   public void strategyConnect()
     throws Exception
   {
-    final LdapConnection conn = new LdapConnection(
-      TestUtil.readLdapConnectionConfig(
+    final Connection conn = new Connection(
+      TestUtil.readConnectionConfig(
         TestUtil.class.getResourceAsStream("/ldap.conn.properties")));
-    final LdapConnectionConfig lcc = conn.getLdapConnectionConfig();
+    final ConnectionConfig lcc = conn.getConnectionConfig();
 
     conn.open();
     conn.close();

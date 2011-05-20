@@ -16,32 +16,32 @@ package edu.vt.middleware.ldap.props;
 import java.io.InputStream;
 import java.util.Properties;
 import java.util.Set;
-import edu.vt.middleware.ldap.LdapConnectionConfig;
+import edu.vt.middleware.ldap.ConnectionConfig;
 
 /**
- * Reads properties specific to {@link LdapConnectionConfig} and returns an
+ * Reads properties specific to {@link ConnectionConfig} and returns an
  * initialized object of that type.
  *
  * @author  Middleware Services
  * @version  $Revision$ $Date$
  */
-public final class LdapConnectionConfigPropertySource
-  extends AbstractPropertySource<LdapConnectionConfig>
+public final class ConnectionConfigPropertySource
+  extends AbstractPropertySource<ConnectionConfig>
 {
 
   /** Invoker for ldap connection config. */
   private static final AdvancedPropertyInvoker INVOKER =
-    new AdvancedPropertyInvoker(LdapConnectionConfig.class);
+    new AdvancedPropertyInvoker(ConnectionConfig.class);
 
 
   /**
    * Creates a new ldap connection config property source using the default
    * properties file.
    */
-  public LdapConnectionConfigPropertySource()
+  public ConnectionConfigPropertySource()
   {
     this(
-      LdapConnectionConfigPropertySource.class.getResourceAsStream(
+      ConnectionConfigPropertySource.class.getResourceAsStream(
         PROPERTIES_FILE));
   }
 
@@ -51,7 +51,7 @@ public final class LdapConnectionConfigPropertySource
    *
    * @param  is  to read properties from
    */
-  public LdapConnectionConfigPropertySource(final InputStream is)
+  public ConnectionConfigPropertySource(final InputStream is)
   {
     this(loadProperties(is));
   }
@@ -62,7 +62,7 @@ public final class LdapConnectionConfigPropertySource
    *
    * @param  props  to read properties from
    */
-  public LdapConnectionConfigPropertySource(final Properties props)
+  public ConnectionConfigPropertySource(final Properties props)
   {
     this(PropertyDomain.LDAP, props);
   }
@@ -74,11 +74,11 @@ public final class LdapConnectionConfigPropertySource
    * @param  domain  that properties are in
    * @param  props  to read properties from
    */
-  public LdapConnectionConfigPropertySource(
+  public ConnectionConfigPropertySource(
     final PropertyDomain domain, final Properties props)
   {
     object = initializeObject(
-      INVOKER, new LdapConnectionConfig(), domain.value(), props);
+      INVOKER, new ConnectionConfig(), domain.value(), props);
   }
 
 

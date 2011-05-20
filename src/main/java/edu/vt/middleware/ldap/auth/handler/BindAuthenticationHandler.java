@@ -13,8 +13,8 @@
 */
 package edu.vt.middleware.ldap.auth.handler;
 
-import edu.vt.middleware.ldap.LdapConnection;
-import edu.vt.middleware.ldap.LdapConnectionConfig;
+import edu.vt.middleware.ldap.Connection;
+import edu.vt.middleware.ldap.ConnectionConfig;
 import edu.vt.middleware.ldap.LdapException;
 
 /**
@@ -37,18 +37,18 @@ public class BindAuthenticationHandler extends AbstractAuthenticationHandler
    *
    * @param  lcc  ldap connection config
    */
-  public BindAuthenticationHandler(final LdapConnectionConfig lcc)
+  public BindAuthenticationHandler(final ConnectionConfig lcc)
   {
-    setLdapConnectionConfig(lcc);
+    setConnectionConfig(lcc);
   }
 
 
   /** {@inheritDoc} */
   @Override
-  public LdapConnection authenticate(final AuthenticationCriteria ac)
+  public Connection authenticate(final AuthenticationCriteria ac)
     throws LdapException
   {
-    final LdapConnection conn = new LdapConnection(config);
+    final Connection conn = new Connection(config);
     conn.open(ac.getDn(), ac.getCredential());
     return conn;
   }

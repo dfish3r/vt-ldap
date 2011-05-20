@@ -23,7 +23,7 @@ import edu.vt.middleware.ldap.auth.handler.AuthenticationHandler;
 import edu.vt.middleware.ldap.auth.handler.AuthenticationResultHandler;
 import edu.vt.middleware.ldap.auth.handler.AuthorizationHandler;
 import edu.vt.middleware.ldap.handler.LdapResultHandler;
-import edu.vt.middleware.ldap.provider.LdapProvider;
+import edu.vt.middleware.ldap.provider.Provider;
 import edu.vt.middleware.ldap.ssl.CredentialConfigParser;
 import edu.vt.middleware.ldap.ssl.SSLContextInitializer;
 
@@ -97,9 +97,9 @@ public class AdvancedPropertyInvoker extends AbstractPropertyInvoker
             newValue = instantiateType(SSLSocketFactory.class, value);
           }
         }
-      } else if (LdapProvider.class.isAssignableFrom(type)) {
+      } else if (Provider.class.isAssignableFrom(type)) {
         newValue = createTypeFromPropertyValue(
-          LdapProvider.class,
+          Provider.class,
           value);
       } else if (HostnameVerifier.class.isAssignableFrom(type)) {
         newValue = createTypeFromPropertyValue(

@@ -31,10 +31,10 @@ public class PagedSearchOperation
    *
    * @param  lc  ldap connection
    */
-  public PagedSearchOperation(final LdapConnection lc)
+  public PagedSearchOperation(final Connection lc)
   {
-    ldapConnection = lc;
-    initialize(lc.getLdapConnectionConfig());
+    connection = lc;
+    initialize(lc.getConnectionConfig());
   }
 
 
@@ -45,11 +45,11 @@ public class PagedSearchOperation
    * @param  c  cache
    */
   public PagedSearchOperation(
-    final LdapConnection lc, final Cache<PagedSearchRequest> c)
+    final Connection lc, final Cache<PagedSearchRequest> c)
   {
-    ldapConnection = lc;
+    connection = lc;
     cache = c;
-    initialize(lc.getLdapConnectionConfig());
+    initialize(lc.getConnectionConfig());
   }
 
 
@@ -59,7 +59,7 @@ public class PagedSearchOperation
     throws LdapException
   {
     final LdapResult lr =
-      ldapConnection.getProviderConnection().pagedSearch(request);
+      connection.getProviderConnection().pagedSearch(request);
     executeLdapResultHandlers(request, lr);
     return lr;
   }
@@ -68,7 +68,7 @@ public class PagedSearchOperation
   /** {@inheritDoc} */
   @Override
   protected void initializeRequest(
-    final PagedSearchRequest request, final LdapConnectionConfig config)
+    final PagedSearchRequest request, final ConnectionConfig config)
   {
     super.initializeRequest(request, config);
   }

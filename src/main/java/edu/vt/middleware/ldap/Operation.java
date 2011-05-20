@@ -22,7 +22,7 @@ package edu.vt.middleware.ldap;
  * @author  Middleware Services
  * @version  $Revision: 1330 $ $Date: 2010-05-23 18:10:53 -0400 (Sun, 23 May 2010) $
  */
-public interface LdapOperation<Q extends LdapRequest, S>
+public interface Operation<Q extends Request, S>
 {
 
 
@@ -33,5 +33,5 @@ public interface LdapOperation<Q extends LdapRequest, S>
    * @return  response for this operation
    * @throws  LdapException  if the operation fails
    */
-  LdapResponse<S> execute(Q request) throws LdapException;
+  Response<S> execute(Q request) throws LdapException;
 }

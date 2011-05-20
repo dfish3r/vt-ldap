@@ -16,7 +16,7 @@ package edu.vt.middleware.ldap.ldif;
 import java.io.StringReader;
 import java.io.StringWriter;
 import edu.vt.middleware.ldap.AbstractTest;
-import edu.vt.middleware.ldap.LdapConnection;
+import edu.vt.middleware.ldap.Connection;
 import edu.vt.middleware.ldap.LdapEntry;
 import edu.vt.middleware.ldap.LdapResult;
 import edu.vt.middleware.ldap.SearchFilter;
@@ -82,7 +82,7 @@ public class LdifTest extends AbstractTest
   public void searchAndCompareLdif(final String dn, final String filter)
     throws Exception
   {
-    final LdapConnection conn = TestUtil.createLdapConnection();
+    final Connection conn = TestUtil.createConnection();
     conn.open();
     final SearchOperation search = new SearchOperation(conn);
 

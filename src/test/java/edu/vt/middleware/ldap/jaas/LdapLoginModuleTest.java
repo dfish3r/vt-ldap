@@ -25,8 +25,8 @@ import javax.security.auth.login.LoginException;
 import edu.vt.middleware.ldap.AbstractTest;
 import edu.vt.middleware.ldap.AttributeModification;
 import edu.vt.middleware.ldap.AttributeModificationType;
+import edu.vt.middleware.ldap.Connection;
 import edu.vt.middleware.ldap.LdapAttribute;
-import edu.vt.middleware.ldap.LdapConnection;
 import edu.vt.middleware.ldap.LdapEntry;
 import edu.vt.middleware.ldap.ModifyOperation;
 import edu.vt.middleware.ldap.ModifyRequest;
@@ -124,7 +124,7 @@ public class LdapLoginModuleTest extends AbstractTest
     }
 
     // setup group relationships
-    final LdapConnection conn = TestUtil.createSetupLdapConnection();
+    final Connection conn = TestUtil.createSetupConnection();
     conn.open();
     final ModifyOperation modify = new ModifyOperation(conn);
     modify.execute(new ModifyRequest(

@@ -14,8 +14,8 @@
 package edu.vt.middleware.ldap.auth;
 
 import edu.vt.middleware.ldap.AbstractTest;
+import edu.vt.middleware.ldap.ConnectionConfig;
 import edu.vt.middleware.ldap.Credential;
-import edu.vt.middleware.ldap.LdapConnectionConfig;
 import edu.vt.middleware.ldap.LdapEntry;
 import edu.vt.middleware.ldap.LdapException;
 import edu.vt.middleware.ldap.LdapResult;
@@ -189,7 +189,7 @@ public class AuthenticatorTest extends AbstractTest
     AssertJUnit.assertEquals(
       ldapUrl,
       ((SearchDnResolver) auth.getDnResolver()).
-        getLdapConnectionConfig().getLdapUrl());
+        getConnectionConfig().getLdapUrl());
     AssertJUnit.assertEquals(
       baseDn, ((SearchDnResolver) auth.getDnResolver()).getBaseDn());
   }
@@ -783,8 +783,8 @@ public class AuthenticatorTest extends AbstractTest
     throws Exception
   {
     final Authenticator auth = createTLSAuthenticator(true);
-    final LdapConnectionConfig authLcc =
-      auth.getAuthenticationHandler().getLdapConnectionConfig();
+    final ConnectionConfig authLcc =
+      auth.getAuthenticationHandler().getConnectionConfig();
     auth.setAuthenticationHandler(new CompareAuthenticationHandler(authLcc));
 
     // test plain auth

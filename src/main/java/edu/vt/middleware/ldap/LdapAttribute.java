@@ -153,8 +153,7 @@ public class LdapAttribute extends AbstractLdapBean
 
   /**
    * Returns the values of this attribute as strings. Binary data is base64
-   * encoded. See {@link #convertValuesToString()}. The return collection cannot
-   * be modified.
+   * encoded. The return collection cannot be modified.
    *
    * @return  set of string attribute values
    */
@@ -181,9 +180,8 @@ public class LdapAttribute extends AbstractLdapBean
 
 
   /**
-   * Returns the values of this attribute as byte arrays. See
-   * {@link #convertValuesToByteArray()}. The return collection cannot be
-   * modified.
+   * Returns the values of this attribute as byte arrays. String data is UTF-8
+   * encoded. The return collection cannot be modified.
    *
    * @return  set of byte array attribute values
    */
@@ -642,7 +640,7 @@ public class LdapAttribute extends AbstractLdapBean
      *
      * @return  set
      */
-    private <E> Set<E> createSortBehaviorSet(Class<E> c)
+    private <E> Set<E> createSortBehaviorSet(final Class<E> c)
     {
       Set<E> s = null;
       if (SortBehavior.UNORDERED == sortBehavior) {

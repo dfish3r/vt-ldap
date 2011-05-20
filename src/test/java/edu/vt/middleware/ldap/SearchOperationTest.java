@@ -61,7 +61,7 @@ public class SearchOperationTest extends AbstractTest
   }
 
   /** Ldap connection instance for concurrency testing. */
-  protected LdapConnection singleConn;
+  protected Connection singleConn;
 
 
   /**
@@ -72,7 +72,7 @@ public class SearchOperationTest extends AbstractTest
   public SearchOperationTest()
     throws Exception
   {
-    singleConn = TestUtil.createLdapConnection();
+    singleConn = TestUtil.createConnection();
   }
 
 
@@ -141,7 +141,7 @@ public class SearchOperationTest extends AbstractTest
     }
 
     // setup group relationships
-    final LdapConnection conn = TestUtil.createSetupLdapConnection();
+    final Connection conn = TestUtil.createSetupConnection();
     conn.open();
     final ModifyOperation modify = new ModifyOperation(conn);
     modify.execute(new ModifyRequest(
@@ -208,11 +208,11 @@ public class SearchOperationTest extends AbstractTest
    *
    * @throws  Exception  On ldap connection failure.
    */
-  public LdapConnection createLdapConnection(final boolean createNew)
+  public Connection createLdapConnection(final boolean createNew)
     throws Exception
   {
     if (createNew) {
-      return TestUtil.createLdapConnection();
+      return TestUtil.createConnection();
     }
     return singleConn;
   }
@@ -319,7 +319,7 @@ public class SearchOperationTest extends AbstractTest
     final String ldifFile)
     throws Exception
   {
-    final LdapConnection conn = TestUtil.createLdapConnection();
+    final Connection conn = TestUtil.createConnection();
     conn.open();
     final PagedSearchOperation search = new PagedSearchOperation(conn);
     final String expected = TestUtil.readFileIntoString(ldifFile);
@@ -443,7 +443,7 @@ public class SearchOperationTest extends AbstractTest
     final String ldifFile)
     throws Exception
   {
-    final LdapConnection conn = createLdapConnection(true);
+    final Connection conn = createLdapConnection(true);
     conn.open();
     final SearchOperation search = new SearchOperation(conn);
 
@@ -486,7 +486,7 @@ public class SearchOperationTest extends AbstractTest
     final String ldifFile)
     throws Exception
   {
-    final LdapConnection conn = createLdapConnection(true);
+    final Connection conn = createLdapConnection(true);
     conn.open();
     final SearchOperation search = new SearchOperation(conn);
 
@@ -583,7 +583,7 @@ public class SearchOperationTest extends AbstractTest
     final String ldifFile)
     throws Exception
   {
-    final LdapConnection conn = createLdapConnection(true);
+    final Connection conn = createLdapConnection(true);
     conn.open();
     final SearchOperation search = new SearchOperation(conn);
     final CaseChangeResultHandler srh =
@@ -723,7 +723,7 @@ public class SearchOperationTest extends AbstractTest
     final int resultsSize)
     throws Exception
   {
-    final LdapConnection conn = createLdapConnection(true);
+    final Connection conn = createLdapConnection(true);
     conn.open();
     final SearchOperation search = new SearchOperation(conn);
     final SearchRequest request = new SearchRequest();
@@ -773,7 +773,7 @@ public class SearchOperationTest extends AbstractTest
   public void searchWithRetry(final String resultCode)
     throws Exception
   {
-    final LdapConnection conn = createLdapConnection(true);
+    final Connection conn = createLdapConnection(true);
     conn.initialize();
 
     final ResultCode retryResultCode = ResultCode.valueOf(resultCode);
@@ -914,7 +914,7 @@ public class SearchOperationTest extends AbstractTest
     final String results)
     throws Exception
   {
-    final LdapConnection conn = createLdapConnection(false);
+    final Connection conn = createLdapConnection(false);
     final SearchOperation search = new SearchOperation(conn);
     final LdapResult result = search.execute(
       SearchRequest.newObjectScopeSearchRequest(
@@ -945,7 +945,7 @@ public class SearchOperationTest extends AbstractTest
     final String results)
     throws Exception
   {
-    final LdapConnection conn = createLdapConnection(true);
+    final Connection conn = createLdapConnection(true);
     conn.open();
     final SearchOperation search = new SearchOperation(conn);
     final SearchRequest request = SearchRequest.newObjectScopeSearchRequest(
@@ -965,7 +965,7 @@ public class SearchOperationTest extends AbstractTest
   public void getSaslMechanisms()
     throws Exception
   {
-    final LdapConnection conn = createLdapConnection(true);
+    final Connection conn = createLdapConnection(true);
     conn.open();
     final SearchOperation search = new SearchOperation(conn);
     final LdapResult result = search.execute(
@@ -981,7 +981,7 @@ public class SearchOperationTest extends AbstractTest
   public void getSupportedControls()
     throws Exception
   {
-    final LdapConnection conn = createLdapConnection(true);
+    final Connection conn = createLdapConnection(true);
     conn.open();
     final SearchOperation search = new SearchOperation(conn);
     final LdapResult result = search.execute(
@@ -1034,7 +1034,7 @@ public class SearchOperationTest extends AbstractTest
 
     final String expected = TestUtil.readFileIntoString(ldifFile);
 
-    final LdapConnection conn = TestUtil.createGssApiLdapConnection();
+    final Connection conn = TestUtil.createGssApiConnection();
     conn.open();
     final SearchOperation search = new SearchOperation(conn);
     final LdapResult result = search.execute(

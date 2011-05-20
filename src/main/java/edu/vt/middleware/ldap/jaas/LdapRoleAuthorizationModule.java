@@ -26,7 +26,7 @@ import javax.security.auth.login.LoginContext;
 import javax.security.auth.login.LoginException;
 import javax.security.auth.spi.LoginModule;
 import com.sun.security.auth.callback.TextCallbackHandler;
-import edu.vt.middleware.ldap.LdapConnection;
+import edu.vt.middleware.ldap.Connection;
 import edu.vt.middleware.ldap.LdapEntry;
 import edu.vt.middleware.ldap.LdapException;
 import edu.vt.middleware.ldap.LdapResult;
@@ -56,7 +56,7 @@ public class LdapRoleAuthorizationModule extends AbstractLoginModule
   private boolean noResultsIsError;
 
   /** Ldap connection to use for searching roles against the LDAP. */
-  private LdapConnection ldapConn;
+  private Connection conn;
 
   /** Search request to use for searching roles. */
   private SearchRequest searchRequest;
@@ -96,8 +96,8 @@ public class LdapRoleAuthorizationModule extends AbstractLoginModule
         Arrays.toString(roleAttribute),
         noResultsIsError, });
 
-    ldapConn = createLdapConnection(options);
-    logger.debug("Created ldap connection: {}", ldapConn);
+    conn = createConnection(options);
+    logger.debug("Created ldap connection: {}", conn);
 
     searchRequest = createSearchRequest(options);
     searchRequest.setReturnAttributes(roleAttribute);
@@ -135,8 +135,8 @@ public class LdapRoleAuthorizationModule extends AbstractLoginModule
 
       if (roleFilter != null) {
         final Object[] filterArgs = new Object[] {loginDn, loginName, };
-        ldapConn.open();
-        final SearchOperation search = new SearchOperation(ldapConn);
+        conn.open();
+        final SearchOperation search = new SearchOperation(conn);
         searchRequest.setSearchFilter(
           new SearchFilter(roleFilter, filterArgs));
         final LdapResult result = search.execute(
@@ -162,7 +162,7 @@ public class LdapRoleAuthorizationModule extends AbstractLoginModule
       loginSuccess = false;
       throw new LoginException(e.getMessage());
     } finally {
-      ldapConn.close();
+      conn.close();
     }
     return true;
   }

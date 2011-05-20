@@ -13,7 +13,7 @@
 */
 package edu.vt.middleware.ldap.pool;
 
-import edu.vt.middleware.ldap.LdapConnection;
+import edu.vt.middleware.ldap.Connection;
 
 /**
  * <code>LdapFactory</code> provides an interface for creating, activating,
@@ -24,7 +24,7 @@ import edu.vt.middleware.ldap.LdapConnection;
  * @author  Middleware Services
  * @version  $Revision$ $Date$
  */
-public interface LdapFactory<T extends LdapConnection>
+public interface LdapFactory<T extends Connection>
 {
 
 

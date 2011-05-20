@@ -43,8 +43,8 @@ public class SpringTest
         "/spring-context.xml",
       });
     AssertJUnit.assertTrue(context.getBeanDefinitionCount() > 0);
-    final LdapConnection conn =
-      (LdapConnection) context.getBean("ldapConnection");
+    final Connection conn =
+      (Connection) context.getBean("connection");
     conn.open();
     conn.close();
 

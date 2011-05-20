@@ -16,11 +16,11 @@ package edu.vt.middleware.ldap.cli;
 import java.util.Map;
 import edu.vt.middleware.ldap.CompareOperation;
 import edu.vt.middleware.ldap.CompareRequest;
+import edu.vt.middleware.ldap.Connection;
+import edu.vt.middleware.ldap.ConnectionConfig;
 import edu.vt.middleware.ldap.LdapAttribute;
-import edu.vt.middleware.ldap.LdapConnection;
-import edu.vt.middleware.ldap.LdapConnectionConfig;
 import edu.vt.middleware.ldap.LdapUtil;
-import edu.vt.middleware.ldap.props.LdapConnectionConfigPropertySource;
+import edu.vt.middleware.ldap.props.ConnectionConfigPropertySource;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
 
@@ -65,8 +65,8 @@ public class CompareOperationCli extends AbstractCli
         true,
         "colon delimited name value pair (attr:value|attr::b64value)"));
     final Map<String, String> desc = getArgDesc(
-      LdapConnectionConfig.class);
-    for (String s : LdapConnectionConfigPropertySource.getProperties()) {
+      ConnectionConfig.class);
+    for (String s : ConnectionConfigPropertySource.getProperties()) {
       options.addOption(new Option(s, true, desc.get(s)));
     }
     super.initOptions();
@@ -90,7 +90,7 @@ public class CompareOperationCli extends AbstractCli
         la = new LdapAttribute(attr[0], attr[1]);
       }
       compare(
-        initLdapConnectionConfig(line), line.getOptionValue(OPT_DN), la);
+        initConnectionConfig(line), line.getOptionValue(OPT_DN), la);
     }
   }
 
@@ -105,10 +105,10 @@ public class CompareOperationCli extends AbstractCli
    * @throws  Exception  on any LDAP search error
    */
   protected void compare(
-    final LdapConnectionConfig lcc, final String dn, final LdapAttribute la)
+    final ConnectionConfig lcc, final String dn, final LdapAttribute la)
     throws Exception
   {
-    final LdapConnection conn = new LdapConnection(lcc);
+    final Connection conn = new Connection(lcc);
     conn.open();
 
     final CompareOperation op = new CompareOperation(conn);

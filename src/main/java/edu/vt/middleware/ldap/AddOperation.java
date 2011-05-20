@@ -19,7 +19,7 @@ package edu.vt.middleware.ldap;
  * @author  Middleware Services
  * @version  $Revision: 1330 $ $Date: 2010-05-23 18:10:53 -0400 (Sun, 23 May 2010) $
  */
-public class AddOperation extends AbstractLdapOperation<AddRequest, Void>
+public class AddOperation extends AbstractOperation<AddRequest, Void>
 {
 
 
@@ -28,25 +28,25 @@ public class AddOperation extends AbstractLdapOperation<AddRequest, Void>
    *
    * @param  lc  ldap connection
    */
-  public AddOperation(final LdapConnection lc)
+  public AddOperation(final Connection lc)
   {
-    ldapConnection = lc;
-    initialize(lc.getLdapConnectionConfig());
+    connection = lc;
+    initialize(lc.getConnectionConfig());
   }
 
 
   /** {@inheritDoc} */
   @Override
-  protected LdapResponse<Void> invoke(final AddRequest request)
+  protected Response<Void> invoke(final AddRequest request)
     throws LdapException
   {
-    ldapConnection.getProviderConnection().add(request);
-    return new LdapResponse<Void>();
+    connection.getProviderConnection().add(request);
+    return new Response<Void>();
   }
 
 
   /** {@inheritDoc} */
   @Override
   protected void initializeRequest(
-    final AddRequest request, final LdapConnectionConfig config) {}
+    final AddRequest request, final ConnectionConfig config) {}
 }

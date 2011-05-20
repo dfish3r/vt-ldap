@@ -18,7 +18,7 @@ import java.util.Map;
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLSocketFactory;
 import edu.vt.middleware.ldap.provider.ConnectionStrategy;
-import edu.vt.middleware.ldap.provider.LdapProvider;
+import edu.vt.middleware.ldap.provider.Provider;
 import edu.vt.middleware.ldap.provider.jndi.JndiProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,16 +29,16 @@ import org.slf4j.LoggerFactory;
  * @author  Middleware Services
  * @version  $Revision$ $Date$
  */
-public class LdapConnectionConfig extends AbstractConfig
+public class ConnectionConfig extends AbstractConfig
 {
   /** Ldap provider class name. */
-  public static final String LDAP_PROVIDER = "edu.vt.middleware.ldap.provider";
+  public static final String PROVIDER = "edu.vt.middleware.ldap.provider";
 
   /** Static reference to the default ldap provider. */
-  private static final LdapProvider DEFAULT_LDAP_PROVIDER;
+  private static final Provider DEFAULT_PROVIDER;
 
   /** Ldap provider implementation. */
-  private LdapProvider ldapProvider = DEFAULT_LDAP_PROVIDER;
+  private Provider provider = DEFAULT_PROVIDER;
 
   /** Default ldap socket factory used for SSL and TLS. */
   private SSLSocketFactory sslSocketFactory;
@@ -91,30 +91,30 @@ public class LdapConnectionConfig extends AbstractConfig
    * provider is returned.
    */
   static {
-    final String ldapProviderClass = System.getProperty(LDAP_PROVIDER);
-    if (ldapProviderClass != null) {
-      final Logger l = LoggerFactory.getLogger(LdapConnectionConfig.class);
+    final String providerClass = System.getProperty(PROVIDER);
+    if (providerClass != null) {
+      final Logger l = LoggerFactory.getLogger(ConnectionConfig.class);
       try {
         if (l.isInfoEnabled()) {
-          l.info("Setting ldap provider to " + ldapProviderClass);
+          l.info("Setting ldap provider to " + providerClass);
         }
-        DEFAULT_LDAP_PROVIDER =
-          (LdapProvider) Class.forName(ldapProviderClass).newInstance();
+        DEFAULT_PROVIDER =
+          (Provider) Class.forName(providerClass).newInstance();
       } catch (Exception e) {
         if (l.isErrorEnabled()) {
-          l.error("Error instantiating " + ldapProviderClass, e);
+          l.error("Error instantiating " + providerClass, e);
         }
         throw new IllegalStateException(e);
       }
     } else {
       // set the default ldap provider to JNDI
-      DEFAULT_LDAP_PROVIDER = new JndiProvider();
+      DEFAULT_PROVIDER = new JndiProvider();
     }
   }
 
 
   /** Default constructor. */
-  public LdapConnectionConfig() {}
+  public ConnectionConfig() {}
 
 
   /**
@@ -122,7 +122,7 @@ public class LdapConnectionConfig extends AbstractConfig
    *
    * @param  url  to connect to
    */
-  public LdapConnectionConfig(final String url)
+  public ConnectionConfig(final String url)
   {
     this();
     setLdapUrl(url);
@@ -134,9 +134,9 @@ public class LdapConnectionConfig extends AbstractConfig
    *
    * @return  ldap provider
    */
-  public LdapProvider getLdapProvider()
+  public Provider getProvider()
   {
-    return ldapProvider;
+    return provider;
   }
 
 
@@ -145,11 +145,11 @@ public class LdapConnectionConfig extends AbstractConfig
    *
    * @param  lp  ldap provider to set
    */
-  public void setLdapProvider(final LdapProvider lp)
+  public void setProvider(final Provider lp)
   {
     checkImmutable();
-    logger.trace("setting ldapProvider: {}", lp);
-    ldapProvider = lp;
+    logger.trace("setting provider: {}", lp);
+    provider = lp;
   }
 
 
@@ -559,7 +559,7 @@ public class LdapConnectionConfig extends AbstractConfig
   {
     return
       String.format(
-        "[%s@%d::ldapProvider=%s, sslSocketFactory=%s, " +
+        "[%s@%d::provider=%s, sslSocketFactory=%s, " +
         "hostnameVerifier=%s, ldapUrl=%s, timeout=%s, bindDn=%s, " +
         "bindCredential=%s, authenticationType=%s, operationRetry=%s, " +
         "operationRetryWait=%s, operationRetryBackoff=%s, " +
@@ -567,7 +567,7 @@ public class LdapConnectionConfig extends AbstractConfig
         "connectionStrategy=%s]",
         getClass().getName(),
         hashCode(),
-        ldapProvider,
+        provider,
         sslSocketFactory,
         hostnameVerifier,
         ldapUrl,

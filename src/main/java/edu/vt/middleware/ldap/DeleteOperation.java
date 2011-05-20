@@ -19,7 +19,7 @@ package edu.vt.middleware.ldap;
  * @author  Middleware Services
  * @version  $Revision: 1330 $ $Date: 2010-05-23 18:10:53 -0400 (Sun, 23 May 2010) $
  */
-public class DeleteOperation extends AbstractLdapOperation<DeleteRequest, Void>
+public class DeleteOperation extends AbstractOperation<DeleteRequest, Void>
 {
 
 
@@ -28,25 +28,25 @@ public class DeleteOperation extends AbstractLdapOperation<DeleteRequest, Void>
    *
    * @param  lc  ldap connection
    */
-  public DeleteOperation(final LdapConnection lc)
+  public DeleteOperation(final Connection lc)
   {
-    ldapConnection = lc;
-    initialize(lc.getLdapConnectionConfig());
+    connection = lc;
+    initialize(lc.getConnectionConfig());
   }
 
 
   /** {@inheritDoc} */
   @Override
-  protected LdapResponse<Void> invoke(final DeleteRequest request)
+  protected Response<Void> invoke(final DeleteRequest request)
     throws LdapException
   {
-    ldapConnection.getProviderConnection().delete(request);
-    return new LdapResponse<Void>();
+    connection.getProviderConnection().delete(request);
+    return new Response<Void>();
   }
 
 
   /** {@inheritDoc} */
   @Override
   protected void initializeRequest(
-    final DeleteRequest request, final LdapConnectionConfig config) {}
+    final DeleteRequest request, final ConnectionConfig config) {}
 }

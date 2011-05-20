@@ -14,22 +14,23 @@
 package edu.vt.middleware.ldap.pool;
 
 import java.util.NoSuchElementException;
-import edu.vt.middleware.ldap.LdapConnection;
+import edu.vt.middleware.ldap.Connection;
 
 /**
  * <code>SharedLdapPool</code> implements a pool of ldap objects that has a set
  * minimum and maximum size. The pool will not grow beyond the maximum size and
  * when the pool is exhausted, requests for new objects will be serviced by
- * objects that are already in use. Since {@link edu.vt.middleware.ldap.Ldap} is
- * a thread safe object this implementation leverages that by sharing ldap
- * objects among requests. This implementation should be used when you want some
- * control over the maximum number of ldap connections, but can tolerate some
- * new connections under high load. See {@link AbstractLdapPool}.
+ * objects that are already in use. Since
+ * {@link edu.vt.middleware.ldap.Connection} is a thread safe object this
+ * implementation leverages that by sharing ldap objects among requests. This
+ * implementation should be used when you want some control over the maximum
+ * number of ldap connections, but can tolerate some new connections under high
+ * load. See {@link AbstractLdapPool}.
  *
  * @author  Middleware Services
  * @version  $Revision$ $Date$
  */
-public class SharedLdapPool extends AbstractLdapPool<LdapConnection>
+public class SharedLdapPool extends AbstractLdapPool<Connection>
 {
 
 
@@ -38,7 +39,7 @@ public class SharedLdapPool extends AbstractLdapPool<LdapConnection>
    *
    * @param  lf  ldap factory
    */
-  public SharedLdapPool(final LdapFactory<LdapConnection> lf)
+  public SharedLdapPool(final LdapFactory<Connection> lf)
   {
     super(new LdapPoolConfig(), lf);
   }
@@ -51,7 +52,7 @@ public class SharedLdapPool extends AbstractLdapPool<LdapConnection>
    * @param  lf  ldap factory
    */
   public SharedLdapPool(
-    final LdapPoolConfig lpc, final LdapFactory<LdapConnection> lf)
+    final LdapPoolConfig lpc, final LdapFactory<Connection> lf)
   {
     super(lpc, lf);
   }
@@ -59,10 +60,10 @@ public class SharedLdapPool extends AbstractLdapPool<LdapConnection>
 
   /** {@inheritDoc} */
   @Override
-  public LdapConnection checkOut()
+  public Connection checkOut()
     throws LdapPoolException
   {
-    LdapConnection lc = null;
+    Connection lc = null;
     boolean create = false;
     logger.trace(
       "waiting on pool lock for check out {}", poolLock.getQueueLength());
@@ -137,21 +138,21 @@ public class SharedLdapPool extends AbstractLdapPool<LdapConnection>
    * @throws  IllegalStateException  if an object cannot be removed from the
    * available queue
    */
-  protected LdapConnection retrieveAvailable()
+  protected Connection retrieveAvailable()
   {
-    LdapConnection lc = null;
+    Connection lc = null;
     logger.trace(
       "waiting on pool lock for retrieve available {}",
       poolLock.getQueueLength());
     poolLock.lock();
     try {
       try {
-        final PooledLdapConnection<LdapConnection> pl = available.remove();
+        final PooledConnection<Connection> pl = available.remove();
         active.add(
-          new PooledLdapConnection<LdapConnection>(pl.getLdapConnection()));
+          new PooledConnection<Connection>(pl.getConnection()));
         available.add(
-          new PooledLdapConnection<LdapConnection>(pl.getLdapConnection()));
-        lc = pl.getLdapConnection();
+          new PooledConnection<Connection>(pl.getConnection()));
+        lc = pl.getConnection();
         logger.trace("retrieved available ldap connection: {}", lc);
       } catch (NoSuchElementException e) {
         logger.error("could not remove ldap object from list", e);
@@ -166,11 +167,11 @@ public class SharedLdapPool extends AbstractLdapPool<LdapConnection>
 
   /** {@inheritDoc} */
   @Override
-  public void checkIn(final LdapConnection lc)
+  public void checkIn(final Connection lc)
   {
     final boolean valid = validateAndPassivate(lc);
-    final PooledLdapConnection<LdapConnection> pl =
-      new PooledLdapConnection<LdapConnection>(lc);
+    final PooledConnection<Connection> pl =
+      new PooledConnection<Connection>(lc);
     logger.trace(
       "waiting on pool lock for check in {}", poolLock.getQueueLength());
     poolLock.lock();

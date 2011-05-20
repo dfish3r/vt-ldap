@@ -30,10 +30,10 @@ public class SearchOperation extends AbstractSearchOperation<SearchRequest>
    *
    * @param  lc  ldap connection
    */
-  public SearchOperation(final LdapConnection lc)
+  public SearchOperation(final Connection lc)
   {
-    ldapConnection = lc;
-    initialize(lc.getLdapConnectionConfig());
+    connection = lc;
+    initialize(lc.getConnectionConfig());
   }
 
 
@@ -43,11 +43,11 @@ public class SearchOperation extends AbstractSearchOperation<SearchRequest>
    * @param  lc  ldap connection
    * @param  c  cache
    */
-  public SearchOperation(final LdapConnection lc, final Cache<SearchRequest> c)
+  public SearchOperation(final Connection lc, final Cache<SearchRequest> c)
   {
-    ldapConnection = lc;
+    connection = lc;
     cache = c;
-    initialize(lc.getLdapConnectionConfig());
+    initialize(lc.getConnectionConfig());
   }
 
 
@@ -56,7 +56,7 @@ public class SearchOperation extends AbstractSearchOperation<SearchRequest>
   protected LdapResult executeSearch(final SearchRequest request)
     throws LdapException
   {
-    final LdapResult lr = ldapConnection.getProviderConnection().search(
+    final LdapResult lr = connection.getProviderConnection().search(
       request);
     executeLdapResultHandlers(request, lr);
     return lr;

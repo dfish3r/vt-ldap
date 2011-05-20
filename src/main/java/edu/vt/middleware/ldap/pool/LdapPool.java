@@ -13,7 +13,7 @@
 */
 package edu.vt.middleware.ldap.pool;
 
-import edu.vt.middleware.ldap.LdapConnection;
+import edu.vt.middleware.ldap.Connection;
 
 /**
  * <code>LdapPool</code> provides an interface for pooling ldap objects.
@@ -23,7 +23,7 @@ import edu.vt.middleware.ldap.LdapConnection;
  * @author  Middleware Services
  * @version  $Revision$ $Date$
  */
-public interface LdapPool<T extends LdapConnection>
+public interface LdapPool<T extends Connection>
 {
 
 

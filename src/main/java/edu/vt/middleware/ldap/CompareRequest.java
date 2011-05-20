@@ -19,7 +19,7 @@ package edu.vt.middleware.ldap;
  * @author  Middleware Services
  * @version  $Revision: 1330 $ $Date: 2010-05-23 18:10:53 -0400 (Sun, 23 May 2010) $
  */
-public class CompareRequest implements LdapRequest
+public class CompareRequest implements Request
 {
   /** DN to compare. */
   protected String compareDn = "";

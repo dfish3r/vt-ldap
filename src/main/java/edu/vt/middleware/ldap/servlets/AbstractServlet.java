@@ -16,8 +16,8 @@ package edu.vt.middleware.ldap.servlets;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
-import edu.vt.middleware.ldap.LdapConnection;
-import edu.vt.middleware.ldap.LdapConnectionConfig;
+import edu.vt.middleware.ldap.Connection;
+import edu.vt.middleware.ldap.ConnectionConfig;
 import edu.vt.middleware.ldap.LdapException;
 import edu.vt.middleware.ldap.LdapResult;
 import edu.vt.middleware.ldap.SearchFilter;
@@ -30,7 +30,7 @@ import edu.vt.middleware.ldap.pool.LdapPoolConfig;
 import edu.vt.middleware.ldap.pool.LdapPoolException;
 import edu.vt.middleware.ldap.pool.SharedLdapPool;
 import edu.vt.middleware.ldap.pool.SoftLimitLdapPool;
-import edu.vt.middleware.ldap.props.LdapConnectionConfigPropertySource;
+import edu.vt.middleware.ldap.props.ConnectionConfigPropertySource;
 import edu.vt.middleware.ldap.props.LdapPoolConfigPropertySource;
 import edu.vt.middleware.ldap.props.SearchRequestPropertySource;
 import org.slf4j.Logger;
@@ -80,7 +80,7 @@ public abstract class AbstractServlet extends HttpServlet
   protected final Logger logger = LoggerFactory.getLogger(getClass());
 
   /** Pool for searching. */
-  private LdapPool<LdapConnection> ldapPool;
+  private LdapPool<Connection> ldapPool;
 
   /** Search request reader for reading search properties. */
   private SearchRequestPropertySource searchRequestSource;
@@ -101,10 +101,10 @@ public abstract class AbstractServlet extends HttpServlet
     final String propertiesFile = getInitParameter(PROPERTIES_FILE);
     logger.debug("{} = {}", PROPERTIES_FILE, propertiesFile);
 
-    final LdapConnectionConfigPropertySource lccSource =
-      new LdapConnectionConfigPropertySource(
+    final ConnectionConfigPropertySource lccSource =
+      new ConnectionConfigPropertySource(
         SearchServlet.class.getResourceAsStream(propertiesFile));
-    final LdapConnectionConfig lcc = lccSource.get();
+    final ConnectionConfig lcc = lccSource.get();
 
     searchRequestSource = new SearchRequestPropertySource(
       SearchServlet.class.getResourceAsStream(propertiesFile));
@@ -148,7 +148,7 @@ public abstract class AbstractServlet extends HttpServlet
     LdapResult result = null;
     if (query != null) {
       try {
-        LdapConnection conn = null;
+        Connection conn = null;
         try {
           conn = ldapPool.checkOut();
           final SearchOperation search = new SearchOperation(conn);

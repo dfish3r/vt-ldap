@@ -19,7 +19,7 @@ package edu.vt.middleware.ldap;
  * @author  Middleware Services
  * @version  $Revision: 1330 $ $Date: 2010-05-23 18:10:53 -0400 (Sun, 23 May 2010) $
  */
-public class RenameOperation extends AbstractLdapOperation<RenameRequest, Void>
+public class RenameOperation extends AbstractOperation<RenameRequest, Void>
 {
 
 
@@ -28,25 +28,25 @@ public class RenameOperation extends AbstractLdapOperation<RenameRequest, Void>
    *
    * @param  lc  ldap connection
    */
-  public RenameOperation(final LdapConnection lc)
+  public RenameOperation(final Connection lc)
   {
-    ldapConnection = lc;
-    initialize(lc.getLdapConnectionConfig());
+    connection = lc;
+    initialize(lc.getConnectionConfig());
   }
 
 
   /** {@inheritDoc} */
   @Override
-  protected LdapResponse<Void> invoke(final RenameRequest request)
+  protected Response<Void> invoke(final RenameRequest request)
     throws LdapException
   {
-    ldapConnection.getProviderConnection().rename(request);
-    return new LdapResponse<Void>();
+    connection.getProviderConnection().rename(request);
+    return new Response<Void>();
   }
 
 
   /** {@inheritDoc} */
   @Override
   protected void initializeRequest(
-    final RenameRequest request, final LdapConnectionConfig config) {}
+    final RenameRequest request, final ConnectionConfig config) {}
 }

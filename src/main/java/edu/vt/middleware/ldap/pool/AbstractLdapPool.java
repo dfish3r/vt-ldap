@@ -21,7 +21,7 @@ import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
-import edu.vt.middleware.ldap.LdapConnection;
+import edu.vt.middleware.ldap.Connection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -41,7 +41,7 @@ import org.slf4j.LoggerFactory;
  * @author  Middleware Services
  * @version  $Revision$ $Date$
  */
-public abstract class AbstractLdapPool<T extends LdapConnection>
+public abstract class AbstractLdapPool<T extends Connection>
   implements LdapPool<T>
 {
 
@@ -61,12 +61,12 @@ public abstract class AbstractLdapPool<T extends LdapConnection>
   protected final Logger logger = LoggerFactory.getLogger(getClass());
 
   /** List of available ldap objects in the pool. */
-  protected Queue<PooledLdapConnection<T>> available =
-    new LinkedList<PooledLdapConnection<T>>();
+  protected Queue<PooledConnection<T>> available =
+    new LinkedList<PooledConnection<T>>();
 
   /** List of ldap objects in use. */
-  protected Queue<PooledLdapConnection<T>> active =
-    new LinkedList<PooledLdapConnection<T>>();
+  protected Queue<PooledConnection<T>> active =
+    new LinkedList<PooledConnection<T>>();
 
   /** Ldap pool config. */
   protected LdapPoolConfig poolConfig;
@@ -189,12 +189,12 @@ public abstract class AbstractLdapPool<T extends LdapConnection>
     poolLock.lock();
     try {
       while (available.size() > 0) {
-        final PooledLdapConnection<T> pl = available.remove();
-        ldapFactory.destroy(pl.getLdapConnection());
+        final PooledConnection<T> pl = available.remove();
+        ldapFactory.destroy(pl.getConnection());
       }
       while (active.size() > 0) {
-        final PooledLdapConnection<T> pl = active.remove();
-        ldapFactory.destroy(pl.getLdapConnection());
+        final PooledConnection<T> pl = active.remove();
+        ldapFactory.destroy(pl.getConnection());
       }
       logger.debug("pool closed");
     } finally {
@@ -216,7 +216,7 @@ public abstract class AbstractLdapPool<T extends LdapConnection>
   {
     final T t = ldapFactory.create();
     if (t != null) {
-      final PooledLdapConnection<T> pl = new PooledLdapConnection<T>(t);
+      final PooledConnection<T> pl = new PooledConnection<T>(t);
       poolLock.lock();
       try {
         available.add(pl);
@@ -239,7 +239,7 @@ public abstract class AbstractLdapPool<T extends LdapConnection>
   {
     final T t = ldapFactory.create();
     if (t != null) {
-      final PooledLdapConnection<T> pl = new PooledLdapConnection<T>(t);
+      final PooledConnection<T> pl = new PooledConnection<T>(t);
       poolLock.lock();
       try {
         active.add(pl);
@@ -263,7 +263,7 @@ public abstract class AbstractLdapPool<T extends LdapConnection>
   {
     final T t = ldapFactory.create();
     if (t != null) {
-      final PooledLdapConnection<T> pl = new PooledLdapConnection<T>(t);
+      final PooledConnection<T> pl = new PooledConnection<T>(t);
       poolLock.lock();
       try {
         available.add(pl);
@@ -286,7 +286,7 @@ public abstract class AbstractLdapPool<T extends LdapConnection>
   protected void removeAvailable(final T t)
   {
     boolean destroy = false;
-    final PooledLdapConnection<T> pl = new PooledLdapConnection<T>(t);
+    final PooledConnection<T> pl = new PooledConnection<T>(t);
     poolLock.lock();
     try {
       if (available.remove(pl)) {
@@ -313,7 +313,7 @@ public abstract class AbstractLdapPool<T extends LdapConnection>
   protected void removeActive(final T t)
   {
     boolean destroy = false;
-    final PooledLdapConnection<T> pl = new PooledLdapConnection<T>(t);
+    final PooledConnection<T> pl = new PooledConnection<T>(t);
     poolLock.lock();
     try {
       if (active.remove(pl)) {
@@ -340,7 +340,7 @@ public abstract class AbstractLdapPool<T extends LdapConnection>
   protected void removeAvailableAndActive(final T t)
   {
     boolean destroy = false;
-    final PooledLdapConnection<T> pl = new PooledLdapConnection<T>(t);
+    final PooledConnection<T> pl = new PooledConnection<T>(t);
     poolLock.lock();
     try {
       if (available.remove(pl)) {
@@ -432,14 +432,14 @@ public abstract class AbstractLdapPool<T extends LdapConnection>
       if (active.size() == 0) {
         logger.debug("pruning pool of size {}", available.size());
         while (available.size() > poolConfig.getMinPoolSize()) {
-          PooledLdapConnection<T> pl = available.peek();
+          PooledConnection<T> pl = available.peek();
           final long time = System.currentTimeMillis() - pl.getCreatedTime();
           if (time >
               TimeUnit.SECONDS.toMillis(poolConfig.getExpirationTime())) {
             pl = available.remove();
             logger.trace(
-              "removing {} in the pool for {}ms", pl.getLdapConnection(), time);
-            ldapFactory.destroy(pl.getLdapConnection());
+              "removing {} in the pool for {}ms", pl.getConnection(), time);
+            ldapFactory.destroy(pl.getConnection());
           } else {
             break;
           }
@@ -465,24 +465,24 @@ public abstract class AbstractLdapPool<T extends LdapConnection>
           logger.debug(
             "validate for pool of size {}", available.size());
 
-          final Queue<PooledLdapConnection<T>> remove =
-            new LinkedList<PooledLdapConnection<T>>();
-          for (PooledLdapConnection<T> pl : available) {
-            logger.trace("validating {}", pl.getLdapConnection());
-            if (ldapFactory.validate(pl.getLdapConnection())) {
+          final Queue<PooledConnection<T>> remove =
+            new LinkedList<PooledConnection<T>>();
+          for (PooledConnection<T> pl : available) {
+            logger.trace("validating {}", pl.getConnection());
+            if (ldapFactory.validate(pl.getConnection())) {
               logger.trace(
-                "ldap object passed validation: {}", pl.getLdapConnection());
+                "ldap object passed validation: {}", pl.getConnection());
             } else {
               logger.warn(
-                "ldap object failed validation: {}", pl.getLdapConnection());
+                "ldap object failed validation: {}", pl.getConnection());
               remove.add(pl);
             }
           }
-          for (PooledLdapConnection<T> pl : remove) {
+          for (PooledConnection<T> pl : remove) {
             logger.trace(
-              "removing {} from the pool", pl.getLdapConnection());
+              "removing {} from the pool", pl.getConnection());
             available.remove(pl);
-            ldapFactory.destroy(pl.getLdapConnection());
+            ldapFactory.destroy(pl.getConnection());
           }
         }
         initializePool();
@@ -537,14 +537,14 @@ public abstract class AbstractLdapPool<T extends LdapConnection>
    *
    * @param  <T>  type of ldap object
    */
-  static protected class PooledLdapConnection<T extends LdapConnection>
+  static protected class PooledConnection<T extends Connection>
   {
 
     /** hash code seed. */
     protected static final int HASH_CODE_SEED = 89;
 
     /** Underlying search operation object. */
-    private T ldapConn;
+    private T conn;
 
     /** Time this object was created. */
     private long createdTime;
@@ -555,9 +555,9 @@ public abstract class AbstractLdapPool<T extends LdapConnection>
      *
      * @param  t  ldap object
      */
-    public PooledLdapConnection(final T t)
+    public PooledConnection(final T t)
     {
-      ldapConn = t;
+      conn = t;
       createdTime = System.currentTimeMillis();
     }
 
@@ -567,9 +567,9 @@ public abstract class AbstractLdapPool<T extends LdapConnection>
      *
      * @return  underlying ldap connection
      */
-    public T getLdapConnection()
+    public T getConnection()
     {
-      return ldapConn;
+      return conn;
     }
 
 
@@ -612,8 +612,8 @@ public abstract class AbstractLdapPool<T extends LdapConnection>
     public int hashCode()
     {
       int hc = HASH_CODE_SEED;
-      if (ldapConn != null) {
-        hc += ldapConn.hashCode();
+      if (conn != null) {
+        hc += conn.hashCode();
       }
       return hc;
     }

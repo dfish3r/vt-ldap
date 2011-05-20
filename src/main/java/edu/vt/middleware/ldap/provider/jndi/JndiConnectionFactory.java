@@ -16,8 +16,8 @@ package edu.vt.middleware.ldap.provider.jndi;
 import java.util.Hashtable;
 import javax.naming.NamingException;
 import javax.naming.ldap.InitialLdapContext;
+import edu.vt.middleware.ldap.ConnectionConfig;
 import edu.vt.middleware.ldap.Credential;
-import edu.vt.middleware.ldap.LdapConnectionConfig;
 import edu.vt.middleware.ldap.LdapException;
 import edu.vt.middleware.ldap.ResultCode;
 import edu.vt.middleware.ldap.auth.AuthenticationException;
@@ -106,7 +106,7 @@ public class JndiConnectionFactory extends AbstractJndiConnectionFactory
    * @return  jndi connection factory
    */
   public static JndiConnectionFactory newInstance(
-    final LdapConnectionConfig lcc)
+    final ConnectionConfig lcc)
   {
     final JndiConnectionFactory cf = new JndiConnectionFactory(
       lcc.getLdapUrl());

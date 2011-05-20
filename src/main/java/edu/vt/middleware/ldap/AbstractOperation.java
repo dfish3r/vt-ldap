@@ -25,15 +25,15 @@ import org.slf4j.LoggerFactory;
  * @author  Middleware Services
  * @version  $Revision: 1330 $ $Date: 2010-05-23 18:10:53 -0400 (Sun, 23 May 2010) $
  */
-public abstract class AbstractLdapOperation<Q extends LdapRequest, S>
-  implements LdapOperation<Q, S>
+public abstract class AbstractOperation<Q extends Request, S>
+  implements Operation<Q, S>
 {
 
   /** Logger for this class. */
   protected final Logger logger = LoggerFactory.getLogger(getClass());
 
   /** Ldap connection to perform operation. */
-  protected LdapConnection ldapConnection;
+  protected Connection connection;
 
   /** Number of times to retry ldap operations. */
   protected int operationRetry;
@@ -51,7 +51,7 @@ public abstract class AbstractLdapOperation<Q extends LdapRequest, S>
    *
    * @param  lcc  ldap connection configuration to read properties from
    */
-  protected void initialize(final LdapConnectionConfig lcc)
+  protected void initialize(final ConnectionConfig lcc)
   {
     operationRetry = lcc.getOperationRetry();
     operationRetryWait = lcc.getOperationRetryWait();
@@ -138,7 +138,7 @@ public abstract class AbstractLdapOperation<Q extends LdapRequest, S>
    * @return  ldap response
    * @throws  LdapException  if the invocation fails
    */
-  protected abstract LdapResponse<S> invoke(final Q request)
+  protected abstract Response<S> invoke(final Q request)
     throws LdapException;
 
 
@@ -150,20 +150,20 @@ public abstract class AbstractLdapOperation<Q extends LdapRequest, S>
    * @param  lcc  ldap connection configuration to initialize request with
    */
   protected abstract void initializeRequest(
-    final Q request, final LdapConnectionConfig lcc);
+    final Q request, final ConnectionConfig lcc);
 
 
   /** {@inheritDoc} */
   @Override
-  public LdapResponse<S> execute(final Q request)
+  public Response<S> execute(final Q request)
     throws LdapException
   {
     logger.debug(
-      "request={}, connection={}", request, ldapConnection);
+      "request={}, connection={}", request, connection);
 
-    LdapResponse<S> response = null;
+    Response<S> response = null;
     initializeRequest(
-      request, ldapConnection.getLdapConnectionConfig());
+      request, connection.getConnectionConfig());
     for (int i = 0;
          i <= operationRetry || operationRetry == -1;
          i++) {
@@ -195,7 +195,7 @@ public abstract class AbstractLdapOperation<Q extends LdapRequest, S>
     if (count < operationRetry || operationRetry == -1) {
       logger.warn(
         "Error performing LDAP operation, retrying (attempt {})", count, e);
-      ldapConnection.close();
+      connection.close();
       if (operationRetryWait > 0) {
         long sleepTime = operationRetryWait;
         if (operationRetryBackoff > 0 && count > 0) {
@@ -207,7 +207,7 @@ public abstract class AbstractLdapOperation<Q extends LdapRequest, S>
           logger.debug("Operation retry wait interrupted", ie);
         }
       }
-      ldapConnection.open();
+      connection.open();
     } else {
       throw e;
     }

@@ -30,7 +30,8 @@ import org.slf4j.LoggerFactory;
  * @author  Middleware Services
  * @version  $Revision$
  */
-public abstract class AbstractConnectionFactory implements ConnectionFactory
+public abstract class AbstractProviderConnectionFactory
+  implements ProviderConnectionFactory
 {
 
   /** Logger for this class. */
@@ -156,13 +157,13 @@ public abstract class AbstractConnectionFactory implements ConnectionFactory
 
   /** {@inheritDoc} */
   @Override
-  public Connection create(final String dn, final Credential credential)
+  public ProviderConnection create(final String dn, final Credential credential)
     throws LdapException
   {
     LdapException lastThrown = null;
     final String[] urls = parseLdapUrl(
       ldapUrl, connectionStrategy);
-    Connection conn = null;
+    ProviderConnection conn = null;
     for (String url : urls) {
       try {
         logger.trace(
@@ -197,7 +198,7 @@ public abstract class AbstractConnectionFactory implements ConnectionFactory
    *
    * @throws  LdapException  if a connection cannot be established
    */
-  protected abstract Connection createInternal(
+  protected abstract ProviderConnection createInternal(
     final String url, final String dn, final Credential credential)
     throws LdapException;
 

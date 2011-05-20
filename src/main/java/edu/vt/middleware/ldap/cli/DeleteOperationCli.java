@@ -14,11 +14,11 @@
 package edu.vt.middleware.ldap.cli;
 
 import java.util.Map;
+import edu.vt.middleware.ldap.Connection;
+import edu.vt.middleware.ldap.ConnectionConfig;
 import edu.vt.middleware.ldap.DeleteOperation;
 import edu.vt.middleware.ldap.DeleteRequest;
-import edu.vt.middleware.ldap.LdapConnection;
-import edu.vt.middleware.ldap.LdapConnectionConfig;
-import edu.vt.middleware.ldap.props.LdapConnectionConfigPropertySource;
+import edu.vt.middleware.ldap.props.ConnectionConfigPropertySource;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
 
@@ -55,8 +55,8 @@ public class DeleteOperationCli extends AbstractCli
   {
     options.addOption(new Option(OPT_DN, true, "entry DN"));
     final Map<String, String> desc = getArgDesc(
-      LdapConnectionConfig.class);
-    for (String s : LdapConnectionConfigPropertySource.getProperties()) {
+      ConnectionConfig.class);
+    for (String s : ConnectionConfigPropertySource.getProperties()) {
       options.addOption(new Option(s, true, desc.get(s)));
     }
     super.initOptions();
@@ -72,7 +72,7 @@ public class DeleteOperationCli extends AbstractCli
       printHelp();
     } else {
       delete(
-        initLdapConnectionConfig(line), line.getOptionValues(OPT_DN));
+        initConnectionConfig(line), line.getOptionValues(OPT_DN));
     }
   }
 
@@ -85,10 +85,10 @@ public class DeleteOperationCli extends AbstractCli
    *
    * @throws  Exception  on any LDAP search error
    */
-  protected void delete(final LdapConnectionConfig lcc, final String[] entryDns)
+  protected void delete(final ConnectionConfig lcc, final String[] entryDns)
     throws Exception
   {
-    final LdapConnection conn = new LdapConnection(lcc);
+    final Connection conn = new Connection(lcc);
     conn.open();
 
     for (String dn : entryDns) {

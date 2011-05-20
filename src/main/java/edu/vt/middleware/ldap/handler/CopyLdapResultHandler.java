@@ -32,14 +32,14 @@ public class CopyLdapResultHandler implements LdapResultHandler
   protected final Logger logger = LoggerFactory.getLogger(getClass());
 
   /** Attribute handler. */
-  private LdapAttributeHandler[] ldapAttributeHandler;
+  private LdapAttributeHandler[] attributeHandler;
 
 
   /** {@inheritDoc} */
   @Override
   public LdapAttributeHandler[] getAttributeHandler()
   {
-    return ldapAttributeHandler;
+    return attributeHandler;
   }
 
 
@@ -47,7 +47,7 @@ public class CopyLdapResultHandler implements LdapResultHandler
   @Override
   public void setAttributeHandler(final LdapAttributeHandler[] ah)
   {
-    ldapAttributeHandler = ah;
+    attributeHandler = ah;
   }
 
 
@@ -90,9 +90,9 @@ public class CopyLdapResultHandler implements LdapResultHandler
   protected void processAttributes(final SearchCriteria sc, final LdapEntry le)
     throws LdapException
   {
-    if (ldapAttributeHandler != null &&
-        ldapAttributeHandler.length > 0) {
-      for (LdapAttributeHandler ah : ldapAttributeHandler) {
+    if (attributeHandler != null &&
+        attributeHandler.length > 0) {
+      for (LdapAttributeHandler ah : attributeHandler) {
         for (LdapAttribute la : le.getAttributes()) {
           ah.process(sc, la);
         }

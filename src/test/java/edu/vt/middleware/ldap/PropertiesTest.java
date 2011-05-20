@@ -23,7 +23,7 @@ import edu.vt.middleware.ldap.handler.MergeResultHandler;
 import edu.vt.middleware.ldap.handler.RecursiveResultHandler;
 import edu.vt.middleware.ldap.jaas.TestCallbackHandler;
 import edu.vt.middleware.ldap.props.AuthenticatorPropertySource;
-import edu.vt.middleware.ldap.props.LdapConnectionConfigPropertySource;
+import edu.vt.middleware.ldap.props.ConnectionConfigPropertySource;
 import edu.vt.middleware.ldap.props.SearchRequestPropertySource;
 import org.testng.AssertJUnit;
 import org.testng.annotations.BeforeClass;
@@ -55,10 +55,10 @@ public class PropertiesTest
   public void nullProperties()
     throws Exception
   {
-    final LdapConnectionConfigPropertySource lccSource =
-      new LdapConnectionConfigPropertySource(
+    final ConnectionConfigPropertySource lccSource =
+      new ConnectionConfigPropertySource(
         PropertiesTest.class.getResourceAsStream("/ldap.null.properties"));
-    final LdapConnectionConfig lcc = lccSource.get();
+    final ConnectionConfig lcc = lccSource.get();
 
     AssertJUnit.assertNull(lcc.getSslSocketFactory());
     AssertJUnit.assertNull(lcc.getHostnameVerifier());
@@ -78,10 +78,10 @@ public class PropertiesTest
   public void parserProperties()
     throws Exception
   {
-    final LdapConnectionConfigPropertySource lccSource =
-      new LdapConnectionConfigPropertySource(
+    final ConnectionConfigPropertySource lccSource =
+      new ConnectionConfigPropertySource(
         PropertiesTest.class.getResourceAsStream("/ldap.parser.properties"));
-    final LdapConnectionConfig lcc = lccSource.get();
+    final ConnectionConfig lcc = lccSource.get();
 
     AssertJUnit.assertEquals(
       "ldap://ed-dev.middleware.vt.edu:14389", lcc.getLdapUrl());
@@ -138,8 +138,8 @@ public class PropertiesTest
         PropertiesTest.class.getResourceAsStream("/ldap.parser.properties"));
     final Authenticator auth = aSource.get();
 
-    final LdapConnectionConfig authLcc =
-      ((SearchDnResolver) auth.getDnResolver()).getLdapConnectionConfig();
+    final ConnectionConfig authLcc =
+      ((SearchDnResolver) auth.getDnResolver()).getConnectionConfig();
     AssertJUnit.assertEquals(
       "ldap://ed-auth.middleware.vt.edu:14389", authLcc.getLdapUrl());
     AssertJUnit.assertEquals("uid=1,ou=test,dc=vt,dc=edu", authLcc.getBindDn());
@@ -162,12 +162,12 @@ public class PropertiesTest
       "vt-ldap-props", new TestCallbackHandler());
     lc.login();
 
-    LdapConnectionConfig lcc = null;
+    ConnectionConfig lcc = null;
     SearchRequest sr = null;
     Authenticator auth = null;
     for (Object o : lc.getSubject().getPublicCredentials()) {
-      if (o instanceof LdapConnection) {
-        lcc = ((LdapConnection) o).getLdapConnectionConfig();
+      if (o instanceof Connection) {
+        lcc = ((Connection) o).getConnectionConfig();
       } else if (o instanceof SearchRequest) {
         sr = (SearchRequest) o;
       } else if (o instanceof Authenticator) {
@@ -179,7 +179,7 @@ public class PropertiesTest
 
     AssertJUnit.assertEquals(
       edu.vt.middleware.ldap.provider.jndi.JndiProvider.class,
-      lcc.getLdapProvider().getClass());
+      lcc.getProvider().getClass());
     AssertJUnit.assertEquals(
       "ldap://ed-dev.middleware.vt.edu:14389", lcc.getLdapUrl());
     AssertJUnit.assertEquals("uid=1,ou=test,dc=vt,dc=edu", lcc.getBindDn());
@@ -225,8 +225,8 @@ public class PropertiesTest
     AssertJUnit.assertEquals(
       ResultCode.PARTIAL_RESULTS, sr.getSearchIgnoreResultCodes()[1]);
 
-    final LdapConnectionConfig authLcc =
-      ((SearchDnResolver) auth.getDnResolver()).getLdapConnectionConfig();
+    final ConnectionConfig authLcc =
+      ((SearchDnResolver) auth.getDnResolver()).getConnectionConfig();
     AssertJUnit.assertEquals(
       "ldap://ed-dev.middleware.vt.edu:14389", authLcc.getLdapUrl());
     AssertJUnit.assertEquals("uid=1,ou=test,dc=vt,dc=edu", authLcc.getBindDn());

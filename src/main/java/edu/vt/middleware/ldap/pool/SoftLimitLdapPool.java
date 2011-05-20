@@ -14,7 +14,7 @@
 package edu.vt.middleware.ldap.pool;
 
 import java.util.NoSuchElementException;
-import edu.vt.middleware.ldap.LdapConnection;
+import edu.vt.middleware.ldap.Connection;
 
 /**
  * <code>SoftLimitLdapPool</code> implements a pool of ldap objects that has a
@@ -39,7 +39,7 @@ public class SoftLimitLdapPool extends BlockingLdapPool
    *
    * @param  lf  ldap factory
    */
-  public SoftLimitLdapPool(final LdapFactory<LdapConnection> lf)
+  public SoftLimitLdapPool(final LdapFactory<Connection> lf)
   {
     super(new LdapPoolConfig(), lf);
   }
@@ -52,7 +52,7 @@ public class SoftLimitLdapPool extends BlockingLdapPool
    * @param  lf  ldap factory
    */
   public SoftLimitLdapPool(
-    final LdapPoolConfig lpc, final LdapFactory<LdapConnection> lf)
+    final LdapPoolConfig lpc, final LdapFactory<Connection> lf)
   {
     super(lpc, lf);
   }
@@ -60,10 +60,10 @@ public class SoftLimitLdapPool extends BlockingLdapPool
 
   /** {@inheritDoc} */
   @Override
-  public LdapConnection checkOut()
+  public Connection checkOut()
     throws LdapPoolException
   {
-    LdapConnection lc = null;
+    Connection lc = null;
     logger.trace(
       "waiting on pool lock for check out {}", poolLock.getQueueLength());
     poolLock.lock();

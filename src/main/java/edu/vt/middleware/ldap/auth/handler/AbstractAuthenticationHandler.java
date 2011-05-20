@@ -13,7 +13,7 @@
 */
 package edu.vt.middleware.ldap.auth.handler;
 
-import edu.vt.middleware.ldap.LdapConnectionConfig;
+import edu.vt.middleware.ldap.ConnectionConfig;
 
 /**
  * AbstractAuthenticationHandler provides a base implementation for
@@ -27,12 +27,12 @@ public abstract class AbstractAuthenticationHandler
 {
 
   /** LDAP connection configuration. */
-  protected LdapConnectionConfig config;
+  protected ConnectionConfig config;
 
 
   /** {@inheritDoc} */
   @Override
-  public LdapConnectionConfig getLdapConnectionConfig()
+  public ConnectionConfig getConnectionConfig()
   {
     return config;
   }
@@ -40,7 +40,7 @@ public abstract class AbstractAuthenticationHandler
 
   /** {@inheritDoc} */
   @Override
-  public void setLdapConnectionConfig(final LdapConnectionConfig lcc)
+  public void setConnectionConfig(final ConnectionConfig lcc)
   {
     config = lcc;
   }

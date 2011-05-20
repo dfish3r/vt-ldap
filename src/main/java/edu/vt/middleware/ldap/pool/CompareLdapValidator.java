@@ -13,7 +13,7 @@
 */
 package edu.vt.middleware.ldap.pool;
 
-import edu.vt.middleware.ldap.LdapConnection;
+import edu.vt.middleware.ldap.Connection;
 import edu.vt.middleware.ldap.LdapException;
 import edu.vt.middleware.ldap.LdapResult;
 import edu.vt.middleware.ldap.SearchFilter;
@@ -29,7 +29,7 @@ import org.slf4j.LoggerFactory;
  * @author  Middleware Services
  * @version  $Revision$ $Date$
  */
-public class CompareLdapValidator implements LdapValidator<LdapConnection>
+public class CompareLdapValidator implements LdapValidator<Connection>
 {
 
   /** Logger for this class. */
@@ -106,7 +106,7 @@ public class CompareLdapValidator implements LdapValidator<LdapConnection>
 
   /** {@inheritDoc} */
   @Override
-  public boolean validate(final LdapConnection lc)
+  public boolean validate(final Connection lc)
   {
     boolean success = false;
     if (lc != null) {

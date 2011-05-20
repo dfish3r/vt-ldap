@@ -68,7 +68,7 @@ public class RenameOperationTest extends AbstractTest
   public void renameLdapEntry(final String oldDn, final String newDn)
     throws Exception
   {
-    final LdapConnection conn = TestUtil.createLdapConnection();
+    final Connection conn = TestUtil.createConnection();
     conn.open();
     final SearchOperation search = new SearchOperation(conn);
     AssertJUnit.assertTrue(

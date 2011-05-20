@@ -13,7 +13,7 @@
 */
 package edu.vt.middleware.ldap.pool;
 
-import edu.vt.middleware.ldap.LdapConnection;
+import edu.vt.middleware.ldap.Connection;
 
 /**
  * <code>CloseLdapPassivator</code> passivates an ldap object by attempting to
@@ -22,13 +22,13 @@ import edu.vt.middleware.ldap.LdapConnection;
  * @author  Middleware Services
  * @version  $Revision$ $Date$
  */
-public class CloseLdapPassivator implements LdapPassivator<LdapConnection>
+public class CloseLdapPassivator implements LdapPassivator<Connection>
 {
 
 
   /** {@inheritDoc} */
   @Override
-  public boolean passivate(final LdapConnection lc)
+  public boolean passivate(final Connection lc)
   {
     boolean success = false;
     if (lc != null) {

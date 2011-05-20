@@ -14,8 +14,8 @@
 package edu.vt.middleware.ldap;
 
 import java.util.Collection;
-import edu.vt.middleware.ldap.provider.Connection;
-import edu.vt.middleware.ldap.provider.ConnectionFactory;
+import edu.vt.middleware.ldap.provider.ProviderConnection;
+import edu.vt.middleware.ldap.provider.ProviderConnectionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,23 +25,23 @@ import org.slf4j.LoggerFactory;
  * @author  Middleware Services
  * @version  $Revision: 1330 $ $Date: 2010-05-23 18:10:53 -0400 (Sun, 23 May 2010) $
  */
-public class LdapConnection
+public class Connection
 {
   /** Logger for this class. */
   protected final Logger logger = LoggerFactory.getLogger(getClass());
 
   /** LDAP connection configuration. */
-  protected LdapConnectionConfig config;
+  protected ConnectionConfig config;
 
   /** LDAP connection factory. */
-  protected ConnectionFactory providerConnectionFactory;
+  protected ProviderConnectionFactory providerConnectionFactory;
 
   /** LDAP connection. */
-  protected Connection providerConnection;
+  protected ProviderConnection providerConnection;
 
 
   /** Default constructor. */
-  public LdapConnection() {}
+  public Connection() {}
 
 
   /**
@@ -49,9 +49,9 @@ public class LdapConnection
    *
    * @param  ldapUrl  to connect to
    */
-  public LdapConnection(final String ldapUrl)
+  public Connection(final String ldapUrl)
   {
-    this(new LdapConnectionConfig(ldapUrl));
+    this(new ConnectionConfig(ldapUrl));
   }
 
 
@@ -60,9 +60,9 @@ public class LdapConnection
    *
    * @param  lcc  ldap connection configuration
    */
-  public LdapConnection(final LdapConnectionConfig lcc)
+  public Connection(final ConnectionConfig lcc)
   {
-    setLdapConnectionConfig(lcc);
+    setConnectionConfig(lcc);
   }
 
 
@@ -71,7 +71,7 @@ public class LdapConnection
    *
    * @return  ldap connection configuration
    */
-  public LdapConnectionConfig getLdapConnectionConfig()
+  public ConnectionConfig getConnectionConfig()
   {
     return config;
   }
@@ -82,7 +82,7 @@ public class LdapConnection
    *
    * @param  lcc  ldap connection configuration
    */
-  public void setLdapConnectionConfig(final LdapConnectionConfig lcc)
+  public void setConnectionConfig(final ConnectionConfig lcc)
   {
     if (providerConnectionFactory != null) {
       throw new IllegalStateException(
@@ -101,7 +101,7 @@ public class LdapConnection
   {
     if (providerConnectionFactory == null) {
       providerConnectionFactory =
-        config.getLdapProvider().getConnectionFactory(config);
+        config.getProvider().getConnectionFactory(config);
     }
   }
 
@@ -109,8 +109,8 @@ public class LdapConnection
   /**
    * This will establish a connection if one does not already exist by binding
    * to the LDAP using parameters given by
-   * {@link LdapConnectionConfig#getBindDn()} and
-   * {@link LdapConnectionConfig#getBindCredential()}. If these parameters
+   * {@link ConnectionConfig#getBindDn()} and
+   * {@link ConnectionConfig#getBindCredential()}. If these parameters
    * have not been set then an anonymous bind will be attempted. This connection
    * should be closed using {@link #close()}.
    *
@@ -167,7 +167,7 @@ public class LdapConnection
    *
    * @return  provider connection
    */
-  public Connection getProviderConnection()
+  public ProviderConnection getProviderConnection()
   {
     if (providerConnection == null) {
       throw new IllegalStateException("Connection is not open");
@@ -182,7 +182,7 @@ public class LdapConnection
    *
    * @return  provider connection
    */
-  public ConnectionFactory getProviderConnectionFactory()
+  public ProviderConnectionFactory getProviderConnectionFactory()
   {
     if (providerConnectionFactory == null) {
       throw new IllegalStateException("Connection is not initialized");

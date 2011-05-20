@@ -69,7 +69,7 @@ public class ModifyOperationTest extends AbstractTest
     throws Exception
   {
     final LdapEntry expected = TestUtil.convertStringToEntry(dn, attrs);
-    final LdapConnection conn = TestUtil.createLdapConnection();
+    final Connection conn = TestUtil.createConnection();
     conn.open();
     final ModifyOperation modify = new ModifyOperation(conn);
     modify.execute(
@@ -100,7 +100,7 @@ public class ModifyOperationTest extends AbstractTest
     throws Exception
   {
     final LdapEntry expected = TestUtil.convertStringToEntry(dn, attrs);
-    final LdapConnection conn = TestUtil.createLdapConnection();
+    final Connection conn = TestUtil.createConnection();
     conn.open();
     final ModifyOperation modify = new ModifyOperation(conn);
     final AttributeModification[] mods =
@@ -136,7 +136,7 @@ public class ModifyOperationTest extends AbstractTest
     throws Exception
   {
     final LdapEntry expected = TestUtil.convertStringToEntry(dn, attrs);
-    final LdapConnection conn = TestUtil.createLdapConnection();
+    final Connection conn = TestUtil.createConnection();
     conn.open();
     final ModifyOperation modify = new ModifyOperation(conn);
     modify.execute(new ModifyRequest(
@@ -168,7 +168,7 @@ public class ModifyOperationTest extends AbstractTest
     throws Exception
   {
     final LdapEntry expected = TestUtil.convertStringToEntry(dn, attrs);
-    final LdapConnection conn = TestUtil.createLdapConnection();
+    final Connection conn = TestUtil.createConnection();
     conn.open();
     final ModifyOperation modify = new ModifyOperation(conn);
     final AttributeModification[] mods =
@@ -209,7 +209,7 @@ public class ModifyOperationTest extends AbstractTest
     remove.getAttribute().removeStringValue("Unit Test User");
     expected.getAttribute().removeStringValue("Best Test User");
 
-    final LdapConnection conn = TestUtil.createLdapConnection();
+    final Connection conn = TestUtil.createConnection();
     conn.open();
     final ModifyOperation modify = new ModifyOperation(conn);
     modify.execute(new ModifyRequest(
@@ -248,7 +248,7 @@ public class ModifyOperationTest extends AbstractTest
     remove.getAttributes().remove(remove.getAttribute(attrsName[0]));
     expected.getAttributes().remove(expected.getAttribute(attrsName[1]));
 
-    final LdapConnection conn = TestUtil.createLdapConnection();
+    final Connection conn = TestUtil.createConnection();
     conn.open();
     final ModifyOperation modify = new ModifyOperation(conn);
     final AttributeModification[] mods =

@@ -15,7 +15,7 @@ package edu.vt.middleware.ldap.auth;
 
 import java.util.Arrays;
 import edu.vt.middleware.ldap.Credential;
-import edu.vt.middleware.ldap.LdapRequest;
+import edu.vt.middleware.ldap.Request;
 import edu.vt.middleware.ldap.auth.handler.AuthorizationHandler;
 
 /**
@@ -24,7 +24,7 @@ import edu.vt.middleware.ldap.auth.handler.AuthorizationHandler;
  * @author  Middleware Services
  * @version  $Revision: 1330 $ $Date: 2010-05-23 18:10:53 -0400 (Sun, 23 May 2010) $
  */
-public class AuthenticationRequest implements LdapRequest
+public class AuthenticationRequest implements Request
 {
   /** User identifier. */
   protected String user;

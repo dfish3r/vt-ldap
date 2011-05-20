@@ -29,7 +29,7 @@ import org.testng.annotations.Test;
  * @author  Middleware Services
  * @version  $Revision$
  */
-public class LdapOperationCliTest extends AbstractTest
+public class OperationCliTest extends AbstractTest
 {
 
 

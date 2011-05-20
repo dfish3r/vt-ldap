@@ -17,7 +17,7 @@ import java.util.Map;
 import javax.security.auth.Subject;
 import javax.security.auth.callback.CallbackHandler;
 import javax.security.auth.login.LoginException;
-import edu.vt.middleware.ldap.LdapConnection;
+import edu.vt.middleware.ldap.Connection;
 import edu.vt.middleware.ldap.SearchRequest;
 import edu.vt.middleware.ldap.auth.Authenticator;
 
@@ -31,7 +31,7 @@ public class PropsLoginModule extends AbstractLoginModule
 {
 
   /** Ldap connection to load propertie for. */
-  private LdapConnection conn;
+  private Connection conn;
 
   /** Search request to load properties for. */
   private SearchRequest sr;
@@ -49,7 +49,7 @@ public class PropsLoginModule extends AbstractLoginModule
     final Map<String, ?> options)
   {
     super.initialize(subject, callbackHandler, sharedState, options);
-    conn = createLdapConnection(options);
+    conn = createConnection(options);
     sr = createSearchRequest(options);
     auth = createAuthenticator(options);
   }

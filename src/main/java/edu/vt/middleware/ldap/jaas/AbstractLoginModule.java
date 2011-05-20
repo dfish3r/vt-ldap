@@ -31,15 +31,15 @@ import javax.security.auth.callback.PasswordCallback;
 import javax.security.auth.callback.UnsupportedCallbackException;
 import javax.security.auth.login.LoginException;
 import javax.security.auth.spi.LoginModule;
+import edu.vt.middleware.ldap.Connection;
 import edu.vt.middleware.ldap.LdapAttribute;
-import edu.vt.middleware.ldap.LdapConnection;
 import edu.vt.middleware.ldap.LdapEntry;
 import edu.vt.middleware.ldap.SearchRequest;
 import edu.vt.middleware.ldap.auth.AuthenticationRequest;
 import edu.vt.middleware.ldap.auth.Authenticator;
 import edu.vt.middleware.ldap.props.AuthenticationRequestPropertySource;
 import edu.vt.middleware.ldap.props.AuthenticatorPropertySource;
-import edu.vt.middleware.ldap.props.LdapConnectionConfigPropertySource;
+import edu.vt.middleware.ldap.props.ConnectionConfigPropertySource;
 import edu.vt.middleware.ldap.props.PropertySource.PropertyDomain;
 import edu.vt.middleware.ldap.props.SearchRequestPropertySource;
 import org.slf4j.Logger;
@@ -330,13 +330,13 @@ public abstract class AbstractLoginModule implements LoginModule
    *
    * @return  ldap connection
    */
-  protected static LdapConnection createLdapConnection(
+  protected static Connection createConnection(
     final Map<String, ?> options)
   {
-    final LdapConnectionConfigPropertySource source =
-      new LdapConnectionConfigPropertySource(
+    final ConnectionConfigPropertySource source =
+      new ConnectionConfigPropertySource(
         PropertyDomain.AUTH, createProperties(options));
-    return new LdapConnection(source.get());
+    return new Connection(source.get());
   }
 
 

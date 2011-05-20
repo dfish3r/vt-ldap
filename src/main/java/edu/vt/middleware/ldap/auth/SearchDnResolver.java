@@ -18,8 +18,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
-import edu.vt.middleware.ldap.LdapConnection;
-import edu.vt.middleware.ldap.LdapConnectionConfig;
+import edu.vt.middleware.ldap.Connection;
+import edu.vt.middleware.ldap.ConnectionConfig;
 import edu.vt.middleware.ldap.LdapEntry;
 import edu.vt.middleware.ldap.LdapException;
 import edu.vt.middleware.ldap.LdapResult;
@@ -46,7 +46,7 @@ public class SearchDnResolver implements DnResolver, Serializable
   protected final Logger logger = LoggerFactory.getLogger(getClass());
 
   /** Ldap connection config. */
-  protected LdapConnectionConfig config;
+  protected ConnectionConfig config;
 
   /** DN to search. */
   protected String baseDn = "";
@@ -73,9 +73,9 @@ public class SearchDnResolver implements DnResolver, Serializable
    *
    * @param  lcc  ldap connection config
    */
-  public SearchDnResolver(final LdapConnectionConfig lcc)
+  public SearchDnResolver(final ConnectionConfig lcc)
   {
-    setLdapConnectionConfig(lcc);
+    setConnectionConfig(lcc);
   }
 
 
@@ -84,7 +84,7 @@ public class SearchDnResolver implements DnResolver, Serializable
    *
    * @return  ldap connection config
    */
-  public LdapConnectionConfig getLdapConnectionConfig()
+  public ConnectionConfig getConnectionConfig()
   {
     return config;
   }
@@ -95,7 +95,7 @@ public class SearchDnResolver implements DnResolver, Serializable
    *
    * @param  lcc  ldap connection config
    */
-  public void setLdapConnectionConfig(final LdapConnectionConfig lcc)
+  public void setConnectionConfig(final ConnectionConfig lcc)
   {
     config = lcc;
   }
@@ -184,7 +184,7 @@ public class SearchDnResolver implements DnResolver, Serializable
 
   /**
    * Sets whether DN resolution should fail if multiple DNs are found
-   * If false an exception will be thrown if {@link#resolve(String)}
+   * If false an exception will be thrown if {@link #resolve(String)}
    * finds more than one DN matching it's filter. Otherwise the first DN found
    * is returned.
    *
@@ -224,7 +224,7 @@ public class SearchDnResolver implements DnResolver, Serializable
 
   /**
    * Attempts to find the DN for the supplied user. {@link
-   * g#getUserFilter()} is used to look up the DN. The user is
+   * #getUserFilter()} is used to look up the DN. The user is
    * provided as the {0} variable filter argument. If more than one entry
    * matches the search, the result is controlled by
    * {@link #setAllowMultipleDns(boolean)}.
@@ -336,7 +336,7 @@ public class SearchDnResolver implements DnResolver, Serializable
     throws LdapException
   {
     final SearchRequest request = createSearchRequest(filter);
-    final LdapConnection conn = new LdapConnection(config);
+    final Connection conn = new Connection(config);
     try {
       conn.open();
       final SearchOperation op = new SearchOperation(conn);

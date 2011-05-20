@@ -13,8 +13,8 @@
 */
 package edu.vt.middleware.ldap.auth.handler;
 
-import edu.vt.middleware.ldap.LdapConnection;
-import edu.vt.middleware.ldap.LdapConnectionConfig;
+import edu.vt.middleware.ldap.Connection;
+import edu.vt.middleware.ldap.ConnectionConfig;
 import edu.vt.middleware.ldap.LdapException;
 
 /**
@@ -40,7 +40,7 @@ public interface AuthenticationHandler
    * @throws  AuthenticationException  if authentication fails
    * @throws  LdapException  if ldap operation fails
    */
-  LdapConnection authenticate(AuthenticationCriteria ac)
+  Connection authenticate(AuthenticationCriteria ac)
     throws LdapException;
 
 
@@ -49,7 +49,7 @@ public interface AuthenticationHandler
    *
    * @return  ldap connection configuration
    */
-  LdapConnectionConfig getLdapConnectionConfig();
+  ConnectionConfig getConnectionConfig();
 
 
   /**
@@ -57,5 +57,5 @@ public interface AuthenticationHandler
    *
    * @param  config  ldap connection config
    */
-  void setLdapConnectionConfig(final LdapConnectionConfig config);
+  void setConnectionConfig(final ConnectionConfig config);
 }

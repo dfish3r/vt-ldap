@@ -13,7 +13,7 @@
 */
 package edu.vt.middleware.ldap.pool;
 
-import edu.vt.middleware.ldap.LdapConnection;
+import edu.vt.middleware.ldap.Connection;
 import edu.vt.middleware.ldap.LdapException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,7 +25,7 @@ import org.slf4j.LoggerFactory;
  * @author  Middleware Services
  * @version  $Revision$ $Date$
  */
-public class ConnectLdapActivator implements LdapActivator<LdapConnection>
+public class ConnectLdapActivator implements LdapActivator<Connection>
 {
 
   /** Logger for this class. */
@@ -34,7 +34,7 @@ public class ConnectLdapActivator implements LdapActivator<LdapConnection>
 
   /** {@inheritDoc} */
   @Override
-  public boolean activate(final LdapConnection lc)
+  public boolean activate(final Connection lc)
   {
     boolean success = false;
     if (lc != null) {

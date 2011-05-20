@@ -15,7 +15,7 @@ package edu.vt.middleware.ldap.pool;
 
 import java.util.NoSuchElementException;
 import java.util.concurrent.TimeUnit;
-import edu.vt.middleware.ldap.LdapConnection;
+import edu.vt.middleware.ldap.Connection;
 
 /**
  * <code>BlockingLdapPool</code> implements a pool of ldap objects that has a
@@ -31,7 +31,7 @@ import edu.vt.middleware.ldap.LdapConnection;
  * @author  Middleware Services
  * @version  $Revision$ $Date$
  */
-public class BlockingLdapPool extends AbstractLdapPool<LdapConnection>
+public class BlockingLdapPool extends AbstractLdapPool<Connection>
 {
 
   /** Time in milliseconds to wait for an available ldap object. */
@@ -43,7 +43,7 @@ public class BlockingLdapPool extends AbstractLdapPool<LdapConnection>
    *
    * @param  lf  ldap factory
    */
-  public BlockingLdapPool(final LdapFactory<LdapConnection> lf)
+  public BlockingLdapPool(final LdapFactory<Connection> lf)
   {
     super(new LdapPoolConfig(), lf);
   }
@@ -56,7 +56,7 @@ public class BlockingLdapPool extends AbstractLdapPool<LdapConnection>
    * @param  lf  ldap factory
    */
   public BlockingLdapPool(
-    final LdapPoolConfig lpc, final LdapFactory<LdapConnection> lf)
+    final LdapPoolConfig lpc, final LdapFactory<Connection> lf)
   {
     super(lpc, lf);
   }
@@ -89,10 +89,10 @@ public class BlockingLdapPool extends AbstractLdapPool<LdapConnection>
 
   /** {@inheritDoc} */
   @Override
-  public LdapConnection checkOut()
+  public Connection checkOut()
     throws LdapPoolException
   {
-    LdapConnection lc = null;
+    Connection lc = null;
     boolean create = false;
     logger.trace(
       "waiting on pool lock for check out {}", poolLock.getQueueLength());
@@ -171,18 +171,18 @@ public class BlockingLdapPool extends AbstractLdapPool<LdapConnection>
    *
    * @throws  NoSuchElementException  if the available queue is empty
    */
-  protected LdapConnection retrieveAvailable()
+  protected Connection retrieveAvailable()
   {
-    LdapConnection lc = null;
+    Connection lc = null;
     logger.trace(
       "waiting on pool lock for retrieve available {}",
       poolLock.getQueueLength());
     poolLock.lock();
     try {
-      final PooledLdapConnection<LdapConnection> pl = available.remove();
+      final PooledConnection<Connection> pl = available.remove();
       active.add(
-        new PooledLdapConnection<LdapConnection>(pl.getLdapConnection()));
-      lc = pl.getLdapConnection();
+        new PooledConnection<Connection>(pl.getConnection()));
+      lc = pl.getConnection();
       logger.trace("retrieved available ldap connection: {}", lc);
     } finally {
       poolLock.unlock();
@@ -201,10 +201,10 @@ public class BlockingLdapPool extends AbstractLdapPool<LdapConnection>
    * time and it occurs
    * @throws  PoolInterruptedException  if the current thread is interrupted
    */
-  protected LdapConnection blockAvailable()
+  protected Connection blockAvailable()
     throws LdapPoolException
   {
-    LdapConnection lc = null;
+    Connection lc = null;
     logger.trace(
       "waiting on pool lock for block available {}",
       poolLock.getQueueLength());
@@ -244,11 +244,11 @@ public class BlockingLdapPool extends AbstractLdapPool<LdapConnection>
 
   /** {@inheritDoc} */
   @Override
-  public void checkIn(final LdapConnection lc)
+  public void checkIn(final Connection lc)
   {
     final boolean valid = validateAndPassivate(lc);
-    final PooledLdapConnection<LdapConnection> pl =
-      new PooledLdapConnection<LdapConnection>(lc);
+    final PooledConnection<Connection> pl =
+      new PooledConnection<Connection>(lc);
     logger.trace(
       "waiting on pool lock for check in {}", poolLock.getQueueLength());
     poolLock.lock();

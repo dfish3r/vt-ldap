@@ -40,7 +40,7 @@ public class RetrySearchOperation extends SearchOperation
    *
    * @param  lc  ldap connection
    */
-  public RetrySearchOperation(final LdapConnection lc)
+  public RetrySearchOperation(final Connection lc)
   {
     super(lc);
   }

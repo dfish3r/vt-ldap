@@ -16,14 +16,14 @@ package edu.vt.middleware.ldap.cli;
 import java.io.BufferedWriter;
 import java.io.OutputStreamWriter;
 import java.util.Map;
-import edu.vt.middleware.ldap.LdapConnection;
-import edu.vt.middleware.ldap.LdapConnectionConfig;
+import edu.vt.middleware.ldap.Connection;
+import edu.vt.middleware.ldap.ConnectionConfig;
 import edu.vt.middleware.ldap.LdapResult;
 import edu.vt.middleware.ldap.SearchOperation;
 import edu.vt.middleware.ldap.SearchRequest;
 import edu.vt.middleware.ldap.dsml.Dsmlv1Writer;
 import edu.vt.middleware.ldap.ldif.LdifWriter;
-import edu.vt.middleware.ldap.props.LdapConnectionConfigPropertySource;
+import edu.vt.middleware.ldap.props.ConnectionConfigPropertySource;
 import edu.vt.middleware.ldap.props.PropertySource.PropertyDomain;
 import edu.vt.middleware.ldap.props.SearchRequestPropertySource;
 import org.apache.commons.cli.CommandLine;
@@ -63,8 +63,8 @@ public class SearchOperationCli extends AbstractCli
     options.addOption(
       new Option(OPT_DSMLV1, false, "output results in DSML v1"));
     final Map<String, String> desc = getArgDesc(
-      LdapConnectionConfig.class, SearchRequest.class);
-    for (String s : LdapConnectionConfigPropertySource.getProperties()) {
+      ConnectionConfig.class, SearchRequest.class);
+    for (String s : ConnectionConfigPropertySource.getProperties()) {
       options.addOption(new Option(s, true, desc.get(s)));
     }
     for (String s : SearchRequestPropertySource.getProperties()) {
@@ -104,7 +104,7 @@ public class SearchOperationCli extends AbstractCli
       printHelp();
     } else {
       search(
-        initLdapConnectionConfig(line),
+        initConnectionConfig(line),
         initSearchRequest(line));
     }
   }
@@ -118,10 +118,10 @@ public class SearchOperationCli extends AbstractCli
    *
    * @throws  Exception  on any LDAP search error
    */
-  protected void search(final LdapConnectionConfig lcc, final SearchRequest sr)
+  protected void search(final ConnectionConfig lcc, final SearchRequest sr)
     throws Exception
   {
-    final LdapConnection conn = new LdapConnection(lcc);
+    final Connection conn = new Connection(lcc);
     conn.open();
 
     final SearchOperation op = new SearchOperation(conn);

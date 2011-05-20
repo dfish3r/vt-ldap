@@ -22,8 +22,8 @@ import javax.naming.ldap.StartTlsRequest;
 import javax.naming.ldap.StartTlsResponse;
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLSocketFactory;
+import edu.vt.middleware.ldap.ConnectionConfig;
 import edu.vt.middleware.ldap.Credential;
-import edu.vt.middleware.ldap.LdapConnectionConfig;
 import edu.vt.middleware.ldap.LdapException;
 import edu.vt.middleware.ldap.ResultCode;
 import edu.vt.middleware.ldap.auth.AuthenticationException;
@@ -216,7 +216,7 @@ public class JndiTlsConnectionFactory extends AbstractJndiConnectionFactory
    * @return  jndi tls connection factory
    */
   public static JndiTlsConnectionFactory newInstance(
-    final LdapConnectionConfig lcc)
+    final ConnectionConfig lcc)
   {
     final JndiTlsConnectionFactory cf = new JndiTlsConnectionFactory(
       lcc.getLdapUrl());

@@ -29,7 +29,7 @@ import edu.vt.middleware.ldap.handler.SearchCriteria;
  * @version  $Revision: 1330 $ $Date: 2010-05-23 18:10:53 -0400 (Sun, 23 May 2010) $
  */
 public abstract class AbstractSearchOperation<Q extends SearchRequest>
-  extends AbstractLdapOperation<Q, LdapResult>
+  extends AbstractOperation<Q, LdapResult>
 {
 
   /** Cache to use when performing searches. */
@@ -63,10 +63,10 @@ public abstract class AbstractSearchOperation<Q extends SearchRequest>
   /** {@inheritDoc} */
   @Override
   protected void initializeRequest(
-    final Q request, final LdapConnectionConfig lc)
+    final Q request, final ConnectionConfig lc)
   {
     request.setLdapResultHandlers(
-      initializeLdapResultHandlers(request, ldapConnection));
+      initializeLdapResultHandlers(request, connection));
   }
 
 
@@ -79,21 +79,20 @@ public abstract class AbstractSearchOperation<Q extends SearchRequest>
    * @return  initialized result handlers
    */
   protected LdapResultHandler[] initializeLdapResultHandlers(
-    final Q request, final LdapConnection conn)
+    final Q request, final Connection conn)
   {
     final LdapResultHandler[] handler = request.getLdapResultHandlers();
     if (handler != null && handler.length > 0) {
       for (LdapResultHandler h : handler) {
         if (ExtendedLdapResultHandler.class.isInstance(h)) {
-          ((ExtendedLdapResultHandler) h).setResultLdapConnection(conn);
+          ((ExtendedLdapResultHandler) h).setResultConnection(conn);
         }
 
         final LdapAttributeHandler[] attrHandler = h.getAttributeHandler();
         if (attrHandler != null && attrHandler.length > 0) {
           for (LdapAttributeHandler ah : attrHandler) {
             if (ExtendedLdapAttributeHandler.class.isInstance(ah)) {
-              ((ExtendedLdapAttributeHandler) ah).setResultLdapConnection(
-                conn);
+              ((ExtendedLdapAttributeHandler) ah).setResultConnection(conn);
             }
           }
         }
@@ -116,7 +115,7 @@ public abstract class AbstractSearchOperation<Q extends SearchRequest>
 
   /** {@inheritDoc} */
   @Override
-  protected LdapResponse<LdapResult> invoke(final Q request)
+  protected Response<LdapResult> invoke(final Q request)
     throws LdapException
   {
     LdapResult lr = null;
@@ -129,7 +128,7 @@ public abstract class AbstractSearchOperation<Q extends SearchRequest>
     } else {
       lr = executeSearch(request);
     }
-    return new LdapResponse<LdapResult>(lr);
+    return new Response<LdapResult>(lr);
   }
 
 

@@ -16,8 +16,8 @@ package edu.vt.middleware.ldap.handler;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import edu.vt.middleware.ldap.Connection;
 import edu.vt.middleware.ldap.LdapAttribute;
-import edu.vt.middleware.ldap.LdapConnection;
 import edu.vt.middleware.ldap.LdapEntry;
 import edu.vt.middleware.ldap.LdapException;
 import edu.vt.middleware.ldap.LdapResult;
@@ -61,7 +61,7 @@ public class RecursiveResultHandler extends CopyLdapResultHandler
 {
 
   /** Ldap connection to use for searching. */
-  private LdapConnection ldapConnection;
+  private Connection connection;
 
   /** Attribute to recursively search on. */
   private String searchAttribute;
@@ -98,11 +98,11 @@ public class RecursiveResultHandler extends CopyLdapResultHandler
    * @param  mergeAttrs  attribute names to merge
    */
   public RecursiveResultHandler(
-    final LdapConnection lc,
+    final Connection lc,
     final String searchAttr,
     final String[] mergeAttrs)
   {
-    ldapConnection = lc;
+    connection = lc;
     searchAttribute = searchAttr;
     mergeAttributes = mergeAttrs;
     initalizeReturnAttributes();
@@ -111,17 +111,17 @@ public class RecursiveResultHandler extends CopyLdapResultHandler
 
   /** {@inheritDoc} */
   @Override
-  public LdapConnection getResultLdapConnection()
+  public Connection getResultConnection()
   {
-    return ldapConnection;
+    return connection;
   }
 
 
   /** {@inheritDoc} */
   @Override
-  public void setResultLdapConnection(final LdapConnection lc)
+  public void setResultConnection(final Connection lc)
   {
-    ldapConnection = lc;
+    connection = lc;
   }
 
 
@@ -255,7 +255,7 @@ public class RecursiveResultHandler extends CopyLdapResultHandler
 
       LdapEntry newEntry = null;
       try {
-        final SearchOperation search = new SearchOperation(ldapConnection);
+        final SearchOperation search = new SearchOperation(connection);
         final SearchRequest sr = SearchRequest.newObjectScopeSearchRequest(
           dn, retAttrs);
         final LdapResult result = search.execute(sr).getResult();

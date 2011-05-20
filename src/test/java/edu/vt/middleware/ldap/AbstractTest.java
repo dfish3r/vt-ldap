@@ -33,12 +33,12 @@ public abstract class AbstractTest
   public void createLdapEntry(final LdapEntry entry)
     throws Exception
   {
-    LdapConnection conn = TestUtil.createSetupLdapConnection();
+    Connection conn = TestUtil.createSetupConnection();
     conn.open();
     final AddOperation create = new AddOperation(conn);
     create.execute(new AddRequest(entry.getDn(), entry.getAttributes()));
     conn.close();
-    conn = TestUtil.createLdapConnection();
+    conn = TestUtil.createConnection();
     conn.open();
     final CompareOperation compare = new CompareOperation(conn);
     final LdapAttribute la = new LdapAttribute();
@@ -62,7 +62,7 @@ public abstract class AbstractTest
   public void deleteLdapEntry(final String dn)
     throws Exception
   {
-    final LdapConnection conn = TestUtil.createSetupLdapConnection();
+    final Connection conn = TestUtil.createSetupConnection();
     conn.open();
     final DeleteOperation delete = new DeleteOperation(conn);
     delete.execute(new DeleteRequest(dn));

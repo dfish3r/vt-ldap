@@ -13,8 +13,8 @@
 */
 package edu.vt.middleware.ldap.auth;
 
-import edu.vt.middleware.ldap.LdapConnection;
-import edu.vt.middleware.ldap.LdapConnectionConfig;
+import edu.vt.middleware.ldap.Connection;
+import edu.vt.middleware.ldap.ConnectionConfig;
 import edu.vt.middleware.ldap.LdapException;
 import edu.vt.middleware.ldap.LdapResult;
 import edu.vt.middleware.ldap.SearchFilter;
@@ -34,7 +34,7 @@ public class PersistentSearchDnResolver extends SearchDnResolver
   private static final long serialVersionUID = -7275676180831565373L;
 
   /** Ldap connection. */
-  protected LdapConnection ldapConnection = new LdapConnection();
+  protected Connection connection = new Connection();
 
 
   /** Default constructor. */
@@ -46,9 +46,9 @@ public class PersistentSearchDnResolver extends SearchDnResolver
    *
    * @param  lcc  ldap connection config
    */
-  public PersistentSearchDnResolver(final LdapConnectionConfig lcc)
+  public PersistentSearchDnResolver(final ConnectionConfig lcc)
   {
-    setLdapConnectionConfig(lcc);
+    setConnectionConfig(lcc);
   }
 
 
@@ -57,10 +57,10 @@ public class PersistentSearchDnResolver extends SearchDnResolver
    *
    * @param  lcc  ldap connection config
    */
-  public void setLdapConnectionConfig(final LdapConnectionConfig lcc)
+  public void setConnectionConfig(final ConnectionConfig lcc)
   {
-    super.setLdapConnectionConfig(lcc);
-    ldapConnection.setLdapConnectionConfig(config);
+    super.setConnectionConfig(lcc);
+    connection.setConnectionConfig(config);
   }
 
 
@@ -72,7 +72,7 @@ public class PersistentSearchDnResolver extends SearchDnResolver
   public void open()
     throws LdapException
   {
-    ldapConnection.open();
+    connection.open();
   }
 
 
@@ -82,7 +82,7 @@ public class PersistentSearchDnResolver extends SearchDnResolver
     throws LdapException
   {
     final SearchRequest request = createSearchRequest(filter);
-    final SearchOperation op = new SearchOperation(ldapConnection);
+    final SearchOperation op = new SearchOperation(connection);
     return op.execute(request).getResult();
   }
 
@@ -92,6 +92,6 @@ public class PersistentSearchDnResolver extends SearchDnResolver
    */
   public void close()
   {
-    ldapConnection.close();
+    connection.close();
   }
 }

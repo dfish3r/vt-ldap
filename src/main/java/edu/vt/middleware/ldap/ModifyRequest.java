@@ -21,7 +21,7 @@ import java.util.Arrays;
  * @author  Middleware Services
  * @version  $Revision: 1330 $ $Date: 2010-05-23 18:10:53 -0400 (Sun, 23 May 2010) $
  */
-public class ModifyRequest implements LdapRequest
+public class ModifyRequest implements Request
 {
   /** DN to modify. */
   protected String modifyDn;

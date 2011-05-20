@@ -15,7 +15,7 @@ package edu.vt.middleware.ldap.auth.handler;
 
 import java.util.ArrayList;
 import java.util.List;
-import edu.vt.middleware.ldap.LdapConnection;
+import edu.vt.middleware.ldap.Connection;
 import edu.vt.middleware.ldap.LdapException;
 import edu.vt.middleware.ldap.LdapResult;
 import edu.vt.middleware.ldap.SearchFilter;
@@ -78,7 +78,7 @@ public class CompareAuthorizationHandler implements AuthorizationHandler
   /** {@inheritDoc} */
   @Override
   public void process(
-    final AuthenticationCriteria ac, final LdapConnection conn)
+    final AuthenticationCriteria ac, final Connection conn)
     throws LdapException
   {
     final SearchFilter filter = new SearchFilter(searchFilter.getFilter());

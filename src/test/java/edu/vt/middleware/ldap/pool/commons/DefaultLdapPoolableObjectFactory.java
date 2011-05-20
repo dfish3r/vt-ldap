@@ -13,8 +13,8 @@
 */
 package edu.vt.middleware.ldap.pool.commons;
 
-import edu.vt.middleware.ldap.LdapConnection;
-import edu.vt.middleware.ldap.LdapConnectionConfig;
+import edu.vt.middleware.ldap.Connection;
+import edu.vt.middleware.ldap.ConnectionConfig;
 import edu.vt.middleware.ldap.pool.DefaultLdapFactory;
 import org.apache.commons.pool.PoolableObjectFactory;
 
@@ -35,7 +35,7 @@ public class DefaultLdapPoolableObjectFactory extends DefaultLdapFactory
    *
    * @param  lcc  ldap connection config
    */
-  public DefaultLdapPoolableObjectFactory(final LdapConnectionConfig lcc)
+  public DefaultLdapPoolableObjectFactory(final ConnectionConfig lcc)
   {
     super(lcc);
   }
@@ -45,7 +45,7 @@ public class DefaultLdapPoolableObjectFactory extends DefaultLdapFactory
   @Override
   public void activateObject(final Object obj)
   {
-    activate((LdapConnection) obj);
+    activate((Connection) obj);
   }
 
 
@@ -53,7 +53,7 @@ public class DefaultLdapPoolableObjectFactory extends DefaultLdapFactory
   @Override
   public void destroyObject(final Object obj)
   {
-    destroy((LdapConnection) obj);
+    destroy((Connection) obj);
   }
 
 
@@ -69,7 +69,7 @@ public class DefaultLdapPoolableObjectFactory extends DefaultLdapFactory
   @Override
   public void passivateObject(final Object obj)
   {
-    passivate((LdapConnection) obj);
+    passivate((Connection) obj);
   }
 
 
@@ -77,6 +77,6 @@ public class DefaultLdapPoolableObjectFactory extends DefaultLdapFactory
   @Override
   public boolean validateObject(final Object obj)
   {
-    return validate((LdapConnection) obj);
+    return validate((Connection) obj);
   }
 }

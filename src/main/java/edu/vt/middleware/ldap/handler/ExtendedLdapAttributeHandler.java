@@ -13,7 +13,7 @@
 */
 package edu.vt.middleware.ldap.handler;
 
-import edu.vt.middleware.ldap.LdapConnection;
+import edu.vt.middleware.ldap.Connection;
 
 /**
  * Provides an interface for attribute handlers that require the use of the
@@ -31,7 +31,7 @@ public interface ExtendedLdapAttributeHandler extends LdapAttributeHandler
    *
    * @return  ldap connection
    */
-  LdapConnection getResultLdapConnection();
+  Connection getResultConnection();
 
 
   /**
@@ -39,5 +39,5 @@ public interface ExtendedLdapAttributeHandler extends LdapAttributeHandler
    *
    * @param  lc  ldap connection
    */
-  void setResultLdapConnection(final LdapConnection lc);
+  void setResultConnection(final Connection lc);
 }

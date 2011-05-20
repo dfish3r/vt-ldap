@@ -20,9 +20,9 @@ import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
+import edu.vt.middleware.ldap.ConnectionConfig;
 import edu.vt.middleware.ldap.Credential;
-import edu.vt.middleware.ldap.LdapConnectionConfig;
-import edu.vt.middleware.ldap.props.LdapConnectionConfigPropertySource;
+import edu.vt.middleware.ldap.props.ConnectionConfigPropertySource;
 import edu.vt.middleware.ldap.props.PropertySource.PropertyDomain;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
@@ -103,14 +103,14 @@ public abstract class AbstractCli
    *
    * @throws  Exception  if an ldap connection config cannot be created
    */
-  protected LdapConnectionConfig initLdapConnectionConfig(
+  protected ConnectionConfig initConnectionConfig(
     final CommandLine line)
     throws Exception
   {
-    final LdapConnectionConfigPropertySource lccSource =
-      new LdapConnectionConfigPropertySource(
+    final ConnectionConfigPropertySource lccSource =
+      new ConnectionConfigPropertySource(
         getPropertiesFromOptions(PropertyDomain.LDAP.value(), line));
-    final LdapConnectionConfig config = lccSource.get();
+    final ConnectionConfig config = lccSource.get();
     if (config.getBindDn() != null && config.getBindCredential() == null) {
       // prompt the user to enter a password
       final char[] pass = System.console().readPassword(

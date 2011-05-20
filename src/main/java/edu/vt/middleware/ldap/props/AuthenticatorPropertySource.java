@@ -82,7 +82,7 @@ public final class AuthenticatorPropertySource
     object = initializeObject(
       INVOKER, new Authenticator(), domain.value(), props);
 
-    LdapConnectionConfigPropertySource lccPropSource = null;
+    ConnectionConfigPropertySource lccPropSource = null;
 
     // initialize a SearchDnResolver by default
     DnResolver resolver = object.getDnResolver();
@@ -94,9 +94,9 @@ public final class AuthenticatorPropertySource
     }
     if (resolver instanceof SearchDnResolver) {
       final SearchDnResolver sdr = (SearchDnResolver) resolver;
-      if (sdr.getLdapConnectionConfig() == null) {
-        lccPropSource = new LdapConnectionConfigPropertySource(domain, props);
-        sdr.setLdapConnectionConfig(lccPropSource.get());
+      if (sdr.getConnectionConfig() == null) {
+        lccPropSource = new ConnectionConfigPropertySource(domain, props);
+        sdr.setConnectionConfig(lccPropSource.get());
       }
     }
 
@@ -108,11 +108,11 @@ public final class AuthenticatorPropertySource
       authHandler = ahPropSource.get();
       object.setAuthenticationHandler(authHandler);
     }
-    if (authHandler.getLdapConnectionConfig() == null) {
+    if (authHandler.getConnectionConfig() == null) {
       if (lccPropSource == null) {
-        lccPropSource = new LdapConnectionConfigPropertySource(domain, props);
+        lccPropSource = new ConnectionConfigPropertySource(domain, props);
       }
-      authHandler.setLdapConnectionConfig(lccPropSource.get());
+      authHandler.setConnectionConfig(lccPropSource.get());
     }
   }
 

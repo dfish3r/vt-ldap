@@ -17,8 +17,8 @@ import java.io.StringWriter;
 import java.util.HashMap;
 import java.util.Map;
 import edu.vt.middleware.ldap.AbstractTest;
-import edu.vt.middleware.ldap.LdapConnection;
-import edu.vt.middleware.ldap.LdapConnectionConfig;
+import edu.vt.middleware.ldap.Connection;
+import edu.vt.middleware.ldap.ConnectionConfig;
 import edu.vt.middleware.ldap.LdapEntry;
 import edu.vt.middleware.ldap.LdapResult;
 import edu.vt.middleware.ldap.SearchFilter;
@@ -111,8 +111,8 @@ public class LdapPoolTest extends AbstractTest
   public LdapPoolTest()
     throws Exception
   {
-    final LdapConnectionConfig lcc =
-      TestUtil.createLdapConnection().getLdapConnectionConfig();
+    final ConnectionConfig lcc =
+      TestUtil.createConnection().getConnectionConfig();
     final DefaultLdapFactory factory = new DefaultLdapFactory(lcc);
     factory.setLdapValidator(
       new CompareLdapValidator(
@@ -156,8 +156,8 @@ public class LdapPoolTest extends AbstractTest
     sharedLpc.setValidatePeriod(5L);
     sharedPool = new SharedLdapPool(sharedLpc, factory);
 
-    final LdapConnectionConfig connStrategyLcc =
-      TestUtil.createLdapConnection().getLdapConnectionConfig();
+    final ConnectionConfig connStrategyLcc =
+      TestUtil.createConnection().getConnectionConfig();
     connStrategyLcc.setLdapUrl(
       "ldap://ed-dev.middleware.vt.edu:14389 ldap://ed-dne.middleware.vt.edu");
     connStrategyLcc.setConnectionStrategy(ConnectionStrategy.ROUND_ROBIN);
@@ -478,17 +478,17 @@ public class LdapPoolTest extends AbstractTest
       AssertJUnit.assertEquals(IllegalStateException.class, e.getClass());
     }
 
-    LdapConnection conn = null;
+    Connection conn = null;
     try {
       conn = softLimitPool.checkOut();
       try {
-        conn.setLdapConnectionConfig(new LdapConnectionConfig());
+        conn.setConnectionConfig(new ConnectionConfig());
         AssertJUnit.fail("Expected illegalstateexception to be thrown");
       } catch (IllegalStateException e) {
         AssertJUnit.assertEquals(IllegalStateException.class, e.getClass());
       }
       try {
-        conn.getLdapConnectionConfig().setTimeout(10000);
+        conn.getConnectionConfig().setTimeout(10000);
         AssertJUnit.fail("Expected illegalstateexception to be thrown");
       } catch (IllegalStateException e) {
         AssertJUnit.assertEquals(IllegalStateException.class, e.getClass());
@@ -578,17 +578,17 @@ public class LdapPoolTest extends AbstractTest
       AssertJUnit.assertEquals(IllegalStateException.class, e.getClass());
     }
 
-    LdapConnection conn = null;
+    Connection conn = null;
     try {
       conn = blockingPool.checkOut();
       try {
-        conn.setLdapConnectionConfig(new LdapConnectionConfig());
+        conn.setConnectionConfig(new ConnectionConfig());
         AssertJUnit.fail("Expected illegalstateexception to be thrown");
       } catch (IllegalStateException e) {
         AssertJUnit.assertEquals(IllegalStateException.class, e.getClass());
       }
       try {
-        conn.getLdapConnectionConfig().setTimeout(10000);
+        conn.getConnectionConfig().setTimeout(10000);
         AssertJUnit.fail("Expected illegalstateexception to be thrown");
       } catch (IllegalStateException e) {
         AssertJUnit.assertEquals(IllegalStateException.class, e.getClass());
@@ -809,17 +809,17 @@ public class LdapPoolTest extends AbstractTest
       AssertJUnit.assertEquals(IllegalStateException.class, e.getClass());
     }
 
-    LdapConnection conn = null;
+    Connection conn = null;
     try {
       conn = sharedPool.checkOut();
       try {
-        conn.setLdapConnectionConfig(new LdapConnectionConfig());
+        conn.setConnectionConfig(new ConnectionConfig());
         AssertJUnit.fail("Expected illegalstateexception to be thrown");
       } catch (IllegalStateException e) {
         AssertJUnit.assertEquals(IllegalStateException.class, e.getClass());
       }
       try {
-        conn.getLdapConnectionConfig().setTimeout(10000);
+        conn.getConnectionConfig().setTimeout(10000);
         AssertJUnit.fail("Expected illegalstateexception to be thrown");
       } catch (IllegalStateException e) {
         AssertJUnit.assertEquals(IllegalStateException.class, e.getClass());
@@ -955,13 +955,13 @@ public class LdapPoolTest extends AbstractTest
    * @throws  Exception  On test failure.
    */
   private long search(
-    final LdapPool<LdapConnection> pool,
+    final LdapPool<Connection> pool,
     final SearchRequest request,
     final LdapEntry results)
     throws Exception
   {
     final long startTime = System.currentTimeMillis();
-    LdapConnection conn = null;
+    Connection conn = null;
     LdapResult result = null;
     try {
       logger.trace("waiting for pool checkout");
@@ -1003,7 +1003,7 @@ public class LdapPoolTest extends AbstractTest
     throws Exception
   {
     final long startTime = System.currentTimeMillis();
-    LdapConnection conn = null;
+    Connection conn = null;
     try {
       logger.trace("waiting for pool checkout");
       conn = vtComparisonPool.checkOut();
@@ -1038,10 +1038,10 @@ public class LdapPoolTest extends AbstractTest
     throws Exception
   {
     final long startTime = System.currentTimeMillis();
-    LdapConnection conn = null;
+    Connection conn = null;
     try {
       logger.trace("waiting for pool checkout");
-      conn = (LdapConnection) commonsComparisonPool.borrowObject();
+      conn = (Connection) commonsComparisonPool.borrowObject();
       logger.trace("performing search: {}", request);
       final SearchOperation search = new SearchOperation(conn);
       search.execute(request);

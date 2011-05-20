@@ -19,7 +19,7 @@ package edu.vt.middleware.ldap;
  * @author  Middleware Services
  * @version  $Revision: 1330 $ $Date: 2010-05-23 18:10:53 -0400 (Sun, 23 May 2010) $
  */
-public class ModifyOperation extends AbstractLdapOperation<ModifyRequest, Void>
+public class ModifyOperation extends AbstractOperation<ModifyRequest, Void>
 {
 
 
@@ -28,25 +28,25 @@ public class ModifyOperation extends AbstractLdapOperation<ModifyRequest, Void>
    *
    * @param  lc  ldap connection
    */
-  public ModifyOperation(final LdapConnection lc)
+  public ModifyOperation(final Connection lc)
   {
-    ldapConnection = lc;
-    initialize(lc.getLdapConnectionConfig());
+    connection = lc;
+    initialize(lc.getConnectionConfig());
   }
 
 
   /** {@inheritDoc} */
   @Override
-  protected LdapResponse<Void> invoke(final ModifyRequest request)
+  protected Response<Void> invoke(final ModifyRequest request)
     throws LdapException
   {
-    ldapConnection.getProviderConnection().modify(request);
-    return new LdapResponse<Void>();
+    connection.getProviderConnection().modify(request);
+    return new Response<Void>();
   }
 
 
   /** {@inheritDoc} */
   @Override
   protected void initializeRequest(
-    final ModifyRequest request, final LdapConnectionConfig config) {}
+    final ModifyRequest request, final ConnectionConfig config) {}
 }

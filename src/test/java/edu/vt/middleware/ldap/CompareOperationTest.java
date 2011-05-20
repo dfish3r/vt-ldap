@@ -77,7 +77,7 @@ public class CompareOperationTest extends AbstractTest
     final String attrValue)
     throws Exception
   {
-    final LdapConnection conn = TestUtil.createLdapConnection();
+    final Connection conn = TestUtil.createConnection();
     conn.open();
     final CompareOperation compare = new CompareOperation(conn);
     LdapAttribute la = new LdapAttribute();

@@ -14,13 +14,13 @@
 package edu.vt.middleware.ldap.auth;
 
 import java.util.Arrays;
+import edu.vt.middleware.ldap.Connection;
+import edu.vt.middleware.ldap.ConnectionConfig;
 import edu.vt.middleware.ldap.Credential;
-import edu.vt.middleware.ldap.LdapConnection;
-import edu.vt.middleware.ldap.LdapConnectionConfig;
 import edu.vt.middleware.ldap.LdapEntry;
 import edu.vt.middleware.ldap.LdapException;
-import edu.vt.middleware.ldap.LdapResponse;
 import edu.vt.middleware.ldap.LdapResult;
+import edu.vt.middleware.ldap.Response;
 import edu.vt.middleware.ldap.auth.handler.AuthenticationCriteria;
 import edu.vt.middleware.ldap.auth.handler.AuthenticationHandler;
 import edu.vt.middleware.ldap.auth.handler.AuthenticationResultHandler;
@@ -43,13 +43,13 @@ public class Authenticator extends AbstractAuthenticator
 
   /**
    * Creates a new authenticator. See
-   * {@link #Authenticator(LdapConnectionConfig)}.
+   * {@link #Authenticator(ConnectionConfig)}.
    *
    * @param  ldapUrl  to connect to
    */
   public Authenticator(final String ldapUrl)
   {
-    this(new LdapConnectionConfig(ldapUrl));
+    this(new ConnectionConfig(ldapUrl));
   }
 
 
@@ -60,7 +60,7 @@ public class Authenticator extends AbstractAuthenticator
    *
    * @param  lcc  ldap connection config
    */
-  public Authenticator(final LdapConnectionConfig lcc)
+  public Authenticator(final ConnectionConfig lcc)
   {
     this(new SearchDnResolver(lcc), new BindAuthenticationHandler(lcc));
   }
@@ -90,11 +90,11 @@ public class Authenticator extends AbstractAuthenticator
    * @throws  AuthorizationException  if authorization fails
    * @throws  LdapException  if an LDAP error occurs
    */
-  public LdapResponse<LdapEntry> authenticate(
+  public Response<LdapEntry> authenticate(
     final AuthenticationRequest request)
     throws LdapException
   {
-    return new LdapResponse<LdapEntry>(
+    return new Response<LdapEntry>(
       authenticate(resolveDn(request.getUser()), request));
   }
 
@@ -136,7 +136,7 @@ public class Authenticator extends AbstractAuthenticator
 
     LdapResult result = null;
 
-    LdapConnection conn = null;
+    Connection conn = null;
     try {
       final AuthenticationCriteria ac = new AuthenticationCriteria(dn);
       ac.setCredential(request.getCredential());

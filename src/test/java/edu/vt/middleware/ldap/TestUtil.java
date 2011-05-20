@@ -24,7 +24,7 @@ import edu.vt.middleware.ldap.auth.Authenticator;
 import edu.vt.middleware.ldap.auth.NoopDnResolver;
 import edu.vt.middleware.ldap.ldif.LdifReader;
 import edu.vt.middleware.ldap.props.AuthenticatorPropertySource;
-import edu.vt.middleware.ldap.props.LdapConnectionConfigPropertySource;
+import edu.vt.middleware.ldap.props.ConnectionConfigPropertySource;
 import org.testng.annotations.DataProvider;
 
 /**
@@ -44,16 +44,16 @@ public final class TestUtil
    * @param  is  to read properties from, if null use default properties
    * @return  authenticator config
    */
-  public static LdapConnectionConfig readLdapConnectionConfig(
+  public static ConnectionConfig readConnectionConfig(
     final InputStream is)
   {
     if (is != null) {
-      final LdapConnectionConfigPropertySource lccSource =
-        new LdapConnectionConfigPropertySource(is);
+      final ConnectionConfigPropertySource lccSource =
+        new ConnectionConfigPropertySource(is);
       return lccSource.get();
     } else {
-      final LdapConnectionConfigPropertySource lccSource =
-        new LdapConnectionConfigPropertySource();
+      final ConnectionConfigPropertySource lccSource =
+        new ConnectionConfigPropertySource();
       return lccSource.get();
     }
   }
@@ -83,11 +83,11 @@ public final class TestUtil
    * @throws  Exception  On test failure.
    */
   @DataProvider(name = "setup-ldap")
-  public static LdapConnection createSetupLdapConnection()
+  public static Connection createSetupConnection()
     throws Exception
   {
-    return new LdapConnection(
-      readLdapConnectionConfig(
+    return new Connection(
+      readConnectionConfig(
         TestUtil.class.getResourceAsStream("/ldap.setup.properties")));
   }
 
@@ -98,10 +98,10 @@ public final class TestUtil
    * @throws  Exception  On test failure.
    */
   @DataProvider(name = "ldap")
-  public static LdapConnection createLdapConnection()
+  public static Connection createConnection()
     throws Exception
   {
-    return new LdapConnection(readLdapConnectionConfig(null));
+    return new Connection(readConnectionConfig(null));
   }
 
 
@@ -111,11 +111,11 @@ public final class TestUtil
    * @throws  Exception  On test failure.
    */
   @DataProvider(name = "sasl-external-ldap")
-  public static LdapConnection createSaslExternalLdapConnection()
+  public static Connection createSaslExternalConnection()
     throws Exception
   {
-    return new LdapConnection(
-      readLdapConnectionConfig(
+    return new Connection(
+      readConnectionConfig(
         TestUtil.class.getResourceAsStream("/ldap.external.properties")));
   }
 
@@ -126,11 +126,11 @@ public final class TestUtil
    * @throws  Exception  On test failure.
    */
   @DataProvider(name = "gss-api-ldap")
-  public static LdapConnection createGssApiLdapConnection()
+  public static Connection createGssApiConnection()
     throws Exception
   {
-    return new LdapConnection(
-      readLdapConnectionConfig(
+    return new Connection(
+      readConnectionConfig(
         TestUtil.class.getResourceAsStream("/ldap.gssapi.properties")));
   }
 

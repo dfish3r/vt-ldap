@@ -16,8 +16,8 @@ package edu.vt.middleware.ldap.cli;
 import java.io.BufferedWriter;
 import java.io.OutputStreamWriter;
 import java.util.Map;
+import edu.vt.middleware.ldap.ConnectionConfig;
 import edu.vt.middleware.ldap.Credential;
-import edu.vt.middleware.ldap.LdapConnectionConfig;
 import edu.vt.middleware.ldap.LdapEntry;
 import edu.vt.middleware.ldap.LdapResult;
 import edu.vt.middleware.ldap.auth.AuthenticationRequest;
@@ -27,7 +27,7 @@ import edu.vt.middleware.ldap.dsml.Dsmlv1Writer;
 import edu.vt.middleware.ldap.ldif.LdifWriter;
 import edu.vt.middleware.ldap.props.AuthenticationRequestPropertySource;
 import edu.vt.middleware.ldap.props.AuthenticatorPropertySource;
-import edu.vt.middleware.ldap.props.LdapConnectionConfigPropertySource;
+import edu.vt.middleware.ldap.props.ConnectionConfigPropertySource;
 import edu.vt.middleware.ldap.props.PropertySource.PropertyDomain;
 import edu.vt.middleware.ldap.props.SearchDnResolverPropertySource;
 import org.apache.commons.cli.CommandLine;
@@ -67,18 +67,21 @@ public class AuthenticatorCli extends AbstractCli
     options.addOption(
       new Option(OPT_DSMLV1, false, "output results in DSML v1"));
     final Map<String, String> desc = getArgDesc(
-      LdapConnectionConfig.class,
+      ConnectionConfig.class,
       Authenticator.class,
       SearchDnResolver.class,
       AuthenticationRequest.class);
-    for (String s : LdapConnectionConfigPropertySource.getProperties()) {
+    for (String s : ConnectionConfigPropertySource.getProperties()) {
       options.addOption(new Option(s, true, desc.get(s)));
     }
     for (String s : AuthenticatorPropertySource.getProperties()) {
       options.addOption(new Option(s, true, desc.get(s)));
     }
     for (String s : SearchDnResolverPropertySource.getProperties()) {
-      options.addOption(new Option(s, true, desc.get(s)));
+      // ignore connection config property
+      if (!s.equalsIgnoreCase(ConnectionConfig.class.getSimpleName())) {
+        options.addOption(new Option(s, true, desc.get(s)));
+      }
     }
     for (String s : AuthenticationRequestPropertySource.getProperties()) {
       options.addOption(new Option(s, true, desc.get(s)));

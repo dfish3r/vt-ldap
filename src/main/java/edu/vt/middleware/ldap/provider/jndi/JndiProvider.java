@@ -13,9 +13,9 @@
 */
 package edu.vt.middleware.ldap.provider.jndi;
 
-import edu.vt.middleware.ldap.LdapConnectionConfig;
-import edu.vt.middleware.ldap.provider.ConnectionFactory;
-import edu.vt.middleware.ldap.provider.LdapProvider;
+import edu.vt.middleware.ldap.ConnectionConfig;
+import edu.vt.middleware.ldap.provider.Provider;
+import edu.vt.middleware.ldap.provider.ProviderConnectionFactory;
 
 /**
  * Exposes a connection factory for creating ldap connections with JNDI.
@@ -23,15 +23,16 @@ import edu.vt.middleware.ldap.provider.LdapProvider;
  * @author  Middleware Services
  * @version  $Revision: 1330 $ $Date: 2010-05-23 18:10:53 -0400 (Sun, 23 May 2010) $
  */
-public class JndiProvider implements LdapProvider
+public class JndiProvider implements Provider
 {
 
 
   /** {@inheritDoc} */
   @Override
-  public ConnectionFactory getConnectionFactory(final LdapConnectionConfig lcc)
+  public ProviderConnectionFactory getConnectionFactory(
+    final ConnectionConfig lcc)
   {
-    ConnectionFactory cf = null;
+    ProviderConnectionFactory cf = null;
     if (lcc.isTlsEnabled()) {
       cf = JndiTlsConnectionFactory.newInstance(lcc);
     } else {

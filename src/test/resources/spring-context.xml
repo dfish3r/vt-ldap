@@ -6,13 +6,13 @@
   xsi:schemaLocation="
 http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
 
-  <bean id="ldapConnection"
-    class="edu.vt.middleware.ldap.LdapConnection"
-    p:ldapConnectionConfig-ref="ldapConnectionConfig"
+  <bean id="connection"
+    class="edu.vt.middleware.ldap.Connection"
+    p:connectionConfig-ref="connectionConfig"
   />
   
-  <bean id="ldapConnectionConfig"
-    class="edu.vt.middleware.ldap.LdapConnectionConfig"
+  <bean id="connectionConfig"
+    class="edu.vt.middleware.ldap.ConnectionConfig"
     p:ldapUrl="ldap://ed-dev.middleware.vt.edu:14389"
     p:tls="true"
     p:authenticationType="EXTERNAL">

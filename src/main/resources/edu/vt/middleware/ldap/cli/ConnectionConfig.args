@@ -1,15 +1,14 @@
-authenticationType:type of authentication (ANONYMPUS|SIMPLE|STRONG)
+authenticationType:type of authentication (ANONYMOUS|SIMPLE|STRONG|EXTERNAL|DIGEST_MD5|CRAM_MD5|GSSAPI)
 bindCredential:password for the bindDn
 bindDn:fully qualified dn to bind as
-connectionFactory:fully qualified class name that implements edu.vt.middleware.ldap.provider.ConnectionFactory
 connectionStrategy:LDAP connection strategy for failover
 hostnameVerifier:fully qualified class name that implements javax.net.ssl.HostnameVerifier
-ldapProvider:fully qualified class name that implements edu.vt.middleware.ldap.provider.LdapProvider
 ldapUrl:URL that identifies the LDAP server to search
 logCredentials:whether to log authentication credentials (true|false)
 operationRetry:number of times to retry LDAP operations on exception
 operationRetryBackoff:factor to multiply operationRetryWait by
 operationRetryWait:milliseconds to wait before retrying LDAP operations
+provider:fully qualified class name that implements edu.vt.middleware.ldap.provider.Provider
 providerProperties:LDAP provider specific properties
 ssl:whether to use ssl (true|false)
 sslSocketFactory:fully qualified class name that implements javax.net.ssl.SSLSocketFactory

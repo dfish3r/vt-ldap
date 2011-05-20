@@ -17,9 +17,9 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import edu.vt.middleware.ldap.CompareOperation;
 import edu.vt.middleware.ldap.CompareRequest;
+import edu.vt.middleware.ldap.Connection;
+import edu.vt.middleware.ldap.ConnectionConfig;
 import edu.vt.middleware.ldap.LdapAttribute;
-import edu.vt.middleware.ldap.LdapConnection;
-import edu.vt.middleware.ldap.LdapConnectionConfig;
 import edu.vt.middleware.ldap.LdapException;
 import edu.vt.middleware.ldap.LdapUtil;
 import edu.vt.middleware.ldap.auth.AuthenticationException;
@@ -51,9 +51,9 @@ public class CompareAuthenticationHandler extends AbstractAuthenticationHandler
    *
    * @param  lcc  ldap connection config
    */
-  public CompareAuthenticationHandler(final LdapConnectionConfig lcc)
+  public CompareAuthenticationHandler(final ConnectionConfig lcc)
   {
-    setLdapConnectionConfig(lcc);
+    setConnectionConfig(lcc);
   }
 
 
@@ -81,7 +81,7 @@ public class CompareAuthenticationHandler extends AbstractAuthenticationHandler
 
   /** {@inheritDoc} */
   @Override
-  public LdapConnection authenticate(final AuthenticationCriteria ac)
+  public Connection authenticate(final AuthenticationCriteria ac)
     throws LdapException
   {
     byte[] hash = new byte[DIGEST_SIZE];
@@ -93,7 +93,7 @@ public class CompareAuthenticationHandler extends AbstractAuthenticationHandler
       throw new LdapException(e);
     }
 
-    final LdapConnection conn = new LdapConnection(config);
+    final Connection conn = new Connection(config);
     conn.open();
     final LdapAttribute la = new LdapAttribute(
       "userPassword",

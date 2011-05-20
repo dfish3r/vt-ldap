@@ -20,7 +20,7 @@ package edu.vt.middleware.ldap;
  * @version  $Revision: 1330 $ $Date: 2010-05-23 18:10:53 -0400 (Sun, 23 May 2010) $
  */
 public class CompareOperation
-  extends AbstractLdapOperation<CompareRequest, Boolean>
+  extends AbstractOperation<CompareRequest, Boolean>
 {
 
 
@@ -29,25 +29,25 @@ public class CompareOperation
    *
    * @param  lc  ldap connection
    */
-  public CompareOperation(final LdapConnection lc)
+  public CompareOperation(final Connection lc)
   {
-    ldapConnection = lc;
-    initialize(lc.getLdapConnectionConfig());
+    connection = lc;
+    initialize(lc.getConnectionConfig());
   }
 
 
   /** {@inheritDoc} */
   @Override
-  protected LdapResponse<Boolean> invoke(final CompareRequest request)
+  protected Response<Boolean> invoke(final CompareRequest request)
     throws LdapException
   {
-    return new LdapResponse<Boolean>(
-      ldapConnection.getProviderConnection().compare(request));
+    return new Response<Boolean>(
+      connection.getProviderConnection().compare(request));
   }
 
 
   /** {@inheritDoc} */
   @Override
   protected void initializeRequest(
-    final CompareRequest request, final LdapConnectionConfig config) {}
+    final CompareRequest request, final ConnectionConfig config) {}
 }

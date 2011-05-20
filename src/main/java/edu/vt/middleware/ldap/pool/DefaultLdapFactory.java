@@ -13,8 +13,8 @@
 */
 package edu.vt.middleware.ldap.pool;
 
-import edu.vt.middleware.ldap.LdapConnection;
-import edu.vt.middleware.ldap.LdapConnectionConfig;
+import edu.vt.middleware.ldap.Connection;
+import edu.vt.middleware.ldap.ConnectionConfig;
 import edu.vt.middleware.ldap.LdapException;
 
 /**
@@ -24,11 +24,11 @@ import edu.vt.middleware.ldap.LdapException;
  * @author  Middleware Services
  * @version  $Revision$ $Date$
  */
-public class DefaultLdapFactory extends AbstractLdapFactory<LdapConnection>
+public class DefaultLdapFactory extends AbstractLdapFactory<Connection>
 {
 
   /** Ldap connection configuration to create ldap objects with. */
-  private LdapConnectionConfig config;
+  private ConnectionConfig config;
 
   /** Whether to connect to the ldap on object creation. */
   private boolean connectOnCreate = true;
@@ -41,7 +41,7 @@ public class DefaultLdapFactory extends AbstractLdapFactory<LdapConnection>
    *
    * @param  lcc  ldap connection config
    */
-  public DefaultLdapFactory(final LdapConnectionConfig lcc)
+  public DefaultLdapFactory(final ConnectionConfig lcc)
   {
     config = lcc;
     config.makeImmutable();
@@ -74,9 +74,9 @@ public class DefaultLdapFactory extends AbstractLdapFactory<LdapConnection>
 
   /** {@inheritDoc} */
   @Override
-  public LdapConnection create()
+  public Connection create()
   {
-    LdapConnection conn = new LdapConnection(config);
+    Connection conn = new Connection(config);
     if (connectOnCreate) {
       try {
         conn.open();
@@ -91,7 +91,7 @@ public class DefaultLdapFactory extends AbstractLdapFactory<LdapConnection>
 
   /** {@inheritDoc} */
   @Override
-  public void destroy(final LdapConnection lc)
+  public void destroy(final Connection lc)
   {
     lc.close();
     logger.trace("destroyed ldap connection: {}", lc);

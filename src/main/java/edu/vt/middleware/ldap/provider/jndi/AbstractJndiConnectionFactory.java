@@ -17,9 +17,9 @@ import java.io.PrintStream;
 import java.util.Hashtable;
 import java.util.Map;
 import edu.vt.middleware.ldap.AuthenticationType;
-import edu.vt.middleware.ldap.LdapConnectionConfig;
+import edu.vt.middleware.ldap.ConnectionConfig;
 import edu.vt.middleware.ldap.ResultCode;
-import edu.vt.middleware.ldap.provider.AbstractConnectionFactory;
+import edu.vt.middleware.ldap.provider.AbstractProviderConnectionFactory;
 
 /**
  * Base class for JNDI connection factory implementations.
@@ -28,7 +28,7 @@ import edu.vt.middleware.ldap.provider.AbstractConnectionFactory;
  * @version  $Revision: 1442 $
  */
 public abstract class AbstractJndiConnectionFactory
-  extends AbstractConnectionFactory
+  extends AbstractProviderConnectionFactory
 {
   /**
    * The value of this property is a string that specifies the authentication
@@ -193,7 +193,7 @@ public abstract class AbstractJndiConnectionFactory
    * @return  JNDI ldap context environment
    */
   protected static Hashtable<String, Object> createEnvironment(
-    final LdapConnectionConfig lcc)
+    final ConnectionConfig lcc)
   {
     final Hashtable<String, Object> env = new Hashtable<String, Object>();
 

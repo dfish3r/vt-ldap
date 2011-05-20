@@ -9,7 +9,7 @@ http://www.springframework.org/schema/util http://www.springframework.org/schema
 
   <bean id="ldapFactory"
     class="edu.vt.middleware.ldap.pool.DefaultLdapFactory">
-    <constructor-arg index="0" ref="ldapConnectionConfig"/>
+    <constructor-arg index="0" ref="connectionConfig"/>
   </bean>
   
   <bean id="ldapPool"
@@ -29,8 +29,8 @@ http://www.springframework.org/schema/util http://www.springframework.org/schema
     <constructor-arg index="1" ref="ldapFactory"/>
   </bean>
   
-  <bean id="ldapConnectionConfig"
-    class="edu.vt.middleware.ldap.LdapConnectionConfig"
+  <bean id="connectionConfig"
+    class="edu.vt.middleware.ldap.ConnectionConfig"
     p:ldapUrl="ldap://ed-dev.middleware.vt.edu:14389"
     p:tls="true"
     p:authenticationType="EXTERNAL">

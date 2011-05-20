@@ -23,7 +23,7 @@ import edu.vt.middleware.ldap.ResultCode;
  * @author  Middleware Services
  * @version  $Revision$
  */
-public interface ConnectionFactory
+public interface ProviderConnectionFactory
 {
 
 
@@ -68,5 +68,6 @@ public interface ConnectionFactory
    * @throws  AuthenticationException  if the supplied credentials are invalid
    * @throws  LdapException  if an LDAP error occurs
    */
-  Connection create(String dn, Credential credential) throws LdapException;
+  ProviderConnection create(String dn, Credential credential)
+    throws LdapException;
 }

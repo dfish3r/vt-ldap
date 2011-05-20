@@ -21,14 +21,14 @@ package edu.vt.middleware.ldap;
  * @author  Middleware Services
  * @version  $Revision: 1330 $ $Date: 2010-05-23 18:10:53 -0400 (Sun, 23 May 2010) $
  */
-public class LdapResponse<T>
+public class Response<T>
 {
   /** Operation response. */
   private T result;
 
 
   /** Default constructor. */
-  public LdapResponse() {}
+  public Response() {}
 
 
   /**
@@ -36,7 +36,7 @@ public class LdapResponse<T>
    *
    * @param  t  response type
    */
-  public LdapResponse(final T t)
+  public Response(final T t)
   {
     result = t;
   }

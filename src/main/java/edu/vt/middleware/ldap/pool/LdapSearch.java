@@ -13,7 +13,7 @@
 */
 package edu.vt.middleware.ldap.pool;
 
-import edu.vt.middleware.ldap.LdapConnection;
+import edu.vt.middleware.ldap.Connection;
 import edu.vt.middleware.ldap.LdapException;
 import edu.vt.middleware.ldap.LdapResult;
 import edu.vt.middleware.ldap.SearchFilter;
@@ -36,7 +36,7 @@ public class LdapSearch
   protected final Logger logger = LoggerFactory.getLogger(getClass());
 
   /** Pool of ldap connections. */
-  protected LdapPool<LdapConnection> pool;
+  protected LdapPool<Connection> pool;
 
 
   /**
@@ -44,7 +44,7 @@ public class LdapSearch
    *
    * @param  lp  ldap pool
    */
-  public LdapSearch(final LdapPool<LdapConnection> lp)
+  public LdapSearch(final LdapPool<Connection> lp)
   {
     pool = lp;
   }
@@ -66,7 +66,7 @@ public class LdapSearch
     LdapResult result = null;
     if (query != null) {
       try {
-        LdapConnection conn = null;
+        Connection conn = null;
         try {
           conn = pool.checkOut();
           final SearchOperation search = new SearchOperation(conn);

@@ -81,7 +81,7 @@ public class LdapResultTest extends AbstractTest
     final String ldifFile)
     throws Exception
   {
-    final LdapConnection conn = TestUtil.createLdapConnection();
+    final Connection conn = TestUtil.createConnection();
     conn.open();
     final SearchOperation search = new SearchOperation(conn);
 

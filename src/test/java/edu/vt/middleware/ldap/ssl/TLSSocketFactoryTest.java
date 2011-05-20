@@ -16,7 +16,7 @@ package edu.vt.middleware.ldap.ssl;
 import java.util.Arrays;
 import javax.net.ssl.SSLSocket;
 import edu.vt.middleware.ldap.AnyHostnameVerifier;
-import edu.vt.middleware.ldap.LdapConnection;
+import edu.vt.middleware.ldap.Connection;
 import edu.vt.middleware.ldap.SearchOperation;
 import edu.vt.middleware.ldap.SearchRequest;
 import edu.vt.middleware.ldap.TestUtil;
@@ -90,7 +90,7 @@ public class TLSSocketFactoryTest
    *
    * @throws  Exception  On ldap connection failure.
    */
-  public LdapConnection createTLSLdapConnection()
+  public Connection createTLSLdapConnection()
     throws Exception
   {
     // configure TLSSocketFactory
@@ -105,10 +105,10 @@ public class TLSSocketFactoryTest
     sf.initialize();
 
     // configure ldap object to use TLS
-    final LdapConnection conn = TestUtil.createLdapConnection();
-    conn.getLdapConnectionConfig().setTls(true);
-    conn.getLdapConnectionConfig().setSslSocketFactory(sf);
-    conn.getLdapConnectionConfig().setHostnameVerifier(
+    final Connection conn = TestUtil.createConnection();
+    conn.getConnectionConfig().setTls(true);
+    conn.getConnectionConfig().setSslSocketFactory(sf);
+    conn.getConnectionConfig().setHostnameVerifier(
       new AnyHostnameVerifier());
     return conn;
   }
@@ -119,9 +119,9 @@ public class TLSSocketFactoryTest
   public void setEnabledCipherSuites()
     throws Exception
   {
-    final LdapConnection conn = createTLSLdapConnection();
+    final Connection conn = createTLSLdapConnection();
     final TLSSocketFactory sf =
-      (TLSSocketFactory) conn.getLdapConnectionConfig().getSslSocketFactory();
+      (TLSSocketFactory) conn.getConnectionConfig().getSslSocketFactory();
 
     conn.open();
     SearchOperation search = new SearchOperation(conn);
@@ -163,9 +163,9 @@ public class TLSSocketFactoryTest
   public void setEnabledProtocols()
     throws Exception
   {
-    final LdapConnection conn = createTLSLdapConnection();
+    final Connection conn = createTLSLdapConnection();
     final TLSSocketFactory sf =
-      (TLSSocketFactory) conn.getLdapConnectionConfig().getSslSocketFactory();
+      (TLSSocketFactory) conn.getConnectionConfig().getSslSocketFactory();
 
     conn.open();
     SearchOperation search = new SearchOperation(conn);

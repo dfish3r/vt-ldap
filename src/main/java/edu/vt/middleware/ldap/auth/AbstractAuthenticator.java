@@ -14,7 +14,7 @@
 package edu.vt.middleware.ldap.auth;
 
 import java.util.Arrays;
-import edu.vt.middleware.ldap.LdapConnection;
+import edu.vt.middleware.ldap.Connection;
 import edu.vt.middleware.ldap.LdapException;
 import edu.vt.middleware.ldap.LdapResult;
 import edu.vt.middleware.ldap.SearchFilter;
@@ -146,13 +146,13 @@ public abstract class AbstractAuthenticator
    * @throws  AuthenticationException  if the bind fails
    * @throws  LdapException  if an LDAP error occurs
    */
-  protected LdapConnection authenticate(
+  protected Connection authenticate(
     final AuthenticationHandler authHandler,
     final AuthenticationResultHandler[] authResultHandler,
     final AuthenticationCriteria ac)
     throws LdapException
   {
-    LdapConnection conn = null;
+    Connection conn = null;
     try {
       conn = authHandler.authenticate(ac);
       logger.info("Authentication succeeded for dn: {}", ac.getDn());
@@ -185,7 +185,7 @@ public abstract class AbstractAuthenticator
   protected void authorize(
     final AuthorizationHandler[] authzHandler,
     final AuthenticationResultHandler[] authResultHandler,
-    final LdapConnection conn,
+    final Connection conn,
     final AuthenticationCriteria ac)
     throws LdapException
   {
@@ -226,7 +226,7 @@ public abstract class AbstractAuthenticator
   protected LdapResult getLdapEntry(
     final String dn,
     final AuthenticationRequest request,
-    final LdapConnection conn)
+    final Connection conn)
     throws LdapException
   {
     logger.debug(

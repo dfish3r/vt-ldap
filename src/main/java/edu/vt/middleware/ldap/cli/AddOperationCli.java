@@ -17,12 +17,12 @@ import java.io.FileReader;
 import java.util.Map;
 import edu.vt.middleware.ldap.AddOperation;
 import edu.vt.middleware.ldap.AddRequest;
-import edu.vt.middleware.ldap.LdapConnection;
-import edu.vt.middleware.ldap.LdapConnectionConfig;
+import edu.vt.middleware.ldap.Connection;
+import edu.vt.middleware.ldap.ConnectionConfig;
 import edu.vt.middleware.ldap.LdapEntry;
 import edu.vt.middleware.ldap.LdapResult;
 import edu.vt.middleware.ldap.ldif.LdifReader;
-import edu.vt.middleware.ldap.props.LdapConnectionConfigPropertySource;
+import edu.vt.middleware.ldap.props.ConnectionConfigPropertySource;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
 
@@ -59,8 +59,8 @@ public class AddOperationCli extends AbstractCli
   {
     options.addOption(new Option(OPT_FILE, true, "LDIF file"));
     final Map<String, String> desc = getArgDesc(
-      LdapConnectionConfig.class);
-    for (String s : LdapConnectionConfigPropertySource.getProperties()) {
+      ConnectionConfig.class);
+    for (String s : ConnectionConfigPropertySource.getProperties()) {
       options.addOption(new Option(s, true, desc.get(s)));
     }
     super.initOptions();
@@ -76,7 +76,7 @@ public class AddOperationCli extends AbstractCli
       printHelp();
     } else {
       add(
-        initLdapConnectionConfig(line), line.getOptionValue(OPT_FILE));
+        initConnectionConfig(line), line.getOptionValue(OPT_FILE));
     }
   }
 
@@ -89,10 +89,10 @@ public class AddOperationCli extends AbstractCli
    *
    * @throws  Exception  on any LDAP search error
    */
-  protected void add(final LdapConnectionConfig lcc, final String file)
+  protected void add(final ConnectionConfig lcc, final String file)
     throws Exception
   {
-    final LdapConnection conn = new LdapConnection(lcc);
+    final Connection conn = new Connection(lcc);
     conn.open();
 
     final LdifReader reader = new LdifReader(new FileReader(file));
