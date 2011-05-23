@@ -81,6 +81,9 @@ public class Connection
    * Sets the ldap connection configuration.
    *
    * @param  lcc  ldap connection configuration
+   *
+   * @throws  IllegalStateException  if this connection has already been
+   * initialized
    */
   public void setConnectionConfig(final ConnectionConfig lcc)
   {
@@ -126,11 +129,12 @@ public class Connection
   /**
    * This will establish a connection if one does not already exist by binding
    * to the LDAP using the supplied dn and credential. This connection should be
-   * closed using {@link #close()}.
+   * closed using {@link #close()}. See {@link #initialize()}.
    *
    * @param  bindDn  to bind to the LDAP as
    * @param  bindCredential  to bind to the LDAP with
    *
+   * @throws  IllegalStateExcepiton  if the connection is already open
    * @throws  LdapException  if the LDAP cannot be reached
    */
   public synchronized void open(
@@ -166,6 +170,8 @@ public class Connection
    * call to {@link #open()}.
    *
    * @return  provider connection
+   *
+   * @throws  IllegalStateException  if the connection is not open
    */
   public ProviderConnection getProviderConnection()
   {
