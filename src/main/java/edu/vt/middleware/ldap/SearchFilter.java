@@ -268,7 +268,7 @@ public class SearchFilter
   /**
    * This returns a string representation of this search filter.
    *
-   * @return  <code>String</code>
+   * @return  string representation
    */
   @Override
   public String toString()

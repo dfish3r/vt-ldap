@@ -36,15 +36,15 @@ public class KeyStoreCredentialReader extends AbstractCredentialReader<KeyStore>
    * @param  params  Two optional parameters are supported:
    *
    * <ul>
-   *   <li>KeyStore password</li>
-   *   <li>KeyStore type; defaults to JVM default keystore format if
+   *   <li>keystore password</li>
+   *   <li>keystore type; defaults to JVM default keystore format if
    *     omitted</li>
    * </ul>
    *
    * <p>If only a single parameter is supplied, it is assumed to be
    * the password.</p>
    *
-   * @return  KeyStore read from data in stream.
+   * @return  keystore read from data in stream.
    *
    * @throws  IOException  On IO errors.
    * @throws  GeneralSecurityException  On errors with the credential data.

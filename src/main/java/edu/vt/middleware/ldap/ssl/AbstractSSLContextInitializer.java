@@ -17,7 +17,7 @@ import java.security.GeneralSecurityException;
 import javax.net.ssl.SSLContext;
 
 /**
- * Provides common implementation for <code>SSLContextInitializer</code>.
+ * Provides common implementation for SSL context initializer.
  *
  * @author  Middleware Services
  * @version  $Revision: 1106 $ $Date: 2010-01-29 23:34:13 -0500 (Fri, 29 Jan 2010) $

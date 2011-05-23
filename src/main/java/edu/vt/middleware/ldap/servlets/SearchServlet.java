@@ -79,7 +79,7 @@ public final class SearchServlet extends AbstractServlet
   /**
    * Initialize this servlet.
    *
-   * @param  config  <code>ServletConfig</code>
+   * @param  config  servlet config
    *
    * @throws  ServletException  if an error occurs
    */

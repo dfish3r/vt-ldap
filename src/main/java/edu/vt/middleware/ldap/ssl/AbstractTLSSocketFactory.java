@@ -21,7 +21,7 @@ import javax.net.ssl.SSLSocket;
 import javax.net.ssl.SSLSocketFactory;
 
 /**
- * Provides common implementation for <code>TLSSocketFactory</code>.
+ * Provides common implementation for TLSSocketFactory.
  *
  * @author  Middleware Services
  * @version  $Revision: 1106 $ $Date: 2010-01-29 23:34:13 -0500 (Fri, 29 Jan 2010) $
@@ -53,10 +53,10 @@ public abstract class AbstractTLSSocketFactory extends SSLSocketFactory
 
 
   /**
-   * This returns the underlying <code>SSLSocketFactory</code> that this class
-   * uses for creating SSL Sockets.
+   * Returns the underlying SSL socket factory that this class uses for creating
+   * SSL Sockets.
    *
-   * @return  <code>SSLSocketFactory</code>
+   * @return  SSL socket factory
    */
   public SSLSocketFactory getFactory()
   {
@@ -65,12 +65,12 @@ public abstract class AbstractTLSSocketFactory extends SSLSocketFactory
 
 
   /**
-   * This returns the names of the SSL cipher suites which are currently enabled
-   * for use on sockets created by this factory. A null value indicates that no
+   * Returns the names of the SSL cipher suites which are currently enabled for
+   * use on sockets created by this factory. A null value indicates that no
    * specific cipher suites have been enabled and that the default suites are in
    * use.
    *
-   * @return  <code>String[]</code> of cipher suites
+   * @return  cipher suites
    */
   public String[] getEnabledCipherSuites()
   {
@@ -79,12 +79,12 @@ public abstract class AbstractTLSSocketFactory extends SSLSocketFactory
 
 
   /**
-   * This returns the names of the protocol versions which are currently enabled
+   * Returns the names of the protocol versions which are currently enabled
    * for use on sockets created by this factory. A null value indicates that no
    * specific protocols have been enabled and that the default protocols are in
    * use.
    *
-   * @return  <code>String[]</code> of protocols
+   * @return  enabled protocols
    */
   public String[] getEnabledProtocols()
   {
@@ -96,7 +96,7 @@ public abstract class AbstractTLSSocketFactory extends SSLSocketFactory
    * Sets the cipher suites enabled for use on sockets created by this factory.
    * See {@link javax.net.ssl.SSLSocket#setEnabledCipherSuites(String[])}.
    *
-   * @param  s  <code>String[]</code> of cipher suites
+   * @param  s  cipher suites
    */
   public void setEnabledCipherSuites(final String[] s)
   {
@@ -108,7 +108,7 @@ public abstract class AbstractTLSSocketFactory extends SSLSocketFactory
    * Sets the protocol versions enabled for use on sockets created by this
    * factory. See {@link javax.net.ssl.SSLSocket#setEnabledProtocols(String[])}.
    *
-   * @param  s  <code>String[]</code> of cipher suites
+   * @param  s  enabled protocols
    */
   public void setEnabledProtocols(final String[] s)
   {
@@ -119,9 +119,9 @@ public abstract class AbstractTLSSocketFactory extends SSLSocketFactory
   /**
    * Initializes the supplied socket for use.
    *
-   * @param  s  <code>SSLSocket</code> to initialize
+   * @param  s  SSL socket to initialize
    *
-   * @return  <code>SSLSocket</code>
+   * @return  SSL socket
    */
   protected SSLSocket initSSLSocket(final SSLSocket s)
   {
@@ -136,16 +136,15 @@ public abstract class AbstractTLSSocketFactory extends SSLSocketFactory
 
 
   /**
-   * This returns a socket layered over an existing socket connected to the
+   * Returns a socket layered over an existing socket connected to the
    * named host, at the given port.
    *
-   * @param  s  <code>Socket</code> existing socket
-   * @param  host  <code>String</code> server hostname
-   * @param  port  <code>int</code> server port
-   * @param  autoClose  <code>boolean</code> close the underlying socket when
-   * this socket is closed
+   * @param  s  existing socket
+   * @param  host  server hostname
+   * @param  port  server port
+   * @param  autoClose  close the underlying socket when this socket is closed
    *
-   * @return  <code>Socket</code> - connected to the specified host and port
+   * @return  socket connected to the specified host and port
    *
    * @throws  IOException  if an I/O error occurs when creating the socket
    */
@@ -166,9 +165,9 @@ public abstract class AbstractTLSSocketFactory extends SSLSocketFactory
 
 
   /**
-   * This creates an unconnected socket.
+   * Creates an unconnected socket.
    *
-   * @return  <code>Socket</code> - unconnected socket
+   * @return  unconnected socket
    *
    * @throws  IOException  if an I/O error occurs when creating the socket
    */
@@ -184,13 +183,13 @@ public abstract class AbstractTLSSocketFactory extends SSLSocketFactory
 
 
   /**
-   * This creates a socket and connects it to the specified port number at the
+   * Creates a socket and connects it to the specified port number at the
    * specified address.
    *
-   * @param  host  <code>InetAddress</code> server hostname
-   * @param  port  <code>int</code> server port
+   * @param  host  server hostname
+   * @param  port  server port
    *
-   * @return  <code>Socket</code> - connected to the specified host and port
+   * @return  socket connected to the specified host and port
    *
    * @throws  IOException  if an I/O error occurs when creating the socket
    */
@@ -207,16 +206,16 @@ public abstract class AbstractTLSSocketFactory extends SSLSocketFactory
 
 
   /**
-   * This creates a socket and connect it to the specified port number at the
+   * Creates a socket and connect it to the specified port number at the
    * specified address. The socket will also be bound to the supplied local
    * address and port.
    *
-   * @param  address  <code>InetAddress</code> server hostname
-   * @param  port  <code>int</code> server port
-   * @param  localAddress  <code>InetAddress</code> client hostname
-   * @param  localPort  <code>int</code> client port
+   * @param  address  server hostname
+   * @param  port  server port
+   * @param  localAddress  client hostname
+   * @param  localPort  client port
    *
-   * @return  <code>Socket</code> - connected to the specified host and port
+   * @return  socket connected to the specified host and port
    *
    * @throws  IOException  if an I/O error occurs when creating the socket
    */
@@ -241,13 +240,13 @@ public abstract class AbstractTLSSocketFactory extends SSLSocketFactory
 
 
   /**
-   * This creates a socket and connects it to the specified port number at the
+   * Creates a socket and connects it to the specified port number at the
    * specified address.
    *
-   * @param  host  <code>String</code> server hostname
-   * @param  port  <code>int</code> server port
+   * @param  host  server hostname
+   * @param  port  server port
    *
-   * @return  <code>Socket</code> - connected to the specified host and port
+   * @return  socket connected to the specified host and port
    *
    * @throws  IOException  if an I/O error occurs when creating the socket
    */
@@ -264,16 +263,16 @@ public abstract class AbstractTLSSocketFactory extends SSLSocketFactory
 
 
   /**
-   * This creates a socket and connect it to the specified port number at the
+   * Creates a socket and connect it to the specified port number at the
    * specified address. The socket will also be bound to the supplied local
    * address and port.
    *
-   * @param  host  <code>String</code> server hostname
-   * @param  port  <code>int</code> server port
-   * @param  localHost  <code>InetAddress</code> client hostname
-   * @param  localPort  <code>int</code> client port
+   * @param  host  server hostname
+   * @param  port  server port
+   * @param  localHost  client hostname
+   * @param  localPort  client port
    *
-   * @return  <code>Socket</code> - connected to the specified host and port
+   * @return  socket connected to the specified host and port
    *
    * @throws  IOException  if an I/O error occurs when creating the socket
    */
@@ -298,9 +297,9 @@ public abstract class AbstractTLSSocketFactory extends SSLSocketFactory
 
 
   /**
-   * This returns the list of cipher suites which are enabled by default.
+   * Returns the list of cipher suites which are enabled by default.
    *
-   * @return  <code>String[]</code> - array of the cipher suites
+   * @return cipher suites
    */
   public String[] getDefaultCipherSuites()
   {
@@ -313,10 +312,10 @@ public abstract class AbstractTLSSocketFactory extends SSLSocketFactory
 
 
   /**
-   * This returns the names of the cipher suites which could be enabled for use
+   * Returns the names of the cipher suites which could be enabled for use
    * on an SSL connection.
    *
-   * @return  <code>String[]</code> - array of the cipher suites
+   * @return  cipher suites
    */
   public String[] getSupportedCipherSuites()
   {

@@ -33,7 +33,7 @@ public interface SSLContextInitializer
    *
    * @param  protocol  type to use for SSL
    *
-   * @return  <code>SSLContext</code>
+   * @return  SSL context
    *
    * @throws  GeneralSecurityException  if the SSLContext cannot be created
    */
@@ -44,7 +44,7 @@ public interface SSLContextInitializer
   /**
    * Returns the trust managers used when creating SSL contexts.
    *
-   * @return  <code>TrustManager[]</code>
+   * @return  trust managers
    *
    * @throws  GeneralSecurityException  if an errors occurs while loading the
    * TrustManagers
@@ -56,7 +56,7 @@ public interface SSLContextInitializer
   /**
    * Returns the key managers used when creating SSL contexts.
    *
-   * @return  <code>KeyManagers[]</code>
+   * @return  key managers
    *
    * @throws  GeneralSecurityException  if an errors occurs while loading the
    * KeyManagers

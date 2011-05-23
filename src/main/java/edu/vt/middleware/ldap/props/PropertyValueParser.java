@@ -48,10 +48,9 @@ public class PropertyValueParser
 
 
   /**
-   * Creates a new <code>ConfigParser</code> with the supplied configuration
-   * string.
+   * Creates a new config parser.
    *
-   * @param  config  <code>String</code>
+   * @param  config  containing configuration data
    */
   public PropertyValueParser(final String config)
   {
@@ -75,7 +74,7 @@ public class PropertyValueParser
   /**
    * Returns the class name from the configuration.
    *
-   * @return  <code>String</code> class name
+   * @return  class name
    */
   public String getClassName()
   {
@@ -86,7 +85,7 @@ public class PropertyValueParser
   /**
    * Returns the properties from the configuration.
    *
-   * @return  <code>Map</code> of property name to value
+   * @return  map of property name to value
    */
   public Map<String, String> getProperties()
   {
@@ -97,9 +96,9 @@ public class PropertyValueParser
   /**
    * Returns whether the supplied configuration data contains a config.
    *
-   * @param  config  <code>String</code>
+   * @param  config  containing configuration data
    *
-   * @return  <code>boolean</code>
+   * @return  whether the supplied configuration data contains a config
    */
   public static boolean isConfig(final String config)
   {
@@ -111,7 +110,7 @@ public class PropertyValueParser
    * Initialize an instance of the class type with the properties contained in
    * this config.
    *
-   * @return  <code>Object</code> of the type the config parsed
+   * @return  object of the type the config parsed
    */
   public Object initializeType()
   {
@@ -127,8 +126,8 @@ public class PropertyValueParser
   /**
    * Sets the properties on the supplied object.
    *
-   * @param  c  <code>Class</code> type of the supplied object
-   * @param  o  <code>Object</code> to invoke properties on
+   * @param  c  type of the supplied object
+   * @param  o  to invoke properties on
    */
   protected void setProperties(final Class<?> c, final Object o)
   {

@@ -30,6 +30,7 @@ public class X509CertificateCredentialReader
   extends AbstractCredentialReader<X509Certificate>
 {
 
+
   /** {@inheritDoc} */
   @Override
   public X509Certificate read(final InputStream is, final String... params)

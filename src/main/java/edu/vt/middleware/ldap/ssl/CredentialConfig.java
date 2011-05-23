@@ -16,11 +16,10 @@ package edu.vt.middleware.ldap.ssl;
 import java.security.GeneralSecurityException;
 
 /**
- * <code>CredentialConfig</code> provides a base interface for all credential
- * configurations. Since credential configs are invoked via reflection by the
- * PropertyInvoker their method signatures are not important. They only need to
- * be able to create an SSL context initializer once their properties have been
- * set.
+ * Provides a base interface for all credential configurations. Since credential 
+ * onfigs are invoked via reflection by the PropertyInvoker their method
+ * signatures are not important. They only need to be able to create an SSL
+ * context initializer once their properties have been set.
  *
  * @author  Middleware Services
  * @version  $Revision: 1106 $ $Date: 2010-01-29 23:34:13 -0500 (Fri, 29 Jan 2010) $
@@ -30,10 +29,10 @@ public interface CredentialConfig
 
 
   /**
-   * Creates an <code>SSLContextInitializer</code> using the configured trust
-   * and authentication material in this config.
+   * Creates an SSL context initializer using the configured trust and
+   * authentication material in this config.
    *
-   * @return  <code>SSLContextInitializer</code>
+   * @return  SSL context initializer
    *
    * @throws  GeneralSecurityException  if the ssl context initializer cannot be
    * created

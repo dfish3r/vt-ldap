@@ -77,10 +77,9 @@ public class CredentialConfigParser
 
 
   /**
-   * Creates a new <code>CredentialConfigParser</code> with the supplied
-   * configuration string.
+   * Creates a new credential config parser.
    *
-   * @param  config  <code>String</code>
+   * @param  config  containing configuration data
    */
   public CredentialConfigParser(final String config)
   {
@@ -124,7 +123,7 @@ public class CredentialConfigParser
   /**
    * Returns the SSL socket factory class name from the configuration.
    *
-   * @return  <code>String</code> class name
+   * @return  class name
    */
   public String getSslSocketFactoryClassName()
   {
@@ -135,7 +134,7 @@ public class CredentialConfigParser
   /**
    * Returns the credential config class name from the configuration.
    *
-   * @return  <code>String</code> class name
+   * @return  class name
    */
   public String getCredentialConfigClassName()
   {
@@ -146,7 +145,7 @@ public class CredentialConfigParser
   /**
    * Returns the properties from the configuration.
    *
-   * @return  <code>Map</code> of property name to value
+   * @return  map of property name to value
    */
   public Map<String, String> getProperties()
   {
@@ -158,9 +157,10 @@ public class CredentialConfigParser
    * Returns whether the supplied configuration data contains a credential
    * config.
    *
-   * @param  config  <code>String</code>
+   * @param  config  containing configuration data
    *
-   * @return  <code>boolean</code>
+   * @return  whether the supplied configuration data contains a credential
+   * config
    */
   public static boolean isCredentialConfig(final String config)
   {
@@ -175,7 +175,7 @@ public class CredentialConfigParser
    * Initialize an instance of credential config with the properties contained
    * in this config.
    *
-   * @return  <code>Object</code> of the type <code>CredentialConfig</code>
+   * @return  object of the type CredentialConfig
    */
   public Object initializeType()
   {
@@ -192,8 +192,8 @@ public class CredentialConfigParser
   /**
    * Sets the properties on the supplied object.
    *
-   * @param  c  <code>Class</code> type of the supplied object
-   * @param  o  <code>Object</code> to invoke properties on
+   * @param  c  class type of the supplied object
+   * @param  o  object to invoke properties on
    */
   protected void setProperties(final Class<?> c, final Object o)
   {

@@ -18,9 +18,8 @@ import javax.net.ssl.KeyManager;
 import javax.net.ssl.TrustManager;
 
 /**
- * Provides a default implementation of <code>SSLContextInitializer</code> which
- * allows the setting of trust and key managers in order to create an SSL
- * context.
+ * Provides a default implementation of SSL context initializer which allows the
+ * setting of trust and key managers in order to create an SSL context.
  *
  * @author  Middleware Services
  * @version  $Revision$ $Date$
@@ -47,7 +46,7 @@ public class DefaultSSLContextInitializer extends AbstractSSLContextInitializer
   /**
    * Sets the trust managers.
    *
-   * @param  tm  <code>TrustManager[]</code>
+   * @param  tm  trust managers
    */
   public void setTrustManagers(final TrustManager[] tm)
   {
@@ -67,7 +66,7 @@ public class DefaultSSLContextInitializer extends AbstractSSLContextInitializer
   /**
    * Sets the key managers.
    *
-   * @param  km  <code>KeyManager[]</code>
+   * @param  km  key managers
    */
   public void setKeyManagers(final KeyManager[] km)
   {

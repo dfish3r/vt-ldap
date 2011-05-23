@@ -21,8 +21,8 @@ import javax.net.ssl.TrustManager;
 import javax.net.ssl.TrustManagerFactory;
 
 /**
- * Provides a <code>SSLContextInitializer</code> which can use java KeyStores to
- * create key and trust managers.
+ * Provides an SSL context initializer which can use java KeyStores to create
+ * key and trust managers.
  *
  * @author  Middleware Services
  * @version  $Revision: 1106 $ $Date: 2010-01-29 23:34:13 -0500 (Fri, 29 Jan 2010) $
@@ -43,7 +43,7 @@ public class KeyStoreSSLContextInitializer extends AbstractSSLContextInitializer
   /**
    * Sets the keystore to use for creating the trust managers.
    *
-   * @param  ks  <code>KeyStore</code>
+   * @param  ks  keystore
    */
   public void setTrustKeystore(final KeyStore ks)
   {
@@ -54,7 +54,7 @@ public class KeyStoreSSLContextInitializer extends AbstractSSLContextInitializer
   /**
    * Sets the keystore to use for creating the key managers.
    *
-   * @param  ks  <code>KeyStore</code>
+   * @param  ks  keystore
    */
   public void setAuthenticationKeystore(final KeyStore ks)
   {
@@ -65,7 +65,7 @@ public class KeyStoreSSLContextInitializer extends AbstractSSLContextInitializer
   /**
    * Sets the password used for accessing the authentication keystore.
    *
-   * @param  password  <code>char[]</code>
+   * @param  password  to use for authentication
    */
   public void setAuthenticationPassword(final char[] password)
   {

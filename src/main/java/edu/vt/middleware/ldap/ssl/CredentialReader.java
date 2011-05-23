@@ -32,11 +32,11 @@ public interface CredentialReader<T>
   /**
    * Reads a credential object from a path.
    *
-   * @param  path  Path from which to read credential.
+   * @param  path  from which to read credential.
    * @param  params  Arbitrary string parameters, e.g. password, needed to read
    * the credential.
    *
-   * @return  Credential read from data at path.
+   * @return  credential read from data at path.
    *
    * @throws  IOException  On IO errors.
    * @throws  GeneralSecurityException  On errors with the credential data.
@@ -48,11 +48,11 @@ public interface CredentialReader<T>
   /**
    * Reads a credential object from an input stream.
    *
-   * @param  is  Input stream from which to read credential.
+   * @param  is  input stream from which to read credential.
    * @param  params  Arbitrary string parameters, e.g. password, needed to read
    * the credential.
    *
-   * @return  Credential read from data in stream.
+   * @return  credential read from data in stream.
    *
    * @throws  IOException  On IO errors.
    * @throws  GeneralSecurityException  On errors with the credential data.

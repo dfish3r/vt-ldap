@@ -87,9 +87,9 @@ public abstract class AbstractCredentialReader<T> implements CredentialReader<T>
    * Gets a buffered input stream from the given input stream. If the given
    * instance is already buffered, it is simply returned.
    *
-   * @param  is  Input stream from which to create buffered instance.
+   * @param  is  input stream from which to create buffered instance.
    *
-   * @return  Buffered input stream. If the given instance is already buffered,
+   * @return  buffered input stream. If the given instance is already buffered,
    * it is simply returned.
    */
   protected InputStream getBufferedInputStream(final InputStream is)

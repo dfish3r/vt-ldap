@@ -18,7 +18,7 @@ import java.security.GeneralSecurityException;
 
 /**
  * Provides the properties necessary for creating an SSL context initializer
- * with a <code>KeyStoreCredentialReader</code>.
+ * with a keystore credential reader.
  *
  * @author  Middleware Services
  * @version  $Revision: 1106 $ $Date: 2010-01-29 23:34:13 -0500 (Fri, 29 Jan 2010) $
@@ -50,9 +50,9 @@ public class KeyStoreCredentialConfig implements CredentialConfig
 
 
   /**
-   * This returns the name of the truststore to use.
+   * Returns the name of the truststore to use.
    *
-   * @return  <code>String</code> truststore name
+   * @return  truststore name
    */
   public String getTrustStore()
   {
@@ -61,9 +61,9 @@ public class KeyStoreCredentialConfig implements CredentialConfig
 
 
   /**
-   * This sets the name of the truststore to use.
+   * Sets the name of the truststore to use.
    *
-   * @param  s  <code>String</code> truststore name
+   * @param  s  truststore name
    */
   public void setTrustStore(final String s)
   {
@@ -72,9 +72,9 @@ public class KeyStoreCredentialConfig implements CredentialConfig
 
 
   /**
-   * This returns the password for the truststore.
+   * Returns the password for the truststore.
    *
-   * @return  <code>String</code> truststore password
+   * @return  truststore password
    */
   public String getTrustStorePassword()
   {
@@ -83,9 +83,9 @@ public class KeyStoreCredentialConfig implements CredentialConfig
 
 
   /**
-   * This sets the password for the truststore.
+   * Sets the password for the truststore.
    *
-   * @param  s  <code>String</code> truststore password
+   * @param  s  truststore password
    */
   public void setTrustStorePassword(final String s)
   {
@@ -94,9 +94,9 @@ public class KeyStoreCredentialConfig implements CredentialConfig
 
 
   /**
-   * This returns the type of the truststore.
+   * Returns the type of the truststore.
    *
-   * @return  <code>String</code> truststore type
+   * @return  truststore type
    */
   public String getTrustStoreType()
   {
@@ -105,9 +105,9 @@ public class KeyStoreCredentialConfig implements CredentialConfig
 
 
   /**
-   * This sets the type of the truststore.
+   * Sets the type of the truststore.
    *
-   * @param  s  <code>String</code> truststore type
+   * @param  s  truststore type
    */
   public void setTrustStoreType(final String s)
   {
@@ -116,9 +116,9 @@ public class KeyStoreCredentialConfig implements CredentialConfig
 
 
   /**
-   * This returns the name of the keystore to use.
+   * Returns the name of the keystore to use.
    *
-   * @return  <code>String</code> keystore name
+   * @return  keystore name
    */
   public String getKeyStore()
   {
@@ -127,9 +127,9 @@ public class KeyStoreCredentialConfig implements CredentialConfig
 
 
   /**
-   * This sets the name of the keystore to use.
+   * Sets the name of the keystore to use.
    *
-   * @param  s  <code>String</code> keystore name
+   * @param  s  keystore name
    */
   public void setKeyStore(final String s)
   {
@@ -138,9 +138,9 @@ public class KeyStoreCredentialConfig implements CredentialConfig
 
 
   /**
-   * This returns the password for the keystore.
+   * Returns the password for the keystore.
    *
-   * @return  <code>String</code> keystore password
+   * @return  keystore password
    */
   public String getKeyStorePassword()
   {
@@ -149,9 +149,9 @@ public class KeyStoreCredentialConfig implements CredentialConfig
 
 
   /**
-   * This sets the password for the keystore.
+   * Sets the password for the keystore.
    *
-   * @param  s  <code>String</code> keystore password
+   * @param  s  keystore password
    */
   public void setKeyStorePassword(final String s)
   {
@@ -160,9 +160,9 @@ public class KeyStoreCredentialConfig implements CredentialConfig
 
 
   /**
-   * This returns the type of the keystore.
+   * Returns the type of the keystore.
    *
-   * @return  <code>String</code> keystore type
+   * @return  keystore type
    */
   public String getKeyStoreType()
   {
@@ -171,9 +171,9 @@ public class KeyStoreCredentialConfig implements CredentialConfig
 
 
   /**
-   * This sets the type of the keystore.
+   * Sets the type of the keystore.
    *
-   * @param  s  <code>String</code> keystore type
+   * @param  s  keystore type
    */
   public void setKeyStoreType(final String s)
   {

@@ -56,7 +56,7 @@ public class SingletonTLSSocketFactory extends TLSSocketFactory
   /**
    * This returns the default SSL socket factory.
    *
-   * @return  <code>SocketFactory</code>
+   * @return  socket factory
    */
   public static SocketFactory getDefault()
   {

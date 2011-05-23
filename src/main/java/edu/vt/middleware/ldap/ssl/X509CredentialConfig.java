@@ -18,7 +18,7 @@ import java.security.GeneralSecurityException;
 
 /**
  * Provides the properties necessary for creating an SSL context initializer
- * with a <code>X509CredentialReader</code>.
+ * with an X.509 credential reader.
  *
  * @author  Middleware Services
  * @version  $Revision: 1106 $ $Date: 2010-01-29 23:34:13 -0500 (Fri, 29 Jan 2010) $
@@ -49,9 +49,9 @@ public class X509CredentialConfig implements CredentialConfig
 
 
   /**
-   * This returns the name of the trust certificates to use.
+   * Returns the name of the trust certificates to use.
    *
-   * @return  <code>String</code> trust certificates name
+   * @return  trust certificates name
    */
   public String getTrustCertificates()
   {
@@ -60,9 +60,9 @@ public class X509CredentialConfig implements CredentialConfig
 
 
   /**
-   * This sets the name of the trust certificates to use.
+   * Sets the name of the trust certificates to use.
    *
-   * @param  s  <code>String</code> trust certificates name
+   * @param  s  trust certificates name
    */
   public void setTrustCertificates(final String s)
   {
@@ -71,9 +71,9 @@ public class X509CredentialConfig implements CredentialConfig
 
 
   /**
-   * This returns the name of the authentication certificate to use.
+   * Returns the name of the authentication certificate to use.
    *
-   * @return  <code>String</code> authentication certificate name
+   * @return  authentication certificate name
    */
   public String getAuthenticationCertificate()
   {
@@ -82,9 +82,9 @@ public class X509CredentialConfig implements CredentialConfig
 
 
   /**
-   * This sets the name of the authentication certificate to use.
+   * Sets the name of the authentication certificate to use.
    *
-   * @param  s  <code>String</code> authentication certificate name
+   * @param  s  authentication certificate name
    */
   public void setAuthenticationCertificate(final String s)
   {
@@ -93,9 +93,9 @@ public class X509CredentialConfig implements CredentialConfig
 
 
   /**
-   * This returns the name of the authentication key to use.
+   * Returns the name of the authentication key to use.
    *
-   * @return  <code>String</code> authentication key name
+   * @return  authentication key name
    */
   public String getAuthenticationKey()
   {
@@ -104,9 +104,9 @@ public class X509CredentialConfig implements CredentialConfig
 
 
   /**
-   * This sets the name of the authentication key to use.
+   * Sets the name of the authentication key to use.
    *
-   * @param  s  <code>String</code> authentication key name
+   * @param  s  authentication key name
    */
   public void setAuthenticationKey(final String s)
   {

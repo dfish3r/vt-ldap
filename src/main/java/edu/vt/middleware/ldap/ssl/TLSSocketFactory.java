@@ -19,10 +19,10 @@ import javax.net.ssl.SSLContext;
 import org.slf4j.LoggerFactory;
 
 /**
- * <code>TLSSocketFactory</code> is an extension of SSLSocketFactory. Note that
- * {@link #initialize()} must be called prior to using this socket factory. This
- * means that this class cannot be passed to implementations that expect the
- * socket factory to function immediately after construction.
+ * An extension of SSLSocketFactory that leverages an SSL context initializer.
+ * Note that {@link #initialize()} must be called prior to using this socket
+ * factory. This means that this class cannot be passed to implementations that
+ * expect the socket factory to function immediately after construction.
  *
  * @author  Middleware Services
  * @version  $Revision: 1106 $ $Date: 2010-01-29 23:34:13 -0500 (Fri, 29 Jan 2010) $
@@ -38,7 +38,7 @@ public class TLSSocketFactory extends AbstractTLSSocketFactory
   /**
    * Returns the SSL context initializer.
    *
-   * @return  <code>SSLContextInitializer</code>
+   * @return  SSL context initializer
    */
   public SSLContextInitializer getSSLContextInitializer()
   {
@@ -74,9 +74,9 @@ public class TLSSocketFactory extends AbstractTLSSocketFactory
 
 
   /**
-   * This returns the default SSL socket factory.
+   * Returns the default SSL socket factory.
    *
-   * @return  <code>SocketFactory</code>
+   * @return  socket factory
    */
   public static SocketFactory getDefault()
   {
@@ -94,7 +94,7 @@ public class TLSSocketFactory extends AbstractTLSSocketFactory
   /**
    * Provides a descriptive string representation of this instance.
    *
-   * @return  String of the form $Classname::factory=$factory.
+   * @return  string representation
    */
   @Override
   public String toString()

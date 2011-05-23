@@ -24,8 +24,8 @@ import javax.net.ssl.TrustManager;
 import javax.net.ssl.TrustManagerFactory;
 
 /**
- * Provides a <code>SSLContextInitializer</code> which can use X509 certificates
- * to create key and trust managers.
+ * Provides an SSL context initializer which can use X.509 certificates to create
+ * key and trust managers.
  *
  * @author  Middleware Services
  * @version  $Revision: 1106 $ $Date: 2010-01-29 23:34:13 -0500 (Fri, 29 Jan 2010) $
@@ -46,7 +46,7 @@ public class X509SSLContextInitializer extends AbstractSSLContextInitializer
   /**
    * Returns the certificates to use for creating the trust managers.
    *
-   * @return  <code>X509Certificates[]</code>
+   * @return  X.509 certificates
    */
   public X509Certificate[] getTrustCertificates()
   {
@@ -57,7 +57,7 @@ public class X509SSLContextInitializer extends AbstractSSLContextInitializer
   /**
    * Sets the certificates to use for creating the trust managers.
    *
-   * @param  certs  <code>X509Certificates[]</code>
+   * @param  certs  X.509 certificates
    */
   public void setTrustCertificates(final X509Certificate[] certs)
   {
@@ -68,7 +68,7 @@ public class X509SSLContextInitializer extends AbstractSSLContextInitializer
   /**
    * Returns the certificate to use for creating the key managers.
    *
-   * @return  <code>X509Certificate</code>
+   * @return  X.509 certificate
    */
   public X509Certificate getAuthenticationCertificate()
   {
@@ -79,7 +79,7 @@ public class X509SSLContextInitializer extends AbstractSSLContextInitializer
   /**
    * Sets the certificate to use for creating the key managers.
    *
-   * @param  cert  <code>X509Certificate</code>
+   * @param  cert  X.509 certificate
    */
   public void setAuthenticationCertificate(final X509Certificate cert)
   {
@@ -90,7 +90,7 @@ public class X509SSLContextInitializer extends AbstractSSLContextInitializer
   /**
    * Returns the private key associated with the authentication certificate.
    *
-   * @return  <code>PrivateKey</code>
+   * @return  private key
    */
   public PrivateKey getAuthenticationKey()
   {
@@ -101,7 +101,7 @@ public class X509SSLContextInitializer extends AbstractSSLContextInitializer
   /**
    * Sets the private key associated with the authentication certificate.
    *
-   * @param  key  <code>PrivateKey</code>
+   * @param  key  private key
    */
   public void setAuthenticationKey(final PrivateKey key)
   {
