@@ -14,13 +14,13 @@
 package edu.vt.middleware.ldap.pool;
 
 /**
- * <code>BlockingTimeoutException</code> is thrown when a blocking operation
- * times out. See {@link BlockingLdapPool#checkOut()}.
+ * Thrown when a blocking operation times out. See
+ * {@link BlockingPool#checkOut()}.
  *
  * @author  Middleware Services
  * @version  $Revision$
  */
-public class BlockingTimeoutException extends LdapPoolException
+public class BlockingTimeoutException extends PoolException
 {
 
   /** serialVersionUID. */
@@ -28,10 +28,9 @@ public class BlockingTimeoutException extends LdapPoolException
 
 
   /**
-   * This creates a new <code>BlockingTimeoutException</code> with the supplied
-   * <code>String</code>.
+   * Creates a new blocking timeout exception.
    *
-   * @param  msg  <code>String</code>
+   * @param  msg  describing this exception
    */
   public BlockingTimeoutException(final String msg)
   {
@@ -40,10 +39,9 @@ public class BlockingTimeoutException extends LdapPoolException
 
 
   /**
-   * This creates a new <code>BlockingTimeoutException</code> with the supplied
-   * <code>Exception</code>.
+   * Creates a new blocking timeout exception.
    *
-   * @param  e  <code>Exception</code>
+   * @param  e  pooling specific exception
    */
   public BlockingTimeoutException(final Exception e)
   {
@@ -52,11 +50,10 @@ public class BlockingTimeoutException extends LdapPoolException
 
 
   /**
-   * This creates a new <code>BlockingTimeoutException</code> with the supplied
-   * <code>String</code> and <code>Exception</code>.
+   * Creates a new blocking timeout exception.
    *
-   * @param  msg  <code>String</code>
-   * @param  e  <code>Exception</code>
+   * @param  msg  describing this exception
+   * @param  e  pooling specific exception
    */
   public BlockingTimeoutException(final String msg, final Exception e)
   {

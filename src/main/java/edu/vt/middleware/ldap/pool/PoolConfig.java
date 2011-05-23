@@ -16,13 +16,13 @@ package edu.vt.middleware.ldap.pool;
 import edu.vt.middleware.ldap.AbstractConfig;
 
 /**
- * <code>LdapPoolConfig</code> contains all the configuration data that the
- * pooling implementations need to control the pool.
+ * Contains all the configuration data that the pooling implementations need to
+ * control the pool.
  *
  * @author  Middleware Services
  * @version  $Revision$ $Date$
  */
-public class LdapPoolConfig extends AbstractConfig
+public class PoolConfig extends AbstractConfig
 {
   /** Default min pool size, value is {@value}. */
   public static final int DEFAULT_MIN_POOL_SIZE = 3;
@@ -74,15 +74,14 @@ public class LdapPoolConfig extends AbstractConfig
 
 
   /** Default constructor. */
-  public LdapPoolConfig() {}
+  public PoolConfig() {}
 
 
   /**
-   * This returns the min pool size for the <code>LdapPoolConfig</code>. Default
-   * value is {@link #DEFAULT_MIN_POOL_SIZE}. This value represents the size of
-   * the pool after a prune has occurred.
+   * Returns the min pool size. Default value is {@link #DEFAULT_MIN_POOL_SIZE}.
+   * This value represents the size of the pool after a prune has occurred.
    *
-   * @return  <code>int</code> - min pool size
+   * @return  min pool size
    */
   public int getMinPoolSize()
   {
@@ -91,11 +90,11 @@ public class LdapPoolConfig extends AbstractConfig
 
 
   /**
-   * This returns the max pool size for the <code>LdapPoolConfig</code>. Default
-   * value is {@link #DEFAULT_MAX_POOL_SIZE}. This value may or may not be
-   * strictly enforced depending on the pooling implementation.
+   * Returns the max pool size. Default value is {@link #DEFAULT_MAX_POOL_SIZE}.
+   * This value may or may not be strictly enforced depending on the pooling
+   * implementation.
    *
-   * @return  <code>int</code> - max pool size
+   * @return  max pool size
    */
   public int getMaxPoolSize()
   {
@@ -104,11 +103,10 @@ public class LdapPoolConfig extends AbstractConfig
 
 
   /**
-   * This returns the validate on check in flag for the <code>
-   * LdapPoolConfig</code>. Default value is {@link
+   * Returns the validate on check in flag. Default value is {@link
    * #DEFAULT_VALIDATE_ON_CHECKIN}.
    *
-   * @return  <code>boolean</code> - validate on check in
+   * @return  validate on check in
    */
   public boolean isValidateOnCheckIn()
   {
@@ -117,11 +115,10 @@ public class LdapPoolConfig extends AbstractConfig
 
 
   /**
-   * This returns the validate on check out flag for the <code>
-   * LdapPoolConfig</code>. Default value is {@link
+   * Returns the validate on check out flag. Default value is {@link
    * #DEFAULT_VALIDATE_ON_CHECKOUT}.
    *
-   * @return  <code>boolean</code> - validate on check in
+   * @return  validate on check in
    */
   public boolean isValidateOnCheckOut()
   {
@@ -130,11 +127,10 @@ public class LdapPoolConfig extends AbstractConfig
 
 
   /**
-   * This returns the validate periodically flag for the <code>
-   * LdapPoolConfig</code>. Default value is {@link
+   * Returns the validate periodically flag. Default value is {@link
    * #DEFAULT_VALIDATE_PERIODICALLY}.
    *
-   * @return  <code>boolean</code> - validate periodically
+   * @return  validate periodically
    */
   public boolean isValidatePeriodically()
   {
@@ -143,10 +139,9 @@ public class LdapPoolConfig extends AbstractConfig
 
 
   /**
-   * This returns the prune period for the <code>LdapPoolConfig</code>.
-   * Default value is {@link #DEFAULT_PRUNE_PERIOD}..
+   * Returns the prune period. Default value is {@link #DEFAULT_PRUNE_PERIOD}.
    *
-   * @return  <code>long</code> - prune period in seconds
+   * @return  prune period in seconds
    */
   public long getPrunePeriod()
   {
@@ -155,10 +150,10 @@ public class LdapPoolConfig extends AbstractConfig
 
 
   /**
-   * This returns the validate period for the <code>LdapPoolConfig</code>.
-   * Default value is {@link #DEFAULT_VALIDATE_PERIOD}.
+   * Returns the validate period. Default value is {@link
+   * #DEFAULT_VALIDATE_PERIOD}.
    *
-   * @return  <code>long</code> - validate period in seconds
+   * @return  validate period in seconds
    */
   public long getValidatePeriod()
   {
@@ -167,13 +162,13 @@ public class LdapPoolConfig extends AbstractConfig
 
 
   /**
-   * This returns the expiration time for the <code>LdapPoolConfig</code>.
-   * Default value is {@link #DEFAULT_EXPIRATION_TIME}. The expiration time
-   * represents the max time an ldap object should be available before it is
-   * considered stale. This value does not apply to objects in the pool if the
-   * pool has only a minimum number of objects available.
+   * Returns the expiration time. Default value is {@link
+   * #DEFAULT_EXPIRATION_TIME}. The expiration time represents the max time an
+   * ldap connection should be available before it is considered stale. This
+   * value does not apply to connections in the pool if the pool has only the
+   * minimum number of connections available.
    *
-   * @return  <code>long</code> - expiration time in seconds
+   * @return  expiration time in seconds
    */
   public long getExpirationTime()
   {
@@ -182,9 +177,9 @@ public class LdapPoolConfig extends AbstractConfig
 
 
   /**
-   * This sets the min pool size for the <code>LdapPoolConfig</code>.
+   * Sets the min pool size.
    *
-   * @param  size  <code>int</code>
+   * @param  size  min pool size
    */
   public void setMinPoolSize(final int size)
   {
@@ -197,9 +192,9 @@ public class LdapPoolConfig extends AbstractConfig
 
 
   /**
-   * This sets the max pool size for the <code>LdapPoolConfig</code>.
+   * Sets the max pool size.
    *
-   * @param  size  <code>int</code>
+   * @param  size  max pool size
    */
   public void setMaxPoolSize(final int size)
   {
@@ -212,10 +207,9 @@ public class LdapPoolConfig extends AbstractConfig
 
 
   /**
-   * This sets the validate on check in flag for the <code>
-   * LdapPoolConfig</code>.
+   * Sets the validate on check in flag.
    *
-   * @param  b  <code>boolean</code>
+   * @param  b  validate on check in
    */
   public void setValidateOnCheckIn(final boolean b)
   {
@@ -226,10 +220,9 @@ public class LdapPoolConfig extends AbstractConfig
 
 
   /**
-   * This sets the validate on check out flag for the <code>
-   * LdapPoolConfig</code>.
+   * Sets the validate on check out flag.
    *
-   * @param  b  <code>boolean</code>
+   * @param  b  validate on check out
    */
   public void setValidateOnCheckOut(final boolean b)
   {
@@ -240,10 +233,9 @@ public class LdapPoolConfig extends AbstractConfig
 
 
   /**
-   * This sets the validate periodically flag for the <code>
-   * LdapPoolConfig</code>.
+   * Sets the validate periodically flag.
    *
-   * @param  b  <code>boolean</code>
+   * @param  b  validate periodically
    */
   public void setValidatePeriodically(final boolean b)
   {

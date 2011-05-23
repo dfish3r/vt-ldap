@@ -14,47 +14,48 @@
 package edu.vt.middleware.ldap.pool;
 
 /**
- * Thrown when a pool thread is unexpectedly interrupted while blocking.
+ * Thrown when an attempt to validate an ldap connection fails. See
+ * {@link ConnectionFactory#validate}.
  *
  * @author  Middleware Services
  * @version  $Revision$
  */
-public class PoolInterruptedException extends PoolException
+public class ValidationException extends PoolException
 {
 
   /** serialVersionUID. */
-  private static final long serialVersionUID = 3788775913431470860L;
+  private static final long serialVersionUID = -3130116579807362686L;
 
 
   /**
-   * Creates a new pool interrupted exception.
+   * Creates a new validation exception.
    *
    * @param  msg  describing this exception
    */
-  public PoolInterruptedException(final String msg)
+  public ValidationException(final String msg)
   {
     super(msg);
   }
 
 
   /**
-   * Creates a new pool interrupted exception.
+   * Creates a new validation exception.
    *
    * @param  e  pooling specific exception
    */
-  public PoolInterruptedException(final Exception e)
+  public ValidationException(final Exception e)
   {
     super(e);
   }
 
 
   /**
-   * Creates a new pool interrupted exception.
+   * Creates a new validation exception.
    *
    * @param  msg  describing this exception
    * @param  e  pooling specific exception
    */
-  public PoolInterruptedException(final String msg, final Exception e)
+  public ValidationException(final String msg, final Exception e)
   {
     super(msg, e);
   }

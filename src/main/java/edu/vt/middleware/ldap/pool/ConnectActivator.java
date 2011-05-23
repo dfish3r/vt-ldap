@@ -19,13 +19,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * <code>ConnectLdapActivator</code> activates an ldap object by attempting to
- * connect to the ldap.
+ * Activates an ldap connection by attempting to open a connection to the ldap.
  *
  * @author  Middleware Services
  * @version  $Revision$ $Date$
  */
-public class ConnectLdapActivator implements LdapActivator<Connection>
+public class ConnectActivator implements Activator<Connection>
 {
 
   /** Logger for this class. */
@@ -34,12 +33,12 @@ public class ConnectLdapActivator implements LdapActivator<Connection>
 
   /** {@inheritDoc} */
   @Override
-  public boolean activate(final Connection lc)
+  public boolean activate(final Connection c)
   {
     boolean success = false;
-    if (lc != null) {
+    if (c != null) {
       try {
-        lc.open();
+        c.open();
         success = true;
       } catch (LdapException e) {
         logger.error("unabled to connect to the ldap", e);

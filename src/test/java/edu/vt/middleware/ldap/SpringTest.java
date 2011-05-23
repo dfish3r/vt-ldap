@@ -13,7 +13,7 @@
 */
 package edu.vt.middleware.ldap;
 
-import edu.vt.middleware.ldap.pool.BlockingLdapPool;
+import edu.vt.middleware.ldap.pool.BlockingPool;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.testng.AssertJUnit;
 import org.testng.annotations.Test;
@@ -53,8 +53,8 @@ public class SpringTest
         "/spring-pool-context.xml",
       });
     AssertJUnit.assertTrue(poolContext.getBeanDefinitionCount() > 0);
-    final BlockingLdapPool lp =
-      (BlockingLdapPool) poolContext.getBean("ldapPool");
+    final BlockingPool lp =
+      (BlockingPool) poolContext.getBean("pool");
     lp.close();
   }
 }

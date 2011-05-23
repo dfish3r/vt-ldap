@@ -16,23 +16,23 @@ package edu.vt.middleware.ldap.pool;
 import edu.vt.middleware.ldap.Connection;
 
 /**
- * <code>CloseLdapPassivator</code> passivates an ldap object by attempting to
- * close it's connection to the ldap.
+ * Passivates an ldap connection by attempting to close it.
  *
  * @author  Middleware Services
  * @version  $Revision$ $Date$
  */
-public class CloseLdapPassivator implements LdapPassivator<Connection>
+public class ClosePassivator
+  implements Passivator<Connection>
 {
 
 
   /** {@inheritDoc} */
   @Override
-  public boolean passivate(final Connection lc)
+  public boolean passivate(final Connection c)
   {
     boolean success = false;
-    if (lc != null) {
-      lc.close();
+    if (c != null) {
+      c.close();
       success = true;
     }
     return success;

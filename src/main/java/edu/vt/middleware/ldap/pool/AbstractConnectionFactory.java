@@ -18,92 +18,91 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * <code>AbstractLdapFactory</code> provides a basic implementation of an ldap
- * factory.
+ * Provides a the base implementation of an connection factory.
  *
- * @param  <T>  type of ldap object
+ * @param  <T>  type of ldap connection
  *
  * @author  Middleware Services
  * @version  $Revision$ $Date$
  */
-public abstract class AbstractLdapFactory<T extends Connection>
-  implements LdapFactory<T>
+public abstract class AbstractConnectionFactory<T extends Connection>
+  implements ConnectionFactory<T>
 {
 
   /** Logger for this class. */
   protected final Logger logger = LoggerFactory.getLogger(getClass());
 
-  /** For activating ldap objects. */
-  protected LdapActivator<T> activator;
+  /** For activating ldap connections. */
+  protected Activator<T> activator;
 
-  /** For passivating ldap objects. */
-  protected LdapPassivator<T> passivator;
+  /** For passivating ldap connections. */
+  protected Passivator<T> passivator;
 
-  /** For validating ldap objects. */
-  protected LdapValidator<T> validator;
+  /** For validating ldap connections. */
+  protected Validator<T> validator;
 
 
   /**
-   * Sets the ldap activator for this factory.
+   * Sets the activator for this factory.
    *
-   * @param  la  ldap activator
+   * @param  a  activator
    */
-  public void setLdapActivator(final LdapActivator<T> la)
+  public void setActivator(final Activator<T> a)
   {
-    activator = la;
+    activator = a;
   }
 
 
   /**
-   * Returns the ldap activator for this factory.
+   * Returns the activator for this factory.
    *
-   * @return  ldap activator
+   * @return  activator
    */
-  public LdapActivator<T> getLdapActivator()
+  public Activator<T> getActivator()
   {
     return activator;
   }
 
 
   /**
-   * Sets the ldap passivator for this factory.
+   * Sets the passivator for this factory.
    *
-   * @param  lp  ldap passivator
+   * @param  p  passivator
    */
-  public void setLdapPassivator(final LdapPassivator<T> lp)
+  public void setPassivator(final Passivator<T> p)
   {
-    passivator = lp;
+    passivator = p;
   }
 
 
   /**
-   * Returns the ldap passivator for this factory.
+   * Returns the passivator for this factory.
    *
-   * @return  ldap passivator
+   * @return  passivator
    */
-  public LdapPassivator<T> getLdapPassivator()
+  public Passivator<T> getPassivator()
   {
     return passivator;
   }
 
 
   /**
-   * Sets the ldap validator for this factory.
+   * Sets the validator for this factory.
    *
-   * @param  lv  ldap validator
+   * @param  v  validator
    */
-  public void setLdapValidator(final LdapValidator<T> lv)
+  public void setValidator(final Validator<T> v)
   {
-    validator = lv;
+    validator = v;
   }
 
 
   /**
-   * Returns the ldap validator for this factory.
+   * Returns the validator for this factory.
    *
-   * @return  ldap validator
+   * @return  validator
    */
-  public LdapValidator<T> getLdapValidator()
+  public Validator<T> getValidator()
   {
     return validator;
   }

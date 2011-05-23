@@ -23,15 +23,15 @@ import edu.vt.middleware.ldap.LdapResult;
 import edu.vt.middleware.ldap.SearchFilter;
 import edu.vt.middleware.ldap.SearchOperation;
 import edu.vt.middleware.ldap.SearchRequest;
-import edu.vt.middleware.ldap.pool.BlockingLdapPool;
-import edu.vt.middleware.ldap.pool.DefaultLdapFactory;
-import edu.vt.middleware.ldap.pool.LdapPool;
-import edu.vt.middleware.ldap.pool.LdapPoolConfig;
-import edu.vt.middleware.ldap.pool.LdapPoolException;
-import edu.vt.middleware.ldap.pool.SharedLdapPool;
-import edu.vt.middleware.ldap.pool.SoftLimitLdapPool;
+import edu.vt.middleware.ldap.pool.BlockingPool;
+import edu.vt.middleware.ldap.pool.DefaultConnectionFactory;
+import edu.vt.middleware.ldap.pool.Pool;
+import edu.vt.middleware.ldap.pool.PoolConfig;
+import edu.vt.middleware.ldap.pool.PoolException;
+import edu.vt.middleware.ldap.pool.SharedPool;
+import edu.vt.middleware.ldap.pool.SoftLimitPool;
 import edu.vt.middleware.ldap.props.ConnectionConfigPropertySource;
-import edu.vt.middleware.ldap.props.LdapPoolConfigPropertySource;
+import edu.vt.middleware.ldap.props.PoolConfigPropertySource;
 import edu.vt.middleware.ldap.props.SearchRequestPropertySource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -80,7 +80,7 @@ public abstract class AbstractServlet extends HttpServlet
   protected final Logger logger = LoggerFactory.getLogger(getClass());
 
   /** Pool for searching. */
-  private LdapPool<Connection> ldapPool;
+  private Pool<Connection> ldapPool;
 
   /** Search request reader for reading search properties. */
   private SearchRequestPropertySource searchRequestSource;
@@ -112,19 +112,19 @@ public abstract class AbstractServlet extends HttpServlet
     final String poolPropertiesFile = getInitParameter(POOL_PROPERTIES_FILE);
     logger.debug("{} = {}", POOL_PROPERTIES_FILE, poolPropertiesFile);
 
-    final LdapPoolConfigPropertySource lpcSource =
-      new LdapPoolConfigPropertySource(
+    final PoolConfigPropertySource lpcSource =
+      new PoolConfigPropertySource(
         SearchServlet.class.getResourceAsStream(poolPropertiesFile));
-    final LdapPoolConfig lpc = lpcSource.get();
+    final PoolConfig lpc = lpcSource.get();
 
     final String poolType = getInitParameter(POOL_TYPE);
     logger.debug("{} = {}", POOL_TYPE, poolType);
     if (PoolType.BLOCKING == PoolType.valueOf(poolType)) {
-      ldapPool = new BlockingLdapPool(lpc, new DefaultLdapFactory(lcc));
+      ldapPool = new BlockingPool(lpc, new DefaultConnectionFactory(lcc));
     } else if (PoolType.SOFTLIMIT == PoolType.valueOf(poolType)) {
-      ldapPool = new SoftLimitLdapPool(lpc, new DefaultLdapFactory(lcc));
+      ldapPool = new SoftLimitPool(lpc, new DefaultConnectionFactory(lcc));
     } else if (PoolType.SHARED == PoolType.valueOf(poolType)) {
-      ldapPool = new SharedLdapPool(lpc, new DefaultLdapFactory(lcc));
+      ldapPool = new SharedPool(lpc, new DefaultConnectionFactory(lcc));
     } else {
       throw new ServletException("Unknown pool type: " + poolType);
     }
@@ -160,7 +160,7 @@ public abstract class AbstractServlet extends HttpServlet
         } finally {
           ldapPool.checkIn(conn);
         }
-      } catch (LdapPoolException e) {
+      } catch (PoolException e) {
         logger.error("Error using LDAP pool", e);
       }
     }

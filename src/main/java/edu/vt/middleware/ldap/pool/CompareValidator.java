@@ -23,13 +23,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * <code>CompareLdapValidator</code> validates an ldap connection is healthy by
- * performing a compare operation.
+ * Validates an ldap connection is healthy by performing a compare operation.
  *
  * @author  Middleware Services
  * @version  $Revision$ $Date$
  */
-public class CompareLdapValidator implements LdapValidator<Connection>
+public class CompareValidator
+  implements Validator<Connection>
 {
 
   /** Logger for this class. */
@@ -43,17 +43,16 @@ public class CompareLdapValidator implements LdapValidator<Connection>
 
 
   /** Default constructor. */
-  public CompareLdapValidator() {}
+  public CompareValidator() {}
 
 
   /**
-   * Creates a new <code>CompareLdapValidator</code> with the supplied compare
-   * dn and filter.
+   * Creates a new compare connection validator.
    *
    * @param  dn  to use for compares
    * @param  filter  to use for compares
    */
-  public CompareLdapValidator(final String dn, final SearchFilter filter)
+  public CompareValidator(final String dn, final SearchFilter filter)
   {
     validateDn = dn;
     validateFilter = filter;
@@ -106,12 +105,12 @@ public class CompareLdapValidator implements LdapValidator<Connection>
 
   /** {@inheritDoc} */
   @Override
-  public boolean validate(final Connection lc)
+  public boolean validate(final Connection c)
   {
     boolean success = false;
-    if (lc != null) {
+    if (c != null) {
       try {
-        final SearchOperation search = new SearchOperation(lc);
+        final SearchOperation search = new SearchOperation(c);
         final LdapResult lr = search.execute(
           new SearchRequest(
             validateDn, validateFilter)).getResult();

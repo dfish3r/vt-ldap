@@ -26,29 +26,29 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * <code>AbstractLdapPool</code> contains the basic implementation for pooling
- * ldap objects. The main design objective for the supplied pooling
- * implementations is to provide a pool that does not block on object creation
- * or destruction. This is what accounts for the multiple locks available on
- * this class. The pool is backed by two queues, one for available objects and
- * one for active objects. Objects that are available for {@link #checkOut()}
- * exist in the available queue. Objects that are actively in use exist in the
- * active queue. Note that depending on the implementation an object can exist
- * in both queues at the same time.
+ * Contains the base implementation for pooling ldap connections. The main
+ * design objective for the supplied pooling implementations is to provide a
+ * pool that does not block on connection creation or destruction. This is what
+ * accounts for the multiple locks available on this class. The pool is backed
+ * by two queues, one for available connections and one for active connections.
+ * Connections that are available for {@link #checkOut()} exist in the available
+ * queue. Connections that are actively in use exist in the active queue. Note
+ * that depending on the implementation a connection can exist in both queues at
+ * the same time.
  *
- * @param  <T>  type of ldap object
+ * @param  <T>  type of ldap connection
  *
  * @author  Middleware Services
  * @version  $Revision$ $Date$
  */
-public abstract class AbstractLdapPool<T extends Connection>
-  implements LdapPool<T>
+public abstract class AbstractPool<T extends Connection>
+  implements Pool<T>
 {
 
   /** Lock for the entire pool. */
   protected final ReentrantLock poolLock = new ReentrantLock();
 
-  /** Condition for notifying threads that an object was returned. */
+  /** Condition for notifying threads that a connection was returned. */
   protected final Condition poolNotEmpty = poolLock.newCondition();
 
   /** Lock for check ins. */
@@ -60,19 +60,19 @@ public abstract class AbstractLdapPool<T extends Connection>
   /** Logger for this class. */
   protected final Logger logger = LoggerFactory.getLogger(getClass());
 
-  /** List of available ldap objects in the pool. */
+  /** List of available ldap connections in the pool. */
   protected Queue<PooledConnection<T>> available =
     new LinkedList<PooledConnection<T>>();
 
-  /** List of ldap objects in use. */
+  /** List of ldap connections in use. */
   protected Queue<PooledConnection<T>> active =
     new LinkedList<PooledConnection<T>>();
 
-  /** Ldap pool config. */
-  protected LdapPoolConfig poolConfig;
+  /** Pool config. */
+  protected PoolConfig config;
 
-  /** Factory to create ldap objects. */
-  protected LdapFactory<T> ldapFactory;
+  /** Factory to create ldap connections. */
+  protected ConnectionFactory<T> factory;
 
   /** Executor for scheduling pool tasks. */
   protected ScheduledExecutorService poolExecutor =
@@ -88,25 +88,25 @@ public abstract class AbstractLdapPool<T extends Connection>
 
 
   /**
-   * Creates a new pool with the supplied pool configuration and ldap factory.
-   * The pool configuration will be marked as immutable by this pool.
+   * Creates a new pool with the supplied pool configuration and connection
+   * factory. The pool configuration will be marked as immutable by this pool.
    *
-   * @param  lpc  <code>LdapPoolConfig</code>
-   * @param  lf  <code>LdapFactory</code>
+   * @param  pc  pool config
+   * @param  cf  connection factory
    */
-  public AbstractLdapPool(final LdapPoolConfig lpc, final LdapFactory<T> lf)
+  public AbstractPool(final PoolConfig pc, final ConnectionFactory<T> cf)
   {
-    poolConfig = lpc;
-    poolConfig.makeImmutable();
-    ldapFactory = lf;
+    config = pc;
+    config.makeImmutable();
+    factory = cf;
   }
 
 
   /** {@inheritDoc} */
   @Override
-  public LdapPoolConfig getLdapPoolConfig()
+  public PoolConfig getPoolConfig()
   {
-    return poolConfig;
+    return config;
   }
 
 
@@ -126,8 +126,8 @@ public abstract class AbstractLdapPool<T extends Connection>
     };
     poolExecutor.scheduleAtFixedRate(
       prune,
-      poolConfig.getPrunePeriod(),
-      poolConfig.getPrunePeriod(),
+      config.getPrunePeriod(),
+      config.getPrunePeriod(),
       TimeUnit.SECONDS);
     logger.debug("prune pool task scheduled");
 
@@ -141,8 +141,8 @@ public abstract class AbstractLdapPool<T extends Connection>
     };
     poolExecutor.scheduleAtFixedRate(
       validate,
-      poolConfig.getValidatePeriod(),
-      poolConfig.getValidatePeriod(),
+      config.getValidatePeriod(),
+      config.getValidatePeriod(),
       TimeUnit.SECONDS);
     logger.debug("validate pool task scheduled");
 
@@ -156,21 +156,21 @@ public abstract class AbstractLdapPool<T extends Connection>
   private void initializePool()
   {
     logger.debug(
-      "checking ldap pool size >= {}", poolConfig.getMinPoolSize());
+      "checking ldap pool size >= {}", config.getMinPoolSize());
 
     int count = 0;
     poolLock.lock();
     try {
       while (
-        available.size() < poolConfig.getMinPoolSize() &&
-          count < poolConfig.getMinPoolSize() * 2) {
+        available.size() < config.getMinPoolSize() &&
+          count < config.getMinPoolSize() * 2) {
         final T t = createAvailable();
-        if (poolConfig.isValidateOnCheckIn()) {
-          if (ldapFactory.validate(t)) {
+        if (config.isValidateOnCheckIn()) {
+          if (factory.validate(t)) {
             logger.trace(
-              "ldap object passed initialize validation: {}", t);
+              "ldap connection passed initialize validation: {}", t);
           } else {
-            logger.warn("ldap object failed initialize validation: {}", t);
+            logger.warn("ldap connection failed initialize validation: {}", t);
             removeAvailable(t);
           }
         }
@@ -190,11 +190,11 @@ public abstract class AbstractLdapPool<T extends Connection>
     try {
       while (available.size() > 0) {
         final PooledConnection<T> pl = available.remove();
-        ldapFactory.destroy(pl.getConnection());
+        factory.destroy(pl.getConnection());
       }
       while (active.size() > 0) {
         final PooledConnection<T> pl = active.remove();
-        ldapFactory.destroy(pl.getConnection());
+        factory.destroy(pl.getConnection());
       }
       logger.debug("pool closed");
     } finally {
@@ -208,13 +208,13 @@ public abstract class AbstractLdapPool<T extends Connection>
 
 
   /**
-   * Create a new ldap object and place it in the available pool.
+   * Create a new ldap connection and place it in the available pool.
    *
-   * @return  ldap object that was placed in the available pool
+   * @return  ldap connection that was placed in the available pool
    */
   protected T createAvailable()
   {
-    final T t = ldapFactory.create();
+    final T t = factory.create();
     if (t != null) {
       final PooledConnection<T> pl = new PooledConnection<T>(t);
       poolLock.lock();
@@ -224,20 +224,20 @@ public abstract class AbstractLdapPool<T extends Connection>
         poolLock.unlock();
       }
     } else {
-      logger.warn("unable to create available ldap object");
+      logger.warn("unable to create available ldap connection");
     }
     return t;
   }
 
 
   /**
-   * Create a new ldap object and place it in the active pool.
+   * Create a new ldap connection and place it in the active pool.
    *
-   * @return  ldap object that was placed in the active pool
+   * @return  ldap connection that was placed in the active pool
    */
   protected T createActive()
   {
-    final T t = ldapFactory.create();
+    final T t = factory.create();
     if (t != null) {
       final PooledConnection<T> pl = new PooledConnection<T>(t);
       poolLock.lock();
@@ -247,21 +247,21 @@ public abstract class AbstractLdapPool<T extends Connection>
         poolLock.unlock();
       }
     } else {
-      logger.warn("unable to create active ldap object");
+      logger.warn("unable to create active ldap connection");
     }
     return t;
   }
 
 
   /**
-   * Create a new ldap object and place it in both the available and active
+   * Create a new ldap connection and place it in both the available and active
    * pools.
    *
-   * @return  ldap object that was placed in the available and active pools
+   * @return  ldap connection that was placed in the available and active pools
    */
   protected T createAvailableAndActive()
   {
-    final T t = ldapFactory.create();
+    final T t = factory.create();
     if (t != null) {
       final PooledConnection<T> pl = new PooledConnection<T>(t);
       poolLock.lock();
@@ -272,16 +272,16 @@ public abstract class AbstractLdapPool<T extends Connection>
         poolLock.unlock();
       }
     } else {
-      logger.warn("unable to create available and active ldap object");
+      logger.warn("unable to create available and active ldap connection");
     }
     return t;
   }
 
 
   /**
-   * Remove an ldap object from the available pool.
+   * Remove an ldap connection from the available pool.
    *
-   * @param  t  ldap object that exists in the available pool
+   * @param  t  ldap connection that was in the available pool
    */
   protected void removeAvailable(final T t)
   {
@@ -293,22 +293,22 @@ public abstract class AbstractLdapPool<T extends Connection>
         destroy = true;
       } else {
         logger.warn(
-          "attempt to remove unknown available ldap object: {}", t);
+          "attempt to remove unknown available ldap connection: {}", t);
       }
     } finally {
       poolLock.unlock();
     }
     if (destroy) {
-      logger.trace("removing available ldap object: {}", t);
-      ldapFactory.destroy(t);
+      logger.trace("removing available ldap connection: {}", t);
+      factory.destroy(t);
     }
   }
 
 
   /**
-   * Remove an ldap object from the active pool.
+   * Remove an ldap connection from the active pool.
    *
-   * @param  t  ldap object that exists in the active pool
+   * @param  t  ldap connection that was in the active pool
    */
   protected void removeActive(final T t)
   {
@@ -319,22 +319,22 @@ public abstract class AbstractLdapPool<T extends Connection>
       if (active.remove(pl)) {
         destroy = true;
       } else {
-        logger.warn("attempt to remove unknown active ldap object: {}", t);
+        logger.warn("attempt to remove unknown active ldap connection: {}", t);
       }
     } finally {
       poolLock.unlock();
     }
     if (destroy) {
-      logger.trace("removing active ldap object: {}", t);
-      ldapFactory.destroy(t);
+      logger.trace("removing active ldap connection: {}", t);
+      factory.destroy(t);
     }
   }
 
 
   /**
-   * Remove an ldap object from both the available and active pools.
+   * Remove an ldap connection from both the available and active pools.
    *
-   * @param  t  ldap object that exists in the both the available and active
+   * @param  t  ldap connection that was in the both the available and active
    * pools
    */
   protected void removeAvailableAndActive(final T t)
@@ -347,75 +347,75 @@ public abstract class AbstractLdapPool<T extends Connection>
         destroy = true;
       } else {
         logger.debug(
-          "attempt to remove unknown available ldap object: {}", t);
+          "attempt to remove unknown available ldap connection: {}", t);
       }
       if (active.remove(pl)) {
         destroy = true;
       } else {
         logger.debug(
-          "attempt to remove unknown active ldap object: {}", t);
+          "attempt to remove unknown active ldap connection: {}", t);
       }
     } finally {
       poolLock.unlock();
     }
     if (destroy) {
-      logger.trace("removing active ldap object: {}", t);
-      ldapFactory.destroy(t);
+      logger.trace("removing active ldap connection: {}", t);
+      factory.destroy(t);
     }
   }
 
 
   /**
-   * Attempts to activate and validate an ldap object. Performed before an
-   * object is returned from {@link LdapPool#checkOut()}.
+   * Attempts to activate and validate an ldap connection. Performed before a
+   * connection is returned from {@link Pool#checkOut()}.
    *
-   * @param  t  ldap object
+   * @param  t  ldap connection
    *
-   * @throws  LdapPoolException  if this method fais
-   * @throws  LdapActivationException  if the ldap object cannot be activated
-   * @throws  LdapValidateException  if the ldap object cannot be validated
+   * @throws  PoolException  if this method fais
+   * @throws  ActivationException  if the ldap connection cannot be activated
+   * @throws  ValidationException  if the ldap connection cannot be validated
    */
   protected void activateAndValidate(final T t)
-    throws LdapPoolException
+    throws PoolException
   {
-    if (!ldapFactory.activate(t)) {
-      logger.warn("ldap object failed activation: {}", t);
+    if (!factory.activate(t)) {
+      logger.warn("ldap connection failed activation: {}", t);
       removeAvailableAndActive(t);
-      throw new LdapActivationException("Activation of ldap object failed");
+      throw new ActivationException("Activation of ldap connection failed");
     }
     if (
-      poolConfig.isValidateOnCheckOut() &&
-        !ldapFactory.validate(t)) {
-      logger.warn("ldap object failed check out validation: {}", t);
+      config.isValidateOnCheckOut() &&
+        !factory.validate(t)) {
+      logger.warn("ldap connection failed check out validation: {}", t);
       removeAvailableAndActive(t);
-      throw new LdapValidationException("Validation of ldap object failed");
+      throw new ValidationException("Validation of ldap connection failed");
     }
   }
 
 
   /**
-   * Attempts to validate and passivate an ldap object. Performed when an object
-   * is given to {@link LdapPool#checkIn}.
+   * Attempts to validate and passivate an ldap connection. Performed when a
+   * connection is given to {@link Pool#checkIn}.
    *
-   * @param  t  ldap object
+   * @param  t  ldap connection
    *
    * @return  whether both validate and passivation succeeded
    */
   protected boolean validateAndPassivate(final T t)
   {
     boolean valid = false;
-    if (poolConfig.isValidateOnCheckIn()) {
-      if (!ldapFactory.validate(t)) {
-        logger.warn("ldap object failed check in validation: {}", t);
+    if (config.isValidateOnCheckIn()) {
+      if (!factory.validate(t)) {
+        logger.warn("ldap connection failed check in validation: {}", t);
       } else {
         valid = true;
       }
     } else {
       valid = true;
     }
-    if (valid && !ldapFactory.passivate(t)) {
+    if (valid && !factory.passivate(t)) {
       valid = false;
-      logger.warn("ldap object failed activation: {}", t);
+      logger.warn("ldap connection failed activation: {}", t);
     }
     return valid;
   }
@@ -431,22 +431,22 @@ public abstract class AbstractLdapPool<T extends Connection>
     try {
       if (active.size() == 0) {
         logger.debug("pruning pool of size {}", available.size());
-        while (available.size() > poolConfig.getMinPoolSize()) {
+        while (available.size() > config.getMinPoolSize()) {
           PooledConnection<T> pl = available.peek();
           final long time = System.currentTimeMillis() - pl.getCreatedTime();
           if (time >
-              TimeUnit.SECONDS.toMillis(poolConfig.getExpirationTime())) {
+              TimeUnit.SECONDS.toMillis(config.getExpirationTime())) {
             pl = available.remove();
             logger.trace(
               "removing {} in the pool for {}ms", pl.getConnection(), time);
-            ldapFactory.destroy(pl.getConnection());
+            factory.destroy(pl.getConnection());
           } else {
             break;
           }
         }
         logger.debug("pool size pruned to {}", available.size());
       } else {
-        logger.debug("pool is currently active, no objects pruned");
+        logger.debug("pool is currently active, no connections pruned");
       }
     } finally {
       poolLock.unlock();
@@ -461,7 +461,7 @@ public abstract class AbstractLdapPool<T extends Connection>
     poolLock.lock();
     try {
       if (active.size() == 0) {
-        if (poolConfig.isValidatePeriodically()) {
+        if (config.isValidatePeriodically()) {
           logger.debug(
             "validate for pool of size {}", available.size());
 
@@ -469,12 +469,12 @@ public abstract class AbstractLdapPool<T extends Connection>
             new LinkedList<PooledConnection<T>>();
           for (PooledConnection<T> pl : available) {
             logger.trace("validating {}", pl.getConnection());
-            if (ldapFactory.validate(pl.getConnection())) {
+            if (factory.validate(pl.getConnection())) {
               logger.trace(
-                "ldap object passed validation: {}", pl.getConnection());
+                "ldap connection passed validation: {}", pl.getConnection());
             } else {
               logger.warn(
-                "ldap object failed validation: {}", pl.getConnection());
+                "ldap connection failed validation: {}", pl.getConnection());
               remove.add(pl);
             }
           }
@@ -482,7 +482,7 @@ public abstract class AbstractLdapPool<T extends Connection>
             logger.trace(
               "removing {} from the pool", pl.getConnection());
             available.remove(pl);
-            ldapFactory.destroy(pl.getConnection());
+            factory.destroy(pl.getConnection());
           }
         }
         initializePool();
@@ -531,29 +531,29 @@ public abstract class AbstractLdapPool<T extends Connection>
 
 
   /**
-   * <code>PooledLdap</code> contains an ldap object that is participating in a
-   * pool. Used to track how long an ldap object has been in either the
-   * available or active queues.
+   * Contains an ldap connection that is participating in this pool. Used to
+   * track how long an ldap connection has been in either the available or
+   * active queues.
    *
-   * @param  <T>  type of ldap object
+   * @param  <T>  type of ldap connection
    */
-  static protected class PooledConnection<T extends Connection>
+  static class PooledConnection<T extends Connection>
   {
 
     /** hash code seed. */
     protected static final int HASH_CODE_SEED = 89;
 
-    /** Underlying search operation object. */
+    /** Underlying connection object. */
     private T conn;
 
-    /** Time this object was created. */
+    /** Time this connection was created. */
     private long createdTime;
 
 
     /**
-     * Creates a new <code>PooledLdap</code> with the supplied ldap object.
+     * Creates a new pooled connection.
      *
-     * @param  t  ldap object
+     * @param  t  ldap connection
      */
     public PooledConnection(final T t)
     {
@@ -574,7 +574,7 @@ public abstract class AbstractLdapPool<T extends Connection>
 
 
     /**
-     * Returns the time this object was created.
+     * Returns the time this connection was created.
      *
      * @return  creation time
      */
@@ -585,12 +585,11 @@ public abstract class AbstractLdapPool<T extends Connection>
 
 
     /**
-     * Returns whether the supplied <code>Object</code> contains the same data
-     * as this bean.
+     * Returns whether the supplied object contains the same data as this one.
      *
-     * @param  o  <code>Object</code>
+     * @param  o  to compare against
      *
-     * @return  <code>boolean</code>
+     * @return  whether the supplied object contains the same data as this one
      */
     public boolean equals(final Object o)
     {
@@ -605,9 +604,9 @@ public abstract class AbstractLdapPool<T extends Connection>
 
 
     /**
-     * This returns the hash code for this object.
+     * Returns the hash code for this object.
      *
-     * @return  <code>int</code>
+     * @return  hash code
      */
     public int hashCode()
     {

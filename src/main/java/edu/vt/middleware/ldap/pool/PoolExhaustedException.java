@@ -14,47 +14,47 @@
 package edu.vt.middleware.ldap.pool;
 
 /**
- * Thrown when a pool thread is unexpectedly interrupted while blocking.
+ * Thrown when the pool is empty and no new requests can be serviced.
  *
  * @author  Middleware Services
  * @version  $Revision$
  */
-public class PoolInterruptedException extends PoolException
+public class PoolExhaustedException extends PoolException
 {
 
   /** serialVersionUID. */
-  private static final long serialVersionUID = 3788775913431470860L;
+  private static final long serialVersionUID = 900885030182519501L;
 
 
   /**
-   * Creates a new pool interrupted exception.
+   * Creates a new pool exhausted exception.
    *
    * @param  msg  describing this exception
    */
-  public PoolInterruptedException(final String msg)
+  public PoolExhaustedException(final String msg)
   {
     super(msg);
   }
 
 
   /**
-   * Creates a new pool interrupted exception.
+   * Creates a new pool exhausted exception.
    *
    * @param  e  pooling specific exception
    */
-  public PoolInterruptedException(final Exception e)
+  public PoolExhaustedException(final Exception e)
   {
     super(e);
   }
 
 
   /**
-   * Creates a new pool interrupted exception.
+   * Creates a new pool exhausted exception.
    *
    * @param  msg  describing this exception
    * @param  e  pooling specific exception
    */
-  public PoolInterruptedException(final String msg, final Exception e)
+  public PoolExhaustedException(final String msg, final Exception e)
   {
     super(msg, e);
   }

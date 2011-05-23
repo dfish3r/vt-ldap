@@ -18,41 +18,40 @@ import edu.vt.middleware.ldap.ConnectionConfig;
 import edu.vt.middleware.ldap.LdapException;
 
 /**
- * <code>DefaultLdapFactory</code> provides a simple implementation of an ldap
- * factory.
+ * Provides a simple implementation of a connection factory.
  *
  * @author  Middleware Services
  * @version  $Revision$ $Date$
  */
-public class DefaultLdapFactory extends AbstractLdapFactory<Connection>
+public class DefaultConnectionFactory
+  extends AbstractConnectionFactory<Connection>
 {
 
-  /** Ldap connection configuration to create ldap objects with. */
+  /** Connection configuration to create ldap connections with. */
   private ConnectionConfig config;
 
-  /** Whether to connect to the ldap on object creation. */
+  /** Whether to connect to the ldap on connection creation. */
   private boolean connectOnCreate = true;
 
 
   /**
-   * This creates a new <code>DefaultLdapFactory</code> with the supplied ldap
-   * configuration. The ldap configuration will be marked as immutable by this
-   * factory.
+   * Creates a new default connection factory. The connection configuration will
+   * be marked as immutable by this factory.
    *
-   * @param  lcc  ldap connection config
+   * @param  cc  connection config
    */
-  public DefaultLdapFactory(final ConnectionConfig lcc)
+  public DefaultConnectionFactory(final ConnectionConfig cc)
   {
-    config = lcc;
+    config = cc;
     config.makeImmutable();
   }
 
 
   /**
-   * Returns whether ldap objects will attempt to connect after creation.
+   * Returns whether ldap connections will attempt to connect after creation.
    * Default is true.
    *
-   * @return  <code>boolean</code>
+   * @return   whether ldap connections will attempt to connect after creation
    */
   public boolean getConnectOnCreate()
   {
@@ -61,7 +60,7 @@ public class DefaultLdapFactory extends AbstractLdapFactory<Connection>
 
 
   /**
-   * This sets whether newly created ldap objects will attempt to connect.
+   * Sets whether newly created ldap connections will attempt to connect.
    * Default is true.
    *
    * @param  b  connect on create

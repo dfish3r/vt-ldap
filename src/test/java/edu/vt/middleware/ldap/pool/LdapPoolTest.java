@@ -64,22 +64,22 @@ public class LdapPoolTest extends AbstractTest
   protected final Logger logger = LoggerFactory.getLogger(getClass());
 
   /** LdapPool instance for concurrency testing. */
-  private SoftLimitLdapPool softLimitPool;
+  private SoftLimitPool softLimitPool;
 
   /** LdapPool instance for concurrency testing. */
-  private BlockingLdapPool blockingPool;
+  private BlockingPool blockingPool;
 
   /** LdapPool instance for concurrency testing. */
-  private BlockingLdapPool blockingTimeoutPool;
+  private BlockingPool blockingTimeoutPool;
 
   /** LdapPool instance for concurrency testing. */
-  private SharedLdapPool sharedPool;
+  private SharedPool sharedPool;
 
   /** LdapPool instance for concurrency testing. */
-  private BlockingLdapPool connStrategyPool;
+  private BlockingPool connStrategyPool;
 
   /** LdapPool instance for concurrency testing. */
-  private BlockingLdapPool vtComparisonPool;
+  private BlockingPool vtComparisonPool;
 
   /** Commons LdapPool for comparison testing. */
   private CommonsLdapPool commonsComparisonPool;
@@ -113,69 +113,69 @@ public class LdapPoolTest extends AbstractTest
   {
     final ConnectionConfig lcc =
       TestUtil.createConnection().getConnectionConfig();
-    final DefaultLdapFactory factory = new DefaultLdapFactory(lcc);
-    factory.setLdapValidator(
-      new CompareLdapValidator(
+    final DefaultConnectionFactory factory = new DefaultConnectionFactory(lcc);
+    factory.setValidator(
+      new CompareValidator(
         "ou=test,dc=vt,dc=edu",
         new SearchFilter("ou=test")));
 
-    final LdapPoolConfig softLimitLpc = new LdapPoolConfig();
+    final PoolConfig softLimitLpc = new PoolConfig();
     softLimitLpc.setValidateOnCheckIn(true);
     softLimitLpc.setValidateOnCheckOut(true);
     softLimitLpc.setValidatePeriodically(true);
     softLimitLpc.setPrunePeriod(5L);
     softLimitLpc.setExpirationTime(1L);
     softLimitLpc.setValidatePeriod(5L);
-    softLimitPool = new SoftLimitLdapPool(softLimitLpc, factory);
+    softLimitPool = new SoftLimitPool(softLimitLpc, factory);
 
-    final LdapPoolConfig blockingLpc = new LdapPoolConfig();
+    final PoolConfig blockingLpc = new PoolConfig();
     blockingLpc.setValidateOnCheckIn(true);
     blockingLpc.setValidateOnCheckOut(true);
     blockingLpc.setValidatePeriodically(true);
     blockingLpc.setPrunePeriod(5L);
     blockingLpc.setExpirationTime(1L);
     blockingLpc.setValidatePeriod(5L);
-    blockingPool = new BlockingLdapPool(blockingLpc, factory);
+    blockingPool = new BlockingPool(blockingLpc, factory);
 
-    final LdapPoolConfig blockingTimeoutLpc = new LdapPoolConfig();
+    final PoolConfig blockingTimeoutLpc = new PoolConfig();
     blockingTimeoutLpc.setValidateOnCheckIn(true);
     blockingTimeoutLpc.setValidateOnCheckOut(true);
     blockingTimeoutLpc.setValidatePeriodically(true);
     blockingTimeoutLpc.setPrunePeriod(5L);
     blockingTimeoutLpc.setExpirationTime(1L);
     blockingTimeoutLpc.setValidatePeriod(5L);
-    blockingTimeoutPool = new BlockingLdapPool(blockingTimeoutLpc, factory);
+    blockingTimeoutPool = new BlockingPool(blockingTimeoutLpc, factory);
     blockingTimeoutPool.setBlockWaitTime(1000L);
 
-    final LdapPoolConfig sharedLpc = new LdapPoolConfig();
+    final PoolConfig sharedLpc = new PoolConfig();
     sharedLpc.setValidateOnCheckIn(true);
     sharedLpc.setValidateOnCheckOut(true);
     sharedLpc.setValidatePeriodically(true);
     sharedLpc.setPrunePeriod(5L);
     sharedLpc.setExpirationTime(1L);
     sharedLpc.setValidatePeriod(5L);
-    sharedPool = new SharedLdapPool(sharedLpc, factory);
+    sharedPool = new SharedPool(sharedLpc, factory);
 
     final ConnectionConfig connStrategyLcc =
       TestUtil.createConnection().getConnectionConfig();
     connStrategyLcc.setLdapUrl(
       "ldap://ed-dev.middleware.vt.edu:14389 ldap://ed-dne.middleware.vt.edu");
     connStrategyLcc.setConnectionStrategy(ConnectionStrategy.ROUND_ROBIN);
-    final DefaultLdapFactory connStrategyFactory = new DefaultLdapFactory(
-      connStrategyLcc);
-    connStrategyPool = new BlockingLdapPool(
-      new LdapPoolConfig(), connStrategyFactory);
+    final DefaultConnectionFactory connStrategyFactory =
+      new DefaultConnectionFactory(connStrategyLcc);
+    connStrategyPool = new BlockingPool(
+      new PoolConfig(), connStrategyFactory);
 
     // configure comparison pools
-    final LdapPoolConfig vtComparisonLpc = new LdapPoolConfig();
+    final PoolConfig vtComparisonLpc = new PoolConfig();
     vtComparisonLpc.setValidateOnCheckIn(true);
     vtComparisonLpc.setValidateOnCheckOut(true);
-    vtComparisonPool = new BlockingLdapPool(vtComparisonLpc, factory);
+    vtComparisonPool = new BlockingPool(vtComparisonLpc, factory);
 
     final DefaultLdapPoolableObjectFactory commonsFactory =
       new DefaultLdapPoolableObjectFactory(lcc);
-    commonsFactory.setLdapValidator(
-      new CompareLdapValidator(
+    commonsFactory.setValidator(
+      new CompareValidator(
         "ou=test,dc=vt,dc=edu",
         new SearchFilter("ou=test")));
     commonsComparisonPool = new CommonsLdapPool(commonsFactory);
@@ -472,7 +472,7 @@ public class LdapPoolTest extends AbstractTest
     throws Exception
   {
     try {
-      softLimitPool.getLdapPoolConfig().setMinPoolSize(8);
+      softLimitPool.getPoolConfig().setMinPoolSize(8);
       AssertJUnit.fail("Expected illegalstateexception to be thrown");
     } catch (IllegalStateException e) {
       AssertJUnit.assertEquals(IllegalStateException.class, e.getClass());
@@ -561,7 +561,7 @@ public class LdapPoolTest extends AbstractTest
     Thread.sleep(10000);
     AssertJUnit.assertEquals(0, softLimitPool.activeCount());
     AssertJUnit.assertEquals(
-      LdapPoolConfig.DEFAULT_MIN_POOL_SIZE,
+      PoolConfig.DEFAULT_MIN_POOL_SIZE,
       softLimitPool.availableCount());
   }
 
@@ -572,7 +572,7 @@ public class LdapPoolTest extends AbstractTest
     throws Exception
   {
     try {
-      blockingPool.getLdapPoolConfig().setMinPoolSize(8);
+      blockingPool.getPoolConfig().setMinPoolSize(8);
       AssertJUnit.fail("Expected illegalstateexception to be thrown");
     } catch (IllegalStateException e) {
       AssertJUnit.assertEquals(IllegalStateException.class, e.getClass());
@@ -687,7 +687,7 @@ public class LdapPoolTest extends AbstractTest
     Thread.sleep(10000);
     AssertJUnit.assertEquals(0, blockingPool.activeCount());
     AssertJUnit.assertEquals(
-      LdapPoolConfig.DEFAULT_MIN_POOL_SIZE,
+      PoolConfig.DEFAULT_MIN_POOL_SIZE,
       blockingPool.availableCount());
   }
 
@@ -792,7 +792,7 @@ public class LdapPoolTest extends AbstractTest
     Thread.sleep(10000);
     AssertJUnit.assertEquals(0, blockingTimeoutPool.activeCount());
     AssertJUnit.assertEquals(
-      LdapPoolConfig.DEFAULT_MIN_POOL_SIZE,
+      PoolConfig.DEFAULT_MIN_POOL_SIZE,
       blockingTimeoutPool.availableCount());
   }
 
@@ -803,7 +803,7 @@ public class LdapPoolTest extends AbstractTest
     throws Exception
   {
     try {
-      sharedPool.getLdapPoolConfig().setMinPoolSize(8);
+      sharedPool.getPoolConfig().setMinPoolSize(8);
       AssertJUnit.fail("Expected illegalstateexception to be thrown");
     } catch (IllegalStateException e) {
       AssertJUnit.assertEquals(IllegalStateException.class, e.getClass());
@@ -918,7 +918,7 @@ public class LdapPoolTest extends AbstractTest
     Thread.sleep(10000);
     AssertJUnit.assertEquals(0, sharedPool.activeCount());
     AssertJUnit.assertEquals(
-      LdapPoolConfig.DEFAULT_MIN_POOL_SIZE,
+      PoolConfig.DEFAULT_MIN_POOL_SIZE,
       sharedPool.availableCount());
   }
 
@@ -955,7 +955,7 @@ public class LdapPoolTest extends AbstractTest
    * @throws  Exception  On test failure.
    */
   private long search(
-    final LdapPool<Connection> pool,
+    final Pool<Connection> pool,
     final SearchRequest request,
     final LdapEntry results)
     throws Exception

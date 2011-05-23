@@ -17,51 +17,49 @@ import java.util.NoSuchElementException;
 import edu.vt.middleware.ldap.Connection;
 
 /**
- * <code>SharedLdapPool</code> implements a pool of ldap objects that has a set
- * minimum and maximum size. The pool will not grow beyond the maximum size and
- * when the pool is exhausted, requests for new objects will be serviced by
- * objects that are already in use. Since
- * {@link edu.vt.middleware.ldap.Connection} is a thread safe object this
- * implementation leverages that by sharing ldap objects among requests. This
- * implementation should be used when you want some control over the maximum
- * number of ldap connections, but can tolerate some new connections under high
- * load. See {@link AbstractLdapPool}.
+ * Implements a pool of ldap connections that has a set minimum and maximum
+ * size. The pool will not grow beyond the maximum size and when the pool is
+ * exhausted, requests for new objects will be serviced by objects that are
+ * already in use. Since {@link edu.vt.middleware.ldap.Connection} is a thread
+ * safe object this implementation leverages that by sharing ldap connections
+ * among requests. This implementation should be used when you want some control
+ * over the maximum number of ldap connections, but can tolerate some new
+ * connections under high load. See {@link AbstractPool}.
  *
  * @author  Middleware Services
  * @version  $Revision$ $Date$
  */
-public class SharedLdapPool extends AbstractLdapPool<Connection>
+public class SharedPool extends AbstractPool<Connection>
 {
 
 
   /**
-   * Creates a new ldap pool with the supplied ldap factory.
+   * Creates a new ldap pool.
    *
-   * @param  lf  ldap factory
+   * @param  cf  connection factory
    */
-  public SharedLdapPool(final LdapFactory<Connection> lf)
+  public SharedPool(final ConnectionFactory<Connection> cf)
   {
-    super(new LdapPoolConfig(), lf);
+    super(new PoolConfig(), cf);
   }
 
 
   /**
-   * Creates a new ldap pool with the supplied ldap config and factory.
+   * Creates a new ldap pool.
    *
-   * @param  lpc  ldap pool configuration
-   * @param  lf  ldap factory
+   * @param  pc  pool configuration
+   * @param  cf  connection factory
    */
-  public SharedLdapPool(
-    final LdapPoolConfig lpc, final LdapFactory<Connection> lf)
+  public SharedPool(final PoolConfig pc, final ConnectionFactory<Connection> cf)
   {
-    super(lpc, lf);
+    super(pc, cf);
   }
 
 
   /** {@inheritDoc} */
   @Override
   public Connection checkOut()
-    throws LdapPoolException
+    throws PoolException
   {
     Connection lc = null;
     boolean create = false;
@@ -69,18 +67,18 @@ public class SharedLdapPool extends AbstractLdapPool<Connection>
       "waiting on pool lock for check out {}", poolLock.getQueueLength());
     poolLock.lock();
     try {
-      // if an available object exists, use it
-      // if no available objects and the pool can grow, attempt to create
-      // otherwise the pool is full, return a shared object
+      // if an available connection exists, use it
+      // if no available connections and the pool can grow, attempt to create
+      // otherwise the pool is full, return a shared connection
       if (active.size() < available.size()) {
-        logger.trace("retrieve available ldap object");
+        logger.trace("retrieve available ldap connection");
         lc = retrieveAvailable();
-      } else if (active.size() < poolConfig.getMaxPoolSize()) {
-        logger.trace("pool can grow, attempt to create ldap object");
+      } else if (active.size() < config.getMaxPoolSize()) {
+        logger.trace("pool can grow, attempt to create ldap connection");
         create = true;
       } else {
         logger.trace(
-          "pool is full, attempt to retrieve available ldap object");
+          "pool is full, attempt to retrieve available ldap connection");
         lc = retrieveAvailable();
       }
     } finally {
@@ -91,13 +89,13 @@ public class SharedLdapPool extends AbstractLdapPool<Connection>
       // previous block determined a creation should occur
       // block here until create occurs without locking the whole pool
       // if the pool is already maxed or creates are failing,
-      // return a shared object
+      // return a shared connection
       checkOutLock.lock();
       try {
         boolean b = true;
         poolLock.lock();
         try {
-          if (available.size() == poolConfig.getMaxPoolSize()) {
+          if (available.size() == config.getMaxPoolSize()) {
             b = false;
           }
         } finally {
@@ -112,7 +110,7 @@ public class SharedLdapPool extends AbstractLdapPool<Connection>
         checkOutLock.unlock();
       }
       if (lc == null) {
-        logger.debug("create failed, retrieve available ldap object");
+        logger.debug("create failed, retrieve available ldap connection");
         lc = retrieveAvailable();
       }
     }
@@ -121,8 +119,8 @@ public class SharedLdapPool extends AbstractLdapPool<Connection>
       activateAndValidate(lc);
     } else {
       logger.error("Could not service check out request");
-      throw new LdapPoolExhaustedException(
-        "Pool is empty and object creation failed");
+      throw new PoolExhaustedException(
+        "Pool is empty and connection creation failed");
     }
 
     return lc;
@@ -130,12 +128,12 @@ public class SharedLdapPool extends AbstractLdapPool<Connection>
 
 
   /**
-   * This attempts to retrieve an ldap object from the available queue. This
+   * Attempts to retrieve an ldap connection from the available queue. This
    * pooling implementation guarantees there is always an object available.
    *
    * @return  ldap connection from the pool
    *
-   * @throws  IllegalStateException  if an object cannot be removed from the
+   * @throws  IllegalStateException  if a connection cannot be removed from the
    * available queue
    */
   protected Connection retrieveAvailable()
@@ -155,7 +153,7 @@ public class SharedLdapPool extends AbstractLdapPool<Connection>
         lc = pl.getConnection();
         logger.trace("retrieved available ldap connection: {}", lc);
       } catch (NoSuchElementException e) {
-        logger.error("could not remove ldap object from list", e);
+        logger.error("could not remove ldap connection from list", e);
         throw new IllegalStateException("Pool is empty", e);
       }
     } finally {

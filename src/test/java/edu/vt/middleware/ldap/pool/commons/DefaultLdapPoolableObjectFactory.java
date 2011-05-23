@@ -15,7 +15,7 @@ package edu.vt.middleware.ldap.pool.commons;
 
 import edu.vt.middleware.ldap.Connection;
 import edu.vt.middleware.ldap.ConnectionConfig;
-import edu.vt.middleware.ldap.pool.DefaultLdapFactory;
+import edu.vt.middleware.ldap.pool.DefaultConnectionFactory;
 import org.apache.commons.pool.PoolableObjectFactory;
 
 /**
@@ -25,7 +25,7 @@ import org.apache.commons.pool.PoolableObjectFactory;
  * @author  Middleware Services
  * @version  $Revision$ $Date$
  */
-public class DefaultLdapPoolableObjectFactory extends DefaultLdapFactory
+public class DefaultLdapPoolableObjectFactory extends DefaultConnectionFactory
   implements PoolableObjectFactory
 {
 

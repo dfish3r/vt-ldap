@@ -16,24 +16,24 @@ package edu.vt.middleware.ldap.pool;
 import edu.vt.middleware.ldap.Connection;
 
 /**
- * <code>LdapPasivator</code> provides an interface for passivating ldap objects
- * when they are checked back into the pool.
+ * Provides an interface for validating ldap connections when they are in the
+ * pool.
  *
- * @param  <T>  type of ldap object
+ * @param  <T>  type of ldap connection
  *
  * @author  Middleware Services
  * @version  $Revision$ $Date$
  */
-public interface LdapPassivator<T extends Connection>
+public interface Validator<T extends Connection>
 {
 
 
   /**
-   * Passivate the supplied ldap object.
+   * Validate the supplied ldap connection.
    *
-   * @param  t  ldap object
+   * @param  t  ldap connection
    *
-   * @return  whether passivation was successful
+   * @return  whether validation was successful
    */
-  boolean passivate(T t);
+  boolean validate(T t);
 }
