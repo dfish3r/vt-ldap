@@ -24,8 +24,8 @@ import javax.net.ssl.TrustManager;
 import javax.net.ssl.TrustManagerFactory;
 
 /**
- * Provides an SSL context initializer which can use X.509 certificates to create
- * key and trust managers.
+ * Provides an SSL context initializer which can use X.509 certificates to
+ * create key and trust managers.
  *
  * @author  Middleware Services
  * @version  $Revision: 1106 $ $Date: 2010-01-29 23:34:13 -0500 (Fri, 29 Jan 2010) $
