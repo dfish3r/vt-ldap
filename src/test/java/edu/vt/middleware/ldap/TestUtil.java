@@ -48,13 +48,13 @@ public final class TestUtil
     final InputStream is)
   {
     if (is != null) {
-      final ConnectionConfigPropertySource lccSource =
+      final ConnectionConfigPropertySource ccSource =
         new ConnectionConfigPropertySource(is);
-      return lccSource.get();
+      return ccSource.get();
     } else {
-      final ConnectionConfigPropertySource lccSource =
+      final ConnectionConfigPropertySource ccSource =
         new ConnectionConfigPropertySource();
-      return lccSource.get();
+      return ccSource.get();
     }
   }
 

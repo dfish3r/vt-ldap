@@ -55,13 +55,13 @@ public class PropertiesTest
   public void nullProperties()
     throws Exception
   {
-    final ConnectionConfigPropertySource lccSource =
+    final ConnectionConfigPropertySource ccSource =
       new ConnectionConfigPropertySource(
         PropertiesTest.class.getResourceAsStream("/ldap.null.properties"));
-    final ConnectionConfig lcc = lccSource.get();
+    final ConnectionConfig cc = ccSource.get();
 
-    AssertJUnit.assertNull(lcc.getSslSocketFactory());
-    AssertJUnit.assertNull(lcc.getHostnameVerifier());
+    AssertJUnit.assertNull(cc.getSslSocketFactory());
+    AssertJUnit.assertNull(cc.getHostnameVerifier());
 
     final SearchRequestPropertySource srSource =
       new SearchRequestPropertySource(
@@ -78,24 +78,24 @@ public class PropertiesTest
   public void parserProperties()
     throws Exception
   {
-    final ConnectionConfigPropertySource lccSource =
+    final ConnectionConfigPropertySource ccSource =
       new ConnectionConfigPropertySource(
         PropertiesTest.class.getResourceAsStream("/ldap.parser.properties"));
-    final ConnectionConfig lcc = lccSource.get();
+    final ConnectionConfig cc = ccSource.get();
 
     AssertJUnit.assertEquals(
-      "ldap://ed-dev.middleware.vt.edu:14389", lcc.getLdapUrl());
-    AssertJUnit.assertEquals("uid=1,ou=test,dc=vt,dc=edu", lcc.getBindDn());
+      "ldap://ed-dev.middleware.vt.edu:14389", cc.getLdapUrl());
+    AssertJUnit.assertEquals("uid=1,ou=test,dc=vt,dc=edu", cc.getBindDn());
     AssertJUnit.assertEquals(
-      AuthenticationType.SIMPLE, lcc.getAuthenticationType());
-    AssertJUnit.assertEquals(8000, lcc.getTimeout());
-    AssertJUnit.assertFalse(lcc.isTlsEnabled());
-    AssertJUnit.assertEquals(1, lcc.getProviderProperties().size());
+      AuthenticationType.SIMPLE, cc.getAuthenticationType());
+    AssertJUnit.assertEquals(8000, cc.getTimeout());
+    AssertJUnit.assertFalse(cc.isTlsEnabled());
+    AssertJUnit.assertEquals(1, cc.getProviderProperties().size());
     AssertJUnit.assertEquals(
-      "true", lcc.getProviderProperties().get("java.naming.authoritative"));
-    AssertJUnit.assertEquals(7, lcc.getOperationRetry());
-    AssertJUnit.assertEquals(2000, lcc.getOperationRetryWait());
-    AssertJUnit.assertEquals(3, lcc.getOperationRetryBackoff());
+      "true", cc.getProviderProperties().get("java.naming.authoritative"));
+    AssertJUnit.assertEquals(7, cc.getOperationRetry());
+    AssertJUnit.assertEquals(2000, cc.getOperationRetryWait());
+    AssertJUnit.assertEquals(3, cc.getOperationRetryBackoff());
 
     final SearchRequestPropertySource scSource =
       new SearchRequestPropertySource(
@@ -108,22 +108,21 @@ public class PropertiesTest
     AssertJUnit.assertEquals(5000, sr.getTimeLimit());
     AssertJUnit.assertEquals("jpegPhoto", sr.getBinaryAttributes()[0]);
 
-    for (LdapResultHandler srh : sr.getLdapResultHandlers()) {
-      if (RecursiveResultHandler.class.isInstance(srh)) {
-        final RecursiveResultHandler h = (RecursiveResultHandler)
-          srh;
+    for (LdapResultHandler rh : sr.getLdapResultHandlers()) {
+      if (RecursiveResultHandler.class.isInstance(rh)) {
+        final RecursiveResultHandler h = (RecursiveResultHandler) rh;
         AssertJUnit.assertEquals("member", h.getSearchAttribute());
         AssertJUnit.assertEquals(
           Arrays.asList(new String[] {"mail", "department"}),
           Arrays.asList(h.getMergeAttributes()));
-      } else if (MergeResultHandler.class.isInstance(srh)) {
-        final MergeResultHandler h = (MergeResultHandler) srh;
+      } else if (MergeResultHandler.class.isInstance(rh)) {
+        final MergeResultHandler h = (MergeResultHandler) rh;
         AssertJUnit.assertNotNull(h);
-      } else if (DnAttributeResultHandler.class.isInstance(srh)) {
-        final DnAttributeResultHandler h = (DnAttributeResultHandler) srh;
+      } else if (DnAttributeResultHandler.class.isInstance(rh)) {
+        final DnAttributeResultHandler h = (DnAttributeResultHandler) rh;
         AssertJUnit.assertEquals("myDN", h.getDnAttributeName());
       } else {
-        throw new Exception("Unknown search result handler type " + srh);
+        throw new Exception("Unknown search result handler type " + rh);
       }
     }
 
@@ -138,18 +137,18 @@ public class PropertiesTest
         PropertiesTest.class.getResourceAsStream("/ldap.parser.properties"));
     final Authenticator auth = aSource.get();
 
-    final ConnectionConfig authLcc =
+    final ConnectionConfig authCc =
       ((SearchDnResolver) auth.getDnResolver()).getConnectionConfig();
     AssertJUnit.assertEquals(
-      "ldap://ed-auth.middleware.vt.edu:14389", authLcc.getLdapUrl());
-    AssertJUnit.assertEquals("uid=1,ou=test,dc=vt,dc=edu", authLcc.getBindDn());
+      "ldap://ed-auth.middleware.vt.edu:14389", authCc.getLdapUrl());
+    AssertJUnit.assertEquals("uid=1,ou=test,dc=vt,dc=edu", authCc.getBindDn());
     AssertJUnit.assertEquals(
-      AuthenticationType.SIMPLE, authLcc.getAuthenticationType());
-    AssertJUnit.assertEquals(8000, authLcc.getTimeout());
-    AssertJUnit.assertTrue(authLcc.isTlsEnabled());
-    AssertJUnit.assertEquals(1, authLcc.getProviderProperties().size());
+      AuthenticationType.SIMPLE, authCc.getAuthenticationType());
+    AssertJUnit.assertEquals(8000, authCc.getTimeout());
+    AssertJUnit.assertTrue(authCc.isTlsEnabled());
+    AssertJUnit.assertEquals(1, authCc.getProviderProperties().size());
     AssertJUnit.assertEquals(
-      "true", authLcc.getProviderProperties().get("java.naming.authoritative"));
+      "true", authCc.getProviderProperties().get("java.naming.authoritative"));
   }
 
 
@@ -162,12 +161,12 @@ public class PropertiesTest
       "vt-ldap-props", new TestCallbackHandler());
     lc.login();
 
-    ConnectionConfig lcc = null;
+    ConnectionConfig cc = null;
     SearchRequest sr = null;
     Authenticator auth = null;
     for (Object o : lc.getSubject().getPublicCredentials()) {
       if (o instanceof Connection) {
-        lcc = ((Connection) o).getConnectionConfig();
+        cc = ((Connection) o).getConnectionConfig();
       } else if (o instanceof SearchRequest) {
         sr = (SearchRequest) o;
       } else if (o instanceof Authenticator) {
@@ -177,22 +176,20 @@ public class PropertiesTest
       }
     }
 
+    AssertJUnit.assertNotNull(cc.getProvider().getClass());
     AssertJUnit.assertEquals(
-      edu.vt.middleware.ldap.provider.jndi.JndiProvider.class,
-      lcc.getProvider().getClass());
+      "ldap://ed-dev.middleware.vt.edu:14389", cc.getLdapUrl());
+    AssertJUnit.assertEquals("uid=1,ou=test,dc=vt,dc=edu", cc.getBindDn());
     AssertJUnit.assertEquals(
-      "ldap://ed-dev.middleware.vt.edu:14389", lcc.getLdapUrl());
-    AssertJUnit.assertEquals("uid=1,ou=test,dc=vt,dc=edu", lcc.getBindDn());
+      AuthenticationType.SIMPLE, cc.getAuthenticationType());
+    AssertJUnit.assertEquals(8000, cc.getTimeout());
+    AssertJUnit.assertTrue(cc.isTlsEnabled());
+    AssertJUnit.assertEquals(1, cc.getProviderProperties().size());
     AssertJUnit.assertEquals(
-      AuthenticationType.SIMPLE, lcc.getAuthenticationType());
-    AssertJUnit.assertEquals(8000, lcc.getTimeout());
-    AssertJUnit.assertTrue(lcc.isTlsEnabled());
-    AssertJUnit.assertEquals(1, lcc.getProviderProperties().size());
-    AssertJUnit.assertEquals(
-      "true", lcc.getProviderProperties().get("java.naming.authoritative"));
-    AssertJUnit.assertEquals(7, lcc.getOperationRetry());
-    AssertJUnit.assertEquals(2000, lcc.getOperationRetryWait());
-    AssertJUnit.assertEquals(3, lcc.getOperationRetryBackoff());
+      "true", cc.getProviderProperties().get("java.naming.authoritative"));
+    AssertJUnit.assertEquals(7, cc.getOperationRetry());
+    AssertJUnit.assertEquals(2000, cc.getOperationRetryWait());
+    AssertJUnit.assertEquals(3, cc.getOperationRetryBackoff());
 
     AssertJUnit.assertEquals("ou=test,dc=vt,dc=edu", sr.getBaseDn());
     AssertJUnit.assertEquals(10, sr.getBatchSize());
