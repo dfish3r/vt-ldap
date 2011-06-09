@@ -238,9 +238,6 @@ public abstract class AbstractJndiConnectionFactory
     case SIMPLE:
       s = "simple";
       break;
-    case STRONG:
-      s = "strong";
-      break;
     case EXTERNAL:
       s = "EXTERNAL";
       break;

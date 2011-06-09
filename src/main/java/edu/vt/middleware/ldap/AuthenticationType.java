@@ -27,9 +27,6 @@ public enum AuthenticationType
   /** Simple authentication type. */
   SIMPLE,
 
-  /** Strong authentication type. */
-  STRONG,
-
   /** External authentication type. */
   EXTERNAL,
 
