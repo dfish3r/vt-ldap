@@ -224,18 +224,11 @@ public class AuthenticatorTest extends AbstractTest
     AssertJUnit.assertEquals(testLdapEntry.getDn(), auth.resolveDn(uid));
     auth.setDnResolver(resolver);
 
-    // test subtree searching
-    resolver.setSubtreeSearch(true);
-    final String baseDn = resolver.getBaseDn();
-    resolver.setBaseDn(baseDn.substring(baseDn.indexOf(",") + 1));
-    AssertJUnit.assertEquals(testLdapEntry.getDn(), auth.resolveDn(user));
-    resolver.setBaseDn(baseDn);
-    resolver.setSubtreeSearch(false);
-
     // test one level searching
     AssertJUnit.assertEquals(testLdapEntry.getDn(), auth.resolveDn(user));
 
     // test duplicate DNs
+    final String filter = resolver.getUserFilter();
     resolver.setUserFilter(duplicateFilter);
     try {
       auth.resolveDn(user);
@@ -246,6 +239,14 @@ public class AuthenticatorTest extends AbstractTest
 
     resolver.setAllowMultipleDns(true);
     auth.resolveDn(user);
+    resolver.setUserFilter(filter);
+    resolver.setAllowMultipleDns(false);
+
+    // test subtree searching
+    resolver.setSubtreeSearch(true);
+    final String baseDn = resolver.getBaseDn();
+    resolver.setBaseDn(baseDn.substring(baseDn.indexOf(",") + 1));
+    AssertJUnit.assertEquals(testLdapEntry.getDn(), auth.resolveDn(user));
   }
 
 
