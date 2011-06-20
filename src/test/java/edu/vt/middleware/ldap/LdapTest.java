@@ -1040,6 +1040,43 @@ public class LdapTest
   {
     final String expected = TestUtil.readFileIntoString(ldifFile);
     final LdapEntry entry = TestUtil.convertLdifToEntry(expected);
+    // only remove escaped '/'
+    entry.setDn(entry.getDn().replaceAll("\\\\/", "/"));
+
+    final Ldap ldap = this.createLdap(false);
+
+    final Iterator<SearchResult> iter = ldap.search(
+      dn, new SearchFilter(filter));
+    AssertJUnit.assertEquals(
+      entry,
+      TestUtil.convertLdifToEntry((new Ldif()).createLdif(iter)));
+  }
+
+
+  /**
+   * @param  dn  to search on.
+   * @param  filter  to search with.
+   * @param  ldifFile  to compare with
+   *
+   * @throws  Exception  On test failure.
+   */
+  @Parameters(
+    {
+      "rewriteSearchDn",
+      "rewriteSearchFilter",
+      "rewriteSearchResults"
+    }
+  )
+  @Test(groups = {"ldaptest"})
+  public void searchRewrite(
+    final String dn,
+    final String filter,
+    final String ldifFile)
+    throws Exception
+  {
+    final String expected = TestUtil.readFileIntoString(ldifFile);
+    final LdapEntry entry = TestUtil.convertLdifToEntry(expected);
+    // remove all escaped characters
     entry.setDn(entry.getDn().replaceAll("\\\\", ""));
 
     final Ldap ldap = this.createLdap(false);

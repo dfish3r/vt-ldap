@@ -65,10 +65,13 @@ public class FqdnSearchResultHandler extends CopySearchResultHandler
     if (resultName != null) {
       StringBuffer fqName = null;
       if (sr.isRelative()) {
+        if (this.logger.isTraceEnabled()) {
+          this.logger.trace("processing relative dn: " + resultName);
+        }
         if (sc.getDn() != null) {
           if (!"".equals(resultName)) {
-            fqName = new StringBuffer(readCompositeName(resultName)).append(
-              ",").append(sc.getDn());
+            fqName = new StringBuffer(
+              readCompositeName(resultName)).append(",").append(sc.getDn());
           } else {
             fqName = new StringBuffer(sc.getDn());
           }
@@ -76,14 +79,20 @@ public class FqdnSearchResultHandler extends CopySearchResultHandler
           fqName = new StringBuffer(readCompositeName(resultName));
         }
       } else {
+        if (this.logger.isTraceEnabled()) {
+          this.logger.trace("processing non-relative dn: " + resultName);
+        }
         if (this.removeUrls) {
           fqName = new StringBuffer(
-            URI.create(readCompositeName(resultName)).getPath().substring(1));
+            readCompositeName(URI.create(resultName).getPath().substring(1)));
         } else {
           fqName = new StringBuffer(readCompositeName(resultName));
         }
       }
       newDn = fqName.toString();
+    }
+    if (this.logger.isTraceEnabled()) {
+      this.logger.trace("processed dn: " + newDn);
     }
     return newDn;
   }
@@ -93,19 +102,25 @@ public class FqdnSearchResultHandler extends CopySearchResultHandler
    * Uses a <code>CompositeName</code> to parse the supplied string.
    *
    * @param  s  <code>String</code> composite name to read
+   *
    * @return  <code>String</code> ldap name
    */
   private String readCompositeName(final String s)
   {
-    String name = "";
+    StringBuffer name = new StringBuffer();
     try {
       final CompositeName cName = new CompositeName(s);
-      name = cName.get(0);
+      for (int i = 0; i < cName.size(); i++) {
+        name.append(cName.get(i));
+        if (i + 1 < cName.size()) {
+          name.append("/");
+        }
+      }
     } catch (InvalidNameException e) {
       if (this.logger.isErrorEnabled()) {
         this.logger.error("Error formatting name: " + s, e);
       }
     }
-    return name;
+    return name.toString();
   }
 }

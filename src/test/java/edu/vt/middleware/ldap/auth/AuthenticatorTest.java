@@ -51,6 +51,9 @@ public class AuthenticatorTest
   /** Entry created for auth tests. */
   private static LdapEntry testLdapEntry;
 
+  /** Entry created for auth tests. */
+  private static LdapEntry specialCharsLdapEntry;
+
   /** Ldap instance for concurrency testing. */
   private Authenticator singleTLSAuth;
 
@@ -108,6 +111,35 @@ public class AuthenticatorTest
   }
 
 
+  /**
+   * @param  ldifFile  to create.
+   *
+   * @throws  Exception  On test failure.
+   */
+  @Parameters({ "createSpecialCharsEntry2" })
+  @BeforeClass(groups = {"authtest"})
+  public void createSpecialCharsEntry(final String ldifFile)
+    throws Exception
+  {
+    final String ldif = TestUtil.readFileIntoString(ldifFile);
+    specialCharsLdapEntry = TestUtil.convertLdifToEntry(ldif);
+
+    Ldap ldap = TestUtil.createSetupLdap();
+    ldap.create(
+      specialCharsLdapEntry.getDn(),
+      specialCharsLdapEntry.getLdapAttributes().toAttributes());
+    ldap.close();
+    ldap = TestUtil.createLdap();
+    while (
+      !ldap.compare(
+        specialCharsLdapEntry.getDn(),
+          new SearchFilter(specialCharsLdapEntry.getDn().split(",ou")[0]))) {
+      Thread.sleep(100);
+    }
+    ldap.close();
+  }
+
+
   /** @throws  Exception  On test failure. */
   @AfterClass(groups = {"authtest"})
   public void deleteAuthEntry()
@@ -115,6 +147,7 @@ public class AuthenticatorTest
   {
     final Ldap ldap = TestUtil.createSetupLdap();
     ldap.delete(testLdapEntry.getDn());
+    ldap.delete(specialCharsLdapEntry.getDn());
     ldap.close();
   }
 
@@ -775,6 +808,41 @@ public class AuthenticatorTest
     } catch (Exception e) {
       AssertJUnit.assertEquals(e.getClass(), AuthorizationException.class);
     }
+
+    ldap.close();
+  }
+
+
+  /**
+   * @param  user  to authenticate.
+   * @param  credential  to authenticate with.
+   * @param  returnAttrs  to search for.
+   * @param  results  to expect from the search.
+   *
+   * @throws  Exception  On test failure.
+   */
+  @Parameters(
+    {
+      "authenticateSpecialCharsUser",
+      "authenticateSpecialCharsCredential"
+    }
+  )
+  @Test(groups = {"authtest"})
+  public void authenticateSpecialChars(
+    final String user, final String credential)
+    throws Exception
+  {
+    final Authenticator ldap = this.createTLSAuthenticator(true);
+
+    // test without rewrite
+    AssertJUnit.assertFalse(ldap.authenticate(user, INVALID_PASSWD));
+    AssertJUnit.assertTrue(ldap.authenticate(user, credential));
+
+    // test with rewrite
+    ldap.getAuthenticatorConfig().setBaseDn("dc=blah");
+    ldap.getAuthenticatorConfig().setSubtreeSearch(true);
+    AssertJUnit.assertFalse(ldap.authenticate(user, INVALID_PASSWD));
+    AssertJUnit.assertTrue(ldap.authenticate(user, credential));
 
     ldap.close();
   }

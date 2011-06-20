@@ -46,6 +46,8 @@
 
   <parameter name="createSpecialCharsEntry"
              value="/edu/vt/middleware/ldap/specialChars.ldif"/>
+  <parameter name="createSpecialCharsEntry2"
+             value="/edu/vt/middleware/ldap/specialChars-2.ldif"/>
 
   <parameter name="multipleLdifResultsIn"
              value="/edu/vt/middleware/ldap/multipleEntriesIn.ldif"/>
@@ -146,6 +148,11 @@
   <parameter name="specialCharSearchResults"
              value="/edu/vt/middleware/ldap/specialChars.ldif"/>
 
+  <parameter name="rewriteSearchDn" value="dc=blah"/>
+  <parameter name="rewriteSearchFilter" value="(uid=17893)"/>
+  <parameter name="rewriteSearchResults"
+             value="/edu/vt/middleware/ldap/specialChars.ldif"/>
+
   <parameter name="listDn" value="ou=test,dc=vt,dc=edu"/>
   <parameter name="listResults" value="uid=1|uid=2"/>
 
@@ -218,6 +225,9 @@
   <parameter name="authenticateFilter" value="departmentNumber=0823"/>
   <parameter name="authenticateReturnAttrs" value="givenName|sn"/>
   <parameter name="authenticateResults" value="givenName=Joho|sn=Dof"/>
+
+  <parameter name="authenticateSpecialCharsUser" value="17894"/>
+  <parameter name="authenticateSpecialCharsCredential" value="password2"/>
 
   <parameter name="digestMd5User" value="test3"/>
   <parameter name="digestMd5Credential" value="password"/>
