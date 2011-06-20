@@ -52,6 +52,8 @@
 
   <parameter name="createSpecialCharsEntry"
              value="/edu/vt/middleware/ldap/specialChars.ldif"/>
+  <parameter name="createSpecialCharsEntry2"
+             value="/edu/vt/middleware/ldap/specialChars-2.ldif"/>
 
   <parameter name="multipleLdifResultsIn"
              value="/edu/vt/middleware/ldap/multipleEntriesIn.ldif"/>
@@ -134,6 +136,11 @@
   <parameter name="specialCharSearchDn" value="ou=test,dc=vt,dc=edu"/>
   <parameter name="specialCharSearchFilter" value="(uid=17893)"/>
   <parameter name="specialCharSearchResults"
+             value="/edu/vt/middleware/ldap/specialChars.ldif"/>
+
+  <parameter name="rewriteSearchDn" value="dc=blah"/>
+  <parameter name="rewriteSearchFilter" value="(uid=17893)"/>
+  <parameter name="rewriteSearchResults"
              value="/edu/vt/middleware/ldap/specialChars.ldif"/>
 
   <parameter name="searchExceptionDn" value="ou=test,dc=vt,dc=edu"/>
@@ -222,6 +229,9 @@
   <parameter name="authenticateReturnAttrs" value="departmentNumber|givenName|sn"/>
   <parameter name="authenticateResults"
              value="/edu/vt/middleware/ldap/searchResults-6.ldif"/>
+
+  <parameter name="authenticateSpecialCharsUser" value="17894"/>
+  <parameter name="authenticateSpecialCharsCredential" value="password2"/>
 
   <parameter name="digestMd5User" value="test3"/>
   <parameter name="digestMd5Credential" value="password"/>

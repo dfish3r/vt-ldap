@@ -542,6 +542,7 @@ public class JndiConnection implements ProviderConnection
       while (en.hasMore()) {
         try {
           final SearchResult sr = en.next();
+          logger.trace("reading search result: {}", sr);
           sr.setName(formatDn(sr, baseDn));
           ldapResult.addEntry(bu.toLdapEntry(sr));
         } catch (NamingException e) {
@@ -583,6 +584,7 @@ public class JndiConnection implements ProviderConnection
     if (resultName != null) {
       StringBuilder fqName = null;
       if (sr.isRelative()) {
+        logger.trace("formatting relative dn {}", resultName);
         if (baseDn != null) {
           if (!"".equals(resultName)) {
             fqName = new StringBuilder(
@@ -594,16 +596,17 @@ public class JndiConnection implements ProviderConnection
           fqName = new StringBuilder(readCompositeName(resultName));
         }
       } else {
+        logger.trace("formatting non-relative dn {}", resultName);
         if (removeDnUrls) {
           fqName = new StringBuilder(
-            URI.create(
-              readCompositeName(resultName)).getPath().substring(1));
+            readCompositeName(URI.create(resultName).getPath().substring(1)));
         } else {
           fqName = new StringBuilder(readCompositeName(resultName));
         }
       }
       newDn = fqName.toString();
     }
+    logger.trace("formatted dn {} as {}", resultName, newDn);
     return newDn;
   }
 
@@ -619,8 +622,15 @@ public class JndiConnection implements ProviderConnection
   private String readCompositeName(final String s)
     throws InvalidNameException
   {
+    final StringBuffer name = new StringBuffer();
     final CompositeName cName = new CompositeName(s);
-    return cName.get(0);
+    for (int i = 0; i < cName.size(); i++) {
+      name.append(cName.get(i));
+      if (i + 1 < cName.size()) {
+        name.append("/");
+      }
+    }
+    return name.toString();
   }
 
 

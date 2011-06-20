@@ -1,5 +1,5 @@
-dn: cn=Test/User,ou=test,dc=vt,dc=edu
-cn: Test/User
+dn: cn=Test\/User\/ \#1,ou=test,dc=vt,dc=edu
+cn: Test/User/ #1
 givenName: Test
 objectClass: inetOrgPerson
 objectClass: organizationalPerson

@@ -51,6 +51,9 @@ public class AuthenticatorTest extends AbstractTest
   /** Entry created for auth tests. */
   private static LdapEntry testLdapEntry;
 
+  /** Entry created for auth tests. */
+  private static LdapEntry specialCharsLdapEntry;
+
   /** Ldap instance for concurrency testing. */
   private Authenticator singleTLSAuth;
 
@@ -95,12 +98,29 @@ public class AuthenticatorTest extends AbstractTest
   }
 
 
+  /**
+   * @param  ldifFile  to create.
+   *
+   * @throws  Exception  On test failure.
+   */
+  @Parameters({ "createSpecialCharsEntry2" })
+  @BeforeClass(groups = {"authtest"})
+  public void createSpecialCharsEntry(final String ldifFile)
+    throws Exception
+  {
+    final String ldif = TestUtil.readFileIntoString(ldifFile);
+    specialCharsLdapEntry = TestUtil.convertLdifToResult(ldif).getEntry();
+    super.createLdapEntry(specialCharsLdapEntry);
+  }
+
+
   /** @throws  Exception  On test failure. */
   @AfterClass(groups = {"authtest"})
   public void deleteAuthEntry()
     throws Exception
   {
     super.deleteLdapEntry(testLdapEntry.getDn());
+    super.deleteLdapEntry(specialCharsLdapEntry.getDn());
   }
 
 
@@ -890,5 +910,54 @@ public class AuthenticatorTest extends AbstractTest
     } catch (LdapException e) {
       AssertJUnit.assertEquals(AuthorizationException.class, e.getClass());
     }
+  }
+
+
+  /**
+   * @param  user  to authenticate.
+   * @param  credential  to authenticate with.
+   * @param  returnAttrs  to search for.
+   * @param  results  to expect from the search.
+   *
+   * @throws  Exception  On test failure.
+   */
+  @Parameters(
+    {
+      "authenticateSpecialCharsUser",
+      "authenticateSpecialCharsCredential"
+    }
+  )
+  @Test(groups = {"authtest"})
+  public void authenticateSpecialChars(
+    final String user, final String credential)
+    throws Exception
+  {
+    final Authenticator auth = createTLSAuthenticator(true);
+
+    // test without rewrite
+    try {
+      auth.authenticate(
+        new AuthenticationRequest(user, new Credential(INVALID_PASSWD)));
+      AssertJUnit.fail("Should have thrown AuthenticationException");
+    } catch (LdapException e) {
+      AssertJUnit.assertEquals(
+        AuthenticationException.class, e.getClass());
+    }
+    auth.authenticate(
+      new AuthenticationRequest(user, new Credential(credential)));
+
+    // test with rewrite
+    ((SearchDnResolver) auth.getDnResolver()).setBaseDn("dc=blah");
+    ((SearchDnResolver) auth.getDnResolver()).setSubtreeSearch(true);
+    try {
+      auth.authenticate(
+        new AuthenticationRequest(user, new Credential(INVALID_PASSWD)));
+      AssertJUnit.fail("Should have thrown AuthenticationException");
+    } catch (LdapException e) {
+      AssertJUnit.assertEquals(
+        AuthenticationException.class, e.getClass());
+    }
+    auth.authenticate(
+      new AuthenticationRequest(user, new Credential(credential)));
   }
 }

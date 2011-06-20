@@ -705,6 +705,44 @@ public class SearchOperationTest extends AbstractTest
   /**
    * @param  dn  to search on.
    * @param  filter  to search with.
+   * @param  ldifFile  to compare with
+   *
+   * @throws  Exception  On test failure.
+   */
+  @Parameters(
+    {
+      "rewriteSearchDn",
+      "rewriteSearchFilter",
+      "rewriteSearchResults"
+    }
+  )
+  @Test(groups = {"searchtest"})
+  public void rewriteSearch(
+    final String dn,
+    final String filter,
+    final String ldifFile)
+    throws Exception
+  {
+    final SearchOperation search = new SearchOperation(
+      createLdapConnection(false));
+    final String expected = TestUtil.readFileIntoString(ldifFile);
+    final LdapResult specialCharsResult = TestUtil.convertLdifToResult(
+      expected);
+    specialCharsResult.getEntry().setDn(
+      specialCharsResult.getEntry().getDn().replaceAll("\\\\", ""));
+
+    // test special character searching
+    final LdapResult result = search.execute(
+      new SearchRequest(
+        dn,
+        new SearchFilter(filter))).getResult();
+    AssertJUnit.assertEquals(specialCharsResult, result);
+  }
+
+
+  /**
+   * @param  dn  to search on.
+   * @param  filter  to search with.
    * @param  resultsSize  of search results.
    *
    * @throws  Exception  On test failure.
