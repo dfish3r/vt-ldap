@@ -1,4 +1,4 @@
-dn: cn=Test\/User\/ \#2\,3\=4\/\+5\<6\>7\;8,ou=test,dc=vt,dc=edu
+dn: cn=Test/User/ #2\,3=4/\+5\<6\>7\;8,ou=test,dc=vt,dc=edu
 cn: Test/User/ #2,3=4/+5<6>7;8
 givenName: Test
 objectClass: inetOrgPerson

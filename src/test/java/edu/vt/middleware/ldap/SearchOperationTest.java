@@ -690,14 +690,14 @@ public class SearchOperationTest extends AbstractTest
     final String expected = TestUtil.readFileIntoString(ldifFile);
     final LdapResult specialCharsResult = TestUtil.convertLdifToResult(
       expected);
-    specialCharsResult.getEntry().setDn(
-      specialCharsResult.getEntry().getDn().replaceAll("\\\\", ""));
 
     // test special character searching
     final LdapResult result = search.execute(
       new SearchRequest(
         dn,
         new SearchFilter(filter))).getResult();
+    // DNs returned from JNDI may have escaped characters
+    result.getEntry().setDn(result.getEntry().getDn().replaceAll("\\\\", ""));
     AssertJUnit.assertEquals(specialCharsResult, result);
   }
 

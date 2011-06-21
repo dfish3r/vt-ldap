@@ -42,8 +42,9 @@ public abstract class AbstractTest
     conn.open();
     final CompareOperation compare = new CompareOperation(conn);
     final LdapAttribute la = new LdapAttribute();
-    la.setName(entry.getDn().split(",ou=")[0].split("=")[0]);
-    la.addStringValue(entry.getDn().split(",ou=")[0].split("=")[1]);
+    la.setName(entry.getDn().split(",ou=")[0].split("=", 2)[0]);
+    la.addStringValue(
+      entry.getDn().split(",ou=")[0].split("=", 2)[1].replaceAll("\\\\", ""));
     while (
       !compare.execute(new CompareRequest(entry.getDn(), la)).getResult()) {
       Thread.sleep(100);
