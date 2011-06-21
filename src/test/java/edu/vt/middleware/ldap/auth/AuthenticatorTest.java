@@ -103,7 +103,7 @@ public class AuthenticatorTest extends AbstractTest
    *
    * @throws  Exception  On test failure.
    */
-  @Parameters({ "createSpecialCharsEntry2" })
+  @Parameters("createSpecialCharsEntry2")
   @BeforeClass(groups = {"authtest"})
   public void createSpecialCharsEntry(final String ldifFile)
     throws Exception
@@ -916,8 +916,6 @@ public class AuthenticatorTest extends AbstractTest
   /**
    * @param  user  to authenticate.
    * @param  credential  to authenticate with.
-   * @param  returnAttrs  to search for.
-   * @param  results  to expect from the search.
    *
    * @throws  Exception  On test failure.
    */
