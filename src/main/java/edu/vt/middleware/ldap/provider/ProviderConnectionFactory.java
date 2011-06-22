@@ -13,12 +13,13 @@
 */
 package edu.vt.middleware.ldap.provider;
 
+import edu.vt.middleware.ldap.AuthenticationType;
 import edu.vt.middleware.ldap.Credential;
 import edu.vt.middleware.ldap.LdapException;
 import edu.vt.middleware.ldap.ResultCode;
 
 /**
- * Provides an interface for creating and closing provider connections.
+ * Provides an interface for creating provider connections.
  *
  * @author  Middleware Services
  * @version  $Revision$
@@ -57,6 +58,38 @@ public interface ProviderConnectionFactory
    * @param  codes  ldap result codes
    */
   void setOperationRetryResultCodes(ResultCode[] codes);
+
+
+  /**
+   * Returns the authentication type.
+   *
+   * @return  authentication type
+   */
+  AuthenticationType getAuthenticationType();
+
+
+  /**
+   * Sets the authentication type.
+   *
+   * @param  type  authentication type
+   */
+  void setAuthenticationType(AuthenticationType type);
+
+
+  /**
+   * Returns whether authentication credentials will be logged.
+   *
+   * @return  whether authentication credentials will be logged
+   */
+  boolean getLogCredentials();
+
+
+  /**
+   * Sets whether authentication credentials will be logged.
+   *
+   * @param  b  whether authentication credentials will be logged
+   */
+  void setLogCredentials(boolean b);
 
 
   /**

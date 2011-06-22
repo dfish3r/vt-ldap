@@ -20,9 +20,6 @@ import javax.naming.ldap.InitialLdapContext;
 import javax.naming.ldap.LdapContext;
 import javax.naming.ldap.StartTlsRequest;
 import javax.naming.ldap.StartTlsResponse;
-import javax.net.ssl.HostnameVerifier;
-import javax.net.ssl.SSLSocketFactory;
-import edu.vt.middleware.ldap.ConnectionConfig;
 import edu.vt.middleware.ldap.Credential;
 import edu.vt.middleware.ldap.LdapException;
 import edu.vt.middleware.ldap.ResultCode;
@@ -38,11 +35,6 @@ import edu.vt.middleware.ldap.provider.ConnectionException;
  */
 public class JndiTlsConnectionFactory extends AbstractJndiConnectionFactory
 {
-  /** ldap socket factory used for SSL and TLS. */
-  protected SSLSocketFactory sslSocketFactory;
-
-  /** hostname verifier for TLS connections. */
-  protected HostnameVerifier hostnameVerifier;
 
 
   /**
@@ -50,56 +42,12 @@ public class JndiTlsConnectionFactory extends AbstractJndiConnectionFactory
    *
    * @param  url  of the ldap to connect to
    */
-  protected JndiTlsConnectionFactory(final String url)
+  public JndiTlsConnectionFactory(final String url)
   {
     if (url == null) {
       throw new IllegalArgumentException("LDAP URL cannot be null");
     }
     ldapUrl = url;
-  }
-
-
-  /**
-   * Returns the SSL socket factory to use for TLS connections.
-   *
-   * @return  SSL socket factory
-   */
-  public SSLSocketFactory getSslSocketFactory()
-  {
-    return sslSocketFactory;
-  }
-
-
-  /**
-   * Sets the SSL socket factory to use for TLS connections.
-   *
-   * @param  sf  SSL socket factory
-   */
-  public void setSslSocketFactory(final SSLSocketFactory sf)
-  {
-    sslSocketFactory = sf;
-  }
-
-
-  /**
-   * Returns the hostname verifier to use for TLS connections.
-   *
-   * @return  hostname verifier
-   */
-  public HostnameVerifier getHostnameVerifier()
-  {
-    return hostnameVerifier;
-  }
-
-
-  /**
-   * Sets the hostname verifier to use for TLS connections.
-   *
-   * @param  verifier  for hostnames
-   */
-  public void setHostnameVerifier(final HostnameVerifier verifier)
-  {
-    hostnameVerifier = verifier;
   }
 
 
@@ -205,29 +153,5 @@ public class JndiTlsConnectionFactory extends AbstractJndiConnectionFactory
       tls.negotiate();
     }
     return tls;
-  }
-
-
-  /**
-   * Creates a new instance of this connection factory.
-   *
-   * @param  lcc  ldap connection configuration to read connection properties
-   * from
-   * @return  jndi tls connection factory
-   */
-  public static JndiTlsConnectionFactory newInstance(
-    final ConnectionConfig lcc)
-  {
-    final JndiTlsConnectionFactory cf = new JndiTlsConnectionFactory(
-      lcc.getLdapUrl());
-    cf.setAuthenticationType(lcc.getAuthenticationType());
-    cf.setEnvironment(createEnvironment(lcc));
-    cf.setLogCredentials(lcc.getLogCredentials());
-    cf.setSslSocketFactory(lcc.getSslSocketFactory());
-    cf.setHostnameVerifier(lcc.getHostnameVerifier());
-    if (lcc.getConnectionStrategy() != null) {
-      cf.setConnectionStrategy(lcc.getConnectionStrategy());
-    }
-    return cf;
   }
 }

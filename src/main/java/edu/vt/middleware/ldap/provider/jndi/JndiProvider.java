@@ -13,7 +13,9 @@
 */
 package edu.vt.middleware.ldap.provider.jndi;
 
+import java.io.PrintStream;
 import edu.vt.middleware.ldap.ConnectionConfig;
+import edu.vt.middleware.ldap.ResultCode;
 import edu.vt.middleware.ldap.provider.Provider;
 import edu.vt.middleware.ldap.provider.ProviderConnectionFactory;
 
@@ -26,18 +28,83 @@ import edu.vt.middleware.ldap.provider.ProviderConnectionFactory;
 public class JndiProvider implements Provider
 {
 
+  /** Stream to print LDAP ASN.1 BER packets. */
+  protected PrintStream tracePackets;
+
+  /** Whether to remove the URL from any DNs which are not relative. */
+  protected boolean removeDnUrls = true;
+
 
   /** {@inheritDoc} */
   @Override
   public ProviderConnectionFactory getConnectionFactory(
-    final ConnectionConfig lcc)
+    final ConnectionConfig cc)
   {
-    ProviderConnectionFactory cf = null;
-    if (lcc.isTlsEnabled()) {
-      cf = JndiTlsConnectionFactory.newInstance(lcc);
+    JndiProviderConnectionFactory cf = null;
+    if (cc.isTlsEnabled()) {
+      cf = new JndiTlsConnectionFactory(cc.getLdapUrl());
     } else {
-      cf = JndiConnectionFactory.newInstance(lcc);
+      cf = new JndiConnectionFactory(cc.getLdapUrl());
     }
+    cf.setAuthenticationType(cc.getAuthenticationType());
+    cf.setEnvironment(cc);
+    cf.setLogCredentials(cc.getLogCredentials());
+    cf.setSslSocketFactory(cc.getSslSocketFactory());
+    cf.setHostnameVerifier(cc.getHostnameVerifier());
+    if (cc.getConnectionStrategy() != null) {
+      cf.setConnectionStrategy(cc.getConnectionStrategy());
+    }
+    cf.setOperationRetryResultCodes(
+      new ResultCode[] {
+        ResultCode.PROTOCOL_ERROR, ResultCode.BUSY, ResultCode.UNAVAILABLE, });
+    cf.setTracePackets(tracePackets);
+    cf.setRemoveDnUrls(removeDnUrls);
     return cf;
+  }
+
+
+  /**
+   * Returns the print stream used to print ASN.1 BER packets.
+   *
+   * @return  print stream
+   */
+  public PrintStream getTracePackets()
+  {
+    return tracePackets;
+  }
+
+
+  /**
+   * Sets the print stream to print ASN.1 BER packets to.
+   *
+   * @param  stream  to print to
+   */
+  public void setTracePackets(final PrintStream stream)
+  {
+    tracePackets = stream;
+  }
+
+
+  /**
+   * Returns whether the URL will be removed from any DNs which are not
+   * relative. The default value is true.
+   *
+   * @return  whether the URL will be removed from DNs
+   */
+  public boolean getRemoveDnUrls()
+  {
+    return removeDnUrls;
+  }
+
+
+  /**
+   * Sets whether the URL will be removed from any DNs which are not relative
+   * The default value is true.
+   *
+   * @param  b  whether the URL will be removed from DNs
+   */
+  public void setRemoveDnUrls(final boolean b)
+  {
+    removeDnUrls = b;
   }
 }

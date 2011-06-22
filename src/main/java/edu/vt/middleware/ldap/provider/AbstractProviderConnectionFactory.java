@@ -111,44 +111,32 @@ public abstract class AbstractProviderConnectionFactory
   }
 
 
-  /**
-   * Returns the authentication type.
-   *
-   * @return  authentication type
-   */
+  /** {@inheritDoc} */
+  @Override
   public AuthenticationType getAuthenticationType()
   {
     return authenticationType;
   }
 
 
-  /**
-   * Sets the authentication type.
-   *
-   * @param  type  authentication type
-   */
+  /** {@inheritDoc} */
+  @Override
   public void setAuthenticationType(final AuthenticationType type)
   {
     authenticationType = type;
   }
 
 
-  /**
-   * Returns whether authentication credentials will be logged.
-   *
-   * @return  whether authentication credentials will be logged
-   */
+  /** {@inheritDoc} */
+  @Override
   public boolean getLogCredentials()
   {
     return logCredentials;
   }
 
 
-  /**
-   * Sets whether authentication credentials will be logged.
-   *
-   * @param  b  whether authentication credentials will be logged
-   */
+  /** {@inheritDoc} */
+  @Override
   public void setLogCredentials(final boolean b)
   {
     logCredentials = b;

@@ -16,9 +16,10 @@ package edu.vt.middleware.ldap.provider.jndi;
 import java.io.PrintStream;
 import java.util.Hashtable;
 import java.util.Map;
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.SSLSocketFactory;
 import edu.vt.middleware.ldap.AuthenticationType;
 import edu.vt.middleware.ldap.ConnectionConfig;
-import edu.vt.middleware.ldap.ResultCode;
 import edu.vt.middleware.ldap.provider.AbstractProviderConnectionFactory;
 
 /**
@@ -29,6 +30,7 @@ import edu.vt.middleware.ldap.provider.AbstractProviderConnectionFactory;
  */
 public abstract class AbstractJndiConnectionFactory
   extends AbstractProviderConnectionFactory
+  implements JndiProviderConnectionFactory
 {
   /**
    * The value of this property is a string that specifies the authentication
@@ -103,85 +105,100 @@ public abstract class AbstractJndiConnectionFactory
   protected PrintStream tracePackets;
 
   /** Whether to remove the URL from any DNs which are not relative. */
-  protected boolean removeDnUrls = true;
+  protected boolean removeDnUrls;
+
+  /** ldap socket factory used for SSL and TLS. */
+  protected SSLSocketFactory sslSocketFactory;
+
+  /** hostname verifier for TLS connections. */
+  protected HostnameVerifier hostnameVerifier;
 
 
-  /** Default constructor. */
-  public AbstractJndiConnectionFactory()
-  {
-    operationRetryResultCodes = new ResultCode[] {
-      ResultCode.PROTOCOL_ERROR, ResultCode.BUSY, ResultCode.UNAVAILABLE,
-    };
-  }
-
-
-  /**
-   * Returns the ldap context environment properties that are used to make LDAP
-   * connections.
-   *
-   * @return  context environment
-   */
+  /** {@inheritDoc} */
+  @Override
   public Hashtable<String, Object> getEnvironment()
   {
     return environment;
   }
 
 
-  /**
-   * Sets the ldap context environment properties that are used to make LDAP
-   * connections.
-   *
-   * @param  env  context environment
-   */
+  /** {@inheritDoc} */
+  @Override
   public void setEnvironment(final Hashtable<String, Object> env)
   {
     environment = env;
   }
 
 
-  /**
-   * Returns the print stream used to print ASN.1 BER packets.
-   *
-   * @return  print stream
-   */
+  /** {@inheritDoc} */
+  @Override
+  public void setEnvironment(final ConnectionConfig cc)
+  {
+    environment = createEnvironment(cc);
+  }
+
+
+  /** {@inheritDoc} */
+  @Override
   public PrintStream getTracePackets()
   {
     return tracePackets;
   }
 
 
-  /**
-   * Sets the print stream to print ASN.1 BER packets to.
-   *
-   * @param  stream  to print to
-   */
+  /** {@inheritDoc} */
+  @Override
   public void setTracePackets(final PrintStream stream)
   {
     tracePackets = stream;
   }
 
 
-  /**
-   * Returns whether the URL will be removed from any DNs which are not
-   * relative. The default value is true.
-   *
-   * @return  whether the URL will be removed from DNs
-   */
+  /** {@inheritDoc} */
+  @Override
   public boolean getRemoveDnUrls()
   {
     return removeDnUrls;
   }
 
 
-  /**
-   * Sets whether the URL will be removed from any DNs which are not relative
-   * The default value is true.
-   *
-   * @param  b  whether the URL will be removed from DNs
-   */
+  /** {@inheritDoc} */
+  @Override
   public void setRemoveDnUrls(final boolean b)
   {
     removeDnUrls = b;
+  }
+
+
+  /** {@inheritDoc} */
+  @Override
+  public SSLSocketFactory getSslSocketFactory()
+  {
+    return sslSocketFactory;
+  }
+
+
+  /** {@inheritDoc} */
+  @Override
+  public void setSslSocketFactory(final SSLSocketFactory sf)
+  {
+    sslSocketFactory = sf;
+  }
+
+
+  /** {@inheritDoc} */
+  @Override
+  public HostnameVerifier getHostnameVerifier()
+  {
+    return hostnameVerifier;
+  }
+
+
+  /** {@inheritDoc} */
+  @Override
+  public void setHostnameVerifier(final HostnameVerifier verifier)
+  {
+    hostnameVerifier = verifier;
   }
 
 
@@ -189,30 +206,30 @@ public abstract class AbstractJndiConnectionFactory
    * Returns the configuration environment for a JNDI ldap context using the
    * properties found in the supplied ldap connection config.
    *
-   * @param  lcc  ldap connection config
+   * @param  cc  connection config
    * @return  JNDI ldap context environment
    */
   protected static Hashtable<String, Object> createEnvironment(
-    final ConnectionConfig lcc)
+    final ConnectionConfig cc)
   {
     final Hashtable<String, Object> env = new Hashtable<String, Object>();
 
     env.put(CONTEXT_FACTORY, "com.sun.jndi.ldap.LdapCtxFactory");
 
-    if (lcc.isSslEnabled()) {
+    if (cc.isSslEnabled()) {
       env.put(PROTOCOL, "ssl");
-      if (lcc.getSslSocketFactory() != null) {
-        env.put(SOCKET_FACTORY, lcc.getSslSocketFactory().getClass().getName());
+      if (cc.getSslSocketFactory() != null) {
+        env.put(SOCKET_FACTORY, cc.getSslSocketFactory().getClass().getName());
       }
     }
 
-    if (lcc.getTimeout() > 0) {
-      env.put(TIMEOUT, Long.toString(lcc.getTimeout()));
+    if (cc.getTimeout() > 0) {
+      env.put(TIMEOUT, Long.toString(cc.getTimeout()));
     }
 
-    if (!lcc.getProviderProperties().isEmpty()) {
+    if (!cc.getProviderProperties().isEmpty()) {
       for (Map.Entry<String, Object> entry :
-           lcc.getProviderProperties().entrySet()) {
+           cc.getProviderProperties().entrySet()) {
         env.put(entry.getKey(), entry.getValue());
       }
     }

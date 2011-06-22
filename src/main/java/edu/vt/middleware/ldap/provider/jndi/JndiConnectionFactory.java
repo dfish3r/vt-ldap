@@ -16,7 +16,6 @@ package edu.vt.middleware.ldap.provider.jndi;
 import java.util.Hashtable;
 import javax.naming.NamingException;
 import javax.naming.ldap.InitialLdapContext;
-import edu.vt.middleware.ldap.ConnectionConfig;
 import edu.vt.middleware.ldap.Credential;
 import edu.vt.middleware.ldap.LdapException;
 import edu.vt.middleware.ldap.ResultCode;
@@ -38,7 +37,7 @@ public class JndiConnectionFactory extends AbstractJndiConnectionFactory
    *
    * @param  url  of the ldap to connect to
    */
-  protected JndiConnectionFactory(final String url)
+  public JndiConnectionFactory(final String url)
   {
     if (url == null) {
       throw new IllegalArgumentException("LDAP URL cannot be null");
@@ -95,27 +94,5 @@ public class JndiConnectionFactory extends AbstractJndiConnectionFactory
         e, NamingExceptionUtil.getResultCode(e.getClass()));
     }
     return conn;
-  }
-
-
-  /**
-   * Creates a new instance of this connection factory.
-   *
-   * @param  lcc  ldap connection configuration to read connection properties
-   * from
-   * @return  jndi connection factory
-   */
-  public static JndiConnectionFactory newInstance(
-    final ConnectionConfig lcc)
-  {
-    final JndiConnectionFactory cf = new JndiConnectionFactory(
-      lcc.getLdapUrl());
-    cf.setAuthenticationType(lcc.getAuthenticationType());
-    cf.setEnvironment(createEnvironment(lcc));
-    cf.setLogCredentials(lcc.getLogCredentials());
-    if (lcc.getConnectionStrategy() != null) {
-      cf.setConnectionStrategy(lcc.getConnectionStrategy());
-    }
-    return cf;
   }
 }
