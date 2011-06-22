@@ -28,6 +28,10 @@ import edu.vt.middleware.ldap.provider.ProviderConnectionFactory;
 public class JndiProvider implements Provider
 {
 
+  /** Result codes indicating that an operation should be retried. */
+  protected ResultCode[] operationRetryResultCodes = new ResultCode[] {
+    ResultCode.PROTOCOL_ERROR, ResultCode.BUSY, ResultCode.UNAVAILABLE, };
+
   /** Stream to print LDAP ASN.1 BER packets. */
   protected PrintStream tracePackets;
 
@@ -54,12 +58,34 @@ public class JndiProvider implements Provider
     if (cc.getConnectionStrategy() != null) {
       cf.setConnectionStrategy(cc.getConnectionStrategy());
     }
-    cf.setOperationRetryResultCodes(
-      new ResultCode[] {
-        ResultCode.PROTOCOL_ERROR, ResultCode.BUSY, ResultCode.UNAVAILABLE, });
+    cf.setOperationRetryResultCodes(operationRetryResultCodes);
     cf.setTracePackets(tracePackets);
     cf.setRemoveDnUrls(removeDnUrls);
     return cf;
+  }
+
+
+  /**
+   * Returns the result codes that trigger an operation retry. Default values
+   * include PROTOCOL_ERROR, BUSY, and UNAVAILABLE.
+   *
+   * @return  ldap result codes
+   */
+  public ResultCode[] getOperationRetryResultCodes()
+  {
+    return operationRetryResultCodes;
+  }
+
+
+  /**
+   * Sets the result codes that trigger an operation retry.  Default values
+   * include PROTOCOL_ERROR, BUSY, and UNAVAILABLE.
+   *
+   * @param  codes  ldap result codes
+   */
+  public void setOperationRetryResultCodes(final ResultCode[] codes)
+  {
+    operationRetryResultCodes = codes;
   }
 
 
