@@ -22,6 +22,15 @@ package edu.vt.middleware.ldap;
 public abstract class AbstractTest
 {
 
+  /** Number of threads for threaded tests. */
+  public static final int TEST_THREAD_POOL_SIZE = 2;
+
+  /** Invocation count for threaded tests. */
+  public static final int TEST_INVOCATION_COUNT = 10;
+
+  /** Timeout for threaded tests. */
+  public static final int TEST_TIME_OUT = 60000;
+
 
   /**
    * Creates the supplied ldap entry and confirms it exists in the ldap.

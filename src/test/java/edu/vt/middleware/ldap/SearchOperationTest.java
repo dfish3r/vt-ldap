@@ -238,9 +238,9 @@ public class SearchOperationTest extends AbstractTest
   )
   @Test(
     groups = {"searchtest"},
-    threadPoolSize = 10,
-    invocationCount = 100,
-    timeOut = 60000
+    threadPoolSize = TEST_THREAD_POOL_SIZE,
+    invocationCount = TEST_INVOCATION_COUNT,
+    timeOut = TEST_TIME_OUT
   )
   public void search(
     final String dn,
@@ -942,9 +942,9 @@ public class SearchOperationTest extends AbstractTest
   )
   @Test(
     groups = {"searchtest"},
-    threadPoolSize = 10,
-    invocationCount = 100,
-    timeOut = 60000
+    threadPoolSize = TEST_THREAD_POOL_SIZE,
+    invocationCount = TEST_INVOCATION_COUNT,
+    timeOut = TEST_TIME_OUT
   )
   public void getAttributes(
     final String dn,

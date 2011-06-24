@@ -182,9 +182,9 @@ public class LdapLoginModuleTest extends AbstractTest
   @Parameters({ "jaasDn", "jaasUser", "jaasUserRole", "jaasCredential" })
   @Test(
     groups = {"jaastest"},
-    threadPoolSize = 10,
-    invocationCount = 100,
-    timeOut = 60000
+    threadPoolSize = TEST_THREAD_POOL_SIZE,
+    invocationCount = TEST_INVOCATION_COUNT,
+    timeOut = TEST_TIME_OUT
   )
   public void contextTest(
     final String dn,
@@ -208,9 +208,9 @@ public class LdapLoginModuleTest extends AbstractTest
   @Parameters({ "jaasDn", "jaasUser", "jaasUserRole", "jaasCredential" })
   @Test(
     groups = {"jaastest"},
-    threadPoolSize = 10,
-    invocationCount = 100,
-    timeOut = 60000
+    threadPoolSize = TEST_THREAD_POOL_SIZE,
+    invocationCount = TEST_INVOCATION_COUNT,
+    timeOut = TEST_TIME_OUT
   )
   public void contextSslTest(
     final String dn,
@@ -234,9 +234,9 @@ public class LdapLoginModuleTest extends AbstractTest
   @Parameters({ "jaasDn", "jaasUser", "jaasUserRole", "jaasCredential" })
   @Test(
     groups = {"jaastest"},
-    threadPoolSize = 10,
-    invocationCount = 100,
-    timeOut = 60000
+    threadPoolSize = TEST_THREAD_POOL_SIZE,
+    invocationCount = TEST_INVOCATION_COUNT,
+    timeOut = TEST_TIME_OUT
   )
   public void authzContextTest(
     final String dn,
@@ -260,9 +260,9 @@ public class LdapLoginModuleTest extends AbstractTest
   @Parameters({ "jaasDn", "jaasUser", "jaasUserRole", "jaasCredential" })
   @Test(
     groups = {"jaastest"},
-    threadPoolSize = 10,
-    invocationCount = 10,
-    timeOut = 60000
+    threadPoolSize = TEST_THREAD_POOL_SIZE,
+    invocationCount = TEST_INVOCATION_COUNT,
+    timeOut = TEST_TIME_OUT
   )
   public void randomContextTest(
     final String dn,
@@ -285,9 +285,9 @@ public class LdapLoginModuleTest extends AbstractTest
   @Parameters({ "jaasDn", "jaasUser", "jaasCredential" })
   @Test(
     groups = {"jaastest"},
-    threadPoolSize = 10,
-    invocationCount = 100,
-    timeOut = 60000
+    threadPoolSize = TEST_THREAD_POOL_SIZE,
+    invocationCount = TEST_INVOCATION_COUNT,
+    timeOut = TEST_TIME_OUT
   )
   public void filterContextTest(
     final String dn,
@@ -342,9 +342,9 @@ public class LdapLoginModuleTest extends AbstractTest
   @Parameters({ "jaasDn", "jaasUser", "jaasRoleCombined", "jaasCredential" })
   @Test(
     groups = {"jaastest"},
-    threadPoolSize = 10,
-    invocationCount = 100,
-    timeOut = 60000
+    threadPoolSize = TEST_THREAD_POOL_SIZE,
+    invocationCount = TEST_INVOCATION_COUNT,
+    timeOut = TEST_TIME_OUT
   )
   public void rolesContextTest(
     final String dn,
@@ -563,9 +563,9 @@ public class LdapLoginModuleTest extends AbstractTest
   @Parameters({ "jaasDn", "jaasUser", "jaasRoleCombined" })
   @Test(
     groups = {"jaastest"},
-    threadPoolSize = 10,
-    invocationCount = 100,
-    timeOut = 60000
+    threadPoolSize = TEST_THREAD_POOL_SIZE,
+    invocationCount = TEST_INVOCATION_COUNT,
+    timeOut = TEST_TIME_OUT
   )
   public void rolesOnlyContextTest(
     final String dn,
@@ -587,9 +587,9 @@ public class LdapLoginModuleTest extends AbstractTest
   @Parameters({ "jaasDn", "jaasUser", "jaasRoleCombined" })
   @Test(
     groups = {"jaastest"},
-    threadPoolSize = 10,
-    invocationCount = 100,
-    timeOut = 60000
+    threadPoolSize = TEST_THREAD_POOL_SIZE,
+    invocationCount = TEST_INVOCATION_COUNT,
+    timeOut = TEST_TIME_OUT
   )
   public void dnRolesOnlyContextTest(
     final String dn,

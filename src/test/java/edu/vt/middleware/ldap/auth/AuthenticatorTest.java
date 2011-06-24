@@ -288,9 +288,9 @@ public class AuthenticatorTest extends AbstractTest
   )
   @Test(
     groups = {"authtest"},
-    threadPoolSize = 1,
-    invocationCount = 1,
-    timeOut = 60000
+    threadPoolSize = TEST_THREAD_POOL_SIZE,
+    invocationCount = TEST_INVOCATION_COUNT,
+    timeOut = TEST_TIME_OUT
   )
   public void authenticateDn(
     final String dn,
@@ -339,9 +339,9 @@ public class AuthenticatorTest extends AbstractTest
   )
   @Test(
     groups = {"authtest"},
-    threadPoolSize = 10,
-    invocationCount = 100,
-    timeOut = 60000
+    threadPoolSize = TEST_THREAD_POOL_SIZE,
+    invocationCount = TEST_INVOCATION_COUNT,
+    timeOut = TEST_TIME_OUT
   )
   public void authenticateDnSsl(
     final String dn,
@@ -394,9 +394,9 @@ public class AuthenticatorTest extends AbstractTest
   )
   @Test(
     groups = {"authtest"},
-    threadPoolSize = 10,
-    invocationCount = 100,
-    timeOut = 60000
+    threadPoolSize = TEST_THREAD_POOL_SIZE,
+    invocationCount = TEST_INVOCATION_COUNT,
+    timeOut = TEST_TIME_OUT
   )
   public void authenticateDnAndAuthorize(
     final String dn,
@@ -600,9 +600,9 @@ public class AuthenticatorTest extends AbstractTest
   )
   @Test(
     groups = {"authtest"},
-    threadPoolSize = 10,
-    invocationCount = 100,
-    timeOut = 60000
+    threadPoolSize = TEST_THREAD_POOL_SIZE,
+    invocationCount = TEST_INVOCATION_COUNT,
+    timeOut = TEST_TIME_OUT
   )
   public void authenticate(
     final String user,
@@ -655,9 +655,9 @@ public class AuthenticatorTest extends AbstractTest
   )
   @Test(
     groups = {"authtest"},
-    threadPoolSize = 10,
-    invocationCount = 100,
-    timeOut = 60000
+    threadPoolSize = TEST_THREAD_POOL_SIZE,
+    invocationCount = TEST_INVOCATION_COUNT,
+    timeOut = TEST_TIME_OUT
   )
   public void authenticateSsl(
     final String user,
@@ -711,9 +711,9 @@ public class AuthenticatorTest extends AbstractTest
   )
   @Test(
     groups = {"authtest"},
-    threadPoolSize = 10,
-    invocationCount = 100,
-    timeOut = 60000
+    threadPoolSize = TEST_THREAD_POOL_SIZE,
+    invocationCount = TEST_INVOCATION_COUNT,
+    timeOut = TEST_TIME_OUT
   )
   public void authenticateAndAuthorize(
     final String user,
@@ -791,9 +791,9 @@ public class AuthenticatorTest extends AbstractTest
   )
   @Test(
     groups = {"authtest"},
-    threadPoolSize = 10,
-    invocationCount = 100,
-    timeOut = 60000
+    threadPoolSize = TEST_THREAD_POOL_SIZE,
+    invocationCount = TEST_INVOCATION_COUNT,
+    timeOut = TEST_TIME_OUT
   )
   public void authenticateAndAuthorizeCompare(
     final String user,
