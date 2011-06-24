@@ -352,23 +352,26 @@ public class JndiConnection implements ProviderConnection
             }
           }
 
+          cookie = null;
           final Control[] responseControls = ctx.getResponseControls();
           if (responseControls != null) {
-            for (int j = 0; j < responseControls.length; j++) {
-              if (responseControls[j] instanceof PagedResultsResponseControl) {
+            for (Control c : responseControls) {
+              if (c instanceof PagedResultsResponseControl) {
                 final PagedResultsResponseControl prrc =
-                  (PagedResultsResponseControl) responseControls[j];
+                  (PagedResultsResponseControl) c;
                 cookie = prrc.getCookie();
               }
             }
           }
 
           // re-activate paged results
-          ctx.setRequestControls(
-            new Control[] {
-              new PagedResultsControl(
-                request.getPagedResultsSize(), cookie, Control.CRITICAL),
-            });
+          if (cookie != null) {
+            ctx.setRequestControls(
+              new Control[] {
+                new PagedResultsControl(
+                  request.getPagedResultsSize(), cookie, Control.CRITICAL),
+              });
+          }
 
         } while (cookie != null);
       } catch (IOException e) {
