@@ -26,6 +26,9 @@ import java.util.regex.Pattern;
    MyClass{{propertyOne=foo}{propertyTwo=bar}}
  * </pre>
  *
+ * If the class name is supplied to the constructor, the property string need
+ * not contain the class declaration.
+ *
  * @author  Middleware Services
  * @version  $Revision$ $Date$
  */
@@ -35,6 +38,10 @@ public class PropertyValueParser
   /** Property string containing configuration. */
   private static final Pattern CONFIG_PATTERN = Pattern.compile(
     "([^\\{]+)\\s*\\{(.*)\\}\\s*");
+
+  /** Property string for configuring a credential config. */
+  private static final Pattern PARAMS_ONLY_CONFIG_PATTERN = Pattern.compile(
+    "\\s*\\{\\s*(.*)\\s*\\}\\s*");
 
   /** Pattern for finding properties. */
   private static final Pattern PROPERTY_PATTERN = Pattern.compile(
@@ -59,6 +66,30 @@ public class PropertyValueParser
       className = matcher.group(1).trim();
 
       final String props = matcher.group(2).trim();
+      final Matcher m = PROPERTY_PATTERN.matcher(props);
+      while (m.find()) {
+        final String input = m.group().trim();
+        if (input != null && !"".equals(input)) {
+          final String[] s = input.split("=", 2);
+          properties.put(s[0].trim(), s[1].trim());
+        }
+      }
+    }
+  }
+
+
+  /**
+   * Creates a new config parser.
+   *
+   * @param  config  containing configuration data
+   * @param  clazz  fully qualified class name
+   */
+  public PropertyValueParser(final String config, final String clazz)
+  {
+    final Matcher matcher = PARAMS_ONLY_CONFIG_PATTERN.matcher(config);
+    className = clazz;
+    if (matcher.matches()) {
+      final String props = matcher.group(1).trim();
       final Matcher m = PROPERTY_PATTERN.matcher(props);
       while (m.find()) {
         final String input = m.group().trim();
@@ -103,6 +134,21 @@ public class PropertyValueParser
   public static boolean isConfig(final String config)
   {
     return CONFIG_PATTERN.matcher(config).matches();
+  }
+
+
+  /**
+   * Returns whether the supplied configuration data contains a params only
+   * config.
+   *
+   * @param  config  containing configuration data
+   *
+   * @return  whether the supplied configuration data contains a params only
+   * config
+   */
+  public static boolean isParamsOnlyConfig(final String config)
+  {
+    return PARAMS_ONLY_CONFIG_PATTERN.matcher(config).matches();
   }
 
 

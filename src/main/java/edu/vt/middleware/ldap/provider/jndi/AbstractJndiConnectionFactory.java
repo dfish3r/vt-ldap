@@ -18,9 +18,13 @@ import java.util.Hashtable;
 import java.util.Map;
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLSocketFactory;
-import edu.vt.middleware.ldap.AuthenticationType;
 import edu.vt.middleware.ldap.ConnectionConfig;
 import edu.vt.middleware.ldap.provider.AbstractProviderConnectionFactory;
+import edu.vt.middleware.ldap.sasl.DigestMd5Config;
+import edu.vt.middleware.ldap.sasl.Mechanism;
+import edu.vt.middleware.ldap.sasl.QualityOfProtection;
+import edu.vt.middleware.ldap.sasl.SaslConfig;
+import edu.vt.middleware.ldap.sasl.SecurityStrength;
 
 /**
  * Base class for JNDI connection factory implementations.
@@ -98,6 +102,38 @@ public abstract class AbstractJndiConnectionFactory
    */
   public static final String VERSION = "java.naming.ldap.version";
 
+  /**
+   * The value of this property is a string that specifies the sasl
+   * authorization id. The value of this constant is {@value}.
+   */
+  public static final String SASL_AUTHZ_ID =
+    "java.naming.security.sasl.authorizationId";
+
+  /**
+   * The value of this property is a string that specifies the sasl
+   * quality of protection. The value of this constant is {@value}.
+   */
+  public static final String SASL_QOP = "javax.security.sasl.qop";
+
+  /**
+   * The value of this property is a string that specifies the sasl
+   * security strength. The value of this constant is {@value}.
+   */
+  public static final String SASL_STRENGTH = "javax.security.sasl.strength";
+
+  /**
+   * The value of this property is a string that specifies the sasl
+   * mutual authentication flag. The value of this constant is {@value}.
+   */
+  public static final String SASL_MUTUAL_AUTH =
+    "javax.security.sasl.server.authentication";
+
+  /**
+   * The value of this property is a string that specifies the sasl realm. The
+   * value of this constant is {@value}.
+   */
+  public static final String SASL_REALM = "java.naming.security.sasl.realm";
+
   /** Environment properties. */
   protected Hashtable<String, Object> environment;
 
@@ -116,6 +152,14 @@ public abstract class AbstractJndiConnectionFactory
 
   /** {@inheritDoc} */
   @Override
+  public void initialize(final ConnectionConfig cc)
+  {
+    environment = createEnvironment(cc);
+  }
+
+
+  /** {@inheritDoc} */
+  @Override
   public Hashtable<String, Object> getEnvironment()
   {
     return environment;
@@ -127,14 +171,6 @@ public abstract class AbstractJndiConnectionFactory
   public void setEnvironment(final Hashtable<String, Object> env)
   {
     environment = env;
-  }
-
-
-  /** {@inheritDoc} */
-  @Override
-  public void setEnvironment(final ConnectionConfig cc)
-  {
-    environment = createEnvironment(cc);
   }
 
 
@@ -227,6 +263,10 @@ public abstract class AbstractJndiConnectionFactory
       env.put(TIMEOUT, Long.toString(cc.getTimeout()));
     }
 
+    if (cc.getSaslConfig() != null) {
+      env.putAll(getSaslProperties(cc.getSaslConfig()));
+    }
+
     if (!cc.getProviderProperties().isEmpty()) {
       for (Map.Entry<String, Object> entry :
            cc.getProviderProperties().entrySet()) {
@@ -239,22 +279,104 @@ public abstract class AbstractJndiConnectionFactory
 
 
   /**
+   * Returns the JNDI properties for the supplied sasl configuration.
+   *
+   * @param  config  sasl configuration
+   * @return  JNDI properties for use in a context environment
+   */
+  protected static Map<String, Object> getSaslProperties(
+    final SaslConfig config)
+  {
+    final Hashtable<String, Object> env = new Hashtable<String, Object>();
+    if (config.getAuthorizationId() != null) {
+      env.put(SASL_AUTHZ_ID, config.getAuthorizationId());
+    }
+    if (config.getQualityOfProtection() != null) {
+      env.put(
+        SASL_QOP, getQualityOfProtection(config.getQualityOfProtection()));
+    }
+    if (config.getSecurityStrength() != null) {
+      env.put(
+        SASL_STRENGTH,
+        getSecurityStrength(config.getSecurityStrength()));
+    }
+    if (config.getMutualAuthentication() != null) {
+      env.put(SASL_MUTUAL_AUTH, config.getMutualAuthentication().toString());
+    }
+    if (config instanceof DigestMd5Config) {
+      if (((DigestMd5Config) config).getRealm() != null) {
+        env.put(SASL_REALM, ((DigestMd5Config) config).getRealm());
+      }
+    }
+    return env;
+  }
+
+
+  /**
+   * Returns the SASL quality of protection string for the supplied enum.
+   *
+   * @param  qop  quality of protection enum
+   * @return  SASL quality of protection string
+   */
+  protected static String getQualityOfProtection(final QualityOfProtection qop)
+  {
+    String s = null;
+    switch (qop) {
+    case AUTH:
+      s = "auth";
+      break;
+    case AUTH_INT:
+      s = "auth-int";
+      break;
+    case AUTH_CONF:
+      s = "auth-conf";
+      break;
+    default:
+      throw new IllegalArgumentException(
+        "Unknown SASL quality of protection: " + qop);
+    }
+    return s;
+  }
+
+
+  /**
+   * Returns the SASL security strength string for the supplied enum.
+   *
+   * @param  ss  security strength enum
+   * @return  SASL security strength string
+   */
+  protected static String getSecurityStrength(final SecurityStrength ss)
+  {
+    String s = null;
+    switch (ss) {
+    case HIGH:
+      s = "high";
+      break;
+    case MEDIUM:
+      s = "medium";
+      break;
+    case LOW:
+      s = "low";
+      break;
+    default:
+      throw new IllegalArgumentException(
+        "Unknown SASL security strength: " + ss);
+    }
+    return s;
+  }
+
+
+  /**
    * Returns the JNDI authentication string for the supplied authentication
    * type.
    *
-   * @param  type  authentication type
+   * @param  m  sasl mechanism
    * @return  JNDI authentication string
    */
-  protected static String getAuthenticationType(final AuthenticationType type)
+  protected static String getAuthenticationType(final Mechanism m)
   {
     String s = null;
-    switch (type) {
-    case ANONYMOUS:
-      s = "none";
-      break;
-    case SIMPLE:
-      s = "simple";
-      break;
+    switch (m) {
     case EXTERNAL:
       s = "EXTERNAL";
       break;
@@ -269,7 +391,7 @@ public abstract class AbstractJndiConnectionFactory
       break;
     default:
       throw new IllegalArgumentException(
-        "Unknown authentication type: " + type);
+        "Unknown SASL authentication mechanism: " + m);
     }
     return s;
   }

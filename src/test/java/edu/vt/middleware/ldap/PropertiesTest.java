@@ -86,8 +86,6 @@ public class PropertiesTest
     AssertJUnit.assertEquals(
       "ldap://ed-dev.middleware.vt.edu:14389", cc.getLdapUrl());
     AssertJUnit.assertEquals("uid=1,ou=test,dc=vt,dc=edu", cc.getBindDn());
-    AssertJUnit.assertEquals(
-      AuthenticationType.SIMPLE, cc.getAuthenticationType());
     AssertJUnit.assertEquals(8000, cc.getTimeout());
     AssertJUnit.assertFalse(cc.isTlsEnabled());
     AssertJUnit.assertEquals(1, cc.getProviderProperties().size());
@@ -142,8 +140,6 @@ public class PropertiesTest
     AssertJUnit.assertEquals(
       "ldap://ed-auth.middleware.vt.edu:14389", authCc.getLdapUrl());
     AssertJUnit.assertEquals("uid=1,ou=test,dc=vt,dc=edu", authCc.getBindDn());
-    AssertJUnit.assertEquals(
-      AuthenticationType.SIMPLE, authCc.getAuthenticationType());
     AssertJUnit.assertEquals(8000, authCc.getTimeout());
     AssertJUnit.assertTrue(authCc.isTlsEnabled());
     AssertJUnit.assertEquals(1, authCc.getProviderProperties().size());
@@ -180,8 +176,6 @@ public class PropertiesTest
     AssertJUnit.assertEquals(
       "ldap://ed-dev.middleware.vt.edu:14389", cc.getLdapUrl());
     AssertJUnit.assertEquals("uid=1,ou=test,dc=vt,dc=edu", cc.getBindDn());
-    AssertJUnit.assertEquals(
-      AuthenticationType.SIMPLE, cc.getAuthenticationType());
     AssertJUnit.assertEquals(8000, cc.getTimeout());
     AssertJUnit.assertTrue(cc.isTlsEnabled());
     AssertJUnit.assertEquals(1, cc.getProviderProperties().size());
@@ -227,8 +221,6 @@ public class PropertiesTest
     AssertJUnit.assertEquals(
       "ldap://ed-dev.middleware.vt.edu:14389", authLcc.getLdapUrl());
     AssertJUnit.assertEquals("uid=1,ou=test,dc=vt,dc=edu", authLcc.getBindDn());
-    AssertJUnit.assertEquals(
-      AuthenticationType.SIMPLE, authLcc.getAuthenticationType());
     AssertJUnit.assertEquals(8000, authLcc.getTimeout());
     AssertJUnit.assertTrue(authLcc.isTlsEnabled());
     AssertJUnit.assertEquals(1, authLcc.getProviderProperties().size());

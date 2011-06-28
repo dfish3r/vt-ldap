@@ -50,8 +50,7 @@ public class JndiProvider implements Provider
     } else {
       cf = new JndiConnectionFactory(cc.getLdapUrl());
     }
-    cf.setAuthenticationType(cc.getAuthenticationType());
-    cf.setEnvironment(cc);
+    cf.initialize(cc);
     cf.setLogCredentials(cc.getLogCredentials());
     cf.setSslSocketFactory(cc.getSslSocketFactory());
     cf.setHostnameVerifier(cc.getHostnameVerifier());

@@ -31,6 +31,15 @@ public interface JndiProviderConnectionFactory extends ProviderConnectionFactory
 
 
   /**
+   * Prepares this connection factory for use by inspecting the connection
+   * configuration properties.
+   *
+   * @param  cc  connection config
+   */
+  void initialize(ConnectionConfig cc);
+
+
+  /**
    * Returns the ldap context environment properties that are used to make LDAP
    * connections.
    *
@@ -46,15 +55,6 @@ public interface JndiProviderConnectionFactory extends ProviderConnectionFactory
    * @param  env  context environment
    */
   void setEnvironment(Hashtable<String, Object> env);
-
-
-  /**
-   * Sets the ldap context environment properties that are used to make LDAP
-   * connections by invoking {@link #createEnvironment(ConnectionConfig)}.
-   *
-   * @param  cc  connection config
-   */
-  void setEnvironment(ConnectionConfig cc);
 
 
   /**

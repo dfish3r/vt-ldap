@@ -14,6 +14,7 @@
 package edu.vt.middleware.ldap;
 
 import java.util.Collection;
+import edu.vt.middleware.ldap.provider.BindRequest;
 import edu.vt.middleware.ldap.provider.ProviderConnection;
 import edu.vt.middleware.ldap.provider.ProviderConnectionFactory;
 import org.slf4j.Logger;
@@ -146,7 +147,7 @@ public class Connection
     }
     initialize();
     providerConnection = providerConnectionFactory.create(
-      bindDn, bindCredential);
+      new BindRequest(bindDn, bindCredential, config.getSaslConfig()));
   }
 
 

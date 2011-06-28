@@ -32,8 +32,11 @@ http://www.springframework.org/schema/util http://www.springframework.org/schema
   <bean id="connectionConfig"
     class="edu.vt.middleware.ldap.ConnectionConfig"
     p:ldapUrl="ldap://ed-dev.middleware.vt.edu:14389"
-    p:tls="true"
-    p:authenticationType="EXTERNAL">
+    p:tls="true">
+    <property name="saslConfig">
+      <bean class="edu.vt.middleware.ldap.sasl.SaslConfig"
+        p:mechanism="EXTERNAL"/>
+    </property>
     <property name="sslSocketFactory">
       <bean class="edu.vt.middleware.ldap.ssl.TLSSocketFactory"
         init-method="initialize">

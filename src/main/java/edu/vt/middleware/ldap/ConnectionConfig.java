@@ -20,6 +20,7 @@ import javax.net.ssl.SSLSocketFactory;
 import edu.vt.middleware.ldap.provider.ConnectionStrategy;
 import edu.vt.middleware.ldap.provider.Provider;
 import edu.vt.middleware.ldap.provider.jndi.JndiProvider;
+import edu.vt.middleware.ldap.sasl.SaslConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -58,8 +59,8 @@ public class ConnectionConfig extends AbstractConfig
   /** Credential for the bind DN. */
   private Credential bindCredential;
 
-  /** Authentication type to use when binding to the LDAP. */
-  private AuthenticationType authenticationType = AuthenticationType.SIMPLE;
+  /** Configuration for SASL authentication. */
+  private SaslConfig saslConfig;
 
   /** Number of times to retry ldap operations on exception. */
   private int operationRetry = 1;
@@ -143,13 +144,13 @@ public class ConnectionConfig extends AbstractConfig
   /**
    * Sets the ldap provider.
    *
-   * @param  lp  ldap provider to set
+   * @param  p  ldap provider to set
    */
-  public void setProvider(final Provider lp)
+  public void setProvider(final Provider p)
   {
     checkImmutable();
-    logger.trace("setting provider: {}", lp);
-    provider = lp;
+    logger.trace("setting provider: {}", p);
+    provider = p;
   }
 
 
@@ -306,26 +307,26 @@ public class ConnectionConfig extends AbstractConfig
 
 
   /**
-   * Returns the authentication type.
+   * Returns the sasl config.
    *
-   * @return  authentication type
+   * @return  sasl config
    */
-  public AuthenticationType getAuthenticationType()
+  public SaslConfig getSaslConfig()
   {
-    return authenticationType;
+    return saslConfig;
   }
 
 
   /**
-   * Sets the authentication type.
+   * Sets the sasl config.
    *
-   * @param  type  of authentication to use
+   * @param  sc  sasl config
    */
-  public void setAuthenticationType(final AuthenticationType type)
+  public void setSaslConfig(final SaslConfig sc)
   {
     checkImmutable();
-    logger.trace("setting authenticationType: {}", type);
-    authenticationType = type;
+    logger.trace("setting saslConfig: {}", sc);
+    saslConfig = sc;
   }
 
 
@@ -561,7 +562,7 @@ public class ConnectionConfig extends AbstractConfig
       String.format(
         "[%s@%d::provider=%s, sslSocketFactory=%s, " +
         "hostnameVerifier=%s, ldapUrl=%s, timeout=%s, bindDn=%s, " +
-        "bindCredential=%s, authenticationType=%s, operationRetry=%s, " +
+        "bindCredential=%s, saslConfig=%s, operationRetry=%s, " +
         "operationRetryWait=%s, operationRetryBackoff=%s, " +
         "providerProperties=%s, logCredentials=%s, ssl=%s, tls=%s, " +
         "connectionStrategy=%s]",
@@ -575,7 +576,7 @@ public class ConnectionConfig extends AbstractConfig
         bindDn,
         logCredentials || bindCredential == null ?
           bindCredential : "<suppressed>",
-        authenticationType,
+        saslConfig,
         operationRetry,
         operationRetryWait,
         operationRetryBackoff,

@@ -13,8 +13,6 @@
 */
 package edu.vt.middleware.ldap.provider;
 
-import edu.vt.middleware.ldap.AuthenticationType;
-import edu.vt.middleware.ldap.Credential;
 import edu.vt.middleware.ldap.LdapException;
 import edu.vt.middleware.ldap.ResultCode;
 
@@ -61,22 +59,6 @@ public interface ProviderConnectionFactory
 
 
   /**
-   * Returns the authentication type.
-   *
-   * @return  authentication type
-   */
-  AuthenticationType getAuthenticationType();
-
-
-  /**
-   * Sets the authentication type.
-   *
-   * @param  type  authentication type
-   */
-  void setAuthenticationType(AuthenticationType type);
-
-
-  /**
    * Returns whether authentication credentials will be logged.
    *
    * @return  whether authentication credentials will be logged
@@ -95,12 +77,11 @@ public interface ProviderConnectionFactory
   /**
    * Create a connection to an LDAP.
    *
-   * @param  dn  to attempt bind with
-   * @param  credential  to attempt bind with
+   * @param  request  bind request
    *
    * @throws  AuthenticationException  if the supplied credentials are invalid
    * @throws  LdapException  if an LDAP error occurs
    */
-  ProviderConnection create(String dn, Credential credential)
+  ProviderConnection create(BindRequest request)
     throws LdapException;
 }

@@ -17,8 +17,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.StringTokenizer;
-import edu.vt.middleware.ldap.AuthenticationType;
-import edu.vt.middleware.ldap.Credential;
 import edu.vt.middleware.ldap.LdapException;
 import edu.vt.middleware.ldap.ResultCode;
 import org.slf4j.Logger;
@@ -45,9 +43,6 @@ public abstract class AbstractProviderConnectionFactory
 
   /** LDAP URL for connections. */
   protected String ldapUrl;
-
-  /** Authentication type. */
-  protected AuthenticationType authenticationType;
 
   /** Whether to log authentication credentials. */
   protected boolean logCredentials;
@@ -113,22 +108,6 @@ public abstract class AbstractProviderConnectionFactory
 
   /** {@inheritDoc} */
   @Override
-  public AuthenticationType getAuthenticationType()
-  {
-    return authenticationType;
-  }
-
-
-  /** {@inheritDoc} */
-  @Override
-  public void setAuthenticationType(final AuthenticationType type)
-  {
-    authenticationType = type;
-  }
-
-
-  /** {@inheritDoc} */
-  @Override
   public boolean getLogCredentials()
   {
     return logCredentials;
@@ -145,7 +124,7 @@ public abstract class AbstractProviderConnectionFactory
 
   /** {@inheritDoc} */
   @Override
-  public ProviderConnection create(final String dn, final Credential credential)
+  public ProviderConnection create(final BindRequest request)
     throws LdapException
   {
     LdapException lastThrown = null;
@@ -160,7 +139,7 @@ public abstract class AbstractProviderConnectionFactory
             connectionCount,
             url,
             connectionStrategy, });
-        conn = createInternal(url, dn, credential);
+        conn = createInternal(url, request);
         connectionCount.incrementCount();
         lastThrown = null;
         break;
@@ -180,14 +159,13 @@ public abstract class AbstractProviderConnectionFactory
    * Create the provider connection and prepare the connection for use.
    *
    * @param  url  to connect to
-   * @param  dn  to bind as
-   * @param  credential  to bind with in conjunction with dn
+   * @param  request  bind request data
    * @return  ldap connection
    *
    * @throws  LdapException  if a connection cannot be established
    */
   protected abstract ProviderConnection createInternal(
-    final String url, final String dn, final Credential credential)
+    final String url, final BindRequest request)
     throws LdapException;
 
 

@@ -24,6 +24,7 @@ import edu.vt.middleware.ldap.auth.handler.AuthenticationResultHandler;
 import edu.vt.middleware.ldap.auth.handler.AuthorizationHandler;
 import edu.vt.middleware.ldap.handler.LdapResultHandler;
 import edu.vt.middleware.ldap.provider.Provider;
+import edu.vt.middleware.ldap.sasl.SaslConfig;
 import edu.vt.middleware.ldap.ssl.CredentialConfigParser;
 import edu.vt.middleware.ldap.ssl.SSLContextInitializer;
 
@@ -101,6 +102,23 @@ public class AdvancedPropertyInvoker extends AbstractPropertyInvoker
         newValue = createTypeFromPropertyValue(
           Provider.class,
           value);
+      } else if (SaslConfig.class.isAssignableFrom(type)) {
+        if ("null".equals(value)) {
+          newValue = null;
+        } else {
+          if (PropertyValueParser.isParamsOnlyConfig(value)) {
+            final PropertyValueParser configParser =
+              new PropertyValueParser(
+                value, "edu.vt.middleware.ldap.sasl.SaslConfig");
+            newValue = configParser.initializeType();
+          } else if (PropertyValueParser.isConfig(value)) {
+            final PropertyValueParser configParser =
+              new PropertyValueParser(value);
+            newValue = configParser.initializeType();
+          } else {
+            newValue = instantiateType(SaslConfig.class, value);
+          }
+        }
       } else if (HostnameVerifier.class.isAssignableFrom(type)) {
         newValue = createTypeFromPropertyValue(
           HostnameVerifier.class,

@@ -1,4 +1,3 @@
-authenticationType:type of authentication (ANONYMOUS|SIMPLE|STRONG|EXTERNAL|DIGEST_MD5|CRAM_MD5|GSSAPI)
 bindCredential:password for the bindDn
 bindDn:fully qualified dn to bind as
 connectionStrategy:LDAP connection strategy for failover

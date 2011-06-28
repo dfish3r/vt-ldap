@@ -24,6 +24,7 @@ import edu.vt.middleware.ldap.Credential;
 import edu.vt.middleware.ldap.LdapException;
 import edu.vt.middleware.ldap.ResultCode;
 import edu.vt.middleware.ldap.auth.AuthenticationException;
+import edu.vt.middleware.ldap.provider.BindRequest;
 import edu.vt.middleware.ldap.provider.ConnectionException;
 
 /**
@@ -54,19 +55,9 @@ public class JndiTlsConnectionFactory extends AbstractJndiConnectionFactory
   /** {@inheritDoc} */
   @Override
   protected JndiTlsConnection createInternal(
-    final String url, final String dn, final Credential credential)
+    final String url, final BindRequest request)
     throws LdapException
   {
-    logger.debug(
-      "Bind with the following parameters: url = {}, " +
-      "authenticationType = {}, dn = {}, credential = {}, env = {}",
-      new Object[] {
-        url,
-        authenticationType,
-        dn,
-        logCredentials || credential == null ? credential : "<suppressed>",
-        environment, });
-
     final Hashtable<String, Object> env = new Hashtable<String, Object>(
       environment);
     env.put(PROVIDER_URL, url);
@@ -80,16 +71,50 @@ public class JndiTlsConnectionFactory extends AbstractJndiConnectionFactory
     try {
       conn = new JndiTlsConnection(new InitialLdapContext(env, null));
       conn.setStartTlsResponse(startTls(conn.getLdapContext()));
-      // note that when using simple authentication (the default),
-      // if the credential is null the provider will automatically revert the
-      // authentication to none
-      conn.getLdapContext().addToEnvironment(
-        AUTHENTICATION, getAuthenticationType(authenticationType));
-      if (dn != null) {
-        conn.getLdapContext().addToEnvironment(PRINCIPAL, dn);
-        if (credential != null) {
-          conn.getLdapContext().addToEnvironment(
-            CREDENTIALS, credential.getBytes());
+      if (request.isSaslRequest()) {
+        final String authenticationType = getAuthenticationType(
+          request.getSaslConfig().getMechanism());
+        final String username = request.getBindDn();
+        final Credential credential = request.getBindCredential();
+        logger.debug(
+          "Bind with the following parameters: url = {}, " +
+          "authenticationType = {}, username = {}, credential = {}, env = {}",
+          new Object[] {
+            url,
+            authenticationType,
+            username,
+            logCredentials || credential == null ? credential : "<suppressed>",
+            environment, });
+
+        conn.getLdapContext().addToEnvironment(
+          AUTHENTICATION, authenticationType);
+        if (username != null) {
+          conn.getLdapContext().addToEnvironment(PRINCIPAL, username);
+          if (credential != null) {
+            conn.getLdapContext().addToEnvironment(
+              CREDENTIALS, credential.getBytes());
+          }
+        }
+      } else {
+        final String dn = request.getBindDn();
+        final Credential credential = request.getBindCredential();
+        logger.debug(
+          "Bind with the following parameters: url = {}, dn = {}, " +
+          "credential = {}, env = {}",
+          new Object[] {
+            url,
+            dn,
+            logCredentials || credential == null ? credential : "<suppressed>",
+            environment, });
+        // note that when using simple authentication (the default),
+        // if the credential is null the provider will automatically revert the
+        // authentication to none
+        if (dn != null) {
+          conn.getLdapContext().addToEnvironment(PRINCIPAL, dn);
+          if (credential != null) {
+            conn.getLdapContext().addToEnvironment(
+              CREDENTIALS, credential.getBytes());
+          }
         }
       }
       conn.getLdapContext().reconnect(null);

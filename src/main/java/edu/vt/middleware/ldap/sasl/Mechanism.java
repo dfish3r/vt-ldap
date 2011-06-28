@@ -11,22 +11,16 @@
   Version: $Revision$
   Updated: $Date$
 */
-package edu.vt.middleware.ldap;
+package edu.vt.middleware.ldap.sasl;
 
 /**
- * Enum to define ldap authentication types.
+ * Enum to define SASL mechanisms.
  *
  * @author  Middleware Services
  * @version  $Revision$ $Date$
  */
-public enum AuthenticationType
+public enum Mechanism
 {
-  /** Anonymous authentication type. */
-  ANONYMOUS,
-
-  /** Simple authentication type. */
-  SIMPLE,
-
   /** External authentication type. */
   EXTERNAL,
 
