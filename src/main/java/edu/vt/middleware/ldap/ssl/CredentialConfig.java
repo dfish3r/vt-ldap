@@ -17,7 +17,7 @@ import java.security.GeneralSecurityException;
 
 /**
  * Provides a base interface for all credential configurations. Since credential
- * onfigs are invoked via reflection by the PropertyInvoker their method
+ * configs are invoked via reflection by the PropertyInvoker their method
  * signatures are not important. They only need to be able to create an SSL
  * context initializer once their properties have been set.
  *
