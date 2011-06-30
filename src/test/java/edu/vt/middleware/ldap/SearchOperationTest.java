@@ -1031,6 +1031,148 @@ public class SearchOperationTest extends AbstractTest
 
 
   /**
+   * @param  user  to bind as
+   * @param  credential  to bind with
+   * @param  dn  to search on.
+   * @param  filter  to search with.
+   * @param  filterArgs  to replace args in filter with.
+   * @param  returnAttrs  to return from search.
+   * @param  ldifFile  to compare with
+   *
+   * @throws  Exception  On test failure.
+   */
+  @Parameters(
+    {
+      "digestMd5User",
+      "digestMd5Credential",
+      "digestMd5SearchDn",
+      "digestMd5SearchFilter",
+      "digestMd5SearchFilterArgs",
+      "digestMd5SearchReturnAttrs",
+      "digestMd5SearchResults"
+    }
+  )
+  @Test(groups = {"searchtest"})
+  public void digestMd5Search(
+    final String user,
+    final String credential,
+    final String dn,
+    final String filter,
+    final String filterArgs,
+    final String returnAttrs,
+    final String ldifFile)
+    throws Exception
+  {
+    final String expected = TestUtil.readFileIntoString(ldifFile);
+
+    final Connection conn = TestUtil.createDigestMd5Connection();
+    conn.getConnectionConfig().setBindDn(user);
+    conn.getConnectionConfig().setBindCredential(new Credential(credential));
+    conn.open();
+    final SearchOperation search = new SearchOperation(conn);
+    final LdapResult result = search.execute(
+      new SearchRequest(
+        dn,
+        new SearchFilter(filter, filterArgs.split("\\|")),
+        returnAttrs.split("\\|"))).getResult();
+    AssertJUnit.assertEquals(TestUtil.convertLdifToResult(expected), result);
+    conn.close();
+  }
+
+
+  /**
+   * @param  user  to bind as
+   * @param  credential  to bind with
+   * @param  dn  to search on.
+   * @param  filter  to search with.
+   * @param  filterArgs  to replace args in filter with.
+   * @param  returnAttrs  to return from search.
+   * @param  ldifFile  to compare with
+   *
+   * @throws  Exception  On test failure.
+   */
+  @Parameters(
+    {
+      "cramMd5User",
+      "cramMd5Credential",
+      "cramMd5SearchDn",
+      "cramMd5SearchFilter",
+      "cramMd5SearchFilterArgs",
+      "cramMd5SearchReturnAttrs",
+      "cramMd5SearchResults"
+    }
+  )
+  @Test(groups = {"searchtest"})
+  public void cramMd5Search(
+    final String user,
+    final String credential,
+    final String dn,
+    final String filter,
+    final String filterArgs,
+    final String returnAttrs,
+    final String ldifFile)
+    throws Exception
+  {
+    final String expected = TestUtil.readFileIntoString(ldifFile);
+
+    final Connection conn = TestUtil.createCramMd5Connection();
+    conn.getConnectionConfig().setBindDn(user);
+    conn.getConnectionConfig().setBindCredential(new Credential(credential));
+    conn.open();
+    final SearchOperation search = new SearchOperation(conn);
+    final LdapResult result = search.execute(
+      new SearchRequest(
+        dn,
+        new SearchFilter(filter, filterArgs.split("\\|")),
+        returnAttrs.split("\\|"))).getResult();
+    AssertJUnit.assertEquals(TestUtil.convertLdifToResult(expected), result);
+    conn.close();
+  }
+
+
+  /**
+   * @param  dn  to search on.
+   * @param  filter  to search with.
+   * @param  filterArgs  to replace args in filter with.
+   * @param  returnAttrs  to return from search.
+   * @param  ldifFile  to compare with
+   *
+   * @throws  Exception  On test failure.
+   */
+  @Parameters(
+    {
+      "saslExternalSearchDn",
+      "saslExternalSearchFilter",
+      "saslExternalSearchFilterArgs",
+      "saslExternalSearchReturnAttrs",
+      "saslExternalSearchResults"
+    }
+  )
+  @Test(groups = {"searchtest"})
+  public void saslExternalSearch(
+    final String dn,
+    final String filter,
+    final String filterArgs,
+    final String returnAttrs,
+    final String ldifFile)
+    throws Exception
+  {
+    final String expected = TestUtil.readFileIntoString(ldifFile);
+
+    final Connection conn = TestUtil.createSaslExternalConnection();
+    conn.open();
+    final SearchOperation search = new SearchOperation(conn);
+    final LdapResult result = search.execute(
+      new SearchRequest(
+        dn,
+        new SearchFilter(filter, filterArgs.split("\\|")),
+        returnAttrs.split("\\|"))).getResult();
+    AssertJUnit.assertEquals(TestUtil.convertLdifToResult(expected), result);
+    conn.close();
+  }
+
+
+  /**
    * @param  krb5Realm  kerberos realm
    * @param  krb5Kdc  kerberos kdc
    * @param  dn  to search on.

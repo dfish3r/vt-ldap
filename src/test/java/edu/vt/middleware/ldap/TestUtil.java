@@ -125,6 +125,36 @@ public final class TestUtil
    *
    * @throws  Exception  On test failure.
    */
+  @DataProvider(name = "digest-md5-ldap")
+  public static Connection createDigestMd5Connection()
+    throws Exception
+  {
+    return new Connection(
+      readConnectionConfig(
+        TestUtil.class.getResourceAsStream("/ldap.digest-md5.properties")));
+  }
+
+
+  /**
+   * @return  ldap connection
+   *
+   * @throws  Exception  On test failure.
+   */
+  @DataProvider(name = "cram-md5-ldap")
+  public static Connection createCramMd5Connection()
+    throws Exception
+  {
+    return new Connection(
+      readConnectionConfig(
+        TestUtil.class.getResourceAsStream("/ldap.cram-md5.properties")));
+  }
+
+
+  /**
+   * @return  ldap connection
+   *
+   * @throws  Exception  On test failure.
+   */
   @DataProvider(name = "gss-api-ldap")
   public static Connection createGssApiConnection()
     throws Exception

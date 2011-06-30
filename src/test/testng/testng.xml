@@ -199,6 +199,27 @@
   <parameter name="renameOldDn" value="uid=5,ou=test,dc=vt,dc=edu"/>
   <parameter name="renameNewDn" value="uid=1005,ou=test,dc=vt,dc=edu"/>
 
+  <parameter name="digestMd5SearchDn" value="ou=test,dc=vt,dc=edu"/>
+  <parameter name="digestMd5SearchFilter" value="(uid={0})"/>
+  <parameter name="digestMd5SearchFilterArgs" value="2"/>
+  <parameter name="digestMd5SearchReturnAttrs" value="departmentNumber|givenName|sn"/>
+  <parameter name="digestMd5SearchResults"
+             value="/edu/vt/middleware/ldap/searchResults-2.ldif"/>
+
+  <parameter name="cramMd5SearchDn" value="ou=test,dc=vt,dc=edu"/>
+  <parameter name="cramMd5SearchFilter" value="(uid={0})"/>
+  <parameter name="cramMd5SearchFilterArgs" value="test3"/>
+  <parameter name="cramMd5SearchReturnAttrs" value="cn|sn|uid"/>
+  <parameter name="cramMd5SearchResults"
+             value="/edu/vt/middleware/ldap/test3.ldif"/>
+
+  <parameter name="saslExternalSearchDn" value="ou=test,dc=vt,dc=edu"/>
+  <parameter name="saslExternalSearchFilter" value="(uid={0})"/>
+  <parameter name="saslExternalSearchFilterArgs" value="2"/>
+  <parameter name="saslExternalSearchReturnAttrs" value="departmentNumber|givenName|sn"/>
+  <parameter name="saslExternalSearchResults"
+             value="/edu/vt/middleware/ldap/searchResults-2.ldif"/>
+
   <parameter name="krb5Realm" value="VT.EDU"/>
   <parameter name="krb5Kdc" value="ed-dev.middleware.vt.edu"/>
   <parameter name="gssApiSearchDn" value="ou=test,dc=vt,dc=edu"/>
@@ -233,7 +254,7 @@
   <parameter name="authenticateSpecialCharsUser" value="17894"/>
   <parameter name="authenticateSpecialCharsCredential" value="password2"/>
 
-  <parameter name="digestMd5User" value="test3"/>
+  <parameter name="digestMd5User" value="test3@vt.edu"/>
   <parameter name="digestMd5Credential" value="password"/>
 
   <parameter name="cramMd5User" value="test3"/>
