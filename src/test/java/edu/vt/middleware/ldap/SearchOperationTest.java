@@ -267,6 +267,14 @@ public class SearchOperationTest extends AbstractTest
         returnAttrs.split("\\|"))).getResult();
     AssertJUnit.assertEquals(TestUtil.convertLdifToResult(expected), result);
 
+    // test searching no attributes
+    result = search.execute(
+      new SearchRequest(
+        dn,
+        new SearchFilter(filter, filterArgs.split("\\|")),
+        new String[]{})).getResult();
+    AssertJUnit.assertTrue(result.getEntry().getAttributes().isEmpty());
+
     // test searching without handler
     result = search.execute(
       new SearchRequest(
