@@ -14,7 +14,7 @@
 package edu.vt.middleware.ldap.provider.jndi;
 
 import java.io.PrintStream;
-import java.util.Hashtable;
+import java.util.Map;
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLSocketFactory;
 import edu.vt.middleware.ldap.ConnectionConfig;
@@ -45,7 +45,7 @@ public interface JndiProviderConnectionFactory extends ProviderConnectionFactory
    *
    * @return  context environment
    */
-  Hashtable<String, Object> getEnvironment();
+  Map<String, Object> getEnvironment();
 
 
   /**
@@ -54,7 +54,7 @@ public interface JndiProviderConnectionFactory extends ProviderConnectionFactory
    *
    * @param  env  context environment
    */
-  void setEnvironment(Hashtable<String, Object> env);
+  void setEnvironment(Map<String, Object> env);
 
 
   /**

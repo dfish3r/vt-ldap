@@ -14,7 +14,7 @@
 package edu.vt.middleware.ldap.provider.jndi;
 
 import java.io.PrintStream;
-import java.util.Hashtable;
+import java.util.HashMap;
 import java.util.Map;
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLSocketFactory;
@@ -135,7 +135,7 @@ public abstract class AbstractJndiConnectionFactory
   public static final String SASL_REALM = "java.naming.security.sasl.realm";
 
   /** Environment properties. */
-  protected Hashtable<String, Object> environment;
+  protected Map<String, Object> environment;
 
   /** Stream to print LDAP ASN.1 BER packets. */
   protected PrintStream tracePackets;
@@ -160,7 +160,7 @@ public abstract class AbstractJndiConnectionFactory
 
   /** {@inheritDoc} */
   @Override
-  public Hashtable<String, Object> getEnvironment()
+  public Map<String, Object> getEnvironment()
   {
     return environment;
   }
@@ -168,7 +168,7 @@ public abstract class AbstractJndiConnectionFactory
 
   /** {@inheritDoc} */
   @Override
-  public void setEnvironment(final Hashtable<String, Object> env)
+  public void setEnvironment(final Map<String, Object> env)
   {
     environment = env;
   }
@@ -245,10 +245,10 @@ public abstract class AbstractJndiConnectionFactory
    * @param  cc  connection config
    * @return  JNDI ldap context environment
    */
-  protected static Hashtable<String, Object> createEnvironment(
+  protected static Map<String, Object> createEnvironment(
     final ConnectionConfig cc)
   {
-    final Hashtable<String, Object> env = new Hashtable<String, Object>();
+    final Map<String, Object> env = new HashMap<String, Object>();
 
     env.put(CONTEXT_FACTORY, "com.sun.jndi.ldap.LdapCtxFactory");
 
@@ -287,7 +287,7 @@ public abstract class AbstractJndiConnectionFactory
   protected static Map<String, Object> getSaslProperties(
     final SaslConfig config)
   {
-    final Hashtable<String, Object> env = new Hashtable<String, Object>();
+    final Map<String, Object> env = new HashMap<String, Object>();
     if (config.getAuthorizationId() != null) {
       env.put(SASL_AUTHZ_ID, config.getAuthorizationId());
     }
