@@ -816,8 +816,6 @@ public class AuthenticatorTest
   /**
    * @param  user  to authenticate.
    * @param  credential  to authenticate with.
-   * @param  returnAttrs  to search for.
-   * @param  results  to expect from the search.
    *
    * @throws  Exception  On test failure.
    */

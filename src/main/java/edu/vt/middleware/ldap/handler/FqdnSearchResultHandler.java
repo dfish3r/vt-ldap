@@ -107,7 +107,7 @@ public class FqdnSearchResultHandler extends CopySearchResultHandler
    */
   private String readCompositeName(final String s)
   {
-    StringBuffer name = new StringBuffer();
+    final StringBuffer name = new StringBuffer();
     try {
       final CompositeName cName = new CompositeName(s);
       for (int i = 0; i < cName.size(); i++) {
