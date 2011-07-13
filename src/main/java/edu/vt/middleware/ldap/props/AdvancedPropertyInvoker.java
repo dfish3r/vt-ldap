@@ -22,6 +22,7 @@ import edu.vt.middleware.ldap.auth.DnResolver;
 import edu.vt.middleware.ldap.auth.handler.AuthenticationHandler;
 import edu.vt.middleware.ldap.auth.handler.AuthenticationResultHandler;
 import edu.vt.middleware.ldap.auth.handler.AuthorizationHandler;
+import edu.vt.middleware.ldap.control.Control;
 import edu.vt.middleware.ldap.handler.LdapResultHandler;
 import edu.vt.middleware.ldap.provider.Provider;
 import edu.vt.middleware.ldap.sasl.SaslConfig;
@@ -129,6 +130,8 @@ public class AdvancedPropertyInvoker extends AbstractPropertyInvoker
           value);
       } else if (DnResolver.class.isAssignableFrom(type)) {
         newValue = createTypeFromPropertyValue(DnResolver.class, value);
+      } else if (Control.class.isAssignableFrom(type)) {
+        newValue = createTypeFromPropertyValue(Control.class, value);
       } else if (LdapResultHandler[].class.isAssignableFrom(type)) {
         newValue = createArrayTypeFromPropertyValue(
           LdapResultHandler.class,

@@ -17,6 +17,9 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import edu.vt.middleware.ldap.control.PagedResultsControl;
+import edu.vt.middleware.ldap.control.SortControl;
+import edu.vt.middleware.ldap.control.SortKey;
 import edu.vt.middleware.ldap.handler.CaseChangeResultHandler;
 import edu.vt.middleware.ldap.handler.CaseChangeResultHandler.CaseChange;
 import edu.vt.middleware.ldap.handler.CopyLdapResultHandler;
@@ -329,16 +332,57 @@ public class SearchOperationTest extends AbstractTest
   {
     final Connection conn = TestUtil.createConnection();
     conn.open();
-    final PagedSearchOperation search = new PagedSearchOperation(conn);
+    final SearchOperation search = new SearchOperation(conn);
     final String expected = TestUtil.readFileIntoString(ldifFile);
 
     // test searching
-    final PagedSearchRequest request = new PagedSearchRequest(
+    final SearchRequest request = new SearchRequest(
       dn, new SearchFilter(filter));
-    request.setPagedResultsSize(1);
+    request.setPagedResultsControl(new PagedResultsControl(1, true));
     final LdapResult result = search.execute(request).getResult();
     AssertJUnit.assertEquals(
       TestUtil.convertLdifToResult(expected), result);
+
+    conn.close();
+  }
+
+
+  /**
+   * @param  dn  to search on.
+   * @param  filter  to search with.
+   *
+   * @throws  Exception  On test failure.
+   */
+  @Parameters({
+      "sortSearchDn",
+      "sortSearchFilter"
+    })
+  @Test(groups = {"searchtest"})
+  public void sortedSearch(
+    final String dn,
+    final String filter)
+    throws Exception
+  {
+    final Connection conn = TestUtil.createConnection();
+    conn.open();
+    final SearchOperation search = new SearchOperation(conn);
+
+    // test searching
+    final SearchRequest request = new SearchRequest(
+      dn, new SearchFilter(filter));
+    request.setSortBehavior(SortBehavior.ORDERED);
+    request.setSortControl(
+      new SortControl(
+        new SortKey[] {new SortKey("uid", "integerMatch", true)}, true));
+    final LdapResult result = search.execute(request).getResult();
+
+    // confirm sorted
+    int i = 5;
+    for (LdapEntry e : result.getEntries()) {
+      AssertJUnit.assertEquals(
+        String.valueOf(2000 + i), e.getAttribute("uid").getStringValue());
+      i--;
+    }
 
     conn.close();
   }

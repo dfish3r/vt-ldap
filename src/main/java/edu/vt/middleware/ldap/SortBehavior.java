@@ -18,7 +18,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Enum to define how ldap result, entries, and attribute data should be sorted.
- * Default sort behavior can be controled with the
+ * Default sort behavior can be controlled with the
  * edu.vt.middleware.ldap.sortBehavior system property. This property must be
  * the fully qualified name of a sort behavior.
  *

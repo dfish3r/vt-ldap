@@ -105,6 +105,7 @@ public class PropertiesTest
     AssertJUnit.assertEquals(SearchScope.OBJECT, sr.getSearchScope());
     AssertJUnit.assertEquals(5000, sr.getTimeLimit());
     AssertJUnit.assertEquals("jpegPhoto", sr.getBinaryAttributes()[0]);
+    AssertJUnit.assertEquals(5, sr.getPagedResultsControl().getSize());
 
     for (LdapResultHandler rh : sr.getLdapResultHandlers()) {
       if (RecursiveResultHandler.class.isInstance(rh)) {

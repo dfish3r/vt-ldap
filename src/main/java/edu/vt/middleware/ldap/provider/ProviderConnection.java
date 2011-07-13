@@ -19,7 +19,6 @@ import edu.vt.middleware.ldap.DeleteRequest;
 import edu.vt.middleware.ldap.LdapException;
 import edu.vt.middleware.ldap.LdapResult;
 import edu.vt.middleware.ldap.ModifyRequest;
-import edu.vt.middleware.ldap.PagedSearchRequest;
 import edu.vt.middleware.ldap.RenameRequest;
 import edu.vt.middleware.ldap.SearchRequest;
 
@@ -77,16 +76,6 @@ public interface ProviderConnection
    * @throws  LdapException  if an error occurs
    */
   void rename(RenameRequest request) throws LdapException;
-
-
-  /**
-   * Search the ldap using the paged results control.
-   *
-   * @param  request  containing the data necessary to perform the operation
-   * @return  ldap result
-   * @throws  LdapException  if an error occurs
-   */
-  LdapResult pagedSearch(PagedSearchRequest request) throws LdapException;
 
 
   /**

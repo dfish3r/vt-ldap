@@ -164,6 +164,9 @@
   <parameter name="pagedSearchResults"
              value="/edu/vt/middleware/ldap/pagedResults.ldif"/>
 
+  <parameter name="sortSearchDn" value="ou=test,dc=vt,dc=edu"/>
+  <parameter name="sortSearchFilter" value="(|(uugid=group2)(uugid=group3)(uugid=group4)(uugid=group5))"/>
+
   <parameter name="getSchemaDn" value="ou=test,dc=vt,dc=edu"/>
   <parameter name="getSchemaResults"
              value="/edu/vt/middleware/ldap/getSchemaResults.ldif"/>

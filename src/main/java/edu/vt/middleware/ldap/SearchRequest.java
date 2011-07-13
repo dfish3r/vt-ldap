@@ -14,6 +14,8 @@
 package edu.vt.middleware.ldap;
 
 import java.util.Arrays;
+import edu.vt.middleware.ldap.control.PagedResultsControl;
+import edu.vt.middleware.ldap.control.SortControl;
 import edu.vt.middleware.ldap.handler.LdapResultHandler;
 
 /**
@@ -59,6 +61,12 @@ public class SearchRequest implements Request
 
   /** Binary attribute names. */
   protected String[] binaryAttrs;
+
+  /** Paged results control. */
+  protected PagedResultsControl pagedResultsControl;
+
+  /** Sort control. */
+  protected SortControl sortControl;
 
   /** Sort behavior of results. */
   protected SortBehavior sortBehavior = SortBehavior.getDefaultSortBehavior();
@@ -421,6 +429,53 @@ public class SearchRequest implements Request
 
 
   /**
+   * Returns the paged results control.
+   *
+   * @return  paged results control
+   */
+  public PagedResultsControl getPagedResultsControl()
+  {
+    return pagedResultsControl;
+  }
+
+
+  /**
+   * Sets the paged results control.
+   *
+   * @param  prc  paged results control
+   */
+  public void setPagedResultsControl(final PagedResultsControl prc)
+  {
+    pagedResultsControl = prc;
+  }
+
+
+  /**
+   * Returns the sort control.
+   *
+   * @return  sort control
+   */
+  public SortControl getSortControl()
+  {
+    return sortControl;
+  }
+
+
+  /**
+   * Sets the sort control. When using this control
+   * {@link #setSortBehavior(SortBehavior)} should be invoked with
+   * {@link SortBehavior#ORDERED} so that the sort order will be maintained.
+   * Failure to do this will result in the server side sort order being lost.
+   *
+   * @param  sc  sort control
+   */
+  public void setSortControl(final SortControl sc)
+  {
+    sortControl = sc;
+  }
+
+
+  /**
    * Returns the sort behavior.
    *
    * @return  sort behavior
@@ -619,8 +674,8 @@ public class SearchRequest implements Request
         "[%s@%d::baseDn=%s, searchFilter=%s, returnAttributes=%s, " +
         "searchScope=%s, timeLimit=%s, countLimit=%s, batchSize=%s, " +
         "derefAliases=%s, referralBehavior=%s, typesOnly=%s, " +
-        "binaryAttributes=%s, sortBehavior=%s, searchResultHandler=%s, " +
-        "searchIgnoreResultCodes=%s]",
+        "binaryAttributes=%s, pagedResultsControl=%s, sortControl=%s," +
+        "sortBehavior=%s, searchResultHandler=%s, searchIgnoreResultCodes=%s]",
         getClass().getName(),
         hashCode(),
         baseDn,
@@ -634,6 +689,8 @@ public class SearchRequest implements Request
         referralBehavior,
         typesOnly,
         binaryAttrs != null ? Arrays.asList(binaryAttrs) : null,
+        pagedResultsControl,
+        sortControl,
         sortBehavior,
         handlers != null ? Arrays.asList(handlers) : null,
         searchIgnoreResultCodes != null ?

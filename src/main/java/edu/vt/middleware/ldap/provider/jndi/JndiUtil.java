@@ -30,6 +30,7 @@ import edu.vt.middleware.ldap.AttributeModificationType;
 import edu.vt.middleware.ldap.LdapAttribute;
 import edu.vt.middleware.ldap.LdapEntry;
 import edu.vt.middleware.ldap.SortBehavior;
+import edu.vt.middleware.ldap.control.SortKey;
 
 /**
  * Provides methods for converting between JNDI specific objects and vt-ldap
@@ -176,6 +177,28 @@ public class JndiUtil
         fromLdapAttribute(am[i].getAttribute()));
     }
     return mods;
+  }
+
+
+  /**
+   * Returns jndi sort keys using the supplied sort keys.
+   *
+   * @param  sk  sort keys
+   * @return  jndi sort keys
+   */
+  public static javax.naming.ldap.SortKey[] fromSortKey(final SortKey[] sk)
+  {
+    javax.naming.ldap.SortKey[] keys = null;
+    if (sk != null) {
+      keys = new javax.naming.ldap.SortKey[sk.length];
+      for (int i = 0; i < sk.length; i++) {
+        keys[i] = new javax.naming.ldap.SortKey(
+          sk[i].getAttributeDescription(),
+          !sk[i].getReverseOrder(),
+          sk[i].getMatchingRuleId());
+      }
+    }
+    return keys;
   }
 
 

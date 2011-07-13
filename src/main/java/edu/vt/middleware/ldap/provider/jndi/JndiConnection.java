@@ -26,6 +26,8 @@ import javax.naming.ldap.LdapContext;
 import javax.naming.ldap.LdapName;
 import javax.naming.ldap.PagedResultsControl;
 import javax.naming.ldap.PagedResultsResponseControl;
+import javax.naming.ldap.SortControl;
+import javax.naming.ldap.SortResponseControl;
 import edu.vt.middleware.ldap.AddRequest;
 import edu.vt.middleware.ldap.CompareRequest;
 import edu.vt.middleware.ldap.DeleteRequest;
@@ -34,7 +36,6 @@ import edu.vt.middleware.ldap.LdapException;
 import edu.vt.middleware.ldap.LdapResult;
 import edu.vt.middleware.ldap.ModifyRequest;
 import edu.vt.middleware.ldap.OperationException;
-import edu.vt.middleware.ldap.PagedSearchRequest;
 import edu.vt.middleware.ldap.RenameRequest;
 import edu.vt.middleware.ldap.ResultCode;
 import edu.vt.middleware.ldap.SearchRequest;
@@ -314,7 +315,75 @@ public class JndiConnection implements ProviderConnection
 
   /** {@inheritDoc} */
   @Override
-  public LdapResult pagedSearch(final PagedSearchRequest request)
+  public LdapResult search(final SearchRequest request)
+    throws LdapException
+  {
+    LdapResult result = null;
+    if (request.getPagedResultsControl() != null) {
+      result = doPagedSearch(request);
+    } else if (request.getSortControl() != null) {
+      result = doSortSearch(request);
+    } else {
+      result = doSearch(request);
+    }
+    return result;
+  }
+
+
+  /**
+   * Search the ldap.
+   *
+   * @param  request  containing the data necessary to perform the operation
+   * @return  ldap result
+   * @throws  LdapException  if an error occurs
+   */
+  protected LdapResult doSearch(final SearchRequest request)
+    throws LdapException
+  {
+    LdapResult result = null;
+    try {
+      LdapContext ctx = null;
+      NamingEnumeration<SearchResult> en = null;
+      try {
+        ctx = context.newInstance(null);
+        initializeSearchContext(ctx, request);
+        final SearchControls controls = getSearchControls(request);
+        en = ctx.search(
+          request.getBaseDn(),
+          request.getSearchFilter() != null ?
+            request.getSearchFilter().getFilter() : null,
+          request.getSearchFilter() != null ?
+            request.getSearchFilter().getFilterArgs().toArray() : null,
+          controls);
+
+        result = readSearchResults(
+          getSearchDn(request, ctx),
+          en,
+          request.getSearchIgnoreResultCodes(),
+          request.getSortBehavior());
+      } finally {
+        if (en != null) {
+          en.close();
+        }
+        if (ctx != null) {
+          ctx.close();
+        }
+      }
+    } catch (NamingException e) {
+      throwOperationException(e);
+    }
+    return result;
+  }
+
+
+  /**
+   * Search the ldap using the paged results control.
+   *
+   * @param  request  containing the data necessary to perform the operation
+   * @return  ldap result
+   * @throws  LdapException  if an error occurs
+   */
+  protected LdapResult doPagedSearch(final SearchRequest request)
     throws LdapException
   {
     LdapResult result = null;
@@ -324,10 +393,12 @@ public class JndiConnection implements ProviderConnection
       try {
         byte[] cookie = null;
         ctx = context.newInstance(null);
+        initializeSearchContext(ctx, request);
         ctx.setRequestControls(
           new Control[] {
             new PagedResultsControl(
-              request.getPagedResultsSize(), Control.CRITICAL),
+              request.getPagedResultsControl().getSize(),
+              request.getPagedResultsControl().getCriticality()),
           });
         result = new LdapResult(request.getSortBehavior());
         final SearchControls controls = getSearchControls(request);
@@ -369,13 +440,15 @@ public class JndiConnection implements ProviderConnection
             ctx.setRequestControls(
               new Control[] {
                 new PagedResultsControl(
-                  request.getPagedResultsSize(), cookie, Control.CRITICAL),
+                  request.getPagedResultsControl().getSize(),
+                  cookie,
+                  request.getPagedResultsControl().getCriticality()),
               });
           }
 
         } while (cookie != null);
       } catch (IOException e) {
-        logger.error("Could not encode page size into control", e);
+        logger.error("Could not encode request control", e);
         throw new NamingException(e.getMessage());
       } finally {
         if (en != null) {
@@ -392,9 +465,14 @@ public class JndiConnection implements ProviderConnection
   }
 
 
-  /** {@inheritDoc} */
-  @Override
-  public LdapResult search(final SearchRequest request)
+  /**
+   * Search the ldap using the sort control.
+   *
+   * @param  request  containing the data necessary to perform the operation
+   * @return  ldap result
+   * @throws  LdapException  if an error occurs
+   */
+  protected LdapResult doSortSearch(final SearchRequest request)
     throws LdapException
   {
     LdapResult result = null;
@@ -404,20 +482,40 @@ public class JndiConnection implements ProviderConnection
       try {
         ctx = context.newInstance(null);
         initializeSearchContext(ctx, request);
-        final SearchControls controls = getSearchControls(request);
+        ctx.setRequestControls(
+          new Control[] {
+            new SortControl(
+              JndiUtil.fromSortKey(request.getSortControl().getSortKeys()),
+              request.getSortControl().getCriticality()),
+          });
         en = ctx.search(
           request.getBaseDn(),
           request.getSearchFilter() != null ?
             request.getSearchFilter().getFilter() : null,
           request.getSearchFilter() != null ?
             request.getSearchFilter().getFilterArgs().toArray() : null,
-          controls);
+          getSearchControls(request));
 
         result = readSearchResults(
           getSearchDn(request, ctx),
           en,
           request.getSearchIgnoreResultCodes(),
           request.getSortBehavior());
+
+        final Control[] responseControls = ctx.getResponseControls();
+        if (responseControls != null) {
+          for (Control c : responseControls) {
+            if (c instanceof SortResponseControl) {
+              final SortResponseControl src = (SortResponseControl) c;
+              if (!src.isSorted()) {
+                throw src.getException();
+              }
+            }
+          }
+        }
+      } catch (IOException e) {
+        logger.error("Could not encode request control", e);
+        throw new NamingException(e.getMessage());
       } finally {
         if (en != null) {
           en.close();
