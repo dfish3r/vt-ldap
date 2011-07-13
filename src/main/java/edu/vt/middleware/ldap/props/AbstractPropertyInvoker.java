@@ -251,7 +251,8 @@ public abstract class AbstractPropertyInvoker implements PropertyInvoker
         return e;
       }
     }
-    return null;
+    throw new IllegalArgumentException(
+      String.format("Unknown enum value %s for %s", value, clazz));
   }
 
 
