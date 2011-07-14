@@ -18,6 +18,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
+import java.util.Arrays;
 import org.apache.commons.codec.binary.Base64;
 import org.slf4j.LoggerFactory;
 
@@ -168,5 +169,34 @@ public final class LdapUtil
       data.close();
     }
     return data.toByteArray();
+  }
+
+
+  /**
+   * Concatenates multiple arrays together.
+   *
+   * @param  <T>  type of array
+   * @param  first  array to concatenate. Cannot be null.
+   * @param  rest  of the arrays to concatenate. May be null.
+   * @return  array containing the concatenation of all parameters
+   */
+  public static <T> T[] concatArrays(final T[] first, final T[]... rest)
+  {
+    int totalLength = first.length;
+    for (T[] array : rest) {
+      if (array != null) {
+        totalLength += array.length;
+      }
+    }
+    final T[] result = Arrays.copyOf(first, totalLength);
+
+    int offset = first.length;
+    for (T[] array : rest) {
+      if (array != null) {
+        System.arraycopy(array, 0, result, offset, array.length);
+        offset += array.length;
+      }
+    }
+    return result;
   }
 }
