@@ -43,7 +43,7 @@ public class AuthenticatorLoadTest extends AbstractTest
   public static final String INVALID_PASSWD = "not-a-password";
 
   /** Invalid filter test data. */
-  public static final String INVALID_FILTER = "departmentNumber=1111";
+  public static final String INVALID_FILTER = "(departmentNumber=1111)";
 
   /** Entries for auth tests. */
   private static Map<String, LdapEntry[]> entries =

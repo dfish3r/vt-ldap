@@ -128,7 +128,7 @@
              value="/edu/vt/middleware/ldap/mergeDuplicateResults.ldif"/>
 
   <parameter name="binarySearchDn" value="ou=test,dc=vt,dc=edu"/>
-  <parameter name="binarySearchFilter" value="uid=2"/>
+  <parameter name="binarySearchFilter" value="(uid=2)"/>
   <parameter name="binarySearchReturnAttr" value="jpegPhoto"/>
   <parameter name="binarySearchResult"
              value="/9j/4AAQSkZJRgABAQEASABIAAD//gATQ3JlYXRlZCB3aXRoIEdJTVD/2wBDAFA3PEY8MlBGQUZaVVBfeMiCeG5uePWvuZHI////////////////////////////////////////////////////2wBDAVVaWnhpeOuCguv/////////////////////////////////////////////////////////////////////////wAARCAANABcDASIAAhEBAxEB/8QAGAAAAwEBAAAAAAAAAAAAAAAAAAIEAQP/xAAiEAEAAgIABQUAAAAAAAAAAAABAAMCEQQSMUFxISIjMnP/xAAUAQEAAAAAAAAAAAAAAAAAAAAA/8QAFBEBAAAAAAAAAAAAAAAAAAAAAP/aAAwDAQACEQMRAD8A71fHZZW+ge48MWqvG0bLMRcnZvsdpnGH0R0ryvhlAAAdCBPRTXkZ7wHWaEI/D9LP0yhA/9k="/>
@@ -237,11 +237,11 @@
 
   <parameter name="getDnUid" value="6"/>
   <parameter name="getDnUser" value="jqadams@vt.edu"/>
-  <parameter name="getDnDuplicateFilter" value="uid=*"/>
+  <parameter name="getDnDuplicateFilter" value="(uid=*)"/>
 
   <parameter name="authenticateDn" value="uid=6,ou=test,dc=vt,dc=edu"/>
   <parameter name="authenticateDnCredential" value="password6"/>
-  <parameter name="authenticateDnFilter" value="departmentNumber={1}"/>
+  <parameter name="authenticateDnFilter" value="(departmentNumber={1})"/>
   <parameter name="authenticateDnFilterArgs" value="0826"/>
   <parameter name="authenticateDnReturnAttrs" value="departmentNumber|givenName|sn"/>
   <parameter name="authenticateDnResults"
@@ -249,7 +249,7 @@
              
   <parameter name="authenticateUser" value="jqadams@vt.edu"/>
   <parameter name="authenticateCredential" value="password6"/>
-  <parameter name="authenticateFilter" value="departmentNumber=0826"/>
+  <parameter name="authenticateFilter" value="(departmentNumber=0826)"/>
   <parameter name="authenticateReturnAttrs" value="departmentNumber|givenName|sn"/>
   <parameter name="authenticateResults"
              value="/edu/vt/middleware/ldap/searchResults-6.ldif"/>
@@ -264,7 +264,7 @@
   <parameter name="cramMd5Credential" value="password"/>
 
   <parameter name="toSearchResultsDn" value="ou=test,dc=vt,dc=edu"/>
-  <parameter name="toSearchResultsFilter" value="uid=7"/>
+  <parameter name="toSearchResultsFilter" value="(uid=7)"/>
   <parameter name="toSearchResultsAttrs" value="departmentNumber|givenName|sn"/>
   <parameter name="toSearchResultsResults"
              value="/edu/vt/middleware/ldap/searchResults-7.ldif"/>
@@ -281,7 +281,7 @@
              value="-ldapUrl|ldap://ed-dev.middleware.vt.edu:14389|-bindDn|uid=1,ou=test,dc=vt,dc=edu|-bindCredential|VKSxXwlU7YssGl1foLMH2mGMWkifbODb1djfJ4t2|-dn|uid=8,ou=test,dc=vt,dc=edu"/>
 
   <parameter name="cliAuthArgs"
-             value="-ldapUrl|ldap://ed-dev.middleware.vt.edu:14389|-baseDn|ou=test,dc=vt,dc=edu|-tls|true|-hostnameVerifier|edu.vt.middleware.ldap.AnyHostnameVerifier|-bindDn|uid=1,ou=test,dc=vt,dc=edu|-bindCredential|VKSxXwlU7YssGl1foLMH2mGMWkifbODb1djfJ4t2|-userFilter|mail={0}|-user|whharrison@vt.edu|-credential|password9|-authorizationFilter|(departmentNumber=0829)|-returnAttributes|departmentNumber,givenName,sn"/>
+             value="-ldapUrl|ldap://ed-dev.middleware.vt.edu:14389|-baseDn|ou=test,dc=vt,dc=edu|-tls|true|-hostnameVerifier|edu.vt.middleware.ldap.AnyHostnameVerifier|-bindDn|uid=1,ou=test,dc=vt,dc=edu|-bindCredential|VKSxXwlU7YssGl1foLMH2mGMWkifbODb1djfJ4t2|-userFilter|(mail={0})|-user|whharrison@vt.edu|-credential|password9|-authorizationFilter|(departmentNumber=0829)|-returnAttributes|departmentNumber,givenName,sn"/>
   <parameter name="cliAuthResults"
              value="/edu/vt/middleware/ldap/searchResults-9.ldif"/>
 

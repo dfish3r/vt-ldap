@@ -347,14 +347,13 @@ public class JndiConnection implements ProviderConnection
       try {
         ctx = context.newInstance(null);
         initializeSearchContext(ctx, request);
-        final SearchControls controls = getSearchControls(request);
         en = ctx.search(
           request.getBaseDn(),
           request.getSearchFilter() != null ?
             request.getSearchFilter().getFilter() : null,
           request.getSearchFilter() != null ?
             request.getSearchFilter().getFilterArgs().toArray() : null,
-          controls);
+          getSearchControls(request));
 
         result = readSearchResults(
           getSearchDn(request, ctx),

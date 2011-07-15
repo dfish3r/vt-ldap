@@ -148,11 +148,6 @@ public class SearchFilter
   {
     String s = filter.getFilter();
 
-    // put '(' and ')' around filter if missing
-    if (!s.startsWith("(")) {
-      s = String.format("(%s)", s);
-    }
-
     final List<Object> args = filter.getFilterArgs();
     if (args.size() > 0) {
       int i = 0;
