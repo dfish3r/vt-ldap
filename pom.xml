@@ -72,6 +72,8 @@
     <checkstyle.dir>${basedir}/src/main/checkstyle</checkstyle.dir>
     <testng.dir>${basedir}/src/test/testng</testng.dir>
     <assembly.dir>${basedir}/src/main/assembly</assembly.dir>
+    <skipTests>true</skipTests>
+    <vt-ldap.provider>edu.vt.middleware.ldap.provider.jndi.JndiProvider</vt-ldap.provider>
   </properties>
 
   <dependencies>
@@ -111,7 +113,7 @@
     <dependency>
       <groupId>org.testng</groupId>
       <artifactId>testng</artifactId>
-      <version>5.14</version>
+      <version>6.1.1</version>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -242,9 +244,9 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
         <configuration>
-          <argLine>-Xms2g -Xmx2g -XX:PermSize=256m -XX:MaxPermSize=256m</argLine>
+          <argLine>-Dedu.vt.middleware.ldap.provider=${vt-ldap.provider} -Xms1g -Xmx2g -XX:PermSize=256m -XX:MaxPermSize=256m</argLine>
           <!-- tests are currently host specific and require authorization -->
-          <skipTests>true</skipTests>
+          <skipTests>${skipTests}</skipTests>
           <suiteXmlFiles>
             <suiteXmlFile>${testng.dir}/testng.xml</suiteXmlFile>
           </suiteXmlFiles>
