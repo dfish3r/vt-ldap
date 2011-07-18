@@ -26,6 +26,7 @@ import edu.vt.middleware.ldap.handler.CopyLdapResultHandler;
 import edu.vt.middleware.ldap.handler.DnAttributeResultHandler;
 import edu.vt.middleware.ldap.handler.LdapAttributeHandler;
 import edu.vt.middleware.ldap.handler.LdapResultHandler;
+import edu.vt.middleware.ldap.handler.MergeAttributeResultHandler;
 import edu.vt.middleware.ldap.handler.MergeResultHandler;
 import edu.vt.middleware.ldap.handler.RecursiveAttributeHandler;
 import edu.vt.middleware.ldap.handler.RecursiveResultHandler;
@@ -511,8 +512,7 @@ public class SearchOperationTest extends AbstractTest
       new LdapResultHandler[]{handler});
     sr.setSortBehavior(SortBehavior.SORTED);
     final LdapResult result = search.execute(sr).getResult();
-    AssertJUnit.assertEquals(
-      TestUtil.convertLdifToResult(expected).hashCode(), result.hashCode());
+    AssertJUnit.assertEquals(TestUtil.convertLdifToResult(expected), result);
     conn.close();
   }
 
@@ -554,8 +554,54 @@ public class SearchOperationTest extends AbstractTest
       new LdapResultHandler[]{handler});
     sr.setSortBehavior(SortBehavior.SORTED);
     final LdapResult result = search.execute(sr).getResult();
-    AssertJUnit.assertEquals(
-      TestUtil.convertLdifToResult(expected).hashCode(), result.hashCode());
+    AssertJUnit.assertEquals(TestUtil.convertLdifToResult(expected), result);
+    conn.close();
+  }
+
+
+  /**
+   * @param  dn  to search on.
+   * @param  filter  to search with.
+   * @param  returnAttrs  to return from search.
+   * @param  ldifFile  to compare with
+   *
+   * @throws  Exception  On test failure.
+   */
+  @Parameters({
+      "mergeAttributeSearchDn",
+      "mergeAttributeSearchFilter",
+      "mergeAttributeReturnAttrs",
+      "mergeAttributeSearchResults"
+    })
+  @Test(groups = {"searchtest"})
+  public void mergeAttributeSearch(
+    final String dn,
+    final String filter,
+    final String returnAttrs,
+    final String ldifFile)
+    throws Exception
+  {
+    final Connection conn = createLdapConnection(true);
+    conn.open();
+    final SearchOperation search = new SearchOperation(conn);
+
+    final String expected = TestUtil.readFileIntoString(ldifFile);
+
+    // test merge searching
+    final MergeAttributeResultHandler handler =
+      new MergeAttributeResultHandler();
+    handler.setMergeAttributeName("cn");
+    handler.setAttributeNames(
+      new String[] {"displayName", "givenName", "sn", });
+
+    final SearchRequest sr = new SearchRequest(
+      dn,
+      new SearchFilter(filter),
+      returnAttrs.split("\\|"),
+      new LdapResultHandler[]{handler});
+    sr.setSortBehavior(SortBehavior.SORTED);
+    final LdapResult result = search.execute(sr).getResult();
+    AssertJUnit.assertEquals(TestUtil.convertLdifToResult(expected), result);
     conn.close();
   }
 
