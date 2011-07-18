@@ -367,7 +367,7 @@ public final class TestUtil
     while ((line = br.readLine()) != null) {
       if (line.matches(".*ESTABLISHED$")) {
         final String s = line.split("\\s+")[NETSTAT_HOST_INDEX];
-        openConns.add(s.substring(0, s.lastIndexOf(".")));
+        openConns.add(s);
       }
     }
 
