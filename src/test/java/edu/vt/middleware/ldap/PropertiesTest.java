@@ -101,7 +101,6 @@ public class PropertiesTest
     final SearchRequest sr = scSource.get();
 
     AssertJUnit.assertEquals("ou=test,dc=vt,dc=edu", sr.getBaseDn());
-    AssertJUnit.assertEquals(10, sr.getBatchSize());
     AssertJUnit.assertEquals(SearchScope.OBJECT, sr.getSearchScope());
     AssertJUnit.assertEquals(5000, sr.getTimeLimit());
     AssertJUnit.assertEquals("jpegPhoto", sr.getBinaryAttributes()[0]);
@@ -187,7 +186,6 @@ public class PropertiesTest
     AssertJUnit.assertEquals(3, cc.getOperationRetryBackoff());
 
     AssertJUnit.assertEquals("ou=test,dc=vt,dc=edu", sr.getBaseDn());
-    AssertJUnit.assertEquals(10, sr.getBatchSize());
     AssertJUnit.assertEquals(SearchScope.OBJECT, sr.getSearchScope());
     AssertJUnit.assertEquals(5000, sr.getTimeLimit());
     AssertJUnit.assertEquals("jpegPhoto", sr.getBinaryAttributes()[0]);

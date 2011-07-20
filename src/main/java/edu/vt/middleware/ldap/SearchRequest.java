@@ -45,10 +45,7 @@ public class SearchRequest implements Request
   protected long timeLimit;
 
   /** Number of entries to return. */
-  protected long countLimit;
-
-  /** Batch size to return results in. */
-  protected int batchSize = -1;
+  protected long sizeLimit;
 
   /** How to handle aliases. */
   protected DerefAliases derefAliases;
@@ -297,46 +294,24 @@ public class SearchRequest implements Request
 
 
   /**
-   * Returns the count limit.
+   * Returns the size limit.
    *
-   * @return  count limit
+   * @return  size limit
    */
-  public long getCountLimit()
+  public long getSizeLimit()
   {
-    return countLimit;
+    return sizeLimit;
   }
 
 
   /**
-   * Sets the count limit.
+   * Sets the size limit.
    *
-   * @param  l  count limit
+   * @param  l  size limit
    */
-  public void setCountLimit(final long l)
+  public void setSizeLimit(final long l)
   {
-    countLimit = l;
-  }
-
-
-  /**
-   * Returns the batch size.
-   *
-   * @return  batch size
-   */
-  public int getBatchSize()
-  {
-    return batchSize;
-  }
-
-
-  /**
-   * Sets the batch size.
-   *
-   * @param  i  batch size
-   */
-  public void setBatchSize(final int i)
-  {
-    batchSize = i;
+    sizeLimit = l;
   }
 
 
@@ -555,8 +530,7 @@ public class SearchRequest implements Request
     request.setReturnAttributes(sr.getReturnAttributes());
     request.setSearchScope(sr.getSearchScope());
     request.setTimeLimit(sr.getTimeLimit());
-    request.setCountLimit(sr.getCountLimit());
-    request.setBatchSize(sr.getBatchSize());
+    request.setSizeLimit(sr.getSizeLimit());
     request.setDerefAliases(sr.getDerefAliases());
     request.setReferralBehavior(sr.getReferralBehavior());
     request.setTypesOnly(sr.getTypesOnly());
@@ -647,8 +621,7 @@ public class SearchRequest implements Request
     hc += retAttrs != null ? Arrays.hashCode(retAttrs) : 0;
     hc += scope != null ? scope.hashCode() : 0;
     hc += timeLimit;
-    hc += countLimit;
-    hc += batchSize;
+    hc += sizeLimit;
     hc += derefAliases != null ? derefAliases.hashCode() : 0;
     hc += referralBehavior != null ? referralBehavior.hashCode() : 0;
     hc += Boolean.valueOf(typesOnly).hashCode();
@@ -672,10 +645,10 @@ public class SearchRequest implements Request
     return
       String.format(
         "[%s@%d::baseDn=%s, searchFilter=%s, returnAttributes=%s, " +
-        "searchScope=%s, timeLimit=%s, countLimit=%s, batchSize=%s, " +
-        "derefAliases=%s, referralBehavior=%s, typesOnly=%s, " +
-        "binaryAttributes=%s, pagedResultsControl=%s, sortControl=%s," +
-        "sortBehavior=%s, searchResultHandler=%s, searchIgnoreResultCodes=%s]",
+        "searchScope=%s, timeLimit=%s, sizeLimit=%s, derefAliases=%s, " +
+        "referralBehavior=%s, typesOnly=%s, binaryAttributes=%s, " +
+        "pagedResultsControl=%s, sortControl=%s, sortBehavior=%s, " +
+        "searchResultHandler=%s, searchIgnoreResultCodes=%s]",
         getClass().getName(),
         hashCode(),
         baseDn,
@@ -683,8 +656,7 @@ public class SearchRequest implements Request
         retAttrs != null ? Arrays.asList(retAttrs) : null,
         scope,
         timeLimit,
-        countLimit,
-        batchSize,
+        sizeLimit,
         derefAliases,
         referralBehavior,
         typesOnly,

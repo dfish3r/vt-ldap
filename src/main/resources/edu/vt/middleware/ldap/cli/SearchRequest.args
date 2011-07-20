@@ -1,7 +1,5 @@
 baseDn:base dn
-batchSize:result batch size
 binaryAttributes:comma delimited list of binary attributes
-countLimit:maximum number of entries to return
 derefAliases:how to handle aliases (NEVER|SEARCHING|FINDING|ALWAYS)
 ldapResultHandlers:LDAP handlers for post processing results
 referralBehavior:how to handle referrals (FOLLOW|THROW|IGNORE)
@@ -9,6 +7,7 @@ returnAttributes:attributes to return from the search
 searchFilter:LDAP filter to execute
 searchIgnoreResultCodes:LDAP result codes to ignore (TIME_LIMIT_EXCEEDED|PARTIAL_RESULTS|...)
 searchScope:scope of the search (OBJECT|ONELEVEL|SUBTREE)
+sizeLimit:maximum number of entries to return
 sortBehavior:how search results should be sorted
 timeLimit:amount of time in milliseconds that search operations will block
 typesOnly:whether to return only attribute types (true|false)

@@ -54,13 +54,6 @@ import org.slf4j.LoggerFactory;
 public class JndiConnection implements ProviderConnection
 {
   /**
-   * The value of this property is a string of decimal digits that specifies the
-   * batch size of search results returned by the server. The value of this
-   * constant is {@value}.
-   */
-  public static final String BATCH_SIZE = "java.naming.batchsize";
-
-  /**
    * The value of this property is a string that specifies additional binary
    * attributes. The value of this constant is {@value}.
    */
@@ -567,10 +560,6 @@ public class JndiConnection implements ProviderConnection
     final LdapContext ctx, final SearchRequest request)
     throws NamingException
   {
-    if (request.getBatchSize() != -1) {
-      ctx.addToEnvironment(
-        BATCH_SIZE, Integer.toString(request.getBatchSize()));
-    }
     if (request.getReferralBehavior() != null) {
       ctx.addToEnvironment(
         REFERRAL, request.getReferralBehavior().name().toLowerCase());
@@ -752,7 +741,7 @@ public class JndiConnection implements ProviderConnection
       ctls.setSearchScope(searchScope);
     }
     ctls.setTimeLimit(Long.valueOf(sr.getTimeLimit()).intValue());
-    ctls.setCountLimit(sr.getCountLimit());
+    ctls.setCountLimit(sr.getSizeLimit());
     ctls.setDerefLinkFlag(false);
     // note that if returning obj flag is set to true, object contexts on the
     // SearchResult must the explicitly closed:

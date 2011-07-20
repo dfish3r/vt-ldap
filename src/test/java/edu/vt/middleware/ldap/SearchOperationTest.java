@@ -866,7 +866,7 @@ public class SearchOperationTest extends AbstractTest
 
     // test exception searching
     request.setBaseDn(dn);
-    request.setCountLimit(resultsSize);
+    request.setSizeLimit(resultsSize);
     request.setSearchIgnoreResultCodes(null);
 
     request.setSearchFilter(new SearchFilter("(uugid=*)"));
