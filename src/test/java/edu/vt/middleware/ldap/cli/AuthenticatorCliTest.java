@@ -75,7 +75,7 @@ public class AuthenticatorCliTest extends AbstractTest
   {
     System.setProperty(
       "javax.net.ssl.trustStore",
-      "src/test/resources/ed.truststore");
+      "target/test-classes/ed.truststore");
     System.setProperty("javax.net.ssl.trustStoreType", "BKS");
     System.setProperty("javax.net.ssl.trustStorePassword", "changeit");
 

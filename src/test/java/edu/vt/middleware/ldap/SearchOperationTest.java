@@ -1305,7 +1305,7 @@ public class SearchOperationTest extends AbstractTest
   {
     System.setProperty(
       "java.security.auth.login.config",
-      "src/test/resources/ldap_jaas.config");
+      "target/test-classes/ldap_jaas.config");
     System.setProperty("javax.security.auth.useSubjectCredsOnly", "false");
     System.setProperty("java.security.krb5.realm", krb5Realm);
     System.setProperty("java.security.krb5.kdc", krb5Kdc);

@@ -82,7 +82,7 @@ public class LdapLoginModuleTest extends AbstractTest
 
     System.setProperty(
       "java.security.auth.login.config",
-      "src/test/resources/ldap_jaas.config");
+      "target/test-classes/ldap_jaas.config");
   }
 
 

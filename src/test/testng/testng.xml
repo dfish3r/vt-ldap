@@ -276,7 +276,7 @@
              value="/edu/vt/middleware/ldap/searchResults-7.ldif"/>
 
   <parameter name="cliAddArgs"
-             value="-ldapUrl|ldap://ed-dev.middleware.vt.edu:14389|-bindDn|uid=1,ou=test,dc=vt,dc=edu|-bindCredential|VKSxXwlU7YssGl1foLMH2mGMWkifbODb1djfJ4t2|-file|src/test/resources/edu/vt/middleware/ldap/createLdapEntry-8.ldif"/>
+             value="-ldapUrl|ldap://ed-dev.middleware.vt.edu:14389|-bindDn|uid=1,ou=test,dc=vt,dc=edu|-bindCredential|VKSxXwlU7YssGl1foLMH2mGMWkifbODb1djfJ4t2|-file|target/test-classes/edu/vt/middleware/ldap/createLdapEntry-8.ldif"/>
   <parameter name="cliSearchArgs"
              value="-ldapUrl|ldap://ed-dev.middleware.vt.edu:14389|-baseDn|ou=test,dc=vt,dc=edu|-bindDn|uid=1,ou=test,dc=vt,dc=edu|-bindCredential|VKSxXwlU7YssGl1foLMH2mGMWkifbODb1djfJ4t2|-searchFilter|(mail=mvburen@vt.edu)|-returnAttributes|departmentNumber,givenName,jpegPhoto,sn"/>
   <parameter name="cliSearchResults"
@@ -300,7 +300,7 @@
   <parameter name="jaasRoleCombinedRecursive" value="0830|group6|group7|group8|group9"/>
   <parameter name="jaasCredential" value="password10"/>
 
-  <parameter name="webXml" value="src/test/resources/web.xml"/>
+  <parameter name="webXml" value="target/test-classes/web.xml"/>
 
   <parameter name="ldifSearchServletQuery" value="mail=jkpolk@vt.edu"/>
   <parameter name="ldifSearchServletAttrs" value="departmentNumber|givenName|sn|jpegPhoto"/>

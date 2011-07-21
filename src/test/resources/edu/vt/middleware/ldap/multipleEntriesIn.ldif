@@ -29,7 +29,7 @@ postalAddress: SETI-Middleware
  Blacksburg, VA 24060
 displayName: Daniel W Fisher
 suppressDisplay: false
-jpegPhoto:< file:///${basedir}/src/test/resources/edu/vt/middleware/ldap/image.jpg
+jpegPhoto:< file:///${basedir}/target/test-classes/edu/vt/middleware/ldap/image.jpg
 uupid: dfisher
 
 # random comment

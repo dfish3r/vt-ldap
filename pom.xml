@@ -72,8 +72,7 @@
     <checkstyle.dir>${basedir}/src/main/checkstyle</checkstyle.dir>
     <testng.dir>${basedir}/src/test/testng</testng.dir>
     <assembly.dir>${basedir}/src/main/assembly</assembly.dir>
-    <skipTests>true</skipTests>
-    <vt-ldap.provider>edu.vt.middleware.ldap.provider.jndi.JndiProvider</vt-ldap.provider>
+    <skipLdapTests>true</skipLdapTests>
   </properties>
 
   <dependencies>
@@ -96,12 +95,6 @@
       <groupId>commons-pool</groupId>
       <artifactId>commons-pool</artifactId>
       <version>1.5.4</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>jaxen</groupId>
-      <artifactId>jaxen</artifactId>
-      <version>1.1.1</version>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -241,12 +234,32 @@
         </executions>
       </plugin>
       <plugin>
+        <artifactId>maven-resources-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>copy-testng</id>
+            <phase>validate</phase>
+            <goals>
+              <goal>copy-resources</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>${basedir}/target/test-classes</outputDirectory>
+              <resources>
+                <resource>
+                  <directory>${testng.dir}</directory>
+                </resource>
+              </resources>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
         <configuration>
-          <argLine>-Dedu.vt.middleware.ldap.provider=${vt-ldap.provider} -Xms1g -Xmx2g -XX:PermSize=256m -XX:MaxPermSize=256m</argLine>
+          <argLine>-Xms1g -Xmx2g -XX:PermSize=256m -XX:MaxPermSize=256m</argLine>
           <!-- tests are currently host specific and require authorization -->
-          <skipTests>${skipTests}</skipTests>
+          <skipTests>${skipLdapTests}</skipTests>
           <suiteXmlFiles>
             <suiteXmlFile>${testng.dir}/testng.xml</suiteXmlFile>
           </suiteXmlFiles>

@@ -99,7 +99,7 @@ public class TLSSocketFactoryTest
     final X509SSLContextInitializer ctxInit =
       new X509SSLContextInitializer();
     ctxInit.setTrustCertificates(
-      reader.read("file:src/test/resources/ed.trust.crt"));
+      reader.read("file:target/test-classes/ed.trust.crt"));
     final TLSSocketFactory sf = new TLSSocketFactory();
     sf.setSSLContextInitializer(ctxInit);
     sf.initialize();
