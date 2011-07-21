@@ -13,8 +13,6 @@
 */
 package edu.vt.middleware.ldap;
 
-import java.util.HashMap;
-import java.util.Map;
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLSocketFactory;
 import edu.vt.middleware.ldap.provider.ConnectionStrategy;
@@ -70,10 +68,6 @@ public class ConnectionConfig extends AbstractConfig
 
   /** Factor to multiply operation retry wait by. */
   private int operationRetryBackoff;
-
-  /** Additional provider properties. */
-  private Map<String, Object> providerProperties =
-    new HashMap<String, Object>();
 
   /** Whether to log authentication credentials. */
   private boolean logCredentials;
@@ -409,30 +403,6 @@ public class ConnectionConfig extends AbstractConfig
 
 
   /**
-   * Returns provider specific properties.
-   *
-   * @return  map of additional provider properties
-   */
-  public Map<String, Object> getProviderProperties()
-  {
-    return providerProperties;
-  }
-
-
-  /**
-   * Sets provider specific properties.
-   *
-   * @param  props  map of additional provider properties
-   */
-  public void setProviderProperties(final Map<String, Object> props)
-  {
-    checkImmutable();
-    logger.trace("setting provider properties {}", props);
-    providerProperties = props;
-  }
-
-
-  /**
    * Returns whether authentication credentials will be logged.
    *
    * @return  whether authentication credentials will be logged.
@@ -563,9 +533,8 @@ public class ConnectionConfig extends AbstractConfig
         "[%s@%d::provider=%s, sslSocketFactory=%s, " +
         "hostnameVerifier=%s, ldapUrl=%s, timeout=%s, bindDn=%s, " +
         "bindCredential=%s, saslConfig=%s, operationRetry=%s, " +
-        "operationRetryWait=%s, operationRetryBackoff=%s, " +
-        "providerProperties=%s, logCredentials=%s, ssl=%s, tls=%s, " +
-        "connectionStrategy=%s]",
+        "operationRetryWait=%s, operationRetryBackoff=%s, logCredentials=%s, " +
+        "ssl=%s, tls=%s, connectionStrategy=%s]",
         getClass().getName(),
         hashCode(),
         provider,
@@ -580,7 +549,6 @@ public class ConnectionConfig extends AbstractConfig
         operationRetry,
         operationRetryWait,
         operationRetryBackoff,
-        providerProperties,
         logCredentials,
         ssl,
         tls,

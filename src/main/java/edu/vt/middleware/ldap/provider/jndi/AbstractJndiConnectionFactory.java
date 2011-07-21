@@ -170,6 +170,7 @@ public abstract class AbstractJndiConnectionFactory
   @Override
   public void setEnvironment(final Map<String, Object> env)
   {
+    logger.trace("setting environment: {}", env);
     environment = env;
   }
 
@@ -186,6 +187,7 @@ public abstract class AbstractJndiConnectionFactory
   @Override
   public void setTracePackets(final PrintStream stream)
   {
+    logger.trace("setting tracePackets: {}", stream);
     tracePackets = stream;
   }
 
@@ -202,6 +204,7 @@ public abstract class AbstractJndiConnectionFactory
   @Override
   public void setRemoveDnUrls(final boolean b)
   {
+    logger.trace("setting removeDnUrls: {}", b);
     removeDnUrls = b;
   }
 
@@ -218,6 +221,7 @@ public abstract class AbstractJndiConnectionFactory
   @Override
   public void setSslSocketFactory(final SSLSocketFactory sf)
   {
+    logger.trace("setting sslSocketFactory: {}", sf);
     sslSocketFactory = sf;
   }
 
@@ -234,6 +238,7 @@ public abstract class AbstractJndiConnectionFactory
   @Override
   public void setHostnameVerifier(final HostnameVerifier verifier)
   {
+    logger.trace("setting hostnameVerifier: {}", verifier);
     hostnameVerifier = verifier;
   }
 
@@ -245,7 +250,7 @@ public abstract class AbstractJndiConnectionFactory
    * @param  cc  connection config
    * @return  JNDI ldap context environment
    */
-  protected static Map<String, Object> createEnvironment(
+  protected Map<String, Object> createEnvironment(
     final ConnectionConfig cc)
   {
     final Map<String, Object> env = new HashMap<String, Object>();
@@ -267,9 +272,8 @@ public abstract class AbstractJndiConnectionFactory
       env.putAll(getSaslProperties(cc.getSaslConfig()));
     }
 
-    if (!cc.getProviderProperties().isEmpty()) {
-      for (Map.Entry<String, Object> entry :
-           cc.getProviderProperties().entrySet()) {
+    if (!properties.isEmpty()) {
+      for (Map.Entry<String, Object> entry : properties.entrySet()) {
         env.put(entry.getKey(), entry.getValue());
       }
     }

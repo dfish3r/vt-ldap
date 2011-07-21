@@ -13,7 +13,9 @@
 */
 package edu.vt.middleware.ldap.provider;
 
+import java.util.Map;
 import edu.vt.middleware.ldap.ConnectionConfig;
+import edu.vt.middleware.ldap.ResultCode;
 
 /**
  * Provides access to a provider specific connection factory.
@@ -23,6 +25,38 @@ import edu.vt.middleware.ldap.ConnectionConfig;
  */
 public interface Provider
 {
+
+
+  /**
+   * Returns the result codes that trigger an operation retry.
+   *
+   * @return  ldap result codes
+   */
+  ResultCode[] getOperationRetryResultCodes();
+
+
+  /**
+   * Sets the result codes that trigger an operation retry.
+   *
+   * @param  codes  ldap result codes
+   */
+  void setOperationRetryResultCodes(ResultCode[] codes);
+
+
+  /**
+   * Returns provider specific properties.
+   *
+   * @return  map of additional provider properties
+   */
+  Map<String, Object> getProperties();
+
+
+  /**
+   * Sets provider specific properties.
+   *
+   * @param  props  map of additional provider properties
+   */
+  void setProperties(final Map<String, Object> props);
 
 
   /**

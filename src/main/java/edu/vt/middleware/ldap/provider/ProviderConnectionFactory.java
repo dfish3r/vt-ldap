@@ -13,6 +13,7 @@
 */
 package edu.vt.middleware.ldap.provider;
 
+import java.util.Map;
 import edu.vt.middleware.ldap.LdapException;
 import edu.vt.middleware.ldap.ResultCode;
 
@@ -72,6 +73,22 @@ public interface ProviderConnectionFactory
    * @param  b  whether authentication credentials will be logged
    */
   void setLogCredentials(boolean b);
+
+
+  /**
+   * Returns provider specific properties.
+   *
+   * @return  map of additional provider properties
+   */
+  Map<String, Object> getProperties();
+
+
+  /**
+   * Sets provider specific properties.
+   *
+   * @param  props  map of additional provider properties
+   */
+  void setProperties(final Map<String, Object> props);
 
 
   /**

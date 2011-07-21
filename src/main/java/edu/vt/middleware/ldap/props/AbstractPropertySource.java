@@ -37,6 +37,9 @@ public abstract class AbstractPropertySource<T> implements PropertySource<T>
   /** Object that is created an initialized with properties. */
   protected T object;
 
+  /** Properties that are not in the vt-ldap domain. */
+  protected Map<String, Object> extraProps = new HashMap<String, Object>();
+
 
   /**
    * Creates properties from the supplied input stream. See
@@ -64,26 +67,19 @@ public abstract class AbstractPropertySource<T> implements PropertySource<T>
 
   /**
    * Iterates over the properties and uses the invoker to set those properties
-   * on the supplied object. Any properties that do not belong to the object are
-   * passed to a method called 'setProviderProperties(Map)', if one exists on
-   * that object.
-   *
-   * @param  <T>  type of object to invoke properties on
+   * on the object. Any properties that do not belong to the object are set in
+   * the extraProps map.
    *
    * @param  invoker  to set properties on the object
-   * @param  obj  to initialize
    * @param  domain  for properties on the object
    * @param  properties  to iterate over
-   * @return  initialized object
    */
-  protected static <T> T initializeObject(
+  protected void initializeObject(
     final PropertyInvoker invoker,
-    final T obj,
     final String domain,
     final Properties properties)
   {
     final Map<String, String> props = new HashMap<String, String>();
-    final Map<String, String> providerProps = new HashMap<String, String>();
     final Enumeration<?> en = properties.keys();
     if (en != null) {
       while (en.hasMoreElements()) {
@@ -91,7 +87,7 @@ public abstract class AbstractPropertySource<T> implements PropertySource<T>
         final String value = (String) properties.get(name);
         // add to provider specific properties if it isn't a vt-ldap property
         if (!name.startsWith(PropertyDomain.LDAP.value())) {
-          providerProps.put(name, value);
+          extraProps.put(name, value);
         } else {
           // strip out the method name
           final int split = name.lastIndexOf('.') + 1;
@@ -106,29 +102,15 @@ public abstract class AbstractPropertySource<T> implements PropertySource<T>
           // if it is, set it now, it may be overridden with the props map
           } else if (domain.startsWith(propDomain)) {
             if (invoker.hasProperty(propName)) {
-              invoker.setProperty(obj, propName, value);
+              invoker.setProperty(object, propName, value);
             }
           }
         }
       }
       for (Map.Entry<String, String> entry : props.entrySet()) {
-        invoker.setProperty(obj, entry.getKey(), entry.getValue());
-      }
-      // set provider specific properties
-      if (!providerProps.isEmpty() &&
-          invoker.hasProperty("providerProperties")) {
-        try {
-          SimplePropertyInvoker.invokeMethod(
-            obj.getClass().getMethod(
-              "setProviderProperties", Map.class),
-            obj,
-            providerProps);
-        } catch (NoSuchMethodException e) {
-          throw new IllegalArgumentException(e);
-        }
+        invoker.setProperty(object, entry.getKey(), entry.getValue());
       }
     }
-    return obj;
   }
 
 

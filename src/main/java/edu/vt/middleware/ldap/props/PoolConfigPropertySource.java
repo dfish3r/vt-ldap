@@ -76,8 +76,8 @@ public final class PoolConfigPropertySource
   public PoolConfigPropertySource(
     final PropertyDomain domain, final Properties props)
   {
-    object = initializeObject(
-      INVOKER, new PoolConfig(), domain.value(), props);
+    object = new PoolConfig();
+    initializeObject(INVOKER, domain.value(), props);
   }
 
 

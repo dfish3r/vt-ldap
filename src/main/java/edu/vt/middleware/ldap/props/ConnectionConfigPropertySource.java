@@ -77,8 +77,9 @@ public final class ConnectionConfigPropertySource
   public ConnectionConfigPropertySource(
     final PropertyDomain domain, final Properties props)
   {
-    object = initializeObject(
-      INVOKER, new ConnectionConfig(), domain.value(), props);
+    object = new ConnectionConfig();
+    initializeObject(INVOKER, domain.value(), props);
+    object.getProvider().setProperties(extraProps);
   }
 
 

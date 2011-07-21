@@ -79,8 +79,8 @@ public final class AuthenticatorPropertySource
   public AuthenticatorPropertySource(
     final PropertyDomain domain, final Properties props)
   {
-    object = initializeObject(
-      INVOKER, new Authenticator(), domain.value(), props);
+    object = new Authenticator();
+    initializeObject(INVOKER, domain.value(), props);
 
     ConnectionConfigPropertySource lccPropSource = null;
 

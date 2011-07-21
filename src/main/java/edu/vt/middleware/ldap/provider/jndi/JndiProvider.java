@@ -16,7 +16,7 @@ package edu.vt.middleware.ldap.provider.jndi;
 import java.io.PrintStream;
 import edu.vt.middleware.ldap.ConnectionConfig;
 import edu.vt.middleware.ldap.ResultCode;
-import edu.vt.middleware.ldap.provider.Provider;
+import edu.vt.middleware.ldap.provider.AbstractProvider;
 import edu.vt.middleware.ldap.provider.ProviderConnectionFactory;
 
 /**
@@ -25,18 +25,22 @@ import edu.vt.middleware.ldap.provider.ProviderConnectionFactory;
  * @author  Middleware Services
  * @version  $Revision: 1330 $ $Date: 2010-05-23 18:10:53 -0400 (Sun, 23 May 2010) $
  */
-public class JndiProvider implements Provider
+public class JndiProvider extends AbstractProvider
 {
-
-  /** Result codes indicating that an operation should be retried. */
-  protected ResultCode[] operationRetryResultCodes = new ResultCode[] {
-    ResultCode.PROTOCOL_ERROR, ResultCode.BUSY, ResultCode.UNAVAILABLE, };
 
   /** Stream to print LDAP ASN.1 BER packets. */
   protected PrintStream tracePackets;
 
   /** Whether to remove the URL from any DNs which are not relative. */
   protected boolean removeDnUrls = true;
+
+
+  /** Default constructor. */
+  public JndiProvider()
+  {
+    operationRetryResultCodes = new ResultCode[] {
+      ResultCode.PROTOCOL_ERROR, ResultCode.BUSY, ResultCode.UNAVAILABLE, };
+  }
 
 
   /** {@inheritDoc} */
@@ -58,33 +62,10 @@ public class JndiProvider implements Provider
       cf.setConnectionStrategy(cc.getConnectionStrategy());
     }
     cf.setOperationRetryResultCodes(operationRetryResultCodes);
+    cf.setProperties(properties);
     cf.setTracePackets(tracePackets);
     cf.setRemoveDnUrls(removeDnUrls);
     return cf;
-  }
-
-
-  /**
-   * Returns the result codes that trigger an operation retry. Default values
-   * include PROTOCOL_ERROR, BUSY, and UNAVAILABLE.
-   *
-   * @return  ldap result codes
-   */
-  public ResultCode[] getOperationRetryResultCodes()
-  {
-    return operationRetryResultCodes;
-  }
-
-
-  /**
-   * Sets the result codes that trigger an operation retry.  Default values
-   * include PROTOCOL_ERROR, BUSY, and UNAVAILABLE.
-   *
-   * @param  codes  ldap result codes
-   */
-  public void setOperationRetryResultCodes(final ResultCode[] codes)
-  {
-    operationRetryResultCodes = codes;
   }
 
 
@@ -106,6 +87,7 @@ public class JndiProvider implements Provider
    */
   public void setTracePackets(final PrintStream stream)
   {
+    logger.trace("setting tracePackets: {}", stream);
     tracePackets = stream;
   }
 
@@ -130,6 +112,7 @@ public class JndiProvider implements Provider
    */
   public void setRemoveDnUrls(final boolean b)
   {
+    logger.trace("setting removeDnUrls: {}", b);
     removeDnUrls = b;
   }
 }

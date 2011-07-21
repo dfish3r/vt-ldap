@@ -15,7 +15,9 @@ package edu.vt.middleware.ldap.provider;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.StringTokenizer;
 import edu.vt.middleware.ldap.LdapException;
 import edu.vt.middleware.ldap.ResultCode;
@@ -46,6 +48,9 @@ public abstract class AbstractProviderConnectionFactory
 
   /** Whether to log authentication credentials. */
   protected boolean logCredentials;
+
+  /** Additional provider properties. */
+  protected Map<String, Object> properties = new HashMap<String, Object>();
 
   /** Number of connections made. */
   private ConnectionCount connectionCount = new ConnectionCount();
@@ -102,6 +107,7 @@ public abstract class AbstractProviderConnectionFactory
   @Override
   public void setOperationRetryResultCodes(final ResultCode[] codes)
   {
+    logger.trace("setting operationRetryResultCodes: {}", codes);
     operationRetryResultCodes = codes;
   }
 
@@ -118,7 +124,25 @@ public abstract class AbstractProviderConnectionFactory
   @Override
   public void setLogCredentials(final boolean b)
   {
+    logger.trace("setting logCredentials: {}", b);
     logCredentials = b;
+  }
+
+
+  /** {@inheritDoc} */
+  @Override
+  public Map<String, Object> getProperties()
+  {
+    return properties;
+  }
+
+
+  /** {@inheritDoc} */
+  @Override
+  public void setProperties(final Map<String, Object> props)
+  {
+    logger.trace("setting properties: {}", props);
+    properties = props;
   }
 
 
@@ -128,8 +152,7 @@ public abstract class AbstractProviderConnectionFactory
     throws LdapException
   {
     LdapException lastThrown = null;
-    final String[] urls = parseLdapUrl(
-      ldapUrl, connectionStrategy);
+    final String[] urls = parseLdapUrl(ldapUrl, connectionStrategy);
     ProviderConnection conn = null;
     for (String url : urls) {
       try {

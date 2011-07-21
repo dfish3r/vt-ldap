@@ -77,8 +77,8 @@ public final class AuthenticationRequestPropertySource
   public AuthenticationRequestPropertySource(
     final PropertyDomain domain, final Properties props)
   {
-    object = initializeObject(
-      INVOKER, new AuthenticationRequest(), domain.value(), props);
+    object = new AuthenticationRequest();
+    initializeObject(INVOKER, domain.value(), props);
   }
 
 

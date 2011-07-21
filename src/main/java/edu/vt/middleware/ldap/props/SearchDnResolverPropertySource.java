@@ -77,8 +77,8 @@ public final class SearchDnResolverPropertySource
   public SearchDnResolverPropertySource(
     final PropertyDomain domain, final Properties props)
   {
-    object = initializeObject(
-      INVOKER, new SearchDnResolver(), domain.value(), props);
+    object = new SearchDnResolver();
+    initializeObject(INVOKER, domain.value(), props);
   }
 
 
