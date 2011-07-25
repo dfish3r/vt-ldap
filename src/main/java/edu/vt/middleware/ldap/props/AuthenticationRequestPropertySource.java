@@ -30,8 +30,8 @@ public final class AuthenticationRequestPropertySource
 {
 
   /** Invoker for authentication request. */
-  private static final AdvancedPropertyInvoker INVOKER =
-    new AdvancedPropertyInvoker(AuthenticationRequest.class);
+  private static final AuthenticationRequestPropertyInvoker INVOKER =
+    new AuthenticationRequestPropertyInvoker(AuthenticationRequest.class);
 
 
   /**

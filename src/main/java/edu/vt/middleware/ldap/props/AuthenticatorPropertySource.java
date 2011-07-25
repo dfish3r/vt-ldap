@@ -33,8 +33,8 @@ public final class AuthenticatorPropertySource
 {
 
   /** Invoker for authenticator. */
-  private static final AdvancedPropertyInvoker INVOKER =
-    new AdvancedPropertyInvoker(Authenticator.class);
+  private static final AuthenticatorPropertyInvoker INVOKER =
+    new AuthenticatorPropertyInvoker(Authenticator.class);
 
 
   /**

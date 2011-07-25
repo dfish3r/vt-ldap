@@ -236,6 +236,44 @@ public abstract class AbstractPropertyInvoker implements PropertyInvoker
 
 
   /**
+   * Converts simple types that are common to all property invokers. If value
+   * cannot be converted it is returned as is.
+   *
+   * @param  type  of object to convert value into
+   * @param  value  to parse
+   * @return  object of the supplied type
+   */
+  protected Object convertSimpleType(final Class<?> type, final String value)
+  {
+    Object newValue = value;
+    if (Class.class.isAssignableFrom(type)) {
+      newValue = createTypeFromPropertyValue(Class.class, value);
+    } else if (Class[].class.isAssignableFrom(type)) {
+      newValue = createArrayTypeFromPropertyValue(Class.class, value);
+    } else if (type.isEnum()) {
+      newValue = getEnum(type, value);
+    } else if (String[].class == type) {
+      newValue = value.split(",");
+    } else if (Object[].class == type) {
+      newValue = value.split(",");
+    } else if (float.class == type) {
+      newValue = Float.parseFloat(value);
+    } else if (int.class == type) {
+      newValue = Integer.parseInt(value);
+    } else if (long.class == type) {
+      newValue = Long.parseLong(value);
+    } else if (short.class == type) {
+      newValue = Short.parseShort(value);
+    } else if (double.class == type) {
+      newValue = Double.parseDouble(value);
+    } else if (boolean.class == type) {
+      newValue = Boolean.valueOf(value);
+    }
+    return newValue;
+  }
+
+
+  /**
    * Returns the enum for the supplied type and value.
    *
    * @param  clazz  of the enum

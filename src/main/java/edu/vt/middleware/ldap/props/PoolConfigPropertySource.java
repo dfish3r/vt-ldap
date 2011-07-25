@@ -30,8 +30,8 @@ public final class PoolConfigPropertySource
 {
 
   /** Invoker for ldap pool config. */
-  private static final AdvancedPropertyInvoker INVOKER =
-    new AdvancedPropertyInvoker(PoolConfig.class);
+  private static final SimplePropertyInvoker INVOKER =
+    new SimplePropertyInvoker(PoolConfig.class);
 
 
   /**

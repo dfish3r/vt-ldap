@@ -30,8 +30,8 @@ public final class SearchDnResolverPropertySource
 {
 
   /** Invoker for search dn resolver. */
-  private static final AdvancedPropertyInvoker INVOKER =
-    new AdvancedPropertyInvoker(SearchDnResolver.class);
+  private static final SimplePropertyInvoker INVOKER =
+    new SimplePropertyInvoker(SearchDnResolver.class);
 
 
   /**

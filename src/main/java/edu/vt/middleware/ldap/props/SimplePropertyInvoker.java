@@ -13,8 +13,6 @@
 */
 package edu.vt.middleware.ldap.props;
 
-import java.lang.reflect.Array;
-
 /**
  * Handles simple properties common to all objects.
  *
@@ -40,49 +38,6 @@ public class SimplePropertyInvoker extends AbstractPropertyInvoker
   @Override
   protected Object convertValue(final Class<?> type, final String value)
   {
-    Object newValue = value;
-    if (type != String.class) {
-      if (Class.class.isAssignableFrom(type)) {
-        if ("null".equals(value)) {
-          newValue = null;
-        } else {
-          newValue = createClass(value);
-        }
-      } else if (Class[].class.isAssignableFrom(type)) {
-        if ("null".equals(value)) {
-          newValue = null;
-        } else {
-          final String[] classes = value.split(",");
-          newValue = Array.newInstance(Class.class, classes.length);
-          for (int i = 0; i < classes.length; i++) {
-            Array.set(newValue, i, createClass(classes[i]));
-          }
-        }
-      } else if (type.isEnum()) {
-        for (Object o : type.getEnumConstants()) {
-          final Enum<?> e = (Enum<?>) o;
-          if (e.name().equals(value)) {
-            newValue = o;
-          }
-        }
-      } else if (String[].class == type) {
-        newValue = value.split(",");
-      } else if (Object[].class == type) {
-        newValue = value.split(",");
-      } else if (float.class == type) {
-        newValue = Float.parseFloat(value);
-      } else if (int.class == type) {
-        newValue = Integer.parseInt(value);
-      } else if (long.class == type) {
-        newValue = Long.parseLong(value);
-      } else if (short.class == type) {
-        newValue = Short.parseShort(value);
-      } else if (double.class == type) {
-        newValue = Double.parseDouble(value);
-      } else if (boolean.class == type) {
-        newValue = Boolean.valueOf(value);
-      }
-    }
-    return newValue;
+    return convertSimpleType(type, value);
   }
 }

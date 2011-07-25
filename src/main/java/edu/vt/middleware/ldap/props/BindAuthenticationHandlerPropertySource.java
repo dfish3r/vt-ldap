@@ -30,8 +30,8 @@ public final class BindAuthenticationHandlerPropertySource
 {
 
   /** Invoker for bind authentication handler. */
-  private static final AdvancedPropertyInvoker INVOKER =
-    new AdvancedPropertyInvoker(BindAuthenticationHandler.class);
+  private static final SimplePropertyInvoker INVOKER =
+    new SimplePropertyInvoker(BindAuthenticationHandler.class);
 
 
   /**

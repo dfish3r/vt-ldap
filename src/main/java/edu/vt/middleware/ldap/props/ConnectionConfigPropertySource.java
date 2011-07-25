@@ -30,8 +30,8 @@ public final class ConnectionConfigPropertySource
 {
 
   /** Invoker for ldap connection config. */
-  private static final AdvancedPropertyInvoker INVOKER =
-    new AdvancedPropertyInvoker(ConnectionConfig.class);
+  private static final ConnectionConfigPropertyInvoker INVOKER =
+    new ConnectionConfigPropertyInvoker(ConnectionConfig.class);
 
 
   /**

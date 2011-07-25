@@ -16,35 +16,27 @@ package edu.vt.middleware.ldap.props;
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLSocketFactory;
 import edu.vt.middleware.ldap.Credential;
-import edu.vt.middleware.ldap.ResultCode;
-import edu.vt.middleware.ldap.SearchFilter;
-import edu.vt.middleware.ldap.auth.DnResolver;
-import edu.vt.middleware.ldap.auth.handler.AuthenticationHandler;
-import edu.vt.middleware.ldap.auth.handler.AuthenticationResultHandler;
-import edu.vt.middleware.ldap.auth.handler.AuthorizationHandler;
-import edu.vt.middleware.ldap.control.Control;
-import edu.vt.middleware.ldap.handler.LdapResultHandler;
 import edu.vt.middleware.ldap.provider.Provider;
 import edu.vt.middleware.ldap.sasl.SaslConfig;
 import edu.vt.middleware.ldap.ssl.CredentialConfigParser;
 import edu.vt.middleware.ldap.ssl.SSLContextInitializer;
 
 /**
- * Handles complex properties specific to the vt-ldap package.
+ * Handles properties for {@link ConnectionConfig}.
  *
  * @author  Middleware Services
  * @version  $Revision$ $Date$
  */
-public class AdvancedPropertyInvoker extends AbstractPropertyInvoker
+public class ConnectionConfigPropertyInvoker extends AbstractPropertyInvoker
 {
 
 
   /**
-   * Creates a new advanced property invoker for the supplied class.
+   * Creates a new connection config property invoker for the supplied class.
    *
    * @param  c  class that has setter methods
    */
-  public AdvancedPropertyInvoker(final Class<?> c)
+  public ConnectionConfigPropertyInvoker(final Class<?> c)
   {
     initialize(c);
   }
@@ -124,55 +116,10 @@ public class AdvancedPropertyInvoker extends AbstractPropertyInvoker
         newValue = createTypeFromPropertyValue(
           HostnameVerifier.class,
           value);
-      } else if (AuthenticationHandler.class.isAssignableFrom(type)) {
-        newValue = createTypeFromPropertyValue(
-          AuthenticationHandler.class,
-          value);
-      } else if (DnResolver.class.isAssignableFrom(type)) {
-        newValue = createTypeFromPropertyValue(DnResolver.class, value);
-      } else if (Control.class.isAssignableFrom(type)) {
-        newValue = createTypeFromPropertyValue(Control.class, value);
-      } else if (LdapResultHandler[].class.isAssignableFrom(type)) {
-        newValue = createArrayTypeFromPropertyValue(
-          LdapResultHandler.class,
-          value);
-      } else if (AuthenticationResultHandler[].class.isAssignableFrom(type)) {
-        newValue = createArrayTypeFromPropertyValue(
-          AuthenticationResultHandler.class,
-          value);
-      } else if (AuthorizationHandler[].class.isAssignableFrom(type)) {
-        newValue = createArrayTypeFromPropertyValue(
-          AuthorizationHandler.class,
-          value);
-      } else if (ResultCode[].class.isAssignableFrom(type)) {
-        newValue = createArrayEnumFromPropertyValue(
-          ResultCode.class, value);
-      } else if (Class.class.isAssignableFrom(type)) {
-        newValue = createTypeFromPropertyValue(Class.class, value);
-      } else if (Class[].class.isAssignableFrom(type)) {
-        newValue = createArrayTypeFromPropertyValue(Class.class, value);
-      } else if (type.isEnum()) {
-        newValue = getEnum(type, value);
-      } else if (SearchFilter.class.isAssignableFrom(type)) {
-        newValue = new SearchFilter(value);
       } else if (Credential.class.isAssignableFrom(type)) {
         newValue = new Credential(value);
-      } else if (String[].class == type) {
-        newValue = value.split(",");
-      } else if (Object[].class == type) {
-        newValue = value.split(",");
-      } else if (float.class == type) {
-        newValue = Float.parseFloat(value);
-      } else if (int.class == type) {
-        newValue = Integer.parseInt(value);
-      } else if (long.class == type) {
-        newValue = Long.parseLong(value);
-      } else if (short.class == type) {
-        newValue = Short.parseShort(value);
-      } else if (double.class == type) {
-        newValue = Double.parseDouble(value);
-      } else if (boolean.class == type) {
-        newValue = Boolean.valueOf(value);
+      } else {
+        newValue = convertSimpleType(type, value);
       }
     }
     return newValue;
