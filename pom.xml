@@ -144,7 +144,9 @@
     </testResources>
     <plugins>
       <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-resources-plugin</artifactId>
+        <version>2.5</version>
         <executions>
           <execution>
             <id>copy-info</id>
@@ -175,11 +177,6 @@
               </resources>
             </configuration>
           </execution>
-        </executions>
-      </plugin>
-      <plugin>
-        <artifactId>maven-resources-plugin</artifactId>
-        <executions>
           <execution>
             <id>copy-scripts</id>
             <phase>validate</phase>
@@ -196,11 +193,27 @@
               </resources>
             </configuration>
           </execution>
+          <execution>
+            <id>copy-testng</id>
+            <phase>validate</phase>
+            <goals>
+              <goal>copy-resources</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>${basedir}/target/test-classes</outputDirectory>
+              <resources>
+                <resource>
+                  <directory>${testng.dir}</directory>
+                </resource>
+              </resources>
+            </configuration>
+          </execution>
         </executions>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
+        <version>2.3.2</version>
         <configuration>
           <fork>true</fork>
           <debug>true</debug>
@@ -234,28 +247,9 @@
         </executions>
       </plugin>
       <plugin>
-        <artifactId>maven-resources-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>copy-testng</id>
-            <phase>validate</phase>
-            <goals>
-              <goal>copy-resources</goal>
-            </goals>
-            <configuration>
-              <outputDirectory>${basedir}/target/test-classes</outputDirectory>
-              <resources>
-                <resource>
-                  <directory>${testng.dir}</directory>
-                </resource>
-              </resources>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-      <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
+        <version>2.9</version>
         <configuration>
           <argLine>-Xms1g -Xmx2g -XX:PermSize=256m -XX:MaxPermSize=256m</argLine>
           <!-- tests are currently host specific and require authorization -->
@@ -277,6 +271,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-javadoc-plugin</artifactId>
+        <version>2.8</version>
         <configuration>
           <links>
             <link>http://download.oracle.com/javase/6/docs/api</link>
@@ -296,6 +291,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-source-plugin</artifactId>
+        <version>2.1.2</version>
         <executions>
           <execution>
             <id>source</id>
@@ -309,6 +305,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-jar-plugin</artifactId>
+        <version>2.3.1</version>
         <executions>
           <execution>
             <id>jar</id>
