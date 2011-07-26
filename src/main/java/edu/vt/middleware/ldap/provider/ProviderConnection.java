@@ -17,7 +17,6 @@ import edu.vt.middleware.ldap.AddRequest;
 import edu.vt.middleware.ldap.CompareRequest;
 import edu.vt.middleware.ldap.DeleteRequest;
 import edu.vt.middleware.ldap.LdapException;
-import edu.vt.middleware.ldap.LdapResult;
 import edu.vt.middleware.ldap.ModifyRequest;
 import edu.vt.middleware.ldap.RenameRequest;
 import edu.vt.middleware.ldap.SearchRequest;
@@ -82,10 +81,10 @@ public interface ProviderConnection
    * Search the ldap.
    *
    * @param  request  containing the data necessary to perform the operation
-   * @return  ldap result
+   * @return  search iterator
    * @throws  LdapException  if an error occurs
    */
-  LdapResult search(SearchRequest request) throws LdapException;
+  SearchIterator search(SearchRequest request) throws LdapException;
 
 
   /**

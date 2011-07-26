@@ -29,6 +29,8 @@ import edu.vt.middleware.ldap.AttributeModification;
 import edu.vt.middleware.ldap.AttributeModificationType;
 import edu.vt.middleware.ldap.LdapAttribute;
 import edu.vt.middleware.ldap.LdapEntry;
+import edu.vt.middleware.ldap.LdapException;
+import edu.vt.middleware.ldap.OperationException;
 import edu.vt.middleware.ldap.SortBehavior;
 import edu.vt.middleware.ldap.control.SortKey;
 
@@ -177,6 +179,33 @@ public class JndiUtil
         fromLdapAttribute(am[i].getAttribute()));
     }
     return mods;
+  }
+
+
+  /**
+   * Determines whether to throw operation exception or ldap exception. If
+   * operation exception is thrown, the operation will be retried. Otherwise
+   * the exception is propagated out.
+   *
+   * @param  operationRetryExceptions  types to compare e against
+   * @param  e  naming exception to examine
+   * @throws  OperationException  if the operation should be retried
+   * @throws  LdapException  to propagate the exception out
+   */
+  public static void throwOperationException(
+    final Class<?>[] operationRetryExceptions, final NamingException e)
+    throws LdapException
+  {
+    if (operationRetryExceptions != null &&
+        operationRetryExceptions.length > 0) {
+      for (Class<?> ne : operationRetryExceptions) {
+        if (ne.isInstance(e)) {
+          throw new OperationException(
+            e, NamingExceptionUtil.getResultCode(e.getClass()));
+        }
+      }
+    }
+    throw new LdapException(e, NamingExceptionUtil.getResultCode(e.getClass()));
   }
 
 

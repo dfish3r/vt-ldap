@@ -14,6 +14,7 @@
 package edu.vt.middleware.ldap;
 
 import edu.vt.middleware.ldap.cache.Cache;
+import edu.vt.middleware.ldap.provider.SearchIterator;
 
 /**
  * Executes an ldap search operation.
@@ -56,8 +57,16 @@ public class SearchOperation extends AbstractSearchOperation<SearchRequest>
   protected LdapResult executeSearch(final SearchRequest request)
     throws LdapException
   {
-    final LdapResult lr = connection.getProviderConnection().search(
+    final LdapResult lr = new LdapResult(request.getSortBehavior());
+    final SearchIterator si = connection.getProviderConnection().search(
       request);
+    try {
+      while (si.hasNext()) {
+        lr.addEntry(si.next());
+      }
+    } finally {
+      si.close();
+    }
     executeLdapResultHandlers(request, lr);
     return lr;
   }
