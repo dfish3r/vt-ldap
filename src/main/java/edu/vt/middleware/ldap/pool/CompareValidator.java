@@ -13,93 +13,68 @@
 */
 package edu.vt.middleware.ldap.pool;
 
+import edu.vt.middleware.ldap.CompareOperation;
+import edu.vt.middleware.ldap.CompareRequest;
 import edu.vt.middleware.ldap.Connection;
-import edu.vt.middleware.ldap.LdapException;
-import edu.vt.middleware.ldap.LdapResult;
-import edu.vt.middleware.ldap.SearchFilter;
-import edu.vt.middleware.ldap.SearchOperation;
-import edu.vt.middleware.ldap.SearchRequest;
+import edu.vt.middleware.ldap.LdapAttribute;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Validates an ldap connection is healthy by performing a compare operation.
+ * Validates a connection is healthy by performing a compare operation.
  *
  * @author  Middleware Services
  * @version  $Revision$ $Date$
  */
-public class CompareValidator
-  implements Validator<Connection>
+public class CompareValidator implements Validator<Connection>
 {
 
   /** Logger for this class. */
   protected final Logger logger = LoggerFactory.getLogger(getClass());
 
-  /** DN for validating connections. Default value is {@value}. */
-  private String validateDn = "";
-
-  /** Filter for validating connections. Default value is {@value}. */
-  private SearchFilter validateFilter = new SearchFilter("(objectClass=*)");
+  /** Compare request to perform validation with. */
+  private CompareRequest compareRequest;
 
 
-  /** Default constructor. */
-  public CompareValidator() {}
-
-
-  /**
-   * Creates a new compare connection validator.
-   *
-   * @param  dn  to use for compares
-   * @param  filter  to use for compares
-   */
-  public CompareValidator(final String dn, final SearchFilter filter)
+  /** Creates a new compare validator. */
+  public CompareValidator()
   {
-    validateDn = dn;
-    validateFilter = filter;
+    compareRequest = new CompareRequest();
+    compareRequest.setDn("");
+    compareRequest.setAttribute(new LdapAttribute("objectClass", "top"));
   }
 
 
   /**
-   * Returns the validate DN.
+   * Creates a new compare validator.
    *
-   * @return  validate DN
+   * @param  cr  to use for compares
    */
-  public String getValidateDn()
+  public CompareValidator(final CompareRequest cr)
   {
-    return validateDn;
+    compareRequest = cr;
   }
 
 
   /**
-   * Returns the validate filter.
+   * Returns the compare request.
    *
-   * @return  validate filter
+   * @return  compare request
    */
-  public SearchFilter getValidateFilter()
+  public CompareRequest getCompareRequest()
   {
-    return validateFilter;
+    return compareRequest;
   }
 
 
   /**
-   * Sets the validate DN.
+   * Sets the compare request.
    *
-   * @param  s  DN
+   * @param  cr  compare request
    */
-  public void setValidateDn(final String s)
+  public void setCompareRequest(final CompareRequest cr)
   {
-    validateDn = s;
-  }
-
-
-  /**
-   * Sets the validate filter.
-   *
-   * @param  filter  to compare with
-   */
-  public void setValidateFilter(final SearchFilter filter)
-  {
-    validateFilter = filter;
+    compareRequest = cr;
   }
 
 
@@ -110,14 +85,12 @@ public class CompareValidator
     boolean success = false;
     if (c != null) {
       try {
-        final SearchOperation search = new SearchOperation(c);
-        final LdapResult lr = search.execute(
-          new SearchRequest(
-            validateDn, validateFilter)).getResult();
-        success = lr.size() == 1;
-      } catch (LdapException e) {
+        final CompareOperation compare = new CompareOperation(c);
+        final Boolean b = compare.execute(compareRequest).getResult();
+        success = b.booleanValue();
+      } catch (Exception e) {
         logger.debug(
-          "validation failed for compare {}", validateFilter, e);
+          "validation failed for compare request {}", compareRequest, e);
       }
     }
     return success;

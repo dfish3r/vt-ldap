@@ -13,25 +13,23 @@
 */
 package edu.vt.middleware.ldap.pool;
 
-import edu.vt.middleware.ldap.Connection;
-
 /**
- * Provides an interface for passivating ldap connections when they are checked
- * back into the pool.
+ * Provides an interface for passivating objects when they are checked back into
+ * the pool.
  *
- * @param  <T>  type of ldap connection
+ * @param  <T>  type of object being pooled
  *
  * @author  Middleware Services
  * @version  $Revision$ $Date$
  */
-public interface Passivator<T extends Connection>
+public interface Passivator<T>
 {
 
 
   /**
-   * Passivate the supplied ldap connection.
+   * Passivate the supplied object.
    *
-   * @param  t  ldap connection
+   * @param  t  object
    *
    * @return  whether passivation was successful
    */

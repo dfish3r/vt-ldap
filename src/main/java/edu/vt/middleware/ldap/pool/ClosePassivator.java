@@ -16,13 +16,12 @@ package edu.vt.middleware.ldap.pool;
 import edu.vt.middleware.ldap.Connection;
 
 /**
- * Passivates an ldap connection by attempting to close it.
+ * Passivates a connection by attempting to close it.
  *
  * @author  Middleware Services
  * @version  $Revision$ $Date$
  */
-public class ClosePassivator
-  implements Passivator<Connection>
+public class ClosePassivator implements Passivator<Connection>
 {
 
 

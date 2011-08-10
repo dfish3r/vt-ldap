@@ -16,49 +16,49 @@ package edu.vt.middleware.ldap.pool;
 import java.util.NoSuchElementException;
 import java.util.concurrent.TimeUnit;
 import edu.vt.middleware.ldap.Connection;
+import edu.vt.middleware.ldap.ConnectionConfig;
 
 /**
- * Implements a pool of ldap connections that has a set minimum and maximum
- * size. The pool will not grow beyond the maximum size and when the pool is
- * exhausted, requests for new connections will block. The length of time the
- * pool will block is determined by {@link #getBlockWaitTime()}. By default the
- * pool will block indefinitely and there is no guarantee that waiting threads
- * will be serviced in the order in which they made their request. This
- * implementation should be used when you need to control the <em>exact</em>
- * number of ldap connections that can be created. See
- * {@link AbstractPool}.
+ * Implements a pool of connections that has a set minimum and maximum size. The
+ * pool will not grow beyond the maximum size and when the pool is exhausted,
+ * requests for new connections will block. The length of time the pool will
+ * block is determined by {@link #getBlockWaitTime()}. By default the pool will
+ * block indefinitely and there is no guarantee that waiting threads will be
+ * serviced in the order in which they made their request. This implementation
+ * should be used when you need to control the <em>exact</em> number of
+ * connections that can be created. See {@link AbstractConnectionPool}.
  *
  * @author  Middleware Services
  * @version  $Revision$ $Date$
  */
-public class BlockingPool extends AbstractPool<Connection>
+public class BlockingConnectionPool extends AbstractConnectionPool
+  implements ConnectionPool
 {
 
-  /** Time in milliseconds to wait for an available ldap connection. */
+  /** Time in milliseconds to wait for an available connection. */
   private long blockWaitTime;
 
 
   /**
-   * Creates a new ldap pool.
+   * Creates a new blocking pool.
    *
-   * @param  cf  connection factory
+   * @param  cc  connection configuration
    */
-  public BlockingPool(final ConnectionFactory<Connection> cf)
+  public BlockingConnectionPool(final ConnectionConfig cc)
   {
-    super(new PoolConfig(), cf);
+    super(new PoolConfig(), cc);
   }
 
 
   /**
-   * Creates a new ldap pool.
+   * Creates a new blocking pool.
    *
-   * @param  cpc  connection pool configuration
-   * @param  cf  connection factory
+   * @param  pc  pool configuration
+   * @param  cc  connection configuration
    */
-  public BlockingPool(
-    final PoolConfig cpc, final ConnectionFactory<Connection> cf)
+  public BlockingConnectionPool(final PoolConfig pc, final ConnectionConfig cc)
   {
-    super(cpc, cf);
+    super(pc, cc);
   }
 
 
@@ -66,7 +66,7 @@ public class BlockingPool extends AbstractPool<Connection>
    * Returns the block wait time. Default time is 0, which will wait
    * indefinitely.
    *
-   * @return  time in milliseconds to wait for available ldap connections
+   * @return  time in milliseconds to wait for available connections
    */
   public long getBlockWaitTime()
   {
@@ -77,7 +77,7 @@ public class BlockingPool extends AbstractPool<Connection>
   /**
    * Sets the block wait time. Default time is 0, which will wait indefinitely.
    *
-   * @param  time  in milliseconds to wait for available ldap connections
+   * @param  time  in milliseconds to wait for available connections
    */
   public void setBlockWaitTime(final long time)
   {
@@ -89,10 +89,10 @@ public class BlockingPool extends AbstractPool<Connection>
 
   /** {@inheritDoc} */
   @Override
-  public Connection checkOut()
+  public Connection getConnection()
     throws PoolException
   {
-    Connection lc = null;
+    PooledConnection pc = null;
     boolean create = false;
     logger.trace(
       "waiting on pool lock for check out {}", poolLock.getQueueLength());
@@ -103,18 +103,18 @@ public class BlockingPool extends AbstractPool<Connection>
       // otherwise the pool is full, block until a connection is returned
       if (available.size() > 0) {
         try {
-          logger.trace("retrieve available ldap connection");
-          lc = retrieveAvailable();
+          logger.trace("retrieve available connection");
+          pc = retrieveAvailable();
         } catch (NoSuchElementException e) {
-          logger.error("could not remove ldap connection from list", e);
+          logger.error("could not remove connection from list", e);
           throw new IllegalStateException("Pool is empty", e);
         }
-      } else if (active.size() < config.getMaxPoolSize()) {
-        logger.trace("pool can grow, attempt to create ldap connection");
+      } else if (active.size() < poolConfig.getMaxPoolSize()) {
+        logger.trace("pool can grow, attempt to create connection");
         create = true;
       } else {
-        logger.trace("pool is full, block until ldap connection is available");
-        lc = blockAvailable();
+        logger.trace("pool is full, block until connection is available");
+        pc = blockAvailable();
       }
     } finally {
       poolLock.unlock();
@@ -132,85 +132,82 @@ public class BlockingPool extends AbstractPool<Connection>
         try {
           if (
             available.size() + active.size() ==
-              config.getMaxPoolSize()) {
+              poolConfig.getMaxPoolSize()) {
             b = false;
           }
         } finally {
           poolLock.unlock();
         }
         if (b) {
-          lc = createActive();
-          logger.trace("created new active ldap connection: {}", lc);
+          pc = createActive();
+          logger.trace("created new active connection: {}", pc);
         }
       } finally {
         checkOutLock.unlock();
       }
-      if (lc == null) {
-        logger.debug(
-          "create failed, block until ldap connection is available");
-        lc = blockAvailable();
+      if (pc == null) {
+        logger.debug("create failed, block until connection is available");
+        pc = blockAvailable();
       }
     }
 
-    if (lc != null) {
-      activateAndValidate(lc);
+    if (pc != null) {
+      activateAndValidate(pc);
     } else {
       logger.error("Could not service check out request");
       throw new PoolExhaustedException(
         "Pool is empty and connection creation failed");
     }
 
-    return lc;
+    return pc;
   }
 
 
   /**
-   * Attempts to retrieve an ldap connection from the available queue.
+   * Attempts to retrieve a connection from the available queue.
    *
-   * @return  ldap connection from the pool
+   * @return  connection from the pool
    *
    * @throws  NoSuchElementException  if the available queue is empty
    */
-  protected Connection retrieveAvailable()
+  protected PooledConnection retrieveAvailable()
   {
-    Connection lc = null;
+    PooledConnection pc = null;
     logger.trace(
       "waiting on pool lock for retrieve available {}",
       poolLock.getQueueLength());
     poolLock.lock();
     try {
-      final PooledConnection<Connection> pl = available.remove();
-      active.add(
-        new PooledConnection<Connection>(pl.getConnection()));
-      lc = pl.getConnection();
-      logger.trace("retrieved available ldap connection: {}", lc);
+      pc = available.remove();
+      active.add(pc);
+      logger.trace("retrieved available connection: {}", pc);
     } finally {
       poolLock.unlock();
     }
-    return lc;
+    return pc;
   }
 
 
   /**
-   * This blocks until an ldap connection can be acquired.
+   * This blocks until a connection can be acquired.
    *
-   * @return  ldap connection from the pool
+   * @return  connection from the pool
    *
    * @throws  PoolException  if this method fails
    * @throws  BlockingTimeoutException  if this pool is configured with a block
    * time and it occurs
    * @throws  PoolInterruptedException  if the current thread is interrupted
    */
-  protected Connection blockAvailable()
+  protected PooledConnection blockAvailable()
     throws PoolException
   {
-    Connection lc = null;
+    PooledConnection pc = null;
     logger.trace(
       "waiting on pool lock for block available {}",
       poolLock.getQueueLength());
     poolLock.lock();
     try {
-      while (lc == null) {
+      while (pc == null) {
         logger.trace("available pool is empty, waiting...");
         if (blockWaitTime > 0) {
           if (
@@ -225,7 +222,7 @@ public class BlockingPool extends AbstractPool<Connection>
         }
         logger.trace("notified to continue...");
         try {
-          lc = retrieveAvailable();
+          pc = retrieveAvailable();
         } catch (NoSuchElementException e) {
           logger.trace("notified to continue but pool was empty");
         }
@@ -238,31 +235,29 @@ public class BlockingPool extends AbstractPool<Connection>
     } finally {
       poolLock.unlock();
     }
-    return lc;
+    return pc;
   }
 
 
   /** {@inheritDoc} */
   @Override
-  public void checkIn(final Connection lc)
+  protected void putConnection(final PooledConnection pc)
   {
-    final boolean valid = validateAndPassivate(lc);
-    final PooledConnection<Connection> pl =
-      new PooledConnection<Connection>(lc);
+    final boolean valid = validateAndPassivate(pc);
     logger.trace(
       "waiting on pool lock for check in {}", poolLock.getQueueLength());
     poolLock.lock();
     try {
-      if (active.remove(pl)) {
+      if (active.remove(pc)) {
         if (valid) {
-          available.add(pl);
-          logger.trace("returned active ldap connection: {}", lc);
+          available.add(pc);
+          logger.trace("returned active connection: {}", pc);
           poolNotEmpty.signal();
         }
-      } else if (available.contains(pl)) {
-        logger.warn("returned available ldap connection: {}", lc);
+      } else if (available.contains(pc)) {
+        logger.warn("returned available connection: {}", pc);
       } else {
-        logger.warn("attempt to return unknown ldap connection: {}", lc);
+        logger.warn("attempt to return unknown connection: {}", pc);
       }
     } finally {
       poolLock.unlock();

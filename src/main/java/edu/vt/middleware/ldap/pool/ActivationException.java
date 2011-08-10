@@ -14,8 +14,7 @@
 package edu.vt.middleware.ldap.pool;
 
 /**
- * Thrown when an attempt to activate an ldap connection fails. See
- * {@link ConnectionFactory#activate}.
+ * Thrown when an attempt to activate a pooled object fails.
  *
  * @author  Middleware Services
  * @version  $Revision$

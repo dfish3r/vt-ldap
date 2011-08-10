@@ -323,9 +323,9 @@
   <parameter name="ldapHost" value="ed-dev"/>
   <parameter name="sleepTime" value="10000"/>
 
-  <test name="coretests" parallel="methods" thread-count="12">
+  <test name="tests">
     <groups>
-      <run>
+      <define name="core">
         <include name="beantest" />
         <include name="propstest" />
         <include name="searchtest" />
@@ -344,58 +344,26 @@
       <!--
         <include name="wikitest" />
       -->
-      </run>
-    </groups>
-    <packages>
-      <package name="edu.vt.middleware.ldap.*" />
-    </packages>
-  </test>
-  <test name="clitests">
-    <groups>
-      <run>
         <include name="ldapclitest" />
         <include name="authclitest" />
-      </run>
-    </groups>
-    <packages>
-      <package name="edu.vt.middleware.ldap.*" />
-    </packages>
-  </test>
-  <test name="conntest">
-    <groups>
-      <run>
         <include name="ldapconntest" />
-      </run>
-    </groups>
-    <packages>
-      <package name="edu.vt.middleware.ldap.*" />
-    </packages>
-  </test>
-<!-- must run separate from other tests
-  <test name="loadtests" parallel="methods" thread-count="12">
-    <groups>
-      <run>
+      </define>
+      <define name="load">
         <include name="authloadtest" />
-      </run>
-    </groups>
-    <packages>
-      <package name="edu.vt.middleware.ldap.*" />
-    </packages>
-  </test>
-  <test name="pooltests" parallel="methods" thread-count="12">
-    <groups>
-      <run>
+      </define>
+      <define name="pool">
+        <include name="validatortest" />
         <include name="softlimitpooltest" />
         <include name="blockingpooltest" />
         <include name="blockingtimeoutpooltest" />
-        <include name="sharedpooltest" />
         <include name="connstrategypooltest" />
-        <include name="comparisonpooltest" />
-      </run>
+      </define>
     </groups>
+    <run>
+      <include name="${ldapTestGroup}"/>
+    </run>
     <packages>
-      <package name="edu.vt.middleware.ldap.pool.*" />
+      <package name="edu.vt.middleware.ldap.*" />
     </packages>
   </test>
--->
 </suite>

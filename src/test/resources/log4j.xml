@@ -18,6 +18,12 @@
     <appender-ref ref="CONSOLE"/>
   </category>
 
+  <category name="edu.vt.middleware.ldap.pool"
+            additivity="false">
+    <priority value="INFO"/>
+    <appender-ref ref="CONSOLE"/>
+  </category>
+
   <category name="org.springframework"
             additivity="false">
     <priority value="ERROR"/>

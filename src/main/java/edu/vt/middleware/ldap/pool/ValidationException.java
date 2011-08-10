@@ -14,8 +14,7 @@
 package edu.vt.middleware.ldap.pool;
 
 /**
- * Thrown when an attempt to validate an ldap connection fails. See
- * {@link ConnectionFactory#validate}.
+ * Thrown when an attempt to validate a pooled object fails.
  *
  * @author  Middleware Services
  * @version  $Revision$

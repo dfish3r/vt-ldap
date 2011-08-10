@@ -23,13 +23,11 @@ import edu.vt.middleware.ldap.LdapResult;
 import edu.vt.middleware.ldap.SearchFilter;
 import edu.vt.middleware.ldap.SearchOperation;
 import edu.vt.middleware.ldap.SearchRequest;
-import edu.vt.middleware.ldap.pool.BlockingPool;
-import edu.vt.middleware.ldap.pool.DefaultConnectionFactory;
-import edu.vt.middleware.ldap.pool.Pool;
+import edu.vt.middleware.ldap.pool.BlockingConnectionPool;
+import edu.vt.middleware.ldap.pool.ConnectionPool;
 import edu.vt.middleware.ldap.pool.PoolConfig;
 import edu.vt.middleware.ldap.pool.PoolException;
-import edu.vt.middleware.ldap.pool.SharedPool;
-import edu.vt.middleware.ldap.pool.SoftLimitPool;
+import edu.vt.middleware.ldap.pool.SoftLimitConnectionPool;
 import edu.vt.middleware.ldap.props.ConnectionConfigPropertySource;
 import edu.vt.middleware.ldap.props.PoolConfigPropertySource;
 import edu.vt.middleware.ldap.props.SearchRequestPropertySource;
@@ -70,17 +68,14 @@ public abstract class AbstractServlet extends HttpServlet
     BLOCKING,
 
     /** soft limit. */
-    SOFTLIMIT,
-
-    /** shared. */
-    SHARED
+    SOFTLIMIT
   }
 
   /** Logger for this class. */
   protected final Logger logger = LoggerFactory.getLogger(getClass());
 
   /** Pool for searching. */
-  private Pool<Connection> ldapPool;
+  private ConnectionPool ldapPool;
 
   /** Search request reader for reading search properties. */
   private SearchRequestPropertySource searchRequestSource;
@@ -101,10 +96,10 @@ public abstract class AbstractServlet extends HttpServlet
     final String propertiesFile = getInitParameter(PROPERTIES_FILE);
     logger.debug("{} = {}", PROPERTIES_FILE, propertiesFile);
 
-    final ConnectionConfigPropertySource lccSource =
+    final ConnectionConfigPropertySource ccSource =
       new ConnectionConfigPropertySource(
         SearchServlet.class.getResourceAsStream(propertiesFile));
-    final ConnectionConfig lcc = lccSource.get();
+    final ConnectionConfig cc = ccSource.get();
 
     searchRequestSource = new SearchRequestPropertySource(
       SearchServlet.class.getResourceAsStream(propertiesFile));
@@ -112,19 +107,17 @@ public abstract class AbstractServlet extends HttpServlet
     final String poolPropertiesFile = getInitParameter(POOL_PROPERTIES_FILE);
     logger.debug("{} = {}", POOL_PROPERTIES_FILE, poolPropertiesFile);
 
-    final PoolConfigPropertySource lpcSource =
+    final PoolConfigPropertySource pcSource =
       new PoolConfigPropertySource(
         SearchServlet.class.getResourceAsStream(poolPropertiesFile));
-    final PoolConfig lpc = lpcSource.get();
+    final PoolConfig pc = pcSource.get();
 
     final String poolType = getInitParameter(POOL_TYPE);
     logger.debug("{} = {}", POOL_TYPE, poolType);
     if (PoolType.BLOCKING == PoolType.valueOf(poolType)) {
-      ldapPool = new BlockingPool(lpc, new DefaultConnectionFactory(lcc));
+      ldapPool = new BlockingConnectionPool(pc, cc);
     } else if (PoolType.SOFTLIMIT == PoolType.valueOf(poolType)) {
-      ldapPool = new SoftLimitPool(lpc, new DefaultConnectionFactory(lcc));
-    } else if (PoolType.SHARED == PoolType.valueOf(poolType)) {
-      ldapPool = new SharedPool(lpc, new DefaultConnectionFactory(lcc));
+      ldapPool = new SoftLimitConnectionPool(pc, cc);
     } else {
       throw new ServletException("Unknown pool type: " + poolType);
     }
@@ -150,7 +143,7 @@ public abstract class AbstractServlet extends HttpServlet
       try {
         Connection conn = null;
         try {
-          conn = ldapPool.checkOut();
+          conn = ldapPool.getConnection();
           final SearchOperation search = new SearchOperation(conn);
           final SearchRequest sr = SearchRequest.newSearchRequest(
             searchRequestSource.get());
@@ -158,7 +151,9 @@ public abstract class AbstractServlet extends HttpServlet
           sr.setReturnAttributes(attrs);
           result = search.execute(sr).getResult();
         } finally {
-          ldapPool.checkIn(conn);
+          if (conn != null) {
+            conn.close();
+          }
         }
       } catch (PoolException e) {
         logger.error("Error using LDAP pool", e);

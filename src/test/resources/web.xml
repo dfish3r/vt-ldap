@@ -57,7 +57,7 @@
     </init-param>
     <init-param>
       <param-name>edu.vt.middleware.ldap.servlets.poolType</param-name>
-      <param-value>SHARED</param-value>
+      <param-value>BLOCKING</param-value>
     </init-param>
   </servlet>
   <servlet-mapping>

@@ -13,25 +13,22 @@
 */
 package edu.vt.middleware.ldap.pool;
 
-import edu.vt.middleware.ldap.Connection;
-
 /**
- * Provides an interface for activating ldap connections when they enter the
- * pool.
+ * Provides an interface for activating objects when they enter the pool.
  *
- * @param  <T>  type of ldap connection
+ * @param  <T>  type of object being pooled
  *
  * @author  Middleware Services
  * @version  $Revision$ $Date$
  */
-public interface Activator<T extends Connection>
+public interface Activator<T>
 {
 
 
   /**
-   * Activate the supplied ldap connection.
+   * Activate the supplied object.
    *
-   * @param  t  ldap connection
+   * @param  t  object
    *
    * @return  whether activation was successful
    */

@@ -14,12 +14,11 @@
 package edu.vt.middleware.ldap.pool;
 
 import edu.vt.middleware.ldap.Connection;
-import edu.vt.middleware.ldap.LdapException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Activates an ldap connection by attempting to open a connection to the ldap.
+ * Activates a connection by attempting to open it.
  *
  * @author  Middleware Services
  * @version  $Revision$ $Date$
@@ -40,7 +39,7 @@ public class ConnectActivator implements Activator<Connection>
       try {
         c.open();
         success = true;
-      } catch (LdapException e) {
+      } catch (Exception e) {
         logger.error("unabled to connect to the ldap", e);
       }
     }

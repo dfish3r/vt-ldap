@@ -15,7 +15,7 @@ package edu.vt.middleware.ldap.pool;
 
 /**
  * Thrown when a blocking operation times out. See
- * {@link BlockingPool#checkOut()}.
+ * {@link ConnectionPool#getConnection()}.
  *
  * @author  Middleware Services
  * @version  $Revision$

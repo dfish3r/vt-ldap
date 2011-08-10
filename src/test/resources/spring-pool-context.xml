@@ -7,11 +7,6 @@
 http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
 http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-2.5.xsd">
 
-  <bean id="connFactory"
-    class="edu.vt.middleware.ldap.pool.DefaultConnectionFactory">
-    <constructor-arg index="0" ref="connectionConfig"/>
-  </bean>
-  
   <bean id="pool"
     class="edu.vt.middleware.ldap.pool.BlockingPool"
     init-method="initialize"
@@ -26,7 +21,7 @@ http://www.springframework.org/schema/util http://www.springframework.org/schema
         p:prunePeriod="60"
       />
     </constructor-arg>
-    <constructor-arg index="1" ref="connFactory"/>
+    <constructor-arg index="1" ref="connectionConfig"/>
   </bean>
   
   <bean id="connectionConfig"
