@@ -19,7 +19,7 @@ import edu.vt.middleware.ldap.control.Control;
 import edu.vt.middleware.ldap.handler.LdapResultHandler;
 
 /**
- * Handles properties for {@link SearchRequest}.
+ * Handles properties for {@link edu.vt.middleware.ldap.SearchRequest}.
  *
  * @author  Middleware Services
  * @version  $Revision$ $Date$

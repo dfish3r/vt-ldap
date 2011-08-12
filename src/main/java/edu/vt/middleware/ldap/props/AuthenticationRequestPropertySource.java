@@ -19,7 +19,8 @@ import java.util.Set;
 import edu.vt.middleware.ldap.auth.AuthenticationRequest;
 
 /**
- * Reads properties specific to {@link AuthenticationRequest} and returns an
+ * Reads properties specific to
+ * {@link edu.vt.middleware.ldap.auth.AuthenticationRequest} and returns an
  * initialized object of that type.
  *
  * @author  Middleware Services

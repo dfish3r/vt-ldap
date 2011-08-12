@@ -22,7 +22,7 @@ import edu.vt.middleware.ldap.ssl.CredentialConfigParser;
 import edu.vt.middleware.ldap.ssl.SSLContextInitializer;
 
 /**
- * Handles properties for {@link ConnectionConfig}.
+ * Handles properties for {@link edu.vt.middleware.ldap.ConnectionConfig}.
  *
  * @author  Middleware Services
  * @version  $Revision$ $Date$

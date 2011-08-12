@@ -17,7 +17,8 @@ import edu.vt.middleware.ldap.Credential;
 import edu.vt.middleware.ldap.auth.handler.AuthorizationHandler;
 
 /**
- * Handles properties for {@link AuthenticationRequest}.
+ * Handles properties for
+ * {@link edu.vt.middleware.ldap.auth.AuthenticationRequest}.
  *
  * @author  Middleware Services
  * @version  $Revision$ $Date$

@@ -18,7 +18,7 @@ import edu.vt.middleware.ldap.auth.handler.AuthenticationHandler;
 import edu.vt.middleware.ldap.auth.handler.AuthenticationResultHandler;
 
 /**
- * Handles properties for {@link Authenticator}.
+ * Handles properties for {@link edu.vt.middleware.ldap.auth.Authenticator}.
  *
  * @author  Middleware Services
  * @version  $Revision$ $Date$

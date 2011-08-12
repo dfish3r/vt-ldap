@@ -22,7 +22,8 @@ import edu.vt.middleware.ldap.auth.SearchDnResolver;
 import edu.vt.middleware.ldap.auth.handler.AuthenticationHandler;
 
 /**
- * Reads properties specific to {@link Authenticator} and returns an initialized
+ * Reads properties specific to
+ * {@link edu.vt.middleware.ldap.auth.Authenticator} and returns an initialized
  * object of that type.
  *
  * @author  Middleware Services
@@ -82,7 +83,7 @@ public final class AuthenticatorPropertySource
     object = new Authenticator();
     initializeObject(INVOKER, domain.value(), props);
 
-    ConnectionConfigPropertySource lccPropSource = null;
+    ConnectionConfigPropertySource ccPropSource = null;
 
     // initialize a SearchDnResolver by default
     DnResolver resolver = object.getDnResolver();
@@ -95,8 +96,8 @@ public final class AuthenticatorPropertySource
     if (resolver instanceof SearchDnResolver) {
       final SearchDnResolver sdr = (SearchDnResolver) resolver;
       if (sdr.getConnectionConfig() == null) {
-        lccPropSource = new ConnectionConfigPropertySource(domain, props);
-        sdr.setConnectionConfig(lccPropSource.get());
+        ccPropSource = new ConnectionConfigPropertySource(domain, props);
+        sdr.setConnectionConfig(ccPropSource.get());
       }
     }
 
@@ -109,10 +110,10 @@ public final class AuthenticatorPropertySource
       object.setAuthenticationHandler(authHandler);
     }
     if (authHandler.getConnectionConfig() == null) {
-      if (lccPropSource == null) {
-        lccPropSource = new ConnectionConfigPropertySource(domain, props);
+      if (ccPropSource == null) {
+        ccPropSource = new ConnectionConfigPropertySource(domain, props);
       }
-      authHandler.setConnectionConfig(lccPropSource.get());
+      authHandler.setConnectionConfig(ccPropSource.get());
     }
   }
 
