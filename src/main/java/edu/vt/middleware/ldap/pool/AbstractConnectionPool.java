@@ -567,6 +567,25 @@ public abstract class AbstractConnectionPool extends AbstractPool<Connection>
 
 
   /**
+   * Provides a descriptive string representation of this instance.
+   *
+   * @return  string representation
+   */
+  @Override
+  public String toString()
+  {
+    return
+      String.format(
+        "[%s@%d::connectOnCreate=%s, connectionConfig=%s, poolConfig=%s]",
+        getClass().getName(),
+        hashCode(),
+        connectOnCreate,
+        connectionConfig,
+        poolConfig);
+  }
+
+
+  /**
    * A connection that is participating in this pool. Used to track how long a
    * connection has been in use and override close invocations.
    *

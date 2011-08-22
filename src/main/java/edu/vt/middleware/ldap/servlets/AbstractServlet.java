@@ -25,6 +25,7 @@ import edu.vt.middleware.ldap.SearchOperation;
 import edu.vt.middleware.ldap.SearchRequest;
 import edu.vt.middleware.ldap.pool.BlockingConnectionPool;
 import edu.vt.middleware.ldap.pool.ConnectionPool;
+import edu.vt.middleware.ldap.pool.ConnectionPoolType;
 import edu.vt.middleware.ldap.pool.PoolConfig;
 import edu.vt.middleware.ldap.pool.PoolException;
 import edu.vt.middleware.ldap.pool.SoftLimitConnectionPool;
@@ -61,24 +62,14 @@ public abstract class AbstractServlet extends HttpServlet
   /** serial version uid. */
   private static final long serialVersionUID = 1984990003439357859L;
 
-  /** Types of available pools. */
-  protected enum PoolType {
-
-    /** blocking. */
-    BLOCKING,
-
-    /** soft limit. */
-    SOFTLIMIT
-  }
-
   /** Logger for this class. */
   protected final Logger logger = LoggerFactory.getLogger(getClass());
 
   /** Pool for searching. */
   private ConnectionPool ldapPool;
 
-  /** Search request reader for reading search properties. */
-  private SearchRequestPropertySource searchRequestSource;
+  /** Search request for storing search properties. */
+  private SearchRequest searchRequest;
 
 
   /**
@@ -96,27 +87,33 @@ public abstract class AbstractServlet extends HttpServlet
     final String propertiesFile = getInitParameter(PROPERTIES_FILE);
     logger.debug("{} = {}", PROPERTIES_FILE, propertiesFile);
 
+    final ConnectionConfig cc = new ConnectionConfig();
     final ConnectionConfigPropertySource ccSource =
       new ConnectionConfigPropertySource(
-        SearchServlet.class.getResourceAsStream(propertiesFile));
-    final ConnectionConfig cc = ccSource.get();
+        cc, SearchServlet.class.getResourceAsStream(propertiesFile));
+    ccSource.initialize();
 
-    searchRequestSource = new SearchRequestPropertySource(
-      SearchServlet.class.getResourceAsStream(propertiesFile));
+    searchRequest = new SearchRequest();
+    final SearchRequestPropertySource srSource =
+      new SearchRequestPropertySource(
+        searchRequest, SearchServlet.class.getResourceAsStream(propertiesFile));
+    srSource.initialize();
 
     final String poolPropertiesFile = getInitParameter(POOL_PROPERTIES_FILE);
     logger.debug("{} = {}", POOL_PROPERTIES_FILE, poolPropertiesFile);
 
+    final PoolConfig pc = new PoolConfig();
     final PoolConfigPropertySource pcSource =
       new PoolConfigPropertySource(
-        SearchServlet.class.getResourceAsStream(poolPropertiesFile));
-    final PoolConfig pc = pcSource.get();
+        pc, SearchServlet.class.getResourceAsStream(poolPropertiesFile));
+    pcSource.initialize();
 
     final String poolType = getInitParameter(POOL_TYPE);
     logger.debug("{} = {}", POOL_TYPE, poolType);
-    if (PoolType.BLOCKING == PoolType.valueOf(poolType)) {
+    if (ConnectionPoolType.BLOCKING == ConnectionPoolType.valueOf(poolType)) {
       ldapPool = new BlockingConnectionPool(pc, cc);
-    } else if (PoolType.SOFTLIMIT == PoolType.valueOf(poolType)) {
+    } else if (ConnectionPoolType.SOFTLIMIT ==
+               ConnectionPoolType.valueOf(poolType)) {
       ldapPool = new SoftLimitConnectionPool(pc, cc);
     } else {
       throw new ServletException("Unknown pool type: " + poolType);
@@ -146,7 +143,7 @@ public abstract class AbstractServlet extends HttpServlet
           conn = ldapPool.getConnection();
           final SearchOperation search = new SearchOperation(conn);
           final SearchRequest sr = SearchRequest.newSearchRequest(
-            searchRequestSource.get());
+            searchRequest);
           sr.setSearchFilter(new SearchFilter(query));
           sr.setReturnAttributes(attrs);
           result = search.execute(sr).getResult();
