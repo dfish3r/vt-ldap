@@ -52,16 +52,16 @@ public class SearchDnResolver implements DnResolver, Serializable
   protected String baseDn = "";
 
   /** Filter for searching for the user. */
-  private String userFilter;
+  protected String userFilter;
 
   /** Filter arguments for searching for the user. */
-  private Object[] userFilterArgs;
+  protected Object[] userFilterArgs;
 
   /** Whether to throw an exception if multiple DNs are found. */
-  private boolean allowMultipleDns;
+  protected boolean allowMultipleDns;
 
   /** Whether to use a subtree search when resolving DNs. */
-  private boolean subtreeSearch;
+  protected boolean subtreeSearch;
 
 
   /** Default constructor. */
@@ -71,18 +71,18 @@ public class SearchDnResolver implements DnResolver, Serializable
   /**
    * Creates a new search dn resolver.
    *
-   * @param  lcc  ldap connection config
+   * @param  cc  connection config
    */
-  public SearchDnResolver(final ConnectionConfig lcc)
+  public SearchDnResolver(final ConnectionConfig cc)
   {
-    setConnectionConfig(lcc);
+    setConnectionConfig(cc);
   }
 
 
   /**
-   * Returns the ldap connection config.
+   * Returns the connection config.
    *
-   * @return  ldap connection config
+   * @return  connection config
    */
   public ConnectionConfig getConnectionConfig()
   {
@@ -91,13 +91,13 @@ public class SearchDnResolver implements DnResolver, Serializable
 
 
   /**
-   * Sets the ldap connection config.
+   * Sets the connection config.
    *
-   * @param  lcc  ldap connection config
+   * @param  cc  connection config
    */
-  public void setConnectionConfig(final ConnectionConfig lcc)
+  public void setConnectionConfig(final ConnectionConfig cc)
   {
-    config = lcc;
+    config = cc;
   }
 
 
@@ -336,14 +336,32 @@ public class SearchDnResolver implements DnResolver, Serializable
     throws LdapException
   {
     final SearchRequest request = createSearchRequest(filter);
-    final Connection conn = new Connection(config);
+    Connection conn = null;
     try {
-      conn.open();
+      conn = getConnection();
       final SearchOperation op = new SearchOperation(conn);
       return op.execute(request).getResult();
     } finally {
-      conn.close();
+      if (conn != null) {
+        conn.close();
+      }
     }
+  }
+
+
+  /**
+   * Retrieve a connection that is ready for use.
+   *
+   * @return  connection
+   *
+   * @throws LdapException  if an error occurs opening the connection
+   */
+  protected Connection getConnection()
+    throws LdapException
+  {
+    final Connection conn = new Connection(config);
+    conn.open();
+    return conn;
   }
 
 

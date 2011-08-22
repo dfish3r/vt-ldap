@@ -13,6 +13,7 @@
 */
 package edu.vt.middleware.ldap.auth;
 
+import java.util.Arrays;
 import edu.vt.middleware.ldap.Connection;
 import edu.vt.middleware.ldap.ConnectionConfig;
 import edu.vt.middleware.ldap.LdapException;
@@ -28,13 +29,14 @@ import edu.vt.middleware.ldap.SearchRequest;
  * @version  $Revision: 1634 $ $Date: 2010-09-29 16:03:09 -0400 (Wed, 29 Sep 2010) $
  */
 public class PersistentSearchDnResolver extends SearchDnResolver
+  implements ManagedDnResolver
 {
 
   /** serial version uid. */
   private static final long serialVersionUID = -7275676180831565373L;
 
   /** Ldap connection. */
-  protected Connection connection = new Connection();
+  protected Connection connection;
 
 
   /** Default constructor. */
@@ -44,34 +46,21 @@ public class PersistentSearchDnResolver extends SearchDnResolver
   /**
    * Creates a new persistent search dn resolver.
    *
-   * @param  lcc  ldap connection config
+   * @param  cc  connection config
    */
-  public PersistentSearchDnResolver(final ConnectionConfig lcc)
+  public PersistentSearchDnResolver(final ConnectionConfig cc)
   {
-    setConnectionConfig(lcc);
+    setConnectionConfig(cc);
   }
 
 
-  /**
-   * Sets the ldap connection config.
-   *
-   * @param  lcc  ldap connection config
-   */
-  public void setConnectionConfig(final ConnectionConfig lcc)
-  {
-    super.setConnectionConfig(lcc);
-    connection.setConnectionConfig(config);
-  }
-
-
-  /**
-   * Opens a persistent connection to the ldap.
-   *
-   * @throws  LdapException  if an error occurs opening the connection
-   */
-  public void open()
+  /** {@inheritDoc} */
+  @Override
+  public void initialize()
     throws LdapException
   {
+    connection = new Connection();
+    connection.setConnectionConfig(config);
     connection.open();
   }
 
@@ -87,11 +76,34 @@ public class PersistentSearchDnResolver extends SearchDnResolver
   }
 
 
-  /**
-   * Closes the persistent connection to the ldap.
-   */
+  /** {@inheritDoc} */
+  @Override
   public void close()
   {
     connection.close();
+  }
+
+
+  /**
+   * Provides a descriptive string representation of this instance.
+   *
+   * @return  string representation
+   */
+  @Override
+  public String toString()
+  {
+    return
+      String.format(
+        "[%s@%d::baseDn=%s, userFilter=%s, userFilterArgs=%s, " +
+        "allowMultipleDns=%s, subtreeSearch=%s, config=%s, connection=%s]",
+        getClass().getName(),
+        hashCode(),
+        baseDn,
+        userFilter,
+        userFilterArgs != null ? Arrays.asList(userFilterArgs) : null,
+        allowMultipleDns,
+        subtreeSearch,
+        config,
+        connection);
   }
 }
