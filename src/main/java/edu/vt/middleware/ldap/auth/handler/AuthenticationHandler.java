@@ -45,17 +45,17 @@ public interface AuthenticationHandler
 
 
   /**
-   * Returns the ldap connection configuration.
+   * Returns the connection configuration.
    *
-   * @return  ldap connection configuration
+   * @return  connection configuration
    */
   ConnectionConfig getConnectionConfig();
 
 
   /**
-   * Sets the ldap connection configuration.
+   * Sets the connection configuration.
    *
-   * @param  config  ldap connection config
+   * @param  cc  connection config
    */
-  void setConnectionConfig(final ConnectionConfig config);
+  void setConnectionConfig(final ConnectionConfig cc);
 }

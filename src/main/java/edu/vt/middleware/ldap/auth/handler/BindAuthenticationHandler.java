@@ -35,11 +35,11 @@ public class BindAuthenticationHandler extends AbstractAuthenticationHandler
   /**
    * Creates a new bind authentication handler.
    *
-   * @param  lcc  ldap connection config
+   * @param  cc  connection config
    */
-  public BindAuthenticationHandler(final ConnectionConfig lcc)
+  public BindAuthenticationHandler(final ConnectionConfig cc)
   {
-    setConnectionConfig(lcc);
+    setConnectionConfig(cc);
   }
 
 

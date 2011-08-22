@@ -40,8 +40,8 @@ public abstract class AbstractAuthenticationHandler
 
   /** {@inheritDoc} */
   @Override
-  public void setConnectionConfig(final ConnectionConfig lcc)
+  public void setConnectionConfig(final ConnectionConfig cc)
   {
-    config = lcc;
+    config = cc;
   }
 }
