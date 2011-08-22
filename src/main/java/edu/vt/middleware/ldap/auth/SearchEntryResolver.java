@@ -1,0 +1,98 @@
+/*
+  $Id$
+
+  Copyright (C) 2003-2010 Virginia Tech.
+  All rights reserved.
+
+  SEE LICENSE FOR MORE INFORMATION
+
+  Author:  Middleware Services
+  Email:   middleware@vt.edu
+  Version: $Revision$
+  Updated: $Date$
+*/
+package edu.vt.middleware.ldap.auth;
+
+import java.io.Serializable;
+import java.util.Arrays;
+import edu.vt.middleware.ldap.Connection;
+import edu.vt.middleware.ldap.LdapEntry;
+import edu.vt.middleware.ldap.LdapException;
+import edu.vt.middleware.ldap.LdapResult;
+import edu.vt.middleware.ldap.SearchOperation;
+import edu.vt.middleware.ldap.SearchRequest;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+/**
+ * Looks up the LDAP entry associated with a user using an LDAP search.
+ *
+ * @author  Middleware Services
+ * @version  $Revision$ $Date$
+ */
+public class SearchEntryResolver implements EntryResolver, Serializable
+{
+
+  /** serial version uid. */
+  private static final long serialVersionUID = -2658940542452738858L;
+
+  /** Logger for this class. */
+  protected final Logger logger = LoggerFactory.getLogger(getClass());
+
+  /** User attributes to return. */
+  protected String[] returnAttributes;
+
+
+  /** Default constructor. */
+  public SearchEntryResolver() {}
+
+
+  /**
+   * Creates a new search entry resolver.
+   *
+   * @param  attributes  to return
+   */
+  public SearchEntryResolver(final String[] attributes)
+  {
+    setReturnAttributes(attributes);
+  }
+
+
+  /**
+   * Returns the return attributes.
+   *
+   * @return  attributes to return
+   */
+  public String[] getReturnAttributes()
+  {
+    return returnAttributes;
+  }
+
+
+  /**
+   * Sets the return attributes.
+   *
+   * @param  attributes  to return
+   */
+  public void setReturnAttributes(final String[] attributes)
+  {
+    returnAttributes = attributes;
+  }
+
+
+  /** {@inheritDoc} */
+  @Override
+  public LdapEntry resolve(final Connection connection, final String dn)
+    throws LdapException
+  {
+    logger.debug(
+      "Resolving entry attributes: {}",
+      returnAttributes == null ?
+        "all attributes" : Arrays.toString(returnAttributes));
+    final SearchOperation search = new SearchOperation(connection);
+    final LdapResult result = search.execute(
+      SearchRequest.newObjectScopeSearchRequest(
+        dn, returnAttributes)).getResult();
+    return result.getEntry();
+  }
+}

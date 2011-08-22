@@ -13,6 +13,7 @@
 */
 package edu.vt.middleware.ldap.props;
 
+import edu.vt.middleware.ldap.auth.EntryResolver;
 import edu.vt.middleware.ldap.auth.DnResolver;
 import edu.vt.middleware.ldap.auth.handler.AuthenticationHandler;
 import edu.vt.middleware.ldap.auth.handler.AuthenticationResultHandler;
@@ -54,6 +55,8 @@ public class AuthenticatorPropertyInvoker extends AbstractPropertyInvoker
         newValue = createArrayTypeFromPropertyValue(
           AuthenticationResultHandler.class,
           value);
+      } else if (EntryResolver.class.isAssignableFrom(type)) {
+        newValue = createTypeFromPropertyValue(EntryResolver.class, value);
       } else {
         newValue = convertSimpleType(type, value);
       }

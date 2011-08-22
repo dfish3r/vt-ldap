@@ -13,13 +13,10 @@
 */
 package edu.vt.middleware.ldap.auth;
 
-import java.util.Arrays;
 import edu.vt.middleware.ldap.Connection;
+import edu.vt.middleware.ldap.LdapEntry;
 import edu.vt.middleware.ldap.LdapException;
-import edu.vt.middleware.ldap.LdapResult;
 import edu.vt.middleware.ldap.SearchFilter;
-import edu.vt.middleware.ldap.SearchOperation;
-import edu.vt.middleware.ldap.SearchRequest;
 import edu.vt.middleware.ldap.auth.handler.AuthenticationCriteria;
 import edu.vt.middleware.ldap.auth.handler.AuthenticationHandler;
 import edu.vt.middleware.ldap.auth.handler.AuthenticationResultHandler;
@@ -44,6 +41,9 @@ public abstract class AbstractAuthenticator
 
   /** Handler to process authentication. */
   protected AuthenticationHandler authenticationHandler;
+
+  /** For finding user entries. */
+  protected EntryResolver entryResolver;
 
   /** Handlers to process authentication results. */
   protected AuthenticationResultHandler[] authenticationResultHandlers;
@@ -90,6 +90,28 @@ public abstract class AbstractAuthenticator
   public void setAuthenticationHandler(final AuthenticationHandler handler)
   {
     authenticationHandler = handler;
+  }
+
+
+  /**
+   * Returns the entry resolver.
+   *
+   * @return  entry resolver
+   */
+  public EntryResolver getEntryResolver()
+  {
+    return entryResolver;
+  }
+
+
+  /**
+   * Sets the entry resolver.
+   *
+   * @param  resolver  for finding entries
+   */
+  public void setEntryResolver(final EntryResolver resolver)
+  {
+    entryResolver = resolver;
   }
 
 
@@ -215,31 +237,6 @@ public abstract class AbstractAuthenticator
 
 
   /**
-   * Retrieves the ldap entry for the supplied DN from the ldap.
-   *
-   * @param  dn  of the ldap entry to retrieve
-   * @param  request  containing the return attributes to include
-   * @param  conn  to perform the search on
-   * @return  ldap result containing the ldap entry
-   * @throws  LdapException  if an LDAP error occurs
-   */
-  protected LdapResult getLdapEntry(
-    final String dn,
-    final AuthenticationRequest request,
-    final Connection conn)
-    throws LdapException
-  {
-    logger.debug(
-      "Returning attributes: {}",
-      request.getReturnAttributes() == null ?
-        "all attributes" : Arrays.toString(request.getReturnAttributes()));
-    final SearchOperation search = new SearchOperation(conn);
-    return search.execute(SearchRequest.newObjectScopeSearchRequest(
-      dn, request.getReturnAttributes())).getResult();
-  }
-
-
-  /**
    * Creates authorization handlers based on the authentication request and the
    * authentication configuration. Defers to the request data if an option has
    * been set, otherwise uses the configuration data. If an authorization filter
@@ -282,5 +279,37 @@ public abstract class AbstractAuthenticator
       }
     }
     return authzHandler;
+  }
+
+
+  /**
+   * Attempts to find the ldap entry for the supplied DN. If an entry resolver
+   * has been provided it is used, otherwise a {@link SearchEntryResolver} is
+   * used if return attributes have been requested.
+   *
+   * @param  request  authentication request
+   * @param  conn  that authentication occurred on
+   * @param  dn  that authenticated
+   * @return  ldap entry
+   * @throws LdapException  if an error occurs resolving the entry
+   */
+  protected LdapEntry resolveEntry(
+    final AuthenticationRequest request, final Connection conn, final String dn)
+    throws LdapException
+  {
+    LdapEntry entry = null;
+    if (entryResolver != null) {
+      entry = entryResolver.resolve(conn, dn);
+    } else {
+      EntryResolver er = null;
+      if (request.getReturnAttributes() == null ||
+          request.getReturnAttributes().length > 0) {
+        er = new SearchEntryResolver(request.getReturnAttributes());
+      } else {
+        er = new NoopEntryResolver();
+      }
+      entry = er.resolve(conn, dn);
+    }
+    return entry;
   }
 }

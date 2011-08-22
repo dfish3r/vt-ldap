@@ -19,7 +19,6 @@ import edu.vt.middleware.ldap.ConnectionConfig;
 import edu.vt.middleware.ldap.Credential;
 import edu.vt.middleware.ldap.LdapEntry;
 import edu.vt.middleware.ldap.LdapException;
-import edu.vt.middleware.ldap.LdapResult;
 import edu.vt.middleware.ldap.Response;
 import edu.vt.middleware.ldap.auth.handler.AuthenticationCriteria;
 import edu.vt.middleware.ldap.auth.handler.AuthenticationHandler;
@@ -58,11 +57,11 @@ public class Authenticator extends AbstractAuthenticator
    * {@link SearchDnResolver} and the authentication handler to
    * {@link BindAuthenticationHandler}.
    *
-   * @param  lcc  ldap connection config
+   * @param  cc  connection config
    */
-  public Authenticator(final ConnectionConfig lcc)
+  public Authenticator(final ConnectionConfig cc)
   {
-    this(new SearchDnResolver(lcc), new BindAuthenticationHandler(lcc));
+    this(new SearchDnResolver(cc), new BindAuthenticationHandler(cc));
   }
 
 
@@ -134,7 +133,7 @@ public class Authenticator extends AbstractAuthenticator
         "Cannot authenticate dn, dn cannot be empty or null");
     }
 
-    LdapResult result = null;
+    LdapEntry entry = null;
 
     Connection conn = null;
     try {
@@ -150,11 +149,8 @@ public class Authenticator extends AbstractAuthenticator
         getAuthorizationHandlers(request);
       authorize(authzHandler, authenticationResultHandlers, conn, ac);
 
-      // retrieve requested attributes
-      if (request.getReturnAttributes() == null ||
-          request.getReturnAttributes().length > 0) {
-        result = getLdapEntry(dn, request, conn);
-      }
+      // resolve entry
+      entry = resolveEntry(request, conn, dn);
 
       // authentication and authorization succeeded, report result
       if (authenticationResultHandlers != null &&
@@ -170,11 +166,7 @@ public class Authenticator extends AbstractAuthenticator
       }
     }
 
-    if (result != null) {
-      return result.getEntry();
-    } else {
-      return new LdapEntry(dn);
-    }
+    return entry;
   }
 
 
@@ -189,11 +181,12 @@ public class Authenticator extends AbstractAuthenticator
     return
       String.format(
         "[%s@%d::dnResolver=%s, authenticationHandler=%s, " +
-        "authenticationResultHandlers=%s]",
+        "entryResolver=%s, authenticationResultHandlers=%s]",
         getClass().getName(),
         hashCode(),
         dnResolver,
         authenticationHandler,
+        entryResolver,
         authenticationResultHandlers != null ?
           Arrays.asList(authenticationResultHandlers) : null);
   }
