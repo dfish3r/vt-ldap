@@ -648,7 +648,7 @@ public class SearchRequest implements Request
         "searchScope=%s, timeLimit=%s, sizeLimit=%s, derefAliases=%s, " +
         "referralBehavior=%s, typesOnly=%s, binaryAttributes=%s, " +
         "pagedResultsControl=%s, sortControl=%s, sortBehavior=%s, " +
-        "searchResultHandler=%s, searchIgnoreResultCodes=%s]",
+        "ldapResultHandlers=%s, searchIgnoreResultCodes=%s]",
         getClass().getName(),
         hashCode(),
         baseDn,
