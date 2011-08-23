@@ -15,6 +15,12 @@ package edu.vt.middleware.ldap.jaas;
 
 import java.io.Serializable;
 import java.security.Principal;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
+import edu.vt.middleware.ldap.LdapAttribute;
+import edu.vt.middleware.ldap.LdapEntry;
+import edu.vt.middleware.ldap.LdapResult;
 
 /**
  * Provides a custom implementation for adding LDAP principals to a subject
@@ -119,5 +125,60 @@ public class LdapRole implements Principal, Serializable, Comparable<Principal>
   public int compareTo(final Principal p)
   {
     return name.compareTo(p.getName());
+  }
+
+
+  /**
+   * Iterates over the supplied result and returns all attributes as a set of
+   * ldap roles.
+   *
+   * @param  result  to read
+   *
+   * @return  ldap roles
+   */
+  public static Set<LdapRole> toRoles(final LdapResult result)
+  {
+    final Set<LdapRole> r = new HashSet<LdapRole>();
+    for (LdapEntry le : result.getEntries()) {
+      r.addAll(toRoles(le));
+    }
+    return r;
+  }
+
+
+  /**
+   * Iterates over the supplied entry and returns all attributes as a set of
+   * ldap roles.
+   *
+   * @param  entry  to read
+   *
+   * @return  ldap roles
+   */
+  public static Set<LdapRole> toRoles(final LdapEntry entry)
+  {
+    return toRoles(entry.getAttributes());
+  }
+
+
+  /**
+   * Iterates over the supplied attributes and returns all values as a set of
+   * ldap roles.
+   *
+   * @param  attributes  to read
+   *
+   * @return  ldap roles
+   */
+  public static Set<LdapRole> toRoles(
+    final Collection<LdapAttribute> attributes)
+  {
+    final Set<LdapRole> r = new HashSet<LdapRole>();
+    if (attributes != null) {
+      for (LdapAttribute ldapAttr : attributes) {
+        for (String attrValue : ldapAttr.getStringValues()) {
+          r.add(new LdapRole(attrValue));
+        }
+      }
+    }
+    return r;
   }
 }

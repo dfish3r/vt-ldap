@@ -45,6 +45,9 @@ public class LdapLoginModule extends AbstractLoginModule implements LoginModule
   /** User attribute to add to role data. */
   private String[] userRoleAttribute = new String[0];
 
+  /** Factory for creating authenticators with JAAS options. */
+  private AuthenticatorFactory authenticatorFactory;
+
   /** Authenticator to use against the LDAP. */
   private Authenticator auth;
 
@@ -75,18 +78,36 @@ public class LdapLoginModule extends AbstractLoginModule implements LoginModule
         } else {
           userRoleAttribute = value.split(",");
         }
+      } else if (key.equalsIgnoreCase("authenticatorFactory")) {
+        try {
+          authenticatorFactory =
+            (AuthenticatorFactory) Class.forName(value).newInstance();
+        } catch (ClassNotFoundException e) {
+          throw new IllegalArgumentException(e);
+        } catch (InstantiationException e) {
+          throw new IllegalArgumentException(e);
+        } catch (IllegalAccessException e) {
+          throw new IllegalArgumentException(e);
+        }
       }
     }
 
+    if (authenticatorFactory == null) {
+      authenticatorFactory = new PropertiesAuthenticatorFactory();
+    }
+
     logger.trace(
-      "userRoleAttribute = {}", Arrays.toString(userRoleAttribute));
+      "authenticatorFactory = {}, userRoleAttribute = {}",
+      authenticatorFactory,
+      Arrays.toString(userRoleAttribute));
 
-    auth = createAuthenticator(options);
-    logger.debug("Created authenticator: {}", auth);
+    auth = authenticatorFactory.createAuthenticator(options);
+    logger.debug("Retrieved authenticator from factory: {}", auth);
 
-    authRequest = createAuthenticationRequest(options);
+    authRequest = authenticatorFactory.createAuthenticationRequest(options);
     authRequest.setReturnAttributes(userRoleAttribute);
-    logger.debug("Created authentication request: {}", authRequest);
+    logger.debug(
+      "Retrieved authentication request from factory: {}", authRequest);
   }
 
 
@@ -109,7 +130,7 @@ public class LdapLoginModule extends AbstractLoginModule implements LoginModule
       try {
         entry = auth.authenticate(authRequest).getResult();
         if (entry != null) {
-          roles.addAll(entryToRoles(entry));
+          roles.addAll(LdapRole.toRoles(entry));
           if (defaultRole != null && !defaultRole.isEmpty()) {
             roles.addAll(defaultRole);
           }
@@ -121,7 +142,7 @@ public class LdapLoginModule extends AbstractLoginModule implements LoginModule
           try {
             entry = auth.authenticate(authRequest).getResult();
             if (entry != null) {
-              roles.addAll(entryToRoles(entry));
+              roles.addAll(LdapRole.toRoles(entry));
             }
             if (defaultRole != null && !defaultRole.isEmpty()) {
               roles.addAll(defaultRole);

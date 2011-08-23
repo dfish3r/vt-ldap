@@ -17,8 +17,8 @@ import java.util.Map;
 import javax.security.auth.Subject;
 import javax.security.auth.callback.CallbackHandler;
 import javax.security.auth.login.LoginException;
-import edu.vt.middleware.ldap.Connection;
 import edu.vt.middleware.ldap.SearchRequest;
+import edu.vt.middleware.ldap.auth.AuthenticationRequest;
 import edu.vt.middleware.ldap.auth.Authenticator;
 
 /**
@@ -30,14 +30,23 @@ import edu.vt.middleware.ldap.auth.Authenticator;
 public class PropsLoginModule extends AbstractLoginModule
 {
 
-  /** Ldap connection to load propertie for. */
-  private Connection conn;
+  /** Factory for creating authenticators with JAAS options. */
+  private AuthenticatorFactory authenticatorFactory;
+
+  /** Factory for creating role resolvers with JAAS options. */
+  private RoleResolverFactory roleResolverFactory;
+
+  /** Authenticator to load properties for. */
+  private Authenticator auth;
+
+  /** Authentication request to load properties for. */
+  private AuthenticationRequest authRequest;
+
+  /** Role resolver to load properties for. */
+  private RoleResolver roleResolver;
 
   /** Search request to load properties for. */
-  private SearchRequest sr;
-
-  /** Authenticator to load propeties for. */
-  private Authenticator auth;
+  private SearchRequest searchRequest;
 
 
   /** {@inheritDoc} */
@@ -49,9 +58,12 @@ public class PropsLoginModule extends AbstractLoginModule
     final Map<String, ?> options)
   {
     super.initialize(subject, callbackHandler, sharedState, options);
-    conn = createConnection(options);
-    sr = createSearchRequest(options);
-    auth = createAuthenticator(options);
+    authenticatorFactory = new PropertiesAuthenticatorFactory();
+    auth = authenticatorFactory.createAuthenticator(options);
+    authRequest = authenticatorFactory.createAuthenticationRequest(options);
+    roleResolverFactory = new PropertiesRoleResolverFactory();
+    roleResolver = roleResolverFactory.createRoleResolver(options);
+    searchRequest = roleResolverFactory.createSearchRequest(options);
   }
 
 
@@ -69,9 +81,10 @@ public class PropsLoginModule extends AbstractLoginModule
   public boolean commit()
     throws LoginException
   {
-    subject.getPublicCredentials().add(conn);
-    subject.getPublicCredentials().add(sr);
     subject.getPublicCredentials().add(auth);
+    subject.getPublicCredentials().add(authRequest);
+    subject.getPublicCredentials().add(roleResolver);
+    subject.getPublicCredentials().add(searchRequest);
     return true;
   }
 

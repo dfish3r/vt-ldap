@@ -302,6 +302,78 @@ public class LdapLoginModuleTest extends AbstractTest
   /**
    * @param  dn  of this user
    * @param  user  to authenticate.
+   * @param  credential  to authenticate with.
+   *
+   * @throws  Exception  On test failure.
+   */
+  @Parameters({ "jaasDn", "jaasUser", "jaasCredential" })
+  @Test(
+    groups = {"jaastest"},
+    threadPoolSize = TEST_THREAD_POOL_SIZE,
+    invocationCount = TEST_INVOCATION_COUNT,
+    timeOut = TEST_TIME_OUT
+  )
+  public void persistentDnResolverContextTest(
+    final String dn,
+    final String user,
+    final String credential)
+    throws Exception
+  {
+    doContextTest("vt-ldap-persistent-dnr", dn, user, "", credential, false);
+  }
+
+
+  /**
+   * @param  dn  of this user
+   * @param  user  to authenticate.
+   * @param  credential  to authenticate with.
+   *
+   * @throws  Exception  On test failure.
+   */
+  @Parameters({ "jaasDn", "jaasUser", "jaasCredential" })
+  @Test(
+    groups = {"jaastest"},
+    threadPoolSize = TEST_THREAD_POOL_SIZE,
+    invocationCount = TEST_INVOCATION_COUNT,
+    timeOut = TEST_TIME_OUT
+  )
+  public void pooledDnResolverContextTest(
+    final String dn,
+    final String user,
+    final String credential)
+    throws Exception
+  {
+    doContextTest("vt-ldap-pooled-dnr", dn, user, "", credential, false);
+  }
+
+
+  /**
+   * @param  dn  of this user
+   * @param  user  to authenticate.
+   * @param  credential  to authenticate with.
+   *
+   * @throws  Exception  On test failure.
+   */
+  @Parameters({ "jaasDn", "jaasUser", "jaasCredential" })
+  @Test(
+    groups = {"jaastest"},
+    threadPoolSize = TEST_THREAD_POOL_SIZE,
+    invocationCount = TEST_INVOCATION_COUNT,
+    timeOut = TEST_TIME_OUT
+  )
+  public void springPooledDnResolverContextTest(
+    final String dn,
+    final String user,
+    final String credential)
+    throws Exception
+  {
+    doContextTest("vt-ldap-pooled-dnr-spring", dn, user, "", credential, false);
+  }
+
+
+  /**
+   * @param  dn  of this user
+   * @param  user  to authenticate.
    * @param  role  to set for this user
    * @param  credential  to authenticate with.
    *
@@ -598,6 +670,30 @@ public class LdapLoginModuleTest extends AbstractTest
     throws Exception
   {
     doRolesContextTest("vt-ldap-dn-roles-only", dn, user, role);
+  }
+
+
+  /**
+   * @param  dn  of this user
+   * @param  user  to authenticate.
+   * @param  role  to set for this user
+   *
+   * @throws  Exception  On test failure.
+   */
+  @Parameters({ "jaasDn", "jaasUser", "jaasRoleCombined" })
+  @Test(
+    groups = {"jaastest"},
+    threadPoolSize = TEST_THREAD_POOL_SIZE,
+    invocationCount = TEST_INVOCATION_COUNT,
+    timeOut = TEST_TIME_OUT
+  )
+  public void dnRolesOnlyPooledContextTest(
+    final String dn,
+    final String user,
+    final String role)
+    throws Exception
+  {
+    doRolesContextTest("vt-ldap-roles-only-pooled", dn, user, role);
   }
 
 

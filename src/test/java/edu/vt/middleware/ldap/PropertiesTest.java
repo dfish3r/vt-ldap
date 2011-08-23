@@ -15,12 +15,14 @@ package edu.vt.middleware.ldap;
 
 import java.util.Arrays;
 import javax.security.auth.login.LoginContext;
+import edu.vt.middleware.ldap.auth.AuthenticationRequest;
 import edu.vt.middleware.ldap.auth.Authenticator;
 import edu.vt.middleware.ldap.auth.SearchDnResolver;
 import edu.vt.middleware.ldap.handler.DnAttributeResultHandler;
 import edu.vt.middleware.ldap.handler.LdapResultHandler;
 import edu.vt.middleware.ldap.handler.MergeResultHandler;
 import edu.vt.middleware.ldap.handler.RecursiveResultHandler;
+import edu.vt.middleware.ldap.jaas.RoleResolver;
 import edu.vt.middleware.ldap.jaas.TestCallbackHandler;
 import edu.vt.middleware.ldap.props.AuthenticatorPropertySource;
 import edu.vt.middleware.ldap.props.ConnectionConfigPropertySource;
@@ -55,18 +57,20 @@ public class PropertiesTest
   public void nullProperties()
     throws Exception
   {
+    final ConnectionConfig cc = new ConnectionConfig();
     final ConnectionConfigPropertySource ccSource =
       new ConnectionConfigPropertySource(
-        PropertiesTest.class.getResourceAsStream("/ldap.null.properties"));
-    final ConnectionConfig cc = ccSource.get();
+        cc, PropertiesTest.class.getResourceAsStream("/ldap.null.properties"));
+    ccSource.initialize();
 
     AssertJUnit.assertNull(cc.getSslSocketFactory());
     AssertJUnit.assertNull(cc.getHostnameVerifier());
 
+    final SearchRequest sr = new SearchRequest();
     final SearchRequestPropertySource srSource =
       new SearchRequestPropertySource(
-        PropertiesTest.class.getResourceAsStream("/ldap.null.properties"));
-    final SearchRequest sr = srSource.get();
+        sr, PropertiesTest.class.getResourceAsStream("/ldap.null.properties"));
+    srSource.initialize();
 
     AssertJUnit.assertNull(sr.getLdapResultHandlers());
     AssertJUnit.assertNull(sr.getSearchIgnoreResultCodes());
@@ -78,10 +82,12 @@ public class PropertiesTest
   public void parserProperties()
     throws Exception
   {
+    final ConnectionConfig cc = new ConnectionConfig();
     final ConnectionConfigPropertySource ccSource =
       new ConnectionConfigPropertySource(
+        cc,
         PropertiesTest.class.getResourceAsStream("/ldap.parser.properties"));
-    final ConnectionConfig cc = ccSource.get();
+    ccSource.initialize();
 
     AssertJUnit.assertEquals(
       "ldap://ed-dev.middleware.vt.edu:14389", cc.getLdapUrl());
@@ -96,10 +102,12 @@ public class PropertiesTest
     AssertJUnit.assertEquals(2000, cc.getOperationRetryWait());
     AssertJUnit.assertEquals(3, cc.getOperationRetryBackoff());
 
-    final SearchRequestPropertySource scSource =
+    final SearchRequest sr = new SearchRequest();
+    final SearchRequestPropertySource srSource =
       new SearchRequestPropertySource(
+        sr,
         PropertiesTest.class.getResourceAsStream("/ldap.parser.properties"));
-    final SearchRequest sr = scSource.get();
+    srSource.initialize();
 
     AssertJUnit.assertEquals("ou=test,dc=vt,dc=edu", sr.getBaseDn());
     AssertJUnit.assertEquals(SearchScope.OBJECT, sr.getSearchScope());
@@ -131,10 +139,12 @@ public class PropertiesTest
     AssertJUnit.assertEquals(
       ResultCode.PARTIAL_RESULTS, sr.getSearchIgnoreResultCodes()[1]);
 
+    final Authenticator auth = new Authenticator();
     final AuthenticatorPropertySource aSource =
       new AuthenticatorPropertySource(
+        auth,
         PropertiesTest.class.getResourceAsStream("/ldap.parser.properties"));
-    final Authenticator auth = aSource.get();
+    aSource.initialize();
 
     final ConnectionConfig authCc =
       ((SearchDnResolver) auth.getDnResolver()).getConnectionConfig();
@@ -159,20 +169,26 @@ public class PropertiesTest
       "vt-ldap-props", new TestCallbackHandler());
     lc.login();
 
-    ConnectionConfig cc = null;
-    SearchRequest sr = null;
     Authenticator auth = null;
+    AuthenticationRequest authRequest = null;
+    RoleResolver roleResolver = null;
+    SearchRequest searchRequest = null;
     for (Object o : lc.getSubject().getPublicCredentials()) {
-      if (o instanceof Connection) {
-        cc = ((Connection) o).getConnectionConfig();
-      } else if (o instanceof SearchRequest) {
-        sr = (SearchRequest) o;
-      } else if (o instanceof Authenticator) {
+      if (o instanceof Authenticator) {
         auth = (Authenticator) o;
+      } else if (o instanceof AuthenticationRequest) {
+        authRequest = (AuthenticationRequest) o;
+      } else if (o instanceof RoleResolver) {
+        roleResolver = (RoleResolver) o;
+      } else if (o instanceof SearchRequest) {
+        searchRequest = (SearchRequest) o;
       } else {
         throw new Exception("Unknown public credential found: " + o);
       }
     }
+
+    final ConnectionConfig cc =
+      auth.getAuthenticationHandler().getConnectionConfig();
 
     AssertJUnit.assertNotNull(cc.getProvider().getClass());
     AssertJUnit.assertEquals(
@@ -188,12 +204,14 @@ public class PropertiesTest
     AssertJUnit.assertEquals(2000, cc.getOperationRetryWait());
     AssertJUnit.assertEquals(3, cc.getOperationRetryBackoff());
 
-    AssertJUnit.assertEquals("ou=test,dc=vt,dc=edu", sr.getBaseDn());
-    AssertJUnit.assertEquals(SearchScope.OBJECT, sr.getSearchScope());
-    AssertJUnit.assertEquals(5000, sr.getTimeLimit());
-    AssertJUnit.assertEquals("jpegPhoto", sr.getBinaryAttributes()[0]);
+    AssertJUnit.assertEquals("ou=test,dc=vt,dc=edu", searchRequest.getBaseDn());
+    AssertJUnit.assertEquals(
+      SearchScope.OBJECT, searchRequest.getSearchScope());
+    AssertJUnit.assertEquals(5000, searchRequest.getTimeLimit());
+    AssertJUnit.assertEquals(
+      "jpegPhoto", searchRequest.getBinaryAttributes()[0]);
 
-    for (LdapResultHandler srh : sr.getLdapResultHandlers()) {
+    for (LdapResultHandler srh : searchRequest.getLdapResultHandlers()) {
       if (RecursiveResultHandler.class.isInstance(srh)) {
         final RecursiveResultHandler h = (RecursiveResultHandler)
           srh;
@@ -212,11 +230,14 @@ public class PropertiesTest
       }
     }
 
-    AssertJUnit.assertEquals(2, sr.getSearchIgnoreResultCodes().length);
     AssertJUnit.assertEquals(
-      ResultCode.SIZE_LIMIT_EXCEEDED, sr.getSearchIgnoreResultCodes()[0]);
+      2, searchRequest.getSearchIgnoreResultCodes().length);
     AssertJUnit.assertEquals(
-      ResultCode.PARTIAL_RESULTS, sr.getSearchIgnoreResultCodes()[1]);
+      ResultCode.SIZE_LIMIT_EXCEEDED,
+      searchRequest.getSearchIgnoreResultCodes()[0]);
+    AssertJUnit.assertEquals(
+      ResultCode.PARTIAL_RESULTS,
+      searchRequest.getSearchIgnoreResultCodes()[1]);
 
     final ConnectionConfig authLcc =
       ((SearchDnResolver) auth.getDnResolver()).getConnectionConfig();

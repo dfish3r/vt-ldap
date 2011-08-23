@@ -26,12 +26,8 @@ import javax.security.auth.login.LoginContext;
 import javax.security.auth.login.LoginException;
 import javax.security.auth.spi.LoginModule;
 import com.sun.security.auth.callback.TextCallbackHandler;
-import edu.vt.middleware.ldap.Connection;
-import edu.vt.middleware.ldap.LdapEntry;
 import edu.vt.middleware.ldap.LdapException;
-import edu.vt.middleware.ldap.LdapResult;
 import edu.vt.middleware.ldap.SearchFilter;
-import edu.vt.middleware.ldap.SearchOperation;
 import edu.vt.middleware.ldap.SearchRequest;
 
 /**
@@ -55,10 +51,13 @@ public class LdapRoleAuthorizationModule extends AbstractLoginModule
   /** Whether failing to find any roles should raise an exception. */
   private boolean noResultsIsError;
 
-  /** Ldap connection to use for searching roles against the LDAP. */
-  private Connection conn;
+  /** Factory for creating role resolvers with JAAS options. */
+  private RoleResolverFactory roleResolverFactory;
 
-  /** Search request to use for searching roles. */
+  /** To search for roles. */
+  private RoleResolver roleResolver;
+
+  /** Search request to use for roles. */
   private SearchRequest searchRequest;
 
 
@@ -86,22 +85,39 @@ public class LdapRoleAuthorizationModule extends AbstractLoginModule
         }
       } else if (key.equalsIgnoreCase("noResultsIsError")) {
         noResultsIsError = Boolean.valueOf(value);
+      } else if (key.equalsIgnoreCase("roleResolverFactory")) {
+        try {
+          roleResolverFactory =
+            (RoleResolverFactory) Class.forName(value).newInstance();
+        } catch (ClassNotFoundException e) {
+          throw new IllegalArgumentException(e);
+        } catch (InstantiationException e) {
+          throw new IllegalArgumentException(e);
+        } catch (IllegalAccessException e) {
+          throw new IllegalArgumentException(e);
+        }
       }
     }
 
+    if (roleResolverFactory == null) {
+      roleResolverFactory = new PropertiesRoleResolverFactory();
+    }
+
     logger.trace(
-      "roleFilter = {}, roleAttribute = {}, noResultsIsError = {}",
+      "roleResolverFactory = {}, roleFilter = {}, roleAttribute = {}, " +
+      "noResultsIsError = {}",
       new Object[] {
+        roleResolverFactory,
         roleFilter,
         Arrays.toString(roleAttribute),
         noResultsIsError, });
 
-    conn = createConnection(options);
-    logger.debug("Created ldap connection: {}", conn);
+    roleResolver = roleResolverFactory.createRoleResolver(options);
+    logger.debug("Retrieved role resolver from factory: {}", roleResolver);
 
-    searchRequest = createSearchRequest(options);
+    searchRequest = roleResolverFactory.createSearchRequest(options);
     searchRequest.setReturnAttributes(roleAttribute);
-    logger.debug("Created search request: {}", searchRequest);
+    logger.debug("Retrieved search request from factory: {}", searchRequest);
   }
 
 
@@ -133,23 +149,14 @@ public class LdapRoleAuthorizationModule extends AbstractLoginModule
         loginSuccess = true;
       }
 
-      if (roleFilter != null) {
-        final Object[] filterArgs = new Object[] {loginDn, loginName, };
-        conn.open();
-        final SearchOperation search = new SearchOperation(conn);
-        searchRequest.setSearchFilter(
-          new SearchFilter(roleFilter, filterArgs));
-        final LdapResult result = search.execute(
-          searchRequest).getResult();
-        if (result.size() == 0 && noResultsIsError) {
-          loginSuccess = false;
-          throw new LoginException(
-            "Could not find roles using " + roleFilter);
-        }
-        for (LdapEntry le : result.getEntries()) {
-          roles.addAll(entryToRoles(le));
-        }
+      final Object[] filterArgs = new Object[] {loginDn, loginName, };
+      searchRequest.setSearchFilter(new SearchFilter(roleFilter, filterArgs));
+      final Set<LdapRole> lr = roleResolver.search(searchRequest);
+      if (lr.size() == 0 && noResultsIsError) {
+        loginSuccess = false;
+        throw new LoginException("Could not find roles using " + roleFilter);
       }
+      roles.addAll(lr);
       if (defaultRole != null && !defaultRole.isEmpty()) {
         roles.addAll(defaultRole);
       }
@@ -161,8 +168,6 @@ public class LdapRoleAuthorizationModule extends AbstractLoginModule
       logger.debug("Error occured attempting role lookup", e);
       loginSuccess = false;
       throw new LoginException(e.getMessage());
-    } finally {
-      conn.close();
     }
     return true;
   }

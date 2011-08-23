@@ -20,7 +20,6 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 import java.util.Set;
 import java.util.TreeSet;
 import javax.security.auth.Subject;
@@ -31,17 +30,6 @@ import javax.security.auth.callback.PasswordCallback;
 import javax.security.auth.callback.UnsupportedCallbackException;
 import javax.security.auth.login.LoginException;
 import javax.security.auth.spi.LoginModule;
-import edu.vt.middleware.ldap.Connection;
-import edu.vt.middleware.ldap.LdapAttribute;
-import edu.vt.middleware.ldap.LdapEntry;
-import edu.vt.middleware.ldap.SearchRequest;
-import edu.vt.middleware.ldap.auth.AuthenticationRequest;
-import edu.vt.middleware.ldap.auth.Authenticator;
-import edu.vt.middleware.ldap.props.AuthenticationRequestPropertySource;
-import edu.vt.middleware.ldap.props.AuthenticatorPropertySource;
-import edu.vt.middleware.ldap.props.ConnectionConfigPropertySource;
-import edu.vt.middleware.ldap.props.PropertySource.PropertyDomain;
-import edu.vt.middleware.ldap.props.SearchRequestPropertySource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -64,13 +52,6 @@ public abstract class AbstractLoginModule implements LoginModule
   /** Constant for login password stored in shared state. */
   public static final String LOGIN_PASSWORD =
     "javax.security.auth.login.password";
-
-  /** Regular expression for ldap properties to ignore. */
-  private static final String IGNORE_LDAP_REGEX =
-    "useFirstPass|tryFirstPass|storePass|" +
-    "setLdapPrincipal|setLdapDnPrincipal|setLdapCredential|" +
-    "defaultRole|principalGroupName|roleGroupName|" +
-    "userRoleAttribute|roleFilter|roleAttribute|noResultsIsError";
 
   /** Logger for this class. */
   protected final Logger logger = LoggerFactory.getLogger(getClass());
@@ -175,7 +156,7 @@ public abstract class AbstractLoginModule implements LoginModule
       }
     }
 
-    logger.debug(
+    logger.trace(
       "useFirstPass = {}, tryFirstPass = {}, storePass = {}, clearPass = {}, " +
       "setLdapPrincipal = {}, setLdapDnPrincipal = {}, " +
       "setLdapCredential = {}, defaultRole = {}, principalGroupName = {}, " +
@@ -308,97 +289,6 @@ public abstract class AbstractLoginModule implements LoginModule
 
 
   /**
-   * Creates a new authenticator with the supplied JAAS options.
-   *
-   * @param  options  JAAS configuration options
-   *
-   * @return  authenticator
-   */
-  protected static Authenticator createAuthenticator(
-    final Map<String, ?> options)
-  {
-    final AuthenticatorPropertySource source = new AuthenticatorPropertySource(
-      createProperties(options));
-    return source.get();
-  }
-
-
-  /**
-   * Creates a new ldap connection with the supplied JAAS options.
-   *
-   * @param  options  JAAS configuration options
-   *
-   * @return  ldap connection
-   */
-  protected static Connection createConnection(
-    final Map<String, ?> options)
-  {
-    final ConnectionConfigPropertySource source =
-      new ConnectionConfigPropertySource(
-        PropertyDomain.AUTH, createProperties(options));
-    return new Connection(source.get());
-  }
-
-
-  /**
-   * Creates a new search request with the supplied JAAS options.
-   *
-   * @param  options  JAAS configuration options
-   *
-   * @return  search request
-   */
-  protected static SearchRequest createSearchRequest(
-    final Map<String, ?> options)
-  {
-    final SearchRequestPropertySource source = new SearchRequestPropertySource(
-      PropertyDomain.AUTH, createProperties(options));
-    return source.get();
-  }
-
-
-  /**
-   * Creates a new authentication request with the supplied JAAS options.
-   *
-   * @param  options  JAAS configuration options
-   *
-   * @return  authentication request
-   */
-  protected static AuthenticationRequest createAuthenticationRequest(
-    final Map<String, ?> options)
-  {
-    final AuthenticationRequestPropertySource source =
-      new AuthenticationRequestPropertySource(createProperties(options));
-    return source.get();
-  }
-
-
-  /**
-   * Initializes the supplied properties with supplied JAAS options.
-   *
-   * @param  options  to read properties from
-   * @return  properties
-   */
-  protected static Properties createProperties(final Map<String, ?> options)
-  {
-    final Properties p = new Properties();
-    for (Map.Entry<String, ?> entry : options.entrySet()) {
-      if (!entry.getKey().matches(IGNORE_LDAP_REGEX)) {
-        // if property name contains a dot, it isn't a vt-ldap property
-        if (entry.getKey().indexOf(".") != -1) {
-          p.setProperty(entry.getKey(), entry.getValue().toString());
-        // add the domain to vt-ldap properties
-        } else {
-          p.setProperty(
-            PropertyDomain.AUTH.value() + entry.getKey(),
-            entry.getValue().toString());
-        }
-      }
-    }
-    return p;
-  }
-
-
-  /**
    * Removes any stateful principals, credentials, or roles stored by login.
    * Also removes shared state name, dn, and password if clearPass is set.
    */
@@ -492,26 +382,5 @@ public abstract class AbstractLoginModule implements LoginModule
         sharedState.put(LOGIN_DN, loginDn);
       }
     }
-  }
-
-
-  /**
-   * Parses the supplied attributes and returns them as a list of ldap roles.
-   *
-   * @param  entry  to parse
-   *
-   * @return  list of ldap roles
-   */
-  protected List<LdapRole> entryToRoles(final LdapEntry entry)
-  {
-    final List<LdapRole> r = new ArrayList<LdapRole>();
-    if (entry != null) {
-      for (LdapAttribute ldapAttr : entry.getAttributes()) {
-        for (String attrValue : ldapAttr.getStringValues()) {
-          r.add(new LdapRole(attrValue));
-        }
-      }
-    }
-    return r;
   }
 }

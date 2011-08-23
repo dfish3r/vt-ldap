@@ -43,6 +43,9 @@ public class LdapDnAuthorizationModule extends AbstractLoginModule
   /** Whether failing to find a DN should raise an exception. */
   private boolean noResultsIsError;
 
+  /** Factory for creating authenticators with JAAS options. */
+  private AuthenticatorFactory authenticatorFactory;
+
   /** Authenticator to use against the LDAP. */
   private Authenticator auth;
 
@@ -63,13 +66,31 @@ public class LdapDnAuthorizationModule extends AbstractLoginModule
       final String value = (String) options.get(key);
       if (key.equalsIgnoreCase("noResultsIsError")) {
         noResultsIsError = Boolean.valueOf(value);
+      } else if (key.equalsIgnoreCase("authenticatorFactory")) {
+        try {
+          authenticatorFactory =
+            (AuthenticatorFactory) Class.forName(value).newInstance();
+        } catch (ClassNotFoundException e) {
+          throw new IllegalArgumentException(e);
+        } catch (InstantiationException e) {
+          throw new IllegalArgumentException(e);
+        } catch (IllegalAccessException e) {
+          throw new IllegalArgumentException(e);
+        }
       }
     }
 
-    logger.trace("noResultsIsError = {}", noResultsIsError);
+    if (authenticatorFactory == null) {
+      authenticatorFactory = new PropertiesAuthenticatorFactory();
+    }
 
-    auth = createAuthenticator(options);
-    logger.debug("Created authenticator: {}", auth);
+    logger.trace(
+      "authenticatorFactory = {}, noResultsIsError = {}",
+      authenticatorFactory,
+      noResultsIsError);
+
+    auth = authenticatorFactory.createAuthenticator(options);
+    logger.debug("Retrieved authenticator from factory: {}", auth);
   }
 
 
