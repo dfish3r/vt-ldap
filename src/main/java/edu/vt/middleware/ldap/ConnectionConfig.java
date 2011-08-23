@@ -91,13 +91,13 @@ public class ConnectionConfig extends AbstractConfig
       final Logger l = LoggerFactory.getLogger(ConnectionConfig.class);
       try {
         if (l.isInfoEnabled()) {
-          l.info("Setting ldap provider to " + providerClass);
+          l.info("Setting ldap provider to {}", providerClass);
         }
         DEFAULT_PROVIDER =
           (Provider) Class.forName(providerClass).newInstance();
       } catch (Exception e) {
         if (l.isErrorEnabled()) {
-          l.error("Error instantiating " + providerClass, e);
+          l.error("Error instantiating {}", providerClass, e);
         }
         throw new IllegalStateException(e);
       }
