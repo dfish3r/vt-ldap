@@ -116,15 +116,15 @@ public class SearchOperationCli extends AbstractCli
   /**
    * Executes the ldap search operation.
    *
-   * @param  lcc  ldap connection configuration
+   * @param  cc  connection configuration
    * @param  sr  search request
    *
    * @throws  Exception  on any LDAP search error
    */
-  protected void search(final ConnectionConfig lcc, final SearchRequest sr)
+  protected void search(final ConnectionConfig cc, final SearchRequest sr)
     throws Exception
   {
-    final Connection conn = new Connection(lcc);
+    final Connection conn = new Connection(cc);
     conn.open();
 
     final SearchOperation op = new SearchOperation(conn);

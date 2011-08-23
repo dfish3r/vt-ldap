@@ -80,15 +80,15 @@ public class DeleteOperationCli extends AbstractCli
   /**
    * Executes the ldap delete operation.
    *
-   * @param  lcc  ldap connection configuration.
+   * @param  cc  connection configuration.
    * @param  entryDns  to delete
    *
    * @throws  Exception  on any LDAP search error
    */
-  protected void delete(final ConnectionConfig lcc, final String[] entryDns)
+  protected void delete(final ConnectionConfig cc, final String[] entryDns)
     throws Exception
   {
-    final Connection conn = new Connection(lcc);
+    final Connection conn = new Connection(cc);
     conn.open();
 
     for (String dn : entryDns) {

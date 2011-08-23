@@ -49,11 +49,11 @@ public class CompareAuthenticationHandler extends AbstractAuthenticationHandler
   /**
    * Creates a new compare authentication handler.
    *
-   * @param  lcc  ldap connection config
+   * @param  cc  connection config
    */
-  public CompareAuthenticationHandler(final ConnectionConfig lcc)
+  public CompareAuthenticationHandler(final ConnectionConfig cc)
   {
-    setConnectionConfig(lcc);
+    setConnectionConfig(cc);
   }
 
 

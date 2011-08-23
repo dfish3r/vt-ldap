@@ -59,18 +59,18 @@ public class Connection
   /**
    * Creates a new ldap connection.
    *
-   * @param  lcc  ldap connection configuration
+   * @param  cc  connection configuration
    */
-  public Connection(final ConnectionConfig lcc)
+  public Connection(final ConnectionConfig cc)
   {
-    setConnectionConfig(lcc);
+    setConnectionConfig(cc);
   }
 
 
   /**
-   * Returns the ldap connection configuration.
+   * Returns the connection configuration.
    *
-   * @return  ldap connection configuration
+   * @return  connection configuration
    */
   public ConnectionConfig getConnectionConfig()
   {
@@ -79,20 +79,20 @@ public class Connection
 
 
   /**
-   * Sets the ldap connection configuration.
+   * Sets the connection configuration.
    *
-   * @param  lcc  ldap connection configuration
+   * @param  cc  connection configuration
    *
    * @throws  IllegalStateException  if this connection has already been
    * initialized
    */
-  public void setConnectionConfig(final ConnectionConfig lcc)
+  public void setConnectionConfig(final ConnectionConfig cc)
   {
     if (providerConnectionFactory != null) {
       throw new IllegalStateException(
         "Cannot set configuration after connection has been initialized");
     }
-    config = lcc;
+    config = cc;
   }
 
 

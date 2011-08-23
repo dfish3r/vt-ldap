@@ -62,8 +62,8 @@ public interface Provider
   /**
    * Returns the connection factory for this provider.
    *
-   * @param  lcc  ldap connection configuration
+   * @param  cc  connection configuration
    * @return  connection factory
    */
-  ProviderConnectionFactory getConnectionFactory(ConnectionConfig lcc);
+  ProviderConnectionFactory getConnectionFactory(ConnectionConfig cc);
 }

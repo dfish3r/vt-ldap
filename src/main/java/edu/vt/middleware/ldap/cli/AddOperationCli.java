@@ -84,15 +84,15 @@ public class AddOperationCli extends AbstractCli
   /**
    * Executes the ldap add operation.
    *
-   * @param  lcc  ldap connection configuration
+   * @param  cc  connection configuration
    * @param  file  to read ldif from
    *
    * @throws  Exception  on any LDAP search error
    */
-  protected void add(final ConnectionConfig lcc, final String file)
+  protected void add(final ConnectionConfig cc, final String file)
     throws Exception
   {
-    final Connection conn = new Connection(lcc);
+    final Connection conn = new Connection(cc);
     conn.open();
 
     final LdifReader reader = new LdifReader(new FileReader(file));

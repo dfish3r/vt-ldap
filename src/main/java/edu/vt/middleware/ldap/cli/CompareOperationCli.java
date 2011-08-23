@@ -98,17 +98,17 @@ public class CompareOperationCli extends AbstractCli
   /**
    * Executes the ldap compare operation.
    *
-   * @param  lcc  ldap connection configuration
+   * @param  cc  connection configuration
    * @param  dn  to compare attribute on
    * @param  la  attribute to compare
    *
    * @throws  Exception  on any LDAP search error
    */
   protected void compare(
-    final ConnectionConfig lcc, final String dn, final LdapAttribute la)
+    final ConnectionConfig cc, final String dn, final LdapAttribute la)
     throws Exception
   {
-    final Connection conn = new Connection(lcc);
+    final Connection conn = new Connection(cc);
     conn.open();
 
     final CompareOperation op = new CompareOperation(conn);

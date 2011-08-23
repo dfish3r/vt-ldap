@@ -49,13 +49,13 @@ public abstract class AbstractOperation<Q extends Request, S>
    * Sets the properties of this operation with values from the supplied ldap
    * connection configuration.
    *
-   * @param  lcc  ldap connection configuration to read properties from
+   * @param  cc  connection configuration to read properties from
    */
-  protected void initialize(final ConnectionConfig lcc)
+  protected void initialize(final ConnectionConfig cc)
   {
-    operationRetry = lcc.getOperationRetry();
-    operationRetryWait = lcc.getOperationRetryWait();
-    operationRetryBackoff = lcc.getOperationRetryBackoff();
+    operationRetry = cc.getOperationRetry();
+    operationRetryWait = cc.getOperationRetryWait();
+    operationRetryBackoff = cc.getOperationRetryBackoff();
   }
 
 
@@ -147,10 +147,10 @@ public abstract class AbstractOperation<Q extends Request, S>
    * in this operation.
    *
    * @param  request  to initialize
-   * @param  lcc  ldap connection configuration to initialize request with
+   * @param  cc  connection configuration to initialize request with
    */
   protected abstract void initializeRequest(
-    final Q request, final ConnectionConfig lcc);
+    final Q request, final ConnectionConfig cc);
 
 
   /** {@inheritDoc} */

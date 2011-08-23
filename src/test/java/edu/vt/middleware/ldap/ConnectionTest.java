@@ -140,7 +140,7 @@ public class ConnectionTest
     final Connection conn = new Connection(
       TestUtil.readConnectionConfig(
         TestUtil.class.getResourceAsStream("/ldap.conn.properties")));
-    final ConnectionConfig lcc = conn.getConnectionConfig();
+    final ConnectionConfig cc = conn.getConnectionConfig();
 
     conn.open();
     conn.close();
@@ -149,7 +149,7 @@ public class ConnectionTest
     conn.open();
     conn.close();
 
-    lcc.setConnectionStrategy(ConnectionStrategy.DEFAULT);
+    cc.setConnectionStrategy(ConnectionStrategy.DEFAULT);
     conn.open();
     conn.close();
     conn.open();
@@ -157,7 +157,7 @@ public class ConnectionTest
     conn.open();
     conn.close();
 
-    lcc.setConnectionStrategy(ConnectionStrategy.ACTIVE_PASSIVE);
+    cc.setConnectionStrategy(ConnectionStrategy.ACTIVE_PASSIVE);
     conn.open();
     conn.close();
     conn.open();
@@ -165,7 +165,7 @@ public class ConnectionTest
     conn.open();
     conn.close();
 
-    lcc.setConnectionStrategy(ConnectionStrategy.RANDOM);
+    cc.setConnectionStrategy(ConnectionStrategy.RANDOM);
     conn.open();
     conn.close();
     conn.open();
