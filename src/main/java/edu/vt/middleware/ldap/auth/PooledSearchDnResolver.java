@@ -54,6 +54,17 @@ public class PooledSearchDnResolver extends SearchDnResolver
   /**
    * Creates a new pooled search dn resolver.
    *
+   * @param  cc  connection config
+   */
+  public PooledSearchDnResolver(final ConnectionConfig cc)
+  {
+    setConnectionConfig(cc);
+  }
+
+
+  /**
+   * Creates a new pooled search dn resolver.
+   *
    * @param  pc  pool config
    * @param  cc  connection config
    */
