@@ -17,6 +17,8 @@ import java.util.HashMap;
 import java.util.Map;
 import edu.vt.middleware.ldap.auth.AuthenticationRequest;
 import edu.vt.middleware.ldap.auth.Authenticator;
+import edu.vt.middleware.ldap.auth.DnResolver;
+import edu.vt.middleware.ldap.auth.ManagedDnResolver;
 import edu.vt.middleware.ldap.props.AuthenticationRequestPropertySource;
 import edu.vt.middleware.ldap.props.AuthenticatorPropertySource;
 
@@ -91,5 +93,20 @@ public class PropertiesAuthenticatorFactory extends AbstractPropertiesFactory
     source.initialize();
     logger.trace("Created authentication request {} from {}", ar, jaasOptions);
     return ar;
+  }
+
+
+  /**
+   * Iterates over the cache and closes any managed dn resolvers.
+   */
+  public static void close()
+  {
+    for (Map.Entry<String, Authenticator> e : cache.entrySet()) {
+      final Authenticator a = e.getValue();
+      final DnResolver dr = a.getDnResolver();
+      if (dr instanceof ManagedDnResolver) {
+        ((ManagedDnResolver) dr).close();
+      }
+    }
   }
 }

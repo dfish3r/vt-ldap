@@ -163,6 +163,10 @@ public class LdapLoginModuleTest extends AbstractTest
   {
     System.clearProperty("java.security.auth.login.config");
 
+    PropertiesAuthenticatorFactory.close();
+    PropertiesRoleResolverFactory.close();
+    SpringAuthenticatorFactory.close();
+
     super.deleteLdapEntry(testLdapEntry.getDn());
     super.deleteLdapEntry(groupEntries.get("6")[0].getDn());
     super.deleteLdapEntry(groupEntries.get("7")[0].getDn());

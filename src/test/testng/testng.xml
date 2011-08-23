@@ -332,7 +332,6 @@
         <include name="comparetest" />
         <include name="modifytest" />
         <include name="renametest" />
-        <include name="beantest" />
         <include name="springtest" />
         <include name="authtest" />
         <include name="jaastest" />

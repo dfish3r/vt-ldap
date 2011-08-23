@@ -107,4 +107,15 @@ public class PropertiesRoleResolverFactory extends AbstractPropertiesFactory
     logger.trace("Created search request {} from {}", sr, jaasOptions);
     return sr;
   }
+
+
+  /**
+   * Iterates over the cache and closes all role resolvers.
+   */
+  public static void close()
+  {
+    for (Map.Entry<String, RoleResolver> e : cache.entrySet()) {
+      e.getValue().close();
+    }
+  }
 }

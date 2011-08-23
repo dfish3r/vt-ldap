@@ -16,6 +16,9 @@ package edu.vt.middleware.ldap.jaas;
 import java.util.Map;
 import edu.vt.middleware.ldap.auth.AuthenticationRequest;
 import edu.vt.middleware.ldap.auth.Authenticator;
+import edu.vt.middleware.ldap.auth.DnResolver;
+import edu.vt.middleware.ldap.auth.ManagedDnResolver;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
@@ -53,5 +56,18 @@ public class SpringAuthenticatorFactory implements AuthenticatorFactory
     final Map<String, ?> jaasOptions)
   {
     return (AuthenticationRequest) CONTEXT.getBean("authenticationRequest");
+  }
+
+
+  /**
+   * Closes the authenticator dn resolver if it is a managed dn resolver.
+   */
+  public static void close()
+  {
+    final Authenticator a = (Authenticator) CONTEXT.getBean("authenticator");
+    final DnResolver dr = a.getDnResolver();
+    if (dr instanceof ManagedDnResolver) {
+      ((ManagedDnResolver) dr).close();
+    }
   }
 }

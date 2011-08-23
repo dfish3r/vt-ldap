@@ -17,6 +17,7 @@ import java.util.Arrays;
 import javax.security.auth.login.LoginContext;
 import edu.vt.middleware.ldap.auth.AuthenticationRequest;
 import edu.vt.middleware.ldap.auth.Authenticator;
+import edu.vt.middleware.ldap.auth.ManagedDnResolver;
 import edu.vt.middleware.ldap.auth.SearchDnResolver;
 import edu.vt.middleware.ldap.handler.DnAttributeResultHandler;
 import edu.vt.middleware.ldap.handler.LdapResultHandler;
@@ -157,6 +158,10 @@ public class PropertiesTest
     AssertJUnit.assertEquals(
       "true",
       authCc.getProvider().getProperties().get("java.naming.authoritative"));
+
+    if (auth.getDnResolver() instanceof ManagedDnResolver) {
+      ((ManagedDnResolver) auth.getDnResolver()).close();
+    }
   }
 
 
@@ -257,5 +262,9 @@ public class PropertiesTest
     AssertJUnit.assertEquals(
       edu.vt.middleware.ldap.auth.PersistentSearchDnResolver.class,
       auth.getDnResolver().getClass());
+
+    if (auth.getDnResolver() instanceof ManagedDnResolver) {
+      ((ManagedDnResolver) auth.getDnResolver()).close();
+    }
   }
 }
