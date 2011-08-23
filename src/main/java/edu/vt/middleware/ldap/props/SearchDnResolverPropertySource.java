@@ -37,10 +37,13 @@ public final class SearchDnResolverPropertySource
   /**
    * Creates a new search dn resolver property source using the default
    * properties file.
+   *
+   * @param  sdr  search dn resolver to invoke properties on
    */
-  public SearchDnResolverPropertySource()
+  public SearchDnResolverPropertySource(final SearchDnResolver sdr)
   {
     this(
+      sdr,
       SearchDnResolverPropertySource.class.getResourceAsStream(
         PROPERTIES_FILE));
   }
@@ -49,36 +52,52 @@ public final class SearchDnResolverPropertySource
   /**
    * Creates a new search dn resolver property source.
    *
+   * @param  sdr  search dn resolver to invoke properties on
    * @param  is  to read properties from
    */
-  public SearchDnResolverPropertySource(final InputStream is)
+  public SearchDnResolverPropertySource(
+    final SearchDnResolver sdr, final InputStream is)
   {
-    this(loadProperties(is));
+    this(sdr, loadProperties(is));
   }
 
 
   /**
    * Creates a new search dn resolver property source.
    *
+   * @param  sdr  search dn resolver to invoke properties on
    * @param  props  to read properties from
    */
-  public SearchDnResolverPropertySource(final Properties props)
+  public SearchDnResolverPropertySource(
+    final SearchDnResolver sdr, final Properties props)
   {
-    this(PropertyDomain.AUTH, props);
+    this(sdr, PropertyDomain.AUTH, props);
   }
 
 
   /**
    * Creates a new search dn resolver property source.
    *
+   * @param  sdr  search dn resolver to invoke properties on
    * @param  domain  that properties are in
    * @param  props  to read properties from
    */
   public SearchDnResolverPropertySource(
-    final PropertyDomain domain, final Properties props)
+    final SearchDnResolver sdr,
+    final PropertyDomain domain,
+    final Properties props)
   {
-    object = new SearchDnResolver();
-    initializeObject(INVOKER, domain.value(), props);
+    object = sdr;
+    propertiesDomain = domain;
+    properties = props;
+  }
+
+
+  /** {@inheritDoc} */
+  @Override
+  public void initialize()
+  {
+    initializeObject(INVOKER);
   }
 
 

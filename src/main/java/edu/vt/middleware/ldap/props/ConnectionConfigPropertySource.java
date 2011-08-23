@@ -37,10 +37,13 @@ public final class ConnectionConfigPropertySource
   /**
    * Creates a new ldap connection config property source using the default
    * properties file.
+   *
+   * @param  cc  connection config to invoke properties on
    */
-  public ConnectionConfigPropertySource()
+  public ConnectionConfigPropertySource(final ConnectionConfig cc)
   {
     this(
+      cc,
       ConnectionConfigPropertySource.class.getResourceAsStream(
         PROPERTIES_FILE));
   }
@@ -49,36 +52,52 @@ public final class ConnectionConfigPropertySource
   /**
    * Creates a new ldap connection config property source.
    *
+   * @param  cc  connection config to invoke properties on
    * @param  is  to read properties from
    */
-  public ConnectionConfigPropertySource(final InputStream is)
+  public ConnectionConfigPropertySource(
+    final ConnectionConfig cc, final InputStream is)
   {
-    this(loadProperties(is));
+    this(cc, loadProperties(is));
   }
 
 
   /**
    * Creates a new ldap connection config property source.
    *
+   * @param  cc  connection config to invoke properties on
    * @param  props  to read properties from
    */
-  public ConnectionConfigPropertySource(final Properties props)
+  public ConnectionConfigPropertySource(
+    final ConnectionConfig cc, final Properties props)
   {
-    this(PropertyDomain.LDAP, props);
+    this(cc, PropertyDomain.LDAP, props);
   }
 
 
   /**
    * Creates a new ldap connection config property source.
    *
+   * @param  cc  connection config to invoke properties on
    * @param  domain  that properties are in
    * @param  props  to read properties from
    */
   public ConnectionConfigPropertySource(
-    final PropertyDomain domain, final Properties props)
+    final ConnectionConfig cc,
+    final PropertyDomain domain,
+    final Properties props)
   {
-    object = new ConnectionConfig();
-    initializeObject(INVOKER, domain.value(), props);
+    object = cc;
+    propertiesDomain = domain;
+    properties = props;
+  }
+
+
+  /** {@inheritDoc} */
+  @Override
+  public void initialize()
+  {
+    initializeObject(INVOKER);
     object.getProvider().setProperties(extraProps);
   }
 

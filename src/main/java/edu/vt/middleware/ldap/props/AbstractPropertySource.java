@@ -19,6 +19,8 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Provides methods common to object properties implementations.
@@ -34,8 +36,17 @@ public abstract class AbstractPropertySource<T> implements PropertySource<T>
   /** Default file to read properties from, value is {@value}. */
   public static final String PROPERTIES_FILE = "/ldap.properties";
 
-  /** Object that is created an initialized with properties. */
+  /** Logger for this class. */
+  protected final Logger logger = LoggerFactory.getLogger(getClass());
+
+  /** Object to initialize with properties. */
   protected T object;
+
+  /** Domain that properties are in. */
+  protected PropertyDomain propertiesDomain;
+
+  /** Properties to set. */
+  protected Properties properties;
 
   /** Properties that are not in the vt-ldap domain. */
   protected Map<String, Object> extraProps = new HashMap<String, Object>();
@@ -71,13 +82,8 @@ public abstract class AbstractPropertySource<T> implements PropertySource<T>
    * the extraProps map.
    *
    * @param  invoker  to set properties on the object
-   * @param  domain  for properties on the object
-   * @param  properties  to iterate over
    */
-  protected void initializeObject(
-    final PropertyInvoker invoker,
-    final String domain,
-    final Properties properties)
+  protected void initializeObject(final PropertyInvoker invoker)
   {
     final Map<String, String> props = new HashMap<String, String>();
     final Enumeration<?> en = properties.keys();
@@ -94,13 +100,13 @@ public abstract class AbstractPropertySource<T> implements PropertySource<T>
           final String propName = name.substring(split);
           final String propDomain = name.substring(0, split);
           // if we have this property, set it last
-          if (domain.equals(propDomain)) {
+          if (propertiesDomain.value().equals(propDomain)) {
             if (invoker.hasProperty(propName)) {
               props.put(propName, value);
             }
           // check if this is a super class property
           // if it is, set it now, it may be overridden with the props map
-          } else if (domain.startsWith(propDomain)) {
+          } else if (propertiesDomain.value().startsWith(propDomain)) {
             if (invoker.hasProperty(propName)) {
               invoker.setProperty(object, propName, value);
             }
@@ -111,13 +117,5 @@ public abstract class AbstractPropertySource<T> implements PropertySource<T>
         invoker.setProperty(object, entry.getKey(), entry.getValue());
       }
     }
-  }
-
-
-  /** {@inheritDoc} */
-  @Override
-  public T get()
-  {
-    return object;
   }
 }

@@ -107,10 +107,11 @@ public abstract class AbstractCli
     final CommandLine line)
     throws Exception
   {
-    final ConnectionConfigPropertySource lccSource =
+    final ConnectionConfig config = new ConnectionConfig();
+    final ConnectionConfigPropertySource ccSource =
       new ConnectionConfigPropertySource(
-        getPropertiesFromOptions(PropertyDomain.LDAP.value(), line));
-    final ConnectionConfig config = lccSource.get();
+        config, getPropertiesFromOptions(PropertyDomain.LDAP.value(), line));
+    ccSource.initialize();
     if (config.getBindDn() != null && config.getBindCredential() == null) {
       // prompt the user to enter a password
       final char[] pass = System.console().readPassword(

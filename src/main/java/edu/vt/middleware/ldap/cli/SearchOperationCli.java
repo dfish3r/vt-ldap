@@ -86,9 +86,12 @@ public class SearchOperationCli extends AbstractCli
   protected SearchRequest initSearchRequest(final CommandLine line)
     throws Exception
   {
-    final SearchRequestPropertySource reader = new SearchRequestPropertySource(
-      getPropertiesFromOptions(PropertyDomain.LDAP.value(), line));
-    return reader.get();
+    final SearchRequest request = new SearchRequest();
+    final SearchRequestPropertySource srSource =
+      new SearchRequestPropertySource(
+        request, getPropertiesFromOptions(PropertyDomain.LDAP.value(), line));
+    srSource.initialize();
+    return request;
   }
 
 

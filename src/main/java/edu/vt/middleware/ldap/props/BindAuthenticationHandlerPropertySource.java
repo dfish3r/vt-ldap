@@ -37,11 +37,15 @@ public final class BindAuthenticationHandlerPropertySource
   /**
    * Creates a new bind authentication handler property source using the default
    * properties file.
+   *
+   * @param  bah  bind authentication handler to invoke properties on
    */
-  public BindAuthenticationHandlerPropertySource()
+  public BindAuthenticationHandlerPropertySource(
+    final BindAuthenticationHandler bah)
   {
     this(
-      SearchDnResolverPropertySource.class.getResourceAsStream(
+      bah,
+      BindAuthenticationHandlerPropertySource.class.getResourceAsStream(
         PROPERTIES_FILE));
   }
 
@@ -49,36 +53,52 @@ public final class BindAuthenticationHandlerPropertySource
   /**
    * Creates a new bind authentication handler property source.
    *
+   * @param  bah  bind authentication handler to invoke properties on
    * @param  is  to read properties from
    */
-  public BindAuthenticationHandlerPropertySource(final InputStream is)
+  public BindAuthenticationHandlerPropertySource(
+    final BindAuthenticationHandler bah, final InputStream is)
   {
-    this(loadProperties(is));
+    this(bah, loadProperties(is));
   }
 
 
   /**
    * Creates a new bind authentication handler property source.
    *
+   * @param  bah  bind authentication handler to invoke properties on
    * @param  props  to read properties from
    */
-  public BindAuthenticationHandlerPropertySource(final Properties props)
+  public BindAuthenticationHandlerPropertySource(
+    final BindAuthenticationHandler bah, final Properties props)
   {
-    this(PropertyDomain.AUTH, props);
+    this(bah, PropertyDomain.AUTH, props);
   }
 
 
   /**
    * Creates a new bind authentication handler property source.
    *
+   * @param  bah  bind authentication handler to invoke properties on
    * @param  domain  that properties are in
    * @param  props  to read properties from
    */
   public BindAuthenticationHandlerPropertySource(
-    final PropertyDomain domain, final Properties props)
+    final BindAuthenticationHandler bah,
+    final PropertyDomain domain,
+    final Properties props)
   {
-    object = new BindAuthenticationHandler();
-    initializeObject(INVOKER, domain.value(), props);
+    object = bah;
+    propertiesDomain = domain;
+    properties = props;
+  }
+
+
+  /** {@inheritDoc} */
+  @Override
+  public void initialize()
+  {
+    initializeObject(INVOKER);
   }
 
 

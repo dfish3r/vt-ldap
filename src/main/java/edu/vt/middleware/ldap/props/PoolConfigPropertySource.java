@@ -37,47 +37,61 @@ public final class PoolConfigPropertySource
   /**
    * Creates a new ldap pool config property source using the default properties
    * file.
+   *
+   * @param  pc  pool config to invoke properties on
    */
-  public PoolConfigPropertySource()
+  public PoolConfigPropertySource(final PoolConfig pc)
   {
     this(
-      PoolConfigPropertySource.class.getResourceAsStream(PROPERTIES_FILE));
+      pc, PoolConfigPropertySource.class.getResourceAsStream(PROPERTIES_FILE));
   }
 
 
   /**
    * Creates a new ldap pool config property source.
    *
+   * @param  pc  pool config to invoke properties on
    * @param  is  to read properties from
    */
-  public PoolConfigPropertySource(final InputStream is)
+  public PoolConfigPropertySource(final PoolConfig pc, final InputStream is)
   {
-    this(loadProperties(is));
+    this(pc, loadProperties(is));
   }
 
 
   /**
    * Creates a new ldap pool config property source.
    *
+   * @param  pc  pool config to invoke properties on
    * @param  props  to read properties from
    */
-  public PoolConfigPropertySource(final Properties props)
+  public PoolConfigPropertySource(final PoolConfig pc, final Properties props)
   {
-    this(PropertyDomain.POOL, props);
+    this(pc, PropertyDomain.POOL, props);
   }
 
 
   /**
    * Creates a new ldap pool config property source.
    *
+   * @param  pc  pool config to invoke properties on
    * @param  domain  that properties are in
    * @param  props  to read properties from
    */
   public PoolConfigPropertySource(
-    final PropertyDomain domain, final Properties props)
+    final PoolConfig pc, final PropertyDomain domain, final Properties props)
   {
-    object = new PoolConfig();
-    initializeObject(INVOKER, domain.value(), props);
+    object = pc;
+    propertiesDomain = domain;
+    properties = props;
+  }
+
+
+  /** {@inheritDoc} */
+  @Override
+  public void initialize()
+  {
+    initializeObject(INVOKER);
   }
 
 

@@ -36,10 +36,13 @@ public final class SearchRequestPropertySource
   /**
    * Creates a new search request property source using the default properties
    * file.
+   *
+   * @param  sr  search request to invoke properties on
    */
-  public SearchRequestPropertySource()
+  public SearchRequestPropertySource(final SearchRequest sr)
   {
     this(
+      sr,
       SearchRequestPropertySource.class.getResourceAsStream(PROPERTIES_FILE));
   }
 
@@ -47,36 +50,50 @@ public final class SearchRequestPropertySource
   /**
    * Creates a new search request property source.
    *
+   * @param  sr  search request to invoke properties on
    * @param  is  to read properties from
    */
-  public SearchRequestPropertySource(final InputStream is)
+  public SearchRequestPropertySource(
+    final SearchRequest sr, final InputStream is)
   {
-    this(loadProperties(is));
+    this(sr, loadProperties(is));
   }
 
 
   /**
    * Creates a new search request property source.
    *
+   * @param  sr  search request to invoke properties on
    * @param  props  to read properties from
    */
-  public SearchRequestPropertySource(final Properties props)
+  public SearchRequestPropertySource(
+    final SearchRequest sr, final Properties props)
   {
-    this(PropertyDomain.LDAP, props);
+    this(sr, PropertyDomain.LDAP, props);
   }
 
 
   /**
    * Creates a new search request property source.
    *
+   * @param  sr  search request to invoke properties on
    * @param  domain  that properties are in
    * @param  props  to read properties from
    */
   public SearchRequestPropertySource(
-    final PropertyDomain domain, final Properties props)
+    final SearchRequest sr, final PropertyDomain domain, final Properties props)
   {
-    object = new SearchRequest();
-    initializeObject(INVOKER, domain.value(), props);
+    object = sr;
+    propertiesDomain = domain;
+    properties = props;
+  }
+
+
+  /** {@inheritDoc} */
+  @Override
+  public void initialize()
+  {
+    initializeObject(INVOKER);
   }
 
 

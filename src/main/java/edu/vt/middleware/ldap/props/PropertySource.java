@@ -67,9 +67,7 @@ public interface PropertySource<T>
 
 
   /**
-   * Returns the object initialized with properties.
-   *
-   * @return  initialized object
+   * Initializes the object for this property source.
    */
-  T get();
+  void initialize();
 }

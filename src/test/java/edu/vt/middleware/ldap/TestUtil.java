@@ -47,15 +47,15 @@ public final class TestUtil
   public static ConnectionConfig readConnectionConfig(
     final InputStream is)
   {
+    final ConnectionConfig cc = new ConnectionConfig();
+    ConnectionConfigPropertySource ccSource = null;
     if (is != null) {
-      final ConnectionConfigPropertySource ccSource =
-        new ConnectionConfigPropertySource(is);
-      return ccSource.get();
+      ccSource = new ConnectionConfigPropertySource(cc, is);
     } else {
-      final ConnectionConfigPropertySource ccSource =
-        new ConnectionConfigPropertySource();
-      return ccSource.get();
+      ccSource = new ConnectionConfigPropertySource(cc);
     }
+    ccSource.initialize();
+    return cc;
   }
 
 
@@ -65,15 +65,15 @@ public final class TestUtil
    */
   public static Authenticator readAuthenticator(final InputStream is)
   {
+    final Authenticator a = new Authenticator();
+    AuthenticatorPropertySource aSource = null;
     if (is != null) {
-      final AuthenticatorPropertySource aSource =
-        new AuthenticatorPropertySource(is);
-      return aSource.get();
+      aSource = new AuthenticatorPropertySource(a, is);
     } else {
-      final AuthenticatorPropertySource aSource =
-        new AuthenticatorPropertySource();
-      return aSource.get();
+      aSource = new AuthenticatorPropertySource(a);
     }
+    aSource.initialize();
+    return a;
   }
 
 

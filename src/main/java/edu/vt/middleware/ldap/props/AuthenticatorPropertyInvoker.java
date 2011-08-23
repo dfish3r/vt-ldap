@@ -13,8 +13,8 @@
 */
 package edu.vt.middleware.ldap.props;
 
-import edu.vt.middleware.ldap.auth.EntryResolver;
 import edu.vt.middleware.ldap.auth.DnResolver;
+import edu.vt.middleware.ldap.auth.EntryResolver;
 import edu.vt.middleware.ldap.auth.handler.AuthenticationHandler;
 import edu.vt.middleware.ldap.auth.handler.AuthenticationResultHandler;
 

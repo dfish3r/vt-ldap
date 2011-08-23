@@ -16,10 +16,14 @@ package edu.vt.middleware.ldap.props;
 import java.io.InputStream;
 import java.util.Properties;
 import java.util.Set;
+import edu.vt.middleware.ldap.ConnectionConfig;
+import edu.vt.middleware.ldap.LdapException;
 import edu.vt.middleware.ldap.auth.Authenticator;
 import edu.vt.middleware.ldap.auth.DnResolver;
+import edu.vt.middleware.ldap.auth.ManagedDnResolver;
 import edu.vt.middleware.ldap.auth.SearchDnResolver;
 import edu.vt.middleware.ldap.auth.handler.AuthenticationHandler;
+import edu.vt.middleware.ldap.auth.handler.BindAuthenticationHandler;
 
 /**
  * Reads properties specific to
@@ -41,10 +45,13 @@ public final class AuthenticatorPropertySource
   /**
    * Creates a new authenticator property source using the default properties
    * file.
+   *
+   * @param  a  authenticator to set properties on
    */
-  public AuthenticatorPropertySource()
+  public AuthenticatorPropertySource(final Authenticator a)
   {
     this(
+      a,
       AuthenticatorPropertySource.class.getResourceAsStream(PROPERTIES_FILE));
   }
 
@@ -52,68 +59,109 @@ public final class AuthenticatorPropertySource
   /**
    * Creates a new authenticator property source.
    *
+   * @param  a  authenticator to set properties on
    * @param  is  to read properties from
    */
-  public AuthenticatorPropertySource(final InputStream is)
+  public AuthenticatorPropertySource(
+    final Authenticator a, final InputStream is)
   {
-    this(loadProperties(is));
+    this(a, loadProperties(is));
   }
 
 
   /**
    * Creates a new authenticator property source.
    *
+   * @param  a  authenticator to set properties on
    * @param  props  to read properties from
    */
-  public AuthenticatorPropertySource(final Properties props)
+  public AuthenticatorPropertySource(
+    final Authenticator a, final Properties props)
   {
-    this(PropertyDomain.AUTH, props);
+    this(a, PropertyDomain.AUTH, props);
   }
 
 
   /**
    * Creates a new authenticator property source.
    *
+   * @param  a  authenticator to set properties on
    * @param  domain  that properties are in
    * @param  props  to read properties from
    */
   public AuthenticatorPropertySource(
-    final PropertyDomain domain, final Properties props)
+    final Authenticator a, final PropertyDomain domain, final Properties props)
   {
-    object = new Authenticator();
-    initializeObject(INVOKER, domain.value(), props);
+    object = a;
+    propertiesDomain = domain;
+    properties = props;
+  }
 
-    ConnectionConfigPropertySource ccPropSource = null;
+
+  /** {@inheritDoc} */
+  @Override
+  public void initialize()
+  {
+    initializeObject(INVOKER);
+
+    ConnectionConfig connConfig = null;
 
     // initialize a SearchDnResolver by default
-    DnResolver resolver = object.getDnResolver();
-    if (resolver == null) {
-      final SearchDnResolverPropertySource drPropSource =
-        new SearchDnResolverPropertySource(domain, props);
-      resolver = drPropSource.get();
-      object.setDnResolver(resolver);
+    DnResolver dnResolver = object.getDnResolver();
+    if (dnResolver == null) {
+      dnResolver = new SearchDnResolver();
+      final SearchDnResolverPropertySource dnPropSource =
+        new SearchDnResolverPropertySource(
+          (SearchDnResolver) dnResolver, propertiesDomain, properties);
+      dnPropSource.initialize();
+      object.setDnResolver(dnResolver);
+    } else {
+      final SimplePropertySource<DnResolver> sPropSource =
+        new SimplePropertySource<DnResolver>(
+          dnResolver, propertiesDomain, properties);
+      sPropSource.initialize();
     }
-    if (resolver instanceof SearchDnResolver) {
-      final SearchDnResolver sdr = (SearchDnResolver) resolver;
+    if (dnResolver instanceof SearchDnResolver) {
+      final SearchDnResolver sdr = (SearchDnResolver) dnResolver;
       if (sdr.getConnectionConfig() == null) {
-        ccPropSource = new ConnectionConfigPropertySource(domain, props);
-        sdr.setConnectionConfig(ccPropSource.get());
+        connConfig = new ConnectionConfig();
+        final ConnectionConfigPropertySource ccPropSource =
+          new ConnectionConfigPropertySource(
+            connConfig, propertiesDomain, properties);
+        ccPropSource.initialize();
+        sdr.setConnectionConfig(connConfig);
+      }
+    }
+    if (dnResolver instanceof ManagedDnResolver) {
+      final ManagedDnResolver mdr = (ManagedDnResolver) dnResolver;
+      try {
+        mdr.initialize();
+      } catch (LdapException e) {
+        logger.error("Failed to initialize managed dn resolver", e);
       }
     }
 
     // initialize a BindAuthenticationHandler by default
     AuthenticationHandler authHandler = object.getAuthenticationHandler();
     if (authHandler == null) {
+      authHandler = new BindAuthenticationHandler();
       final BindAuthenticationHandlerPropertySource ahPropSource =
-        new BindAuthenticationHandlerPropertySource(domain, props);
-      authHandler = ahPropSource.get();
+        new BindAuthenticationHandlerPropertySource(
+          (BindAuthenticationHandler) authHandler,
+          propertiesDomain,
+          properties);
+      ahPropSource.initialize();
       object.setAuthenticationHandler(authHandler);
     }
     if (authHandler.getConnectionConfig() == null) {
-      if (ccPropSource == null) {
-        ccPropSource = new ConnectionConfigPropertySource(domain, props);
+      if (connConfig == null) {
+        connConfig = new ConnectionConfig();
+        final ConnectionConfigPropertySource ccPropSource =
+          new ConnectionConfigPropertySource(
+            connConfig, propertiesDomain, properties);
+        ccPropSource.initialize();
       }
-      authHandler.setConnectionConfig(ccPropSource.get());
+      authHandler.setConnectionConfig(connConfig);
     }
   }
 

@@ -17,6 +17,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Parses the configuration data associated with classes that contain setter
@@ -39,13 +41,16 @@ public class PropertyValueParser
   private static final Pattern CONFIG_PATTERN = Pattern.compile(
     "([^\\{]+)\\s*\\{(.*)\\}\\s*");
 
-  /** Property string for configuring a credential config. */
+  /** Property string for configuring a config where the class is known. */
   private static final Pattern PARAMS_ONLY_CONFIG_PATTERN = Pattern.compile(
     "\\s*\\{\\s*(.*)\\s*\\}\\s*");
 
   /** Pattern for finding properties. */
   private static final Pattern PROPERTY_PATTERN = Pattern.compile(
     "([^\\}\\{])+");
+
+  /** Logger for this class. */
+  protected final Logger logger = LoggerFactory.getLogger(getClass());
 
   /** Class found in the config. */
   private String className;
@@ -182,7 +187,11 @@ public class PropertyValueParser
       invoker.setProperty(o, entry.getKey(), entry.getValue());
     }
     if (invoker.getProperties().contains("initialize")) {
-      invoker.setProperty(o, "initialize", null);
+      try {
+        invoker.setProperty(o, "initialize", null);
+      } catch (Throwable t) {
+        logger.debug("Error invoking initialize method", t);
+      }
     }
   }
 }

@@ -38,10 +38,13 @@ public final class AuthenticationRequestPropertySource
   /**
    * Creates a new authentication request property source using the default
    * properties file.
+   *
+   * @param  ar  authentication request to set properties on
    */
-  public AuthenticationRequestPropertySource()
+  public AuthenticationRequestPropertySource(final AuthenticationRequest ar)
   {
     this(
+      ar,
       AuthenticationRequestPropertySource.class.getResourceAsStream(
         PROPERTIES_FILE));
   }
@@ -50,36 +53,52 @@ public final class AuthenticationRequestPropertySource
   /**
    * Creates a new authentication request property source.
    *
+   * @param  ar  authentication request to set properties on
    * @param  is  to read properties from
    */
-  public AuthenticationRequestPropertySource(final InputStream is)
+  public AuthenticationRequestPropertySource(
+    final AuthenticationRequest ar, final InputStream is)
   {
-    this(loadProperties(is));
+    this(ar, loadProperties(is));
   }
 
 
   /**
    * Creates a new authentication request property source.
    *
+   * @param  ar  authentication request to set properties on
    * @param  props  to read properties from
    */
-  public AuthenticationRequestPropertySource(final Properties props)
+  public AuthenticationRequestPropertySource(
+    final AuthenticationRequest ar, final Properties props)
   {
-    this(PropertyDomain.AUTH, props);
+    this(ar, PropertyDomain.AUTH, props);
   }
 
 
   /**
    * Creates a new authentication request property source.
    *
+   * @param  ar  authentication request to set properties on
    * @param  domain  that properties are in
    * @param  props  to read properties from
    */
   public AuthenticationRequestPropertySource(
-    final PropertyDomain domain, final Properties props)
+    final AuthenticationRequest ar,
+    final PropertyDomain domain,
+    final Properties props)
   {
-    object = new AuthenticationRequest();
-    initializeObject(INVOKER, domain.value(), props);
+    object = ar;
+    propertiesDomain = domain;
+    properties = props;
+  }
+
+
+  /** {@inheritDoc} */
+  @Override
+  public void initialize()
+  {
+    initializeObject(INVOKER);
   }
 
 

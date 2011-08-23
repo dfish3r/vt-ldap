@@ -102,10 +102,11 @@ public class AuthenticatorCli extends AbstractCli
   protected Authenticator initAuthenticator(final CommandLine line)
     throws Exception
   {
+    final Authenticator auth = new Authenticator();
     final AuthenticatorPropertySource aSource =
       new AuthenticatorPropertySource(
-        getPropertiesFromOptions(PropertyDomain.AUTH.value(), line));
-    final Authenticator auth = aSource.get();
+        auth, getPropertiesFromOptions(PropertyDomain.AUTH.value(), line));
+    aSource.initialize();
     return auth;
   }
 
@@ -123,10 +124,11 @@ public class AuthenticatorCli extends AbstractCli
     final CommandLine line)
     throws Exception
   {
+    final AuthenticationRequest request = new AuthenticationRequest();
     final AuthenticationRequestPropertySource arSource =
       new AuthenticationRequestPropertySource(
-        getPropertiesFromOptions(PropertyDomain.AUTH.value(), line));
-    final AuthenticationRequest request = arSource.get();
+        request, getPropertiesFromOptions(PropertyDomain.AUTH.value(), line));
+    arSource.initialize();
     if (request.getUser() == null) {
       // prompt for a user name
       final String user = System.console().readLine("[Enter user name]: ");
