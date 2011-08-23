@@ -8,7 +8,7 @@ http://www.springframework.org/schema/beans http://www.springframework.org/schem
 http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-2.5.xsd">
 
   <bean id="pool"
-    class="edu.vt.middleware.ldap.pool.BlockingPool"
+    class="edu.vt.middleware.ldap.pool.BlockingConnectionPool"
     init-method="initialize"
     p:blockWaitTime="5000">
     <constructor-arg index="0">
