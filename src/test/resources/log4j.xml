@@ -18,6 +18,18 @@
     <appender-ref ref="CONSOLE"/>
   </category>
 
+  <category name="edu.vt.middleware.ldap.auth"
+            additivity="false">
+    <priority value="INFO"/>
+    <appender-ref ref="CONSOLE"/>
+  </category>
+
+  <category name="edu.vt.middleware.ldap.jaas"
+            additivity="false">
+    <priority value="INFO"/>
+    <appender-ref ref="CONSOLE"/>
+  </category>
+
   <category name="edu.vt.middleware.ldap.pool"
             additivity="false">
     <priority value="INFO"/>
