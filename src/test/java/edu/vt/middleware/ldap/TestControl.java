@@ -15,6 +15,7 @@ package edu.vt.middleware.ldap;
 
 import org.testng.annotations.AfterSuite;
 import org.testng.annotations.BeforeSuite;
+import org.testng.annotations.Parameters;
 
 /**
  * Contains functions that run before and after all tests.
@@ -46,23 +47,26 @@ public class TestControl
    * @throws Exception on test failure
    */
   @BeforeSuite(alwaysRun = true)
-  public void setup()
+  @Parameters({"ldapTestsIgnoreLock"}) 
+  public void setup(final String ignoreLock)
     throws Exception
   {
-    final Connection conn = TestUtil.createSetupConnection();
-    conn.open();
-    // wait for other tests to finish
-    int i = 1;
-    while (!conn.compare(DN, ATTR_IDLE)) {
-      System.err.println("Waiting for test lock...");
-      Thread.sleep(WAIT_TIME * i++);
+    if (!Boolean.valueOf(ignoreLock)) {
+      final Connection conn = TestUtil.createSetupConnection();
+      conn.open();
+      // wait for other tests to finish
+      int i = 1;
+      while (!conn.compare(DN, ATTR_IDLE)) {
+        System.err.println("Waiting for test lock...");
+        Thread.sleep(WAIT_TIME * i++);
+      }
+      conn.modify(
+        DN,
+        new AttributeModification[] {
+          new AttributeModification(
+            AttributeModificationType.REPLACE, ATTR_RUNNING), });
+      conn.close();
     }
-    conn.modify(
-      DN,
-      new AttributeModification[] {
-        new AttributeModification(
-          AttributeModificationType.REPLACE, ATTR_RUNNING), });
-    conn.close();
   }
 
 

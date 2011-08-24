@@ -3,6 +3,8 @@
 
 <suite name="vt-ldap" verbose="1" parallel="tests" thread-count="1">
 
+  <parameter name="ldapTestsIgnoreLock" value="${ldapTestsIgnoreLock}"/>
+
   <!-- ldap test parameters -->
   <parameter name="createEntry2"
              value="/edu/vt/middleware/ldap/createLdapEntry-2.ldif"/>
