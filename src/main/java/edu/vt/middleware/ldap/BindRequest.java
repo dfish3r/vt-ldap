@@ -11,9 +11,8 @@
   Version: $Revision$
   Updated: $Date$
 */
-package edu.vt.middleware.ldap.provider;
+package edu.vt.middleware.ldap;
 
-import edu.vt.middleware.ldap.Credential;
 import edu.vt.middleware.ldap.sasl.SaslConfig;
 
 /**
@@ -22,7 +21,7 @@ import edu.vt.middleware.ldap.sasl.SaslConfig;
  * @author  Middleware Services
  * @version  $Revision$ $Date$
  */
-public class BindRequest
+public class BindRequest implements Request
 {
   /** DN to bind as before performing operations. */
   private String bindDn;
@@ -143,5 +142,23 @@ public class BindRequest
   public boolean isSaslRequest()
   {
     return saslConfig != null;
+  }
+
+
+  /**
+   * Provides a descriptive string representation of this instance.
+   *
+   * @return  string representation
+   */
+  @Override
+  public String toString()
+  {
+    return
+      String.format(
+        "[%s@%d::bindDn=%s, saslConfig=%s]",
+        getClass().getName(),
+        hashCode(),
+        bindDn,
+        saslConfig);
   }
 }

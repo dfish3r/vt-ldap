@@ -25,6 +25,54 @@ public interface ConnectionPool
 {
 
 
+  /**
+   * Returns the activator for this pool.
+   *
+   * @return  activator
+   */
+  Activator<Connection> getActivator();
+
+
+  /**
+   * Sets the activator for this pool.
+   *
+   * @param  a  activator
+   */
+  void setActivator(final Activator<Connection> a);
+
+
+  /**
+   * Returns the passivator for this pool.
+   *
+   * @return  passivator
+   */
+  Passivator<Connection> getPassivator();
+
+
+  /**
+   * Sets the passivator for this pool.
+   *
+   * @param  p  passivator
+   */
+  void setPassivator(final Passivator<Connection> p);
+
+
+  /**
+   * Returns the validator for this pool.
+   *
+   * @return  validator
+   */
+  Validator<Connection> getValidator();
+
+
+  /**
+   * Sets the validator for this pool.
+   *
+   * @param  v  validator
+   */
+  void setValidator(final Validator<Connection> v);
+
+
   /** Initialize this pool for use. */
   void initialize();
 

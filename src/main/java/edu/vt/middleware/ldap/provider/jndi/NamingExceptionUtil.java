@@ -289,7 +289,7 @@ public final class NamingExceptionUtil
     final Class<?> clazz)
   {
     final ResultCode[] codes = EXCEPTIONS_TO_RESULT_CODES.get(clazz);
-    if (codes.length == 1) {
+    if (codes != null && codes.length == 1) {
       return codes[0];
     } else {
       return null;

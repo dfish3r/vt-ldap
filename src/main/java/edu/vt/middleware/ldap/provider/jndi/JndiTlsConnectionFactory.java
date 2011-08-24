@@ -20,11 +20,11 @@ import javax.naming.ldap.InitialLdapContext;
 import javax.naming.ldap.LdapContext;
 import javax.naming.ldap.StartTlsRequest;
 import javax.naming.ldap.StartTlsResponse;
+import edu.vt.middleware.ldap.BindRequest;
 import edu.vt.middleware.ldap.Credential;
 import edu.vt.middleware.ldap.LdapException;
 import edu.vt.middleware.ldap.ResultCode;
 import edu.vt.middleware.ldap.auth.AuthenticationException;
-import edu.vt.middleware.ldap.provider.BindRequest;
 import edu.vt.middleware.ldap.provider.ConnectionException;
 
 /**
@@ -72,7 +72,7 @@ public class JndiTlsConnectionFactory extends AbstractJndiConnectionFactory
       conn = new JndiTlsConnection(new InitialLdapContext(env, null));
       conn.setStartTlsResponse(startTls(conn.getLdapContext()));
       if (request.isSaslRequest()) {
-        final String authenticationType = getAuthenticationType(
+        final String authenticationType = JndiUtil.getAuthenticationType(
           request.getSaslConfig().getMechanism());
         final String username = request.getBindDn();
         final Credential credential = request.getBindCredential();

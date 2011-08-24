@@ -14,7 +14,6 @@
 package edu.vt.middleware.ldap;
 
 import java.util.Collection;
-import edu.vt.middleware.ldap.provider.BindRequest;
 import edu.vt.middleware.ldap.provider.ProviderConnection;
 import edu.vt.middleware.ldap.provider.ProviderConnectionFactory;
 import org.slf4j.Logger;
@@ -195,6 +194,35 @@ public class Connection
       throw new IllegalStateException("Connection is not initialized");
     }
     return providerConnectionFactory;
+  }
+
+
+  /**
+   * Convenience method for performing an ldap anonymous bind operation.
+   *
+   * @throws  LdapException  if an error occurs
+   */
+  public void bind()
+    throws LdapException
+  {
+    final BindOperation op = new BindOperation(this);
+    op.execute(new BindRequest());
+  }
+
+
+  /**
+   * Convenience method for performing an ldap bind operation.
+   *
+   * @param  dn  to bind as
+   * @param  c  credential to bind with
+   *
+   * @throws  LdapException  if an error occurs
+   */
+  public void bind(final String dn, final Credential c)
+    throws LdapException
+  {
+    final BindOperation op = new BindOperation(this);
+    op.execute(new BindRequest(dn, c));
   }
 
 

@@ -14,6 +14,7 @@
 package edu.vt.middleware.ldap.provider;
 
 import java.util.Map;
+import edu.vt.middleware.ldap.BindRequest;
 import edu.vt.middleware.ldap.LdapException;
 import edu.vt.middleware.ldap.ResultCode;
 

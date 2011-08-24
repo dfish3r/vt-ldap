@@ -14,6 +14,7 @@
 package edu.vt.middleware.ldap.provider;
 
 import edu.vt.middleware.ldap.AddRequest;
+import edu.vt.middleware.ldap.BindRequest;
 import edu.vt.middleware.ldap.CompareRequest;
 import edu.vt.middleware.ldap.DeleteRequest;
 import edu.vt.middleware.ldap.LdapException;
@@ -29,6 +30,23 @@ import edu.vt.middleware.ldap.SearchRequest;
  */
 public interface ProviderConnection
 {
+
+
+  /**
+   * Anonymously bind to the ldap.
+   *
+   * @throws  LdapException  if an error occurs
+   */
+  void bind() throws LdapException;
+
+
+  /**
+   * Bind to the ldap.
+   *
+   * @param  request  containing the data necessary to perform the operation
+   * @throws  LdapException  if an error occurs
+   */
+  void bind(BindRequest request) throws LdapException;
 
 
   /**

@@ -16,6 +16,8 @@ package edu.vt.middleware.ldap.auth.handler;
 import edu.vt.middleware.ldap.Connection;
 import edu.vt.middleware.ldap.ConnectionConfig;
 import edu.vt.middleware.ldap.LdapException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Provides an LDAP authentication implementation that leverages the LDAP bind
@@ -26,6 +28,9 @@ import edu.vt.middleware.ldap.LdapException;
  */
 public class BindAuthenticationHandler extends AbstractAuthenticationHandler
 {
+
+  /** Logger for this class. */
+  protected final Logger logger = LoggerFactory.getLogger(getClass());
 
 
   /** Default constructor. */

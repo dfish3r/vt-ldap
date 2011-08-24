@@ -13,6 +13,7 @@
 */
 package edu.vt.middleware.ldap.provider.jndi;
 
+import javax.naming.Context;
 import javax.naming.NamingEnumeration;
 import javax.naming.NamingException;
 import javax.naming.directory.SearchControls;
@@ -20,13 +21,16 @@ import javax.naming.directory.SearchResult;
 import javax.naming.ldap.LdapContext;
 import javax.naming.ldap.LdapName;
 import edu.vt.middleware.ldap.AddRequest;
+import edu.vt.middleware.ldap.BindRequest;
 import edu.vt.middleware.ldap.CompareRequest;
 import edu.vt.middleware.ldap.DeleteRequest;
 import edu.vt.middleware.ldap.LdapException;
 import edu.vt.middleware.ldap.ModifyRequest;
 import edu.vt.middleware.ldap.RenameRequest;
+import edu.vt.middleware.ldap.ResultCode;
 import edu.vt.middleware.ldap.SearchRequest;
 import edu.vt.middleware.ldap.SearchScope;
+import edu.vt.middleware.ldap.auth.AuthenticationException;
 import edu.vt.middleware.ldap.provider.ProviderConnection;
 import edu.vt.middleware.ldap.provider.SearchIterator;
 import org.slf4j.Logger;
@@ -136,6 +140,49 @@ public class JndiConnection implements ProviderConnection
         e, NamingExceptionUtil.getResultCode(e.getClass()));
     } finally {
       context = null;
+    }
+  }
+
+
+  /** {@inheritDoc} */
+  @Override
+  public void bind()
+    throws LdapException
+  {
+    try {
+      context.addToEnvironment(Context.SECURITY_AUTHENTICATION, "none");
+      context.removeFromEnvironment(Context.SECURITY_PRINCIPAL);
+      context.removeFromEnvironment(Context.SECURITY_CREDENTIALS);
+      context.reconnect(context.getConnectControls());
+    } catch (javax.naming.AuthenticationException e) {
+      throw new AuthenticationException(e, ResultCode.INVALID_CREDENTIALS);
+    } catch (NamingException e) {
+      JndiUtil.throwOperationException(operationRetryExceptions, e);
+    }
+  }
+
+
+  /** {@inheritDoc} */
+  @Override
+  public void bind(final BindRequest request)
+    throws LdapException
+  {
+    String authenticationType = "simple";
+    if (request.isSaslRequest()) {
+      authenticationType = JndiUtil.getAuthenticationType(
+        request.getSaslConfig().getMechanism());
+    }
+    try {
+      context.addToEnvironment(
+        Context.SECURITY_AUTHENTICATION, authenticationType);
+      context.addToEnvironment(Context.SECURITY_PRINCIPAL, request.getBindDn());
+      context.addToEnvironment(
+        Context.SECURITY_CREDENTIALS, request.getBindCredential().getBytes());
+      context.reconnect(context.getConnectControls());
+    } catch (javax.naming.AuthenticationException e) {
+      throw new AuthenticationException(e, ResultCode.INVALID_CREDENTIALS);
+    } catch (NamingException e) {
+      JndiUtil.throwOperationException(operationRetryExceptions, e);
     }
   }
 

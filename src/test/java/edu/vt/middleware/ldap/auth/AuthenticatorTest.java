@@ -25,6 +25,7 @@ import edu.vt.middleware.ldap.auth.handler.AuthenticationResultHandler;
 import edu.vt.middleware.ldap.auth.handler.AuthorizationHandler;
 import edu.vt.middleware.ldap.auth.handler.CompareAuthenticationHandler;
 import edu.vt.middleware.ldap.auth.handler.CompareAuthorizationHandler;
+import edu.vt.middleware.ldap.auth.handler.PooledBindAuthenticationHandler;
 import edu.vt.middleware.ldap.auth.handler.TestAuthenticationResultHandler;
 import edu.vt.middleware.ldap.auth.handler.TestAuthorizationHandler;
 import org.testng.AssertJUnit;
@@ -54,18 +55,20 @@ public class AuthenticatorTest extends AbstractTest
   /** Entry created for auth tests. */
   private static LdapEntry specialCharsLdapEntry;
 
-  /** Ldap instance for concurrency testing. */
+  /** Authenticator instance for concurrency testing. */
   private Authenticator singleTLSAuth;
 
-  /** Ldap instance for concurrency testing. */
+  /** Authenticator instance for concurrency testing. */
   private Authenticator singleSSLAuth;
 
-  /** Ldap instance for concurrency testing. */
+  /** Authenticator instance for concurrency testing. */
   private Authenticator singleTLSDnAuth;
 
-  /** Ldap instance for concurrency testing. */
+  /** Authenticator instance for concurrency testing. */
   private Authenticator singleSSLDnAuth;
 
+  /** Authenticator instance for concurrency testing. */
+  private Authenticator pooledTLSAuth;
 
   /**
    * Default constructor.
@@ -79,6 +82,7 @@ public class AuthenticatorTest extends AbstractTest
     singleSSLAuth = TestUtil.createSSLAuthenticator();
     singleTLSDnAuth = TestUtil.createTLSDnAuthenticator();
     singleSSLDnAuth = TestUtil.createSSLDnAuthenticator();
+    pooledTLSAuth = TestUtil.createTLSAuthenticator();
   }
 
 
@@ -92,6 +96,12 @@ public class AuthenticatorTest extends AbstractTest
   public void createAuthEntry(final String ldifFile)
     throws Exception
   {
+    final PooledBindAuthenticationHandler ah =
+      new PooledBindAuthenticationHandler(
+        pooledTLSAuth.getAuthenticationHandler().getConnectionConfig());
+    ah.initialize();
+    pooledTLSAuth.setAuthenticationHandler(ah);
+
     final String ldif = TestUtil.readFileIntoString(ldifFile);
     testLdapEntry = TestUtil.convertLdifToResult(ldif).getEntry();
     super.createLdapEntry(testLdapEntry);
@@ -121,6 +131,8 @@ public class AuthenticatorTest extends AbstractTest
   {
     super.deleteLdapEntry(testLdapEntry.getDn());
     super.deleteLdapEntry(specialCharsLdapEntry.getDn());
+    ((PooledBindAuthenticationHandler)
+      pooledTLSAuth.getAuthenticationHandler()).close();
   }
 
 
@@ -842,6 +854,62 @@ public class AuthenticatorTest extends AbstractTest
     // test auth with return attributes
     final String expected = TestUtil.readFileIntoString(ldifFile);
     final LdapEntry entry = auth.authenticate(
+      new AuthenticationRequest(
+        user,
+        new Credential(credential),
+        returnAttrs.split("\\|"))).getResult();
+    AssertJUnit.assertEquals(
+      TestUtil.convertLdifToResult(expected), new LdapResult(entry));
+  }
+
+
+  /**
+   * @param  user  to authenticate.
+   * @param  credential  to authenticate with.
+   * @param  filter  to authorize with.
+   * @param  returnAttrs  to search for.
+   * @param  ldifFile  to expect from the search.
+   *
+   * @throws  Exception  On test failure.
+   */
+  @Parameters(
+    {
+      "authenticateUser",
+      "authenticateCredential",
+      "authenticateFilter",
+      "authenticateReturnAttrs",
+      "authenticateResults"
+    }
+  )
+  @Test(
+    groups = {"authtest"},
+    threadPoolSize = TEST_THREAD_POOL_SIZE,
+    invocationCount = TEST_INVOCATION_COUNT,
+    timeOut = TEST_TIME_OUT
+  )
+  public void authenticatePooled(
+    final String user,
+    final String credential,
+    final String filter,
+    final String returnAttrs,
+    final String ldifFile)
+    throws Exception
+  {
+    // test plain auth
+    try {
+      pooledTLSAuth.authenticate(
+        new AuthenticationRequest(user, new Credential(INVALID_PASSWD)));
+      AssertJUnit.fail("Should have thrown AuthenticationException");
+    } catch (LdapException e) {
+      AssertJUnit.assertEquals(AuthenticationException.class, e.getClass());
+    }
+
+    pooledTLSAuth.authenticate(
+      new AuthenticationRequest(user, new Credential(credential)));
+
+    // test auth with return attributes
+    final String expected = TestUtil.readFileIntoString(ldifFile);
+    final LdapEntry entry = pooledTLSAuth.authenticate(
       new AuthenticationRequest(
         user,
         new Credential(credential),

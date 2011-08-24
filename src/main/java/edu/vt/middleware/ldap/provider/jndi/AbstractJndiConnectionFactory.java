@@ -21,10 +21,7 @@ import javax.net.ssl.SSLSocketFactory;
 import edu.vt.middleware.ldap.ConnectionConfig;
 import edu.vt.middleware.ldap.provider.AbstractProviderConnectionFactory;
 import edu.vt.middleware.ldap.sasl.DigestMd5Config;
-import edu.vt.middleware.ldap.sasl.Mechanism;
-import edu.vt.middleware.ldap.sasl.QualityOfProtection;
 import edu.vt.middleware.ldap.sasl.SaslConfig;
-import edu.vt.middleware.ldap.sasl.SecurityStrength;
 
 /**
  * Base class for JNDI connection factory implementations.
@@ -297,12 +294,13 @@ public abstract class AbstractJndiConnectionFactory
     }
     if (config.getQualityOfProtection() != null) {
       env.put(
-        SASL_QOP, getQualityOfProtection(config.getQualityOfProtection()));
+        SASL_QOP,
+        JndiUtil.getQualityOfProtection(config.getQualityOfProtection()));
     }
     if (config.getSecurityStrength() != null) {
       env.put(
         SASL_STRENGTH,
-        getSecurityStrength(config.getSecurityStrength()));
+        JndiUtil.getSecurityStrength(config.getSecurityStrength()));
     }
     if (config.getMutualAuthentication() != null) {
       env.put(SASL_MUTUAL_AUTH, config.getMutualAuthentication().toString());
@@ -313,90 +311,5 @@ public abstract class AbstractJndiConnectionFactory
       }
     }
     return env;
-  }
-
-
-  /**
-   * Returns the SASL quality of protection string for the supplied enum.
-   *
-   * @param  qop  quality of protection enum
-   * @return  SASL quality of protection string
-   */
-  protected static String getQualityOfProtection(final QualityOfProtection qop)
-  {
-    String s = null;
-    switch (qop) {
-    case AUTH:
-      s = "auth";
-      break;
-    case AUTH_INT:
-      s = "auth-int";
-      break;
-    case AUTH_CONF:
-      s = "auth-conf";
-      break;
-    default:
-      throw new IllegalArgumentException(
-        "Unknown SASL quality of protection: " + qop);
-    }
-    return s;
-  }
-
-
-  /**
-   * Returns the SASL security strength string for the supplied enum.
-   *
-   * @param  ss  security strength enum
-   * @return  SASL security strength string
-   */
-  protected static String getSecurityStrength(final SecurityStrength ss)
-  {
-    String s = null;
-    switch (ss) {
-    case HIGH:
-      s = "high";
-      break;
-    case MEDIUM:
-      s = "medium";
-      break;
-    case LOW:
-      s = "low";
-      break;
-    default:
-      throw new IllegalArgumentException(
-        "Unknown SASL security strength: " + ss);
-    }
-    return s;
-  }
-
-
-  /**
-   * Returns the JNDI authentication string for the supplied authentication
-   * type.
-   *
-   * @param  m  sasl mechanism
-   * @return  JNDI authentication string
-   */
-  protected static String getAuthenticationType(final Mechanism m)
-  {
-    String s = null;
-    switch (m) {
-    case EXTERNAL:
-      s = "EXTERNAL";
-      break;
-    case DIGEST_MD5:
-      s = "DIGEST-MD5";
-      break;
-    case CRAM_MD5:
-      s = "CRAM-MD5";
-      break;
-    case GSSAPI:
-      s = "GSSAPI";
-      break;
-    default:
-      throw new IllegalArgumentException(
-        "Unknown SASL authentication mechanism: " + m);
-    }
-    return s;
   }
 }

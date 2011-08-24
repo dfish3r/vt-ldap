@@ -53,7 +53,7 @@ public class EhcacheTest
         .memoryStoreEvictionPolicy(MemoryStoreEvictionPolicy.LRU)
         .overflowToDisk(false)
         .eternal(false)
-        .timeToLiveSeconds(60)
+        .timeToLiveSeconds(0)
         .timeToIdleSeconds(0)
         .diskPersistent(false)
         .diskExpiryThreadIntervalSeconds(3));
@@ -129,19 +129,6 @@ public class EhcacheTest
       new LdapResult(new LdapEntry("uid=102,ou=test,dc=vt,dc=edu")), lr);
     AssertJUnit.assertNull(
       cache.get(new SearchRequest(new SearchFilter("uid=1"))));
-  }
-
-
-  /**
-   * @throws  Exception  On test failure.
-   */
-  @Test(groups = {"cachetest"}, dependsOnMethods = {"get", "put"})
-  public void interval()
-    throws Exception
-  {
-    AssertJUnit.assertEquals(5, cache.size());
-    Thread.sleep(65000);
-    AssertJUnit.assertEquals(0, cache.size());
   }
 
 

@@ -44,10 +44,12 @@ public class TestControl
   /**
    * Obtains the lock before running all tests.
    *
+   * @param  ignoreLock  whether to check for the global test lock
+   *
    * @throws Exception on test failure
    */
   @BeforeSuite(alwaysRun = true)
-  @Parameters({"ldapTestsIgnoreLock"}) 
+  @Parameters("ldapTestsIgnoreLock")
   public void setup(final String ignoreLock)
     throws Exception
   {

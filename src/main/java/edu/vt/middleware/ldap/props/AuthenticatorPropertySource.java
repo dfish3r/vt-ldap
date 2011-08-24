@@ -24,6 +24,7 @@ import edu.vt.middleware.ldap.auth.ManagedDnResolver;
 import edu.vt.middleware.ldap.auth.SearchDnResolver;
 import edu.vt.middleware.ldap.auth.handler.AuthenticationHandler;
 import edu.vt.middleware.ldap.auth.handler.BindAuthenticationHandler;
+import edu.vt.middleware.ldap.auth.handler.ManagedAuthenticationHandler;
 
 /**
  * Reads properties specific to
@@ -152,6 +153,11 @@ public final class AuthenticatorPropertySource
           properties);
       ahPropSource.initialize();
       object.setAuthenticationHandler(authHandler);
+    } else {
+      final SimplePropertySource<AuthenticationHandler> sPropSource =
+        new SimplePropertySource<AuthenticationHandler>(
+          authHandler, propertiesDomain, properties);
+      sPropSource.initialize();
     }
     if (authHandler.getConnectionConfig() == null) {
       if (connConfig == null) {
@@ -162,6 +168,15 @@ public final class AuthenticatorPropertySource
         ccPropSource.initialize();
       }
       authHandler.setConnectionConfig(connConfig);
+    }
+    if (authHandler instanceof ManagedAuthenticationHandler) {
+      final ManagedAuthenticationHandler mah =
+        (ManagedAuthenticationHandler) authHandler;
+      try {
+        mah.initialize();
+      } catch (LdapException e) {
+        logger.error("Failed to initialize managed authentication handler", e);
+      }
     }
   }
 

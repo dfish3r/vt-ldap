@@ -19,6 +19,8 @@ import edu.vt.middleware.ldap.auth.AuthenticationRequest;
 import edu.vt.middleware.ldap.auth.Authenticator;
 import edu.vt.middleware.ldap.auth.DnResolver;
 import edu.vt.middleware.ldap.auth.ManagedDnResolver;
+import edu.vt.middleware.ldap.auth.handler.AuthenticationHandler;
+import edu.vt.middleware.ldap.auth.handler.ManagedAuthenticationHandler;
 import edu.vt.middleware.ldap.props.AuthenticationRequestPropertySource;
 import edu.vt.middleware.ldap.props.AuthenticatorPropertySource;
 
@@ -97,7 +99,8 @@ public class PropertiesAuthenticatorFactory extends AbstractPropertiesFactory
 
 
   /**
-   * Iterates over the cache and closes any managed dn resolvers.
+   * Iterates over the cache and closes any managed dn resolvers and managed
+   * authentication handlers.
    */
   public static void close()
   {
@@ -106,6 +109,10 @@ public class PropertiesAuthenticatorFactory extends AbstractPropertiesFactory
       final DnResolver dr = a.getDnResolver();
       if (dr instanceof ManagedDnResolver) {
         ((ManagedDnResolver) dr).close();
+      }
+      final AuthenticationHandler ah = a.getAuthenticationHandler();
+      if (ah instanceof ManagedAuthenticationHandler) {
+        ((ManagedAuthenticationHandler) ah).close();
       }
     }
   }

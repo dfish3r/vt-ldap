@@ -18,11 +18,11 @@ import java.util.Map;
 import edu.vt.middleware.ldap.AbstractTest;
 import edu.vt.middleware.ldap.Credential;
 import edu.vt.middleware.ldap.LdapEntry;
-import edu.vt.middleware.ldap.LdapResult;
 import edu.vt.middleware.ldap.SearchFilter;
 import edu.vt.middleware.ldap.TestUtil;
 import edu.vt.middleware.ldap.auth.handler.AuthorizationHandler;
 import edu.vt.middleware.ldap.auth.handler.CompareAuthorizationHandler;
+import edu.vt.middleware.ldap.auth.handler.PooledBindAuthenticationHandler;
 import org.testng.AssertJUnit;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
@@ -58,8 +58,11 @@ public class AuthenticatorLoadTest extends AbstractTest
     }
   }
 
-  /** Ldap instance for concurrency testing. */
+  /** Authenticator instance for concurrency testing. */
   private Authenticator singleTLSAuth;
+
+  /** Authenticator instance for concurrency testing. */
+  private Authenticator pooledTLSAuth;
 
 
   /**
@@ -71,6 +74,8 @@ public class AuthenticatorLoadTest extends AbstractTest
     throws Exception
   {
     singleTLSAuth = TestUtil.readAuthenticator(
+      TestUtil.class.getResourceAsStream("/ldap.tls.load.properties"));
+    pooledTLSAuth = TestUtil.readAuthenticator(
       TestUtil.class.getResourceAsStream("/ldap.tls.load.properties"));
   }
 
@@ -114,6 +119,21 @@ public class AuthenticatorLoadTest extends AbstractTest
     final String ldifFile10)
     throws Exception
   {
+    final PooledSearchDnResolver dr =
+      new PooledSearchDnResolver(
+        pooledTLSAuth.getAuthenticationHandler().getConnectionConfig());
+    dr.setBaseDn(
+      ((SearchDnResolver) singleTLSAuth.getDnResolver()).getBaseDn());
+    dr.setUserFilter(
+      ((SearchDnResolver) singleTLSAuth.getDnResolver()).getUserFilter());
+    dr.initialize();
+    pooledTLSAuth.setDnResolver(dr);
+    final PooledBindAuthenticationHandler ah =
+      new PooledBindAuthenticationHandler(
+        pooledTLSAuth.getAuthenticationHandler().getConnectionConfig());
+    ah.initialize();
+    pooledTLSAuth.setAuthenticationHandler(ah);
+
     entries.get("2")[0] = TestUtil.convertLdifToResult(
       TestUtil.readFileIntoString(ldifFile2)).getEntry();
     entries.get("3")[0] = TestUtil.convertLdifToResult(
@@ -153,6 +173,10 @@ public class AuthenticatorLoadTest extends AbstractTest
     super.deleteLdapEntry(entries.get("8")[0].getDn());
     super.deleteLdapEntry(entries.get("9")[0].getDn());
     super.deleteLdapEntry(entries.get("10")[0].getDn());
+
+    ((PooledBindAuthenticationHandler)
+      pooledTLSAuth.getAuthenticationHandler()).close();
+    ((PooledSearchDnResolver) pooledTLSAuth.getDnResolver()).close();
   }
 
 
@@ -248,7 +272,7 @@ public class AuthenticatorLoadTest extends AbstractTest
    * @param  filter  to authorize with.
    * @param  filterArgs  to authorize with
    * @param  returnAttrs  to search for.
-   * @param  ldifFile  to expect from the search.
+   * @param  expectedAttrs  to expect from the search.
    *
    * @throws  Exception  On test failure.
    */
@@ -265,11 +289,12 @@ public class AuthenticatorLoadTest extends AbstractTest
     final String filter,
     final String filterArgs,
     final String returnAttrs,
-    final String ldifFile)
+    final String expectedAttrs)
     throws Exception
   {
     // test auth with return attributes
-    final String expected = TestUtil.readFileIntoString(ldifFile);
+    final LdapEntry expected = TestUtil.convertStringToEntry(
+      null, expectedAttrs);
     final LdapEntry entry = singleTLSAuth.authenticate(
       new AuthenticationRequest(
         user,
@@ -278,7 +303,50 @@ public class AuthenticatorLoadTest extends AbstractTest
         new AuthorizationHandler[]{
           new CompareAuthorizationHandler(
             new SearchFilter(filter, filterArgs.split("\\|"))), })).getResult();
-    AssertJUnit.assertEquals(
-      TestUtil.convertLdifToResult(expected), new LdapResult(entry));
+    expected.setDn(entry.getDn());
+    AssertJUnit.assertEquals(expected, entry);
+  }
+
+
+  /**
+   * @param  user  to authenticate.
+   * @param  credential  to authenticate with.
+   * @param  filter  to authorize with.
+   * @param  filterArgs  to authorize with
+   * @param  returnAttrs  to search for.
+   * @param  expectedAttrs  to expect from the search.
+   *
+   * @throws  Exception  On test failure.
+   */
+  @Test(
+    groups = {"authloadtest"},
+    dataProvider = "auth-data",
+    threadPoolSize = 50,
+    invocationCount = 1000,
+    timeOut = 60000,
+    dependsOnMethods = {"authenticateAndAuthorize"}
+  )
+  public void authenticateAndAuthorizePooled(
+    final String user,
+    final String credential,
+    final String filter,
+    final String filterArgs,
+    final String returnAttrs,
+    final String expectedAttrs)
+    throws Exception
+  {
+    // test auth with return attributes
+    final LdapEntry expected = TestUtil.convertStringToEntry(
+      null, expectedAttrs);
+    final LdapEntry entry = pooledTLSAuth.authenticate(
+      new AuthenticationRequest(
+        user,
+        new Credential(credential),
+        returnAttrs.split("\\|"),
+        new AuthorizationHandler[]{
+          new CompareAuthorizationHandler(
+            new SearchFilter(filter, filterArgs.split("\\|"))), })).getResult();
+    expected.setDn(entry.getDn());
+    AssertJUnit.assertEquals(expected, entry);
   }
 }

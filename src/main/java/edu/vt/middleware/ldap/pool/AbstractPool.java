@@ -90,7 +90,7 @@ public abstract class AbstractPool<T>
 
 
   /**
-   * Prepare the object for placement in the pool.
+   * Prepare the object to exit the pool for use.
    *
    * @param  t  pooled object
    *
@@ -133,7 +133,7 @@ public abstract class AbstractPool<T>
 
 
   /**
-   * Prepare the object for removal from the pool.
+   * Prepare the object to enter the pool after use.
    *
    * @param  t  pooled object
    *

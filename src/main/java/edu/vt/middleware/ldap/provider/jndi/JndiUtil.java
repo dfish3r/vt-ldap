@@ -33,6 +33,9 @@ import edu.vt.middleware.ldap.LdapException;
 import edu.vt.middleware.ldap.OperationException;
 import edu.vt.middleware.ldap.SortBehavior;
 import edu.vt.middleware.ldap.control.SortKey;
+import edu.vt.middleware.ldap.sasl.Mechanism;
+import edu.vt.middleware.ldap.sasl.QualityOfProtection;
+import edu.vt.middleware.ldap.sasl.SecurityStrength;
 
 /**
  * Provides methods for converting between JNDI specific objects and vt-ldap
@@ -250,5 +253,90 @@ public class JndiUtil
       op = LdapContext.REPLACE_ATTRIBUTE;
     }
     return op;
+  }
+
+
+  /**
+   * Returns the SASL quality of protection string for the supplied enum.
+   *
+   * @param  qop  quality of protection enum
+   * @return  SASL quality of protection string
+   */
+  public static String getQualityOfProtection(final QualityOfProtection qop)
+  {
+    String s = null;
+    switch (qop) {
+    case AUTH:
+      s = "auth";
+      break;
+    case AUTH_INT:
+      s = "auth-int";
+      break;
+    case AUTH_CONF:
+      s = "auth-conf";
+      break;
+    default:
+      throw new IllegalArgumentException(
+        "Unknown SASL quality of protection: " + qop);
+    }
+    return s;
+  }
+
+
+  /**
+   * Returns the SASL security strength string for the supplied enum.
+   *
+   * @param  ss  security strength enum
+   * @return  SASL security strength string
+   */
+  public static String getSecurityStrength(final SecurityStrength ss)
+  {
+    String s = null;
+    switch (ss) {
+    case HIGH:
+      s = "high";
+      break;
+    case MEDIUM:
+      s = "medium";
+      break;
+    case LOW:
+      s = "low";
+      break;
+    default:
+      throw new IllegalArgumentException(
+        "Unknown SASL security strength: " + ss);
+    }
+    return s;
+  }
+
+
+  /**
+   * Returns the JNDI authentication string for the supplied authentication
+   * type.
+   *
+   * @param  m  sasl mechanism
+   * @return  JNDI authentication string
+   */
+  public static String getAuthenticationType(final Mechanism m)
+  {
+    String s = null;
+    switch (m) {
+    case EXTERNAL:
+      s = "EXTERNAL";
+      break;
+    case DIGEST_MD5:
+      s = "DIGEST-MD5";
+      break;
+    case CRAM_MD5:
+      s = "CRAM-MD5";
+      break;
+    case GSSAPI:
+      s = "GSSAPI";
+      break;
+    default:
+      throw new IllegalArgumentException(
+        "Unknown SASL authentication mechanism: " + m);
+    }
+    return s;
   }
 }
