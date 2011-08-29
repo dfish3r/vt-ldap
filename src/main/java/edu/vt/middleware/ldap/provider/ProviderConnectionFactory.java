@@ -13,83 +13,35 @@
 */
 package edu.vt.middleware.ldap.provider;
 
-import java.util.Map;
 import edu.vt.middleware.ldap.BindRequest;
 import edu.vt.middleware.ldap.LdapException;
-import edu.vt.middleware.ldap.ResultCode;
 
 /**
  * Provides an interface for creating provider connections.
  *
+ * @param  <T>  type of provider config for this connection factory
+ *
  * @author  Middleware Services
  * @version  $Revision$
  */
-public interface ProviderConnectionFactory
+public interface ProviderConnectionFactory<T extends ProviderConfig>
 {
 
 
   /**
-   * Returns the connection strategy.
+   * Returns the provider configuration.
    *
-   * @return  strategy for making connections
+   * @return  provider configuration
    */
-  ConnectionStrategy getConnectionStrategy();
+  T getProviderConfig();
 
 
   /**
-   * Sets the connection strategy.
+   * Sets the provider configuration.
    *
-   * @param  strategy  for making connections
+   * @param  pc  provider configuration
    */
-  void setConnectionStrategy(ConnectionStrategy strategy);
-
-
-  /**
-   * Returns the result codes that trigger an operation retry.
-   *
-   * @return  ldap result codes
-   */
-  ResultCode[] getOperationRetryResultCodes();
-
-
-  /**
-   * Sets the result codes that trigger an operation retry.
-   *
-   * @param  codes  ldap result codes
-   */
-  void setOperationRetryResultCodes(ResultCode[] codes);
-
-
-  /**
-   * Returns whether authentication credentials will be logged.
-   *
-   * @return  whether authentication credentials will be logged
-   */
-  boolean getLogCredentials();
-
-
-  /**
-   * Sets whether authentication credentials will be logged.
-   *
-   * @param  b  whether authentication credentials will be logged
-   */
-  void setLogCredentials(boolean b);
-
-
-  /**
-   * Returns provider specific properties.
-   *
-   * @return  map of additional provider properties
-   */
-  Map<String, Object> getProperties();
-
-
-  /**
-   * Sets provider specific properties.
-   *
-   * @param  props  map of additional provider properties
-   */
-  void setProperties(final Map<String, Object> props);
+  void setProviderConfig(T pc);
 
 
   /**

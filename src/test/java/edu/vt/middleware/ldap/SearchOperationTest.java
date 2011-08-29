@@ -913,8 +913,8 @@ public class SearchOperationTest extends AbstractTest
     conn.initialize();
 
     final ResultCode retryResultCode = ResultCode.valueOf(resultCode);
-    conn.getProviderConnectionFactory().setOperationRetryResultCodes(
-      new ResultCode[] {retryResultCode, });
+    conn.getProviderConnectionFactory().getProviderConfig().
+      setOperationRetryResultCodes(new ResultCode[] {retryResultCode, });
 
     conn.open();
     final RetrySearchOperation search = new RetrySearchOperation(conn);
@@ -953,7 +953,8 @@ public class SearchOperationTest extends AbstractTest
     search.reset();
     search.setOperationRetry(1);
 
-    conn.getProviderConnectionFactory().setOperationRetryResultCodes(null);
+    conn.getProviderConnectionFactory().getProviderConfig().
+      setOperationRetryResultCodes(null);
 
     conn.open();
     try {
@@ -974,8 +975,8 @@ public class SearchOperationTest extends AbstractTest
     search.setOperationRetry(3);
     search.setOperationRetryWait(1000);
 
-    conn.getProviderConnectionFactory().setOperationRetryResultCodes(
-      new ResultCode[] {retryResultCode, });
+    conn.getProviderConnectionFactory().getProviderConfig().
+      setOperationRetryResultCodes(new ResultCode[] {retryResultCode, });
 
     conn.open();
     try {

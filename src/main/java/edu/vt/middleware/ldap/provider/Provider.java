@@ -13,50 +13,34 @@
 */
 package edu.vt.middleware.ldap.provider;
 
-import java.util.Map;
 import edu.vt.middleware.ldap.ConnectionConfig;
-import edu.vt.middleware.ldap.ResultCode;
 
 /**
  * Provides access to a provider specific connection factory.
  *
+ * @param  <T>  type of provider config for this provider
+ *
  * @author  Middleware Services
  * @version  $Revision: 1330 $ $Date: 2010-05-23 18:10:53 -0400 (Sun, 23 May 2010) $
  */
-public interface Provider
+public interface Provider<T extends ProviderConfig>
 {
 
 
   /**
-   * Returns the result codes that trigger an operation retry.
+   * Returns the provider configuration.
    *
-   * @return  ldap result codes
+   * @return  provider configuration
    */
-  ResultCode[] getOperationRetryResultCodes();
+  T getProviderConfig();
 
 
   /**
-   * Sets the result codes that trigger an operation retry.
+   * Sets the provider configuration.
    *
-   * @param  codes  ldap result codes
+   * @param  pc  provider configuration
    */
-  void setOperationRetryResultCodes(ResultCode[] codes);
-
-
-  /**
-   * Returns provider specific properties.
-   *
-   * @return  map of additional provider properties
-   */
-  Map<String, Object> getProperties();
-
-
-  /**
-   * Sets provider specific properties.
-   *
-   * @param  props  map of additional provider properties
-   */
-  void setProperties(final Map<String, Object> props);
+  void setProviderConfig(T pc);
 
 
   /**
@@ -65,5 +49,13 @@ public interface Provider
    * @param  cc  connection configuration
    * @return  connection factory
    */
-  ProviderConnectionFactory getConnectionFactory(ConnectionConfig cc);
+  ProviderConnectionFactory<T> getConnectionFactory(ConnectionConfig cc);
+
+
+  /**
+   * Creates a new instance of this provider.
+   *
+   * @return  new instance of this provider
+   */
+  Provider<T> newInstance();
 }

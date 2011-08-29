@@ -61,8 +61,8 @@ public class JndiTlsConnectionFactory extends AbstractJndiConnectionFactory
     final Hashtable<String, Object> env = new Hashtable<String, Object>(
       environment);
     env.put(PROVIDER_URL, url);
-    if (tracePackets != null) {
-      env.put(TRACE, tracePackets);
+    if (config.getTracePackets() != null) {
+      env.put(TRACE, config.getTracePackets());
     }
 
     JndiTlsConnection conn = null;
@@ -83,7 +83,8 @@ public class JndiTlsConnectionFactory extends AbstractJndiConnectionFactory
             url,
             authenticationType,
             username,
-            logCredentials || credential == null ? credential : "<suppressed>",
+            config.getLogCredentials() || credential == null ?
+              credential : "<suppressed>",
             environment, });
 
         conn.getLdapContext().addToEnvironment(
@@ -104,7 +105,8 @@ public class JndiTlsConnectionFactory extends AbstractJndiConnectionFactory
           new Object[] {
             url,
             dn,
-            logCredentials || credential == null ? credential : "<suppressed>",
+            config.getLogCredentials() || credential == null ?
+              credential : "<suppressed>",
             environment, });
         // note that when using simple authentication (the default),
         // if the credential is null the provider will automatically revert the
@@ -118,10 +120,10 @@ public class JndiTlsConnectionFactory extends AbstractJndiConnectionFactory
         }
       }
       conn.getLdapContext().reconnect(null);
-      conn.setRemoveDnUrls(removeDnUrls);
+      conn.setRemoveDnUrls(config.getRemoveDnUrls());
       conn.setOperationRetryExceptions(
         NamingExceptionUtil.getNamingExceptions(
-          operationRetryResultCodes));
+          config.getOperationRetryResultCodes()));
     } catch (javax.naming.AuthenticationException e) {
       closeConn = true;
       throw new AuthenticationException(e, ResultCode.INVALID_CREDENTIALS);
@@ -167,13 +169,13 @@ public class JndiTlsConnectionFactory extends AbstractJndiConnectionFactory
   {
     final StartTlsResponse tls = (StartTlsResponse) ctx.extendedOperation(
       new StartTlsRequest());
-    if (hostnameVerifier != null) {
-      logger.trace("TLS hostnameVerifier = {}", hostnameVerifier);
-      tls.setHostnameVerifier(hostnameVerifier);
+    if (config.getHostnameVerifier() != null) {
+      logger.trace("TLS hostnameVerifier = {}", config.getHostnameVerifier());
+      tls.setHostnameVerifier(config.getHostnameVerifier());
     }
-    if (sslSocketFactory != null) {
-      logger.trace("TLS sslSocketFactory = {}", sslSocketFactory);
-      tls.negotiate(sslSocketFactory);
+    if (config.getSslSocketFactory() != null) {
+      logger.trace("TLS sslSocketFactory = {}", config.getSslSocketFactory());
+      tls.negotiate(config.getSslSocketFactory());
     } else {
       tls.negotiate();
     }

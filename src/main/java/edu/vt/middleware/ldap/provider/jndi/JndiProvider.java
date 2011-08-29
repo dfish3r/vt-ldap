@@ -13,11 +13,11 @@
 */
 package edu.vt.middleware.ldap.provider.jndi;
 
-import java.io.PrintStream;
 import edu.vt.middleware.ldap.ConnectionConfig;
-import edu.vt.middleware.ldap.ResultCode;
-import edu.vt.middleware.ldap.provider.AbstractProvider;
+import edu.vt.middleware.ldap.provider.Provider;
 import edu.vt.middleware.ldap.provider.ProviderConnectionFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Exposes a connection factory for creating ldap connections with JNDI.
@@ -25,27 +25,19 @@ import edu.vt.middleware.ldap.provider.ProviderConnectionFactory;
  * @author  Middleware Services
  * @version  $Revision: 1330 $ $Date: 2010-05-23 18:10:53 -0400 (Sun, 23 May 2010) $
  */
-public class JndiProvider extends AbstractProvider
+public class JndiProvider implements Provider<JndiProviderConfig>
 {
 
-  /** Stream to print LDAP ASN.1 BER packets. */
-  protected PrintStream tracePackets;
+  /** Logger for this class. */
+  protected final Logger logger = LoggerFactory.getLogger(getClass());
 
-  /** Whether to remove the URL from any DNs which are not relative. */
-  protected boolean removeDnUrls = true;
-
-
-  /** Default constructor. */
-  public JndiProvider()
-  {
-    operationRetryResultCodes = new ResultCode[] {
-      ResultCode.PROTOCOL_ERROR, ResultCode.BUSY, ResultCode.UNAVAILABLE, };
-  }
+  /** Provider configuration. */
+  private JndiProviderConfig config = new JndiProviderConfig();
 
 
   /** {@inheritDoc} */
   @Override
-  public ProviderConnectionFactory getConnectionFactory(
+  public ProviderConnectionFactory<JndiProviderConfig> getConnectionFactory(
     final ConnectionConfig cc)
   {
     JndiProviderConnectionFactory cf = null;
@@ -54,65 +46,34 @@ public class JndiProvider extends AbstractProvider
     } else {
       cf = new JndiConnectionFactory(cc.getLdapUrl());
     }
+    config.setSslSocketFactory(cc.getSslSocketFactory());
+    config.setHostnameVerifier(cc.getHostnameVerifier());
+    cf.setProviderConfig(config);
     cf.initialize(cc);
-    cf.setLogCredentials(cc.getLogCredentials());
-    cf.setSslSocketFactory(cc.getSslSocketFactory());
-    cf.setHostnameVerifier(cc.getHostnameVerifier());
-    if (cc.getConnectionStrategy() != null) {
-      cf.setConnectionStrategy(cc.getConnectionStrategy());
-    }
-    cf.setOperationRetryResultCodes(operationRetryResultCodes);
-    cf.setProperties(properties);
-    cf.setTracePackets(tracePackets);
-    cf.setRemoveDnUrls(removeDnUrls);
     return cf;
   }
 
 
-  /**
-   * Returns the print stream used to print ASN.1 BER packets.
-   *
-   * @return  print stream
-   */
-  public PrintStream getTracePackets()
+  /** {@inheritDoc} */
+  @Override
+  public JndiProviderConfig getProviderConfig()
   {
-    return tracePackets;
+    return config;
   }
 
 
-  /**
-   * Sets the print stream to print ASN.1 BER packets to.
-   *
-   * @param  stream  to print to
-   */
-  public void setTracePackets(final PrintStream stream)
+  /** {@inheritDoc} */
+  @Override
+  public void setProviderConfig(final JndiProviderConfig jpc)
   {
-    logger.trace("setting tracePackets: {}", stream);
-    tracePackets = stream;
+    config = jpc;
   }
 
 
-  /**
-   * Returns whether the URL will be removed from any DNs which are not
-   * relative. The default value is true.
-   *
-   * @return  whether the URL will be removed from DNs
-   */
-  public boolean getRemoveDnUrls()
+  /** {@inheritDoc} */
+  @Override
+  public JndiProvider newInstance()
   {
-    return removeDnUrls;
-  }
-
-
-  /**
-   * Sets whether the URL will be removed from any DNs which are not relative
-   * The default value is true.
-   *
-   * @param  b  whether the URL will be removed from DNs
-   */
-  public void setRemoveDnUrls(final boolean b)
-  {
-    logger.trace("setting removeDnUrls: {}", b);
-    removeDnUrls = b;
+    return new JndiProvider();
   }
 }

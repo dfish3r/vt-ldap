@@ -13,11 +13,8 @@
 */
 package edu.vt.middleware.ldap.provider.jndi;
 
-import java.io.PrintStream;
 import java.util.HashMap;
 import java.util.Map;
-import javax.net.ssl.HostnameVerifier;
-import javax.net.ssl.SSLSocketFactory;
 import edu.vt.middleware.ldap.ConnectionConfig;
 import edu.vt.middleware.ldap.provider.AbstractProviderConnectionFactory;
 import edu.vt.middleware.ldap.sasl.DigestMd5Config;
@@ -30,7 +27,7 @@ import edu.vt.middleware.ldap.sasl.SaslConfig;
  * @version  $Revision: 1442 $
  */
 public abstract class AbstractJndiConnectionFactory
-  extends AbstractProviderConnectionFactory
+  extends AbstractProviderConnectionFactory<JndiProviderConfig>
   implements JndiProviderConnectionFactory
 {
   /**
@@ -134,109 +131,12 @@ public abstract class AbstractJndiConnectionFactory
   /** Environment properties. */
   protected Map<String, Object> environment;
 
-  /** Stream to print LDAP ASN.1 BER packets. */
-  protected PrintStream tracePackets;
-
-  /** Whether to remove the URL from any DNs which are not relative. */
-  protected boolean removeDnUrls;
-
-  /** ldap socket factory used for SSL and TLS. */
-  protected SSLSocketFactory sslSocketFactory;
-
-  /** hostname verifier for TLS connections. */
-  protected HostnameVerifier hostnameVerifier;
-
 
   /** {@inheritDoc} */
   @Override
   public void initialize(final ConnectionConfig cc)
   {
     environment = createEnvironment(cc);
-  }
-
-
-  /** {@inheritDoc} */
-  @Override
-  public Map<String, Object> getEnvironment()
-  {
-    return environment;
-  }
-
-
-  /** {@inheritDoc} */
-  @Override
-  public void setEnvironment(final Map<String, Object> env)
-  {
-    logger.trace("setting environment: {}", env);
-    environment = env;
-  }
-
-
-  /** {@inheritDoc} */
-  @Override
-  public PrintStream getTracePackets()
-  {
-    return tracePackets;
-  }
-
-
-  /** {@inheritDoc} */
-  @Override
-  public void setTracePackets(final PrintStream stream)
-  {
-    logger.trace("setting tracePackets: {}", stream);
-    tracePackets = stream;
-  }
-
-
-  /** {@inheritDoc} */
-  @Override
-  public boolean getRemoveDnUrls()
-  {
-    return removeDnUrls;
-  }
-
-
-  /** {@inheritDoc} */
-  @Override
-  public void setRemoveDnUrls(final boolean b)
-  {
-    logger.trace("setting removeDnUrls: {}", b);
-    removeDnUrls = b;
-  }
-
-
-  /** {@inheritDoc} */
-  @Override
-  public SSLSocketFactory getSslSocketFactory()
-  {
-    return sslSocketFactory;
-  }
-
-
-  /** {@inheritDoc} */
-  @Override
-  public void setSslSocketFactory(final SSLSocketFactory sf)
-  {
-    logger.trace("setting sslSocketFactory: {}", sf);
-    sslSocketFactory = sf;
-  }
-
-
-  /** {@inheritDoc} */
-  @Override
-  public HostnameVerifier getHostnameVerifier()
-  {
-    return hostnameVerifier;
-  }
-
-
-  /** {@inheritDoc} */
-  @Override
-  public void setHostnameVerifier(final HostnameVerifier verifier)
-  {
-    logger.trace("setting hostnameVerifier: {}", verifier);
-    hostnameVerifier = verifier;
   }
 
 
@@ -269,8 +169,9 @@ public abstract class AbstractJndiConnectionFactory
       env.putAll(getSaslProperties(cc.getSaslConfig()));
     }
 
-    if (!properties.isEmpty()) {
-      for (Map.Entry<String, Object> entry : properties.entrySet()) {
+    if (!config.getProperties().isEmpty()) {
+      for (Map.Entry<String, Object> entry :
+           config.getProperties().entrySet()) {
         env.put(entry.getKey(), entry.getValue());
       }
     }

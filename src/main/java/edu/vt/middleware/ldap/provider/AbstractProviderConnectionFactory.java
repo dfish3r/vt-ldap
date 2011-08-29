@@ -15,46 +15,53 @@ package edu.vt.middleware.ldap.provider;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.StringTokenizer;
 import edu.vt.middleware.ldap.BindRequest;
 import edu.vt.middleware.ldap.LdapException;
-import edu.vt.middleware.ldap.ResultCode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
  * Provides a basic implementation for other connection handlers to inherit.
  *
+ * @param  <T>  type of provider config for this connection factory
+ *
  * @author  Middleware Services
  * @version  $Revision$
  */
-public abstract class AbstractProviderConnectionFactory
-  implements ProviderConnectionFactory
+public abstract class
+AbstractProviderConnectionFactory<T extends ProviderConfig>
+  implements ProviderConnectionFactory<T>
 {
 
   /** Logger for this class. */
   protected final Logger logger = LoggerFactory.getLogger(getClass());
 
-  /** Ldap connection strategy. */
-  protected ConnectionStrategy connectionStrategy = ConnectionStrategy.DEFAULT;
-
-  /** Result codes indicating that an operation should be retried. */
-  protected ResultCode[] operationRetryResultCodes;
+  /** Provider configuration. */
+  protected T config;
 
   /** LDAP URL for connections. */
   protected String ldapUrl;
 
-  /** Whether to log authentication credentials. */
-  protected boolean logCredentials;
-
-  /** Additional provider properties. */
-  protected Map<String, Object> properties = new HashMap<String, Object>();
-
   /** Number of connections made. */
   private ConnectionCount connectionCount = new ConnectionCount();
+
+
+  /** {@inheritDoc} */
+  @Override
+  public T getProviderConfig()
+  {
+    return config;
+  }
+
+
+  /** {@inheritDoc} */
+  @Override
+  public void setProviderConfig(final T t)
+  {
+    config = t;
+  }
 
 
   /**
@@ -81,79 +88,11 @@ public abstract class AbstractProviderConnectionFactory
 
   /** {@inheritDoc} */
   @Override
-  public ConnectionStrategy getConnectionStrategy()
-  {
-    return connectionStrategy;
-  }
-
-
-  /** {@inheritDoc} */
-  @Override
-  public void setConnectionStrategy(final ConnectionStrategy strategy)
-  {
-    logger.trace("setting connectionStrategy: {}", strategy);
-    connectionStrategy = strategy;
-  }
-
-
-  /** {@inheritDoc} */
-  @Override
-  public ResultCode[] getOperationRetryResultCodes()
-  {
-    return operationRetryResultCodes;
-  }
-
-
-  /** {@inheritDoc} */
-  @Override
-  public void setOperationRetryResultCodes(final ResultCode[] codes)
-  {
-    logger.trace("setting operationRetryResultCodes: {}", codes);
-    operationRetryResultCodes = codes;
-  }
-
-
-  /** {@inheritDoc} */
-  @Override
-  public boolean getLogCredentials()
-  {
-    return logCredentials;
-  }
-
-
-  /** {@inheritDoc} */
-  @Override
-  public void setLogCredentials(final boolean b)
-  {
-    logger.trace("setting logCredentials: {}", b);
-    logCredentials = b;
-  }
-
-
-  /** {@inheritDoc} */
-  @Override
-  public Map<String, Object> getProperties()
-  {
-    return properties;
-  }
-
-
-  /** {@inheritDoc} */
-  @Override
-  public void setProperties(final Map<String, Object> props)
-  {
-    logger.trace("setting properties: {}", props);
-    properties = props;
-  }
-
-
-  /** {@inheritDoc} */
-  @Override
   public ProviderConnection create(final BindRequest request)
     throws LdapException
   {
     LdapException lastThrown = null;
-    final String[] urls = parseLdapUrl(ldapUrl, connectionStrategy);
+    final String[] urls = parseLdapUrl(ldapUrl, config.getConnectionStrategy());
     ProviderConnection conn = null;
     for (String url : urls) {
       try {
@@ -162,7 +101,7 @@ public abstract class AbstractProviderConnectionFactory
           new Object[] {
             connectionCount,
             url,
-            connectionStrategy, });
+            config.getConnectionStrategy(), });
         conn = createInternal(url, request);
         connectionCount.incrementCount();
         lastThrown = null;

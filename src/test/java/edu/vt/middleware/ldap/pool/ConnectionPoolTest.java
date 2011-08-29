@@ -129,7 +129,8 @@ public class ConnectionPoolTest extends AbstractTest
       TestUtil.createConnection().getConnectionConfig();
     connStrategyCc.setLdapUrl(
       "ldap://ed-dev.middleware.vt.edu:14389 ldap://ed-dne.middleware.vt.edu");
-    connStrategyCc.setConnectionStrategy(ConnectionStrategy.ROUND_ROBIN);
+    connStrategyCc.getProvider().getProviderConfig().setConnectionStrategy(
+      ConnectionStrategy.ROUND_ROBIN);
     connStrategyPool = new BlockingConnectionPool(
       new PoolConfig(), connStrategyCc);
   }

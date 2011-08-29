@@ -15,7 +15,6 @@ package edu.vt.middleware.ldap;
 
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLSocketFactory;
-import edu.vt.middleware.ldap.provider.ConnectionStrategy;
 import edu.vt.middleware.ldap.provider.Provider;
 import edu.vt.middleware.ldap.provider.jndi.JndiProvider;
 import edu.vt.middleware.ldap.sasl.SaslConfig;
@@ -34,10 +33,10 @@ public class ConnectionConfig extends AbstractConfig
   public static final String PROVIDER = "edu.vt.middleware.ldap.provider";
 
   /** Static reference to the default ldap provider. */
-  private static final Provider DEFAULT_PROVIDER;
+  private static final Provider<?> DEFAULT_PROVIDER;
 
   /** Ldap provider implementation. */
-  private Provider provider = DEFAULT_PROVIDER;
+  private Provider<?> provider = DEFAULT_PROVIDER.newInstance();
 
   /** Default ldap socket factory used for SSL and TLS. */
   private SSLSocketFactory sslSocketFactory;
@@ -69,17 +68,11 @@ public class ConnectionConfig extends AbstractConfig
   /** Factor to multiply operation retry wait by. */
   private int operationRetryBackoff;
 
-  /** Whether to log authentication credentials. */
-  private boolean logCredentials;
-
   /** Connect to LDAP using SSL protocol. */
   private boolean ssl;
 
   /** Connect to LDAP using TLS protocol. */
   private boolean tls;
-
-  /** Ldap connection strategy. */
-  private ConnectionStrategy connectionStrategy = ConnectionStrategy.DEFAULT;
 
   /** Initialize the default ldap provider. The {@link #LDAP_PROVIDER} property
    * is checked and that class is loaded if provided. Otherwise the JNDI
@@ -94,7 +87,7 @@ public class ConnectionConfig extends AbstractConfig
           l.info("Setting ldap provider to {}", providerClass);
         }
         DEFAULT_PROVIDER =
-          (Provider) Class.forName(providerClass).newInstance();
+          (Provider<?>) Class.forName(providerClass).newInstance();
       } catch (Exception e) {
         if (l.isErrorEnabled()) {
           l.error("Error instantiating {}", providerClass, e);
@@ -129,7 +122,7 @@ public class ConnectionConfig extends AbstractConfig
    *
    * @return  ldap provider
    */
-  public Provider getProvider()
+  public Provider<?> getProvider()
   {
     return provider;
   }
@@ -140,7 +133,7 @@ public class ConnectionConfig extends AbstractConfig
    *
    * @param  p  ldap provider to set
    */
-  public void setProvider(final Provider p)
+  public void setProvider(final Provider<?> p)
   {
     checkImmutable();
     logger.trace("setting provider: {}", p);
@@ -291,11 +284,7 @@ public class ConnectionConfig extends AbstractConfig
   public void setBindCredential(final Credential credential)
   {
     checkImmutable();
-    if (getLogCredentials() || credential == null) {
-      logger.trace("setting bindCredential: {}", credential);
-    } else {
-      logger.trace("setting bindCredential: <suppressed>");
-    }
+    logger.trace("setting bindCredential: <suppressed>");
     bindCredential = credential;
   }
 
@@ -403,30 +392,6 @@ public class ConnectionConfig extends AbstractConfig
 
 
   /**
-   * Returns whether authentication credentials will be logged.
-   *
-   * @return  whether authentication credentials will be logged.
-   */
-  public boolean getLogCredentials()
-  {
-    return logCredentials;
-  }
-
-
-  /**
-   * Sets whether authentication credentials will be logged.
-   *
-   * @param  b  whether authentication credentials will be logged
-   */
-  public void setLogCredentials(final boolean b)
-  {
-    checkImmutable();
-    logger.trace("setting logCredentials: {}", b);
-    logCredentials = b;
-  }
-
-
-  /**
    * See {@link #isSslEnabled()}.
    *
    * @return  whether the SSL protocol will be used
@@ -497,30 +462,6 @@ public class ConnectionConfig extends AbstractConfig
 
 
   /**
-   * Returns the connection strategy.
-   *
-   * @return  connection strategy
-   */
-  public ConnectionStrategy getConnectionStrategy()
-  {
-    return connectionStrategy;
-  }
-
-
-  /**
-   * Sets the connection strategy.
-   *
-   * @param  strategy  for making new connections
-   */
-  public void setConnectionStrategy(final ConnectionStrategy strategy)
-  {
-    checkImmutable();
-    logger.trace("setting connectionStrategy: {}", strategy);
-    connectionStrategy = strategy;
-  }
-
-
-  /**
    * Provides a descriptive string representation of this instance.
    *
    * @return  string representation
@@ -532,9 +473,8 @@ public class ConnectionConfig extends AbstractConfig
       String.format(
         "[%s@%d::provider=%s, sslSocketFactory=%s, " +
         "hostnameVerifier=%s, ldapUrl=%s, timeout=%s, bindDn=%s, " +
-        "bindCredential=%s, saslConfig=%s, operationRetry=%s, " +
-        "operationRetryWait=%s, operationRetryBackoff=%s, logCredentials=%s, " +
-        "ssl=%s, tls=%s, connectionStrategy=%s]",
+        "saslConfig=%s, operationRetry=%s, operationRetryWait=%s, " +
+        "operationRetryBackoff=%s, ssl=%s, tls=%s]",
         getClass().getName(),
         hashCode(),
         provider,
@@ -543,15 +483,11 @@ public class ConnectionConfig extends AbstractConfig
         ldapUrl,
         timeout,
         bindDn,
-        logCredentials || bindCredential == null ?
-          bindCredential : "<suppressed>",
         saslConfig,
         operationRetry,
         operationRetryWait,
         operationRetryBackoff,
-        logCredentials,
         ssl,
-        tls,
-        connectionStrategy);
+        tls);
   }
 }

@@ -56,8 +56,8 @@ public class JndiConnectionFactory extends AbstractJndiConnectionFactory
     final Hashtable<String, Object> env = new Hashtable<String, Object>(
       environment);
     env.put(PROVIDER_URL, url);
-    if (tracePackets != null) {
-      env.put(TRACE, tracePackets);
+    if (config.getTracePackets() != null) {
+      env.put(TRACE, config.getTracePackets());
     }
 
     if (request.isSaslRequest()) {
@@ -72,7 +72,8 @@ public class JndiConnectionFactory extends AbstractJndiConnectionFactory
           url,
           authenticationType,
           username,
-          logCredentials || credential == null ? credential : "<suppressed>",
+          config.getLogCredentials() || credential == null ?
+            credential : "<suppressed>",
           environment, });
 
       env.put(AUTHENTICATION, authenticationType);
@@ -91,7 +92,8 @@ public class JndiConnectionFactory extends AbstractJndiConnectionFactory
         new Object[] {
           url,
           dn,
-          logCredentials || credential == null ? credential : "<suppressed>",
+          config.getLogCredentials() || credential == null ?
+            credential : "<suppressed>",
           environment, });
 
       // note that when using simple authentication (the default),
@@ -108,10 +110,10 @@ public class JndiConnectionFactory extends AbstractJndiConnectionFactory
     JndiConnection conn = null;
     try {
       conn = new JndiConnection(new InitialLdapContext(env, null));
-      conn.setRemoveDnUrls(removeDnUrls);
+      conn.setRemoveDnUrls(config.getRemoveDnUrls());
       conn.setOperationRetryExceptions(
         NamingExceptionUtil.getNamingExceptions(
-          operationRetryResultCodes));
+          config.getOperationRetryResultCodes()));
     } catch (javax.naming.AuthenticationException e) {
       throw new AuthenticationException(e, ResultCode.INVALID_CREDENTIALS);
     } catch (NamingException e) {

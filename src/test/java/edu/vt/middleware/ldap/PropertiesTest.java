@@ -95,10 +95,12 @@ public class PropertiesTest
     AssertJUnit.assertEquals("uid=1,ou=test,dc=vt,dc=edu", cc.getBindDn());
     AssertJUnit.assertEquals(8000, cc.getTimeout());
     AssertJUnit.assertFalse(cc.isTlsEnabled());
-    AssertJUnit.assertEquals(1, cc.getProvider().getProperties().size());
+    AssertJUnit.assertEquals(
+      1, cc.getProvider().getProviderConfig().getProperties().size());
     AssertJUnit.assertEquals(
       "true",
-      cc.getProvider().getProperties().get("java.naming.authoritative"));
+      cc.getProvider().getProviderConfig().getProperties().get(
+        "java.naming.authoritative"));
     AssertJUnit.assertEquals(7, cc.getOperationRetry());
     AssertJUnit.assertEquals(2000, cc.getOperationRetryWait());
     AssertJUnit.assertEquals(3, cc.getOperationRetryBackoff());
@@ -154,10 +156,12 @@ public class PropertiesTest
     AssertJUnit.assertEquals("uid=1,ou=test,dc=vt,dc=edu", authCc.getBindDn());
     AssertJUnit.assertEquals(8000, authCc.getTimeout());
     AssertJUnit.assertTrue(authCc.isTlsEnabled());
-    AssertJUnit.assertEquals(1, authCc.getProvider().getProperties().size());
+    AssertJUnit.assertEquals(
+      1, authCc.getProvider().getProviderConfig().getProperties().size());
     AssertJUnit.assertEquals(
       "true",
-      authCc.getProvider().getProperties().get("java.naming.authoritative"));
+      authCc.getProvider().getProviderConfig().getProperties().get(
+        "java.naming.authoritative"));
 
     if (auth.getDnResolver() instanceof ManagedDnResolver) {
       ((ManagedDnResolver) auth.getDnResolver()).close();
@@ -201,10 +205,12 @@ public class PropertiesTest
     AssertJUnit.assertEquals("uid=1,ou=test,dc=vt,dc=edu", cc.getBindDn());
     AssertJUnit.assertEquals(8000, cc.getTimeout());
     AssertJUnit.assertTrue(cc.isTlsEnabled());
-    AssertJUnit.assertEquals(1, cc.getProvider().getProperties().size());
+    AssertJUnit.assertEquals(
+      1, cc.getProvider().getProviderConfig().getProperties().size());
     AssertJUnit.assertEquals(
       "true",
-      cc.getProvider().getProperties().get("java.naming.authoritative"));
+      cc.getProvider().getProviderConfig().getProperties().get(
+        "java.naming.authoritative"));
     AssertJUnit.assertEquals(7, cc.getOperationRetry());
     AssertJUnit.assertEquals(2000, cc.getOperationRetryWait());
     AssertJUnit.assertEquals(3, cc.getOperationRetryBackoff());
@@ -251,10 +257,12 @@ public class PropertiesTest
     AssertJUnit.assertEquals("uid=1,ou=test,dc=vt,dc=edu", authLcc.getBindDn());
     AssertJUnit.assertEquals(8000, authLcc.getTimeout());
     AssertJUnit.assertTrue(authLcc.isTlsEnabled());
-    AssertJUnit.assertEquals(1, authLcc.getProvider().getProperties().size());
+    AssertJUnit.assertEquals(
+      1, authLcc.getProvider().getProviderConfig().getProperties().size());
     AssertJUnit.assertEquals(
       "true",
-      authLcc.getProvider().getProperties().get("java.naming.authoritative"));
+      authLcc.getProvider().getProviderConfig().getProperties().get(
+        "java.naming.authoritative"));
 
     AssertJUnit.assertEquals(
       edu.vt.middleware.ldap.auth.handler.CompareAuthenticationHandler.class,

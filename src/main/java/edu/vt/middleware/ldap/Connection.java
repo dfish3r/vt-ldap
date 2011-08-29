@@ -34,7 +34,7 @@ public class Connection
   protected ConnectionConfig config;
 
   /** LDAP connection factory. */
-  protected ProviderConnectionFactory providerConnectionFactory;
+  protected ProviderConnectionFactory<?> providerConnectionFactory;
 
   /** LDAP connection. */
   protected ProviderConnection providerConnection;
@@ -188,7 +188,7 @@ public class Connection
    *
    * @return  provider connection
    */
-  public ProviderConnectionFactory getProviderConnectionFactory()
+  public ProviderConnectionFactory<?> getProviderConnectionFactory()
   {
     if (providerConnectionFactory == null) {
       throw new IllegalStateException("Connection is not initialized");

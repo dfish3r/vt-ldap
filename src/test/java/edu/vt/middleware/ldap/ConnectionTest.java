@@ -149,7 +149,8 @@ public class ConnectionTest
     conn.open();
     conn.close();
 
-    cc.setConnectionStrategy(ConnectionStrategy.DEFAULT);
+    cc.getProvider().getProviderConfig().setConnectionStrategy(
+      ConnectionStrategy.DEFAULT);
     conn.open();
     conn.close();
     conn.open();
@@ -157,7 +158,8 @@ public class ConnectionTest
     conn.open();
     conn.close();
 
-    cc.setConnectionStrategy(ConnectionStrategy.ACTIVE_PASSIVE);
+    cc.getProvider().getProviderConfig().setConnectionStrategy(
+      ConnectionStrategy.ACTIVE_PASSIVE);
     conn.open();
     conn.close();
     conn.open();
@@ -165,7 +167,8 @@ public class ConnectionTest
     conn.open();
     conn.close();
 
-    cc.setConnectionStrategy(ConnectionStrategy.RANDOM);
+    cc.getProvider().getProviderConfig().setConnectionStrategy(
+      ConnectionStrategy.RANDOM);
     conn.open();
     conn.close();
     conn.open();
