@@ -164,7 +164,7 @@ public abstract class AbstractAuthenticator
    * @param  authResultHandler  to process authentication failures
    * @param  ac  needed by both the authentication handler and the result
    * handlers
-   * @return  ldap connection that the bind occurred on
+   * @return  connection that the bind occurred on
    * @throws  AuthenticationException  if the bind fails
    * @throws  LdapException  if an LDAP error occurs
    */

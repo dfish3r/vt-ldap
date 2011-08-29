@@ -26,12 +26,12 @@ public class RenameOperation extends AbstractOperation<RenameRequest, Void>
   /**
    * Creates a new rename operation.
    *
-   * @param  lc  ldap connection
+   * @param  c  connection
    */
-  public RenameOperation(final Connection lc)
+  public RenameOperation(final Connection c)
   {
-    connection = lc;
-    initialize(lc.getConnectionConfig());
+    connection = c;
+    initialize(c.getConnectionConfig());
   }
 
 

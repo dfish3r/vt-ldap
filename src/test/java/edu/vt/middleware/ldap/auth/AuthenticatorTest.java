@@ -816,9 +816,9 @@ public class AuthenticatorTest extends AbstractTest
     throws Exception
   {
     final Authenticator auth = createTLSAuthenticator(true);
-    final ConnectionConfig authLcc =
+    final ConnectionConfig authCc =
       auth.getAuthenticationHandler().getConnectionConfig();
-    auth.setAuthenticationHandler(new CompareAuthenticationHandler(authLcc));
+    auth.setAuthenticationHandler(new CompareAuthenticationHandler(authCc));
 
     // test plain auth
     try {

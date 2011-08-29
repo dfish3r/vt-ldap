@@ -22,7 +22,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Contains all the configuration data needed to control LDAP connections.
+ * Contains all the configuration data needed to control connections.
  *
  * @author  Middleware Services
  * @version  $Revision$ $Date$

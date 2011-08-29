@@ -23,7 +23,7 @@ import edu.vt.middleware.ldap.SearchOperation;
 import edu.vt.middleware.ldap.SearchRequest;
 
 /**
- * Looks up a user's DN using an LDAP search and keeps the LDAP connection open.
+ * Looks up a user's DN using an LDAP search and keeps the connection open.
  *
  * @author  Middleware Services
  * @version  $Revision: 1634 $ $Date: 2010-09-29 16:03:09 -0400 (Wed, 29 Sep 2010) $
@@ -35,7 +35,7 @@ public class PersistentSearchDnResolver extends SearchDnResolver
   /** serial version uid. */
   private static final long serialVersionUID = -7275676180831565373L;
 
-  /** Ldap connection. */
+  /** Connection. */
   protected Connection connection;
 
 

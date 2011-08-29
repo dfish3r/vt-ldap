@@ -38,7 +38,7 @@ public class ProviderConfig extends AbstractConfig
   /** Additional provider properties. */
   protected Map<String, Object> properties = new HashMap<String, Object>();
 
-  /** Ldap connection strategy. */
+  /** Connection strategy. */
   protected ConnectionStrategy connectionStrategy = ConnectionStrategy.DEFAULT;
 
   /** Whether to log authentication credentials. */

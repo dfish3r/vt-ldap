@@ -38,11 +38,11 @@ public class RetrySearchOperation extends SearchOperation
   /**
    * Creates a new retry search operation.
    *
-   * @param  lc  ldap connection
+   * @param  c  connection
    */
-  public RetrySearchOperation(final Connection lc)
+  public RetrySearchOperation(final Connection c)
   {
-    super(lc);
+    super(c);
   }
 
 

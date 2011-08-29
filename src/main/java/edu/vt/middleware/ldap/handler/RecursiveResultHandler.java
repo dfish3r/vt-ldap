@@ -60,7 +60,7 @@ public class RecursiveResultHandler extends CopyLdapResultHandler
   implements ExtendedLdapResultHandler
 {
 
-  /** Ldap connection to use for searching. */
+  /** Connection to use for searching. */
   private Connection connection;
 
   /** Attribute to recursively search on. */
@@ -93,16 +93,16 @@ public class RecursiveResultHandler extends CopyLdapResultHandler
   /**
    * Creates a new recursive attribute handler.
    *
-   * @param  lc  ldap connection
+   * @param  c  connection
    * @param  searchAttr  attribute to search on
    * @param  mergeAttrs  attribute names to merge
    */
   public RecursiveResultHandler(
-    final Connection lc,
+    final Connection c,
     final String searchAttr,
     final String[] mergeAttrs)
   {
-    connection = lc;
+    connection = c;
     searchAttribute = searchAttr;
     mergeAttributes = mergeAttrs;
     initalizeReturnAttributes();
@@ -119,9 +119,9 @@ public class RecursiveResultHandler extends CopyLdapResultHandler
 
   /** {@inheritDoc} */
   @Override
-  public void setResultConnection(final Connection lc)
+  public void setResultConnection(final Connection c)
   {
-    connection = lc;
+    connection = c;
   }
 
 

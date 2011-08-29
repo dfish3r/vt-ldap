@@ -142,7 +142,7 @@ public abstract class AbstractJndiConnectionFactory
 
   /**
    * Returns the configuration environment for a JNDI ldap context using the
-   * properties found in the supplied ldap connection config.
+   * properties found in the supplied connection config.
    *
    * @param  cc  connection config
    * @return  JNDI ldap context environment

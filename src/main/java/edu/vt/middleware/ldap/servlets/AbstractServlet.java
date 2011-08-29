@@ -123,7 +123,7 @@ public abstract class AbstractServlet extends HttpServlet
 
 
   /**
-   * Performs an ldap search uses this servlets ldap connection pool.
+   * Performs an ldap search uses this servlet's connection pool.
    *
    * @param  query  to execute
    * @param  attrs  to return

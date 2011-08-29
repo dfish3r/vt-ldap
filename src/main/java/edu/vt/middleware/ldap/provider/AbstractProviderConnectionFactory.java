@@ -123,7 +123,7 @@ AbstractProviderConnectionFactory<T extends ProviderConfig>
    *
    * @param  url  to connect to
    * @param  request  bind request data
-   * @return  ldap connection
+   * @return  provider connection
    *
    * @throws  LdapException  if a connection cannot be established
    */

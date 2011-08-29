@@ -29,26 +29,27 @@ public class SearchOperation extends AbstractSearchOperation<SearchRequest>
   /**
    * Creates a new search operation.
    *
-   * @param  lc  ldap connection
+   * @param  c  connection
    */
-  public SearchOperation(final Connection lc)
+  public SearchOperation(final Connection c)
   {
-    connection = lc;
-    initialize(lc.getConnectionConfig());
+    connection = c;
+    initialize(c.getConnectionConfig());
   }
 
 
   /**
    * Creates a new search operation.
    *
-   * @param  lc  ldap connection
+   * @param  conn  connection
    * @param  c  cache
    */
-  public SearchOperation(final Connection lc, final Cache<SearchRequest> c)
+  public SearchOperation(
+    final Connection conn, final Cache<SearchRequest> c)
   {
-    connection = lc;
+    connection = conn;
     cache = c;
-    initialize(lc.getConnectionConfig());
+    initialize(conn.getConnectionConfig());
   }
 
 

@@ -86,9 +86,9 @@ public class TLSSocketFactoryTest
 
 
   /**
-   * @return  ldap connection
+   * @return  connection
    *
-   * @throws  Exception  On ldap connection failure.
+   * @throws  Exception  On connection failure.
    */
   public Connection createTLSLdapConnection()
     throws Exception

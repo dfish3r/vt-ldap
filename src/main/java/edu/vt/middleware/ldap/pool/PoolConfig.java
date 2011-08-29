@@ -163,8 +163,8 @@ public class PoolConfig extends AbstractConfig
 
   /**
    * Returns the expiration time. Default value is {@link
-   * #DEFAULT_EXPIRATION_TIME}. The expiration time represents the max time an
-   * ldap connection should be available before it is considered stale. This
+   * #DEFAULT_EXPIRATION_TIME}. The expiration time represents the max time a
+   * connection should be available before it is considered stale. This
    * value does not apply to connections in the pool if the pool has only the
    * minimum number of connections available.
    *

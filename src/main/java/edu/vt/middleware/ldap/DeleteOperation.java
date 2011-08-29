@@ -26,12 +26,12 @@ public class DeleteOperation extends AbstractOperation<DeleteRequest, Void>
   /**
    * Creates a new delete operation.
    *
-   * @param  lc  ldap connection
+   * @param  c  connection
    */
-  public DeleteOperation(final Connection lc)
+  public DeleteOperation(final Connection c)
   {
-    connection = lc;
-    initialize(lc.getConnectionConfig());
+    connection = c;
+    initialize(c.getConnectionConfig());
   }
 
 

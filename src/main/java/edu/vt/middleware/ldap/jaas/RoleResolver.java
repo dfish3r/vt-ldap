@@ -34,7 +34,7 @@ public class RoleResolver
   /** Logger for this class. */
   protected final Logger logger = LoggerFactory.getLogger(getClass());
 
-  /** Ldap connection config. */
+  /** Connection config. */
   protected ConnectionConfig config;
 
 

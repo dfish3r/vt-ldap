@@ -64,7 +64,7 @@ public class SearchOperationTest extends AbstractTest
     }
   }
 
-  /** Ldap connection instance for concurrency testing. */
+  /** Connection instance for concurrency testing. */
   protected Connection singleConn;
 
 
@@ -206,11 +206,11 @@ public class SearchOperationTest extends AbstractTest
 
 
   /**
-   * @param  createNew  whether to construct a new ldap connection.
+   * @param  createNew  whether to construct a new connection.
    *
-   * @return  ldap connection
+   * @return  connection
    *
-   * @throws  Exception  On ldap connection failure.
+   * @throws  Exception  On connection failure.
    */
   public Connection createLdapConnection(final boolean createNew)
     throws Exception

@@ -20,7 +20,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Class for managing an LDAP connection.
+ * Class for managing a connection to an LDAP.
  *
  * @author  Middleware Services
  * @version  $Revision: 1330 $ $Date: 2010-05-23 18:10:53 -0400 (Sun, 23 May 2010) $
@@ -30,13 +30,13 @@ public class Connection
   /** Logger for this class. */
   protected final Logger logger = LoggerFactory.getLogger(getClass());
 
-  /** LDAP connection configuration. */
+  /** Connection configuration. */
   protected ConnectionConfig config;
 
-  /** LDAP connection factory. */
+  /** Connection factory. */
   protected ProviderConnectionFactory<?> providerConnectionFactory;
 
-  /** LDAP connection. */
+  /** Provider connection. */
   protected ProviderConnection providerConnection;
 
 
@@ -45,7 +45,7 @@ public class Connection
 
 
   /**
-   * Creates a new ldap connection.
+   * Creates a new connection.
    *
    * @param  ldapUrl  to connect to
    */
@@ -56,7 +56,7 @@ public class Connection
 
 
   /**
-   * Creates a new ldap connection.
+   * Creates a new connection.
    *
    * @param  cc  connection configuration
    */
@@ -96,7 +96,7 @@ public class Connection
 
 
   /**
-   * Prepares this ldap connection for use. This method should only be invoked
+   * Prepares this connection for use. This method should only be invoked
    * if provider connection factory needs to be modified before the connection
    * is opened.
    */

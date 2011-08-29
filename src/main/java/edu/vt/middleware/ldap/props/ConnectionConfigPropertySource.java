@@ -30,13 +30,13 @@ public final class ConnectionConfigPropertySource
   extends AbstractPropertySource<ConnectionConfig>
 {
 
-  /** Invoker for ldap connection config. */
+  /** Invoker for connection config. */
   private static final ConnectionConfigPropertyInvoker INVOKER =
     new ConnectionConfigPropertyInvoker(ConnectionConfig.class);
 
 
   /**
-   * Creates a new ldap connection config property source using the default
+   * Creates a new connection config property source using the default
    * properties file.
    *
    * @param  cc  connection config to invoke properties on
@@ -51,7 +51,7 @@ public final class ConnectionConfigPropertySource
 
 
   /**
-   * Creates a new ldap connection config property source.
+   * Creates a new connection config property source.
    *
    * @param  cc  connection config to invoke properties on
    * @param  is  to read properties from
@@ -64,7 +64,7 @@ public final class ConnectionConfigPropertySource
 
 
   /**
-   * Creates a new ldap connection config property source.
+   * Creates a new connection config property source.
    *
    * @param  cc  connection config to invoke properties on
    * @param  props  to read properties from
@@ -77,7 +77,7 @@ public final class ConnectionConfigPropertySource
 
 
   /**
-   * Creates a new ldap connection config property source.
+   * Creates a new connection config property source.
    *
    * @param  cc  connection config to invoke properties on
    * @param  domain  that properties are in

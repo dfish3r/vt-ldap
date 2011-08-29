@@ -25,7 +25,7 @@ import edu.vt.middleware.ldap.pool.PoolException;
 import edu.vt.middleware.ldap.pool.SoftLimitConnectionPool;
 
 /**
- * Looks up a user's DN using a pool of LDAP connections.
+ * Looks up a user's DN using a pool of connections.
  *
  * @author  Middleware Services
  * @version  $Revision$ $Date$

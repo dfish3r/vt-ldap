@@ -17,7 +17,7 @@ import edu.vt.middleware.ldap.LdapException;
 import edu.vt.middleware.ldap.ResultCode;
 
 /**
- * Exception thrown when an ldap connection attempt fails.
+ * Exception thrown when a connection attempt fails.
  *
  * @author  Middleware Services
  * @version  $Revision: 1330 $

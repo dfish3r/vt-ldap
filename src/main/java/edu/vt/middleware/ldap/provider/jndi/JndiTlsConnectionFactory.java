@@ -28,8 +28,8 @@ import edu.vt.middleware.ldap.auth.AuthenticationException;
 import edu.vt.middleware.ldap.provider.ConnectionException;
 
 /**
- * Creates ldap connections using the JNDI {@link InitialLdapContext} class with
- * the start tls extended operation.
+ * Creates connections using the JNDI {@link InitialLdapContext} class with the
+ * start TLS extended operation.
  *
  * @author  Middleware Services
  * @version  $Revision$

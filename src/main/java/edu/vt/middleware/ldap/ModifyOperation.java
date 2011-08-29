@@ -26,12 +26,12 @@ public class ModifyOperation extends AbstractOperation<ModifyRequest, Void>
   /**
    * Creates a new modify operation.
    *
-   * @param  lc  ldap connection
+   * @param  c  connection
    */
-  public ModifyOperation(final Connection lc)
+  public ModifyOperation(final Connection c)
   {
-    connection = lc;
-    initialize(lc.getConnectionConfig());
+    connection = c;
+    initialize(c.getConnectionConfig());
   }
 
 

@@ -24,7 +24,7 @@ import edu.vt.middleware.ldap.auth.AuthenticationException;
 import edu.vt.middleware.ldap.provider.ConnectionException;
 
 /**
- * Creates ldap connections using the JNDI {@link InitialLdapContext} class.
+ * Creates connections using the JNDI {@link InitialLdapContext} class.
  *
  * @author  Middleware Services
  * @version  $Revision$

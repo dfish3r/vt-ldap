@@ -26,7 +26,7 @@ public abstract class AbstractAuthenticationHandler
   implements AuthenticationHandler
 {
 
-  /** LDAP connection configuration. */
+  /** Connection configuration. */
   protected ConnectionConfig config;
 
 

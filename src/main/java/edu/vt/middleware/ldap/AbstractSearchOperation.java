@@ -63,7 +63,7 @@ public abstract class AbstractSearchOperation<Q extends SearchRequest>
   /** {@inheritDoc} */
   @Override
   protected void initializeRequest(
-    final Q request, final ConnectionConfig lc)
+    final Q request, final ConnectionConfig cc)
   {
     request.setLdapResultHandlers(
       initializeLdapResultHandlers(request, connection));

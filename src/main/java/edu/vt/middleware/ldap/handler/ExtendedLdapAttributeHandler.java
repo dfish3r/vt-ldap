@@ -29,7 +29,7 @@ public interface ExtendedLdapAttributeHandler extends LdapAttributeHandler
   /**
    * Gets the connection used by the search operation invoking this handler.
    *
-   * @return  ldap connection
+   * @return  connection
    */
   Connection getResultConnection();
 
@@ -37,7 +37,7 @@ public interface ExtendedLdapAttributeHandler extends LdapAttributeHandler
   /**
    * Sets the connection used by the search operation invoking this handler.
    *
-   * @param  lc  ldap connection
+   * @param  c  connection
    */
-  void setResultConnection(final Connection lc);
+  void setResultConnection(final Connection c);
 }

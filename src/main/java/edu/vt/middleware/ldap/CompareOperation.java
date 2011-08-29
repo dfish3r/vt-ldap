@@ -27,12 +27,12 @@ public class CompareOperation
   /**
    * Creates a new compare operation.
    *
-   * @param  lc  ldap connection
+   * @param  c  connection
    */
-  public CompareOperation(final Connection lc)
+  public CompareOperation(final Connection c)
   {
-    connection = lc;
-    initialize(lc.getConnectionConfig());
+    connection = c;
+    initialize(c.getConnectionConfig());
   }
 
 

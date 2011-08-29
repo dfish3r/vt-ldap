@@ -95,13 +95,13 @@ public abstract class AbstractCli
 
 
   /**
-   * Initialize an ldap connection config with command line options.
+   * Initialize a connection config with command line options.
    *
    * @param  line  parsed command line arguments
    *
-   * @return  ldap connection config that has been initialized
+   * @return  connection config that has been initialized
    *
-   * @throws  Exception  if an ldap connection config cannot be created
+   * @throws  Exception  if a connection config cannot be created
    */
   protected ConnectionConfig initConnectionConfig(
     final CommandLine line)

@@ -34,7 +34,7 @@ public class RecursiveAttributeHandler extends CopyLdapAttributeHandler
   implements ExtendedLdapAttributeHandler
 {
 
-  /** Ldap connection to use for searching. */
+  /** Connection to use for searching. */
   private Connection connection;
 
   /** Attribute name to search for. */
@@ -55,12 +55,12 @@ public class RecursiveAttributeHandler extends CopyLdapAttributeHandler
   /**
    * Creates a new recursive attribute handler.
    *
-   * @param  lc  ldap connection
+   * @param  c  connection
    * @param  name  of the attribute
    */
-  public RecursiveAttributeHandler(final Connection lc, final String name)
+  public RecursiveAttributeHandler(final Connection c, final String name)
   {
-    connection = lc;
+    connection = c;
     attributeName = name;
   }
 
@@ -75,9 +75,9 @@ public class RecursiveAttributeHandler extends CopyLdapAttributeHandler
 
   /** {@inheritDoc} */
   @Override
-  public void setResultConnection(final Connection lc)
+  public void setResultConnection(final Connection c)
   {
-    connection = lc;
+    connection = c;
   }
 
 

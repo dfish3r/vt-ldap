@@ -26,12 +26,12 @@ public class AddOperation extends AbstractOperation<AddRequest, Void>
   /**
    * Creates a new add operation.
    *
-   * @param  lc  ldap connection
+   * @param  c  connection
    */
-  public AddOperation(final Connection lc)
+  public AddOperation(final Connection c)
   {
-    connection = lc;
-    initialize(lc.getConnectionConfig());
+    connection = c;
+    initialize(c.getConnectionConfig());
   }
 
 

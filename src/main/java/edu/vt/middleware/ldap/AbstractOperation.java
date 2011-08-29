@@ -32,7 +32,7 @@ public abstract class AbstractOperation<Q extends Request, S>
   /** Logger for this class. */
   protected final Logger logger = LoggerFactory.getLogger(getClass());
 
-  /** Ldap connection to perform operation. */
+  /** Connection to perform operation. */
   protected Connection connection;
 
   /** Number of times to retry ldap operations. */

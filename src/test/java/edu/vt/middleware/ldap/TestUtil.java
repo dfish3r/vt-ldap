@@ -78,7 +78,7 @@ public final class TestUtil
 
 
   /**
-   * @return  ldap connection
+   * @return  connection
    *
    * @throws  Exception  On test failure.
    */
@@ -93,7 +93,7 @@ public final class TestUtil
 
 
   /**
-   * @return  ldap connection
+   * @return  connection
    *
    * @throws  Exception  On test failure.
    */
@@ -106,7 +106,7 @@ public final class TestUtil
 
 
   /**
-   * @return  ldap connection
+   * @return  connection
    *
    * @throws  Exception  On test failure.
    */
@@ -121,7 +121,7 @@ public final class TestUtil
 
 
   /**
-   * @return  ldap connection
+   * @return  connection
    *
    * @throws  Exception  On test failure.
    */
@@ -136,7 +136,7 @@ public final class TestUtil
 
 
   /**
-   * @return  ldap connection
+   * @return  connection
    *
    * @throws  Exception  On test failure.
    */
@@ -151,7 +151,7 @@ public final class TestUtil
 
 
   /**
-   * @return  ldap connection
+   * @return  connection
    *
    * @throws  Exception  On test failure.
    */

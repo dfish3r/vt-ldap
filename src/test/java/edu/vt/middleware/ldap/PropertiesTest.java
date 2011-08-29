@@ -250,18 +250,18 @@ public class PropertiesTest
       ResultCode.PARTIAL_RESULTS,
       searchRequest.getSearchIgnoreResultCodes()[1]);
 
-    final ConnectionConfig authLcc =
+    final ConnectionConfig authCc =
       ((SearchDnResolver) auth.getDnResolver()).getConnectionConfig();
     AssertJUnit.assertEquals(
-      "ldap://ed-dev.middleware.vt.edu:14389", authLcc.getLdapUrl());
-    AssertJUnit.assertEquals("uid=1,ou=test,dc=vt,dc=edu", authLcc.getBindDn());
-    AssertJUnit.assertEquals(8000, authLcc.getTimeout());
-    AssertJUnit.assertTrue(authLcc.isTlsEnabled());
+      "ldap://ed-dev.middleware.vt.edu:14389", authCc.getLdapUrl());
+    AssertJUnit.assertEquals("uid=1,ou=test,dc=vt,dc=edu", authCc.getBindDn());
+    AssertJUnit.assertEquals(8000, authCc.getTimeout());
+    AssertJUnit.assertTrue(authCc.isTlsEnabled());
     AssertJUnit.assertEquals(
-      1, authLcc.getProvider().getProviderConfig().getProperties().size());
+      1, authCc.getProvider().getProviderConfig().getProperties().size());
     AssertJUnit.assertEquals(
       "true",
-      authLcc.getProvider().getProviderConfig().getProperties().get(
+      authCc.getProvider().getProviderConfig().getProperties().get(
         "java.naming.authoritative"));
 
     AssertJUnit.assertEquals(
