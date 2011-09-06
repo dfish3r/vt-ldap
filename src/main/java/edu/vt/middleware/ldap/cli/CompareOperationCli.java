@@ -18,6 +18,7 @@ import edu.vt.middleware.ldap.CompareOperation;
 import edu.vt.middleware.ldap.CompareRequest;
 import edu.vt.middleware.ldap.Connection;
 import edu.vt.middleware.ldap.ConnectionConfig;
+import edu.vt.middleware.ldap.ConnectionFactory;
 import edu.vt.middleware.ldap.LdapAttribute;
 import edu.vt.middleware.ldap.LdapUtil;
 import edu.vt.middleware.ldap.props.ConnectionConfigPropertySource;
@@ -90,7 +91,7 @@ public class CompareOperationCli extends AbstractCli
         la = new LdapAttribute(attr[0], attr[1]);
       }
       compare(
-        initConnectionConfig(line), line.getOptionValue(OPT_DN), la);
+        initConnectionFactory(line), line.getOptionValue(OPT_DN), la);
     }
   }
 
@@ -98,17 +99,17 @@ public class CompareOperationCli extends AbstractCli
   /**
    * Executes the ldap compare operation.
    *
-   * @param  cc  connection configuration
+   * @param  cf  connection factory
    * @param  dn  to compare attribute on
    * @param  la  attribute to compare
    *
    * @throws  Exception  on any LDAP search error
    */
   protected void compare(
-    final ConnectionConfig cc, final String dn, final LdapAttribute la)
+    final ConnectionFactory cf, final String dn, final LdapAttribute la)
     throws Exception
   {
-    final Connection conn = new Connection(cc);
+    final Connection conn = cf.getConnection();
     conn.open();
 
     final CompareOperation op = new CompareOperation(conn);

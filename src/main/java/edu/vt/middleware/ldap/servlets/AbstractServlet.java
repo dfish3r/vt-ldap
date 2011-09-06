@@ -17,20 +17,17 @@ import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import edu.vt.middleware.ldap.Connection;
-import edu.vt.middleware.ldap.ConnectionConfig;
 import edu.vt.middleware.ldap.LdapException;
 import edu.vt.middleware.ldap.LdapResult;
 import edu.vt.middleware.ldap.SearchFilter;
 import edu.vt.middleware.ldap.SearchOperation;
 import edu.vt.middleware.ldap.SearchRequest;
-import edu.vt.middleware.ldap.pool.BlockingConnectionPool;
-import edu.vt.middleware.ldap.pool.ConnectionPool;
 import edu.vt.middleware.ldap.pool.ConnectionPoolType;
 import edu.vt.middleware.ldap.pool.PoolConfig;
 import edu.vt.middleware.ldap.pool.PoolException;
-import edu.vt.middleware.ldap.pool.SoftLimitConnectionPool;
-import edu.vt.middleware.ldap.props.ConnectionConfigPropertySource;
+import edu.vt.middleware.ldap.pool.PooledConnectionFactory;
 import edu.vt.middleware.ldap.props.PoolConfigPropertySource;
+import edu.vt.middleware.ldap.props.PooledConnectionFactoryPropertySource;
 import edu.vt.middleware.ldap.props.SearchRequestPropertySource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -65,8 +62,8 @@ public abstract class AbstractServlet extends HttpServlet
   /** Logger for this class. */
   protected final Logger logger = LoggerFactory.getLogger(getClass());
 
-  /** Pool for searching. */
-  private ConnectionPool ldapPool;
+  /** Connections for searching. */
+  private PooledConnectionFactory connectionFactory;
 
   /** Search request for storing search properties. */
   private SearchRequest searchRequest;
@@ -87,12 +84,6 @@ public abstract class AbstractServlet extends HttpServlet
     final String propertiesFile = getInitParameter(PROPERTIES_FILE);
     logger.debug("{} = {}", PROPERTIES_FILE, propertiesFile);
 
-    final ConnectionConfig cc = new ConnectionConfig();
-    final ConnectionConfigPropertySource ccSource =
-      new ConnectionConfigPropertySource(
-        cc, SearchServlet.class.getResourceAsStream(propertiesFile));
-    ccSource.initialize();
-
     searchRequest = new SearchRequest();
     final SearchRequestPropertySource srSource =
       new SearchRequestPropertySource(
@@ -102,23 +93,24 @@ public abstract class AbstractServlet extends HttpServlet
     final String poolPropertiesFile = getInitParameter(POOL_PROPERTIES_FILE);
     logger.debug("{} = {}", POOL_PROPERTIES_FILE, poolPropertiesFile);
 
+    final String poolType = getInitParameter(POOL_TYPE);
+    logger.debug("{} = {}", POOL_TYPE, poolType);
+
     final PoolConfig pc = new PoolConfig();
     final PoolConfigPropertySource pcSource =
       new PoolConfigPropertySource(
         pc, SearchServlet.class.getResourceAsStream(poolPropertiesFile));
     pcSource.initialize();
 
-    final String poolType = getInitParameter(POOL_TYPE);
-    logger.debug("{} = {}", POOL_TYPE, poolType);
-    if (ConnectionPoolType.BLOCKING == ConnectionPoolType.valueOf(poolType)) {
-      ldapPool = new BlockingConnectionPool(pc, cc);
-    } else if (ConnectionPoolType.SOFTLIMIT ==
-               ConnectionPoolType.valueOf(poolType)) {
-      ldapPool = new SoftLimitConnectionPool(pc, cc);
-    } else {
-      throw new ServletException("Unknown pool type: " + poolType);
-    }
-    ldapPool.initialize();
+    connectionFactory = new PooledConnectionFactory();
+    final PooledConnectionFactoryPropertySource cfPropSource =
+      new PooledConnectionFactoryPropertySource(
+        connectionFactory,
+        SearchServlet.class.getResourceAsStream(propertiesFile));
+    cfPropSource.initialize();
+    connectionFactory.setPoolConfig(pc);
+    connectionFactory.setPoolType(ConnectionPoolType.valueOf(poolType));
+    connectionFactory.initialize();
   }
 
 
@@ -140,7 +132,7 @@ public abstract class AbstractServlet extends HttpServlet
       try {
         Connection conn = null;
         try {
-          conn = ldapPool.getConnection();
+          conn = connectionFactory.getConnection();
           final SearchOperation search = new SearchOperation(conn);
           final SearchRequest sr = SearchRequest.newSearchRequest(
             searchRequest);
@@ -167,7 +159,7 @@ public abstract class AbstractServlet extends HttpServlet
   public void destroy()
   {
     try {
-      ldapPool.close();
+      connectionFactory.close();
     } finally {
       super.destroy();
     }

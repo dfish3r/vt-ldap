@@ -17,6 +17,8 @@ import java.util.Arrays;
 import javax.net.ssl.SSLSocket;
 import edu.vt.middleware.ldap.AnyHostnameVerifier;
 import edu.vt.middleware.ldap.Connection;
+import edu.vt.middleware.ldap.ConnectionConfig;
+import edu.vt.middleware.ldap.ConnectionFactory;
 import edu.vt.middleware.ldap.SearchOperation;
 import edu.vt.middleware.ldap.SearchRequest;
 import edu.vt.middleware.ldap.TestUtil;
@@ -86,11 +88,11 @@ public class TLSSocketFactoryTest
 
 
   /**
-   * @return  connection
+   * @return  connection configuration
    *
    * @throws  Exception  On connection failure.
    */
-  public Connection createTLSLdapConnection()
+  public ConnectionConfig createTLSLdapConnectionConfig()
     throws Exception
   {
     // configure TLSSocketFactory
@@ -104,13 +106,12 @@ public class TLSSocketFactoryTest
     sf.setSSLContextInitializer(ctxInit);
     sf.initialize();
 
+    final ConnectionConfig cc = TestUtil.readConnectionConfig(null);
     // configure ldap object to use TLS
-    final Connection conn = TestUtil.createConnection();
-    conn.getConnectionConfig().setTls(true);
-    conn.getConnectionConfig().setSslSocketFactory(sf);
-    conn.getConnectionConfig().setHostnameVerifier(
-      new AnyHostnameVerifier());
-    return conn;
+    cc.setTls(true);
+    cc.setSslSocketFactory(sf);
+    cc.setHostnameVerifier(new AnyHostnameVerifier());
+    return cc;
   }
 
 
@@ -119,9 +120,9 @@ public class TLSSocketFactoryTest
   public void setEnabledCipherSuites()
     throws Exception
   {
-    final Connection conn = createTLSLdapConnection();
-    final TLSSocketFactory sf =
-      (TLSSocketFactory) conn.getConnectionConfig().getSslSocketFactory();
+    final ConnectionConfig cc = createTLSLdapConnectionConfig();
+    final TLSSocketFactory sf = (TLSSocketFactory) cc.getSslSocketFactory();
+    Connection conn = ConnectionFactory.getConnection(cc);
 
     conn.open();
     SearchOperation search = new SearchOperation(conn);
@@ -135,6 +136,7 @@ public class TLSSocketFactoryTest
     conn.close();
 
     sf.setEnabledCipherSuites(UNKNOWN_CIPHERS);
+    conn = ConnectionFactory.getConnection(cc);
     try {
       conn.open();
       AssertJUnit.fail(
@@ -147,6 +149,7 @@ public class TLSSocketFactoryTest
     }
 
     sf.setEnabledCipherSuites(CIPHERS);
+    conn = ConnectionFactory.getConnection(cc);
     conn.open();
     search = new SearchOperation(conn);
     search.execute(
@@ -163,9 +166,9 @@ public class TLSSocketFactoryTest
   public void setEnabledProtocols()
     throws Exception
   {
-    final Connection conn = createTLSLdapConnection();
-    final TLSSocketFactory sf =
-      (TLSSocketFactory) conn.getConnectionConfig().getSslSocketFactory();
+    final ConnectionConfig cc = createTLSLdapConnectionConfig();
+    final TLSSocketFactory sf = (TLSSocketFactory) cc.getSslSocketFactory();
+    Connection conn = ConnectionFactory.getConnection(cc);
 
     conn.open();
     SearchOperation search = new SearchOperation(conn);
@@ -180,6 +183,7 @@ public class TLSSocketFactoryTest
     conn.close();
 
     sf.setEnabledProtocols(FAIL_PROTOCOLS);
+    conn = ConnectionFactory.getConnection(cc);
     try {
       conn.open();
       AssertJUnit.fail(
@@ -192,6 +196,7 @@ public class TLSSocketFactoryTest
     }
 
     sf.setEnabledProtocols(UNKNOWN_PROTOCOLS);
+    conn = ConnectionFactory.getConnection(cc);
     try {
       conn.open();
       AssertJUnit.fail(
@@ -204,6 +209,7 @@ public class TLSSocketFactoryTest
     }
 
     sf.setEnabledProtocols(PROTOCOLS);
+    conn = ConnectionFactory.getConnection(cc);
     conn.open();
     search = new SearchOperation(conn);
     search.execute(

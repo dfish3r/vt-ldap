@@ -19,6 +19,7 @@ import edu.vt.middleware.ldap.AddOperation;
 import edu.vt.middleware.ldap.AddRequest;
 import edu.vt.middleware.ldap.Connection;
 import edu.vt.middleware.ldap.ConnectionConfig;
+import edu.vt.middleware.ldap.ConnectionFactory;
 import edu.vt.middleware.ldap.LdapEntry;
 import edu.vt.middleware.ldap.LdapResult;
 import edu.vt.middleware.ldap.ldif.LdifReader;
@@ -76,7 +77,7 @@ public class AddOperationCli extends AbstractCli
       printHelp();
     } else {
       add(
-        initConnectionConfig(line), line.getOptionValue(OPT_FILE));
+        initConnectionFactory(line), line.getOptionValue(OPT_FILE));
     }
   }
 
@@ -84,15 +85,15 @@ public class AddOperationCli extends AbstractCli
   /**
    * Executes the ldap add operation.
    *
-   * @param  cc  connection configuration
+   * @param  cf  connection factory
    * @param  file  to read ldif from
    *
    * @throws  Exception  on any LDAP search error
    */
-  protected void add(final ConnectionConfig cc, final String file)
+  protected void add(final ConnectionFactory cf, final String file)
     throws Exception
   {
-    final Connection conn = new Connection(cc);
+    final Connection conn = cf.getConnection();
     conn.open();
 
     final LdifReader reader = new LdifReader(new FileReader(file));

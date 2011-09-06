@@ -13,13 +13,15 @@
 */
 package edu.vt.middleware.ldap.pool;
 
+import edu.vt.middleware.ldap.LdapException;
+
 /**
  * Base exception thrown when a pool operation fails.
  *
  * @author  Middleware Services
  * @version  $Revision$
  */
-public class PoolException extends Exception
+public class PoolException extends LdapException
 {
 
   /** serialVersionUID. */

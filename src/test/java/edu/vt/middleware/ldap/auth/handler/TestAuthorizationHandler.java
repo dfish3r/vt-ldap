@@ -38,7 +38,7 @@ public class TestAuthorizationHandler implements AuthorizationHandler
   /** {@inheritDoc} */
   @Override
   public void process(
-    final AuthenticationCriteria ac, final Connection conn)
+    final Connection conn, final AuthenticationCriteria ac)
     throws LdapException
   {
     if (!succeed) {

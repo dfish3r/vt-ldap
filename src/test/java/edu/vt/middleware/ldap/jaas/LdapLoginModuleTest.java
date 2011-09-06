@@ -317,30 +317,6 @@ public class LdapLoginModuleTest extends AbstractTest
     invocationCount = TEST_INVOCATION_COUNT,
     timeOut = TEST_TIME_OUT
   )
-  public void persistentDnResolverContextTest(
-    final String dn,
-    final String user,
-    final String credential)
-    throws Exception
-  {
-    doContextTest("vt-ldap-persistent-dnr", dn, user, "", credential, false);
-  }
-
-
-  /**
-   * @param  dn  of this user
-   * @param  user  to authenticate.
-   * @param  credential  to authenticate with.
-   *
-   * @throws  Exception  On test failure.
-   */
-  @Parameters({ "jaasDn", "jaasUser", "jaasCredential" })
-  @Test(
-    groups = {"jaastest"},
-    threadPoolSize = TEST_THREAD_POOL_SIZE,
-    invocationCount = TEST_INVOCATION_COUNT,
-    timeOut = TEST_TIME_OUT
-  )
   public void pooledDnResolverContextTest(
     final String dn,
     final String user,

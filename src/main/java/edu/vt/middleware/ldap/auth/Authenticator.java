@@ -16,6 +16,7 @@ package edu.vt.middleware.ldap.auth;
 import java.util.Arrays;
 import edu.vt.middleware.ldap.Connection;
 import edu.vt.middleware.ldap.ConnectionConfig;
+import edu.vt.middleware.ldap.ConnectionFactory;
 import edu.vt.middleware.ldap.Credential;
 import edu.vt.middleware.ldap.LdapEntry;
 import edu.vt.middleware.ldap.LdapException;
@@ -61,7 +62,22 @@ public class Authenticator extends AbstractAuthenticator
    */
   public Authenticator(final ConnectionConfig cc)
   {
-    this(new SearchDnResolver(cc), new BindAuthenticationHandler(cc));
+    this(
+      new SearchDnResolver(new ConnectionFactory(cc)),
+      new BindAuthenticationHandler(new ConnectionFactory(cc)));
+  }
+
+
+  /**
+   * Creates a new authenticator. Defaults the DN resolver to
+   * {@link SearchDnResolver} and the authentication handler to
+   * {@link BindAuthenticationHandler}.
+   *
+   * @param  cf  connection factory
+   */
+  public Authenticator(final ConnectionFactory cf)
+  {
+    this(new SearchDnResolver(cf), new BindAuthenticationHandler(cf));
   }
 
 

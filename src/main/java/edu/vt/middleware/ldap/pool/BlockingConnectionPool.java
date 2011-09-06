@@ -16,7 +16,7 @@ package edu.vt.middleware.ldap.pool;
 import java.util.NoSuchElementException;
 import java.util.concurrent.TimeUnit;
 import edu.vt.middleware.ldap.Connection;
-import edu.vt.middleware.ldap.ConnectionConfig;
+import edu.vt.middleware.ldap.ConnectionFactory;
 
 /**
  * Implements a pool of connections that has a set minimum and maximum size. The
@@ -42,11 +42,11 @@ public class BlockingConnectionPool extends AbstractConnectionPool
   /**
    * Creates a new blocking pool.
    *
-   * @param  cc  connection configuration
+   * @param  cf  connection factory
    */
-  public BlockingConnectionPool(final ConnectionConfig cc)
+  public BlockingConnectionPool(final ConnectionFactory cf)
   {
-    super(new PoolConfig(), cc);
+    super(new PoolConfig(), cf);
   }
 
 
@@ -54,11 +54,11 @@ public class BlockingConnectionPool extends AbstractConnectionPool
    * Creates a new blocking pool.
    *
    * @param  pc  pool configuration
-   * @param  cc  connection configuration
+   * @param  cf  connection factory
    */
-  public BlockingConnectionPool(final PoolConfig pc, final ConnectionConfig cc)
+  public BlockingConnectionPool(final PoolConfig pc, final ConnectionFactory cf)
   {
-    super(pc, cc);
+    super(pc, cf);
   }
 
 

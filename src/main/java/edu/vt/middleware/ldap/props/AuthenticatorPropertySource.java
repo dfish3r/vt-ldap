@@ -16,15 +16,15 @@ package edu.vt.middleware.ldap.props;
 import java.io.InputStream;
 import java.util.Properties;
 import java.util.Set;
-import edu.vt.middleware.ldap.ConnectionConfig;
-import edu.vt.middleware.ldap.LdapException;
+import edu.vt.middleware.ldap.ConnectionFactory;
+import edu.vt.middleware.ldap.ConnectionFactoryManager;
 import edu.vt.middleware.ldap.auth.Authenticator;
 import edu.vt.middleware.ldap.auth.DnResolver;
-import edu.vt.middleware.ldap.auth.ManagedDnResolver;
 import edu.vt.middleware.ldap.auth.SearchDnResolver;
 import edu.vt.middleware.ldap.auth.handler.AuthenticationHandler;
 import edu.vt.middleware.ldap.auth.handler.BindAuthenticationHandler;
-import edu.vt.middleware.ldap.auth.handler.ManagedAuthenticationHandler;
+import edu.vt.middleware.ldap.pool.PooledConnectionFactory;
+import edu.vt.middleware.ldap.pool.PooledConnectionFactoryManager;
 
 /**
  * Reads properties specific to
@@ -105,8 +105,6 @@ public final class AuthenticatorPropertySource
   {
     initializeObject(INVOKER);
 
-    ConnectionConfig connConfig = null;
-
     // initialize a SearchDnResolver by default
     DnResolver dnResolver = object.getDnResolver();
     if (dnResolver == null) {
@@ -122,23 +120,18 @@ public final class AuthenticatorPropertySource
           dnResolver, propertiesDomain, properties);
       sPropSource.initialize();
     }
-    if (dnResolver instanceof SearchDnResolver) {
-      final SearchDnResolver sdr = (SearchDnResolver) dnResolver;
-      if (sdr.getConnectionConfig() == null) {
-        connConfig = new ConnectionConfig();
-        final ConnectionConfigPropertySource ccPropSource =
-          new ConnectionConfigPropertySource(
-            connConfig, propertiesDomain, properties);
-        ccPropSource.initialize();
-        sdr.setConnectionConfig(connConfig);
+    if (dnResolver instanceof PooledConnectionFactoryManager) {
+      final PooledConnectionFactoryManager cfm =
+        (PooledConnectionFactoryManager) dnResolver;
+      if (cfm.getConnectionFactory() == null) {
+        initPooledConnectionFactoryManager(cfm);
       }
     }
-    if (dnResolver instanceof ManagedDnResolver) {
-      final ManagedDnResolver mdr = (ManagedDnResolver) dnResolver;
-      try {
-        mdr.initialize();
-      } catch (LdapException e) {
-        logger.error("Failed to initialize managed dn resolver", e);
+    if (dnResolver instanceof ConnectionFactoryManager) {
+      final ConnectionFactoryManager cfm =
+        (ConnectionFactoryManager) dnResolver;
+      if (cfm.getConnectionFactory() == null) {
+        initConnectionFactoryManager(cfm);
       }
     }
 
@@ -159,25 +152,56 @@ public final class AuthenticatorPropertySource
           authHandler, propertiesDomain, properties);
       sPropSource.initialize();
     }
-    if (authHandler.getConnectionConfig() == null) {
-      if (connConfig == null) {
-        connConfig = new ConnectionConfig();
-        final ConnectionConfigPropertySource ccPropSource =
-          new ConnectionConfigPropertySource(
-            connConfig, propertiesDomain, properties);
-        ccPropSource.initialize();
-      }
-      authHandler.setConnectionConfig(connConfig);
-    }
-    if (authHandler instanceof ManagedAuthenticationHandler) {
-      final ManagedAuthenticationHandler mah =
-        (ManagedAuthenticationHandler) authHandler;
-      try {
-        mah.initialize();
-      } catch (LdapException e) {
-        logger.error("Failed to initialize managed authentication handler", e);
+    if (authHandler instanceof PooledConnectionFactoryManager) {
+      final PooledConnectionFactoryManager cfm =
+        (PooledConnectionFactoryManager) authHandler;
+      if (cfm.getConnectionFactory() == null) {
+        initPooledConnectionFactoryManager(cfm);
       }
     }
+    if (authHandler instanceof ConnectionFactoryManager) {
+      final ConnectionFactoryManager cfm =
+        (ConnectionFactoryManager) authHandler;
+      if (cfm.getConnectionFactory() == null) {
+        initConnectionFactoryManager(cfm);
+      }
+    }
+  }
+
+
+  /**
+   * Initializes the supplied connection factory manager using the properties
+   * in this property source.
+   *
+   * @param  cfm  to initialize
+   */
+  private void initConnectionFactoryManager(final ConnectionFactoryManager cfm)
+  {
+    final ConnectionFactory cf = new ConnectionFactory();
+    final ConnectionFactoryPropertySource cfPropSource =
+      new ConnectionFactoryPropertySource(
+        cf, propertiesDomain, properties);
+    cfPropSource.initialize();
+    cfm.setConnectionFactory(cf);
+  }
+
+
+  /**
+   * Initializes the supplied connection factory manager using the properties
+   * in this property source.
+   *
+   * @param  cfm  to initialize
+   */
+  private void initPooledConnectionFactoryManager(
+    final PooledConnectionFactoryManager cfm)
+  {
+    final PooledConnectionFactory cf = new PooledConnectionFactory();
+    final PooledConnectionFactoryPropertySource cfPropSource =
+      new PooledConnectionFactoryPropertySource(
+        cf, propertiesDomain, properties);
+    cfPropSource.initialize();
+    cf.initialize();
+    cfm.setConnectionFactory(cf);
   }
 
 

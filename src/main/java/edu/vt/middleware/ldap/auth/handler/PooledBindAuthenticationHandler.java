@@ -14,14 +14,9 @@
 package edu.vt.middleware.ldap.auth.handler;
 
 import edu.vt.middleware.ldap.Connection;
-import edu.vt.middleware.ldap.ConnectionConfig;
 import edu.vt.middleware.ldap.LdapException;
-import edu.vt.middleware.ldap.pool.BlockingConnectionPool;
-import edu.vt.middleware.ldap.pool.ConnectionPool;
-import edu.vt.middleware.ldap.pool.ConnectionPoolType;
-import edu.vt.middleware.ldap.pool.PoolConfig;
-import edu.vt.middleware.ldap.pool.PoolException;
-import edu.vt.middleware.ldap.pool.SoftLimitConnectionPool;
+import edu.vt.middleware.ldap.pool.PooledConnectionFactory;
+import edu.vt.middleware.ldap.pool.PooledConnectionFactoryManager;
 
 /**
  * Provides an LDAP authentication implementation that leverages a pool of LDAP
@@ -30,18 +25,13 @@ import edu.vt.middleware.ldap.pool.SoftLimitConnectionPool;
  * @author  Middleware Services
  * @version  $Revision$
  */
-public class PooledBindAuthenticationHandler extends BindAuthenticationHandler
-  implements ManagedAuthenticationHandler
+public class PooledBindAuthenticationHandler
+  extends AbstractAuthenticationHandler
+  implements PooledConnectionFactoryManager
 {
 
-  /** Connection pool. */
-  protected ConnectionPool pool;
-
-  /** Connection pool type. */
-  protected ConnectionPoolType poolType = ConnectionPoolType.BLOCKING;
-
-  /** Pool config. */
-  protected PoolConfig poolConfig = new PoolConfig();
+  /** Connection factory. */
+  protected PooledConnectionFactory factory;
 
 
   /** Default constructor. */
@@ -51,119 +41,46 @@ public class PooledBindAuthenticationHandler extends BindAuthenticationHandler
   /**
    * Creates a new pooled bind authentication handler.
    *
-   * @param  cc  connection config
+   * @param  cf  connection factory
    */
-  public PooledBindAuthenticationHandler(final ConnectionConfig cc)
+  public PooledBindAuthenticationHandler(final PooledConnectionFactory cf)
   {
-    setConnectionConfig(cc);
-  }
-
-
-  /**
-   * Creates a new pooled bind authentication handler.
-   *
-   * @param  pc  pool config
-   * @param  cc  connection config
-   */
-  public PooledBindAuthenticationHandler(
-    final PoolConfig pc, final ConnectionConfig cc)
-  {
-    setPoolConfig(pc);
-    setConnectionConfig(cc);
-  }
-
-
-  /**
-   * Returns the pool type.
-   *
-   * @return  pool type
-   */
-  public ConnectionPoolType getPoolType()
-  {
-    return poolType;
-  }
-
-
-  /**
-   * Sets the pool type.
-   *
-   * @param  pt  pool type
-   */
-  public void setPoolType(final ConnectionPoolType pt)
-  {
-    poolType = pt;
-  }
-
-
-  /**
-   * Returns the pool config.
-   *
-   * @return  pool config
-   */
-  public PoolConfig getPoolConfig()
-  {
-    return poolConfig;
-  }
-
-
-  /**
-   * Sets the pool config.
-   *
-   * @param  pc  pool config
-   */
-  public void setPoolConfig(final PoolConfig pc)
-  {
-    poolConfig = pc;
+    setConnectionFactory(cf);
   }
 
 
   /** {@inheritDoc} */
   @Override
-  public void initialize()
+  public PooledConnectionFactory getConnectionFactory()
   {
-    if (ConnectionPoolType.BLOCKING == poolType) {
-      pool = new BlockingConnectionPool(poolConfig, config);
-    } else if (ConnectionPoolType.SOFTLIMIT == poolType) {
-      pool = new SoftLimitConnectionPool(poolConfig, config);
-    } else {
-      throw new IllegalArgumentException("Unknown pool type: " + poolType);
-    }
-    pool.initialize();
+    return factory;
   }
 
 
   /** {@inheritDoc} */
   @Override
-  public Connection authenticate(final AuthenticationCriteria ac)
+  public void setConnectionFactory(final PooledConnectionFactory cf)
+  {
+    factory = cf;
+  }
+
+
+  /** {@inheritDoc} */
+  @Override
+  protected Connection getConnection()
     throws LdapException
   {
-    Connection conn = null;
-    try {
-      conn = pool.getConnection();
-    } catch (PoolException e) {
-      logger.error("Could not retrieve connection from pool", e);
-      throw new LdapException(e);
-    }
-    boolean closeConn = false;
-    try {
-      conn.bind(ac.getDn(), ac.getCredential());
-    } catch (LdapException e) {
-      closeConn = true;
-      throw e;
-    } finally {
-      if (closeConn) {
-        conn.close();
-      }
-    }
-    return conn;
+    return factory.getConnection();
   }
 
 
   /** {@inheritDoc} */
   @Override
-  public void close()
+  protected void authenticateInternal(
+    final Connection c, final AuthenticationCriteria ac)
+    throws LdapException
   {
-    pool.close();
+    c.bind(ac.getDn(), ac.getCredential());
   }
 
 
@@ -177,9 +94,9 @@ public class PooledBindAuthenticationHandler extends BindAuthenticationHandler
   {
     return
       String.format(
-        "[%s@%d::pool=%s]",
+        "[%s@%d::factory=%s]",
         getClass().getName(),
         hashCode(),
-        pool);
+        factory);
   }
 }

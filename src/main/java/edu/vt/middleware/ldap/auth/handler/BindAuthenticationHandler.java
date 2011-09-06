@@ -14,10 +14,9 @@
 package edu.vt.middleware.ldap.auth.handler;
 
 import edu.vt.middleware.ldap.Connection;
-import edu.vt.middleware.ldap.ConnectionConfig;
+import edu.vt.middleware.ldap.ConnectionFactory;
+import edu.vt.middleware.ldap.ConnectionFactoryManager;
 import edu.vt.middleware.ldap.LdapException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Provides an LDAP authentication implementation that leverages the LDAP bind
@@ -26,11 +25,13 @@ import org.slf4j.LoggerFactory;
  * @author  Middleware Services
  * @version  $Revision$
  */
-public class BindAuthenticationHandler extends AbstractAuthenticationHandler
+public class BindAuthenticationHandler
+  extends AbstractAuthenticationHandler
+  implements ConnectionFactoryManager
 {
 
-  /** Logger for this class. */
-  protected final Logger logger = LoggerFactory.getLogger(getClass());
+  /** Connection factory. */
+  protected ConnectionFactory factory;
 
 
   /** Default constructor. */
@@ -40,22 +41,46 @@ public class BindAuthenticationHandler extends AbstractAuthenticationHandler
   /**
    * Creates a new bind authentication handler.
    *
-   * @param  cc  connection config
+   * @param  cf  connection factory
    */
-  public BindAuthenticationHandler(final ConnectionConfig cc)
+  public BindAuthenticationHandler(final ConnectionFactory cf)
   {
-    setConnectionConfig(cc);
+    setConnectionFactory(cf);
   }
 
 
   /** {@inheritDoc} */
   @Override
-  public Connection authenticate(final AuthenticationCriteria ac)
+  public ConnectionFactory getConnectionFactory()
+  {
+    return factory;
+  }
+
+
+  /** {@inheritDoc} */
+  @Override
+  public void setConnectionFactory(final ConnectionFactory cf)
+  {
+    factory = cf;
+  }
+
+
+  /** {@inheritDoc} */
+  @Override
+  protected Connection getConnection()
     throws LdapException
   {
-    final Connection conn = new Connection(config);
-    conn.open(ac.getDn(), ac.getCredential());
-    return conn;
+    return factory.getConnection();
+  }
+
+
+  /** {@inheritDoc} */
+  @Override
+  protected void authenticateInternal(
+    final Connection c, final AuthenticationCriteria ac)
+    throws LdapException
+  {
+    c.open(ac.getDn(), ac.getCredential());
   }
 
 
@@ -69,9 +94,9 @@ public class BindAuthenticationHandler extends AbstractAuthenticationHandler
   {
     return
       String.format(
-        "[%s@%d::config=%s]",
+        "[%s@%d::factory=%s]",
         getClass().getName(),
         hashCode(),
-        config);
+        factory);
   }
 }

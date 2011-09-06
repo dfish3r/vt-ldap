@@ -214,7 +214,7 @@ public abstract class AbstractAuthenticator
     if (authzHandler != null && authzHandler.length > 0) {
       for (AuthorizationHandler azh : authzHandler) {
         try {
-          azh.process(ac, conn);
+          azh.process(conn, ac);
           logger.info(
             "Authorization succeeded for dn: {} with handler: {}",
             ac.getDn(),

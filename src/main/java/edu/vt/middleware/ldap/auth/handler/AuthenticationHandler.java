@@ -14,7 +14,6 @@
 package edu.vt.middleware.ldap.auth.handler;
 
 import edu.vt.middleware.ldap.Connection;
-import edu.vt.middleware.ldap.ConnectionConfig;
 import edu.vt.middleware.ldap.LdapException;
 
 /**
@@ -42,20 +41,4 @@ public interface AuthenticationHandler
    */
   Connection authenticate(AuthenticationCriteria ac)
     throws LdapException;
-
-
-  /**
-   * Returns the connection configuration.
-   *
-   * @return  connection configuration
-   */
-  ConnectionConfig getConnectionConfig();
-
-
-  /**
-   * Sets the connection configuration.
-   *
-   * @param  cc  connection config
-   */
-  void setConnectionConfig(final ConnectionConfig cc);
 }

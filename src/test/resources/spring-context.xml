@@ -6,8 +6,8 @@
   xsi:schemaLocation="
 http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
 
-  <bean id="connection"
-    class="edu.vt.middleware.ldap.Connection"
+  <bean id="connectionFactory"
+    class="edu.vt.middleware.ldap.ConnectionFactory"
     p:connectionConfig-ref="connectionConfig"
   />
   

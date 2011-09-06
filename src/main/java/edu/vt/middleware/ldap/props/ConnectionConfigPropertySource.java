@@ -17,7 +17,6 @@ import java.io.InputStream;
 import java.util.Properties;
 import java.util.Set;
 import edu.vt.middleware.ldap.ConnectionConfig;
-import edu.vt.middleware.ldap.provider.ProviderConfig;
 
 /**
  * Reads properties specific to {@link ConnectionConfig} and returns an
@@ -99,17 +98,6 @@ public final class ConnectionConfigPropertySource
   public void initialize()
   {
     initializeObject(INVOKER);
-    final ProviderConfig pc = new ProviderConfig();
-    final ProviderConfigPropertySource pcPropSource =
-      new ProviderConfigPropertySource(pc, propertiesDomain, properties);
-    pcPropSource.initialize();
-    object.getProvider().getProviderConfig().setConnectionStrategy(
-      pc.getConnectionStrategy());
-    object.getProvider().getProviderConfig().setLogCredentials(
-      pc.getLogCredentials());
-    object.getProvider().getProviderConfig().setOperationRetryResultCodes(
-      pc.getOperationRetryResultCodes());
-    object.getProvider().getProviderConfig().setProperties(extraProps);
   }
 
 

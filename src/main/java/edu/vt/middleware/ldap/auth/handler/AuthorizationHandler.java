@@ -38,6 +38,6 @@ public interface AuthorizationHandler
    * @throws  AuthorizationException  if authorization fails
    * @throws  LdapException  if ldap operation fails
    */
-  void process(AuthenticationCriteria ac, Connection conn)
+  void process(Connection conn, AuthenticationCriteria ac)
     throws LdapException;
 }

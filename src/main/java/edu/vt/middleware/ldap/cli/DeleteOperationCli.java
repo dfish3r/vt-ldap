@@ -16,6 +16,7 @@ package edu.vt.middleware.ldap.cli;
 import java.util.Map;
 import edu.vt.middleware.ldap.Connection;
 import edu.vt.middleware.ldap.ConnectionConfig;
+import edu.vt.middleware.ldap.ConnectionFactory;
 import edu.vt.middleware.ldap.DeleteOperation;
 import edu.vt.middleware.ldap.DeleteRequest;
 import edu.vt.middleware.ldap.props.ConnectionConfigPropertySource;
@@ -72,7 +73,7 @@ public class DeleteOperationCli extends AbstractCli
       printHelp();
     } else {
       delete(
-        initConnectionConfig(line), line.getOptionValues(OPT_DN));
+        initConnectionFactory(line), line.getOptionValues(OPT_DN));
     }
   }
 
@@ -80,15 +81,15 @@ public class DeleteOperationCli extends AbstractCli
   /**
    * Executes the ldap delete operation.
    *
-   * @param  cc  connection configuration.
+   * @param  cf  connection factory.
    * @param  entryDns  to delete
    *
    * @throws  Exception  on any LDAP search error
    */
-  protected void delete(final ConnectionConfig cc, final String[] entryDns)
+  protected void delete(final ConnectionFactory cf, final String[] entryDns)
     throws Exception
   {
-    final Connection conn = new Connection(cc);
+    final Connection conn = cf.getConnection();
     conn.open();
 
     for (String dn : entryDns) {

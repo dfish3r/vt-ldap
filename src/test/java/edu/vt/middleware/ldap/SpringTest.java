@@ -43,7 +43,9 @@ public class SpringTest
         "/spring-context.xml",
       });
     AssertJUnit.assertTrue(context.getBeanDefinitionCount() > 0);
-    final Connection conn = (Connection) context.getBean("connection");
+    final ConnectionFactory cf =
+      (ConnectionFactory) context.getBean("connectionFactory");
+    final Connection conn = cf.getConnection();
     conn.open();
     conn.close();
 

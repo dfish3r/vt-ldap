@@ -18,6 +18,7 @@ import java.io.OutputStreamWriter;
 import java.util.Map;
 import edu.vt.middleware.ldap.Connection;
 import edu.vt.middleware.ldap.ConnectionConfig;
+import edu.vt.middleware.ldap.ConnectionFactory;
 import edu.vt.middleware.ldap.LdapResult;
 import edu.vt.middleware.ldap.SearchOperation;
 import edu.vt.middleware.ldap.SearchRequest;
@@ -107,7 +108,7 @@ public class SearchOperationCli extends AbstractCli
       printHelp();
     } else {
       search(
-        initConnectionConfig(line),
+        initConnectionFactory(line),
         initSearchRequest(line));
     }
   }
@@ -116,15 +117,15 @@ public class SearchOperationCli extends AbstractCli
   /**
    * Executes the ldap search operation.
    *
-   * @param  cc  connection configuration
+   * @param  cf  connection factory
    * @param  sr  search request
    *
    * @throws  Exception  on any LDAP search error
    */
-  protected void search(final ConnectionConfig cc, final SearchRequest sr)
+  protected void search(final ConnectionFactory cf, final SearchRequest sr)
     throws Exception
   {
-    final Connection conn = new Connection(cc);
+    final Connection conn = cf.getConnection();
     conn.open();
 
     final SearchOperation op = new SearchOperation(conn);

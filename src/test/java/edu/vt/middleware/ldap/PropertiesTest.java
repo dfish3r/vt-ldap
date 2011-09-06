@@ -17,16 +17,20 @@ import java.util.Arrays;
 import javax.security.auth.login.LoginContext;
 import edu.vt.middleware.ldap.auth.AuthenticationRequest;
 import edu.vt.middleware.ldap.auth.Authenticator;
-import edu.vt.middleware.ldap.auth.ManagedDnResolver;
+import edu.vt.middleware.ldap.auth.PooledSearchDnResolver;
 import edu.vt.middleware.ldap.auth.SearchDnResolver;
+import edu.vt.middleware.ldap.auth.handler.AuthenticationHandler;
 import edu.vt.middleware.ldap.handler.DnAttributeResultHandler;
 import edu.vt.middleware.ldap.handler.LdapResultHandler;
 import edu.vt.middleware.ldap.handler.MergeResultHandler;
 import edu.vt.middleware.ldap.handler.RecursiveResultHandler;
 import edu.vt.middleware.ldap.jaas.RoleResolver;
 import edu.vt.middleware.ldap.jaas.TestCallbackHandler;
+import edu.vt.middleware.ldap.pool.PooledConnectionFactory;
+import edu.vt.middleware.ldap.pool.PooledConnectionFactoryManager;
 import edu.vt.middleware.ldap.props.AuthenticatorPropertySource;
 import edu.vt.middleware.ldap.props.ConnectionConfigPropertySource;
+import edu.vt.middleware.ldap.props.ConnectionFactoryPropertySource;
 import edu.vt.middleware.ldap.props.SearchRequestPropertySource;
 import org.testng.AssertJUnit;
 import org.testng.annotations.BeforeClass;
@@ -83,12 +87,14 @@ public class PropertiesTest
   public void parserProperties()
     throws Exception
   {
-    final ConnectionConfig cc = new ConnectionConfig();
-    final ConnectionConfigPropertySource ccSource =
-      new ConnectionConfigPropertySource(
-        cc,
+    final ConnectionFactory cf = new ConnectionFactory();
+    final ConnectionFactoryPropertySource cfSource =
+      new ConnectionFactoryPropertySource(
+        cf,
         PropertiesTest.class.getResourceAsStream("/ldap.parser.properties"));
-    ccSource.initialize();
+    cfSource.initialize();
+
+    final ConnectionConfig cc = cf.getConnectionConfig();
 
     AssertJUnit.assertEquals(
       "ldap://ed-dev.middleware.vt.edu:14389", cc.getLdapUrl());
@@ -96,10 +102,10 @@ public class PropertiesTest
     AssertJUnit.assertEquals(8000, cc.getTimeout());
     AssertJUnit.assertFalse(cc.isTlsEnabled());
     AssertJUnit.assertEquals(
-      1, cc.getProvider().getProviderConfig().getProperties().size());
+      1, cf.getProvider().getProviderConfig().getProperties().size());
     AssertJUnit.assertEquals(
       "true",
-      cc.getProvider().getProviderConfig().getProperties().get(
+      cf.getProvider().getProviderConfig().getProperties().get(
         "java.naming.authoritative"));
     AssertJUnit.assertEquals(7, cc.getOperationRetry());
     AssertJUnit.assertEquals(2000, cc.getOperationRetryWait());
@@ -149,22 +155,31 @@ public class PropertiesTest
         PropertiesTest.class.getResourceAsStream("/ldap.parser.properties"));
     aSource.initialize();
 
-    final ConnectionConfig authCc =
-      ((SearchDnResolver) auth.getDnResolver()).getConnectionConfig();
+    final ConnectionFactory authCf =
+      ((SearchDnResolver) auth.getDnResolver()).getConnectionFactory();
+    final ConnectionConfig authCc = authCf.getConnectionConfig();
     AssertJUnit.assertEquals(
       "ldap://ed-auth.middleware.vt.edu:14389", authCc.getLdapUrl());
     AssertJUnit.assertEquals("uid=1,ou=test,dc=vt,dc=edu", authCc.getBindDn());
     AssertJUnit.assertEquals(8000, authCc.getTimeout());
     AssertJUnit.assertTrue(authCc.isTlsEnabled());
     AssertJUnit.assertEquals(
-      1, authCc.getProvider().getProviderConfig().getProperties().size());
+      1, authCf.getProvider().getProviderConfig().getProperties().size());
     AssertJUnit.assertEquals(
       "true",
-      authCc.getProvider().getProviderConfig().getProperties().get(
+      authCf.getProvider().getProviderConfig().getProperties().get(
         "java.naming.authoritative"));
 
-    if (auth.getDnResolver() instanceof ManagedDnResolver) {
-      ((ManagedDnResolver) auth.getDnResolver()).close();
+    if (auth.getDnResolver() instanceof PooledConnectionFactoryManager) {
+      final PooledConnectionFactoryManager cfm =
+        (PooledConnectionFactoryManager) auth.getDnResolver();
+      cfm.getConnectionFactory().close();
+    }
+    final AuthenticationHandler ah = auth.getAuthenticationHandler();
+    if (ah instanceof PooledConnectionFactoryManager) {
+      final PooledConnectionFactoryManager cfm =
+        (PooledConnectionFactoryManager) ah;
+      cfm.getConnectionFactory().close();
     }
   }
 
@@ -196,20 +211,22 @@ public class PropertiesTest
       }
     }
 
-    final ConnectionConfig cc =
-      auth.getAuthenticationHandler().getConnectionConfig();
+    AuthenticationHandler ah = auth.getAuthenticationHandler();
+    final ConnectionFactory cf =
+      ((ConnectionFactoryManager) ah).getConnectionFactory();
+    final ConnectionConfig cc = cf.getConnectionConfig();
 
-    AssertJUnit.assertNotNull(cc.getProvider().getClass());
+    AssertJUnit.assertNotNull(cf.getProvider().getClass());
     AssertJUnit.assertEquals(
       "ldap://ed-dev.middleware.vt.edu:14389", cc.getLdapUrl());
     AssertJUnit.assertEquals("uid=1,ou=test,dc=vt,dc=edu", cc.getBindDn());
     AssertJUnit.assertEquals(8000, cc.getTimeout());
     AssertJUnit.assertTrue(cc.isTlsEnabled());
     AssertJUnit.assertEquals(
-      1, cc.getProvider().getProviderConfig().getProperties().size());
+      1, cf.getProvider().getProviderConfig().getProperties().size());
     AssertJUnit.assertEquals(
       "true",
-      cc.getProvider().getProviderConfig().getProperties().get(
+      cf.getProvider().getProviderConfig().getProperties().get(
         "java.naming.authoritative"));
     AssertJUnit.assertEquals(7, cc.getOperationRetry());
     AssertJUnit.assertEquals(2000, cc.getOperationRetryWait());
@@ -250,29 +267,38 @@ public class PropertiesTest
       ResultCode.PARTIAL_RESULTS,
       searchRequest.getSearchIgnoreResultCodes()[1]);
 
-    final ConnectionConfig authCc =
-      ((SearchDnResolver) auth.getDnResolver()).getConnectionConfig();
+    final PooledConnectionFactory authCf =
+      ((PooledSearchDnResolver) auth.getDnResolver()).getConnectionFactory();
+    final ConnectionConfig authCc = authCf.getConnectionConfig();
     AssertJUnit.assertEquals(
       "ldap://ed-dev.middleware.vt.edu:14389", authCc.getLdapUrl());
     AssertJUnit.assertEquals("uid=1,ou=test,dc=vt,dc=edu", authCc.getBindDn());
     AssertJUnit.assertEquals(8000, authCc.getTimeout());
     AssertJUnit.assertTrue(authCc.isTlsEnabled());
     AssertJUnit.assertEquals(
-      1, authCc.getProvider().getProviderConfig().getProperties().size());
+      1, authCf.getProvider().getProviderConfig().getProperties().size());
     AssertJUnit.assertEquals(
       "true",
-      authCc.getProvider().getProviderConfig().getProperties().get(
+      authCf.getProvider().getProviderConfig().getProperties().get(
         "java.naming.authoritative"));
 
     AssertJUnit.assertEquals(
       edu.vt.middleware.ldap.auth.handler.CompareAuthenticationHandler.class,
       auth.getAuthenticationHandler().getClass());
     AssertJUnit.assertEquals(
-      edu.vt.middleware.ldap.auth.PersistentSearchDnResolver.class,
+      edu.vt.middleware.ldap.auth.PooledSearchDnResolver.class,
       auth.getDnResolver().getClass());
 
-    if (auth.getDnResolver() instanceof ManagedDnResolver) {
-      ((ManagedDnResolver) auth.getDnResolver()).close();
+    if (auth.getDnResolver() instanceof PooledConnectionFactoryManager) {
+      final PooledConnectionFactoryManager cfm =
+        (PooledConnectionFactoryManager) auth.getDnResolver();
+      cfm.getConnectionFactory().close();
+    }
+    ah = auth.getAuthenticationHandler();
+    if (ah instanceof PooledConnectionFactoryManager) {
+      final PooledConnectionFactoryManager cfm =
+        (PooledConnectionFactoryManager) ah;
+      cfm.getConnectionFactory().close();
     }
   }
 }

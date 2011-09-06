@@ -17,10 +17,8 @@ import java.util.HashMap;
 import java.util.Map;
 import edu.vt.middleware.ldap.auth.AuthenticationRequest;
 import edu.vt.middleware.ldap.auth.Authenticator;
-import edu.vt.middleware.ldap.auth.DnResolver;
-import edu.vt.middleware.ldap.auth.ManagedDnResolver;
 import edu.vt.middleware.ldap.auth.handler.AuthenticationHandler;
-import edu.vt.middleware.ldap.auth.handler.ManagedAuthenticationHandler;
+import edu.vt.middleware.ldap.pool.PooledConnectionFactoryManager;
 import edu.vt.middleware.ldap.props.AuthenticationRequestPropertySource;
 import edu.vt.middleware.ldap.props.AuthenticatorPropertySource;
 
@@ -106,13 +104,16 @@ public class PropertiesAuthenticatorFactory extends AbstractPropertiesFactory
   {
     for (Map.Entry<String, Authenticator> e : cache.entrySet()) {
       final Authenticator a = e.getValue();
-      final DnResolver dr = a.getDnResolver();
-      if (dr instanceof ManagedDnResolver) {
-        ((ManagedDnResolver) dr).close();
+      if (a.getDnResolver() instanceof PooledConnectionFactoryManager) {
+        final PooledConnectionFactoryManager cfm =
+          (PooledConnectionFactoryManager) a.getDnResolver();
+        cfm.getConnectionFactory().close();
       }
       final AuthenticationHandler ah = a.getAuthenticationHandler();
-      if (ah instanceof ManagedAuthenticationHandler) {
-        ((ManagedAuthenticationHandler) ah).close();
+      if (ah instanceof PooledConnectionFactoryManager) {
+        final PooledConnectionFactoryManager cfm =
+          (PooledConnectionFactoryManager) ah;
+        cfm.getConnectionFactory().close();
       }
     }
   }

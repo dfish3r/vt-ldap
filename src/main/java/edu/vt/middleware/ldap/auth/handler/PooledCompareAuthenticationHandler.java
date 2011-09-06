@@ -11,63 +11,55 @@
   Version: $Revision$
   Updated: $Date$
 */
-package edu.vt.middleware.ldap.auth;
+package edu.vt.middleware.ldap.auth.handler;
 
-import java.io.Serializable;
-import java.util.Arrays;
 import edu.vt.middleware.ldap.Connection;
 import edu.vt.middleware.ldap.LdapException;
 import edu.vt.middleware.ldap.pool.PooledConnectionFactory;
 import edu.vt.middleware.ldap.pool.PooledConnectionFactoryManager;
 
 /**
- * Looks up a user's DN using a pool of connections.
+ * Provides an LDAP authentication implementation that leverages a pool of ldap
+ * connections to perform the compare operation against the userPassword
+ * attribute. The default password scheme used is 'SHA'.
  *
  * @author  Middleware Services
- * @version  $Revision$ $Date$
+ * @version  $Revision$
  */
-public class PooledSearchDnResolver extends AbstractSearchDnResolver
-  implements PooledConnectionFactoryManager, Serializable
+public class PooledCompareAuthenticationHandler
+  extends AbstractCompareAuthenticationHandler
+  implements PooledConnectionFactoryManager
 {
-
-  /** serial version uid. */
-  private static final long serialVersionUID = -1728263498360652469L;
 
   /** Connection factory. */
   protected PooledConnectionFactory factory;
 
 
   /** Default constructor. */
-  public PooledSearchDnResolver() {}
+  public PooledCompareAuthenticationHandler() {}
 
 
   /**
-   * Creates a new pooled search dn resolver.
+   * Creates a new pooled compare authentication handler.
    *
    * @param  cf  connection factory
    */
-  public PooledSearchDnResolver(final PooledConnectionFactory cf)
+  public PooledCompareAuthenticationHandler(final PooledConnectionFactory cf)
   {
     setConnectionFactory(cf);
   }
 
 
-  /**
-   * Returns the connection factory.
-   *
-   * @return  connection factory
-   */
+  /** {@inheritDoc} */
+  @Override
   public PooledConnectionFactory getConnectionFactory()
   {
     return factory;
   }
 
 
-  /**
-   * Sets the connection factory.
-   *
-   * @param  cf  connection factory
-   */
+  /** {@inheritDoc} */
+  @Override
   public void setConnectionFactory(final PooledConnectionFactory cf)
   {
     factory = cf;
@@ -93,15 +85,10 @@ public class PooledSearchDnResolver extends AbstractSearchDnResolver
   {
     return
       String.format(
-        "[%s@%d::factory=%s, baseDn=%s, userFilter=%s, userFilterArgs=%s, " +
-        "allowMultipleDns=%s, subtreeSearch=%s]",
+        "[%s@%d::factory=%s, passwordScheme=%s]",
         getClass().getName(),
         hashCode(),
         factory,
-        baseDn,
-        userFilter,
-        userFilterArgs != null ? Arrays.asList(userFilterArgs) : null,
-        allowMultipleDns,
-        subtreeSearch);
+        passwordScheme);
   }
 }

@@ -78,7 +78,7 @@ public class CompareAuthorizationHandler implements AuthorizationHandler
   /** {@inheritDoc} */
   @Override
   public void process(
-    final AuthenticationCriteria ac, final Connection conn)
+    final Connection conn, final AuthenticationCriteria ac)
     throws LdapException
   {
     final SearchFilter filter = new SearchFilter(searchFilter.getFilter());

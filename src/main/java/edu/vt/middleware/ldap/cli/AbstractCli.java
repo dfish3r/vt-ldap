@@ -20,9 +20,9 @@ import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
-import edu.vt.middleware.ldap.ConnectionConfig;
+import edu.vt.middleware.ldap.ConnectionFactory;
 import edu.vt.middleware.ldap.Credential;
-import edu.vt.middleware.ldap.props.ConnectionConfigPropertySource;
+import edu.vt.middleware.ldap.props.ConnectionFactoryPropertySource;
 import edu.vt.middleware.ldap.props.PropertySource.PropertyDomain;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
@@ -95,30 +95,31 @@ public abstract class AbstractCli
 
 
   /**
-   * Initialize a connection config with command line options.
+   * Initialize a connection factory with command line options.
    *
    * @param  line  parsed command line arguments
    *
-   * @return  connection config that has been initialized
+   * @return  connection factory that has been initialized
    *
    * @throws  Exception  if a connection config cannot be created
    */
-  protected ConnectionConfig initConnectionConfig(
+  protected ConnectionFactory initConnectionFactory(
     final CommandLine line)
     throws Exception
   {
-    final ConnectionConfig config = new ConnectionConfig();
-    final ConnectionConfigPropertySource ccSource =
-      new ConnectionConfigPropertySource(
-        config, getPropertiesFromOptions(PropertyDomain.LDAP.value(), line));
-    ccSource.initialize();
-    if (config.getBindDn() != null && config.getBindCredential() == null) {
+    final ConnectionFactory factory = new ConnectionFactory();
+    final ConnectionFactoryPropertySource cfSource =
+      new ConnectionFactoryPropertySource(
+        factory, getPropertiesFromOptions(PropertyDomain.LDAP.value(), line));
+    cfSource.initialize();
+    if (factory.getConnectionConfig().getBindDn() != null &&
+        factory.getConnectionConfig().getBindCredential() == null) {
       // prompt the user to enter a password
       final char[] pass = System.console().readPassword(
-        "[Enter password for %s]: ", config.getBindDn());
-      config.setBindCredential(new Credential(pass));
+        "[Enter password for %s]: ", factory.getConnectionConfig().getBindDn());
+      factory.getConnectionConfig().setBindCredential(new Credential(pass));
     }
-    return config;
+    return factory;
   }
 
 

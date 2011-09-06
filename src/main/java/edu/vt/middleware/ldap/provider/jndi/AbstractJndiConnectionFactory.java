@@ -213,4 +213,21 @@ public abstract class AbstractJndiConnectionFactory
     }
     return env;
   }
+
+
+  /**
+   * Provides a descriptive string representation of this instance.
+   *
+   * @return  string representation
+   */
+  @Override
+  public String toString()
+  {
+    return
+      String.format(
+        "[%s@%d::config=%s]",
+        getClass().getName(),
+        hashCode(),
+        config);
+  }
 }

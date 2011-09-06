@@ -21,8 +21,13 @@ http://www.springframework.org/schema/util http://www.springframework.org/schema
         p:prunePeriod="60"
       />
     </constructor-arg>
-    <constructor-arg index="1" ref="connectionConfig"/>
+    <constructor-arg index="1" ref="connectionFactory"/>
   </bean>
+  
+  <bean id="connectionFactory"
+    class="edu.vt.middleware.ldap.ConnectionFactory"
+    p:connectionConfig-ref="connectionConfig"
+  />
   
   <bean id="connectionConfig"
     class="edu.vt.middleware.ldap.ConnectionConfig"

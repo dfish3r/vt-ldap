@@ -909,15 +909,16 @@ public class SearchOperationTest extends AbstractTest
   public void searchWithRetry(final String resultCode)
     throws Exception
   {
-    final Connection conn = createLdapConnection(true);
-    conn.initialize();
-
     final ResultCode retryResultCode = ResultCode.valueOf(resultCode);
-    conn.getProviderConnectionFactory().getProviderConfig().
-      setOperationRetryResultCodes(new ResultCode[] {retryResultCode, });
+    final ConnectionFactory cf = new ConnectionFactory(
+      TestUtil.readConnectionConfig(null));
+    cf.getProvider().getProviderConfig().setOperationRetryResultCodes(
+      new ResultCode[] {retryResultCode, });
+
+    Connection conn = cf.getConnection();
 
     conn.open();
-    final RetrySearchOperation search = new RetrySearchOperation(conn);
+    RetrySearchOperation search = new RetrySearchOperation(conn);
 
     // test defaults
     try {
@@ -950,11 +951,11 @@ public class SearchOperationTest extends AbstractTest
 
     // test no exception
     conn.close();
-    search.reset();
-    search.setOperationRetry(1);
 
-    conn.getProviderConnectionFactory().getProviderConfig().
-      setOperationRetryResultCodes(null);
+    cf.getProvider().getProviderConfig().setOperationRetryResultCodes(null);
+    conn = cf.getConnection();
+    search = new RetrySearchOperation(conn);
+    search.setOperationRetry(1);
 
     conn.open();
     try {
@@ -971,12 +972,13 @@ public class SearchOperationTest extends AbstractTest
 
     // test retry count and wait time
     conn.close();
-    search.reset();
+
+    cf.getProvider().getProviderConfig().setOperationRetryResultCodes(
+      new ResultCode[] {retryResultCode, });
+    conn = cf.getConnection();
+    search = new RetrySearchOperation(conn);
     search.setOperationRetry(3);
     search.setOperationRetryWait(1000);
-
-    conn.getProviderConnectionFactory().getProviderConfig().
-      setOperationRetryResultCodes(new ResultCode[] {retryResultCode, });
 
     conn.open();
     try {

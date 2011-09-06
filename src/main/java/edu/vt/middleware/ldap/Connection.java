@@ -40,29 +40,17 @@ public class Connection
   protected ProviderConnection providerConnection;
 
 
-  /** Default constructor. */
-  public Connection() {}
-
-
-  /**
-   * Creates a new connection.
-   *
-   * @param  ldapUrl  to connect to
-   */
-  public Connection(final String ldapUrl)
-  {
-    this(new ConnectionConfig(ldapUrl));
-  }
-
-
   /**
    * Creates a new connection.
    *
    * @param  cc  connection configuration
+   * @param  pcf  provider connection factory
    */
-  public Connection(final ConnectionConfig cc)
+  protected Connection(
+    final ConnectionConfig cc, final ProviderConnectionFactory<?> pcf)
   {
-    setConnectionConfig(cc);
+    config = cc;
+    providerConnectionFactory = pcf;
   }
 
 
@@ -71,41 +59,26 @@ public class Connection
    *
    * @return  connection configuration
    */
-  public ConnectionConfig getConnectionConfig()
+  protected ConnectionConfig getConnectionConfig()
   {
     return config;
   }
 
 
   /**
-   * Sets the connection configuration.
+   * Returns the provider specific connection. Must be called after a successful
+   * call to {@link #open()}.
    *
-   * @param  cc  connection configuration
+   * @return  provider connection
    *
-   * @throws  IllegalStateException  if this connection has already been
-   * initialized
+   * @throws  IllegalStateException  if the connection is not open
    */
-  public void setConnectionConfig(final ConnectionConfig cc)
+  protected ProviderConnection getProviderConnection()
   {
-    if (providerConnectionFactory != null) {
-      throw new IllegalStateException(
-        "Cannot set configuration after connection has been initialized");
+    if (providerConnection == null) {
+      throw new IllegalStateException("Connection is not open");
     }
-    config = cc;
-  }
-
-
-  /**
-   * Prepares this connection for use. This method should only be invoked
-   * if provider connection factory needs to be modified before the connection
-   * is opened.
-   */
-  public synchronized void initialize()
-  {
-    if (providerConnectionFactory == null) {
-      providerConnectionFactory =
-        config.getProvider().getConnectionFactory(config);
-    }
+    return providerConnection;
   }
 
 
@@ -144,7 +117,6 @@ public class Connection
     if (providerConnection != null) {
       throw new IllegalStateException("Connection already open");
     }
-    initialize();
     providerConnection = providerConnectionFactory.create(
       new BindRequest(bindDn, bindCredential, config.getSaslConfig()));
   }
@@ -162,38 +134,6 @@ public class Connection
     } finally {
       providerConnection = null;
     }
-  }
-
-
-  /**
-   * Returns the provider specific connection. Must be called after a successful
-   * call to {@link #open()}.
-   *
-   * @return  provider connection
-   *
-   * @throws  IllegalStateException  if the connection is not open
-   */
-  public ProviderConnection getProviderConnection()
-  {
-    if (providerConnection == null) {
-      throw new IllegalStateException("Connection is not open");
-    }
-    return providerConnection;
-  }
-
-
-  /**
-   * Returns the provider specific connection factory. Must be called after a
-   * successful call to {@link #initialize()}.
-   *
-   * @return  provider connection
-   */
-  public ProviderConnectionFactory<?> getProviderConnectionFactory()
-  {
-    if (providerConnectionFactory == null) {
-      throw new IllegalStateException("Connection is not initialized");
-    }
-    return providerConnectionFactory;
   }
 
 

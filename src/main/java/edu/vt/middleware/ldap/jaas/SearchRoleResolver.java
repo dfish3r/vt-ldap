@@ -11,7 +11,7 @@
   Version: $Revision$
   Updated: $Date$
 */
-package edu.vt.middleware.ldap.auth.handler;
+package edu.vt.middleware.ldap.jaas;
 
 import edu.vt.middleware.ldap.Connection;
 import edu.vt.middleware.ldap.ConnectionFactory;
@@ -19,15 +19,12 @@ import edu.vt.middleware.ldap.ConnectionFactoryManager;
 import edu.vt.middleware.ldap.LdapException;
 
 /**
- * Provides an LDAP authentication implementation that leverages a compare
- * operation against the userPassword attribute. The default password scheme
- * used is 'SHA'.
+ * Looks up a user's roles using an LDAP search.
  *
  * @author  Middleware Services
- * @version  $Revision$
+ * @version  $Revision$ $Date$
  */
-public class CompareAuthenticationHandler
-  extends AbstractCompareAuthenticationHandler
+public class SearchRoleResolver extends AbstractSearchRoleResolver
   implements ConnectionFactoryManager
 {
 
@@ -36,38 +33,49 @@ public class CompareAuthenticationHandler
 
 
   /** Default constructor. */
-  public CompareAuthenticationHandler() {}
+  public SearchRoleResolver() {}
 
 
   /**
-   * Creates a new compare authentication handler.
+   * Creates a new role resolver.
    *
    * @param  cf  connection factory
    */
-  public CompareAuthenticationHandler(final ConnectionFactory cf)
+  public SearchRoleResolver(final ConnectionFactory cf)
   {
     setConnectionFactory(cf);
   }
 
 
-  /** {@inheritDoc} */
-  @Override
+  /**
+   * Returns the connection factory.
+   *
+   * @return  connection factory
+   */
   public ConnectionFactory getConnectionFactory()
   {
     return factory;
   }
 
 
-  /** {@inheritDoc} */
-  @Override
+  /**
+   * Sets the connection factory.
+   *
+   * @param  cf  connection factory
+   */
   public void setConnectionFactory(final ConnectionFactory cf)
   {
     factory = cf;
   }
 
 
-  /** {@inheritDoc} */
-  @Override
+  /**
+   * Retrieve a connection that is ready for use.
+   *
+   * @return  connection
+   *
+   * @throws LdapException  if an error occurs opening the connection
+   */
   protected Connection getConnection()
     throws LdapException
   {
@@ -87,10 +95,9 @@ public class CompareAuthenticationHandler
   {
     return
       String.format(
-        "[%s@%d::factory=%s, passwordScheme=%s]",
+        "[%s@%d::factory=%s]",
         getClass().getName(),
         hashCode(),
-        factory,
-        passwordScheme);
+        factory);
   }
 }

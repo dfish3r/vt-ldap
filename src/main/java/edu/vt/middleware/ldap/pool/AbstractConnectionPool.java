@@ -22,7 +22,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
 import edu.vt.middleware.ldap.Connection;
-import edu.vt.middleware.ldap.ConnectionConfig;
+import edu.vt.middleware.ldap.ConnectionFactory;
 import edu.vt.middleware.ldap.LdapException;
 
 /**
@@ -60,8 +60,8 @@ public abstract class AbstractConnectionPool extends AbstractPool<Connection>
   /** List of connections in use. */
   protected Queue<PooledConnection> active = new LinkedList<PooledConnection>();
 
-  /** Connection configuration to create connections with. */
-  protected ConnectionConfig connectionConfig;
+  /** Connection factory to create connections with. */
+  protected ConnectionFactory connectionFactory;
 
   /** Whether to connect to the ldap on connection creation. */
   protected boolean connectOnCreate = true;
@@ -81,27 +81,27 @@ public abstract class AbstractConnectionPool extends AbstractPool<Connection>
 
   /**
    * Creates a new pool with the supplied pool configuration and connection
-   * configuration. The configurations will be marked as immutable by this pool.
+   * factory. The configurations will be marked as immutable by this pool.
    *
    * @param  pc  pool config
-   * @param  cc  connection config
+   * @param  cf  connection factory
    */
-  public AbstractConnectionPool(final PoolConfig pc, final ConnectionConfig cc)
+  public AbstractConnectionPool(final PoolConfig pc, final ConnectionFactory cf)
   {
     super(pc);
-    connectionConfig = cc;
-    connectionConfig.makeImmutable();
+    connectionFactory = cf;
+    connectionFactory.getConnectionConfig().makeImmutable();
   }
 
 
   /**
-   * Returns the connection configuration for this pool.
+   * Returns the connection factory for this pool.
    *
-   * @return  connection config
+   * @return  connection factory
    */
-  public ConnectionConfig getConnectionConfig()
+  public ConnectionFactory getConnectionFactory()
   {
-    return connectionConfig;
+    return connectionFactory;
   }
 
 
@@ -255,7 +255,7 @@ public abstract class AbstractConnectionPool extends AbstractPool<Connection>
    */
   protected PooledConnection createConnection()
   {
-    PooledConnection conn = new PooledConnection(connectionConfig);
+    PooledConnection conn = new PooledConnection(connectionFactory);
     if (connectOnCreate) {
       try {
         conn.open();
@@ -576,11 +576,11 @@ public abstract class AbstractConnectionPool extends AbstractPool<Connection>
   {
     return
       String.format(
-        "[%s@%d::connectOnCreate=%s, connectionConfig=%s, poolConfig=%s]",
+        "[%s@%d::connectOnCreate=%s, connectionFactory=%s, poolConfig=%s]",
         getClass().getName(),
         hashCode(),
         connectOnCreate,
-        connectionConfig,
+        connectionFactory,
         poolConfig);
   }
 
@@ -605,11 +605,13 @@ public abstract class AbstractConnectionPool extends AbstractPool<Connection>
     /**
      * Creates a new pooled connection.
      *
-     * @param  cc  connection configuration
+     * @param  cf  connection factory
      */
-    public PooledConnection(final ConnectionConfig cc)
+    protected PooledConnection(final ConnectionFactory cf)
     {
-      super(cc);
+      super(
+        cf.getConnectionConfig(),
+        cf.getProvider().getConnectionFactory(cf.getConnectionConfig()));
     }
 
 

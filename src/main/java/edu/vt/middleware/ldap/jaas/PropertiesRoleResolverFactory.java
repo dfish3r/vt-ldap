@@ -15,9 +15,14 @@ package edu.vt.middleware.ldap.jaas;
 
 import java.util.HashMap;
 import java.util.Map;
+import edu.vt.middleware.ldap.ConnectionFactory;
+import edu.vt.middleware.ldap.ConnectionFactoryManager;
 import edu.vt.middleware.ldap.SearchRequest;
+import edu.vt.middleware.ldap.pool.PooledConnectionFactory;
+import edu.vt.middleware.ldap.pool.PooledConnectionFactoryManager;
+import edu.vt.middleware.ldap.props.ConnectionFactoryPropertySource;
+import edu.vt.middleware.ldap.props.PooledConnectionFactoryPropertySource;
 import edu.vt.middleware.ldap.props.PropertySource.PropertyDomain;
-import edu.vt.middleware.ldap.props.RoleResolverPropertySource;
 import edu.vt.middleware.ldap.props.SearchRequestPropertySource;
 
 /**
@@ -84,11 +89,28 @@ public class PropertiesRoleResolverFactory extends AbstractPropertiesFactory
         throw new IllegalArgumentException(e);
       }
     } else {
-      rr = new RoleResolver();
+      rr = new SearchRoleResolver();
     }
-    final RoleResolverPropertySource source = new RoleResolverPropertySource(
-      rr, createProperties(options));
-    source.initialize();
+    if (rr instanceof PooledConnectionFactoryManager) {
+      final PooledConnectionFactoryManager cfm =
+        (PooledConnectionFactoryManager) rr;
+      final PooledConnectionFactory cf = new PooledConnectionFactory();
+      final PooledConnectionFactoryPropertySource source =
+        new PooledConnectionFactoryPropertySource(
+          cf, PropertyDomain.AUTH, createProperties(options));
+      source.initialize();
+      cf.initialize();
+      cfm.setConnectionFactory(cf);
+    }
+    if (rr instanceof ConnectionFactoryManager) {
+      final ConnectionFactoryManager cfm = (ConnectionFactoryManager) rr;
+      final ConnectionFactory cf = new ConnectionFactory();
+      final ConnectionFactoryPropertySource source =
+        new ConnectionFactoryPropertySource(
+          cf, PropertyDomain.AUTH, createProperties(options));
+      source.initialize();
+      cfm.setConnectionFactory(cf);
+    }
     return rr;
   }
 
@@ -114,8 +136,12 @@ public class PropertiesRoleResolverFactory extends AbstractPropertiesFactory
    */
   public static void close()
   {
-    for (Map.Entry<String, RoleResolver> e : cache.entrySet()) {
-      e.getValue().close();
+    for (RoleResolver rr : cache.values()) {
+      if (rr instanceof PooledConnectionFactoryManager) {
+        final PooledConnectionFactoryManager cfm =
+          (PooledConnectionFactoryManager) rr;
+        cfm.getConnectionFactory().close();
+      }
     }
   }
 }

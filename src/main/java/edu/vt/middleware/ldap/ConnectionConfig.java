@@ -15,11 +15,7 @@ package edu.vt.middleware.ldap;
 
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLSocketFactory;
-import edu.vt.middleware.ldap.provider.Provider;
-import edu.vt.middleware.ldap.provider.jndi.JndiProvider;
 import edu.vt.middleware.ldap.sasl.SaslConfig;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Contains all the configuration data needed to control connections.
@@ -29,14 +25,6 @@ import org.slf4j.LoggerFactory;
  */
 public class ConnectionConfig extends AbstractConfig
 {
-  /** Ldap provider class name. */
-  public static final String PROVIDER = "edu.vt.middleware.ldap.provider";
-
-  /** Static reference to the default ldap provider. */
-  private static final Provider<?> DEFAULT_PROVIDER;
-
-  /** Ldap provider implementation. */
-  private Provider<?> provider = DEFAULT_PROVIDER.newInstance();
 
   /** Default ldap socket factory used for SSL and TLS. */
   private SSLSocketFactory sslSocketFactory;
@@ -74,32 +62,6 @@ public class ConnectionConfig extends AbstractConfig
   /** Connect to LDAP using TLS protocol. */
   private boolean tls;
 
-  /** Initialize the default ldap provider. The {@link #LDAP_PROVIDER} property
-   * is checked and that class is loaded if provided. Otherwise the JNDI
-   * provider is returned.
-   */
-  static {
-    final String providerClass = System.getProperty(PROVIDER);
-    if (providerClass != null) {
-      final Logger l = LoggerFactory.getLogger(ConnectionConfig.class);
-      try {
-        if (l.isInfoEnabled()) {
-          l.info("Setting ldap provider to {}", providerClass);
-        }
-        DEFAULT_PROVIDER =
-          (Provider<?>) Class.forName(providerClass).newInstance();
-      } catch (Exception e) {
-        if (l.isErrorEnabled()) {
-          l.error("Error instantiating {}", providerClass, e);
-        }
-        throw new IllegalStateException(e);
-      }
-    } else {
-      // set the default ldap provider to JNDI
-      DEFAULT_PROVIDER = new JndiProvider();
-    }
-  }
-
 
   /** Default constructor. */
   public ConnectionConfig() {}
@@ -112,32 +74,7 @@ public class ConnectionConfig extends AbstractConfig
    */
   public ConnectionConfig(final String url)
   {
-    this();
     setLdapUrl(url);
-  }
-
-
-  /**
-   * Returns the ldap provider.
-   *
-   * @return  ldap provider
-   */
-  public Provider<?> getProvider()
-  {
-    return provider;
-  }
-
-
-  /**
-   * Sets the ldap provider.
-   *
-   * @param  p  ldap provider to set
-   */
-  public void setProvider(final Provider<?> p)
-  {
-    checkImmutable();
-    logger.trace("setting provider: {}", p);
-    provider = p;
   }
 
 
@@ -471,13 +408,11 @@ public class ConnectionConfig extends AbstractConfig
   {
     return
       String.format(
-        "[%s@%d::provider=%s, sslSocketFactory=%s, " +
-        "hostnameVerifier=%s, ldapUrl=%s, timeout=%s, bindDn=%s, " +
-        "saslConfig=%s, operationRetry=%s, operationRetryWait=%s, " +
-        "operationRetryBackoff=%s, ssl=%s, tls=%s]",
+        "[%s@%d::sslSocketFactory=%s, hostnameVerifier=%s, ldapUrl=%s, " +
+        "timeout=%s, bindDn=%s, saslConfig=%s, operationRetry=%s, " +
+        "operationRetryWait=%s, operationRetryBackoff=%s, ssl=%s, tls=%s]",
         getClass().getName(),
         hashCode(),
-        provider,
         sslSocketFactory,
         hostnameVerifier,
         ldapUrl,

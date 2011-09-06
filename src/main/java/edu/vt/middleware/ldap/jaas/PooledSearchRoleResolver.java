@@ -11,42 +11,37 @@
   Version: $Revision$
   Updated: $Date$
 */
-package edu.vt.middleware.ldap.auth;
+package edu.vt.middleware.ldap.jaas;
 
-import java.io.Serializable;
-import java.util.Arrays;
 import edu.vt.middleware.ldap.Connection;
 import edu.vt.middleware.ldap.LdapException;
 import edu.vt.middleware.ldap.pool.PooledConnectionFactory;
 import edu.vt.middleware.ldap.pool.PooledConnectionFactoryManager;
 
 /**
- * Looks up a user's DN using a pool of connections.
+ * Looks up a user's roles using a pool of connections.
  *
  * @author  Middleware Services
  * @version  $Revision$ $Date$
  */
-public class PooledSearchDnResolver extends AbstractSearchDnResolver
-  implements PooledConnectionFactoryManager, Serializable
+public class PooledSearchRoleResolver extends AbstractSearchRoleResolver
+  implements PooledConnectionFactoryManager
 {
-
-  /** serial version uid. */
-  private static final long serialVersionUID = -1728263498360652469L;
 
   /** Connection factory. */
   protected PooledConnectionFactory factory;
 
 
   /** Default constructor. */
-  public PooledSearchDnResolver() {}
+  public PooledSearchRoleResolver() {}
 
 
   /**
-   * Creates a new pooled search dn resolver.
+   * Creates a new pooled role resolver.
    *
    * @param  cf  connection factory
    */
-  public PooledSearchDnResolver(final PooledConnectionFactory cf)
+  public PooledSearchRoleResolver(final PooledConnectionFactory cf)
   {
     setConnectionFactory(cf);
   }
@@ -93,15 +88,9 @@ public class PooledSearchDnResolver extends AbstractSearchDnResolver
   {
     return
       String.format(
-        "[%s@%d::factory=%s, baseDn=%s, userFilter=%s, userFilterArgs=%s, " +
-        "allowMultipleDns=%s, subtreeSearch=%s]",
+        "[%s@%d::factory=%s]",
         getClass().getName(),
         hashCode(),
-        factory,
-        baseDn,
-        userFilter,
-        userFilterArgs != null ? Arrays.asList(userFilterArgs) : null,
-        allowMultipleDns,
-        subtreeSearch);
+        factory);
   }
 }

@@ -19,6 +19,7 @@ import java.util.Map;
 import edu.vt.middleware.ldap.AbstractTest;
 import edu.vt.middleware.ldap.Connection;
 import edu.vt.middleware.ldap.ConnectionConfig;
+import edu.vt.middleware.ldap.ConnectionFactory;
 import edu.vt.middleware.ldap.LdapEntry;
 import edu.vt.middleware.ldap.LdapResult;
 import edu.vt.middleware.ldap.SearchFilter;
@@ -91,8 +92,7 @@ public class ConnectionPoolTest extends AbstractTest
   public ConnectionPoolTest()
     throws Exception
   {
-    final ConnectionConfig cc =
-      TestUtil.createConnection().getConnectionConfig();
+    final ConnectionConfig cc = TestUtil.readConnectionConfig(null);
 
     final PoolConfig softLimitPc = new PoolConfig();
     softLimitPc.setValidateOnCheckIn(true);
@@ -101,7 +101,8 @@ public class ConnectionPoolTest extends AbstractTest
     softLimitPc.setPrunePeriod(5L);
     softLimitPc.setExpirationTime(1L);
     softLimitPc.setValidatePeriod(5L);
-    softLimitPool = new SoftLimitConnectionPool(softLimitPc, cc);
+    softLimitPool = new SoftLimitConnectionPool(
+      softLimitPc, new ConnectionFactory(cc));
     softLimitPool.setValidator(new SearchValidator());
 
     final PoolConfig blockingPc = new PoolConfig();
@@ -111,7 +112,8 @@ public class ConnectionPoolTest extends AbstractTest
     blockingPc.setPrunePeriod(5L);
     blockingPc.setExpirationTime(1L);
     blockingPc.setValidatePeriod(5L);
-    blockingPool = new BlockingConnectionPool(blockingPc, cc);
+    blockingPool = new BlockingConnectionPool(
+      blockingPc, new ConnectionFactory(cc));
     blockingPool.setValidator(new SearchValidator());
 
     final PoolConfig blockingTimeoutPc = new PoolConfig();
@@ -121,18 +123,20 @@ public class ConnectionPoolTest extends AbstractTest
     blockingTimeoutPc.setPrunePeriod(5L);
     blockingTimeoutPc.setExpirationTime(1L);
     blockingTimeoutPc.setValidatePeriod(5L);
-    blockingTimeoutPool = new BlockingConnectionPool(blockingTimeoutPc, cc);
+    blockingTimeoutPool = new BlockingConnectionPool(
+      blockingTimeoutPc, new ConnectionFactory(cc));
     blockingTimeoutPool.setBlockWaitTime(1000L);
     blockingTimeoutPool.setValidator(new SearchValidator());
 
-    final ConnectionConfig connStrategyCc =
-      TestUtil.createConnection().getConnectionConfig();
+    final ConnectionConfig connStrategyCc = TestUtil.readConnectionConfig(null);
     connStrategyCc.setLdapUrl(
       "ldap://ed-dev.middleware.vt.edu:14389 ldap://ed-dne.middleware.vt.edu");
-    connStrategyCc.getProvider().getProviderConfig().setConnectionStrategy(
+    final ConnectionFactory connStrategyCf = new ConnectionFactory(
+      connStrategyCc);
+    connStrategyCf.getProvider().getProviderConfig().setConnectionStrategy(
       ConnectionStrategy.ROUND_ROBIN);
     connStrategyPool = new BlockingConnectionPool(
-      new PoolConfig(), connStrategyCc);
+      new PoolConfig(), connStrategyCf);
   }
 
 
@@ -406,23 +410,12 @@ public class ConnectionPoolTest extends AbstractTest
       AssertJUnit.assertEquals(IllegalStateException.class, e.getClass());
     }
 
-    Connection conn = null;
     try {
-      conn = softLimitPool.getConnection();
-      try {
-        conn.setConnectionConfig(new ConnectionConfig());
-        AssertJUnit.fail("Expected illegalstateexception to be thrown");
-      } catch (IllegalStateException e) {
-        AssertJUnit.assertEquals(IllegalStateException.class, e.getClass());
-      }
-      try {
-        conn.getConnectionConfig().setTimeout(10000);
-        AssertJUnit.fail("Expected illegalstateexception to be thrown");
-      } catch (IllegalStateException e) {
-        AssertJUnit.assertEquals(IllegalStateException.class, e.getClass());
-      }
-    } finally {
-      conn.close();
+      softLimitPool.getConnectionFactory().getConnectionConfig().setTimeout(
+        10000);
+      AssertJUnit.fail("Expected illegalstateexception to be thrown");
+    } catch (IllegalStateException e) {
+      AssertJUnit.assertEquals(IllegalStateException.class, e.getClass());
     }
   }
 
@@ -506,23 +499,12 @@ public class ConnectionPoolTest extends AbstractTest
       AssertJUnit.assertEquals(IllegalStateException.class, e.getClass());
     }
 
-    Connection conn = null;
     try {
-      conn = blockingPool.getConnection();
-      try {
-        conn.setConnectionConfig(new ConnectionConfig());
-        AssertJUnit.fail("Expected illegalstateexception to be thrown");
-      } catch (IllegalStateException e) {
-        AssertJUnit.assertEquals(IllegalStateException.class, e.getClass());
-      }
-      try {
-        conn.getConnectionConfig().setTimeout(10000);
-        AssertJUnit.fail("Expected illegalstateexception to be thrown");
-      } catch (IllegalStateException e) {
-        AssertJUnit.assertEquals(IllegalStateException.class, e.getClass());
-      }
-    } finally {
-      conn.close();
+      blockingPool.getConnectionFactory().getConnectionConfig().setTimeout(
+        10000);
+      AssertJUnit.fail("Expected illegalstateexception to be thrown");
+    } catch (IllegalStateException e) {
+      AssertJUnit.assertEquals(IllegalStateException.class, e.getClass());
     }
   }
 
