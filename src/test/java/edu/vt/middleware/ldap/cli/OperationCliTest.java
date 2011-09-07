@@ -39,7 +39,7 @@ public class OperationCliTest extends AbstractTest
    * @throws  Exception  On test failure
    */
   @Parameters("cliAddArgs")
-  @BeforeClass(groups = {"ldapclitest"})
+  @BeforeClass(groups = {"ldapcli"})
   public void createLdapEntry(final String args)
     throws Exception
   {
@@ -62,7 +62,7 @@ public class OperationCliTest extends AbstractTest
    * @throws  Exception  On test failure
    */
   @Parameters("cliDeleteArgs")
-  @AfterClass(groups = {"ldapclitest"})
+  @AfterClass(groups = {"ldapcli"})
   public void deleteLdapEntry(final String args)
     throws Exception
   {
@@ -86,7 +86,7 @@ public class OperationCliTest extends AbstractTest
    * @throws  Exception  On test failure
    */
   @Parameters({ "cliSearchArgs", "cliSearchResults" })
-  @Test(groups = {"ldapclitest"})
+  @Test(groups = {"ldapcli"})
   public void search(final String args, final String ldifFile)
     throws Exception
   {
@@ -113,7 +113,7 @@ public class OperationCliTest extends AbstractTest
    * @throws  Exception  On test failure.
    */
   @Parameters("cliCompareArgs")
-  @Test(groups = {"ldapclitest"})
+  @Test(groups = {"ldapcli"})
   public void compare(final String args)
     throws Exception
   {

@@ -47,7 +47,7 @@ public class PropertiesTest
 
 
   /** @throws  Exception  On test failure. */
-  @BeforeClass(groups = {"propstest"})
+  @BeforeClass(groups = {"props"})
   public void init()
     throws Exception
   {
@@ -58,7 +58,7 @@ public class PropertiesTest
 
 
   /** @throws  Exception  On test failure. */
-  @Test(groups = {"propstest"})
+  @Test(groups = {"props"})
   public void nullProperties()
     throws Exception
   {
@@ -83,7 +83,7 @@ public class PropertiesTest
 
 
   /** @throws  Exception  On test failure. */
-  @Test(groups = {"propstest"})
+  @Test(groups = {"props"})
   public void parserProperties()
     throws Exception
   {
@@ -185,7 +185,7 @@ public class PropertiesTest
 
 
   /** @throws  Exception  On test failure. */
-  @Test(groups = {"propstest"})
+  @Test(groups = {"props"})
   public void jaasProperties()
     throws Exception
   {

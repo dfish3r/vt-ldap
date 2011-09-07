@@ -38,7 +38,7 @@ public class LdapResultTest extends AbstractTest
    * @throws  Exception  On test failure.
    */
   @Parameters("createEntry7")
-  @BeforeClass(groups = {"beantest"})
+  @BeforeClass(groups = {"bean"})
   public void createLdapEntry(final String ldifFile)
     throws Exception
   {
@@ -49,7 +49,7 @@ public class LdapResultTest extends AbstractTest
 
 
   /** @throws  Exception  On test failure. */
-  @AfterClass(groups = {"beantest"})
+  @AfterClass(groups = {"bean"})
   public void deleteLdapEntry()
     throws Exception
   {
@@ -73,7 +73,7 @@ public class LdapResultTest extends AbstractTest
       "toSearchResultsResults"
     }
   )
-  @Test(groups = {"beantest"})
+  @Test(groups = {"bean"})
   public void toSearchResults(
     final String dn,
     final String filter,

@@ -38,7 +38,7 @@ public class CompareOperationTest extends AbstractTest
    * @throws  Exception  On test failure.
    */
   @Parameters("createEntry3")
-  @BeforeClass(groups = {"comparetest"})
+  @BeforeClass(groups = {"compare"})
   public void createLdapEntry(final String ldifFile)
     throws Exception
   {
@@ -49,7 +49,7 @@ public class CompareOperationTest extends AbstractTest
 
 
   /** @throws  Exception  On test failure. */
-  @AfterClass(groups = {"comparetest"})
+  @AfterClass(groups = {"compare"})
   public void deleteLdapEntry()
     throws Exception
   {
@@ -66,7 +66,7 @@ public class CompareOperationTest extends AbstractTest
    */
   @Parameters({ "compareDn", "compareAttrName", "compareAttrValue" })
   @Test(
-    groups = {"comparetest"},
+    groups = {"compare"},
     threadPoolSize = 10,
     invocationCount = 100,
     timeOut = 60000

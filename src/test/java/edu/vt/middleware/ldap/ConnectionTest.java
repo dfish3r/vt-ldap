@@ -39,7 +39,7 @@ public class ConnectionTest
    * @throws  Exception  On test failure.
    */
   @Parameters("createEntry15")
-  @BeforeClass(groups = {"ldapconntest"})
+  @BeforeClass(groups = {"conn"})
   public void add(final String ldifFile)
     throws Exception
   {
@@ -53,7 +53,7 @@ public class ConnectionTest
 
 
   /** @throws  Exception  On test failure. */
-  @Test(groups = {"ldapconntest"})
+  @Test(groups = {"conn"})
   public void compare()
     throws Exception
   {
@@ -66,7 +66,7 @@ public class ConnectionTest
 
 
   /** @throws  Exception  On test failure. */
-  @AfterClass(groups = {"ldapconntest"})
+  @AfterClass(groups = {"conn"})
   public void delete()
     throws Exception
   {
@@ -78,7 +78,7 @@ public class ConnectionTest
 
 
   /** @throws  Exception  On test failure. */
-  @Test(groups = {"ldapconntest"})
+  @Test(groups = {"conn"})
   public void modify()
     throws Exception
   {
@@ -95,7 +95,7 @@ public class ConnectionTest
 
 
   /** @throws  Exception  On test failure. */
-  @Test(groups = {"ldapconntest"})
+  @Test(groups = {"conn"})
   public void rename()
     throws Exception
   {
@@ -108,7 +108,7 @@ public class ConnectionTest
 
 
   /** @throws  Exception  On test failure. */
-  @Test(groups = {"ldapconntest"})
+  @Test(groups = {"conn"})
   public void search()
     throws Exception
   {
@@ -122,7 +122,7 @@ public class ConnectionTest
 
 
   /** @throws  Exception  On test failure. */
-  @Test(groups = {"ldapconntest"}, timeOut = 5000)
+  @Test(groups = {"conn"}, timeOut = 5000)
   public void saslExternalConnect()
     throws Exception
   {
@@ -133,7 +133,7 @@ public class ConnectionTest
 
 
   /** @throws  Exception  On test failure. */
-  @Test(groups = {"ldapconntest"})
+  @Test(groups = {"conn"})
   public void strategyConnect()
     throws Exception
   {
@@ -190,7 +190,7 @@ public class ConnectionTest
    * @throws  Exception  On test failure.
    */
   @Parameters({ "ldapHost", "sleepTime" })
-  @AfterSuite(groups = {"ldapconntest"})
+  @AfterSuite(groups = {"conn"})
   public void sleep(final String host, final int sleepTime)
     throws Exception
   {

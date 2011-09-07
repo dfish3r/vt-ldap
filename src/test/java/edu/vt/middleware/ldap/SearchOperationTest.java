@@ -83,7 +83,7 @@ public class SearchOperationTest extends AbstractTest
   /**
    * @throws  Exception  On test failure.
    */
-  @BeforeClass(groups = {"searchtest"})
+  @BeforeClass(groups = {"search"})
   public void openConnection()
     throws Exception
   {
@@ -97,7 +97,7 @@ public class SearchOperationTest extends AbstractTest
    * @throws  Exception  On test failure.
    */
   @Parameters("createEntry2")
-  @BeforeClass(groups = {"searchtest"})
+  @BeforeClass(groups = {"search"})
   public void createLdapEntry(final String ldifFile)
     throws Exception
   {
@@ -123,7 +123,7 @@ public class SearchOperationTest extends AbstractTest
       "createGroup5"
     }
   )
-  @BeforeClass(groups = {"searchtest"})
+  @BeforeClass(groups = {"search"})
   public void createGroupEntry(
     final String ldifFile2,
     final String ldifFile3,
@@ -181,7 +181,7 @@ public class SearchOperationTest extends AbstractTest
    * @throws  Exception  On test failure.
    */
   @Parameters("createSpecialCharsEntry")
-  @BeforeClass(groups = {"searchtest"})
+  @BeforeClass(groups = {"search"})
   public void createSpecialCharsEntry(final String ldifFile)
     throws Exception
   {
@@ -192,7 +192,7 @@ public class SearchOperationTest extends AbstractTest
 
 
   /** @throws  Exception  On test failure. */
-  @AfterClass(groups = {"searchtest"})
+  @AfterClass(groups = {"search"})
   public void deleteLdapEntry()
     throws Exception
   {
@@ -241,7 +241,7 @@ public class SearchOperationTest extends AbstractTest
     }
   )
   @Test(
-    groups = {"searchtest"},
+    groups = {"search"},
     threadPoolSize = TEST_THREAD_POOL_SIZE,
     invocationCount = TEST_INVOCATION_COUNT,
     timeOut = TEST_TIME_OUT
@@ -324,7 +324,7 @@ public class SearchOperationTest extends AbstractTest
       "pagedSearchFilter",
       "pagedSearchResults"
     })
-  @Test(groups = {"searchtest"})
+  @Test(groups = {"search"})
   public void pagedSearch(
     final String dn,
     final String filter,
@@ -358,7 +358,7 @@ public class SearchOperationTest extends AbstractTest
       "sortSearchDn",
       "sortSearchFilter"
     })
-  @Test(groups = {"searchtest"})
+  @Test(groups = {"search"})
   public void sortedSearch(
     final String dn,
     final String filter)
@@ -405,7 +405,7 @@ public class SearchOperationTest extends AbstractTest
       "recursiveAttributeHandlerResults"
     }
   )
-  @Test(groups = {"searchtest"})
+  @Test(groups = {"search"})
   public void recursiveAttributeHandlerSearch(
     final String dn,
     final String filter,
@@ -449,7 +449,7 @@ public class SearchOperationTest extends AbstractTest
       "recursiveSearchResultHandlerResults"
     }
   )
-  @Test(groups = {"searchtest"})
+  @Test(groups = {"search"})
   public void recursiveSearchResultHandlerSearch(
     final String dn,
     final String filter,
@@ -489,7 +489,7 @@ public class SearchOperationTest extends AbstractTest
       "mergeSearchFilter",
       "mergeSearchResults"
     })
-  @Test(groups = {"searchtest"})
+  @Test(groups = {"search"})
   public void mergeSearch(
     final String dn,
     final String filter,
@@ -531,7 +531,7 @@ public class SearchOperationTest extends AbstractTest
       "mergeDuplicateSearchResults"
     }
   )
-  @Test(groups = {"searchtest"})
+  @Test(groups = {"search"})
   public void mergeDuplicateSearch(
     final String dn,
     final String filter,
@@ -573,7 +573,7 @@ public class SearchOperationTest extends AbstractTest
       "mergeAttributeReturnAttrs",
       "mergeAttributeSearchResults"
     })
-  @Test(groups = {"searchtest"})
+  @Test(groups = {"search"})
   public void mergeAttributeSearch(
     final String dn,
     final String filter,
@@ -622,7 +622,7 @@ public class SearchOperationTest extends AbstractTest
       "binarySearchResult"
     }
   )
-  @Test(groups = {"searchtest"})
+  @Test(groups = {"search"})
   public void binarySearch(
     final String dn,
     final String filter,
@@ -672,7 +672,7 @@ public class SearchOperationTest extends AbstractTest
         "searchResults"
       }
     )
-  @Test(groups = {"searchtest"})
+  @Test(groups = {"search"})
   public void caseChangeSearch(
     final String dn,
     final String filter,
@@ -776,7 +776,7 @@ public class SearchOperationTest extends AbstractTest
       "specialCharSearchResults"
     }
   )
-  @Test(groups = {"searchtest"})
+  @Test(groups = {"search"})
   public void specialCharsSearch(
     final String dn,
     final String filter,
@@ -814,7 +814,7 @@ public class SearchOperationTest extends AbstractTest
       "rewriteSearchResults"
     }
   )
-  @Test(groups = {"searchtest"})
+  @Test(groups = {"search"})
   public void rewriteSearch(
     final String dn,
     final String filter,
@@ -852,7 +852,7 @@ public class SearchOperationTest extends AbstractTest
       "searchExceptionResultsSize"
     }
   )
-  @Test(groups = {"searchtest"})
+  @Test(groups = {"search"})
   public void searchWithException(
     final String dn,
     final String filter,
@@ -905,7 +905,7 @@ public class SearchOperationTest extends AbstractTest
    * @throws  Exception  On test failure.
    */
   @Parameters("searchRetryResultCode")
-  @Test(groups = {"searchtest"})
+  @Test(groups = {"search"})
   public void searchWithRetry(final String resultCode)
     throws Exception
   {
@@ -1042,7 +1042,7 @@ public class SearchOperationTest extends AbstractTest
     }
   )
   @Test(
-    groups = {"searchtest"},
+    groups = {"search"},
     threadPoolSize = TEST_THREAD_POOL_SIZE,
     invocationCount = TEST_INVOCATION_COUNT,
     timeOut = TEST_TIME_OUT
@@ -1077,7 +1077,7 @@ public class SearchOperationTest extends AbstractTest
       "getAttributesBase64Results"
     }
   )
-  @Test(groups = {"searchtest"})
+  @Test(groups = {"search"})
   public void getAttributesBase64(
     final String dn,
     final String returnAttrs,
@@ -1100,7 +1100,7 @@ public class SearchOperationTest extends AbstractTest
 
 
   /** @throws  Exception  On test failure. */
-  @Test(groups = {"searchtest"})
+  @Test(groups = {"search"})
   public void getSaslMechanisms()
     throws Exception
   {
@@ -1116,7 +1116,7 @@ public class SearchOperationTest extends AbstractTest
 
 
   /** @throws  Exception  On test failure. */
-  @Test(groups = {"searchtest"})
+  @Test(groups = {"search"})
   public void getSupportedControls()
     throws Exception
   {
@@ -1153,7 +1153,7 @@ public class SearchOperationTest extends AbstractTest
       "digestMd5SearchResults"
     }
   )
-  @Test(groups = {"searchtest"})
+  @Test(groups = {"search"})
   public void digestMd5Search(
     final String user,
     final String credential,
@@ -1203,7 +1203,7 @@ public class SearchOperationTest extends AbstractTest
       "cramMd5SearchResults"
     }
   )
-  @Test(groups = {"searchtest"})
+  @Test(groups = {"search"})
   public void cramMd5Search(
     final String user,
     final String credential,
@@ -1249,7 +1249,7 @@ public class SearchOperationTest extends AbstractTest
       "saslExternalSearchResults"
     }
   )
-  @Test(groups = {"searchtest"})
+  @Test(groups = {"search"})
   public void saslExternalSearch(
     final String dn,
     final String filter,
@@ -1295,7 +1295,7 @@ public class SearchOperationTest extends AbstractTest
       "gssApiSearchResults"
     }
   )
-  @Test(groups = {"searchtest"})
+  @Test(groups = {"search"})
   public void gssApiSearch(
     final String krb5Realm,
     final String krb5Kdc,

@@ -38,7 +38,7 @@ public class ModifyOperationTest extends AbstractTest
    * @throws  Exception  On test failure.
    */
   @Parameters("createEntry4")
-  @BeforeClass(groups = {"modifytest"})
+  @BeforeClass(groups = {"modify"})
   public void createLdapEntry(final String ldifFile)
     throws Exception
   {
@@ -49,7 +49,7 @@ public class ModifyOperationTest extends AbstractTest
 
 
   /** @throws  Exception  On test failure. */
-  @AfterClass(groups = {"modifytest"})
+  @AfterClass(groups = {"modify"})
   public void deleteLdapEntry()
     throws Exception
   {
@@ -64,7 +64,7 @@ public class ModifyOperationTest extends AbstractTest
    * @throws  Exception  On test failure.
    */
   @Parameters({ "addAttributeDn", "addAttributeAttribute" })
-  @Test(groups = {"modifytest"})
+  @Test(groups = {"modify"})
   public void addAttribute(final String dn, final String attrs)
     throws Exception
   {
@@ -95,7 +95,7 @@ public class ModifyOperationTest extends AbstractTest
    * @throws  Exception  On test failure.
    */
   @Parameters({ "addAttributesDn", "addAttributesAttributes" })
-  @Test(groups = {"modifytest"})
+  @Test(groups = {"modify"})
   public void addAttributes(final String dn, final String attrs)
     throws Exception
   {
@@ -129,7 +129,7 @@ public class ModifyOperationTest extends AbstractTest
    */
   @Parameters({ "replaceAttributeDn", "replaceAttributeAttribute" })
   @Test(
-    groups = {"modifytest"},
+    groups = {"modify"},
     dependsOnMethods = {"addAttribute"}
   )
   public void replaceAttribute(final String dn, final String attrs)
@@ -161,7 +161,7 @@ public class ModifyOperationTest extends AbstractTest
    */
   @Parameters({ "replaceAttributesDn", "replaceAttributesAttributes" })
   @Test(
-    groups = {"modifytest"},
+    groups = {"modify"},
     dependsOnMethods = {"addAttributes"}
   )
   public void replaceAttributes(final String dn, final String attrs)
@@ -198,7 +198,7 @@ public class ModifyOperationTest extends AbstractTest
    */
   @Parameters({ "removeAttributeDn", "removeAttributeAttribute" })
   @Test(
-    groups = {"modifytest"},
+    groups = {"modify"},
     dependsOnMethods = {"replaceAttribute"}
   )
   public void removeAttribute(final String dn, final String attrs)
@@ -235,7 +235,7 @@ public class ModifyOperationTest extends AbstractTest
    */
   @Parameters({ "removeAttributesDn", "removeAttributesAttributes" })
   @Test(
-    groups = {"modifytest"},
+    groups = {"modify"},
     dependsOnMethods = {"replaceAttributes"}
   )
   public void removeAttributes(final String dn, final String attrs)

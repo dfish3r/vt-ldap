@@ -111,7 +111,7 @@ public class AuthenticatorLoadTest extends AbstractTest
       "createEntry10"
     }
   )
-  @BeforeClass(groups = {"authloadtest"})
+  @BeforeClass(groups = {"authload"})
   public void createAuthEntry(
     final String ldifFile2,
     final String ldifFile3,
@@ -169,7 +169,7 @@ public class AuthenticatorLoadTest extends AbstractTest
 
 
   /** @throws  Exception  On test failure. */
-  @AfterClass(groups = {"authloadtest"})
+  @AfterClass(groups = {"authload"})
   public void deleteAuthEntry()
     throws Exception
   {
@@ -287,7 +287,7 @@ public class AuthenticatorLoadTest extends AbstractTest
    * @throws  Exception  On test failure.
    */
   @Test(
-    groups = {"authloadtest"},
+    groups = {"authload"},
     dataProvider = "auth-data",
     threadPoolSize = 50,
     invocationCount = 1000,
@@ -329,7 +329,7 @@ public class AuthenticatorLoadTest extends AbstractTest
    * @throws  Exception  On test failure.
    */
   @Test(
-    groups = {"authloadtest"},
+    groups = {"authload"},
     dataProvider = "auth-data",
     threadPoolSize = 50,
     invocationCount = 1000,

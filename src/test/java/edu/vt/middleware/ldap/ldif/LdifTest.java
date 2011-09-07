@@ -49,7 +49,7 @@ public class LdifTest extends AbstractTest
    * @throws  Exception  On test failure.
    */
   @Parameters("createEntry14")
-  @BeforeClass(groups = {"ldiftest"})
+  @BeforeClass(groups = {"ldif"})
   public void createLdapEntry(final String ldifFile)
     throws Exception
   {
@@ -60,7 +60,7 @@ public class LdifTest extends AbstractTest
 
 
   /** @throws  Exception  On test failure. */
-  @AfterClass(groups = {"ldiftest"})
+  @AfterClass(groups = {"ldif"})
   public void deleteLdapEntry()
     throws Exception
   {
@@ -78,7 +78,7 @@ public class LdifTest extends AbstractTest
       "ldifSearchDn",
       "ldifSearchFilter"
     })
-  @Test(groups = {"ldiftest"})
+  @Test(groups = {"ldif"})
   public void searchAndCompareLdif(final String dn, final String filter)
     throws Exception
   {
@@ -112,7 +112,7 @@ public class LdifTest extends AbstractTest
       "ldifEntry",
       "ldifSortedEntry"
     })
-  @Test(groups = {"ldiftest"})
+  @Test(groups = {"ldif"})
   public void readAndCompareSortedLdif(
     final String ldifFile,
     final String ldifSortedFile)
@@ -142,7 +142,7 @@ public class LdifTest extends AbstractTest
       "multipleLdifResultsIn",
       "multipleLdifResultsOut"
     })
-  @Test(groups = {"ldiftest"})
+  @Test(groups = {"ldif"})
   public void readAndCompareMultipleLdif(
     final String ldifFileIn,
     final String ldifFileOut)

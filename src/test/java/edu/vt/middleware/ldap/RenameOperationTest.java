@@ -38,7 +38,7 @@ public class RenameOperationTest extends AbstractTest
    * @throws  Exception  On test failure.
    */
   @Parameters("createEntry5")
-  @BeforeClass(groups = {"renametest"})
+  @BeforeClass(groups = {"rename"})
   public void createLdapEntry(final String ldifFile)
     throws Exception
   {
@@ -49,7 +49,7 @@ public class RenameOperationTest extends AbstractTest
 
 
   /** @throws  Exception  On test failure. */
-  @AfterClass(groups = {"renametest"})
+  @AfterClass(groups = {"rename"})
   public void deleteLdapEntry()
     throws Exception
   {
@@ -64,7 +64,7 @@ public class RenameOperationTest extends AbstractTest
    * @throws  Exception  On test failure.
    */
   @Parameters({ "renameOldDn", "renameNewDn" })
-  @Test(groups = {"renametest"})
+  @Test(groups = {"rename"})
   public void renameLdapEntry(final String oldDn, final String newDn)
     throws Exception
   {

@@ -168,10 +168,10 @@ public class ConnectionPoolTest extends AbstractTest
   )
   @BeforeClass(
     groups = {
-      "softlimitpooltest",
-      "blockingpooltest",
-      "blockingtimeoutpooltest",
-      "connstrategypooltest"
+      "softlimitpool",
+      "blockingpool",
+      "blockingtimeoutpool",
+      "connstrategypool"
     }
   )
   public void createPoolEntry(
@@ -244,10 +244,10 @@ public class ConnectionPoolTest extends AbstractTest
   )
   @BeforeClass(
     groups = {
-      "softlimitpooltest",
-      "blockingpooltest",
-      "blockingtimeoutpooltest",
-      "connstrategypooltest"
+      "softlimitpool",
+      "blockingpool",
+      "blockingtimeoutpool",
+      "connstrategypool"
     }
   )
   public void loadPoolSearchResults(
@@ -286,10 +286,10 @@ public class ConnectionPoolTest extends AbstractTest
   /** @throws  Exception  On test failure. */
   @AfterClass(
     groups = {
-      "softlimitpooltest",
-      "blockingpooltest",
-      "blockingtimeoutpooltest",
-      "connstrategypooltest"
+      "softlimitpool",
+      "blockingpool",
+      "blockingtimeoutpool",
+      "connstrategypool"
     }
   )
   public void deletePoolEntry()
@@ -399,7 +399,7 @@ public class ConnectionPoolTest extends AbstractTest
 
 
   /** @throws  Exception  On test failure. */
-  @Test(groups = {"softlimitpooltest"})
+  @Test(groups = {"softlimitpool"})
   public void checkSoftLimitPoolImmutable()
     throws Exception
   {
@@ -427,7 +427,7 @@ public class ConnectionPoolTest extends AbstractTest
    * @throws  Exception  On test failure.
    */
   @Test(
-    groups = {"softlimitpooltest"},
+    groups = {"softlimitpool"},
     dataProvider = "pool-data",
     threadPoolSize = 3,
     invocationCount = 50,
@@ -452,7 +452,7 @@ public class ConnectionPoolTest extends AbstractTest
    * @throws  Exception  On test failure.
    */
   @Test(
-    groups = {"softlimitpooltest"},
+    groups = {"softlimitpool"},
     dataProvider = "pool-data",
     threadPoolSize = 10,
     invocationCount = 100,
@@ -473,7 +473,7 @@ public class ConnectionPoolTest extends AbstractTest
 
   /** @throws  Exception  On test failure. */
   @Test(
-    groups = {"softlimitpooltest"},
+    groups = {"softlimitpool"},
     dependsOnMethods = {"softLimitMediumSearch"}
   )
   public void softLimitMaxClean()
@@ -488,7 +488,7 @@ public class ConnectionPoolTest extends AbstractTest
 
 
   /** @throws  Exception  On test failure. */
-  @Test(groups = {"blockingpooltest"})
+  @Test(groups = {"blockingpool"})
   public void checkBlockingPoolImmutable()
     throws Exception
   {
@@ -516,7 +516,7 @@ public class ConnectionPoolTest extends AbstractTest
    * @throws  Exception  On test failure.
    */
   @Test(
-    groups = {"blockingpooltest"},
+    groups = {"blockingpool"},
     dataProvider = "pool-data",
     threadPoolSize = 3,
     invocationCount = 50,
@@ -541,7 +541,7 @@ public class ConnectionPoolTest extends AbstractTest
    * @throws  Exception  On test failure.
    */
   @Test(
-    groups = {"blockingpooltest"},
+    groups = {"blockingpool"},
     dataProvider = "pool-data",
     threadPoolSize = 10,
     invocationCount = 100,
@@ -567,7 +567,7 @@ public class ConnectionPoolTest extends AbstractTest
    * @throws  Exception  On test failure.
    */
   @Test(
-    groups = {"blockingpooltest"},
+    groups = {"blockingpool"},
     dataProvider = "pool-data",
     threadPoolSize = 50,
     invocationCount = 1000,
@@ -588,7 +588,7 @@ public class ConnectionPoolTest extends AbstractTest
 
   /** @throws  Exception  On test failure. */
   @Test(
-    groups = {"blockingpooltest"},
+    groups = {"blockingpool"},
     dependsOnMethods = {"blockingLargeSearch"}
   )
   public void blockingMaxClean()
@@ -609,7 +609,7 @@ public class ConnectionPoolTest extends AbstractTest
    * @throws  Exception  On test failure.
    */
   @Test(
-    groups = {"blockingtimeoutpooltest"},
+    groups = {"blockingtimeoutpool"},
     dataProvider = "pool-data",
     threadPoolSize = 3,
     invocationCount = 50,
@@ -638,7 +638,7 @@ public class ConnectionPoolTest extends AbstractTest
    * @throws  Exception  On test failure.
    */
   @Test(
-    groups = {"blockingtimeoutpooltest"},
+    groups = {"blockingtimeoutpool"},
     dataProvider = "pool-data",
     threadPoolSize = 10,
     invocationCount = 100,
@@ -668,7 +668,7 @@ public class ConnectionPoolTest extends AbstractTest
    * @throws  Exception  On test failure.
    */
   @Test(
-    groups = {"blockingtimeoutpooltest"},
+    groups = {"blockingtimeoutpool"},
     dataProvider = "pool-data",
     threadPoolSize = 50,
     invocationCount = 1000,
@@ -693,7 +693,7 @@ public class ConnectionPoolTest extends AbstractTest
 
   /** @throws  Exception  On test failure. */
   @Test(
-    groups = {"blockingtimeoutpooltest"},
+    groups = {"blockingtimeoutpool"},
     dependsOnMethods = {"blockingTimeoutLargeSearch"}
   )
   public void blockingTimeoutMaxClean()
@@ -714,7 +714,7 @@ public class ConnectionPoolTest extends AbstractTest
    * @throws  Exception  On test failure.
    */
   @Test(
-    groups = {"connstrategypooltest"},
+    groups = {"connstrategypool"},
     dataProvider = "pool-data",
     threadPoolSize = 10,
     invocationCount = 100,

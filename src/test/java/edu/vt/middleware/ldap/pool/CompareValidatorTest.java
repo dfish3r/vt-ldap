@@ -34,7 +34,7 @@ public class CompareValidatorTest extends AbstractTest
   /**
    * @throws  Exception  On test failure.
    */
-  @Test(groups = {"validatortest"})
+  @Test(groups = {"validator"})
   public void defaultSettings()
     throws Exception
   {
@@ -50,7 +50,7 @@ public class CompareValidatorTest extends AbstractTest
   /**
    * @throws  Exception  On test failure.
    */
-  @Test(groups = {"validatortest"})
+  @Test(groups = {"validator"})
   public void customSettings()
     throws Exception
   {

@@ -35,7 +35,7 @@ public class LdapBeanTest
    *
    * @throws  Exception  On test failure.
    */
-  @Test(groups = {"beantest"})
+  @Test(groups = {"bean"})
   public void ldapResult()
     throws Exception
   {
@@ -116,7 +116,7 @@ public class LdapBeanTest
    *
    * @throws  Exception  On test failure.
    */
-  @Test(groups = {"beantest"})
+  @Test(groups = {"bean"})
   public void ldapEntry()
     throws Exception
   {
@@ -200,7 +200,7 @@ public class LdapBeanTest
    *
    * @throws  Exception  On test failure.
    */
-  @Test(groups = {"beantest"})
+  @Test(groups = {"bean"})
   public void ldapAttribute()
     throws Exception
   {

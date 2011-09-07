@@ -54,7 +54,7 @@ public class AttributeServletTest extends AbstractTest
    * @throws  Exception  On test failure.
    */
   @Parameters({ "createEntry12", "webXml" })
-  @BeforeClass(groups = {"servlettest"})
+  @BeforeClass(groups = {"servlet"})
   public void createLdapEntry(final String ldifFile, final String webXml)
     throws Exception
   {
@@ -67,7 +67,7 @@ public class AttributeServletTest extends AbstractTest
 
 
   /** @throws  Exception  On test failure. */
-  @AfterClass(groups = {"servlettest"})
+  @AfterClass(groups = {"servlet"})
   public void deleteLdapEntry()
     throws Exception
   {
@@ -89,7 +89,7 @@ public class AttributeServletTest extends AbstractTest
       "attributeServletValue"
     }
   )
-  @Test(groups = {"servlettest"})
+  @Test(groups = {"servlet"})
   public void attributeServlet(
     final String query,
     final String attr,
@@ -134,7 +134,7 @@ public class AttributeServletTest extends AbstractTest
 
   /** @throws  Exception  On test failure. */
   @Test(
-    groups = {"servlettest"},
+    groups = {"servlet"},
     dependsOnMethods = {"attributeServlet"}
   )
   public void prunePools()

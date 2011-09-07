@@ -116,7 +116,7 @@ public class TLSSocketFactoryTest
 
 
   /** @throws  Exception  On test failure. */
-  @Test(groups = {"ssltest"})
+  @Test(groups = {"ssl"})
   public void setEnabledCipherSuites()
     throws Exception
   {
@@ -162,7 +162,7 @@ public class TLSSocketFactoryTest
 
 
   /** @throws  Exception  On test failure. */
-  @Test(groups = {"ssltest"})
+  @Test(groups = {"ssl"})
   public void setEnabledProtocols()
     throws Exception
   {

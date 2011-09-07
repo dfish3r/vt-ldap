@@ -72,7 +72,7 @@ public class LdapLoginModuleTest extends AbstractTest
    * @throws  Exception  On test failure.
    */
   @Parameters("createEntry10")
-  @BeforeClass(groups = {"jaastest"})
+  @BeforeClass(groups = {"jaas"})
   public void createAuthEntry(final String ldifFile)
     throws Exception
   {
@@ -102,7 +102,7 @@ public class LdapLoginModuleTest extends AbstractTest
       "createGroup9"
     }
   )
-  @BeforeClass(groups = {"jaastest"})
+  @BeforeClass(groups = {"jaas"})
   public void createGroupEntry(
     final String ldifFile6,
     final String ldifFile7,
@@ -157,7 +157,7 @@ public class LdapLoginModuleTest extends AbstractTest
 
 
   /** @throws  Exception  On test failure. */
-  @AfterClass(groups = {"jaastest"})
+  @AfterClass(groups = {"jaas"})
   public void deleteAuthEntry()
     throws Exception
   {
@@ -185,7 +185,7 @@ public class LdapLoginModuleTest extends AbstractTest
    */
   @Parameters({ "jaasDn", "jaasUser", "jaasUserRole", "jaasCredential" })
   @Test(
-    groups = {"jaastest"},
+    groups = {"jaas"},
     threadPoolSize = TEST_THREAD_POOL_SIZE,
     invocationCount = TEST_INVOCATION_COUNT,
     timeOut = TEST_TIME_OUT
@@ -211,7 +211,7 @@ public class LdapLoginModuleTest extends AbstractTest
    */
   @Parameters({ "jaasDn", "jaasUser", "jaasUserRole", "jaasCredential" })
   @Test(
-    groups = {"jaastest"},
+    groups = {"jaas"},
     threadPoolSize = TEST_THREAD_POOL_SIZE,
     invocationCount = TEST_INVOCATION_COUNT,
     timeOut = TEST_TIME_OUT
@@ -237,7 +237,7 @@ public class LdapLoginModuleTest extends AbstractTest
    */
   @Parameters({ "jaasDn", "jaasUser", "jaasUserRole", "jaasCredential" })
   @Test(
-    groups = {"jaastest"},
+    groups = {"jaas"},
     threadPoolSize = TEST_THREAD_POOL_SIZE,
     invocationCount = TEST_INVOCATION_COUNT,
     timeOut = TEST_TIME_OUT
@@ -263,7 +263,7 @@ public class LdapLoginModuleTest extends AbstractTest
    */
   @Parameters({ "jaasDn", "jaasUser", "jaasUserRole", "jaasCredential" })
   @Test(
-    groups = {"jaastest"},
+    groups = {"jaas"},
     threadPoolSize = TEST_THREAD_POOL_SIZE,
     invocationCount = TEST_INVOCATION_COUNT,
     timeOut = TEST_TIME_OUT
@@ -288,7 +288,7 @@ public class LdapLoginModuleTest extends AbstractTest
    */
   @Parameters({ "jaasDn", "jaasUser", "jaasCredential" })
   @Test(
-    groups = {"jaastest"},
+    groups = {"jaas"},
     threadPoolSize = TEST_THREAD_POOL_SIZE,
     invocationCount = TEST_INVOCATION_COUNT,
     timeOut = TEST_TIME_OUT
@@ -312,7 +312,7 @@ public class LdapLoginModuleTest extends AbstractTest
    */
   @Parameters({ "jaasDn", "jaasUser", "jaasCredential" })
   @Test(
-    groups = {"jaastest"},
+    groups = {"jaas"},
     threadPoolSize = TEST_THREAD_POOL_SIZE,
     invocationCount = TEST_INVOCATION_COUNT,
     timeOut = TEST_TIME_OUT
@@ -336,7 +336,7 @@ public class LdapLoginModuleTest extends AbstractTest
    */
   @Parameters({ "jaasDn", "jaasUser", "jaasCredential" })
   @Test(
-    groups = {"jaastest"},
+    groups = {"jaas"},
     threadPoolSize = TEST_THREAD_POOL_SIZE,
     invocationCount = TEST_INVOCATION_COUNT,
     timeOut = TEST_TIME_OUT
@@ -360,7 +360,7 @@ public class LdapLoginModuleTest extends AbstractTest
    * @throws  Exception  On test failure.
    */
   @Parameters({ "jaasDn", "jaasUser", "jaasUserRole", "jaasCredential" })
-  @Test(groups = {"jaastest"})
+  @Test(groups = {"jaas"})
   public void handlerContextTest(
     final String dn,
     final String user,
@@ -393,7 +393,7 @@ public class LdapLoginModuleTest extends AbstractTest
    */
   @Parameters({ "jaasDn", "jaasUser", "jaasRoleCombined", "jaasCredential" })
   @Test(
-    groups = {"jaastest"},
+    groups = {"jaas"},
     threadPoolSize = TEST_THREAD_POOL_SIZE,
     invocationCount = TEST_INVOCATION_COUNT,
     timeOut = TEST_TIME_OUT
@@ -422,7 +422,7 @@ public class LdapLoginModuleTest extends AbstractTest
       "jaasDn", "jaasUser", "jaasRoleCombinedRecursive", "jaasCredential"
     }
   )
-  @Test(groups = {"jaastest"})
+  @Test(groups = {"jaas"})
   public void rolesRecursiveContextTest(
     final String dn,
     final String user,
@@ -449,7 +449,7 @@ public class LdapLoginModuleTest extends AbstractTest
    * @throws  Exception  On test failure.
    */
   @Parameters({ "jaasDn", "jaasUser", "jaasUserRoleDefault", "jaasCredential" })
-  @Test(groups = {"jaastest"})
+  @Test(groups = {"jaas"})
   public void useFirstContextTest(
     final String dn,
     final String user,
@@ -470,7 +470,7 @@ public class LdapLoginModuleTest extends AbstractTest
    * @throws  Exception  On test failure.
    */
   @Parameters({ "jaasDn", "jaasUser", "jaasRoleCombined", "jaasCredential" })
-  @Test(groups = {"jaastest"})
+  @Test(groups = {"jaas"})
   public void tryFirstContextTest(
     final String dn,
     final String user,
@@ -491,7 +491,7 @@ public class LdapLoginModuleTest extends AbstractTest
    * @throws  Exception  On test failure.
    */
   @Parameters({ "jaasDn", "jaasUser", "jaasUserRole", "jaasCredential" })
-  @Test(groups = {"jaastest"})
+  @Test(groups = {"jaas"})
   public void sufficientContextTest(
     final String dn,
     final String user,
@@ -614,7 +614,7 @@ public class LdapLoginModuleTest extends AbstractTest
    */
   @Parameters({ "jaasDn", "jaasUser", "jaasRoleCombined" })
   @Test(
-    groups = {"jaastest"},
+    groups = {"jaas"},
     threadPoolSize = TEST_THREAD_POOL_SIZE,
     invocationCount = TEST_INVOCATION_COUNT,
     timeOut = TEST_TIME_OUT
@@ -638,7 +638,7 @@ public class LdapLoginModuleTest extends AbstractTest
    */
   @Parameters({ "jaasDn", "jaasUser", "jaasRoleCombined" })
   @Test(
-    groups = {"jaastest"},
+    groups = {"jaas"},
     threadPoolSize = TEST_THREAD_POOL_SIZE,
     invocationCount = TEST_INVOCATION_COUNT,
     timeOut = TEST_TIME_OUT
@@ -662,7 +662,7 @@ public class LdapLoginModuleTest extends AbstractTest
    */
   @Parameters({ "jaasDn", "jaasUser", "jaasRoleCombined" })
   @Test(
-    groups = {"jaastest"},
+    groups = {"jaas"},
     threadPoolSize = TEST_THREAD_POOL_SIZE,
     invocationCount = TEST_INVOCATION_COUNT,
     timeOut = TEST_TIME_OUT

@@ -57,7 +57,7 @@ public class SearchServletTest extends AbstractTest
    * @throws  Exception  On test failure.
    */
   @Parameters({ "createEntry11", "webXml" })
-  @BeforeClass(groups = {"servlettest"})
+  @BeforeClass(groups = {"servlet"})
   public void createLdapEntry(final String ldifFile, final String webXml)
     throws Exception
   {
@@ -71,7 +71,7 @@ public class SearchServletTest extends AbstractTest
 
 
   /** @throws  Exception  On test failure. */
-  @AfterClass(groups = {"servlettest"})
+  @AfterClass(groups = {"servlet"})
   public void deleteLdapEntry()
     throws Exception
   {
@@ -93,7 +93,7 @@ public class SearchServletTest extends AbstractTest
       "ldifSearchServletLdif"
     }
   )
-  @Test(groups = {"servlettest"})
+  @Test(groups = {"servlet"})
   public void ldifSearchServlet(
     final String query,
     final String attrs,
@@ -132,7 +132,7 @@ public class SearchServletTest extends AbstractTest
       "dsmlSearchServletLdif"
     }
   )
-  @Test(groups = {"servlettest"})
+  @Test(groups = {"servlet"})
   public void dsmlSearchServlet(
     final String query,
     final String attrs,
@@ -176,7 +176,7 @@ public class SearchServletTest extends AbstractTest
 
   /** @throws  Exception  On test failure. */
   @Test(
-    groups = {"servlettest"},
+    groups = {"servlet"},
     dependsOnMethods = {"ldifSearchServlet", "dsmlSearchServlet"}
   )
   public void prunePools()

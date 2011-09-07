@@ -44,7 +44,7 @@ public class EhcacheTest
   /**
    * @throws  Exception  On test failure.
    */
-  @BeforeClass(groups = {"cachetest"})
+  @BeforeClass(groups = {"cache"})
   public void initialize()
     throws Exception
   {
@@ -66,7 +66,7 @@ public class EhcacheTest
   /**
    * @throws  Exception  On test failure.
    */
-  @AfterClass(groups = {"cachetest"})
+  @AfterClass(groups = {"cache"})
   public void clear()
     throws Exception
   {
@@ -82,7 +82,7 @@ public class EhcacheTest
    * @throws  Exception  On test failure.
    */
   @Test(
-    groups = {"cachetest"},
+    groups = {"cache"},
     threadPoolSize = 5,
     invocationCount = 100,
     timeOut = 60000
@@ -106,7 +106,7 @@ public class EhcacheTest
   /**
    * @throws  Exception  On test failure.
    */
-  @Test(groups = {"cachetest"})
+  @Test(groups = {"cache"})
   public void put()
     throws Exception
   {

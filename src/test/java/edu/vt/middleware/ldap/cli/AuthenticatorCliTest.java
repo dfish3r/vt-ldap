@@ -43,7 +43,7 @@ public class AuthenticatorCliTest extends AbstractTest
    * @throws  Exception  On test failure.
    */
   @Parameters("createEntry9")
-  @BeforeClass(groups = {"authclitest"})
+  @BeforeClass(groups = {"authcli"})
   public void createLdapEntry(final String ldifFile)
     throws Exception
   {
@@ -54,7 +54,7 @@ public class AuthenticatorCliTest extends AbstractTest
 
 
   /** @throws  Exception  On test failure. */
-  @AfterClass(groups = {"authclitest"})
+  @AfterClass(groups = {"authcli"})
   public void deleteLdapEntry()
     throws Exception
   {
@@ -69,7 +69,7 @@ public class AuthenticatorCliTest extends AbstractTest
    * @throws  Exception  On test failure.
    */
   @Parameters({ "cliAuthArgs", "cliAuthResults" })
-  @Test(groups = {"authclitest"})
+  @Test(groups = {"authcli"})
   public void authenticate(final String args, final String ldifFile)
     throws Exception
   {

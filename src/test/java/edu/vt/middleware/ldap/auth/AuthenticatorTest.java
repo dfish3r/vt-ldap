@@ -97,7 +97,7 @@ public class AuthenticatorTest extends AbstractTest
    * @throws  Exception  On test failure.
    */
   @Parameters("createEntry6")
-  @BeforeClass(groups = {"authtest"})
+  @BeforeClass(groups = {"auth"})
   public void createAuthEntry(final String ldifFile)
     throws Exception
   {
@@ -122,7 +122,7 @@ public class AuthenticatorTest extends AbstractTest
    * @throws  Exception  On test failure.
    */
   @Parameters("createSpecialCharsEntry2")
-  @BeforeClass(groups = {"authtest"})
+  @BeforeClass(groups = {"auth"})
   public void createSpecialCharsEntry(final String ldifFile)
     throws Exception
   {
@@ -133,7 +133,7 @@ public class AuthenticatorTest extends AbstractTest
 
 
   /** @throws  Exception  On test failure. */
-  @AfterClass(groups = {"authtest"})
+  @AfterClass(groups = {"auth"})
   public void deleteAuthEntry()
     throws Exception
   {
@@ -221,7 +221,7 @@ public class AuthenticatorTest extends AbstractTest
    * @param  baseDn  to check
    */
   @Parameters({ "loadPropertiesUrl", "loadPropertiesBaseDn" })
-  @Test(groups = {"authtest"})
+  @Test(groups = {"auth"})
   public void loadProperties(final String ldapUrl, final String baseDn)
   {
     final Authenticator auth = TestUtil.readAuthenticator(
@@ -243,7 +243,7 @@ public class AuthenticatorTest extends AbstractTest
    * @throws  Exception  On test failure.
    */
   @Parameters({ "getDnUid", "getDnUser", "getDnDuplicateFilter" })
-  @Test(groups = {"authtest"})
+  @Test(groups = {"auth"})
   public void resolveDn(
     final String uid,
     final String user,
@@ -307,7 +307,7 @@ public class AuthenticatorTest extends AbstractTest
     }
   )
   @Test(
-    groups = {"authtest"},
+    groups = {"auth"},
     threadPoolSize = TEST_THREAD_POOL_SIZE,
     invocationCount = TEST_INVOCATION_COUNT,
     timeOut = TEST_TIME_OUT
@@ -358,7 +358,7 @@ public class AuthenticatorTest extends AbstractTest
     }
   )
   @Test(
-    groups = {"authtest"},
+    groups = {"auth"},
     threadPoolSize = TEST_THREAD_POOL_SIZE,
     invocationCount = TEST_INVOCATION_COUNT,
     timeOut = TEST_TIME_OUT
@@ -413,7 +413,7 @@ public class AuthenticatorTest extends AbstractTest
     }
   )
   @Test(
-    groups = {"authtest"},
+    groups = {"auth"},
     threadPoolSize = TEST_THREAD_POOL_SIZE,
     invocationCount = TEST_INVOCATION_COUNT,
     timeOut = TEST_TIME_OUT
@@ -487,7 +487,7 @@ public class AuthenticatorTest extends AbstractTest
       "authenticateDnFilterArgs"
     }
   )
-  @Test(groups = {"authtest"})
+  @Test(groups = {"auth"})
   public void authenticateDnHandler(
     final String dn,
     final String credential,
@@ -557,7 +557,7 @@ public class AuthenticatorTest extends AbstractTest
    * @throws  Exception  On test failure.
    */
   @Parameters({ "digestMd5User", "digestMd5Credential" })
-  @Test(groups = {"authtest"})
+  @Test(groups = {"auth"})
   public void authenticateDigestMd5(final String user, final String credential)
     throws Exception
   {
@@ -583,7 +583,7 @@ public class AuthenticatorTest extends AbstractTest
    * @throws  Exception  On test failure.
    */
   @Parameters({ "cramMd5User", "cramMd5Credential" })
-  @Test(groups = {"authtest"})
+  @Test(groups = {"auth"})
   public void authenticateCramMd5(final String user, final String credential)
     throws Exception
   {
@@ -619,7 +619,7 @@ public class AuthenticatorTest extends AbstractTest
     }
   )
   @Test(
-    groups = {"authtest"},
+    groups = {"auth"},
     threadPoolSize = TEST_THREAD_POOL_SIZE,
     invocationCount = TEST_INVOCATION_COUNT,
     timeOut = TEST_TIME_OUT
@@ -674,7 +674,7 @@ public class AuthenticatorTest extends AbstractTest
     }
   )
   @Test(
-    groups = {"authtest"},
+    groups = {"auth"},
     threadPoolSize = TEST_THREAD_POOL_SIZE,
     invocationCount = TEST_INVOCATION_COUNT,
     timeOut = TEST_TIME_OUT
@@ -730,7 +730,7 @@ public class AuthenticatorTest extends AbstractTest
     }
   )
   @Test(
-    groups = {"authtest"},
+    groups = {"auth"},
     threadPoolSize = TEST_THREAD_POOL_SIZE,
     invocationCount = TEST_INVOCATION_COUNT,
     timeOut = TEST_TIME_OUT
@@ -810,7 +810,7 @@ public class AuthenticatorTest extends AbstractTest
     }
   )
   @Test(
-    groups = {"authtest"},
+    groups = {"auth"},
     threadPoolSize = TEST_THREAD_POOL_SIZE,
     invocationCount = TEST_INVOCATION_COUNT,
     timeOut = TEST_TIME_OUT
@@ -891,7 +891,7 @@ public class AuthenticatorTest extends AbstractTest
     }
   )
   @Test(
-    groups = {"authtest"},
+    groups = {"auth"},
     threadPoolSize = TEST_THREAD_POOL_SIZE,
     invocationCount = TEST_INVOCATION_COUNT,
     timeOut = TEST_TIME_OUT
@@ -942,7 +942,7 @@ public class AuthenticatorTest extends AbstractTest
       "authenticateReturnAttrs"
     }
   )
-  @Test(groups = {"authtest"})
+  @Test(groups = {"auth"})
   public void authenticateExceptions(
     final String user,
     final String credential,
@@ -1002,7 +1002,7 @@ public class AuthenticatorTest extends AbstractTest
       "authenticateSpecialCharsCredential"
     }
   )
-  @Test(groups = {"authtest"})
+  @Test(groups = {"auth"})
   public void authenticateSpecialChars(
     final String user, final String credential)
     throws Exception

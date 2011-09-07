@@ -50,7 +50,7 @@ public class DsmlTest extends AbstractTest
    * @throws  Exception  On test failure.
    */
   @Parameters("createEntry13")
-  @BeforeClass(groups = {"dsmltest"})
+  @BeforeClass(groups = {"dsml"})
   public void createLdapEntry(final String ldifFile)
     throws Exception
   {
@@ -61,7 +61,7 @@ public class DsmlTest extends AbstractTest
 
 
   /** @throws  Exception  On test failure. */
-  @AfterClass(groups = {"dsmltest"})
+  @AfterClass(groups = {"dsml"})
   public void deleteLdapEntry()
     throws Exception
   {
@@ -79,7 +79,7 @@ public class DsmlTest extends AbstractTest
       "dsmlSearchDn",
       "dsmlSearchFilter"
     })
-  @Test(groups = {"dsmltest"})
+  @Test(groups = {"dsml"})
   public void searchAndCompareDsmlv1(final String dn, final String filter)
     throws Exception
   {
@@ -113,7 +113,7 @@ public class DsmlTest extends AbstractTest
       "dsmlv1Entry",
       "dsmlv1SortedEntry"
     })
-  @Test(groups = {"dsmltest"})
+  @Test(groups = {"dsml"})
   public void readAndCompareDsmlv1(
     final String dsmlFile,
     final String dsmlSortedFile)
