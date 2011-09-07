@@ -15,6 +15,7 @@ package edu.vt.middleware.ldap.provider.jndi;
 
 import java.io.IOException;
 import java.util.Hashtable;
+import java.util.Map;
 import javax.naming.NamingException;
 import javax.naming.ldap.InitialLdapContext;
 import javax.naming.ldap.LdapContext;
@@ -42,13 +43,16 @@ public class JndiTlsConnectionFactory extends AbstractJndiConnectionFactory
    * Creates a new jndi tls connection factory.
    *
    * @param  url  of the ldap to connect to
+   * @param  env  jndi context environment
    */
-  public JndiTlsConnectionFactory(final String url)
+  public JndiTlsConnectionFactory(
+    final String url, final Map<String, Object> env)
   {
     if (url == null) {
       throw new IllegalArgumentException("LDAP URL cannot be null");
     }
     ldapUrl = url;
+    environment = env;
   }
 
 
