@@ -115,7 +115,7 @@ public class ConnectionTest
     final Connection conn = TestUtil.createConnection();
     conn.open();
     final LdapResult lr = conn.search(
-      "ou=test,dc=vt,dc=edu", new SearchFilter("uid=15"), null);
+      "ou=test,dc=vt,dc=edu", new SearchFilter("(uid=15)"), null);
     AssertJUnit.assertEquals(testLdapEntry.getDn(), lr.getEntry().getDn());
     conn.close();
   }

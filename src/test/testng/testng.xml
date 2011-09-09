@@ -304,11 +304,11 @@
 
   <parameter name="webXml" value="target/test-classes/web.xml"/>
 
-  <parameter name="ldifSearchServletQuery" value="mail=jkpolk@vt.edu"/>
+  <parameter name="ldifSearchServletQuery" value="(mail=jkpolk@vt.edu)"/>
   <parameter name="ldifSearchServletAttrs" value="departmentNumber|givenName|sn|jpegPhoto"/>
   <parameter name="ldifSearchServletLdif" value="/edu/vt/middleware/ldap/searchResults-11.ldif"/>
 
-  <parameter name="dsmlSearchServletQuery" value="uid=11"/>
+  <parameter name="dsmlSearchServletQuery" value="(uid=11)"/>
   <parameter name="dsmlSearchServletAttrs" value="departmentNumber|givenName|sn|jpegPhoto"/>
   <parameter name="dsmlSearchServletLdif" value="/edu/vt/middleware/ldap/searchResults-11.ldif"/>
 
