@@ -34,6 +34,7 @@ import edu.vt.middleware.ldap.props.DefaultConnectionFactoryPropertySource;
 import edu.vt.middleware.ldap.props.SearchRequestPropertySource;
 import org.testng.AssertJUnit;
 import org.testng.annotations.BeforeClass;
+import org.testng.annotations.Parameters;
 import org.testng.annotations.Test;
 
 /**
@@ -83,8 +84,9 @@ public class PropertiesTest
 
 
   /** @throws  Exception  On test failure. */
+  @Parameters("ldapTestHost")
   @Test(groups = {"props"})
-  public void parserProperties()
+  public void parserProperties(final String host)
     throws Exception
   {
     final ConnectionFactory cf = new DefaultConnectionFactory();
@@ -96,8 +98,7 @@ public class PropertiesTest
 
     final ConnectionConfig cc = cf.getConnectionConfig();
 
-    AssertJUnit.assertEquals(
-      "ldap://ed-dev.middleware.vt.edu:14389", cc.getLdapUrl());
+    AssertJUnit.assertEquals(host, cc.getLdapUrl());
     AssertJUnit.assertEquals("uid=1,ou=test,dc=vt,dc=edu", cc.getBindDn());
     AssertJUnit.assertEquals(8000, cc.getTimeout());
     AssertJUnit.assertFalse(cc.isTlsEnabled());
@@ -185,8 +186,9 @@ public class PropertiesTest
 
 
   /** @throws  Exception  On test failure. */
+  @Parameters("ldapTestHost")
   @Test(groups = {"props"})
-  public void jaasProperties()
+  public void jaasProperties(final String host)
     throws Exception
   {
     final LoginContext lc = new LoginContext(
@@ -217,8 +219,7 @@ public class PropertiesTest
     final ConnectionConfig cc = cf.getConnectionConfig();
 
     AssertJUnit.assertNotNull(cf.getProvider().getClass());
-    AssertJUnit.assertEquals(
-      "ldap://ed-dev.middleware.vt.edu:14389", cc.getLdapUrl());
+    AssertJUnit.assertEquals(host, cc.getLdapUrl());
     AssertJUnit.assertEquals("uid=1,ou=test,dc=vt,dc=edu", cc.getBindDn());
     AssertJUnit.assertEquals(8000, cc.getTimeout());
     AssertJUnit.assertTrue(cc.isTlsEnabled());
@@ -270,8 +271,7 @@ public class PropertiesTest
     final PooledConnectionFactory authCf =
       ((PooledSearchDnResolver) auth.getDnResolver()).getConnectionFactory();
     final ConnectionConfig authCc = authCf.getConnectionConfig();
-    AssertJUnit.assertEquals(
-      "ldap://ed-dev.middleware.vt.edu:14389", authCc.getLdapUrl());
+    AssertJUnit.assertEquals(host, authCc.getLdapUrl());
     AssertJUnit.assertEquals("uid=1,ou=test,dc=vt,dc=edu", authCc.getBindDn());
     AssertJUnit.assertEquals(8000, authCc.getTimeout());
     AssertJUnit.assertTrue(authCc.isTlsEnabled());

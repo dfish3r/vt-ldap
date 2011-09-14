@@ -1287,7 +1287,7 @@ public class SearchOperationTest extends AbstractTest
   @Parameters(
     {
       "krb5Realm",
-      "krb5Kdc",
+      "ldapTestHost",
       "gssApiSearchDn",
       "gssApiSearchFilter",
       "gssApiSearchFilterArgs",
@@ -1311,7 +1311,8 @@ public class SearchOperationTest extends AbstractTest
       "target/test-classes/ldap_jaas.config");
     System.setProperty("javax.security.auth.useSubjectCredsOnly", "false");
     System.setProperty("java.security.krb5.realm", krb5Realm);
-    System.setProperty("java.security.krb5.kdc", krb5Kdc);
+    System.setProperty(
+      "java.security.krb5.kdc", TestUtil.getHostFromLdapUrl(krb5Kdc));
 
     final String expected = TestUtil.readFileIntoString(ldifFile);
 

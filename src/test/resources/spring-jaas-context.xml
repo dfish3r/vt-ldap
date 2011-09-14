@@ -47,7 +47,7 @@ http://www.springframework.org/schema/util http://www.springframework.org/schema
 
   <bean id="connectionConfig"
     class="edu.vt.middleware.ldap.ConnectionConfig"
-    p:ldapUrl="ldap://ed-dev.middleware.vt.edu:14389"
+    p:ldapUrl="${ldapTestHost}"
     p:tls="true"
     p:hostnameVerifier-ref="hostnameVerifier"
     p:bindDn="uid=1,ou=test,dc=vt,dc=edu"

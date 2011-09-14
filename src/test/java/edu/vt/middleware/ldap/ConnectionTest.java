@@ -189,7 +189,7 @@ public class ConnectionTest
    *
    * @throws  Exception  On test failure.
    */
-  @Parameters({ "ldapHost", "sleepTime" })
+  @Parameters({ "ldapTestHost", "sleepTime" })
   @AfterSuite(groups = {"conn"})
   public void sleep(final String host, final int sleepTime)
     throws Exception
@@ -202,7 +202,9 @@ public class ConnectionTest
      * SearchServletTest: 6
      * AttributeServletTest: 3
      */
-    final int openConns = TestUtil.countOpenConnections(host);
+    String newHost = TestUtil.getHostFromLdapUrl(host);
+    final int openConns = TestUtil.countOpenConnections(
+      newHost.substring(0, newHost.indexOf(".")));
     AssertJUnit.assertEquals(10, openConns);
   }
 }

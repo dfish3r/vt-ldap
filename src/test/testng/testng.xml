@@ -4,6 +4,7 @@
 <suite name="vt-ldap" verbose="1" parallel="tests" thread-count="1">
 
   <parameter name="ldapTestsIgnoreLock" value="${ldapTestsIgnoreLock}"/>
+  <parameter name="ldapTestHost" value="${ldapTestHost}"/>
 
   <!-- ldap test parameters -->
   <parameter name="createEntry2"
@@ -232,7 +233,7 @@
              value="/edu/vt/middleware/ldap/searchResults-2.ldif"/>
 
   <parameter name="krb5Realm" value="VT.EDU"/>
-  <parameter name="krb5Kdc" value="ed-dev.middleware.vt.edu"/>
+  <parameter name="krb5Kdc" value="${ldapTestHost}"/>
   <parameter name="gssApiSearchDn" value="ou=test,dc=vt,dc=edu"/>
   <parameter name="gssApiSearchFilter" value="(uid={0})"/>
   <parameter name="gssApiSearchFilterArgs" value="2"/>
@@ -240,7 +241,7 @@
   <parameter name="gssApiSearchResults"
              value="/edu/vt/middleware/ldap/searchResults-2.ldif"/>
 
-  <parameter name="loadPropertiesUrl" value="ldap://ed-dev.middleware.vt.edu:14389"/>
+  <parameter name="loadPropertiesUrl" value="${ldapTestHost}"/>
   <parameter name="loadPropertiesBaseDn" value="ou=test,dc=vt,dc=edu"/>
 
   <parameter name="getDnUid" value="6"/>
@@ -278,18 +279,18 @@
              value="/edu/vt/middleware/ldap/searchResults-7.ldif"/>
 
   <parameter name="cliAddArgs"
-             value="-ldapUrl|ldap://ed-dev.middleware.vt.edu:14389|-bindDn|uid=1,ou=test,dc=vt,dc=edu|-bindCredential|VKSxXwlU7YssGl1foLMH2mGMWkifbODb1djfJ4t2|-file|target/test-classes/edu/vt/middleware/ldap/createLdapEntry-8.ldif"/>
+             value="-ldapUrl|${ldapTestHost}|-bindDn|uid=1,ou=test,dc=vt,dc=edu|-bindCredential|VKSxXwlU7YssGl1foLMH2mGMWkifbODb1djfJ4t2|-file|target/test-classes/edu/vt/middleware/ldap/createLdapEntry-8.ldif"/>
   <parameter name="cliSearchArgs"
-             value="-ldapUrl|ldap://ed-dev.middleware.vt.edu:14389|-baseDn|ou=test,dc=vt,dc=edu|-bindDn|uid=1,ou=test,dc=vt,dc=edu|-bindCredential|VKSxXwlU7YssGl1foLMH2mGMWkifbODb1djfJ4t2|-searchFilter|(mail=mvburen@vt.edu)|-returnAttributes|departmentNumber,givenName,jpegPhoto,sn"/>
+             value="-ldapUrl|${ldapTestHost}|-baseDn|ou=test,dc=vt,dc=edu|-bindDn|uid=1,ou=test,dc=vt,dc=edu|-bindCredential|VKSxXwlU7YssGl1foLMH2mGMWkifbODb1djfJ4t2|-searchFilter|(mail=mvburen@vt.edu)|-returnAttributes|departmentNumber,givenName,jpegPhoto,sn"/>
   <parameter name="cliSearchResults"
              value="/edu/vt/middleware/ldap/searchResults-8.ldif"/>
   <parameter name="cliCompareArgs"
-             value="-ldapUrl|ldap://ed-dev.middleware.vt.edu:14389|-bindDn|uid=1,ou=test,dc=vt,dc=edu|-bindCredential|VKSxXwlU7YssGl1foLMH2mGMWkifbODb1djfJ4t2|-dn|uid=8,ou=test,dc=vt,dc=edu|-attribute|sn:buren"/>
+             value="-ldapUrl|${ldapTestHost}|-bindDn|uid=1,ou=test,dc=vt,dc=edu|-bindCredential|VKSxXwlU7YssGl1foLMH2mGMWkifbODb1djfJ4t2|-dn|uid=8,ou=test,dc=vt,dc=edu|-attribute|sn:buren"/>
   <parameter name="cliDeleteArgs"
-             value="-ldapUrl|ldap://ed-dev.middleware.vt.edu:14389|-bindDn|uid=1,ou=test,dc=vt,dc=edu|-bindCredential|VKSxXwlU7YssGl1foLMH2mGMWkifbODb1djfJ4t2|-dn|uid=8,ou=test,dc=vt,dc=edu"/>
+             value="-ldapUrl|${ldapTestHost}|-bindDn|uid=1,ou=test,dc=vt,dc=edu|-bindCredential|VKSxXwlU7YssGl1foLMH2mGMWkifbODb1djfJ4t2|-dn|uid=8,ou=test,dc=vt,dc=edu"/>
 
   <parameter name="cliAuthArgs"
-             value="-ldapUrl|ldap://ed-dev.middleware.vt.edu:14389|-baseDn|ou=test,dc=vt,dc=edu|-tls|true|-hostnameVerifier|edu.vt.middleware.ldap.AnyHostnameVerifier|-bindDn|uid=1,ou=test,dc=vt,dc=edu|-bindCredential|VKSxXwlU7YssGl1foLMH2mGMWkifbODb1djfJ4t2|-userFilter|(mail={0})|-user|whharrison@vt.edu|-credential|password9|-authorizationFilter|(departmentNumber=0829)|-returnAttributes|departmentNumber,givenName,sn"/>
+             value="-ldapUrl|${ldapTestHost}|-baseDn|ou=test,dc=vt,dc=edu|-tls|true|-hostnameVerifier|edu.vt.middleware.ldap.AnyHostnameVerifier|-bindDn|uid=1,ou=test,dc=vt,dc=edu|-bindCredential|VKSxXwlU7YssGl1foLMH2mGMWkifbODb1djfJ4t2|-userFilter|(mail={0})|-user|whharrison@vt.edu|-credential|password9|-authorizationFilter|(departmentNumber=0829)|-returnAttributes|departmentNumber,givenName,sn"/>
   <parameter name="cliAuthResults"
              value="/edu/vt/middleware/ldap/searchResults-9.ldif"/>
 
@@ -322,7 +323,6 @@
   <parameter name="ldifSearchDn" value="ou=test,dc=vt,dc=edu"/>
   <parameter name="ldifSearchFilter" value="(uid=14)"/>
 
-  <parameter name="ldapHost" value="ed-dev"/>
   <parameter name="sleepTime" value="10000"/>
 
   <test name="tests">

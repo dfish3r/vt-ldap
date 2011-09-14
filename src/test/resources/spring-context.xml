@@ -13,7 +13,7 @@ http://www.springframework.org/schema/beans http://www.springframework.org/schem
   
   <bean id="connectionConfig"
     class="edu.vt.middleware.ldap.ConnectionConfig"
-    p:ldapUrl="ldap://ed-dev.middleware.vt.edu:14389"
+    p:ldapUrl="${ldapTestHost}"
     p:tls="true">
     <property name="saslConfig">
       <bean class="edu.vt.middleware.ldap.sasl.SaslConfig"

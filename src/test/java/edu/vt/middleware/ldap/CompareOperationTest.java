@@ -67,9 +67,9 @@ public class CompareOperationTest extends AbstractTest
   @Parameters({ "compareDn", "compareAttrName", "compareAttrValue" })
   @Test(
     groups = {"compare"},
-    threadPoolSize = 10,
-    invocationCount = 100,
-    timeOut = 60000
+    threadPoolSize = TEST_THREAD_POOL_SIZE,
+    invocationCount = TEST_INVOCATION_COUNT,
+    timeOut = TEST_TIME_OUT
   )
   public void compare(
     final String dn,

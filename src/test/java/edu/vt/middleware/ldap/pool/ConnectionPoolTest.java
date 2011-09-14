@@ -90,7 +90,8 @@ public class ConnectionPoolTest extends AbstractTest
    *
    * @throws  Exception  On test failure.
    */
-  public ConnectionPoolTest()
+  @Parameters("ldapTestHost")
+  public ConnectionPoolTest(final String host)
     throws Exception
   {
     final ConnectionConfig cc = TestUtil.readConnectionConfig(null);
@@ -131,7 +132,7 @@ public class ConnectionPoolTest extends AbstractTest
 
     final ConnectionConfig connStrategyCc = TestUtil.readConnectionConfig(null);
     connStrategyCc.setLdapUrl(
-      "ldap://ed-dev.middleware.vt.edu:14389 ldap://ed-dne.middleware.vt.edu");
+      String.format("%s ldap://dne.middleware.vt.edu", host));
     final ConnectionFactory connStrategyCf = new DefaultConnectionFactory(
       connStrategyCc);
     connStrategyCf.getProvider().getProviderConfig().setConnectionStrategy(
