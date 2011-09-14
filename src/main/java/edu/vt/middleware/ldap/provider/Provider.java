@@ -49,7 +49,7 @@ public interface Provider<T extends ProviderConfig>
    * @param  cc  connection configuration
    * @return  connection factory
    */
-  ProviderConnectionFactory<T> getConnectionFactory(ConnectionConfig cc);
+  ConnectionFactory<T> getConnectionFactory(ConnectionConfig cc);
 
 
   /**

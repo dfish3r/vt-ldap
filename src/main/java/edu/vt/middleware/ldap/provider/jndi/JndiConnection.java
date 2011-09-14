@@ -31,7 +31,7 @@ import edu.vt.middleware.ldap.ResultCode;
 import edu.vt.middleware.ldap.SearchRequest;
 import edu.vt.middleware.ldap.SearchScope;
 import edu.vt.middleware.ldap.auth.AuthenticationException;
-import edu.vt.middleware.ldap.provider.ProviderConnection;
+import edu.vt.middleware.ldap.provider.Connection;
 import edu.vt.middleware.ldap.provider.SearchIterator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -42,7 +42,7 @@ import org.slf4j.LoggerFactory;
  * @author  Middleware Services
  * @version  $Revision: 1330 $ $Date: 2010-05-23 18:10:53 -0400 (Sun, 23 May 2010) $
  */
-public class JndiConnection implements ProviderConnection
+public class JndiConnection implements Connection
 {
 
   /** Logger for this class. */

@@ -16,8 +16,8 @@ package edu.vt.middleware.ldap.provider.jndi;
 import java.util.HashMap;
 import java.util.Map;
 import edu.vt.middleware.ldap.ConnectionConfig;
+import edu.vt.middleware.ldap.provider.ConnectionFactory;
 import edu.vt.middleware.ldap.provider.Provider;
-import edu.vt.middleware.ldap.provider.ProviderConnectionFactory;
 import edu.vt.middleware.ldap.sasl.DigestMd5Config;
 import edu.vt.middleware.ldap.sasl.SaslConfig;
 import org.slf4j.Logger;
@@ -99,10 +99,10 @@ public class JndiProvider implements Provider<JndiProviderConfig>
 
   /** {@inheritDoc} */
   @Override
-  public ProviderConnectionFactory<JndiProviderConfig> getConnectionFactory(
+  public ConnectionFactory<JndiProviderConfig> getConnectionFactory(
     final ConnectionConfig cc)
   {
-    ProviderConnectionFactory<JndiProviderConfig> cf = null;
+    ConnectionFactory<JndiProviderConfig> cf = null;
     if (cc.isTlsEnabled()) {
       cf = new JndiTlsConnectionFactory(cc.getLdapUrl(), createEnvironment(cc));
     } else {
@@ -158,7 +158,7 @@ public class JndiProvider implements Provider<JndiProviderConfig>
       }
     }
     if (cc.getTimeout() > 0) {
-        env.put(TIMEOUT, Long.toString(cc.getTimeout()));
+      env.put(TIMEOUT, Long.toString(cc.getTimeout()));
     }
     if (cc.getSaslConfig() != null) {
       env.putAll(getSaslProperties(cc.getSaslConfig()));

@@ -14,7 +14,7 @@
 package edu.vt.middleware.ldap.provider.jndi;
 
 import java.util.Map;
-import edu.vt.middleware.ldap.provider.AbstractProviderConnectionFactory;
+import edu.vt.middleware.ldap.provider.AbstractConnectionFactory;
 
 /**
  * Base class for JNDI connection factory implementations.
@@ -23,7 +23,7 @@ import edu.vt.middleware.ldap.provider.AbstractProviderConnectionFactory;
  * @version  $Revision: 1442 $
  */
 public abstract class AbstractJndiConnectionFactory
-  extends AbstractProviderConnectionFactory<JndiProviderConfig>
+  extends AbstractConnectionFactory<JndiProviderConfig>
 {
   /**
    * The value of this property is a string that specifies the authentication

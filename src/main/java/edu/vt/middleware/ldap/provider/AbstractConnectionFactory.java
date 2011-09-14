@@ -23,7 +23,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Provides a basic implementation for other connection handlers to inherit.
+ * Provides a basic implementation for other connection factories to inherit.
  *
  * @param  <T>  type of provider config for this connection factory
  *
@@ -31,8 +31,8 @@ import org.slf4j.LoggerFactory;
  * @version  $Revision$
  */
 public abstract class
-AbstractProviderConnectionFactory<T extends ProviderConfig>
-  implements ProviderConnectionFactory<T>
+AbstractConnectionFactory<T extends ProviderConfig>
+  implements ConnectionFactory<T>
 {
 
   /** Logger for this class. */
@@ -88,12 +88,12 @@ AbstractProviderConnectionFactory<T extends ProviderConfig>
 
   /** {@inheritDoc} */
   @Override
-  public ProviderConnection create(final BindRequest request)
+  public Connection create(final BindRequest request)
     throws LdapException
   {
     LdapException lastThrown = null;
     final String[] urls = parseLdapUrl(ldapUrl, config.getConnectionStrategy());
-    ProviderConnection conn = null;
+    Connection conn = null;
     for (String url : urls) {
       try {
         logger.trace(
@@ -127,7 +127,7 @@ AbstractProviderConnectionFactory<T extends ProviderConfig>
    *
    * @throws  LdapException  if a connection cannot be established
    */
-  protected abstract ProviderConnection createInternal(
+  protected abstract Connection createInternal(
     final String url, final BindRequest request)
     throws LdapException;
 

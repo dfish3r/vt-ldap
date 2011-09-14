@@ -14,8 +14,7 @@
 package edu.vt.middleware.ldap;
 
 import java.util.Collection;
-import edu.vt.middleware.ldap.provider.ProviderConnection;
-import edu.vt.middleware.ldap.provider.ProviderConnectionFactory;
+import edu.vt.middleware.ldap.provider.ConnectionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,10 +33,10 @@ public class Connection
   protected ConnectionConfig config;
 
   /** Connection factory. */
-  protected ProviderConnectionFactory<?> providerConnectionFactory;
+  protected ConnectionFactory<?> providerConnectionFactory;
 
   /** Provider connection. */
-  protected ProviderConnection providerConnection;
+  protected edu.vt.middleware.ldap.provider.Connection providerConnection;
 
 
   /**
@@ -47,7 +46,7 @@ public class Connection
    * @param  pcf  provider connection factory
    */
   protected Connection(
-    final ConnectionConfig cc, final ProviderConnectionFactory<?> pcf)
+    final ConnectionConfig cc, final ConnectionFactory<?> pcf)
   {
     config = cc;
     providerConnectionFactory = pcf;
@@ -73,7 +72,7 @@ public class Connection
    *
    * @throws  IllegalStateException  if the connection is not open
    */
-  protected ProviderConnection getProviderConnection()
+  protected edu.vt.middleware.ldap.provider.Connection getProviderConnection()
   {
     if (providerConnection == null) {
       throw new IllegalStateException("Connection is not open");

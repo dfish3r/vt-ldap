@@ -24,7 +24,7 @@ import edu.vt.middleware.ldap.LdapException;
  * @author  Middleware Services
  * @version  $Revision$
  */
-public interface ProviderConnectionFactory<T extends ProviderConfig>
+public interface ConnectionFactory<T extends ProviderConfig>
 {
 
 
@@ -52,6 +52,6 @@ public interface ProviderConnectionFactory<T extends ProviderConfig>
    * @throws  AuthenticationException  if the supplied credentials are invalid
    * @throws  LdapException  if an LDAP error occurs
    */
-  ProviderConnection create(BindRequest request)
+  Connection create(BindRequest request)
     throws LdapException;
 }
