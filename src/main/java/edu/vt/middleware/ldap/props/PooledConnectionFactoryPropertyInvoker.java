@@ -17,7 +17,7 @@ import edu.vt.middleware.ldap.provider.Provider;
 
 /**
  * Handles properties for
- * {@link edu.vt.middleware.ldap.PooledConnectionFactory}.
+ * {@link edu.vt.middleware.ldap.pool.PooledConnectionFactory}.
  *
  * @author  Middleware Services
  * @version  $Revision$ $Date$

@@ -145,8 +145,9 @@ public class CaseChangeResultHandler extends CopyLdapResultHandler
 
   /** {@inheritDoc} */
   @Override
-  protected String processDn(final SearchCriteria sc, final LdapEntry le)
+  protected String processDn(
+    final SearchCriteria criteria, final LdapEntry entry)
   {
-    return CaseChange.perform(dnCaseChange, le.getDn());
+    return CaseChange.perform(dnCaseChange, entry.getDn());
   }
 }

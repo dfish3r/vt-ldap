@@ -30,4 +30,26 @@ public class ExternalConfig extends SaslConfig
   {
     mechanism = Mechanism.EXTERNAL;
   }
+
+
+  /**
+   * Provides a descriptive string representation of this instance.
+   *
+   * @return  string representation
+   */
+  @Override
+  public String toString()
+  {
+    return
+      String.format(
+        "[%s@%d::mechanism=%s, authorizationId=%s, mutualAuthentication=%s, " +
+        "qualityOfProtection=%s, securityStrength=%s]",
+        getClass().getName(),
+        hashCode(),
+        mechanism,
+        authorizationId,
+        mutualAuthentication,
+        qualityOfProtection,
+        securityStrength);
+  }
 }

@@ -19,7 +19,7 @@ import java.util.List;
 import org.apache.commons.codec.binary.Hex;
 
 /**
- * Simple bean for a search filter and it's arguments.
+ * Simple bean for an ldap search filter and it's arguments.
  *
  * @author  Middleware Services
  * @version  $Revision$ $Date$
@@ -28,13 +28,13 @@ public class SearchFilter
 {
 
   /** hash code seed. */
-  protected static final int HASH_CODE_SEED = 89;
+  private static final int HASH_CODE_SEED = 89;
 
   /** filter. */
-  private String filter;
+  private String searchFilter;
 
   /** filter arguments. */
-  private List<Object> filterArgs = new ArrayList<Object>();
+  private List<Object> searchFilterArgs = new ArrayList<Object>();
 
 
   /** Default constructor. */
@@ -44,37 +44,37 @@ public class SearchFilter
   /**
    * Creates a new search filter with the supplied filter.
    *
-   * @param  s  to set filter
+   * @param  filter  to set
    */
-  public SearchFilter(final String s)
+  public SearchFilter(final String filter)
   {
-    filter = s;
+    searchFilter = filter;
   }
 
 
   /**
    * Creates a new string search filter with the supplied filter and arguments.
    *
-   * @param  s  to set filter
-   * @param  o  to set filter arguments
+   * @param  filter  to set
+   * @param  args  to set
    */
-  public SearchFilter(final String s, final List<Object> o)
+  public SearchFilter(final String filter, final List<Object> args)
   {
-    setFilter(s);
-    setFilterArgs(o);
+    setFilter(filter);
+    setFilterArgs(args);
   }
 
 
   /**
    * Creates a new search filter with the supplied filter and arguments.
    *
-   * @param  s  to set filter
-   * @param  o  to set filter arguments
+   * @param  filter  to set
+   * @param  args  to set
    */
-  public SearchFilter(final String s, final Object[] o)
+  public SearchFilter(final String filter, final Object[] args)
   {
-    setFilter(s);
-    setFilterArgs(o);
+    setFilter(filter);
+    setFilterArgs(args);
   }
 
 
@@ -85,18 +85,18 @@ public class SearchFilter
    */
   public String getFilter()
   {
-    return filter;
+    return searchFilter;
   }
 
 
   /**
    * Sets the filter.
    *
-   * @param  s  to set filter
+   * @param  filter  to set
    */
-  public void setFilter(final String s)
+  public void setFilter(final String filter)
   {
-    filter = s;
+    searchFilter = filter;
   }
 
 
@@ -107,19 +107,19 @@ public class SearchFilter
    */
   public List<Object> getFilterArgs()
   {
-    return filterArgs;
+    return searchFilterArgs;
   }
 
 
   /**
    * Sets the filter arguments.
    *
-   * @param  o  to set filter arguments
+   * @param  args  to set
    */
-  public void setFilterArgs(final List<Object> o)
+  public void setFilterArgs(final List<Object> args)
   {
-    if (o != null) {
-      filterArgs = o;
+    if (args != null) {
+      searchFilterArgs = args;
     }
   }
 
@@ -127,12 +127,12 @@ public class SearchFilter
   /**
    * Sets the filter arguments.
    *
-   * @param  o  to set filter arguments
+   * @param  args  to set
    */
-  public void setFilterArgs(final Object[] o)
+  public void setFilterArgs(final Object[] args)
   {
-    if (o != null) {
-      filterArgs = Arrays.asList(o);
+    if (args != null) {
+      searchFilterArgs = Arrays.asList(args);
     }
   }
 
@@ -253,9 +253,9 @@ public class SearchFilter
   public int hashCode()
   {
     int hc = HASH_CODE_SEED;
-    hc += filter != null ? filter.hashCode() : 0;
-    hc += filterArgs != null && !filterArgs.isEmpty() ?
-      filterArgs.hashCode() : 0;
+    hc += searchFilter != null ? searchFilter.hashCode() : 0;
+    hc += searchFilterArgs != null && !searchFilterArgs.isEmpty() ?
+      searchFilterArgs.hashCode() : 0;
     return hc;
   }
 
@@ -273,7 +273,7 @@ public class SearchFilter
         "[%s@%d::filter=%s, filterArgs=%s]",
         getClass().getName(),
         hashCode(),
-        filter,
-        filterArgs);
+        searchFilter,
+        searchFilterArgs);
   }
 }

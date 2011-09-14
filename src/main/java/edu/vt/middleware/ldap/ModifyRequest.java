@@ -23,6 +23,7 @@ import java.util.Arrays;
  */
 public class ModifyRequest implements Request
 {
+
   /** DN to modify. */
   protected String modifyDn;
 

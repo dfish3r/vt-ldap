@@ -13,7 +13,6 @@
 */
 package edu.vt.middleware.ldap.auth;
 
-import java.io.Serializable;
 import java.util.Arrays;
 import edu.vt.middleware.ldap.Connection;
 import edu.vt.middleware.ldap.LdapEntry;
@@ -30,11 +29,8 @@ import org.slf4j.LoggerFactory;
  * @author  Middleware Services
  * @version  $Revision$ $Date$
  */
-public class SearchEntryResolver implements EntryResolver, Serializable
+public class SearchEntryResolver implements EntryResolver
 {
-
-  /** serial version uid. */
-  private static final long serialVersionUID = -2658940542452738858L;
 
   /** Logger for this class. */
   protected final Logger logger = LoggerFactory.getLogger(getClass());
@@ -50,11 +46,11 @@ public class SearchEntryResolver implements EntryResolver, Serializable
   /**
    * Creates a new search entry resolver.
    *
-   * @param  attributes  to return
+   * @param  attrs  to return
    */
-  public SearchEntryResolver(final String[] attributes)
+  public SearchEntryResolver(final String[] attrs)
   {
-    setReturnAttributes(attributes);
+    setReturnAttributes(attrs);
   }
 
 
@@ -72,11 +68,11 @@ public class SearchEntryResolver implements EntryResolver, Serializable
   /**
    * Sets the return attributes.
    *
-   * @param  attributes  to return
+   * @param  attrs  to return
    */
-  public void setReturnAttributes(final String[] attributes)
+  public void setReturnAttributes(final String[] attrs)
   {
-    returnAttributes = attributes;
+    returnAttributes = attrs;
   }
 
 

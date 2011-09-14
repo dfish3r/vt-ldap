@@ -28,28 +28,28 @@ public class LdapDnPrincipal
 {
 
   /** hash code seed. */
-  protected static final int HASH_CODE_SEED = 80;
+  private static final int HASH_CODE_SEED = 80;
 
   /** serial version uid. */
   private static final long serialVersionUID = -4530972236127507368L;
 
   /** LDAP user name. */
-  private String name;
+  private String ldapDn;
 
   /** User ldap entry. */
-  private LdapEntry entry = new LdapEntry();
+  private LdapEntry ldapEntry = new LdapEntry();
 
 
   /**
    * Creates a new ldap principal with the supplied name.
    *
-   * @param  s  name of an ldap DN
-   * @param  le  ldap entry associated with this principal
+   * @param  name  of an ldap DN
+   * @param  entry  ldap entry associated with this principal
    */
-  public LdapDnPrincipal(final String s, final LdapEntry le)
+  public LdapDnPrincipal(final String name, final LdapEntry entry)
   {
-    name = s;
-    entry = le;
+    ldapDn = name;
+    ldapEntry = entry;
   }
 
 
@@ -60,7 +60,7 @@ public class LdapDnPrincipal
    */
   public String getName()
   {
-    return name;
+    return ldapDn;
   }
 
 
@@ -71,7 +71,7 @@ public class LdapDnPrincipal
    */
   public LdapEntry getLdapEntry()
   {
-    return entry;
+    return ldapEntry;
   }
 
 
@@ -101,8 +101,8 @@ public class LdapDnPrincipal
   public int hashCode()
   {
     int hc = HASH_CODE_SEED;
-    if (name != null) {
-      hc += name.hashCode();
+    if (ldapDn != null) {
+      hc += ldapDn.hashCode();
     }
     return hc;
   }
@@ -120,8 +120,8 @@ public class LdapDnPrincipal
       "[%s@%d::%s%s]",
       getClass().getName(),
       hashCode(),
-      name,
-      entry != null ? entry : "");
+      ldapDn,
+      ldapEntry != null ? ldapEntry : "");
   }
 
 
@@ -136,6 +136,6 @@ public class LdapDnPrincipal
    */
   public int compareTo(final Principal p)
   {
-    return name.compareTo(p.getName());
+    return ldapDn.compareTo(p.getName());
   }
 }

@@ -53,5 +53,5 @@ public class BindOperation extends AbstractOperation<BindRequest, Void>
   /** {@inheritDoc} */
   @Override
   protected void initializeRequest(
-    final BindRequest request, final ConnectionConfig config) {}
+    final BindRequest request, final ConnectionConfig cc) {}
 }

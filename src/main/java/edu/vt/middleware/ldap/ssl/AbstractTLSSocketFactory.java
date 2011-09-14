@@ -39,7 +39,7 @@ public abstract class AbstractTLSSocketFactory extends SSLSocketFactory
   protected String[] cipherSuites;
 
   /** Enabled protocol versions. */
-  protected String[] protocols;
+  protected String[] enabledProtocols;
 
 
   /**
@@ -88,7 +88,7 @@ public abstract class AbstractTLSSocketFactory extends SSLSocketFactory
    */
   public String[] getEnabledProtocols()
   {
-    return protocols;
+    return enabledProtocols;
   }
 
 
@@ -96,11 +96,11 @@ public abstract class AbstractTLSSocketFactory extends SSLSocketFactory
    * Sets the cipher suites enabled for use on sockets created by this factory.
    * See {@link javax.net.ssl.SSLSocket#setEnabledCipherSuites(String[])}.
    *
-   * @param  s  cipher suites
+   * @param  suites  cipher suites
    */
-  public void setEnabledCipherSuites(final String[] s)
+  public void setEnabledCipherSuites(final String[] suites)
   {
-    cipherSuites = s;
+    cipherSuites = suites;
   }
 
 
@@ -108,30 +108,30 @@ public abstract class AbstractTLSSocketFactory extends SSLSocketFactory
    * Sets the protocol versions enabled for use on sockets created by this
    * factory. See {@link javax.net.ssl.SSLSocket#setEnabledProtocols(String[])}.
    *
-   * @param  s  enabled protocols
+   * @param  protocols  enabled protocols
    */
-  public void setEnabledProtocols(final String[] s)
+  public void setEnabledProtocols(final String[] protocols)
   {
-    protocols = s;
+    enabledProtocols = protocols;
   }
 
 
   /**
    * Initializes the supplied socket for use.
    *
-   * @param  s  SSL socket to initialize
+   * @param  socket  SSL socket to initialize
    *
    * @return  SSL socket
    */
-  protected SSLSocket initSSLSocket(final SSLSocket s)
+  protected SSLSocket initSSLSocket(final SSLSocket socket)
   {
     if (cipherSuites != null) {
-      s.setEnabledCipherSuites(cipherSuites);
+      socket.setEnabledCipherSuites(cipherSuites);
     }
-    if (protocols != null) {
-      s.setEnabledProtocols(protocols);
+    if (enabledProtocols != null) {
+      socket.setEnabledProtocols(enabledProtocols);
     }
-    return s;
+    return socket;
   }
 
 
@@ -139,7 +139,7 @@ public abstract class AbstractTLSSocketFactory extends SSLSocketFactory
    * Returns a socket layered over an existing socket connected to the
    * named host, at the given port.
    *
-   * @param  s  existing socket
+   * @param  socket  existing socket
    * @param  host  server hostname
    * @param  port  server port
    * @param  autoClose  close the underlying socket when this socket is closed
@@ -149,18 +149,18 @@ public abstract class AbstractTLSSocketFactory extends SSLSocketFactory
    * @throws  IOException  if an I/O error occurs when creating the socket
    */
   public Socket createSocket(
-    final Socket s,
+    final Socket socket,
     final String host,
     final int port,
     final boolean autoClose)
     throws IOException
   {
-    SSLSocket socket = null;
+    SSLSocket sslSocket = null;
     if (factory != null) {
-      socket = initSSLSocket(
-        (SSLSocket) factory.createSocket(s, host, port, autoClose));
+      sslSocket = initSSLSocket(
+        (SSLSocket) factory.createSocket(socket, host, port, autoClose));
     }
-    return socket;
+    return sslSocket;
   }
 
 

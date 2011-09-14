@@ -92,13 +92,13 @@ public class ConnectionConfig extends AbstractConfig
   /**
    * Sets the SSL socket factory.
    *
-   * @param  sf  SSL socket factory
+   * @param  factory  SSL socket factory
    */
-  public void setSslSocketFactory(final SSLSocketFactory sf)
+  public void setSslSocketFactory(final SSLSocketFactory factory)
   {
     checkImmutable();
-    logger.trace("setting sslSocketFactory: {}", sf);
-    sslSocketFactory = sf;
+    logger.trace("setting sslSocketFactory: {}", factory);
+    sslSocketFactory = factory;
   }
 
 
@@ -116,13 +116,13 @@ public class ConnectionConfig extends AbstractConfig
   /**
    * Sets the hostname verifier.
    *
-   * @param  hv  hostname verifier
+   * @param  verifier  hostname verifier
    */
-  public void setHostnameVerifier(final HostnameVerifier hv)
+  public void setHostnameVerifier(final HostnameVerifier verifier)
   {
     checkImmutable();
-    logger.trace("setting hostnameVerifier: {}", hv);
-    hostnameVerifier = hv;
+    logger.trace("setting hostnameVerifier: {}", verifier);
+    hostnameVerifier = verifier;
   }
 
 
@@ -167,13 +167,13 @@ public class ConnectionConfig extends AbstractConfig
    * Sets the maximum amount of time in milliseconds that connect operations
    * will block.
    *
-   * @param  l  timeout for connect operations
+   * @param  time  timeout for connect operations
    */
-  public void setTimeout(final long l)
+  public void setTimeout(final long time)
   {
     checkImmutable();
-    logger.trace("setting timeout: {}", l);
-    timeout = l;
+    logger.trace("setting timeout: {}", time);
+    timeout = time;
   }
 
 
@@ -240,13 +240,13 @@ public class ConnectionConfig extends AbstractConfig
   /**
    * Sets the sasl config.
    *
-   * @param  sc  sasl config
+   * @param  config  sasl config
    */
-  public void setSaslConfig(final SaslConfig sc)
+  public void setSaslConfig(final SaslConfig config)
   {
     checkImmutable();
-    logger.trace("setting saslConfig: {}", sc);
-    saslConfig = sc;
+    logger.trace("setting saslConfig: {}", config);
+    saslConfig = config;
   }
 
 
@@ -266,13 +266,13 @@ public class ConnectionConfig extends AbstractConfig
    * Sets the number of times that ldap operations will be retried if an
    * operation exception occurs.
    *
-   * @param  i  number of retries
+   * @param  retry  number of retries
    */
-  public void setOperationRetry(final int i)
+  public void setOperationRetry(final int retry)
   {
     checkImmutable();
-    logger.trace("setting operationRetry: {}", i);
-    operationRetry = i;
+    logger.trace("setting operationRetry: {}", retry);
+    operationRetry = retry;
   }
 
 
@@ -291,13 +291,13 @@ public class ConnectionConfig extends AbstractConfig
    * Sets the amount of time in milliseconds that operations should wait
    * before retrying.
    *
-   * @param  l  time in milliseconds to wait
+   * @param  wait  time in milliseconds to wait
    */
-  public void setOperationRetryWait(final long l)
+  public void setOperationRetryWait(final long wait)
   {
     checkImmutable();
-    logger.trace("setting operationRetryWait: {}", l);
-    operationRetryWait = l;
+    logger.trace("setting operationRetryWait: {}", wait);
+    operationRetryWait = wait;
   }
 
 

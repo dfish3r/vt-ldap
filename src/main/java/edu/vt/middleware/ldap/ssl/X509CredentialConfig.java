@@ -27,15 +27,15 @@ public class X509CredentialConfig implements CredentialConfig
 {
 
   /** Reads X.509 certificates credential. */
-  protected X509CertificatesCredentialReader certsReader =
+  private X509CertificatesCredentialReader certsReader =
     new X509CertificatesCredentialReader();
 
   /** Reads X.509 certificate credential. */
-  protected X509CertificateCredentialReader certReader =
+  private X509CertificateCredentialReader certReader =
     new X509CertificateCredentialReader();
 
   /** Reads private key credential. */
-  protected PrivateKeyCredentialReader keyReader =
+  private PrivateKeyCredentialReader keyReader =
     new PrivateKeyCredentialReader();
 
   /** Name of the trust certificates to use for the SSL connection. */
@@ -62,11 +62,11 @@ public class X509CredentialConfig implements CredentialConfig
   /**
    * Sets the name of the trust certificates to use.
    *
-   * @param  s  trust certificates name
+   * @param  name  trust certificates name
    */
-  public void setTrustCertificates(final String s)
+  public void setTrustCertificates(final String name)
   {
-    trustCertificates = s;
+    trustCertificates = name;
   }
 
 
@@ -84,11 +84,11 @@ public class X509CredentialConfig implements CredentialConfig
   /**
    * Sets the name of the authentication certificate to use.
    *
-   * @param  s  authentication certificate name
+   * @param  name  authentication certificate name
    */
-  public void setAuthenticationCertificate(final String s)
+  public void setAuthenticationCertificate(final String name)
   {
-    authenticationCertificate = s;
+    authenticationCertificate = name;
   }
 
 
@@ -106,11 +106,11 @@ public class X509CredentialConfig implements CredentialConfig
   /**
    * Sets the name of the authentication key to use.
    *
-   * @param  s  authentication key name
+   * @param  name  authentication key name
    */
-  public void setAuthenticationKey(final String s)
+  public void setAuthenticationKey(final String name)
   {
-    authenticationKey = s;
+    authenticationKey = name;
   }
 
 

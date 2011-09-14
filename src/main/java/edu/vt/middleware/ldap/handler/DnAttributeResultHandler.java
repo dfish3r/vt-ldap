@@ -86,13 +86,14 @@ public class DnAttributeResultHandler extends CopyLdapResultHandler
 
   /** {@inheritDoc} */
   @Override
-  protected void processAttributes(final SearchCriteria sc, final LdapEntry le)
+  protected void processAttributes(
+    final SearchCriteria criteria, final LdapEntry entry)
     throws LdapException
   {
-    if (le.getAttribute(dnAttributeName) == null) {
-      le.addAttribute(new LdapAttribute(dnAttributeName, le.getDn()));
+    if (entry.getAttribute(dnAttributeName) == null) {
+      entry.addAttribute(new LdapAttribute(dnAttributeName, entry.getDn()));
     } else if (addIfExists) {
-      le.getAttribute(dnAttributeName).addStringValue(le.getDn());
+      entry.getAttribute(dnAttributeName).addStringValue(entry.getDn());
     }
   }
 }

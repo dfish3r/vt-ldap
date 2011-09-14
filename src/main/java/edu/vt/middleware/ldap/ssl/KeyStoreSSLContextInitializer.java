@@ -43,22 +43,22 @@ public class KeyStoreSSLContextInitializer extends AbstractSSLContextInitializer
   /**
    * Sets the keystore to use for creating the trust managers.
    *
-   * @param  ks  keystore
+   * @param  keystore  to set
    */
-  public void setTrustKeystore(final KeyStore ks)
+  public void setTrustKeystore(final KeyStore keystore)
   {
-    trustKeystore = ks;
+    trustKeystore = keystore;
   }
 
 
   /**
    * Sets the keystore to use for creating the key managers.
    *
-   * @param  ks  keystore
+   * @param  keystore  to set
    */
-  public void setAuthenticationKeystore(final KeyStore ks)
+  public void setAuthenticationKeystore(final KeyStore keystore)
   {
-    authenticationKeystore = ks;
+    authenticationKeystore = keystore;
   }
 
 

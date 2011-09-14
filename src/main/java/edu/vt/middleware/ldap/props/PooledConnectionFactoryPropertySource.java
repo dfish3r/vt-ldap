@@ -47,7 +47,7 @@ public final class PooledConnectionFactoryPropertySource
   {
     this(
       cf,
-      ConnectionFactoryPropertySource.class.getResourceAsStream(
+      DefaultConnectionFactoryPropertySource.class.getResourceAsStream(
         PROPERTIES_FILE));
   }
 

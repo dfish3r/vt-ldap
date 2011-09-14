@@ -23,7 +23,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Provides methods common to object properties implementations.
+ * Provides methods common to property source implementations.
  *
  * @param  <T>  type of object to invoke properties on
  *

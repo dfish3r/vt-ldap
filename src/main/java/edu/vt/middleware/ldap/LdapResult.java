@@ -20,18 +20,20 @@ import java.util.Map;
 import java.util.TreeMap;
 
 /**
- * Simple bean for ldap result. Contains a map of entry DN to ldap entry.
+ * Simple bean representing an ldap result. Contains a map of entry DN to ldap
+ * entry.
  *
  * @author  Middleware Services
  * @version  $Revision: 1330 $ $Date: 2010-05-23 18:10:53 -0400 (Sun, 23 May 2010) $
  */
 public class LdapResult extends AbstractLdapBean
 {
+
   /** hash code seed. */
-  protected static final int HASH_CODE_SEED = 44;
+  private static final int HASH_CODE_SEED = 44;
 
   /** Entries contained in this result. */
-  protected Map<String, LdapEntry> entries;
+  private Map<String, LdapEntry> resultEntries;
 
 
   /** Default constructor. */
@@ -50,11 +52,11 @@ public class LdapResult extends AbstractLdapBean
   {
     super(sb);
     if (SortBehavior.UNORDERED == sb) {
-      entries = new HashMap<String, LdapEntry>();
+      resultEntries = new HashMap<String, LdapEntry>();
     } else if (SortBehavior.ORDERED == sb) {
-      entries = new LinkedHashMap<String, LdapEntry>();
+      resultEntries = new LinkedHashMap<String, LdapEntry>();
     } else if (SortBehavior.SORTED == sb) {
-      entries = new TreeMap<String, LdapEntry>(
+      resultEntries = new TreeMap<String, LdapEntry>(
         String.CASE_INSENSITIVE_ORDER);
     }
   }
@@ -63,12 +65,12 @@ public class LdapResult extends AbstractLdapBean
   /**
    * Creates a new ldap result.
    *
-   * @param  le  ldap entry
+   * @param  entry  ldap entry
    */
-  public LdapResult(final LdapEntry ... le)
+  public LdapResult(final LdapEntry ... entry)
   {
     this();
-    for (LdapEntry e : le) {
+    for (LdapEntry e : entry) {
       addEntry(e);
     }
   }
@@ -77,12 +79,12 @@ public class LdapResult extends AbstractLdapBean
   /**
    * Creates a new ldap result.
    *
-   * @param  c  collection of ldap entries
+   * @param  entries  collection of ldap entries
    */
-  public LdapResult(final Collection<LdapEntry> c)
+  public LdapResult(final Collection<LdapEntry> entries)
   {
     this();
-    addEntries(c);
+    addEntries(entries);
   }
 
 
@@ -93,7 +95,7 @@ public class LdapResult extends AbstractLdapBean
    */
   public Collection<LdapEntry> getEntries()
   {
-    return entries.values();
+    return resultEntries.values();
   }
 
 
@@ -106,10 +108,10 @@ public class LdapResult extends AbstractLdapBean
    */
   public LdapEntry getEntry()
   {
-    if (entries.size() == 0) {
+    if (resultEntries.size() == 0) {
       return null;
     }
-    return entries.values().iterator().next();
+    return resultEntries.values().iterator().next();
   }
 
 
@@ -121,7 +123,7 @@ public class LdapResult extends AbstractLdapBean
    */
   public LdapEntry getEntry(final String dn)
   {
-    return entries.get(dn.toLowerCase());
+    return resultEntries.get(dn.toLowerCase());
   }
 
 
@@ -132,20 +134,20 @@ public class LdapResult extends AbstractLdapBean
    */
   public String[] getEntryDns()
   {
-    return entries.keySet().toArray(
-      new String[entries.keySet().size()]);
+    return resultEntries.keySet().toArray(
+      new String[resultEntries.keySet().size()]);
   }
 
 
   /**
    * Adds an entry to this ldap result.
    *
-   * @param  le  entry to add
+   * @param  entry  entry to add
    */
-  public void addEntry(final LdapEntry ... le)
+  public void addEntry(final LdapEntry ... entry)
   {
-    for (LdapEntry e : le) {
-      entries.put(e.getDn().toLowerCase(), e);
+    for (LdapEntry e : entry) {
+      resultEntries.put(e.getDn().toLowerCase(), e);
     }
   }
 
@@ -153,11 +155,11 @@ public class LdapResult extends AbstractLdapBean
   /**
    * Adds entry(s) to this ldap result.
    *
-   * @param  c  collection of entries to add
+   * @param  entries  collection of entries to add
    */
-  public void addEntries(final Collection<LdapEntry> c)
+  public void addEntries(final Collection<LdapEntry> entries)
   {
-    for (LdapEntry e : c) {
+    for (LdapEntry e : entries) {
       addEntry(e);
     }
   }
@@ -166,12 +168,12 @@ public class LdapResult extends AbstractLdapBean
   /**
    * Removes an entry from this ldap result.
    *
-   * @param  le  entry to remove
+   * @param  entry  entry to remove
    */
-  public void removeEntry(final LdapEntry ... le)
+  public void removeEntry(final LdapEntry ... entry)
   {
-    for (LdapEntry e : le) {
-      entries.remove(e.getDn().toLowerCase());
+    for (LdapEntry e : entry) {
+      resultEntries.remove(e.getDn().toLowerCase());
     }
   }
 
@@ -183,18 +185,18 @@ public class LdapResult extends AbstractLdapBean
    */
   public void removeEntry(final String dn)
   {
-    entries.remove(dn.toLowerCase());
+    resultEntries.remove(dn.toLowerCase());
   }
 
 
   /**
    * Removes the entry(s) from this ldap result.
    *
-   * @param  c  collection of ldap entries to remove
+   * @param  entries  collection of ldap entries to remove
    */
-  public void removeEntries(final Collection<LdapEntry> c)
+  public void removeEntries(final Collection<LdapEntry> entries)
   {
-    for (LdapEntry le : c) {
+    for (LdapEntry le : entries) {
       removeEntry(le);
     }
   }
@@ -207,7 +209,7 @@ public class LdapResult extends AbstractLdapBean
    */
   public int size()
   {
-    return entries.size();
+    return resultEntries.size();
   }
 
 
@@ -216,7 +218,7 @@ public class LdapResult extends AbstractLdapBean
    */
   public void clear()
   {
-    entries.clear();
+    resultEntries.clear();
   }
 
 
@@ -225,7 +227,7 @@ public class LdapResult extends AbstractLdapBean
   public int hashCode()
   {
     int hc = HASH_CODE_SEED;
-    for (LdapEntry e : entries.values()) {
+    for (LdapEntry e : resultEntries.values()) {
       hc += e != null ? e.hashCode() : 0;
     }
     return hc;
@@ -240,6 +242,6 @@ public class LdapResult extends AbstractLdapBean
   @Override
   public String toString()
   {
-    return String.format("[%s]", entries.values());
+    return String.format("[%s]", resultEntries.values());
   }
 }

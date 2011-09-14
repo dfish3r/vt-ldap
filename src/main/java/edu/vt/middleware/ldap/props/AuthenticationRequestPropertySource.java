@@ -39,12 +39,13 @@ public final class AuthenticationRequestPropertySource
    * Creates a new authentication request property source using the default
    * properties file.
    *
-   * @param  ar  authentication request to set properties on
+   * @param  request  authentication request to set properties on
    */
-  public AuthenticationRequestPropertySource(final AuthenticationRequest ar)
+  public AuthenticationRequestPropertySource(
+    final AuthenticationRequest request)
   {
     this(
-      ar,
+      request,
       AuthenticationRequestPropertySource.class.getResourceAsStream(
         PROPERTIES_FILE));
   }
@@ -53,42 +54,42 @@ public final class AuthenticationRequestPropertySource
   /**
    * Creates a new authentication request property source.
    *
-   * @param  ar  authentication request to set properties on
+   * @param  request  authentication request to set properties on
    * @param  is  to read properties from
    */
   public AuthenticationRequestPropertySource(
-    final AuthenticationRequest ar, final InputStream is)
+    final AuthenticationRequest request, final InputStream is)
   {
-    this(ar, loadProperties(is));
+    this(request, loadProperties(is));
   }
 
 
   /**
    * Creates a new authentication request property source.
    *
-   * @param  ar  authentication request to set properties on
+   * @param  request  authentication request to set properties on
    * @param  props  to read properties from
    */
   public AuthenticationRequestPropertySource(
-    final AuthenticationRequest ar, final Properties props)
+    final AuthenticationRequest request, final Properties props)
   {
-    this(ar, PropertyDomain.AUTH, props);
+    this(request, PropertyDomain.AUTH, props);
   }
 
 
   /**
    * Creates a new authentication request property source.
    *
-   * @param  ar  authentication request to set properties on
+   * @param  request  authentication request to set properties on
    * @param  domain  that properties are in
    * @param  props  to read properties from
    */
   public AuthenticationRequestPropertySource(
-    final AuthenticationRequest ar,
+    final AuthenticationRequest request,
     final PropertyDomain domain,
     final Properties props)
   {
-    object = ar;
+    object = request;
     propertiesDomain = domain;
     properties = props;
   }

@@ -7,7 +7,7 @@
 http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
 
   <bean id="connectionFactory"
-    class="edu.vt.middleware.ldap.ConnectionFactory"
+    class="edu.vt.middleware.ldap.DefaultConnectionFactory"
     p:connectionConfig-ref="connectionConfig"
   />
   

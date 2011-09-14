@@ -21,6 +21,7 @@ package edu.vt.middleware.ldap;
  */
 public class CompareRequest implements Request
 {
+
   /** DN to compare. */
   protected String compareDn = "";
 
@@ -36,12 +37,12 @@ public class CompareRequest implements Request
    * Creates a new compare request.
    *
    * @param  dn  containing the attribute to compare
-   * @param  la  attribute to compare
+   * @param  attr  attribute to compare
    */
-  public CompareRequest(final String dn, final LdapAttribute la)
+  public CompareRequest(final String dn, final LdapAttribute attr)
   {
     setDn(dn);
-    setAttribute(la);
+    setAttribute(attr);
   }
 
 
@@ -83,11 +84,11 @@ public class CompareRequest implements Request
   /**
    * Sets the attribute to compare.
    *
-   * @param  la  attribute to compare
+   * @param  attr  attribute to compare
    */
-  public void setAttribute(final LdapAttribute la)
+  public void setAttribute(final LdapAttribute attr)
   {
-    attribute = la;
+    attribute = attr;
   }
 
 

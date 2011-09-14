@@ -19,8 +19,6 @@ import edu.vt.middleware.ldap.LdapAttribute;
 import edu.vt.middleware.ldap.LdapEntry;
 import edu.vt.middleware.ldap.LdapResult;
 import edu.vt.middleware.ldap.LdapUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Writes an LDIF to a {@link Writer} using an {@link LdapResult}.
@@ -30,6 +28,7 @@ import org.slf4j.LoggerFactory;
  */
 public class LdifWriter
 {
+
   /** ASCII decimal value of nul. */
   private static final int NUL_CHAR = 0;
 
@@ -55,11 +54,8 @@ public class LdifWriter
   private static final String LINE_SEPARATOR = System.getProperty(
     "line.separator");
 
-  /** Logger for this class. */
-  protected final Logger logger = LoggerFactory.getLogger(getClass());
-
   /** Writer to write to. */
-  protected final Writer ldifWriter;
+  private final Writer ldifWriter;
 
 
   /**
@@ -90,16 +86,16 @@ public class LdifWriter
   /**
    * Creates an LDIF using the supplied ldap result.
    *
-   * @param  lr  ldap result
+   * @param  result  ldap result
    *
    * @return  LDIF
    */
-  protected String createLdif(final LdapResult lr)
+  protected String createLdif(final LdapResult result)
   {
     // build string from results
     final StringBuilder ldif = new StringBuilder();
-    if (lr != null) {
-      for (LdapEntry le : lr.getEntries()) {
+    if (result != null) {
+      for (LdapEntry le : result.getEntries()) {
         ldif.append(createLdifEntry(le));
       }
     }
@@ -111,49 +107,49 @@ public class LdifWriter
   /**
    * Creates an LDIF using the supplied ldap entry.
    *
-   * @param  le  ldap entry
+   * @param  entry  ldap entry
    *
    * @return  LDIF
    */
-  protected String createLdifEntry(final LdapEntry le)
+  protected String createLdifEntry(final LdapEntry entry)
   {
-    if (le == null) {
+    if (entry == null) {
       return "";
     }
 
-    final StringBuffer entry = new StringBuffer();
-    final String dn = le.getDn();
+    final StringBuffer entryLdif = new StringBuffer();
+    final String dn = entry.getDn();
     if (dn != null) {
       if (encodeData(dn)) {
         final String encodedDn = LdapUtil.base64Encode(dn);
         if (encodedDn != null) {
-          entry.append("dn:: ").append(dn).append(LINE_SEPARATOR);
+          entryLdif.append("dn:: ").append(dn).append(LINE_SEPARATOR);
         }
       } else {
-        entry.append("dn: ").append(dn).append(LINE_SEPARATOR);
+        entryLdif.append("dn: ").append(dn).append(LINE_SEPARATOR);
       }
     }
 
-    for (LdapAttribute attr : le.getAttributes()) {
+    for (LdapAttribute attr : entry.getAttributes()) {
       final String attrName = attr.getName();
       for (String attrValue : attr.getStringValues()) {
         if (attr.isBinary()) {
-          entry.append(attrName).append(":: ").append(attrValue)
+          entryLdif.append(attrName).append(":: ").append(attrValue)
             .append(LINE_SEPARATOR);
         } else if (encodeData(attrValue)) {
-          entry.append(attrName).append(":: ").append(LdapUtil.base64Encode(
+          entryLdif.append(attrName).append(":: ").append(LdapUtil.base64Encode(
             attrValue)).append(LINE_SEPARATOR);
         } else {
-          entry.append(attrName).append(": ").append(attrValue).append(
+          entryLdif.append(attrName).append(": ").append(attrValue).append(
             LINE_SEPARATOR);
         }
       }
     }
 
-    if (entry.length() > 0) {
-      entry.append(LINE_SEPARATOR);
+    if (entryLdif.length() > 0) {
+      entryLdif.append(LINE_SEPARATOR);
     }
-    return entry.toString();
+    return entryLdif.toString();
   }
 
 

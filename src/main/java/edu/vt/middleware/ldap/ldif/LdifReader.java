@@ -31,11 +31,12 @@ import edu.vt.middleware.ldap.SortBehavior;
  */
 public class LdifReader
 {
+
   /** Reader to read from. */
-  protected final Reader ldifReader;
+  private final Reader ldifReader;
 
   /** Sort behavior. */
-  protected final SortBehavior sortBehavior;
+  private final SortBehavior sortBehavior;
 
 
   /**

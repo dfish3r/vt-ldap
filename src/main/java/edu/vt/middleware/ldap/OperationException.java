@@ -41,11 +41,11 @@ public class OperationException extends LdapException
    * Creates a new operation exception.
    *
    * @param  msg  describing this exception
-   * @param  rc  result code
+   * @param  code  result code
    */
-  public OperationException(final String msg, final ResultCode rc)
+  public OperationException(final String msg, final ResultCode code)
   {
-    super(msg, rc);
+    super(msg, code);
   }
 
 
@@ -64,11 +64,11 @@ public class OperationException extends LdapException
    * Creates a new operation exception.
    *
    * @param  e  provider specific exception
-   * @param  rc  result code
+   * @param  code  result code
    */
-  public OperationException(final Exception e, final ResultCode rc)
+  public OperationException(final Exception e, final ResultCode code)
   {
-    super(e, rc);
+    super(e, code);
   }
 
 
@@ -89,11 +89,11 @@ public class OperationException extends LdapException
    *
    * @param  msg  describing this exception
    * @param  e  provider specific exception
-   * @param  rc  result code
+   * @param  code  result code
    */
   public OperationException(
-    final String msg, final Exception e, final ResultCode rc)
+    final String msg, final Exception e, final ResultCode code)
   {
-    super(msg, e, rc);
+    super(msg, e, code);
   }
 }

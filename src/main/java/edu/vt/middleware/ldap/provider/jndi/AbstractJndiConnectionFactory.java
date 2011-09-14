@@ -25,6 +25,7 @@ import edu.vt.middleware.ldap.provider.AbstractConnectionFactory;
 public abstract class AbstractJndiConnectionFactory
   extends AbstractConnectionFactory<JndiProviderConfig>
 {
+
   /**
    * The value of this property is a string that specifies the authentication
    * mechanism(s) for the provider to use. The value of this constant is

@@ -21,7 +21,7 @@ import edu.vt.middleware.ldap.provider.Provider;
  * @author  Middleware Services
  * @version  $Revision$ $Date$
  */
-public class ConnectionFactoryPropertyInvoker extends AbstractPropertyInvoker
+public class DefaultConnectionFactoryPropertyInvoker extends AbstractPropertyInvoker
 {
 
 
@@ -30,7 +30,7 @@ public class ConnectionFactoryPropertyInvoker extends AbstractPropertyInvoker
    *
    * @param  c  class that has setter methods
    */
-  public ConnectionFactoryPropertyInvoker(final Class<?> c)
+  public DefaultConnectionFactoryPropertyInvoker(final Class<?> c)
   {
     initialize(c);
   }

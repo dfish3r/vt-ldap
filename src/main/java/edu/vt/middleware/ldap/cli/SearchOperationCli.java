@@ -118,18 +118,18 @@ public class SearchOperationCli extends AbstractCli
    * Executes the ldap search operation.
    *
    * @param  cf  connection factory
-   * @param  sr  search request
+   * @param  request  search request
    *
    * @throws  Exception  on any LDAP search error
    */
-  protected void search(final ConnectionFactory cf, final SearchRequest sr)
+  protected void search(final ConnectionFactory cf, final SearchRequest request)
     throws Exception
   {
     final Connection conn = cf.getConnection();
     conn.open();
 
     final SearchOperation op = new SearchOperation(conn);
-    final LdapResult result = op.execute(sr).getResult();
+    final LdapResult result = op.execute(request).getResult();
     if (outputDsmlv1) {
       final Dsmlv1Writer writer = new Dsmlv1Writer(
         new BufferedWriter(new OutputStreamWriter(System.out)));

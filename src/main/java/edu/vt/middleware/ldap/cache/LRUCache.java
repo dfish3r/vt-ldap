@@ -35,16 +35,16 @@ public class LRUCache<Q extends SearchRequest> implements Cache<Q>
 {
 
   /** Initial capacity of the hash map. */
-  protected static final int INITIAL_CAPACITY = 16;
+  private static final int INITIAL_CAPACITY = 16;
 
   /** Load factor of the hash map. */
-  protected static final float LOAD_FACTOR = 0.75f;
+  private static final float LOAD_FACTOR = 0.75f;
 
   /** Map to cache search results. */
-  protected Map<Q, Item> cache;
+  private Map<Q, Item> cache;
 
   /** Executor for performing eviction. */
-  protected ScheduledExecutorService executor =
+  private ScheduledExecutorService executor =
     Executors.newSingleThreadScheduledExecutor(
       new ThreadFactory() {
         public Thread newThread(final Runnable r)
@@ -163,10 +163,10 @@ public class LRUCache<Q extends SearchRequest> implements Cache<Q>
   {
 
     /** Ldap result. */
-    protected LdapResult result;
+    private LdapResult result;
 
     /** Timestamp when this item is created. */
-    protected long creationTime;
+    private long creationTime;
 
 
     /**

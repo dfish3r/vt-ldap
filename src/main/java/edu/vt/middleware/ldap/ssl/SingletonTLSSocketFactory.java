@@ -27,8 +27,9 @@ import org.slf4j.LoggerFactory;
  */
 public class SingletonTLSSocketFactory extends TLSSocketFactory
 {
+
   /** SSLContextInitializer used for initializing SSL contexts. */
-  protected static SSLContextInitializer staticContextInitializer;
+  private static SSLContextInitializer staticContextInitializer;
 
 
   /** {@inheritDoc} */

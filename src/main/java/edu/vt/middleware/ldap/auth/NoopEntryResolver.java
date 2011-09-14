@@ -13,7 +13,6 @@
 */
 package edu.vt.middleware.ldap.auth;
 
-import java.io.Serializable;
 import edu.vt.middleware.ldap.Connection;
 import edu.vt.middleware.ldap.LdapEntry;
 import edu.vt.middleware.ldap.LdapException;
@@ -24,11 +23,9 @@ import edu.vt.middleware.ldap.LdapException;
  * @author  Middleware Services
  * @version  $Revision$ $Date$
  */
-public class NoopEntryResolver implements EntryResolver, Serializable
+public class NoopEntryResolver implements EntryResolver
 {
 
-  /** serial version uid. */
-  private static final long serialVersionUID = -1296734590602210039L;
 
   /** Default constructor. */
   public NoopEntryResolver() {}

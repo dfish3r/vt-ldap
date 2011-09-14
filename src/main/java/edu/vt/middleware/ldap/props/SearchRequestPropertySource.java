@@ -37,12 +37,12 @@ public final class SearchRequestPropertySource
    * Creates a new search request property source using the default properties
    * file.
    *
-   * @param  sr  search request to invoke properties on
+   * @param  request  search request to invoke properties on
    */
-  public SearchRequestPropertySource(final SearchRequest sr)
+  public SearchRequestPropertySource(final SearchRequest request)
   {
     this(
-      sr,
+      request,
       SearchRequestPropertySource.class.getResourceAsStream(PROPERTIES_FILE));
   }
 
@@ -50,40 +50,42 @@ public final class SearchRequestPropertySource
   /**
    * Creates a new search request property source.
    *
-   * @param  sr  search request to invoke properties on
+   * @param  request  search request to invoke properties on
    * @param  is  to read properties from
    */
   public SearchRequestPropertySource(
-    final SearchRequest sr, final InputStream is)
+    final SearchRequest request, final InputStream is)
   {
-    this(sr, loadProperties(is));
+    this(request, loadProperties(is));
   }
 
 
   /**
    * Creates a new search request property source.
    *
-   * @param  sr  search request to invoke properties on
+   * @param  request  search request to invoke properties on
    * @param  props  to read properties from
    */
   public SearchRequestPropertySource(
-    final SearchRequest sr, final Properties props)
+    final SearchRequest request, final Properties props)
   {
-    this(sr, PropertyDomain.LDAP, props);
+    this(request, PropertyDomain.LDAP, props);
   }
 
 
   /**
    * Creates a new search request property source.
    *
-   * @param  sr  search request to invoke properties on
+   * @param  request  search request to invoke properties on
    * @param  domain  that properties are in
    * @param  props  to read properties from
    */
   public SearchRequestPropertySource(
-    final SearchRequest sr, final PropertyDomain domain, final Properties props)
+    final SearchRequest request,
+    final PropertyDomain domain,
+    final Properties props)
   {
-    object = sr;
+    object = request;
     propertiesDomain = domain;
     properties = props;
   }

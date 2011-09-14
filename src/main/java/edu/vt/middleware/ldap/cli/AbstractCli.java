@@ -23,7 +23,7 @@ import java.util.Properties;
 import edu.vt.middleware.ldap.ConnectionFactory;
 import edu.vt.middleware.ldap.Credential;
 import edu.vt.middleware.ldap.DefaultConnectionFactory;
-import edu.vt.middleware.ldap.props.ConnectionFactoryPropertySource;
+import edu.vt.middleware.ldap.props.DefaultConnectionFactoryPropertySource;
 import edu.vt.middleware.ldap.props.PropertySource.PropertyDomain;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
@@ -109,8 +109,8 @@ public abstract class AbstractCli
     throws Exception
   {
     final ConnectionFactory factory = new DefaultConnectionFactory();
-    final ConnectionFactoryPropertySource cfSource =
-      new ConnectionFactoryPropertySource(
+    final DefaultConnectionFactoryPropertySource cfSource =
+      new DefaultConnectionFactoryPropertySource(
         factory, getPropertiesFromOptions(PropertyDomain.LDAP.value(), line));
     cfSource.initialize();
     if (factory.getConnectionConfig().getBindDn() != null &&

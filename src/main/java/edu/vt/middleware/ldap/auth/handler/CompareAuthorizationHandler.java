@@ -45,11 +45,11 @@ public class CompareAuthorizationHandler implements AuthorizationHandler
   /**
    * Creates a new compare authorization handler.
    *
-   * @param  sf  filter to execute on the user entry
+   * @param  filter  to execute on the user entry
    */
-  public CompareAuthorizationHandler(final SearchFilter sf)
+  public CompareAuthorizationHandler(final SearchFilter filter)
   {
-    searchFilter = sf;
+    searchFilter = filter;
   }
 
 
@@ -67,11 +67,11 @@ public class CompareAuthorizationHandler implements AuthorizationHandler
   /**
    * Sets the search filter.
    *
-   * @param  sf  filter to execute on the user entry
+   * @param  filter  to execute on the user entry
    */
-  public void setSearchFilter(final SearchFilter sf)
+  public void setSearchFilter(final SearchFilter filter)
   {
-    searchFilter = sf;
+    searchFilter = filter;
   }
 
 

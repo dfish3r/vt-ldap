@@ -19,7 +19,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Creates connections
+ * Creates connections for performing ldap operations.
  *
  * @author  Middleware Services
  * @version  $Revision$
@@ -31,13 +31,13 @@ public class DefaultConnectionFactory implements ConnectionFactory
   public static final String PROVIDER = "edu.vt.middleware.ldap.provider";
 
   /** Static reference to the default ldap provider. */
-  protected static final Provider<?> DEFAULT_PROVIDER = getDefaultProvider();
+  private static final Provider<?> DEFAULT_PROVIDER = getDefaultProvider();
 
   /** Provider used by this factory. */
-  protected Provider<?> provider = DEFAULT_PROVIDER.newInstance();;
+  private Provider<?> provider = DEFAULT_PROVIDER.newInstance();;
 
   /** Connection configuration used by this factory. */
-  protected ConnectionConfig config;
+  private ConnectionConfig config;
 
 
   /**
@@ -170,7 +170,7 @@ public class DefaultConnectionFactory implements ConnectionFactory
 
 
   /**
-   * The {@link #LDAP_PROVIDER} property is checked and that class is loaded if
+   * The {@link #PROVIDER} property is checked and that class is loaded if
    * provided. Otherwise the JNDI provider is returned.
    *
    * @return  default provider

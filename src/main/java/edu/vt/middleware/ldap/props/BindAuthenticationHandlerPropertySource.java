@@ -38,13 +38,13 @@ public final class BindAuthenticationHandlerPropertySource
    * Creates a new bind authentication handler property source using the default
    * properties file.
    *
-   * @param  bah  bind authentication handler to invoke properties on
+   * @param  handler  bind authentication handler to invoke properties on
    */
   public BindAuthenticationHandlerPropertySource(
-    final BindAuthenticationHandler bah)
+    final BindAuthenticationHandler handler)
   {
     this(
-      bah,
+      handler,
       BindAuthenticationHandlerPropertySource.class.getResourceAsStream(
         PROPERTIES_FILE));
   }
@@ -53,42 +53,42 @@ public final class BindAuthenticationHandlerPropertySource
   /**
    * Creates a new bind authentication handler property source.
    *
-   * @param  bah  bind authentication handler to invoke properties on
+   * @param  handler  bind authentication handler to invoke properties on
    * @param  is  to read properties from
    */
   public BindAuthenticationHandlerPropertySource(
-    final BindAuthenticationHandler bah, final InputStream is)
+    final BindAuthenticationHandler handler, final InputStream is)
   {
-    this(bah, loadProperties(is));
+    this(handler, loadProperties(is));
   }
 
 
   /**
    * Creates a new bind authentication handler property source.
    *
-   * @param  bah  bind authentication handler to invoke properties on
+   * @param  handler  bind authentication handler to invoke properties on
    * @param  props  to read properties from
    */
   public BindAuthenticationHandlerPropertySource(
-    final BindAuthenticationHandler bah, final Properties props)
+    final BindAuthenticationHandler handler, final Properties props)
   {
-    this(bah, PropertyDomain.AUTH, props);
+    this(handler, PropertyDomain.AUTH, props);
   }
 
 
   /**
    * Creates a new bind authentication handler property source.
    *
-   * @param  bah  bind authentication handler to invoke properties on
+   * @param  handler  bind authentication handler to invoke properties on
    * @param  domain  that properties are in
    * @param  props  to read properties from
    */
   public BindAuthenticationHandlerPropertySource(
-    final BindAuthenticationHandler bah,
+    final BindAuthenticationHandler handler,
     final PropertyDomain domain,
     final Properties props)
   {
-    object = bah;
+    object = handler;
     propertiesDomain = domain;
     properties = props;
   }

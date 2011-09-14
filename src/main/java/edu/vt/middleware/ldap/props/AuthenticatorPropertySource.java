@@ -179,8 +179,8 @@ public final class AuthenticatorPropertySource
   private void initConnectionFactoryManager(final ConnectionFactoryManager cfm)
   {
     final ConnectionFactory cf = new DefaultConnectionFactory();
-    final ConnectionFactoryPropertySource cfPropSource =
-      new ConnectionFactoryPropertySource(
+    final DefaultConnectionFactoryPropertySource cfPropSource =
+      new DefaultConnectionFactoryPropertySource(
         cf, propertiesDomain, properties);
     cfPropSource.initialize();
     cfm.setConnectionFactory(cf);

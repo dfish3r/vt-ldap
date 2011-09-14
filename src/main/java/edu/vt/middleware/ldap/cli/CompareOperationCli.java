@@ -101,19 +101,19 @@ public class CompareOperationCli extends AbstractCli
    *
    * @param  cf  connection factory
    * @param  dn  to compare attribute on
-   * @param  la  attribute to compare
+   * @param  attr  attribute to compare
    *
    * @throws  Exception  on any LDAP search error
    */
   protected void compare(
-    final ConnectionFactory cf, final String dn, final LdapAttribute la)
+    final ConnectionFactory cf, final String dn, final LdapAttribute attr)
     throws Exception
   {
     final Connection conn = cf.getConnection();
     conn.open();
 
     final CompareOperation op = new CompareOperation(conn);
-    System.out.println(op.execute(new CompareRequest(dn, la)).getResult());
+    System.out.println(op.execute(new CompareRequest(dn, attr)).getResult());
     conn.close();
   }
 

@@ -26,53 +26,54 @@ import edu.vt.middleware.ldap.handler.LdapResultHandler;
  */
 public class SearchRequest implements Request
 {
+
   /** hash code seed. */
-  protected static final int HASH_CODE_SEED = 93;
+  private static final int HASH_CODE_SEED = 93;
 
   /** DN to search. */
-  protected String baseDn = "";
+  private String baseDn = "";
 
   /** Search filter to execute. */
-  protected SearchFilter filter;
+  private SearchFilter searchFilter;
 
   /** Attributes to return. */
-  protected String[] retAttrs;
+  private String[] retAttrs;
 
   /** Search scope.*/
-  protected SearchScope scope = SearchScope.SUBTREE;
+  private SearchScope searchScope = SearchScope.SUBTREE;
 
   /** Time search operation will block. */
-  protected long timeLimit;
+  private long timeLimit;
 
   /** Number of entries to return. */
-  protected long sizeLimit;
+  private long sizeLimit;
 
   /** How to handle aliases. */
-  protected DerefAliases derefAliases;
+  private DerefAliases derefAliases;
 
   /** How to handle referrals. */
-  protected ReferralBehavior referralBehavior;
+  private ReferralBehavior referralBehavior;
 
   /** Whether to return only attribute types. */
-  protected boolean typesOnly;
+  private boolean typesOnly;
 
   /** Binary attribute names. */
-  protected String[] binaryAttrs;
+  private String[] binaryAttrs;
 
   /** Paged results control. */
-  protected PagedResultsControl pagedResultsControl;
+  private PagedResultsControl pagedResultsControl;
 
   /** Sort control. */
-  protected SortControl sortControl;
+  private SortControl sortControl;
 
   /** Sort behavior of results. */
-  protected SortBehavior sortBehavior = SortBehavior.getDefaultSortBehavior();
+  private SortBehavior sortBehavior = SortBehavior.getDefaultSortBehavior();
 
   /** Ldap result handlers. */
-  protected LdapResultHandler[] handlers;
+  private LdapResultHandler[] resultHandlers;
 
   /** Search result codes to ignore. */
-  protected ResultCode[] searchIgnoreResultCodes = new ResultCode[] {
+  private ResultCode[] searchIgnoreResultCodes = new ResultCode[] {
     ResultCode.TIME_LIMIT_EXCEEDED, ResultCode.SIZE_LIMIT_EXCEEDED, };
 
 
@@ -83,23 +84,23 @@ public class SearchRequest implements Request
   /**
    * Creates a new search request.
    *
-   * @param  sf  search filter
+   * @param  filter  search filter
    */
-  public SearchRequest(final SearchFilter sf)
+  public SearchRequest(final SearchFilter filter)
   {
-    setSearchFilter(sf);
+    setSearchFilter(filter);
   }
 
 
   /**
    * Creates a new search request.
    *
-   * @param  sf  search filter
+   * @param  filter  search filter
    * @param  attrs  to return
    */
-  public SearchRequest(final SearchFilter sf, final String[] attrs)
+  public SearchRequest(final SearchFilter filter, final String[] attrs)
   {
-    setSearchFilter(sf);
+    setSearchFilter(filter);
     setReturnAttributes(attrs);
   }
 
@@ -107,18 +108,18 @@ public class SearchRequest implements Request
   /**
    * Creates a new search request.
    *
-   * @param  sf  search filter
+   * @param  filter  search filter
    * @param  attrs  to return
-   * @param  srh  search result handlers
+   * @param  handlers  ldap result handlers
    */
   public SearchRequest(
-    final SearchFilter sf,
+    final SearchFilter filter,
     final String[] attrs,
-    final LdapResultHandler[] srh)
+    final LdapResultHandler[] handlers)
   {
-    setSearchFilter(sf);
+    setSearchFilter(filter);
     setReturnAttributes(attrs);
-    setLdapResultHandlers(srh);
+    setLdapResultHandlers(handlers);
   }
 
 
@@ -137,12 +138,12 @@ public class SearchRequest implements Request
    * Creates a new search request.
    *
    * @param  dn  to search
-   * @param  sf  search filter
+   * @param  filter  search filter
    */
-  public SearchRequest(final String dn, final SearchFilter sf)
+  public SearchRequest(final String dn, final SearchFilter filter)
   {
     setBaseDn(dn);
-    setSearchFilter(sf);
+    setSearchFilter(filter);
   }
 
 
@@ -150,14 +151,14 @@ public class SearchRequest implements Request
    * Creates a new search request.
    *
    * @param  dn  to search
-   * @param  sf  search filter
+   * @param  filter  search filter
    * @param  attrs  to return
    */
   public SearchRequest(
-    final String dn, final SearchFilter sf, final String[] attrs)
+    final String dn, final SearchFilter filter, final String[] attrs)
   {
     setBaseDn(dn);
-    setSearchFilter(sf);
+    setSearchFilter(filter);
     setReturnAttributes(attrs);
   }
 
@@ -166,20 +167,20 @@ public class SearchRequest implements Request
    * Creates a new search request.
    *
    * @param  dn  to search
-   * @param  sf  search filter
+   * @param  filter  search filter
    * @param  attrs  to return
-   * @param  srh  search result handlers
+   * @param  handlers  ldap result handlers
    */
   public SearchRequest(
     final String dn,
-    final SearchFilter sf,
+    final SearchFilter filter,
     final String[] attrs,
-    final LdapResultHandler[] srh)
+    final LdapResultHandler[] handlers)
   {
     setBaseDn(dn);
-    setSearchFilter(sf);
+    setSearchFilter(filter);
     setReturnAttributes(attrs);
-    setLdapResultHandlers(srh);
+    setLdapResultHandlers(handlers);
   }
 
 
@@ -212,18 +213,18 @@ public class SearchRequest implements Request
    */
   public SearchFilter getSearchFilter()
   {
-    return filter;
+    return searchFilter;
   }
 
 
   /**
    * Sets the search filter.
    *
-   * @param  sf  search filter
+   * @param  filter  search filter
    */
-  public void setSearchFilter(final SearchFilter sf)
+  public void setSearchFilter(final SearchFilter filter)
   {
-    filter = sf;
+    searchFilter = filter;
   }
 
 
@@ -256,18 +257,18 @@ public class SearchRequest implements Request
    */
   public SearchScope getSearchScope()
   {
-    return scope;
+    return searchScope;
   }
 
 
   /**
    * Sets the search scope.
    *
-   * @param  ss  search scope
+   * @param  scope  search scope
    */
-  public void setSearchScope(final SearchScope ss)
+  public void setSearchScope(final SearchScope scope)
   {
-    scope = ss;
+    searchScope = scope;
   }
 
 
@@ -285,11 +286,11 @@ public class SearchRequest implements Request
   /**
    * Sets the time limit.
    *
-   * @param  l  time limit
+   * @param  limit  time limit
    */
-  public void setTimeLimit(final long l)
+  public void setTimeLimit(final long limit)
   {
-    timeLimit = l;
+    timeLimit = limit;
   }
 
 
@@ -307,11 +308,11 @@ public class SearchRequest implements Request
   /**
    * Sets the size limit.
    *
-   * @param  l  size limit
+   * @param  limit  size limit
    */
-  public void setSizeLimit(final long l)
+  public void setSizeLimit(final long limit)
   {
-    sizeLimit = l;
+    sizeLimit = limit;
   }
 
 
@@ -395,11 +396,11 @@ public class SearchRequest implements Request
   /**
    * Sets names of binary attributes.
    *
-   * @param  s  binary attribute names
+   * @param  attrs  binary attribute names
    */
-  public void setBinaryAttributes(final String[] s)
+  public void setBinaryAttributes(final String[] attrs)
   {
-    binaryAttrs = s;
+    binaryAttrs = attrs;
   }
 
 
@@ -417,11 +418,11 @@ public class SearchRequest implements Request
   /**
    * Sets the paged results control.
    *
-   * @param  prc  paged results control
+   * @param  control  paged results control
    */
-  public void setPagedResultsControl(final PagedResultsControl prc)
+  public void setPagedResultsControl(final PagedResultsControl control)
   {
-    pagedResultsControl = prc;
+    pagedResultsControl = control;
   }
 
 
@@ -442,11 +443,11 @@ public class SearchRequest implements Request
    * {@link SortBehavior#ORDERED} so that the sort order will be maintained.
    * Failure to do this will result in the server side sort order being lost.
    *
-   * @param  sc  sort control
+   * @param  control  sort control
    */
-  public void setSortControl(final SortControl sc)
+  public void setSortControl(final SortControl control)
   {
-    sortControl = sc;
+    sortControl = control;
   }
 
 
@@ -479,18 +480,18 @@ public class SearchRequest implements Request
    */
   public LdapResultHandler[] getLdapResultHandlers()
   {
-    return handlers;
+    return resultHandlers;
   }
 
 
   /**
    * Sets the ldap result handlers.
    *
-   * @param  lrh  ldap result handlers
+   * @param  handlers  ldap result handlers
    */
-  public void setLdapResultHandlers(final LdapResultHandler[] lrh)
+  public void setLdapResultHandlers(final LdapResultHandler[] handlers)
   {
-    handlers = lrh;
+    resultHandlers = handlers;
   }
 
 
@@ -519,26 +520,28 @@ public class SearchRequest implements Request
   /**
    * Returns a search request initialized with the supplied request.
    *
-   * @param  sr  search request to read properties from
+   * @param  request  search request to read properties from
    * @return  search request
    */
-  public static SearchRequest newSearchRequest(final SearchRequest sr)
+  public static SearchRequest newSearchRequest(final SearchRequest request)
   {
-    final SearchRequest request = new SearchRequest();
-    request.setBaseDn(sr.getBaseDn());
-    request.setSearchFilter(sr.getSearchFilter());
-    request.setReturnAttributes(sr.getReturnAttributes());
-    request.setSearchScope(sr.getSearchScope());
-    request.setTimeLimit(sr.getTimeLimit());
-    request.setSizeLimit(sr.getSizeLimit());
-    request.setDerefAliases(sr.getDerefAliases());
-    request.setReferralBehavior(sr.getReferralBehavior());
-    request.setTypesOnly(sr.getTypesOnly());
-    request.setBinaryAttributes(sr.getBinaryAttributes());
-    request.setSortBehavior(sr.getSortBehavior());
-    request.setLdapResultHandlers(sr.getLdapResultHandlers());
-    request.setSearchIgnoreResultCodes(sr.getSearchIgnoreResultCodes());
-    return request;
+    final SearchRequest sr = new SearchRequest();
+    sr.setBaseDn(request.getBaseDn());
+    sr.setBinaryAttributes(request.getBinaryAttributes());
+    sr.setDerefAliases(request.getDerefAliases());
+    sr.setLdapResultHandlers(request.getLdapResultHandlers());
+    sr.setPagedResultsControl(request.getPagedResultsControl());
+    sr.setReferralBehavior(request.getReferralBehavior());
+    sr.setReturnAttributes(request.getReturnAttributes());
+    sr.setSearchFilter(request.getSearchFilter());
+    sr.setSearchIgnoreResultCodes(request.getSearchIgnoreResultCodes());
+    sr.setSearchScope(request.getSearchScope());
+    sr.setSizeLimit(request.getSizeLimit());
+    sr.setSortBehavior(request.getSortBehavior());
+    sr.setSortControl(request.getSortControl());
+    sr.setTimeLimit(request.getTimeLimit());
+    sr.setTypesOnly(request.getTypesOnly());
+    return sr;
   }
 
 
@@ -617,19 +620,21 @@ public class SearchRequest implements Request
   {
     int hc = HASH_CODE_SEED;
     hc += baseDn != null ? baseDn.hashCode() : 0;
-    hc += filter != null ? filter.hashCode() : 0;
-    hc += retAttrs != null ? Arrays.hashCode(retAttrs) : 0;
-    hc += scope != null ? scope.hashCode() : 0;
-    hc += timeLimit;
-    hc += sizeLimit;
-    hc += derefAliases != null ? derefAliases.hashCode() : 0;
-    hc += referralBehavior != null ? referralBehavior.hashCode() : 0;
-    hc += Boolean.valueOf(typesOnly).hashCode();
     hc += binaryAttrs != null ? Arrays.hashCode(binaryAttrs) : 0;
-    hc += sortBehavior != null ? sortBehavior.hashCode() : 0;
-    hc += handlers != null ? Arrays.hashCode(handlers) : 0;
+    hc += derefAliases != null ? derefAliases.hashCode() : 0;
+    hc += resultHandlers != null ? Arrays.hashCode(resultHandlers) : 0;
+    hc += pagedResultsControl != null ? pagedResultsControl.hashCode() : 0;
+    hc += referralBehavior != null ? referralBehavior.hashCode() : 0;
+    hc += retAttrs != null ? Arrays.hashCode(retAttrs) : 0;
+    hc += searchFilter != null ? searchFilter.hashCode() : 0;
     hc += searchIgnoreResultCodes != null ?
       Arrays.hashCode(searchIgnoreResultCodes) : 0;
+    hc += searchScope != null ? searchScope.hashCode() : 0;
+    hc += sizeLimit;
+    hc += sortBehavior != null ? sortBehavior.hashCode() : 0;
+    hc += sortControl != null ? sortControl.hashCode() : 0;
+    hc += timeLimit;
+    hc += Boolean.valueOf(typesOnly).hashCode();
     return hc;
   }
 
@@ -652,9 +657,9 @@ public class SearchRequest implements Request
         getClass().getName(),
         hashCode(),
         baseDn,
-        filter,
+        searchFilter,
         retAttrs != null ? Arrays.asList(retAttrs) : null,
-        scope,
+        searchScope,
         timeLimit,
         sizeLimit,
         derefAliases,
@@ -664,7 +669,7 @@ public class SearchRequest implements Request
         pagedResultsControl,
         sortControl,
         sortBehavior,
-        handlers != null ? Arrays.asList(handlers) : null,
+        resultHandlers != null ? Arrays.asList(resultHandlers) : null,
         searchIgnoreResultCodes != null ?
           Arrays.asList(searchIgnoreResultCodes) : null);
   }

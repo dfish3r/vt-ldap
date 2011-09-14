@@ -46,6 +46,7 @@ import edu.vt.middleware.ldap.sasl.SecurityStrength;
  */
 public class JndiUtil
 {
+
   /** Whether to ignore case when creating basic attributes. */
   public static final boolean DEFAULT_IGNORE_CASE = true;
 
@@ -75,18 +76,18 @@ public class JndiUtil
    * Returns a jndi attribute that represents the values in the supplied ldap
    * attribute.
    *
-   * @param  la  ldap attribute
+   * @param  attr  ldap attribute
    * @return  jndi attribute
    */
-  public Attribute fromLdapAttribute(final LdapAttribute la)
+  public Attribute fromLdapAttribute(final LdapAttribute attr)
   {
-    final Attribute attribute = new BasicAttribute(la.getName());
-    if (la.isBinary()) {
-      for (byte[] value : la.getBinaryValues()) {
+    final Attribute attribute = new BasicAttribute(attr.getName());
+    if (attr.isBinary()) {
+      for (byte[] value : attr.getBinaryValues()) {
         attribute.add(value);
       }
     } else {
-      for (String value : la.getStringValues()) {
+      for (String value : attr.getStringValues()) {
         attribute.add(value);
       }
     }
@@ -97,20 +98,21 @@ public class JndiUtil
   /**
    * Returns an ldap attribute using the supplied jndi attribute.
    *
-   * @param  a  jndi attribute
+   * @param  attr  jndi attribute
    * @return  ldap attribute
    *
    * @throws  NamingException  if the attribute values cannot be read
    */
-  public LdapAttribute toLdapAttribute(final Attribute a)
+  public LdapAttribute toLdapAttribute(final Attribute attr)
     throws NamingException
   {
     final Set<Object> values = new HashSet<Object>();
-    final NamingEnumeration<?> ne = a.getAll();
+    final NamingEnumeration<?> ne = attr.getAll();
     while (ne.hasMore()) {
       values.add(ne.next());
     }
-    return LdapAttribute.createLdapAttribute(sortBehavior, a.getID(), values);
+    return LdapAttribute.createLdapAttribute(
+      sortBehavior, attr.getID(), values);
   }
 
 
@@ -118,13 +120,13 @@ public class JndiUtil
    * Returns a jndi attributes that represents the values in the supplied ldap
    * attributes.
    *
-   * @param  c  ldap attributes
+   * @param  attrs  ldap attributes
    * @return  jndi attributes
    */
-  public Attributes fromLdapAttributes(final Collection<LdapAttribute> c)
+  public Attributes fromLdapAttributes(final Collection<LdapAttribute> attrs)
   {
     final Attributes attributes = new BasicAttributes(DEFAULT_IGNORE_CASE);
-    for (LdapAttribute a : c) {
+    for (LdapAttribute a : attrs) {
       attributes.put(fromLdapAttribute(a));
     }
     return attributes;
@@ -134,30 +136,30 @@ public class JndiUtil
   /**
    * Returns a jndi search result that represents the supplied ldap entry.
    *
-   * @param  le  ldap entry
+   * @param  entry  ldap entry
    * @return  jndi search result
    */
-  public SearchResult fromLdapEntry(final LdapEntry le)
+  public SearchResult fromLdapEntry(final LdapEntry entry)
   {
     return new SearchResult(
-      le.getDn(), null, fromLdapAttributes(le.getAttributes()));
+      entry.getDn(), null, fromLdapAttributes(entry.getAttributes()));
   }
 
 
   /**
    * Returns an ldap entry using the supplied jndi search result.
    *
-   * @param  sr  jndi search result
+   * @param  result  jndi search result
    * @return  ldap entry
    *
    * @throws  NamingException  if the search result cannot be read
    */
-  public LdapEntry toLdapEntry(final SearchResult sr)
+  public LdapEntry toLdapEntry(final SearchResult result)
     throws NamingException
   {
     final LdapEntry le = new LdapEntry(sortBehavior);
-    le.setDn(sr.getName());
-    final Attributes a = sr.getAttributes();
+    le.setDn(result.getName());
+    final Attributes a = result.getAttributes();
     final NamingEnumeration<? extends Attribute> ne = a.getAll();
     while (ne.hasMore()) {
       le.addAttribute(toLdapAttribute(ne.next()));
@@ -169,19 +171,19 @@ public class JndiUtil
   /**
    * Returns jndi modification items using the supplied attribute modifications.
    *
-   * @param  am  attribute modifications
+   * @param  mods  attribute modifications
    * @return  jndi modification items
    */
   public ModificationItem[] fromAttributeModification(
-    final AttributeModification[] am)
+    final AttributeModification[] mods)
   {
-    final ModificationItem[] mods = new ModificationItem[am.length];
-    for (int i = 0; i < am.length; i++) {
-      mods[i] = new ModificationItem(
-        getAttributeModification(am[i].getAttributeModificationType()),
-        fromLdapAttribute(am[i].getAttribute()));
+    final ModificationItem[] mi = new ModificationItem[mods.length];
+    for (int i = 0; i < mods.length; i++) {
+      mi[i] = new ModificationItem(
+        getAttributeModification(mods[i].getAttributeModificationType()),
+        fromLdapAttribute(mods[i].getAttribute()));
     }
-    return mods;
+    return mi;
   }
 
 
@@ -215,22 +217,22 @@ public class JndiUtil
   /**
    * Returns jndi sort keys using the supplied sort keys.
    *
-   * @param  sk  sort keys
+   * @param  keys  sort keys
    * @return  jndi sort keys
    */
-  public static javax.naming.ldap.SortKey[] fromSortKey(final SortKey[] sk)
+  public static javax.naming.ldap.SortKey[] fromSortKey(final SortKey[] keys)
   {
-    javax.naming.ldap.SortKey[] keys = null;
-    if (sk != null) {
-      keys = new javax.naming.ldap.SortKey[sk.length];
-      for (int i = 0; i < sk.length; i++) {
-        keys[i] = new javax.naming.ldap.SortKey(
-          sk[i].getAttributeDescription(),
-          !sk[i].getReverseOrder(),
-          sk[i].getMatchingRuleId());
+    javax.naming.ldap.SortKey[] sk = null;
+    if (keys != null) {
+      sk = new javax.naming.ldap.SortKey[keys.length];
+      for (int i = 0; i < keys.length; i++) {
+        sk[i] = new javax.naming.ldap.SortKey(
+          keys[i].getAttributeDescription(),
+          !keys[i].getReverseOrder(),
+          keys[i].getMatchingRuleId());
       }
     }
-    return keys;
+    return sk;
   }
 
 
@@ -238,18 +240,18 @@ public class JndiUtil
    * Returns the jndi modification integer constant for the supplied attribute
    * modification type.
    *
-   * @param  am  attribute modification type
+   * @param  type  attribute modification type
    * @return  integer constant
    */
   protected static int getAttributeModification(
-    final AttributeModificationType am)
+    final AttributeModificationType type)
   {
     int op = -1;
-    if (am == AttributeModificationType.ADD) {
+    if (type == AttributeModificationType.ADD) {
       op = LdapContext.ADD_ATTRIBUTE;
-    } else if (am == AttributeModificationType.REMOVE) {
+    } else if (type == AttributeModificationType.REMOVE) {
       op = LdapContext.REMOVE_ATTRIBUTE;
-    } else if (am == AttributeModificationType.REPLACE) {
+    } else if (type == AttributeModificationType.REPLACE) {
       op = LdapContext.REPLACE_ATTRIBUTE;
     }
     return op;

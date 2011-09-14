@@ -38,8 +38,11 @@ public abstract class AbstractCompareAuthenticationHandler
   /** Maximum digest size. Value is {@value}. */
   protected static final int DIGEST_SIZE = 256;
 
-  /** Password scheme. Default value is {@value}. */
-  protected String passwordScheme = "SHA";
+  /** Default password scheme. Value is {@value}. */
+  protected static final String DEFAULT_SCHEME = "SHA";
+
+  /** Password scheme. */
+  protected String passwordScheme = DEFAULT_SCHEME;
 
 
   /**
@@ -67,13 +70,13 @@ public abstract class AbstractCompareAuthenticationHandler
   /** {@inheritDoc} */
   @Override
   protected void authenticateInternal(
-    final Connection c, final AuthenticationCriteria ac)
+    final Connection c, final AuthenticationCriteria criteria)
     throws LdapException
   {
     byte[] hash = new byte[DIGEST_SIZE];
     try {
       final MessageDigest md = MessageDigest.getInstance(passwordScheme);
-      md.update(ac.getCredential().getBytes());
+      md.update(criteria.getCredential().getBytes());
       hash = md.digest();
     } catch (NoSuchAlgorithmException e) {
       throw new LdapException(e);
@@ -85,7 +88,7 @@ public abstract class AbstractCompareAuthenticationHandler
         "{%s}%s", passwordScheme, LdapUtil.base64Encode(hash)).getBytes());
     final CompareOperation compare = new CompareOperation(c);
     final boolean success = compare.execute(
-      new CompareRequest(ac.getDn(), la)).getResult();
+      new CompareRequest(criteria.getDn(), la)).getResult();
 
     if (!success) {
       throw new AuthenticationException("Compare authentication failed.");

@@ -48,5 +48,5 @@ public class AddOperation extends AbstractOperation<AddRequest, Void>
   /** {@inheritDoc} */
   @Override
   protected void initializeRequest(
-    final AddRequest request, final ConnectionConfig config) {}
+    final AddRequest request, final ConnectionConfig cc) {}
 }

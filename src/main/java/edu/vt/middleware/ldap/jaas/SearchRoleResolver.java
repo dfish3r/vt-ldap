@@ -29,7 +29,7 @@ public class SearchRoleResolver extends AbstractSearchRoleResolver
 {
 
   /** Connection factory. */
-  protected ConnectionFactory factory;
+  private ConnectionFactory factory;
 
 
   /** Default constructor. */

@@ -33,6 +33,7 @@ import org.slf4j.LoggerFactory;
  */
 public abstract class AbstractAuthenticator
 {
+
   /** Logger for this class. */
   protected final Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -129,12 +130,12 @@ public abstract class AbstractAuthenticator
   /**
    * Sets the authentication result handlers.
    *
-   * @param  arh  authentication result handlers
+   * @param  handlers  authentication result handlers
    */
   public void setAuthenticationResultHandlers(
-    final AuthenticationResultHandler[] arh)
+    final AuthenticationResultHandler[] handlers)
   {
-    authenticationResultHandlers = arh;
+    authenticationResultHandlers = handlers;
   }
 
 
@@ -162,7 +163,7 @@ public abstract class AbstractAuthenticator
    *
    * @param  authHandler  to perform authentication
    * @param  authResultHandler  to process authentication failures
-   * @param  ac  needed by both the authentication handler and the result
+   * @param  criteria  needed by both the authentication handler and the result
    * handlers
    * @return  connection that the bind occurred on
    * @throws  AuthenticationException  if the bind fails
@@ -171,18 +172,18 @@ public abstract class AbstractAuthenticator
   protected Connection authenticate(
     final AuthenticationHandler authHandler,
     final AuthenticationResultHandler[] authResultHandler,
-    final AuthenticationCriteria ac)
+    final AuthenticationCriteria criteria)
     throws LdapException
   {
     Connection conn = null;
     try {
-      conn = authHandler.authenticate(ac);
-      logger.info("Authentication succeeded for dn: {}", ac.getDn());
+      conn = authHandler.authenticate(criteria);
+      logger.info("Authentication succeeded for dn: {}", criteria.getDn());
     } catch (AuthenticationException e) {
-      logger.info("Authentication failed for dn: {}", ac.getDn());
+      logger.info("Authentication failed for dn: {}", criteria.getDn());
       if (authResultHandler != null && authResultHandler.length > 0) {
         for (AuthenticationResultHandler ah : authResultHandler) {
-          ah.process(ac, false);
+          ah.process(criteria, false);
         }
       }
       throw e;
@@ -199,7 +200,7 @@ public abstract class AbstractAuthenticator
    * @param  authzHandler  to process
    * @param  authResultHandler  to process authorization failures
    * @param  conn  to perform authorization on
-   * @param  ac  needed by both the authorization handlers and the result
+   * @param  criteria  needed by both the authorization handlers and the result
    * handlers
    * @throws  AuthorizationException  if any authorization handler fails
    * @throws  LdapException  if an LDAP error occurs
@@ -208,25 +209,25 @@ public abstract class AbstractAuthenticator
     final AuthorizationHandler[] authzHandler,
     final AuthenticationResultHandler[] authResultHandler,
     final Connection conn,
-    final AuthenticationCriteria ac)
+    final AuthenticationCriteria criteria)
     throws LdapException
   {
     if (authzHandler != null && authzHandler.length > 0) {
       for (AuthorizationHandler azh : authzHandler) {
         try {
-          azh.process(conn, ac);
+          azh.process(conn, criteria);
           logger.info(
             "Authorization succeeded for dn: {} with handler: {}",
-            ac.getDn(),
+            criteria.getDn(),
             azh);
         } catch (AuthorizationException e) {
           logger.info(
             "Authorization failed for dn: {} with handler: {}",
-            ac.getDn(),
+            criteria.getDn(),
             azh);
           if (authResultHandler != null && authResultHandler.length > 0) {
             for (AuthenticationResultHandler ah : authResultHandler) {
-              ah.process(ac, false);
+              ah.process(criteria, false);
             }
           }
           throw e;

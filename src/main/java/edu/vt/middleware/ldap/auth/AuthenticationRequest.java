@@ -26,23 +26,24 @@ import edu.vt.middleware.ldap.auth.handler.AuthorizationHandler;
  */
 public class AuthenticationRequest implements Request
 {
+
   /** User identifier. */
-  protected String user;
+  private String user;
 
   /** User credential. */
-  protected Credential credential;
+  private Credential credential;
 
   /** User attributes to return. */
-  protected String[] retAttrs = new String[0];
+  private String[] retAttrs = new String[0];
 
   /** Filter for authorizing user. */
-  protected String authzFilter;
+  private String authzFilter;
 
   /** Filter arguments for authorizing user. */
-  protected Object[] authzFilterArgs;
+  private Object[] authzFilterArgs;
 
   /** Handlers to authorize the user. */
-  protected AuthorizationHandler[] authzHandlers;
+  private AuthorizationHandler[] authzHandlers;
 
 
   /** Default constructor. */
@@ -83,16 +84,16 @@ public class AuthenticationRequest implements Request
    *
    * @param  id  that identifies the user
    * @param  c  credential to authenticate the user
-   * @param  ah  authorization handlers
+   * @param  handlers  authorization handlers
    */
   public AuthenticationRequest(
     final String id,
     final Credential c,
-    final AuthorizationHandler[] ah)
+    final AuthorizationHandler[] handlers)
   {
     setUser(id);
     setCredential(c);
-    setAuthorizationHandlers(ah);
+    setAuthorizationHandlers(handlers);
   }
 
 
@@ -102,18 +103,18 @@ public class AuthenticationRequest implements Request
    * @param  id  that identifies the user
    * @param  c  credential to authenticate the user
    * @param  attrs  attributes to return
-   * @param  ah  authorization handlers
+   * @param  handlers  authorization handlers
    */
   public AuthenticationRequest(
     final String id,
     final Credential c,
     final String[] attrs,
-    final AuthorizationHandler[] ah)
+    final AuthorizationHandler[] handlers)
   {
     setUser(id);
     setCredential(c);
     setReturnAttributes(attrs);
-    setAuthorizationHandlers(ah);
+    setAuthorizationHandlers(handlers);
   }
 
 
@@ -241,11 +242,11 @@ public class AuthenticationRequest implements Request
   /**
    * Sets the authorization handlers.
    *
-   * @param  ah  authorization handlers
+   * @param  handlers  authorization handlers
    */
-  public void setAuthorizationHandlers(final AuthorizationHandler[] ah)
+  public void setAuthorizationHandlers(final AuthorizationHandler[] handlers)
   {
-    authzHandlers = ah;
+    authzHandlers = handlers;
   }
 
 
@@ -259,12 +260,11 @@ public class AuthenticationRequest implements Request
   {
     return
       String.format(
-        "[%s@%d::user=%s, credential=%s, retAttrs=%s, authzFilter=%s, " +
+        "[%s@%d::user=%s, retAttrs=%s, authzFilter=%s, " +
         "authzFilterArgs=%s, authzHandlers=%s]",
         getClass().getName(),
         hashCode(),
         user,
-        credential,
         retAttrs != null ? Arrays.asList(retAttrs) : null,
         authzFilter,
         authzFilterArgs != null ?

@@ -32,12 +32,13 @@ public interface AuthorizationHandler
    * connection should <b>not</b> be closed in this method. Implementations
    * should throw authorization exception to indicate an authorization failure.
    *
-   * @param  ac  authentication criteria used to perform the authentication
    * @param  conn  connection used to perform the bind
+   * @param  criteria  authentication criteria used to perform the
+   * authentication
    *
    * @throws  AuthorizationException  if authorization fails
    * @throws  LdapException  if ldap operation fails
    */
-  void process(Connection conn, AuthenticationCriteria ac)
+  void process(Connection conn, AuthenticationCriteria criteria)
     throws LdapException;
 }

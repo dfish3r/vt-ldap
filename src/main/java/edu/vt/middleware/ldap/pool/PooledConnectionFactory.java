@@ -30,23 +30,23 @@ public class PooledConnectionFactory implements ConnectionFactory
 {
 
   /** Static reference to the default ldap provider. */
-  protected static final Provider<?> DEFAULT_PROVIDER =
+  private static final Provider<?> DEFAULT_PROVIDER =
     DefaultConnectionFactory.getDefaultProvider();
 
   /** Provider used by this factory. */
-  protected Provider<?> provider = DEFAULT_PROVIDER.newInstance();;
+  private Provider<?> provider = DEFAULT_PROVIDER.newInstance();;
 
   /** Connection configuration used by this factory. */
-  protected ConnectionConfig config;
+  private ConnectionConfig config;
 
   /** Connection pool. */
-  protected ConnectionPool pool;
+  private ConnectionPool pool;
 
   /** Connection pool type. */
-  protected ConnectionPoolType poolType = ConnectionPoolType.BLOCKING;
+  private ConnectionPoolType poolType = ConnectionPoolType.BLOCKING;
 
   /** Pool config. */
-  protected PoolConfig poolConfig = new PoolConfig();
+  private PoolConfig poolConfig = new PoolConfig();
 
 
   /**

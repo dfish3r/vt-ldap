@@ -49,5 +49,5 @@ public class CompareOperation
   /** {@inheritDoc} */
   @Override
   protected void initializeRequest(
-    final CompareRequest request, final ConnectionConfig config) {}
+    final CompareRequest request, final ConnectionConfig cc) {}
 }

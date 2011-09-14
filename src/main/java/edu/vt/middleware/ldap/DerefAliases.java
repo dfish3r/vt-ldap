@@ -21,6 +21,7 @@ package edu.vt.middleware.ldap;
  */
 public enum DerefAliases
 {
+
   /** never dereference aliases. */
   NEVER,
 

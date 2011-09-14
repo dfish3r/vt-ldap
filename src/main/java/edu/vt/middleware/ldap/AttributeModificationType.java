@@ -21,6 +21,7 @@ package edu.vt.middleware.ldap;
  */
 public enum AttributeModificationType
 {
+
     /** add an attribute. */
     ADD,
 

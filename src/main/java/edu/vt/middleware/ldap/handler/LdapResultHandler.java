@@ -36,7 +36,7 @@ public interface LdapResultHandler extends ResultHandler<LdapResult>
   /**
    * Sets the attribute handlers.
    *
-   * @param  ah  attribute handlers
+   * @param  handlers  attribute handlers
    */
-  void setAttributeHandler(final LdapAttributeHandler[] ah);
+  void setAttributeHandler(final LdapAttributeHandler[] handlers);
 }

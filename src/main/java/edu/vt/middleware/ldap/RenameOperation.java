@@ -48,5 +48,5 @@ public class RenameOperation extends AbstractOperation<RenameRequest, Void>
   /** {@inheritDoc} */
   @Override
   protected void initializeRequest(
-    final RenameRequest request, final ConnectionConfig config) {}
+    final RenameRequest request, final ConnectionConfig cc) {}
 }

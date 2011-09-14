@@ -16,13 +16,14 @@ package edu.vt.middleware.ldap;
 import edu.vt.middleware.ldap.sasl.SaslConfig;
 
 /**
- * Bind request data.
+ * Contains the data required to perform an ldap bind operation.
  *
  * @author  Middleware Services
  * @version  $Revision$ $Date$
  */
 public class BindRequest implements Request
 {
+
   /** DN to bind as before performing operations. */
   private String bindDn;
 
@@ -126,11 +127,11 @@ public class BindRequest implements Request
   /**
    * Sets the sasl config.
    *
-   * @param  sc  sasl config
+   * @param  config  sasl config
    */
-  public void setSaslConfig(final SaslConfig sc)
+  public void setSaslConfig(final SaslConfig config)
   {
-    saslConfig = sc;
+    saslConfig = config;
   }
 
 

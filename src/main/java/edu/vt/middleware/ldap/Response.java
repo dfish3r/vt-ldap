@@ -23,6 +23,7 @@ package edu.vt.middleware.ldap;
  */
 public class Response<T>
 {
+
   /** Operation response. */
   private T result;
 

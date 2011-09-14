@@ -118,13 +118,13 @@ public abstract class AbstractLoginModule implements LoginModule
   @Override
   public void initialize(
     final Subject subj,
-    final CallbackHandler cbh,
+    final CallbackHandler handler,
     final Map<String, ?> state,
     final Map<String, ?> options)
   {
     logger.trace("Begin initialize");
     subject = subj;
-    callbackHandler = cbh;
+    callbackHandler = handler;
     sharedState = state;
 
     final Iterator<String> i = options.keySet().iterator();

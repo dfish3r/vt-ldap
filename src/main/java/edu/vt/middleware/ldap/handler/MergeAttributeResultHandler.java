@@ -82,17 +82,18 @@ public class MergeAttributeResultHandler extends CopyLdapResultHandler
 
   /** {@inheritDoc} */
   @Override
-  protected void processAttributes(final SearchCriteria sc, final LdapEntry le)
+  protected void processAttributes(
+    final SearchCriteria criteria, final LdapEntry entry)
     throws LdapException
   {
     boolean newAttribute = false;
-    LdapAttribute mergedAttribute = le.getAttribute(mergeAttributeName);
+    LdapAttribute mergedAttribute = entry.getAttribute(mergeAttributeName);
     if (mergedAttribute == null) {
       mergedAttribute = new LdapAttribute(mergeAttributeName);
       newAttribute = true;
     }
     for (String s : attributeNames) {
-      final LdapAttribute la = le.getAttribute(s);
+      final LdapAttribute la = entry.getAttribute(s);
       if (la != null) {
         if (la.isBinary()) {
           mergedAttribute.addBinaryValues(la.getBinaryValues());
@@ -103,7 +104,7 @@ public class MergeAttributeResultHandler extends CopyLdapResultHandler
     }
 
     if (mergedAttribute.size() > 0 && newAttribute) {
-      le.addAttribute(mergedAttribute);
+      entry.addAttribute(mergedAttribute);
     }
   }
 }

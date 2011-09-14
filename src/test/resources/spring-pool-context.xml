@@ -25,7 +25,7 @@ http://www.springframework.org/schema/util http://www.springframework.org/schema
   </bean>
   
   <bean id="connectionFactory"
-    class="edu.vt.middleware.ldap.ConnectionFactory"
+    class="edu.vt.middleware.ldap.DefaultConnectionFactory"
     p:connectionConfig-ref="connectionConfig"
   />
   

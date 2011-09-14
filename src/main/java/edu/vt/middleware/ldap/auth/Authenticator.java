@@ -85,15 +85,15 @@ public class Authenticator extends AbstractAuthenticator
   /**
    * Creates a new authenticator.
    *
-   * @param  dr  dn resolver
-   * @param  ah  authentication handler
+   * @param  resolver  dn resolver
+   * @param  handler  authentication handler
    */
   public Authenticator(
-    final DnResolver dr,
-    final AuthenticationHandler ah)
+    final DnResolver resolver,
+    final AuthenticationHandler handler)
   {
-    setDnResolver(dr);
-    setAuthenticationHandler(ah);
+    setDnResolver(resolver);
+    setAuthenticationHandler(handler);
   }
 
 

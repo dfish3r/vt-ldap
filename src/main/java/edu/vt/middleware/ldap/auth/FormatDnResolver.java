@@ -13,7 +13,6 @@
 */
 package edu.vt.middleware.ldap.auth;
 
-import java.io.Serializable;
 import edu.vt.middleware.ldap.LdapException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,17 +23,14 @@ import org.slf4j.LoggerFactory;
  * @author  Middleware Services
  * @version  $Revision$ $Date$
  */
-public class FormatDnResolver implements DnResolver, Serializable
+public class FormatDnResolver implements DnResolver
 {
-
-  /** serial version uid. */
-  private static final long serialVersionUID = -6508789359608064771L;
 
   /** log for this class. */
   protected final Logger logger = LoggerFactory.getLogger(getClass());
 
   /** format of DN. */
-  protected String format;
+  protected String formatString;
 
   /** format arguments. */
   protected Object[] formatArgs;
@@ -47,46 +43,46 @@ public class FormatDnResolver implements DnResolver, Serializable
   /**
    * Creates a new format DN resolver.
    *
-   * @param  s  format string
+   * @param  format  formatter string
    */
-  public FormatDnResolver(final String s)
+  public FormatDnResolver(final String format)
   {
-    setFormat(s);
+    setFormat(format);
   }
 
 
   /**
    * Creates a new format DN resolver with the supplied format and arguments.
    *
-   * @param  s  to set format
-   * @param  o  to set format arguments
+   * @param  format  to set formatter string
+   * @param  args  to set formatter arguments
    */
-  public FormatDnResolver(final String s, final Object[] o)
+  public FormatDnResolver(final String format, final Object[] args)
   {
-    setFormat(s);
-    setFormatArgs(o);
+    setFormat(format);
+    setFormatArgs(args);
   }
 
 
   /**
-   * Returns the format string used to return the entry DN.
+   * Returns the formatter string used to return the entry DN.
    *
    * @return  user field
    */
   public String getFormat()
   {
-    return format;
+    return formatString;
   }
 
 
   /**
-   * Sets the format string used to return the entry DN.
+   * Sets the formatter string used to return the entry DN.
    *
-   * @param  s  format string
+   * @param  format  formatter string
    */
-  public void setFormat(final String s)
+  public void setFormat(final String format)
   {
-    format = s;
+    formatString = format;
   }
 
 
@@ -104,11 +100,11 @@ public class FormatDnResolver implements DnResolver, Serializable
   /**
    * Sets the format arguments.
    *
-   * @param  o  to set format arguments
+   * @param  args  to set format arguments
    */
-  public void setFormatArgs(final Object[] o)
+  public void setFormatArgs(final Object[] args)
   {
-    formatArgs = o;
+    formatArgs = args;
   }
 
 
@@ -126,14 +122,14 @@ public class FormatDnResolver implements DnResolver, Serializable
   {
     String dn = null;
     if (user != null && !"".equals(user)) {
-      logger.debug("Formatting DN with {}", format);
+      logger.debug("Formatting DN with {}", formatString);
       if (formatArgs != null && formatArgs.length > 0) {
         final Object[] args = new Object[formatArgs.length + 1];
         args[0] = user;
         System.arraycopy(formatArgs, 0, args, 1, formatArgs.length);
-        dn = String.format(format, args);
+        dn = String.format(formatString, args);
       } else {
-        dn = String.format(format, user);
+        dn = String.format(formatString, user);
       }
     } else {
       logger.debug("User input was empty or null");

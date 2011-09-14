@@ -45,11 +45,11 @@ public class AuthenticationException extends LdapException
    * Creates a new authentication exception.
    *
    * @param  msg  describing this exception
-   * @param  rc  result code
+   * @param  code  result code
    */
-  public AuthenticationException(final String msg, final ResultCode rc)
+  public AuthenticationException(final String msg, final ResultCode code)
   {
-    super(msg, rc);
+    super(msg, code);
   }
 
 
@@ -68,11 +68,11 @@ public class AuthenticationException extends LdapException
    * Creates a new authentication exception.
    *
    * @param  e  provider specific exception
-   * @param  rc  result code
+   * @param  code  result code
    */
-  public AuthenticationException(final Exception e, final ResultCode rc)
+  public AuthenticationException(final Exception e, final ResultCode code)
   {
-    super(e, rc);
+    super(e, code);
   }
 
 
@@ -93,11 +93,11 @@ public class AuthenticationException extends LdapException
    *
    * @param  msg  describing this exception
    * @param  e  provider specific exception
-   * @param  rc  result code
+   * @param  code  result code
    */
   public AuthenticationException(
-    final String msg, final Exception e, final ResultCode rc)
+    final String msg, final Exception e, final ResultCode code)
   {
-    super(msg, e, rc);
+    super(msg, e, code);
   }
 }

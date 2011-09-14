@@ -37,24 +37,24 @@ public class SortControl extends AbstractControl
   /**
    * Creates a new sort control.
    *
-   * @param  sk  sort key
+   * @param  keys  sort keys
    */
-  public SortControl(final SortKey[] sk)
+  public SortControl(final SortKey[] keys)
   {
-    setSortKeys(sk);
+    setSortKeys(keys);
   }
 
 
   /**
    * Creates a new sort control.
    *
-   * @param  sk  sort key
-   * @param  b  whether this control is critical
+   * @param  keys  sort keys
+   * @param  critical  whether this control is critical
    */
-  public SortControl(final SortKey[] sk, final boolean b)
+  public SortControl(final SortKey[] keys, final boolean critical)
   {
-    setSortKeys(sk);
-    setCriticality(b);
+    setSortKeys(keys);
+    setCriticality(critical);
   }
 
 
@@ -72,11 +72,11 @@ public class SortControl extends AbstractControl
   /**
    * Sets the sort keys.
    *
-   * @param  sk  sort keys
+   * @param  keys  sort keys
    */
-  public void setSortKeys(final SortKey[] sk)
+  public void setSortKeys(final SortKey[] keys)
   {
-    sortKeys = sk;
+    sortKeys = keys;
   }
 
 

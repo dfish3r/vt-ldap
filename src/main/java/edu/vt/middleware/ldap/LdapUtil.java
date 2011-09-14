@@ -30,6 +30,7 @@ import org.slf4j.LoggerFactory;
  */
 public final class LdapUtil
 {
+
   /**
    * UTF-8 character set identifier. The value of this constant is
    * {@value}.

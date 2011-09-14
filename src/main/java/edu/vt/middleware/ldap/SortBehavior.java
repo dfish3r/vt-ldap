@@ -27,6 +27,7 @@ import org.slf4j.LoggerFactory;
  */
 public enum SortBehavior
 {
+
   /** unordered results. */
   UNORDERED,
 

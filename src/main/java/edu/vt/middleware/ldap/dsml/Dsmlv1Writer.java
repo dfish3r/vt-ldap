@@ -30,8 +30,6 @@ import javax.xml.transform.stream.StreamResult;
 import edu.vt.middleware.ldap.LdapAttribute;
 import edu.vt.middleware.ldap.LdapEntry;
 import edu.vt.middleware.ldap.LdapResult;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.w3c.dom.DOMImplementation;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -46,18 +44,15 @@ public class Dsmlv1Writer
 {
 
   /** Document builder factory. */
-  protected static final DocumentBuilderFactory DOC_BUILDER_FACTORY =
+  private static final DocumentBuilderFactory DOC_BUILDER_FACTORY =
     DocumentBuilderFactory.newInstance();
 
   /** Transformer factory. */
-  protected static final TransformerFactory TRANSFORMER_FACTORY =
+  private static final TransformerFactory TRANSFORMER_FACTORY =
     TransformerFactory.newInstance();
 
-  /** Logger for this class. */
-  protected final Logger logger = LoggerFactory.getLogger(getClass());
-
   /** Writer to write to. */
-  protected final Writer dsmlWriter;
+  private final Writer dsmlWriter;
 
 
   /** Initialize the document builder factory. */
@@ -107,14 +102,14 @@ public class Dsmlv1Writer
   /**
    * Creates DSML that corresponds to the supplied ldap result.
    *
-   * @param  lr  ldap result to parse
+   * @param  result  ldap result to parse
    *
    * @throws  ParserConfigurationException  if a document builder cannot be
    * created
    *
    * @return  DSML
    */
-  protected Document createDsml(final LdapResult lr)
+  protected Document createDsml(final LdapResult result)
     throws ParserConfigurationException
   {
     final DocumentBuilder db = DOC_BUILDER_FACTORY.newDocumentBuilder();
@@ -127,8 +122,8 @@ public class Dsmlv1Writer
     doc.getDocumentElement().appendChild(entriesElement);
 
     // build document object from result
-    if (lr != null) {
-      for (LdapEntry le : lr.getEntries()) {
+    if (result != null) {
+      for (LdapEntry le : result.getEntries()) {
         final Element entryElement = doc.createElement("dsml:entry");
         if (le.getDn() != null) {
           entryElement.setAttribute("dn", le.getDn());
@@ -148,14 +143,14 @@ public class Dsmlv1Writer
    * Returns a list of <dsml:attr/> elements for the supplied attributes.
    *
    * @param  doc  to source elements from
-   * @param  ldapAttributes  to iterate over
+   * @param  attrs  to iterate over
    * @return  list of elements contains attributes
    */
   protected List<Element> createDsmlAttributes(
-    final Document doc, final Collection<LdapAttribute> ldapAttributes)
+    final Document doc, final Collection<LdapAttribute> attrs)
   {
     final List<Element> attrElements = new ArrayList<Element>();
-    for (LdapAttribute attr : ldapAttributes) {
+    for (LdapAttribute attr : attrs) {
       final String attrName = attr.getName();
       Element attrElement = null;
       if (attrName.equalsIgnoreCase("objectclass")) {

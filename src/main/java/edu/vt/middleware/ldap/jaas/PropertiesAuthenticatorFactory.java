@@ -34,7 +34,7 @@ public class PropertiesAuthenticatorFactory extends AbstractPropertiesFactory
 {
 
   /** Object cache. */
-  protected static Map<String, Authenticator> cache =
+  private static Map<String, Authenticator> cache =
     new HashMap<String, Authenticator>();
 
 

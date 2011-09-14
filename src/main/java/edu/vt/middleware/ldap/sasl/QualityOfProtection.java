@@ -21,6 +21,7 @@ package edu.vt.middleware.ldap.sasl;
  */
 public enum QualityOfProtection
 {
+
   /** Authentication only. */
   AUTH,
 

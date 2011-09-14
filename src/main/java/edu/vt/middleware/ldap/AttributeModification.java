@@ -21,6 +21,7 @@ package edu.vt.middleware.ldap;
  */
 public class AttributeModification
 {
+
   /** Type of modification to perform. */
   private AttributeModificationType attrMod;
 
@@ -34,13 +35,13 @@ public class AttributeModification
   /**
    * Creates a new attribute modification.
    *
-   * @param  mod  attribute modification type
+   * @param  type  attribute modification type
    * @param  attr  to modify
    */
   public AttributeModification(
-    final AttributeModificationType mod, final LdapAttribute attr)
+    final AttributeModificationType type, final LdapAttribute attr)
   {
-    setAttributeModificationType(mod);
+    setAttributeModificationType(type);
     setAttribute(attr);
   }
 
@@ -59,11 +60,11 @@ public class AttributeModification
   /**
    * Sets the attribute modification type.
    *
-   * @param  amt  attribute modification type
+   * @param  type  attribute modification type
    */
-  public void setAttributeModificationType(final AttributeModificationType amt)
+  public void setAttributeModificationType(final AttributeModificationType type)
   {
-    attrMod = amt;
+    attrMod = type;
   }
 
 

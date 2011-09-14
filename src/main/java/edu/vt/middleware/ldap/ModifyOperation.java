@@ -48,5 +48,5 @@ public class ModifyOperation extends AbstractOperation<ModifyRequest, Void>
   /** {@inheritDoc} */
   @Override
   protected void initializeRequest(
-    final ModifyRequest request, final ConnectionConfig config) {}
+    final ModifyRequest request, final ConnectionConfig cc) {}
 }

@@ -30,11 +30,11 @@ public interface ResultHandler<R>
   /**
    * Process the results from an ldap search.
    *
-   * @param  sc  search criteria used to perform the search
-   * @param  r  search results
+   * @param  criteria  search criteria used to perform the search
+   * @param  result  search results
    *
    * @throws  LdapException  if the LDAP returns an error
    */
-  void process(SearchCriteria sc, R r)
+  void process(SearchCriteria criteria, R result)
     throws LdapException;
 }

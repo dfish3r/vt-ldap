@@ -13,7 +13,6 @@
 */
 package edu.vt.middleware.ldap.auth;
 
-import java.io.Serializable;
 import java.util.Arrays;
 import edu.vt.middleware.ldap.Connection;
 import edu.vt.middleware.ldap.LdapException;
@@ -27,11 +26,8 @@ import edu.vt.middleware.ldap.pool.PooledConnectionFactoryManager;
  * @version  $Revision$ $Date$
  */
 public class PooledSearchDnResolver extends AbstractSearchDnResolver
-  implements PooledConnectionFactoryManager, Serializable
+  implements PooledConnectionFactoryManager
 {
-
-  /** serial version uid. */
-  private static final long serialVersionUID = -1728263498360652469L;
 
   /** Connection factory. */
   protected PooledConnectionFactory factory;

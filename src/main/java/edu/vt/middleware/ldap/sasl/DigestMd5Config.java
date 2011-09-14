@@ -21,8 +21,9 @@ package edu.vt.middleware.ldap.sasl;
  */
 public class DigestMd5Config extends SaslConfig
 {
+
   /** sasl realm. */
-  protected String realm;
+  private String saslRealm;
 
 
   /**
@@ -41,20 +42,20 @@ public class DigestMd5Config extends SaslConfig
    */
   public String getRealm()
   {
-    return realm;
+    return saslRealm;
   }
 
 
   /**
    * Sets the sasl realm.
    *
-   * @param  s  realm
+   * @param  realm  to set
    */
-  public void setRealm(final String s)
+  public void setRealm(final String realm)
   {
     checkImmutable();
-    logger.trace("setting realm: {}", s);
-    realm = s;
+    logger.trace("setting realm: {}", realm);
+    saslRealm = realm;
   }
 
 
@@ -77,6 +78,6 @@ public class DigestMd5Config extends SaslConfig
         mutualAuthentication,
         qualityOfProtection,
         securityStrength,
-        realm);
+        saslRealm);
   }
 }

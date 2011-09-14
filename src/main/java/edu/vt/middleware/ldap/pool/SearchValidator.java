@@ -34,7 +34,7 @@ public class SearchValidator implements Validator<Connection>
 {
 
   /** Logger for this class. */
-  protected final Logger logger = LoggerFactory.getLogger(getClass());
+  private final Logger logger = LoggerFactory.getLogger(getClass());
 
   /** Search request to perform validation with. */
   private SearchRequest searchRequest;

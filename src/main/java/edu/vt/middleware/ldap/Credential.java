@@ -24,6 +24,7 @@ import java.io.UnsupportedEncodingException;
  */
 public class Credential
 {
+
   /** Credential stored as a byte array. */
   private byte[] bytes;
 

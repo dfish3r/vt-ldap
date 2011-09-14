@@ -117,19 +117,6 @@ public class LRUCacheTest
 
 
   /**
-   * @throws  Exception  On test failure.
-   */
-  @Test(groups = {"cache"}, dependsOnMethods = {"get", "put"})
-  public void interval()
-    throws Exception
-  {
-    AssertJUnit.assertEquals(5, cache.size());
-    Thread.sleep(65000);
-    AssertJUnit.assertEquals(0, cache.size());
-  }
-
-
-  /**
    * Fills the cache with data.
    */
   private void fillCache()

@@ -31,12 +31,12 @@ public class MergeResultHandler extends CopyLdapResultHandler
 
   /** {@inheritDoc} */
   @Override
-  public void process(final SearchCriteria sc, final LdapResult lr)
+  public void process(final SearchCriteria criteria, final LdapResult result)
     throws LdapException
   {
-    if (lr != null) {
-      super.process(sc, lr);
-      mergeResults(lr);
+    if (result != null) {
+      super.process(criteria, result);
+      mergeResults(result);
     }
   }
 

@@ -50,6 +50,7 @@ import edu.vt.middleware.ldap.ResultCode;
  */
 public final class NamingExceptionUtil
 {
+
   /** Map of naming exceptions to ldap result codes. */
   private static final Map<Class<?>, ResultCode[]> EXCEPTIONS_TO_RESULT_CODES;
 

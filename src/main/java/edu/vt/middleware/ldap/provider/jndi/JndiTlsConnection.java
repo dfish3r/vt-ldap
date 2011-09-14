@@ -26,8 +26,9 @@ import edu.vt.middleware.ldap.LdapException;
  */
 public class JndiTlsConnection extends JndiConnection
 {
+
   /** Start TLS response. */
-  protected StartTlsResponse startTlsResponse;
+  private StartTlsResponse startTlsResponse;
 
   /**
    * Whether to call {@link StartTlsResponse#close()} when {@link #close()} is

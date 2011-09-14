@@ -25,7 +25,7 @@ public class LdapCredential implements Serializable
 {
 
   /** hash code seed. */
-  protected static final int HASH_CODE_SEED = 89;
+  private static final int HASH_CODE_SEED = 89;
 
   /** serial version uid. */
   private static final long serialVersionUID = 6571981350905290712L;

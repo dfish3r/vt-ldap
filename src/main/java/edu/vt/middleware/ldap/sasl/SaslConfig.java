@@ -23,6 +23,7 @@ import edu.vt.middleware.ldap.AbstractConfig;
  */
 public class SaslConfig extends AbstractConfig
 {
+
   /** sasl mechanism. */
   protected Mechanism mechanism;
 
@@ -77,13 +78,13 @@ public class SaslConfig extends AbstractConfig
   /**
    * Sets the sasl authorization id.
    *
-   * @param  s  authorization id
+   * @param  id  authorization id
    */
-  public void setAuthorizationId(final String s)
+  public void setAuthorizationId(final String id)
   {
     checkImmutable();
-    logger.trace("setting authorizationId: {}", s);
-    authorizationId = s;
+    logger.trace("setting authorizationId: {}", id);
+    authorizationId = id;
   }
 
 

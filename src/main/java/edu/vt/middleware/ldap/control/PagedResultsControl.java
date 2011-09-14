@@ -23,7 +23,7 @@ public class PagedResultsControl extends AbstractControl
 {
 
   /** paged results size. */
-  private int size;
+  private int resultSize;
 
 
   /**
@@ -35,24 +35,24 @@ public class PagedResultsControl extends AbstractControl
   /**
    * Creates a new paged results.
    *
-   * @param  i  paged results size
+   * @param  size  paged results size
    */
-  public PagedResultsControl(final int i)
+  public PagedResultsControl(final int size)
   {
-    setSize(i);
+    setSize(size);
   }
 
 
   /**
    * Creates a new paged results.
    *
-   * @param  i  paged results size
-   * @param  b  whether this control is critical
+   * @param  size  paged results size
+   * @param  critical  whether this control is critical
    */
-  public PagedResultsControl(final int i, final boolean b)
+  public PagedResultsControl(final int size, final boolean critical)
   {
-    setSize(i);
-    setCriticality(b);
+    setSize(size);
+    setCriticality(critical);
   }
 
 
@@ -63,18 +63,18 @@ public class PagedResultsControl extends AbstractControl
    */
   public int getSize()
   {
-    return size;
+    return resultSize;
   }
 
 
   /**
    * Sets the paged results size.
    *
-   * @param  i  paged results size
+   * @param  size  paged results size
    */
-  public void setSize(final int i)
+  public void setSize(final int size)
   {
-    size = i;
+    resultSize = size;
   }
 
 
@@ -92,6 +92,6 @@ public class PagedResultsControl extends AbstractControl
         getClass().getName(),
         hashCode(),
         criticality,
-        size);
+        resultSize);
   }
 }

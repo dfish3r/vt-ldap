@@ -193,12 +193,12 @@ public class RecursiveResultHandler extends CopyLdapResultHandler
 
   /** {@inheritDoc} */
   @Override
-  public void process(final SearchCriteria sc, final LdapResult lr)
+  public void process(final SearchCriteria criteria, final LdapResult result)
     throws LdapException
   {
     // Recursively searches a list of attributes and merges those results with
     // the existing search result set.
-    for (LdapEntry le : lr.getEntries()) {
+    for (LdapEntry le : result.getEntries()) {
       final List<String> searchedDns = new ArrayList<String>();
       if (le.getAttribute(searchAttribute) != null) {
         searchedDns.add(le.getDn());

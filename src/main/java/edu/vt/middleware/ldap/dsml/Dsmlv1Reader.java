@@ -42,14 +42,14 @@ public class Dsmlv1Reader
 {
 
   /** Document builder factory. */
-  protected static final DocumentBuilderFactory DOC_BUILDER_FACTORY =
+  private static final DocumentBuilderFactory DOC_BUILDER_FACTORY =
     DocumentBuilderFactory.newInstance();
 
   /** Reader to read from. */
-  protected final Reader dsmlReader;
+  private final Reader dsmlReader;
 
   /** Sort behavior. */
-  protected final SortBehavior sortBehavior;
+  private final SortBehavior sortBehavior;
 
 
   /** Initialize the document builder factory. */

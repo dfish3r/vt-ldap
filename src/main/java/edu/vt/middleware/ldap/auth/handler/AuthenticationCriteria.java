@@ -16,7 +16,7 @@ package edu.vt.middleware.ldap.auth.handler;
 import edu.vt.middleware.ldap.Credential;
 
 /**
- * Contains the attributes used to perform authentication.
+ * Contains the properties used to perform authentication.
  *
  * @author  Middleware Services
  * @version  $Revision$ $Date$
@@ -25,7 +25,7 @@ public class AuthenticationCriteria
 {
 
   /** dn. */
-  protected String dn;
+  protected String authenticationDn;
 
   /** credential. */
   protected Credential credential;
@@ -38,11 +38,11 @@ public class AuthenticationCriteria
   /**
    * Creates a new authentication criteria.
    *
-   * @param  s  to set dn
+   * @param  dn  to set
    */
-  public AuthenticationCriteria(final String s)
+  public AuthenticationCriteria(final String dn)
   {
-    dn = s;
+    authenticationDn = dn;
   }
 
 
@@ -53,18 +53,18 @@ public class AuthenticationCriteria
    */
   public String getDn()
   {
-    return dn;
+    return authenticationDn;
   }
 
 
   /**
    * Sets the dn.
    *
-   * @param  s  to set dn
+   * @param  dn  to set dn
    */
-  public void setDn(final String s)
+  public void setDn(final String dn)
   {
-    dn = s;
+    authenticationDn = dn;
   }
 
 
@@ -100,10 +100,9 @@ public class AuthenticationCriteria
   {
     return
       String.format(
-        "[%s@%d::dn=%s, credential=%s]",
+        "[%s@%d::dn=%s]",
         getClass().getName(),
         hashCode(),
-        dn,
-        credential);
+        authenticationDn);
   }
 }

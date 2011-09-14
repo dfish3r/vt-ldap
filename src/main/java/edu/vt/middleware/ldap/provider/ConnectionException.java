@@ -44,11 +44,11 @@ public class ConnectionException extends LdapException
    * Creates a new connection exception.
    *
    * @param  msg  describing this exception
-   * @param  rc  result code
+   * @param  code  result code
    */
-  public ConnectionException(final String msg, final ResultCode rc)
+  public ConnectionException(final String msg, final ResultCode code)
   {
-    super(msg, rc);
+    super(msg, code);
   }
 
 
@@ -67,11 +67,11 @@ public class ConnectionException extends LdapException
    * Creates a new connection exception.
    *
    * @param  e  provider specific exception
-   * @param  rc  result code
+   * @param  code  result code
    */
-  public ConnectionException(final Exception e, final ResultCode rc)
+  public ConnectionException(final Exception e, final ResultCode code)
   {
-    super(e, rc);
+    super(e, code);
   }
 
 
@@ -92,11 +92,11 @@ public class ConnectionException extends LdapException
    *
    * @param  msg  describing this exception
    * @param  e  provider specific exception
-   * @param  rc  result code
+   * @param  code  result code
    */
   public ConnectionException(
-    final String msg, final Exception e, final ResultCode rc)
+    final String msg, final Exception e, final ResultCode code)
   {
-    super(msg, e, rc);
+    super(msg, e, code);
   }
 }

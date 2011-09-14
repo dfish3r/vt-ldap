@@ -32,11 +32,11 @@ public class ManageDsaITControl extends AbstractControl
   /**
    * Creates a new ManageDsaIT control.
    *
-   * @param  b  whether this control is critical
+   * @param  critical  whether this control is critical
    */
-  public ManageDsaITControl(final boolean b)
+  public ManageDsaITControl(final boolean critical)
   {
-    setCriticality(b);
+    setCriticality(critical);
   }
 
 

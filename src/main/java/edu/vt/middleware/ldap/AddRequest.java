@@ -23,6 +23,7 @@ import java.util.Collection;
  */
 public class AddRequest implements Request
 {
+
   /** DN to create. */
   protected String createDn;
 
@@ -38,12 +39,12 @@ public class AddRequest implements Request
    * Creates a new add request.
    *
    * @param  dn  to create
-   * @param  la  attributes to add
+   * @param  attrs  attributes to add
    */
-  public AddRequest(final String dn, final Collection<LdapAttribute> la)
+  public AddRequest(final String dn, final Collection<LdapAttribute> attrs)
   {
     setDn(dn);
-    setLdapAttributes(la);
+    setLdapAttributes(attrs);
   }
 
 
@@ -83,11 +84,11 @@ public class AddRequest implements Request
   /**
    * Sets the attributes to add.
    *
-   * @param  la  to add
+   * @param  attrs  to add
    */
-  public void setLdapAttributes(final Collection<LdapAttribute> la)
+  public void setLdapAttributes(final Collection<LdapAttribute> attrs)
   {
-    attributes = la;
+    attributes = attrs;
   }
 
 

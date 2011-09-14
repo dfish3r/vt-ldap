@@ -28,6 +28,7 @@ import org.slf4j.LoggerFactory;
  */
 public class CopyLdapResultHandler implements LdapResultHandler
 {
+
   /** Log for this class. */
   protected final Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -45,21 +46,21 @@ public class CopyLdapResultHandler implements LdapResultHandler
 
   /** {@inheritDoc} */
   @Override
-  public void setAttributeHandler(final LdapAttributeHandler[] ah)
+  public void setAttributeHandler(final LdapAttributeHandler[] handlers)
   {
-    attributeHandler = ah;
+    attributeHandler = handlers;
   }
 
 
   /** {@inheritDoc} */
   @Override
-  public void process(final SearchCriteria sc, final LdapResult lr)
+  public void process(final SearchCriteria criteria, final LdapResult result)
     throws LdapException
   {
-    if (lr != null) {
-      for (LdapEntry le : lr.getEntries()) {
-        le.setDn(processDn(sc, le));
-        processAttributes(sc, le);
+    if (result != null) {
+      for (LdapEntry le : result.getEntries()) {
+        le.setDn(processDn(criteria, le));
+        processAttributes(criteria, le);
       }
     }
   }
@@ -68,33 +69,35 @@ public class CopyLdapResultHandler implements LdapResultHandler
   /**
    * Process the dn of an ldap entry.
    *
-   * @param  sc  search criteria used to find the ldap entry
-   * @param  le  ldap entry to extract the dn from
+   * @param  criteria  search criteria used to find the ldap entry
+   * @param  entry  ldap entry to extract the dn from
    *
    * @return  processed dn
    */
-  protected String processDn(final SearchCriteria sc, final LdapEntry le)
+  protected String processDn(
+    final SearchCriteria criteria, final LdapEntry entry)
   {
-    return le.getDn();
+    return entry.getDn();
   }
 
 
   /**
    * Process the attributes of an ldap entry.
    *
-   * @param  sc  search criteria used to find the ldap entry
-   * @param  le  ldap entry to extract the attributes from
+   * @param  criteria  search criteria used to find the ldap entry
+   * @param  entry  ldap entry to extract the attributes from
    *
    * @throws  LdapException  if the LDAP returns an error
    */
-  protected void processAttributes(final SearchCriteria sc, final LdapEntry le)
+  protected void processAttributes(
+    final SearchCriteria criteria, final LdapEntry entry)
     throws LdapException
   {
     if (attributeHandler != null &&
         attributeHandler.length > 0) {
       for (LdapAttributeHandler ah : attributeHandler) {
-        for (LdapAttribute la : le.getAttributes()) {
-          ah.process(sc, la);
+        for (LdapAttribute la : entry.getAttributes()) {
+          ah.process(criteria, la);
         }
       }
     }

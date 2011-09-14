@@ -28,22 +28,23 @@ import org.slf4j.LoggerFactory;
  */
 public class CopyLdapAttributeHandler implements LdapAttributeHandler
 {
+
   /** Log for this class. */
   protected final Logger logger = LoggerFactory.getLogger(getClass());
 
 
   /** {@inheritDoc} */
   @Override
-  public void process(final SearchCriteria sc, final LdapAttribute attr)
+  public void process(final SearchCriteria criteria, final LdapAttribute attr)
     throws LdapException
   {
     if (attr != null) {
-      attr.setName(processName(sc, attr.getName()));
+      attr.setName(processName(criteria, attr.getName()));
       if (attr.isBinary()) {
         final Set<byte[]> newValues =
           new HashSet<byte[]>(attr.size());
         for (byte[] b : attr.getBinaryValues()) {
-          newValues.add(processValue(sc, b));
+          newValues.add(processValue(criteria, b));
         }
         attr.clear();
         attr.addBinaryValues(newValues);
@@ -51,7 +52,7 @@ public class CopyLdapAttributeHandler implements LdapAttributeHandler
         final Set<String> newValues =
           new HashSet<String>(attr.size());
         for (String s : attr.getStringValues()) {
-          newValues.add(processValue(sc, s));
+          newValues.add(processValue(criteria, s));
         }
         attr.clear();
         attr.addStringValues(newValues);
@@ -63,12 +64,12 @@ public class CopyLdapAttributeHandler implements LdapAttributeHandler
   /**
    * Returns the supplied named unaltered.
    *
-   * @param  sc  search criteria
+   * @param  criteria  search criteria
    * @param  name  to process
    *
    * @return  processed name
    */
-  protected String processName(final SearchCriteria sc, final String name)
+  protected String processName(final SearchCriteria criteria, final String name)
   {
     return name;
   }
@@ -77,12 +78,13 @@ public class CopyLdapAttributeHandler implements LdapAttributeHandler
   /**
    * Returns the supplied value unaltered.
    *
-   * @param  sc  search criteria
+   * @param  criteria  search criteria
    * @param  value  to process
    *
    * @return  processed value
    */
-  protected String processValue(final SearchCriteria sc, final String value)
+  protected String processValue(
+    final SearchCriteria criteria, final String value)
   {
     return value;
   }
@@ -91,12 +93,13 @@ public class CopyLdapAttributeHandler implements LdapAttributeHandler
   /**
    * Returns the supplied value unaltered.
    *
-   * @param  sc  search criteria
+   * @param  criteria  search criteria
    * @param  value  to process
    *
    * @return  processed value
    */
-  protected byte[] processValue(final SearchCriteria sc, final byte[] value)
+  protected byte[] processValue(
+    final SearchCriteria criteria, final byte[] value)
   {
     return value;
   }

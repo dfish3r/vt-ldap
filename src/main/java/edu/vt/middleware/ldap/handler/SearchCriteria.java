@@ -25,10 +25,10 @@ public class SearchCriteria
 {
 
   /** dn. */
-  private String dn;
+  private String searchDn;
 
   /** filter. */
-  private String filter;
+  private String searchFilter;
 
   /** filter arguments. */
   private Object[] filterArgs;
@@ -44,11 +44,11 @@ public class SearchCriteria
   /**
    * Creates a new search criteria.
    *
-   * @param  s  to set dn
+   * @param  dn  to set
    */
-  public SearchCriteria(final String s)
+  public SearchCriteria(final String dn)
   {
-    dn = s;
+    searchDn = dn;
   }
 
 
@@ -75,18 +75,18 @@ public class SearchCriteria
    */
   public String getDn()
   {
-    return dn;
+    return searchDn;
   }
 
 
   /**
    * Sets the dn.
    *
-   * @param  s  to set dn
+   * @param  dn  to set
    */
-  public void setDn(final String s)
+  public void setDn(final String dn)
   {
-    dn = s;
+    searchDn = dn;
   }
 
 
@@ -97,18 +97,18 @@ public class SearchCriteria
    */
   public String getFilter()
   {
-    return filter;
+    return searchFilter;
   }
 
 
   /**
    * Sets the filter.
    *
-   * @param  s  to set filter
+   * @param  filter  to set
    */
-  public void setFilter(final String s)
+  public void setFilter(final String filter)
   {
-    filter = s;
+    searchFilter = filter;
   }
 
 
@@ -126,11 +126,11 @@ public class SearchCriteria
   /**
    * Sets the filter arguments.
    *
-   * @param  o  to set filter arguments
+   * @param  args  to set filter arguments
    */
-  public void setFilterArgs(final Object[] o)
+  public void setFilterArgs(final Object[] args)
   {
-    filterArgs = o;
+    filterArgs = args;
   }
 
 
@@ -148,11 +148,11 @@ public class SearchCriteria
   /**
    * Sets the return attributes.
    *
-   * @param  s  to set return attributes
+   * @param  attrs  to set return attributes
    */
-  public void setReturnAttrs(final String[] s)
+  public void setReturnAttrs(final String[] attrs)
   {
-    returnAttrs = s;
+    returnAttrs = attrs;
   }
 
 
@@ -169,8 +169,8 @@ public class SearchCriteria
         "[%s@%d::dn=%s, filter=%s, filterArgs=%s, returnAttrs=%s]",
         getClass().getName(),
         hashCode(),
-        dn,
-        filter,
+        searchDn,
+        searchFilter,
         filterArgs,
         returnAttrs);
   }

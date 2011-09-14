@@ -14,7 +14,7 @@
 package edu.vt.middleware.ldap;
 
 /**
- * Provides common implementations for other ldap beans.
+ * Provides common implementations for ldap beans.
  *
  * @author  Middleware Services
  * @version  $Revision: 1330 $ $Date: 2010-05-23 18:10:53 -0400 (Sun, 23 May 2010) $

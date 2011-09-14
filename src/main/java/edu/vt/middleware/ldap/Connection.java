@@ -26,6 +26,7 @@ import org.slf4j.LoggerFactory;
  */
 public class Connection
 {
+
   /** Logger for this class. */
   protected final Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -43,13 +44,13 @@ public class Connection
    * Creates a new connection.
    *
    * @param  cc  connection configuration
-   * @param  pcf  provider connection factory
+   * @param  cf  provider connection factory
    */
   protected Connection(
-    final ConnectionConfig cc, final ConnectionFactory<?> pcf)
+    final ConnectionConfig cc, final ConnectionFactory<?> cf)
   {
     config = cc;
-    providerConnectionFactory = pcf;
+    providerConnectionFactory = cf;
   }
 
 
@@ -101,7 +102,7 @@ public class Connection
   /**
    * This will establish a connection if one does not already exist by binding
    * to the LDAP using the supplied dn and credential. This connection should be
-   * closed using {@link #close()}. See {@link #initialize()}.
+   * closed using {@link #close()}.
    *
    * @param  bindDn  to bind to the LDAP as
    * @param  bindCredential  to bind to the LDAP with

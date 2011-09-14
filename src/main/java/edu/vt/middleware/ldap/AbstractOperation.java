@@ -17,7 +17,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Provides common implementation to other ldap operations
+ * Provides common implementation for ldap operations
  *
  * @param  <Q>  type of ldap request
  * @param  <S>  type of ldap response
@@ -46,7 +46,7 @@ public abstract class AbstractOperation<Q extends Request, S>
 
 
   /**
-   * Sets the properties of this operation with values from the supplied ldap
+   * Sets the properties of this operation with values from the supplied
    * connection configuration.
    *
    * @param  cc  connection configuration to read properties from

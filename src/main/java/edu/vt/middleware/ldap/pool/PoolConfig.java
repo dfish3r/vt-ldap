@@ -24,6 +24,7 @@ import edu.vt.middleware.ldap.AbstractConfig;
  */
 public class PoolConfig extends AbstractConfig
 {
+
   /** Default min pool size, value is {@value}. */
   public static final int DEFAULT_MIN_POOL_SIZE = 3;
 

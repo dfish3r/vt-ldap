@@ -23,6 +23,7 @@ package edu.vt.middleware.ldap;
  */
 public class LdapException extends Exception
 {
+
   /** serialVersionUID. */
   private static final long serialVersionUID = 7149010199182440257L;
 
@@ -45,12 +46,12 @@ public class LdapException extends Exception
    * Creates a new ldap exception.
    *
    * @param  msg  describing this exception
-   * @param  rc  result code
+   * @param  code  result code
    */
-  public LdapException(final String msg, final ResultCode rc)
+  public LdapException(final String msg, final ResultCode code)
   {
     super(msg);
-    resultCode = rc;
+    resultCode = code;
   }
 
 
@@ -69,12 +70,12 @@ public class LdapException extends Exception
    * Creates a new ldap exception.
    *
    * @param  e  provider specific exception
-   * @param  rc  result code
+   * @param  code  result code
    */
-  public LdapException(final Exception e, final ResultCode rc)
+  public LdapException(final Exception e, final ResultCode code)
   {
     super(e);
-    resultCode = rc;
+    resultCode = code;
   }
 
 
@@ -95,12 +96,13 @@ public class LdapException extends Exception
    *
    * @param  msg  describing this exception
    * @param  e  provider specific exception
-   * @param  rc  result code
+   * @param  code  result code
    */
-  public LdapException(final String msg, final Exception e, final ResultCode rc)
+  public LdapException(
+    final String msg, final Exception e, final ResultCode code)
   {
     super(msg, e);
-    resultCode = rc;
+    resultCode = code;
   }
 
 

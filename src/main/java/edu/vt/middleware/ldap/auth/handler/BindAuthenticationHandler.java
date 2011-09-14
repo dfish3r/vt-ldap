@@ -77,10 +77,10 @@ public class BindAuthenticationHandler
   /** {@inheritDoc} */
   @Override
   protected void authenticateInternal(
-    final Connection c, final AuthenticationCriteria ac)
+    final Connection c, final AuthenticationCriteria criteria)
     throws LdapException
   {
-    c.open(ac.getDn(), ac.getCredential());
+    c.open(criteria.getDn(), criteria.getCredential());
   }
 
 

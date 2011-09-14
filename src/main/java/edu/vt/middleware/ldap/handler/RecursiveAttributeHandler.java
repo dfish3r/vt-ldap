@@ -24,7 +24,7 @@ import edu.vt.middleware.ldap.SearchOperation;
 import edu.vt.middleware.ldap.SearchRequest;
 
 /**
- * Recursively searches for attributes of the same name and combine them into
+ * Recursively searches for attributes of the same name and combines them into
  * one attribute. Attribute values must represent DNs in the LDAP.
  *
  * @author  Middleware Services
@@ -105,16 +105,16 @@ public class RecursiveAttributeHandler extends CopyLdapAttributeHandler
 
   /** {@inheritDoc} */
   @Override
-  public void process(final SearchCriteria sc, final LdapAttribute attr)
+  public void process(final SearchCriteria criteria, final LdapAttribute attr)
     throws LdapException
   {
     if (attr != null) {
-      attr.setName(processName(sc, attr.getName()));
+      attr.setName(processName(criteria, attr.getName()));
       if (attr.getName().equals(attributeName)) {
         if (attr.isBinary()) {
           final Set<byte[]> newValues = new HashSet<byte[]>(attr.size());
           for (byte[] value : attr.getBinaryValues()) {
-            newValues.add(processValue(sc, value));
+            newValues.add(processValue(criteria, value));
           }
           attr.clear();
           attr.addBinaryValues(newValues);
@@ -122,9 +122,9 @@ public class RecursiveAttributeHandler extends CopyLdapAttributeHandler
           final Set<String> newValues = new HashSet<String>(attr.size());
           for (String value : attr.getStringValues()) {
             final Set<String> recursiveValues = recursiveSearch(
-              processValue(sc, value), new HashSet<String>());
+              processValue(criteria, value), new HashSet<String>());
             for (String s : recursiveValues) {
-              newValues.add(processValue(sc, s));
+              newValues.add(processValue(criteria, s));
             }
           }
           attr.clear();

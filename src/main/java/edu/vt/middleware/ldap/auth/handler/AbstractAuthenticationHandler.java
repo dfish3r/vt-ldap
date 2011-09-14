@@ -67,11 +67,11 @@ public abstract class AbstractAuthenticationHandler
    * Performs a bind on the supplied connection using the supplied criteria.
    *
    * @param  c  to bind on
-   * @param  ac  criteria to bind with
+   * @param  criteria  criteria to bind with
    *
    * @throws  LdapException  if the bind fails
    */
   protected abstract void authenticateInternal(
-    final Connection c, final AuthenticationCriteria ac)
+    final Connection c, final AuthenticationCriteria criteria)
     throws LdapException;
 }

@@ -27,7 +27,7 @@ public class KeyStoreCredentialConfig implements CredentialConfig
 {
 
   /** Handles loading keystores. */
-  protected KeyStoreCredentialReader keyStoreReader =
+  private KeyStoreCredentialReader keyStoreReader =
     new KeyStoreCredentialReader();
 
   /** Name of the truststore to use for the SSL connection. */
@@ -63,11 +63,11 @@ public class KeyStoreCredentialConfig implements CredentialConfig
   /**
    * Sets the name of the truststore to use.
    *
-   * @param  s  truststore name
+   * @param  name  truststore name
    */
-  public void setTrustStore(final String s)
+  public void setTrustStore(final String name)
   {
-    trustStore = s;
+    trustStore = name;
   }
 
 
@@ -85,11 +85,11 @@ public class KeyStoreCredentialConfig implements CredentialConfig
   /**
    * Sets the password for the truststore.
    *
-   * @param  s  truststore password
+   * @param  password  truststore password
    */
-  public void setTrustStorePassword(final String s)
+  public void setTrustStorePassword(final String password)
   {
-    trustStorePassword = s;
+    trustStorePassword = password;
   }
 
 
@@ -107,11 +107,11 @@ public class KeyStoreCredentialConfig implements CredentialConfig
   /**
    * Sets the type of the truststore.
    *
-   * @param  s  truststore type
+   * @param  type  truststore type
    */
-  public void setTrustStoreType(final String s)
+  public void setTrustStoreType(final String type)
   {
-    trustStoreType = s;
+    trustStoreType = type;
   }
 
 
@@ -129,11 +129,11 @@ public class KeyStoreCredentialConfig implements CredentialConfig
   /**
    * Sets the name of the keystore to use.
    *
-   * @param  s  keystore name
+   * @param  name  keystore name
    */
-  public void setKeyStore(final String s)
+  public void setKeyStore(final String name)
   {
-    keyStore = s;
+    keyStore = name;
   }
 
 
@@ -151,11 +151,11 @@ public class KeyStoreCredentialConfig implements CredentialConfig
   /**
    * Sets the password for the keystore.
    *
-   * @param  s  keystore password
+   * @param  password  keystore password
    */
-  public void setKeyStorePassword(final String s)
+  public void setKeyStorePassword(final String password)
   {
-    keyStorePassword = s;
+    keyStorePassword = password;
   }
 
 
@@ -173,11 +173,11 @@ public class KeyStoreCredentialConfig implements CredentialConfig
   /**
    * Sets the type of the keystore.
    *
-   * @param  s  keystore type
+   * @param  type  keystore type
    */
-  public void setKeyStoreType(final String s)
+  public void setKeyStoreType(final String type)
   {
-    keyStoreType = s;
+    keyStoreType = type;
   }
 
 

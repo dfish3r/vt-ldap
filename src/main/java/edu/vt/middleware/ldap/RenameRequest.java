@@ -21,6 +21,7 @@ package edu.vt.middleware.ldap;
  */
 public class RenameRequest implements Request
 {
+
   /** DN to rename. */
   protected String oldRenameDn;
 

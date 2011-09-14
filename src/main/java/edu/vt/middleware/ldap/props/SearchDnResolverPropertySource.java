@@ -38,12 +38,12 @@ public final class SearchDnResolverPropertySource
    * Creates a new search dn resolver property source using the default
    * properties file.
    *
-   * @param  sdr  search dn resolver to invoke properties on
+   * @param  resolver  search dn resolver to invoke properties on
    */
-  public SearchDnResolverPropertySource(final SearchDnResolver sdr)
+  public SearchDnResolverPropertySource(final SearchDnResolver resolver)
   {
     this(
-      sdr,
+      resolver,
       SearchDnResolverPropertySource.class.getResourceAsStream(
         PROPERTIES_FILE));
   }
@@ -52,42 +52,42 @@ public final class SearchDnResolverPropertySource
   /**
    * Creates a new search dn resolver property source.
    *
-   * @param  sdr  search dn resolver to invoke properties on
+   * @param  resolver  search dn resolver to invoke properties on
    * @param  is  to read properties from
    */
   public SearchDnResolverPropertySource(
-    final SearchDnResolver sdr, final InputStream is)
+    final SearchDnResolver resolver, final InputStream is)
   {
-    this(sdr, loadProperties(is));
+    this(resolver, loadProperties(is));
   }
 
 
   /**
    * Creates a new search dn resolver property source.
    *
-   * @param  sdr  search dn resolver to invoke properties on
+   * @param  resolver  search dn resolver to invoke properties on
    * @param  props  to read properties from
    */
   public SearchDnResolverPropertySource(
-    final SearchDnResolver sdr, final Properties props)
+    final SearchDnResolver resolver, final Properties props)
   {
-    this(sdr, PropertyDomain.AUTH, props);
+    this(resolver, PropertyDomain.AUTH, props);
   }
 
 
   /**
    * Creates a new search dn resolver property source.
    *
-   * @param  sdr  search dn resolver to invoke properties on
+   * @param  resolver  search dn resolver to invoke properties on
    * @param  domain  that properties are in
    * @param  props  to read properties from
    */
   public SearchDnResolverPropertySource(
-    final SearchDnResolver sdr,
+    final SearchDnResolver resolver,
     final PropertyDomain domain,
     final Properties props)
   {
-    object = sdr;
+    object = resolver;
     propertiesDomain = domain;
     properties = props;
   }

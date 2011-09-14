@@ -34,7 +34,7 @@ public class LdapGroup implements Group, Serializable
   private static final long serialVersionUID = -342760961669842632L;
 
   /** LDAP role name. */
-  private String name;
+  private String roleName;
 
   /** Principal members. */
   private Set<Principal> members = new HashSet<Principal>();
@@ -43,11 +43,11 @@ public class LdapGroup implements Group, Serializable
   /**
    * Creates a new ldap group with the supplied name.
    *
-   * @param  s  name of the group
+   * @param  name  of the group
    */
-  public LdapGroup(final String s)
+  public LdapGroup(final String name)
   {
-    name = s;
+    roleName = name;
   }
 
 
@@ -58,7 +58,7 @@ public class LdapGroup implements Group, Serializable
    */
   public String getName()
   {
-    return name;
+    return roleName;
   }
 
 
@@ -122,7 +122,7 @@ public class LdapGroup implements Group, Serializable
       "[%s@%d::%s%s]",
       getClass().getName(),
       hashCode(),
-      name,
+      roleName,
       members);
   }
 }

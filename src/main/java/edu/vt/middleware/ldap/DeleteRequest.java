@@ -21,6 +21,7 @@ package edu.vt.middleware.ldap;
  */
 public class DeleteRequest implements Request
 {
+
   /** DN to delete. */
   protected String deleteDn;
 

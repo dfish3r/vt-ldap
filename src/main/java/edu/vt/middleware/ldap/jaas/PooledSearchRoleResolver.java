@@ -29,7 +29,7 @@ public class PooledSearchRoleResolver extends AbstractSearchRoleResolver
 {
 
   /** Connection factory. */
-  protected PooledConnectionFactory factory;
+  private PooledConnectionFactory factory;
 
 
   /** Default constructor. */

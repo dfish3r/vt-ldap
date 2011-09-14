@@ -21,7 +21,7 @@ import edu.vt.middleware.ldap.DefaultConnectionFactory;
 import edu.vt.middleware.ldap.SearchRequest;
 import edu.vt.middleware.ldap.pool.PooledConnectionFactory;
 import edu.vt.middleware.ldap.pool.PooledConnectionFactoryManager;
-import edu.vt.middleware.ldap.props.ConnectionFactoryPropertySource;
+import edu.vt.middleware.ldap.props.DefaultConnectionFactoryPropertySource;
 import edu.vt.middleware.ldap.props.PooledConnectionFactoryPropertySource;
 import edu.vt.middleware.ldap.props.PropertySource.PropertyDomain;
 import edu.vt.middleware.ldap.props.SearchRequestPropertySource;
@@ -38,7 +38,7 @@ public class PropertiesRoleResolverFactory extends AbstractPropertiesFactory
 {
 
   /** Object cache. */
-  protected static Map<String, RoleResolver> cache =
+  private static Map<String, RoleResolver> cache =
     new HashMap<String, RoleResolver>();
 
 
@@ -106,8 +106,8 @@ public class PropertiesRoleResolverFactory extends AbstractPropertiesFactory
     if (rr instanceof ConnectionFactoryManager) {
       final ConnectionFactoryManager cfm = (ConnectionFactoryManager) rr;
       final ConnectionFactory cf = new DefaultConnectionFactory();
-      final ConnectionFactoryPropertySource source =
-        new ConnectionFactoryPropertySource(
+      final DefaultConnectionFactoryPropertySource source =
+        new DefaultConnectionFactoryPropertySource(
           cf, PropertyDomain.AUTH, createProperties(options));
       source.initialize();
       cfm.setConnectionFactory(cf);

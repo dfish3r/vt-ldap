@@ -17,7 +17,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Provides common implementations for ldap configuration objects.
+ * Provides common implementations for configuration objects.
  *
  * @author  Middleware Services
  * @version  $Revision$ $Date$
@@ -32,7 +32,7 @@ public abstract class AbstractConfig
   private boolean immutable;
 
 
-  /** Make this property config immutable. */
+  /** Make this config immutable. */
   public void makeImmutable()
   {
     immutable = true;
@@ -40,9 +40,9 @@ public abstract class AbstractConfig
 
 
   /**
-   * Verifies if this property config is immutable.
+   * Verifies if this config is immutable.
    *
-   * @throws  IllegalStateException  if this property config is immutable
+   * @throws  IllegalStateException  if this config is immutable
    */
   public void checkImmutable()
   {

@@ -48,5 +48,5 @@ public class DeleteOperation extends AbstractOperation<DeleteRequest, Void>
   /** {@inheritDoc} */
   @Override
   protected void initializeRequest(
-    final DeleteRequest request, final ConnectionConfig config) {}
+    final DeleteRequest request, final ConnectionConfig cc) {}
 }

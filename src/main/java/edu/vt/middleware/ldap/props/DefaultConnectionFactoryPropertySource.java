@@ -22,19 +22,20 @@ import edu.vt.middleware.ldap.ConnectionFactory;
 import edu.vt.middleware.ldap.provider.ProviderConfig;
 
 /**
- * Reads properties specific to {@link ConnectionFactory} and returns an
+ * Reads properties specific to
+ * {@link edu.vt.middleware.ldap.DefaultConnectionFactory} and returns an
  * initialized object of that type.
  *
  * @author  Middleware Services
  * @version  $Revision$ $Date$
  */
-public final class ConnectionFactoryPropertySource
+public final class DefaultConnectionFactoryPropertySource
   extends AbstractPropertySource<ConnectionFactory>
 {
 
   /** Invoker for connection factory. */
-  private static final ConnectionFactoryPropertyInvoker INVOKER =
-    new ConnectionFactoryPropertyInvoker(ConnectionFactory.class);
+  private static final DefaultConnectionFactoryPropertyInvoker INVOKER =
+    new DefaultConnectionFactoryPropertyInvoker(ConnectionFactory.class);
 
 
   /**
@@ -43,11 +44,11 @@ public final class ConnectionFactoryPropertySource
    *
    * @param  cf  connection factory to invoke properties on
    */
-  public ConnectionFactoryPropertySource(final ConnectionFactory cf)
+  public DefaultConnectionFactoryPropertySource(final ConnectionFactory cf)
   {
     this(
       cf,
-      ConnectionFactoryPropertySource.class.getResourceAsStream(
+      DefaultConnectionFactoryPropertySource.class.getResourceAsStream(
         PROPERTIES_FILE));
   }
 
@@ -58,7 +59,7 @@ public final class ConnectionFactoryPropertySource
    * @param  cf  connection factory to invoke properties on
    * @param  is  to read properties from
    */
-  public ConnectionFactoryPropertySource(
+  public DefaultConnectionFactoryPropertySource(
     final ConnectionFactory cf, final InputStream is)
   {
     this(cf, loadProperties(is));
@@ -71,7 +72,7 @@ public final class ConnectionFactoryPropertySource
    * @param  cf  connection factory to invoke properties on
    * @param  props  to read properties from
    */
-  public ConnectionFactoryPropertySource(
+  public DefaultConnectionFactoryPropertySource(
     final ConnectionFactory cf, final Properties props)
   {
     this(cf, PropertyDomain.LDAP, props);
@@ -85,7 +86,7 @@ public final class ConnectionFactoryPropertySource
    * @param  domain  that properties are in
    * @param  props  to read properties from
    */
-  public ConnectionFactoryPropertySource(
+  public DefaultConnectionFactoryPropertySource(
     final ConnectionFactory cf,
     final PropertyDomain domain,
     final Properties props)

@@ -22,21 +22,23 @@ import java.util.Set;
 import java.util.TreeSet;
 
 /**
- * Simple bean for ldap attribute. Contains a name and a set of values.
+ * Simple bean representing an ldap attribute. Contains a name and a set of
+ * values.
  *
  * @author  Middleware Services
  * @version  $Revision: 1330 $ $Date: 2010-05-23 18:10:53 -0400 (Sun, 23 May 2010) $
  */
 public class LdapAttribute extends AbstractLdapBean
 {
+
   /** hash code seed. */
-  protected static final int HASH_CODE_SEED = 41;
+  private static final int HASH_CODE_SEED = 41;
 
   /** Name for this attribute. */
-  protected String name;
+  private String attributeName;
 
   /** Values for this attribute. */
-  protected LdapAttributeValues<?> attributeValues;
+  private LdapAttributeValues<?> attributeValues;
 
 
   /** Default constructor. */
@@ -88,25 +90,25 @@ public class LdapAttribute extends AbstractLdapBean
   /**
    * Creates a new ldap attribute.
    *
-   * @param  s  name of this attribute
+   * @param  name  of this attribute
    */
-  public LdapAttribute(final String s)
+  public LdapAttribute(final String name)
   {
     this();
-    setName(s);
+    setName(name);
   }
 
 
   /**
    * Creates a new ldap attribute.
    *
-   * @param  s  name of this attribute
+   * @param  name  of this attribute
    * @param  values  of this attribute
    */
-  public LdapAttribute(final String s, final String ... values)
+  public LdapAttribute(final String name, final String ... values)
   {
     this(false);
-    setName(s);
+    setName(name);
     for (String value : values) {
       addStringValue(value);
     }
@@ -116,13 +118,13 @@ public class LdapAttribute extends AbstractLdapBean
   /**
    * Creates a new ldap attribute.
    *
-   * @param  s  name of this attribute
+   * @param  name  of this attribute
    * @param  values  of this attribute
    */
-  public LdapAttribute(final String s, final byte[] ... values)
+  public LdapAttribute(final String name, final byte[] ... values)
   {
     this(true);
-    setName(s);
+    setName(name);
     for (byte[] value : values) {
       addBinaryValue(value);
     }
@@ -136,18 +138,18 @@ public class LdapAttribute extends AbstractLdapBean
    */
   public String getName()
   {
-    return name;
+    return attributeName;
   }
 
 
   /**
    * Sets the name of this attribute.
    *
-   * @param  s  name to set
+   * @param  name  to set
    */
-  public void setName(final String s)
+  public void setName(final String name)
   {
-    name = s;
+    attributeName = name;
   }
 
 
@@ -353,7 +355,7 @@ public class LdapAttribute extends AbstractLdapBean
   public int hashCode()
   {
     int hc = HASH_CODE_SEED;
-    hc += name != null ? name.toLowerCase().hashCode() : 0;
+    hc += attributeName != null ? attributeName.toLowerCase().hashCode() : 0;
     hc += attributeValues.hashCode();
     return hc;
   }
@@ -367,7 +369,7 @@ public class LdapAttribute extends AbstractLdapBean
   @Override
   public String toString()
   {
-    return String.format("[%s%s]", name, attributeValues);
+    return String.format("[%s%s]", attributeName, attributeValues);
   }
 
 
@@ -541,7 +543,7 @@ public class LdapAttribute extends AbstractLdapBean
       if (!isType(o.getClass())) {
         throw new IllegalArgumentException(
           String.format(
-            "Attribute %s does not support values of type %s", name, type));
+            "Attribute %s does not support values of type %s", attributeName, type));
       }
     }
 

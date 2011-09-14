@@ -27,6 +27,7 @@ import javax.naming.directory.BasicAttributes;
  */
 public final class AttributesFactory
 {
+
   /** Default ignore case value, value of this constant is {@value}. */
   public static final boolean DEFAULT_IGNORE_CASE = true;
 

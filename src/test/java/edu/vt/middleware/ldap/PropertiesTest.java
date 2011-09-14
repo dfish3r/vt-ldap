@@ -30,7 +30,7 @@ import edu.vt.middleware.ldap.pool.PooledConnectionFactory;
 import edu.vt.middleware.ldap.pool.PooledConnectionFactoryManager;
 import edu.vt.middleware.ldap.props.AuthenticatorPropertySource;
 import edu.vt.middleware.ldap.props.ConnectionConfigPropertySource;
-import edu.vt.middleware.ldap.props.ConnectionFactoryPropertySource;
+import edu.vt.middleware.ldap.props.DefaultConnectionFactoryPropertySource;
 import edu.vt.middleware.ldap.props.SearchRequestPropertySource;
 import org.testng.AssertJUnit;
 import org.testng.annotations.BeforeClass;
@@ -88,8 +88,8 @@ public class PropertiesTest
     throws Exception
   {
     final ConnectionFactory cf = new DefaultConnectionFactory();
-    final ConnectionFactoryPropertySource cfSource =
-      new ConnectionFactoryPropertySource(
+    final DefaultConnectionFactoryPropertySource cfSource =
+      new DefaultConnectionFactoryPropertySource(
         cf,
         PropertiesTest.class.getResourceAsStream("/ldap.parser.properties"));
     cfSource.initialize();

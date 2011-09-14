@@ -21,7 +21,7 @@ import edu.vt.middleware.ldap.handler.LdapResultHandler;
 import edu.vt.middleware.ldap.handler.SearchCriteria;
 
 /**
- * Provides common implementation to ldap search operations.
+ * Provides common implementation for search operations.
  *
  * @param  <Q>  type of search request
  *
@@ -75,24 +75,24 @@ public abstract class AbstractSearchOperation<Q extends SearchRequest>
    * connection.
    *
    * @param  request  to read result handlers from
-   * @param  conn  to provide to result handlers
+   * @param  c  to provide to result handlers
    * @return  initialized result handlers
    */
   protected LdapResultHandler[] initializeLdapResultHandlers(
-    final Q request, final Connection conn)
+    final Q request, final Connection c)
   {
     final LdapResultHandler[] handler = request.getLdapResultHandlers();
     if (handler != null && handler.length > 0) {
       for (LdapResultHandler h : handler) {
         if (ExtendedLdapResultHandler.class.isInstance(h)) {
-          ((ExtendedLdapResultHandler) h).setResultConnection(conn);
+          ((ExtendedLdapResultHandler) h).setResultConnection(c);
         }
 
         final LdapAttributeHandler[] attrHandler = h.getAttributeHandler();
         if (attrHandler != null && attrHandler.length > 0) {
           for (LdapAttributeHandler ah : attrHandler) {
             if (ExtendedLdapAttributeHandler.class.isInstance(ah)) {
-              ((ExtendedLdapAttributeHandler) ah).setResultConnection(conn);
+              ((ExtendedLdapAttributeHandler) ah).setResultConnection(c);
             }
           }
         }
@@ -136,11 +136,11 @@ public abstract class AbstractSearchOperation<Q extends SearchRequest>
    * Processes each ldap result handler after a search has been performed.
    *
    * @param  request  the search was performed with
-   * @param  lr  ldap result of the search
+   * @param  result  ldap result of the search
    * @throws LdapException if an error occurs processing a handler
    */
   protected void executeLdapResultHandlers(
-    final SearchRequest request, final LdapResult lr)
+    final SearchRequest request, final LdapResult result)
     throws LdapException
   {
     final LdapResultHandler[] handler = request.getLdapResultHandlers();
@@ -148,7 +148,7 @@ public abstract class AbstractSearchOperation<Q extends SearchRequest>
       final SearchCriteria sc = new SearchCriteria(request);
       for (int i = 0; i < handler.length; i++) {
         if (handler[i] != null) {
-          handler[i].process(sc, lr);
+          handler[i].process(sc, result);
         }
       }
     }

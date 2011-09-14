@@ -36,17 +36,17 @@ public class LdapRole implements Principal, Serializable, Comparable<Principal>
   private static final long serialVersionUID = 1427032827399935399L;
 
   /** LDAP role name. */
-  private String name;
+  private String roleName;
 
 
   /**
    * Creates a new ldap role with the supplied name.
    *
-   * @param  s  name of this role
+   * @param  name  of this role
    */
-  public LdapRole(final String s)
+  public LdapRole(final String name)
   {
-    name = s;
+    roleName = name;
   }
 
 
@@ -57,7 +57,7 @@ public class LdapRole implements Principal, Serializable, Comparable<Principal>
    */
   public String getName()
   {
-    return name;
+    return roleName;
   }
 
 
@@ -74,7 +74,7 @@ public class LdapRole implements Principal, Serializable, Comparable<Principal>
     if (o != null) {
       if (this != o) {
         if (o instanceof LdapRole) {
-          if (((LdapRole) o).getName().equals(name)) {
+          if (((LdapRole) o).getName().equals(roleName)) {
             b = true;
           }
         }
@@ -93,7 +93,7 @@ public class LdapRole implements Principal, Serializable, Comparable<Principal>
    */
   public int hashCode()
   {
-    return name.hashCode();
+    return roleName.hashCode();
   }
 
 
@@ -109,7 +109,7 @@ public class LdapRole implements Principal, Serializable, Comparable<Principal>
       "[%s@%d::%s]",
       getClass().getName(),
       hashCode(),
-      name);
+      roleName);
   }
 
 
@@ -124,7 +124,7 @@ public class LdapRole implements Principal, Serializable, Comparable<Principal>
    */
   public int compareTo(final Principal p)
   {
-    return name.compareTo(p.getName());
+    return roleName.compareTo(p.getName());
   }
 
 
