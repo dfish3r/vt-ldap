@@ -16,6 +16,7 @@ package edu.vt.middleware.ldap.pool;
 import edu.vt.middleware.ldap.Connection;
 import edu.vt.middleware.ldap.ConnectionConfig;
 import edu.vt.middleware.ldap.ConnectionFactory;
+import edu.vt.middleware.ldap.DefaultConnectionFactory;
 import edu.vt.middleware.ldap.LdapException;
 import edu.vt.middleware.ldap.provider.Provider;
 
@@ -25,12 +26,12 @@ import edu.vt.middleware.ldap.provider.Provider;
  * @author  Middleware Services
  * @version  $Revision$
  */
-public class PooledConnectionFactory
+public class PooledConnectionFactory implements ConnectionFactory
 {
 
   /** Static reference to the default ldap provider. */
   protected static final Provider<?> DEFAULT_PROVIDER =
-    ConnectionFactory.getDefaultProvider();
+    DefaultConnectionFactory.getDefaultProvider();
 
   /** Provider used by this factory. */
   protected Provider<?> provider = DEFAULT_PROVIDER.newInstance();;
@@ -89,22 +90,16 @@ public class PooledConnectionFactory
   }
 
 
-  /**
-   * Returns the connection config.
-   *
-   * @return  connection config
-   */
+  /** {@inheritDoc} */
+  @Override
   public ConnectionConfig getConnectionConfig()
   {
     return config;
   }
 
 
-  /**
-   * Sets the connection config.
-   *
-   * @param  cc  connection config
-   */
+  /** {@inheritDoc} */
+  @Override
   public void setConnectionConfig(final ConnectionConfig cc)
   {
     if (pool != null) {
@@ -115,22 +110,16 @@ public class PooledConnectionFactory
   }
 
 
-  /**
-   * Returns the ldap provider.
-   *
-   * @return  ldap provider
-   */
+  /** {@inheritDoc} */
+  @Override
   public Provider<?> getProvider()
   {
     return provider;
   }
 
 
-  /**
-   * Sets the ldap provider.
-   *
-   * @param  p  ldap provider to set
-   */
+  /** {@inheritDoc} */
+  @Override
   public void setProvider(final Provider<?> p)
   {
     if (pool != null) {
@@ -201,10 +190,10 @@ public class PooledConnectionFactory
   {
     if (ConnectionPoolType.BLOCKING == poolType) {
       pool = new BlockingConnectionPool(
-        poolConfig, new ConnectionFactory(config, provider));
+        poolConfig, new DefaultConnectionFactory(config, provider));
     } else if (ConnectionPoolType.SOFTLIMIT == poolType) {
       pool = new SoftLimitConnectionPool(
-        poolConfig, new ConnectionFactory(config, provider));
+        poolConfig, new DefaultConnectionFactory(config, provider));
     } else {
       throw new IllegalArgumentException("Unknown pool type: " + poolType);
     }

@@ -87,7 +87,7 @@ public class PropertiesTest
   public void parserProperties()
     throws Exception
   {
-    final ConnectionFactory cf = new ConnectionFactory();
+    final ConnectionFactory cf = new DefaultConnectionFactory();
     final ConnectionFactoryPropertySource cfSource =
       new ConnectionFactoryPropertySource(
         cf,

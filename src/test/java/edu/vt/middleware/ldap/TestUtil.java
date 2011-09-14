@@ -86,7 +86,7 @@ public final class TestUtil
   public static Connection createSetupConnection()
     throws Exception
   {
-    return ConnectionFactory.getConnection(
+    return DefaultConnectionFactory.getConnection(
       readConnectionConfig(
         TestUtil.class.getResourceAsStream("/ldap.setup.properties")));
   }
@@ -101,7 +101,7 @@ public final class TestUtil
   public static Connection createConnection()
     throws Exception
   {
-    return ConnectionFactory.getConnection(readConnectionConfig(null));
+    return DefaultConnectionFactory.getConnection(readConnectionConfig(null));
   }
 
 
@@ -114,7 +114,7 @@ public final class TestUtil
   public static Connection createSaslExternalConnection()
     throws Exception
   {
-    return ConnectionFactory.getConnection(
+    return DefaultConnectionFactory.getConnection(
       readConnectionConfig(
         TestUtil.class.getResourceAsStream("/ldap.external.properties")));
   }
@@ -129,7 +129,7 @@ public final class TestUtil
   public static Connection createDigestMd5Connection()
     throws Exception
   {
-    return ConnectionFactory.getConnection(
+    return DefaultConnectionFactory.getConnection(
       readConnectionConfig(
         TestUtil.class.getResourceAsStream("/ldap.digest-md5.properties")));
   }
@@ -144,7 +144,7 @@ public final class TestUtil
   public static Connection createCramMd5Connection()
     throws Exception
   {
-    return ConnectionFactory.getConnection(
+    return DefaultConnectionFactory.getConnection(
       readConnectionConfig(
         TestUtil.class.getResourceAsStream("/ldap.cram-md5.properties")));
   }
@@ -159,7 +159,7 @@ public final class TestUtil
   public static Connection createGssApiConnection()
     throws Exception
   {
-    return ConnectionFactory.getConnection(
+    return DefaultConnectionFactory.getConnection(
       readConnectionConfig(
         TestUtil.class.getResourceAsStream("/ldap.gssapi.properties")));
   }

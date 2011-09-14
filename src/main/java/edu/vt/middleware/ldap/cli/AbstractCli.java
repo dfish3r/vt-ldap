@@ -22,6 +22,7 @@ import java.util.Map;
 import java.util.Properties;
 import edu.vt.middleware.ldap.ConnectionFactory;
 import edu.vt.middleware.ldap.Credential;
+import edu.vt.middleware.ldap.DefaultConnectionFactory;
 import edu.vt.middleware.ldap.props.ConnectionFactoryPropertySource;
 import edu.vt.middleware.ldap.props.PropertySource.PropertyDomain;
 import org.apache.commons.cli.CommandLine;
@@ -107,7 +108,7 @@ public abstract class AbstractCli
     final CommandLine line)
     throws Exception
   {
-    final ConnectionFactory factory = new ConnectionFactory();
+    final ConnectionFactory factory = new DefaultConnectionFactory();
     final ConnectionFactoryPropertySource cfSource =
       new ConnectionFactoryPropertySource(
         factory, getPropertiesFromOptions(PropertyDomain.LDAP.value(), line));

@@ -137,7 +137,7 @@ public class ConnectionTest
   public void strategyConnect()
     throws Exception
   {
-    final ConnectionFactory connFactory = new ConnectionFactory(
+    final ConnectionFactory connFactory = new DefaultConnectionFactory(
       TestUtil.readConnectionConfig(
         TestUtil.class.getResourceAsStream("/ldap.conn.properties")));
     Connection conn = connFactory.getConnection();

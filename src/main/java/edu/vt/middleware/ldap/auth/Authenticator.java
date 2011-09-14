@@ -18,6 +18,7 @@ import edu.vt.middleware.ldap.Connection;
 import edu.vt.middleware.ldap.ConnectionConfig;
 import edu.vt.middleware.ldap.ConnectionFactory;
 import edu.vt.middleware.ldap.Credential;
+import edu.vt.middleware.ldap.DefaultConnectionFactory;
 import edu.vt.middleware.ldap.LdapEntry;
 import edu.vt.middleware.ldap.LdapException;
 import edu.vt.middleware.ldap.Response;
@@ -63,8 +64,8 @@ public class Authenticator extends AbstractAuthenticator
   public Authenticator(final ConnectionConfig cc)
   {
     this(
-      new SearchDnResolver(new ConnectionFactory(cc)),
-      new BindAuthenticationHandler(new ConnectionFactory(cc)));
+      new SearchDnResolver(new DefaultConnectionFactory(cc)),
+      new BindAuthenticationHandler(new DefaultConnectionFactory(cc)));
   }
 
 

@@ -20,6 +20,7 @@ import edu.vt.middleware.ldap.AbstractTest;
 import edu.vt.middleware.ldap.Connection;
 import edu.vt.middleware.ldap.ConnectionConfig;
 import edu.vt.middleware.ldap.ConnectionFactory;
+import edu.vt.middleware.ldap.DefaultConnectionFactory;
 import edu.vt.middleware.ldap.LdapEntry;
 import edu.vt.middleware.ldap.LdapResult;
 import edu.vt.middleware.ldap.SearchFilter;
@@ -102,7 +103,7 @@ public class ConnectionPoolTest extends AbstractTest
     softLimitPc.setExpirationTime(1L);
     softLimitPc.setValidatePeriod(5L);
     softLimitPool = new SoftLimitConnectionPool(
-      softLimitPc, new ConnectionFactory(cc));
+      softLimitPc, new DefaultConnectionFactory(cc));
     softLimitPool.setValidator(new SearchValidator());
 
     final PoolConfig blockingPc = new PoolConfig();
@@ -113,7 +114,7 @@ public class ConnectionPoolTest extends AbstractTest
     blockingPc.setExpirationTime(1L);
     blockingPc.setValidatePeriod(5L);
     blockingPool = new BlockingConnectionPool(
-      blockingPc, new ConnectionFactory(cc));
+      blockingPc, new DefaultConnectionFactory(cc));
     blockingPool.setValidator(new SearchValidator());
 
     final PoolConfig blockingTimeoutPc = new PoolConfig();
@@ -124,14 +125,14 @@ public class ConnectionPoolTest extends AbstractTest
     blockingTimeoutPc.setExpirationTime(1L);
     blockingTimeoutPc.setValidatePeriod(5L);
     blockingTimeoutPool = new BlockingConnectionPool(
-      blockingTimeoutPc, new ConnectionFactory(cc));
+      blockingTimeoutPc, new DefaultConnectionFactory(cc));
     blockingTimeoutPool.setBlockWaitTime(1000L);
     blockingTimeoutPool.setValidator(new SearchValidator());
 
     final ConnectionConfig connStrategyCc = TestUtil.readConnectionConfig(null);
     connStrategyCc.setLdapUrl(
       "ldap://ed-dev.middleware.vt.edu:14389 ldap://ed-dne.middleware.vt.edu");
-    final ConnectionFactory connStrategyCf = new ConnectionFactory(
+    final ConnectionFactory connStrategyCf = new DefaultConnectionFactory(
       connStrategyCc);
     connStrategyCf.getProvider().getProviderConfig().setConnectionStrategy(
       ConnectionStrategy.ROUND_ROBIN);
