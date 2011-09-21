@@ -13,7 +13,7 @@
 */
 package edu.vt.middleware.ldap;
 
-import java.io.UnsupportedEncodingException;
+import java.nio.charset.Charset;
 
 /**
  * Provides convenience methods for converting the various types of passwords
@@ -24,6 +24,12 @@ import java.io.UnsupportedEncodingException;
  */
 public class Credential
 {
+
+  /**
+   * UTF-8 character set identifier. The value of this constant is
+   * {@value}.
+   */
+  private static final Charset UTF8_CHARSET = Charset.forName("UTF-8");
 
   /** Credential stored as a byte array. */
   private byte[] bytes;
@@ -36,12 +42,7 @@ public class Credential
    */
   public Credential(final String password)
   {
-    try {
-      bytes = password.getBytes("UTF-8");
-    } catch (UnsupportedEncodingException e) {
-      throw new IllegalArgumentException(
-        "Could not encode password as UTF-8", e);
-    }
+    bytes = password.getBytes(UTF8_CHARSET);
   }
 
 
@@ -52,12 +53,7 @@ public class Credential
    */
   public Credential(final char[] password)
   {
-    try {
-      bytes = new String(password).getBytes("UTF-8");
-    } catch (UnsupportedEncodingException e) {
-      throw new IllegalArgumentException(
-        "Could not encode password as UTF-8", e);
-    }
+    bytes = new String(password).getBytes(UTF8_CHARSET);
   }
 
 
@@ -90,12 +86,7 @@ public class Credential
    */
   public String getString()
   {
-    try {
-      return new String(bytes, "UTF-8");
-    } catch (UnsupportedEncodingException e) {
-      throw new IllegalStateException(
-        "Could not encode password as UTF-8", e);
-    }
+    return new String(bytes, UTF8_CHARSET);
   }
 
 

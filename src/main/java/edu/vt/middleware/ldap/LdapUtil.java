@@ -16,11 +16,10 @@ package edu.vt.middleware.ldap;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
 import java.net.URL;
+import java.nio.charset.Charset;
 import java.util.Arrays;
 import org.apache.commons.codec.binary.Base64;
-import org.slf4j.LoggerFactory;
 
 /**
  * Provides utility methods for this package.
@@ -35,7 +34,7 @@ public final class LdapUtil
    * UTF-8 character set identifier. The value of this constant is
    * {@value}.
    */
-  public static final String UTF8_CHARSET = "UTF-8";
+  private static final Charset UTF8_CHARSET = Charset.forName("UTF-8");
 
   /** Size of buffer in bytes to use when reading files. */
   private static final int READ_BUFFER_SIZE = 128;
@@ -54,16 +53,8 @@ public final class LdapUtil
    */
   public static String base64Encode(final byte[] value)
   {
-    String encodedValue = null;
-    if (value != null) {
-      try {
-        encodedValue = new String(Base64.encodeBase64(value), UTF8_CHARSET);
-      } catch (UnsupportedEncodingException e) {
-        LoggerFactory.getLogger(LdapUtil.class).error(
-          "Could not encode value using {}", UTF8_CHARSET, e);
-      }
-    }
-    return encodedValue;
+    return value != null ?
+      new String(Base64.encodeBase64(value), UTF8_CHARSET) : null;
   }
 
 
@@ -77,16 +68,7 @@ public final class LdapUtil
    */
   public static String base64Encode(final String value)
   {
-    String encodedValue = null;
-    if (value != null) {
-      try {
-        encodedValue = base64Encode(value.getBytes(UTF8_CHARSET));
-      } catch (UnsupportedEncodingException e) {
-        LoggerFactory.getLogger(LdapUtil.class).error(
-          "Could not encode value using {}", UTF8_CHARSET, e);
-      }
-    }
-    return encodedValue;
+    return value != null ? base64Encode(value.getBytes(UTF8_CHARSET)) : null;
   }
 
 
@@ -100,16 +82,7 @@ public final class LdapUtil
    */
   public static byte[] utf8Encode(final String value)
   {
-    byte[] encodedValue = null;
-    if (value != null) {
-      try {
-        encodedValue = value.getBytes(UTF8_CHARSET);
-      } catch (UnsupportedEncodingException e) {
-        LoggerFactory.getLogger(LdapUtil.class).error(
-          "Could not encode value using {}", UTF8_CHARSET, e);
-      }
-    }
-    return encodedValue;
+    return value != null ? value.getBytes(UTF8_CHARSET) : null;
   }
 
 
@@ -122,11 +95,7 @@ public final class LdapUtil
    */
   public static byte[] base64Decode(final String value)
   {
-    byte[] decodedValue = null;
-    if (value != null) {
-      decodedValue = Base64.decodeBase64(value.getBytes());
-    }
-    return decodedValue;
+    return value != null ? Base64.decodeBase64(value.getBytes()) : null;
   }
 
 
