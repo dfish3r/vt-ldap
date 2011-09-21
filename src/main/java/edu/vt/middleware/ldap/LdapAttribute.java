@@ -543,7 +543,9 @@ public class LdapAttribute extends AbstractLdapBean
       if (!isType(o.getClass())) {
         throw new IllegalArgumentException(
           String.format(
-            "Attribute %s does not support values of type %s", attributeName, type));
+            "Attribute %s does not support values of type %s",
+            attributeName,
+            type));
       }
     }
 

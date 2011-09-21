@@ -83,7 +83,11 @@ public class PropertiesTest
   }
 
 
-  /** @throws  Exception  On test failure. */
+  /**
+   * @param  host  that should match a property.
+   *
+   * @throws  Exception  On test failure.
+   */
   @Parameters("ldapTestHost")
   @Test(groups = {"props"})
   public void parserProperties(final String host)
@@ -185,7 +189,11 @@ public class PropertiesTest
   }
 
 
-  /** @throws  Exception  On test failure. */
+  /**
+   * @param  host  that should match a property.
+   *
+   * @throws  Exception  On test failure.
+   */
   @Parameters("ldapTestHost")
   @Test(groups = {"props"})
   public void jaasProperties(final String host)

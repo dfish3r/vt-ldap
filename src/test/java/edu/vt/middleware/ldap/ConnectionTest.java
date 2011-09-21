@@ -202,7 +202,7 @@ public class ConnectionTest
      * SearchServletTest: 6
      * AttributeServletTest: 3
      */
-    String newHost = TestUtil.getHostFromLdapUrl(host);
+    final String newHost = TestUtil.getHostFromLdapUrl(host);
     final int openConns = TestUtil.countOpenConnections(
       newHost.substring(0, newHost.indexOf(".")));
     AssertJUnit.assertEquals(10, openConns);
