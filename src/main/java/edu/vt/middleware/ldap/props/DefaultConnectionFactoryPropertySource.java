@@ -39,7 +39,7 @@ public final class DefaultConnectionFactoryPropertySource
 
 
   /**
-   * Creates a new connection factory property source using the default
+   * Creates a new default connection factory property source using the default
    * properties file.
    *
    * @param  cf  connection factory to invoke properties on
@@ -54,7 +54,7 @@ public final class DefaultConnectionFactoryPropertySource
 
 
   /**
-   * Creates a new connection factory property source.
+   * Creates a new default connection factory property source.
    *
    * @param  cf  connection factory to invoke properties on
    * @param  is  to read properties from
@@ -67,7 +67,7 @@ public final class DefaultConnectionFactoryPropertySource
 
 
   /**
-   * Creates a new connection factory property source.
+   * Creates a new default connection factory property source.
    *
    * @param  cf  connection factory to invoke properties on
    * @param  props  to read properties from
@@ -80,7 +80,7 @@ public final class DefaultConnectionFactoryPropertySource
 
 
   /**
-   * Creates a new connection factory property source.
+   * Creates a new default connection factory property source.
    *
    * @param  cf  connection factory to invoke properties on
    * @param  domain  that properties are in

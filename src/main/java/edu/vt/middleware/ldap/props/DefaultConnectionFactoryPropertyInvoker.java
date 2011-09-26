@@ -16,7 +16,8 @@ package edu.vt.middleware.ldap.props;
 import edu.vt.middleware.ldap.provider.Provider;
 
 /**
- * Handles properties for {@link edu.vt.middleware.ldap.ConnectionFactory}.
+ * Handles properties for
+ * {@link edu.vt.middleware.ldap.DefaultConnectionFactory}.
  *
  * @author  Middleware Services
  * @version  $Revision$ $Date$
@@ -27,7 +28,8 @@ public class DefaultConnectionFactoryPropertyInvoker
 
 
   /**
-   * Creates a new connection factory property invoker for the supplied class.
+   * Creates a new default connection factory property invoker for the supplied
+   * class.
    *
    * @param  c  class that has setter methods
    */
