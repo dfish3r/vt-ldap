@@ -15,10 +15,7 @@ package edu.vt.middleware.ldap.auth;
 
 import java.util.Arrays;
 import edu.vt.middleware.ldap.Connection;
-import edu.vt.middleware.ldap.ConnectionConfig;
-import edu.vt.middleware.ldap.ConnectionFactory;
 import edu.vt.middleware.ldap.Credential;
-import edu.vt.middleware.ldap.DefaultConnectionFactory;
 import edu.vt.middleware.ldap.LdapEntry;
 import edu.vt.middleware.ldap.LdapException;
 import edu.vt.middleware.ldap.Response;
@@ -26,7 +23,6 @@ import edu.vt.middleware.ldap.auth.handler.AuthenticationCriteria;
 import edu.vt.middleware.ldap.auth.handler.AuthenticationHandler;
 import edu.vt.middleware.ldap.auth.handler.AuthenticationResultHandler;
 import edu.vt.middleware.ldap.auth.handler.AuthorizationHandler;
-import edu.vt.middleware.ldap.auth.handler.BindAuthenticationHandler;
 
 /**
  * Provides functionality to authenticate users against an ldap directory.
@@ -40,46 +36,6 @@ public class Authenticator extends AbstractAuthenticator
 
   /** Default constructor. */
   public Authenticator() {}
-
-
-  /**
-   * Creates a new authenticator. See
-   * {@link #Authenticator(ConnectionConfig)}.
-   *
-   * @param  ldapUrl  to connect to
-   */
-  public Authenticator(final String ldapUrl)
-  {
-    this(new ConnectionConfig(ldapUrl));
-  }
-
-
-  /**
-   * Creates a new authenticator. Defaults the DN resolver to
-   * {@link SearchDnResolver} and the authentication handler to
-   * {@link BindAuthenticationHandler}.
-   *
-   * @param  cc  connection config
-   */
-  public Authenticator(final ConnectionConfig cc)
-  {
-    this(
-      new SearchDnResolver(new DefaultConnectionFactory(cc)),
-      new BindAuthenticationHandler(new DefaultConnectionFactory(cc)));
-  }
-
-
-  /**
-   * Creates a new authenticator. Defaults the DN resolver to
-   * {@link SearchDnResolver} and the authentication handler to
-   * {@link BindAuthenticationHandler}.
-   *
-   * @param  cf  connection factory
-   */
-  public Authenticator(final ConnectionFactory cf)
-  {
-    this(new SearchDnResolver(cf), new BindAuthenticationHandler(cf));
-  }
 
 
   /**

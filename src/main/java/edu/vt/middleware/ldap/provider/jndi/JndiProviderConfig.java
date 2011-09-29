@@ -13,7 +13,8 @@
 */
 package edu.vt.middleware.ldap.provider.jndi;
 
-import java.io.PrintStream;
+import java.io.OutputStream;
+import java.util.Arrays;
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLSocketFactory;
 import edu.vt.middleware.ldap.ResultCode;
@@ -29,7 +30,7 @@ public class JndiProviderConfig extends ProviderConfig
 {
 
   /** Stream to print LDAP ASN.1 BER packets. */
-  protected PrintStream tracePackets;
+  protected OutputStream tracePackets;
 
   /** Whether to remove the URL from any DNs which are not relative. */
   protected boolean removeDnUrls = true;
@@ -50,22 +51,22 @@ public class JndiProviderConfig extends ProviderConfig
 
 
   /**
-   * Returns the print stream used to print ASN.1 BER packets.
+   * Returns the output stream used to print ASN.1 BER packets.
    *
-   * @return  print stream
+   * @return  output stream
    */
-  public PrintStream getTracePackets()
+  public OutputStream getTracePackets()
   {
     return tracePackets;
   }
 
 
   /**
-   * Sets the print stream to print ASN.1 BER packets to.
+   * Sets the output stream to print ASN.1 BER packets to.
    *
-   * @param  stream  to print to
+   * @param  stream  to output to
    */
-  public void setTracePackets(final PrintStream stream)
+  public void setTracePackets(final OutputStream stream)
   {
     logger.trace("setting tracePackets: {}", stream);
     tracePackets = stream;
@@ -140,5 +141,31 @@ public class JndiProviderConfig extends ProviderConfig
   {
     logger.trace("setting hostnameVerifier: {}", verifier);
     hostnameVerifier = verifier;
+  }
+
+
+  /**
+   * Provides a descriptive string representation of this instance.
+   *
+   * @return  string representation
+   */
+  @Override
+  public String toString()
+  {
+    return String.format(
+      "[%s@%d::operationRetryResultCodes=%s, properties=%s, " +
+      "connectionStrategy=%s, logCredentials=%s, tracePackets=%s, " +
+      "removeDnUrls=%s, sslSocketFactory=%s, hostnameVerifier=%s]",
+      getClass().getName(),
+      hashCode(),
+      operationRetryResultCodes != null ?
+        Arrays.asList(operationRetryResultCodes) : null,
+      properties,
+      connectionStrategy,
+      logCredentials,
+      tracePackets,
+      removeDnUrls,
+      sslSocketFactory,
+      hostnameVerifier);
   }
 }

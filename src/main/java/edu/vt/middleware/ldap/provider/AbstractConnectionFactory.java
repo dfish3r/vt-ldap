@@ -188,6 +188,25 @@ AbstractConnectionFactory<T extends ProviderConfig>
 
 
   /**
+   * Provides a descriptive string representation of this instance.
+   *
+   * @return  string representation
+   */
+  @Override
+  public String toString()
+  {
+    return
+      String.format(
+        "[%s@%d::ldapUrl=%s, config=%s, connectionCount=%s]",
+        getClass().getName(),
+        hashCode(),
+        ldapUrl,
+        config,
+        connectionCount);
+  }
+
+
+  /**
    * Provides an object to track the connection count.
    */
   private class ConnectionCount

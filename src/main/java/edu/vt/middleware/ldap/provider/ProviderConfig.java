@@ -13,6 +13,7 @@
 */
 package edu.vt.middleware.ldap.provider;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import edu.vt.middleware.ldap.AbstractConfig;
@@ -138,5 +139,27 @@ public class ProviderConfig extends AbstractConfig
   {
     logger.trace("setting logCredentials: {}", b);
     logCredentials = b;
+  }
+
+
+  /**
+   * Provides a descriptive string representation of this instance.
+   *
+   * @return  string representation
+   */
+  @Override
+  public String toString()
+  {
+    return
+      String.format(
+        "[%s@%d::operationRetryResultCodes=%s, properties=%s, " +
+        "connectionStrategy=%s, logCredentials=%s]",
+        getClass().getName(),
+        hashCode(),
+        operationRetryResultCodes != null ?
+          Arrays.asList(operationRetryResultCodes) : null,
+        properties,
+        connectionStrategy,
+        logCredentials);
   }
 }
