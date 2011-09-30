@@ -24,7 +24,7 @@ import edu.vt.middleware.ldap.AbstractTest;
 import edu.vt.middleware.ldap.LdapEntry;
 import edu.vt.middleware.ldap.LdapResult;
 import edu.vt.middleware.ldap.TestUtil;
-import edu.vt.middleware.ldap.dsml.Dsmlv1Writer;
+import edu.vt.middleware.ldap.io.Dsmlv1Writer;
 import org.testng.AssertJUnit;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;

@@ -11,7 +11,7 @@
   Version: $Revision$
   Updated: $Date$
 */
-package edu.vt.middleware.ldap.dsml;
+package edu.vt.middleware.ldap.io;
 
 import java.io.StringReader;
 import java.io.StringWriter;
@@ -31,13 +31,12 @@ import org.testng.annotations.Parameters;
 import org.testng.annotations.Test;
 
 /**
- * Unit test for {@link Dsmlv1Reader}, {@link Dsmlv1Writer},
- * {@link Dsmlv2Reader}, and {@link Dsmlv2Writer}.
+ * Unit test for {@link LdifReader} and {@link LdifWriter}.
  *
  * @author  Middleware Services
  * @version  $Revision$
  */
-public class DsmlTest extends AbstractTest
+public class LdifTest extends AbstractTest
 {
 
   /** Entry created for ldap tests. */
@@ -49,8 +48,8 @@ public class DsmlTest extends AbstractTest
    *
    * @throws  Exception  On test failure.
    */
-  @Parameters("createEntry13")
-  @BeforeClass(groups = {"dsml"})
+  @Parameters("createEntry14")
+  @BeforeClass(groups = {"ldif"})
   public void createLdapEntry(final String ldifFile)
     throws Exception
   {
@@ -61,7 +60,7 @@ public class DsmlTest extends AbstractTest
 
 
   /** @throws  Exception  On test failure. */
-  @AfterClass(groups = {"dsml"})
+  @AfterClass(groups = {"ldif"})
   public void deleteLdapEntry()
     throws Exception
   {
@@ -76,11 +75,11 @@ public class DsmlTest extends AbstractTest
    * @throws  Exception  On test failure.
    */
   @Parameters({
-      "dsmlSearchDn",
-      "dsmlSearchFilter"
+      "ldifSearchDn",
+      "ldifSearchFilter"
     })
-  @Test(groups = {"dsml"})
-  public void searchAndCompareDsmlv1(final String dn, final String filter)
+  @Test(groups = {"ldif"})
+  public void searchAndCompareLdif(final String dn, final String filter)
     throws Exception
   {
     final Connection conn = TestUtil.createConnection();
@@ -91,12 +90,12 @@ public class DsmlTest extends AbstractTest
       new SearchRequest(dn, new SearchFilter(filter))).getResult();
 
     final StringWriter writer = new StringWriter();
-    final Dsmlv1Writer dsmlWriter = new Dsmlv1Writer(writer);
-    dsmlWriter.write(result1);
+    final LdifWriter ldifWriter = new LdifWriter(writer);
+    ldifWriter.write(result1);
 
     final StringReader reader = new StringReader(writer.toString());
-    final Dsmlv1Reader dsmlReader = new Dsmlv1Reader(reader);
-    final LdapResult result2 = dsmlReader.read();
+    final LdifReader ldifReader = new LdifReader(reader);
+    final LdapResult result2 = ldifReader.read();
 
     AssertJUnit.assertEquals(result1, result2);
     conn.close();
@@ -104,31 +103,59 @@ public class DsmlTest extends AbstractTest
 
 
   /**
-   * @param  dsmlFile  to test with.
-   * @param  dsmlSortedFile  to test with.
+   * @param  ldifFile  to create with
+   * @param  ldifSortedFile  to compare with
    *
    * @throws  Exception  On test failure.
    */
   @Parameters({
-      "dsmlv1Entry",
-      "dsmlv1SortedEntry"
+      "ldifEntry",
+      "ldifSortedEntry"
     })
-  @Test(groups = {"dsml"})
-  public void readAndCompareDsmlv1(
-    final String dsmlFile,
-    final String dsmlSortedFile)
+  @Test(groups = {"ldif"})
+  public void readAndCompareSortedLdif(
+    final String ldifFile,
+    final String ldifSortedFile)
     throws Exception
   {
-    final String dsmlStringSorted = TestUtil.readFileIntoString(dsmlSortedFile);
-    final Dsmlv1Reader dsmlReader = new Dsmlv1Reader(
-      new StringReader(TestUtil.readFileIntoString(dsmlFile)),
+    final String ldifStringSorted = TestUtil.readFileIntoString(ldifSortedFile);
+    final LdifReader ldifReader = new LdifReader(
+      new StringReader(TestUtil.readFileIntoString(ldifFile)),
       SortBehavior.SORTED);
-    final LdapResult result = dsmlReader.read();
+    final LdapResult result = ldifReader.read();
 
     final StringWriter writer = new StringWriter();
-    final Dsmlv1Writer dsmlWriter = new Dsmlv1Writer(writer);
-    dsmlWriter.write(result);
+    final LdifWriter ldifWriter = new LdifWriter(writer);
+    ldifWriter.write(result);
 
-    AssertJUnit.assertEquals(dsmlStringSorted, writer.toString());
+    AssertJUnit.assertEquals(ldifStringSorted, writer.toString());
+  }
+
+
+  /**
+   * @param  ldifFileIn  to create with
+   * @param  ldifFileOut  to compare with
+   *
+   * @throws  Exception  On test failure.
+   */
+  @Parameters({
+      "multipleLdifResultsIn",
+      "multipleLdifResultsOut"
+    })
+  @Test(groups = {"ldif"})
+  public void readAndCompareMultipleLdif(
+    final String ldifFileIn,
+    final String ldifFileOut)
+    throws Exception
+  {
+    final String ldifStringIn = TestUtil.readFileIntoString(ldifFileIn);
+    LdifReader ldifReader = new LdifReader(new StringReader(ldifStringIn));
+    final LdapResult result1 = ldifReader.read();
+
+    final String ldifStringOut = TestUtil.readFileIntoString(ldifFileOut);
+    ldifReader = new LdifReader(new StringReader(ldifStringOut));
+    final LdapResult result2 = ldifReader.read();
+
+    AssertJUnit.assertEquals(result1, result2);
   }
 }

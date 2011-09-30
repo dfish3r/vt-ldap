@@ -11,7 +11,7 @@
   Version: $Revision$
   Updated: $Date$
 */
-package edu.vt.middleware.ldap.ldif;
+package edu.vt.middleware.ldap.io;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -29,7 +29,7 @@ import edu.vt.middleware.ldap.SortBehavior;
  * @author  Middleware Services
  * @version  $Revision: 1330 $ $Date: 2010-05-23 18:10:53 -0400 (Sun, 23 May 2010) $
  */
-public class LdifReader
+public class LdifReader implements LdapResultReader
 {
 
   /** Reader to read from. */

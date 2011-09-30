@@ -27,7 +27,7 @@ import edu.vt.middleware.ldap.SearchFilter;
 import edu.vt.middleware.ldap.SearchOperation;
 import edu.vt.middleware.ldap.SearchRequest;
 import edu.vt.middleware.ldap.TestUtil;
-import edu.vt.middleware.ldap.ldif.LdifWriter;
+import edu.vt.middleware.ldap.io.LdifWriter;
 import edu.vt.middleware.ldap.provider.ConnectionStrategy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

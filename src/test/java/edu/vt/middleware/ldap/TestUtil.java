@@ -22,7 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 import edu.vt.middleware.ldap.auth.Authenticator;
 import edu.vt.middleware.ldap.auth.NoopDnResolver;
-import edu.vt.middleware.ldap.ldif.LdifReader;
+import edu.vt.middleware.ldap.io.LdifReader;
 import edu.vt.middleware.ldap.props.AuthenticatorPropertySource;
 import edu.vt.middleware.ldap.props.ConnectionConfigPropertySource;
 import org.testng.annotations.DataProvider;

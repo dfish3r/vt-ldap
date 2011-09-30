@@ -22,7 +22,7 @@ import edu.vt.middleware.ldap.ConnectionConfig;
 import edu.vt.middleware.ldap.ConnectionFactory;
 import edu.vt.middleware.ldap.LdapEntry;
 import edu.vt.middleware.ldap.LdapResult;
-import edu.vt.middleware.ldap.ldif.LdifReader;
+import edu.vt.middleware.ldap.io.LdifReader;
 import edu.vt.middleware.ldap.props.ConnectionConfigPropertySource;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;

@@ -21,8 +21,9 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import edu.vt.middleware.ldap.LdapResult;
-import edu.vt.middleware.ldap.dsml.Dsmlv1Writer;
-import edu.vt.middleware.ldap.ldif.LdifWriter;
+import edu.vt.middleware.ldap.io.Dsmlv1Writer;
+import edu.vt.middleware.ldap.io.LdapResultWriter;
+import edu.vt.middleware.ldap.io.LdifWriter;
 
 /**
  * Queries an LDAP and returns the result as LDIF or DSML. The following init
@@ -119,12 +120,12 @@ public final class SearchServlet extends AbstractServlet
       final LdapResult result = search(
         request.getParameter("query"),
         request.getParameterValues("attrs"));
+      LdapResultWriter writer = null;
       if (output == OutputType.LDIF) {
         response.setContentType("text/plain");
-        final LdifWriter writer = new LdifWriter(
+        writer = new LdifWriter(
           new BufferedWriter(
             new OutputStreamWriter(response.getOutputStream())));
-        writer.write(result);
       } else {
         final String content = request.getParameter("content-type");
         if (content != null && content.equalsIgnoreCase("text")) {
@@ -133,11 +134,11 @@ public final class SearchServlet extends AbstractServlet
           response.setContentType("text/xml");
         }
 
-        final Dsmlv1Writer writer = new Dsmlv1Writer(
+        writer = new Dsmlv1Writer(
           new BufferedWriter(
             new OutputStreamWriter(response.getOutputStream())));
-        writer.write(result);
       }
+      writer.write(result);
     } catch (Exception e) {
       logger.error("Error performing search", e);
       throw new ServletException(e);

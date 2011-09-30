@@ -23,8 +23,9 @@ import edu.vt.middleware.ldap.LdapResult;
 import edu.vt.middleware.ldap.auth.AuthenticationRequest;
 import edu.vt.middleware.ldap.auth.Authenticator;
 import edu.vt.middleware.ldap.auth.SearchDnResolver;
-import edu.vt.middleware.ldap.dsml.Dsmlv1Writer;
-import edu.vt.middleware.ldap.ldif.LdifWriter;
+import edu.vt.middleware.ldap.io.Dsmlv1Writer;
+import edu.vt.middleware.ldap.io.LdapResultWriter;
+import edu.vt.middleware.ldap.io.LdifWriter;
 import edu.vt.middleware.ldap.props.AuthenticationRequestPropertySource;
 import edu.vt.middleware.ldap.props.AuthenticatorPropertySource;
 import edu.vt.middleware.ldap.props.ConnectionConfigPropertySource;
@@ -184,15 +185,15 @@ public class AuthenticatorCli extends AbstractCli
     }
     final LdapEntry entry = auth.authenticate(request).getResult();
     if (entry != null) {
+      LdapResultWriter writer = null;
       if (outputDsmlv1) {
-        final Dsmlv1Writer writer = new Dsmlv1Writer(
+        writer = new Dsmlv1Writer(
           new BufferedWriter(new OutputStreamWriter(System.out)));
-        writer.write(new LdapResult(entry));
       } else {
-        final LdifWriter writer = new LdifWriter(
+        writer = new LdifWriter(
           new BufferedWriter(new OutputStreamWriter(System.out)));
-        writer.write(new LdapResult(entry));
       }
+      writer.write(new LdapResult(entry));
     }
   }
 

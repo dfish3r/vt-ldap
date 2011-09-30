@@ -11,7 +11,7 @@
   Version: $Revision$
   Updated: $Date$
 */
-package edu.vt.middleware.ldap.dsml;
+package edu.vt.middleware.ldap.io;
 
 import java.io.IOException;
 import java.io.Writer;
@@ -40,7 +40,7 @@ import org.w3c.dom.Element;
  * @author  Middleware Services
  * @version  $Revision: 1330 $ $Date: 2010-05-23 18:10:53 -0400 (Sun, 23 May 2010) $
  */
-public class Dsmlv1Writer
+public class Dsmlv1Writer implements LdapResultWriter
 {
 
   /** Document builder factory. */

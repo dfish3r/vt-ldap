@@ -22,8 +22,9 @@ import edu.vt.middleware.ldap.ConnectionFactory;
 import edu.vt.middleware.ldap.LdapResult;
 import edu.vt.middleware.ldap.SearchOperation;
 import edu.vt.middleware.ldap.SearchRequest;
-import edu.vt.middleware.ldap.dsml.Dsmlv1Writer;
-import edu.vt.middleware.ldap.ldif.LdifWriter;
+import edu.vt.middleware.ldap.io.Dsmlv1Writer;
+import edu.vt.middleware.ldap.io.LdapResultWriter;
+import edu.vt.middleware.ldap.io.LdifWriter;
 import edu.vt.middleware.ldap.props.ConnectionConfigPropertySource;
 import edu.vt.middleware.ldap.props.PropertySource.PropertyDomain;
 import edu.vt.middleware.ldap.props.SearchRequestPropertySource;
@@ -130,15 +131,15 @@ public class SearchOperationCli extends AbstractCli
 
     final SearchOperation op = new SearchOperation(conn);
     final LdapResult result = op.execute(request).getResult();
+    LdapResultWriter writer = null;
     if (outputDsmlv1) {
-      final Dsmlv1Writer writer = new Dsmlv1Writer(
+      writer = new Dsmlv1Writer(
         new BufferedWriter(new OutputStreamWriter(System.out)));
-      writer.write(result);
     } else {
-      final LdifWriter writer = new LdifWriter(
+      writer = new LdifWriter(
         new BufferedWriter(new OutputStreamWriter(System.out)));
-      writer.write(result);
     }
+    writer.write(result);
     conn.close();
   }
 
