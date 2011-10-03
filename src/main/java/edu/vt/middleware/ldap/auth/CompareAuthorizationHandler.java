@@ -11,7 +11,7 @@
   Version: $Revision$
   Updated: $Date$
 */
-package edu.vt.middleware.ldap.auth.handler;
+package edu.vt.middleware.ldap.auth;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,10 +21,10 @@ import edu.vt.middleware.ldap.LdapResult;
 import edu.vt.middleware.ldap.SearchFilter;
 import edu.vt.middleware.ldap.SearchOperation;
 import edu.vt.middleware.ldap.SearchRequest;
-import edu.vt.middleware.ldap.auth.AuthorizationException;
 
 /**
- * Performs a compare operation with a custom filter. The DN of the
+ * Performs an object level search operation with a custom filter. If the search
+ * returns a result then the authorization succeeds. The DN of the
  * authenticated user is automatically provided as the {0} variable in the
  * search filter arguments.
  *

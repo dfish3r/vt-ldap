@@ -11,7 +11,7 @@
   Version: $Revision$
   Updated: $Date$
 */
-package edu.vt.middleware.ldap.auth.handler;
+package edu.vt.middleware.ldap.auth;
 
 import edu.vt.middleware.ldap.Connection;
 import edu.vt.middleware.ldap.LdapException;

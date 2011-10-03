@@ -78,17 +78,18 @@ public class SearchEntryResolver implements EntryResolver
 
   /** {@inheritDoc} */
   @Override
-  public LdapEntry resolve(final Connection connection, final String dn)
+  public LdapEntry resolve(
+    final Connection conn, final AuthenticationCriteria ac)
     throws LdapException
   {
     logger.debug(
       "Resolving entry attributes: {}",
       returnAttributes == null ?
         "all attributes" : Arrays.toString(returnAttributes));
-    final SearchOperation search = new SearchOperation(connection);
+    final SearchOperation search = new SearchOperation(conn);
     final LdapResult result = search.execute(
       SearchRequest.newObjectScopeSearchRequest(
-        dn, returnAttributes)).getResult();
+        ac.getDn(), returnAttributes)).getResult();
     return result.getEntry();
   }
 }

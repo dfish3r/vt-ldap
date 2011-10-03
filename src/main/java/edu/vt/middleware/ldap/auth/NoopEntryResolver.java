@@ -31,19 +31,12 @@ public class NoopEntryResolver implements EntryResolver
   public NoopEntryResolver() {}
 
 
-  /**
-   * Returns an ldap entry that contains the supplied dn.
-   *
-   * @param  connection  that authentication occurred on
-   * @param  dn  that authenticated
-   *
-   * @return  ldap entry
-   *
-   * @throws  LdapException  never
-   */
-  public LdapEntry resolve(final Connection connection, final String dn)
+  /** {@inheritDoc} */
+  @Override
+  public LdapEntry resolve(
+    final Connection conn, final AuthenticationCriteria ac)
     throws LdapException
   {
-    return new LdapEntry(dn);
+    return new LdapEntry(ac.getDn());
   }
 }

@@ -14,7 +14,7 @@
 package edu.vt.middleware.ldap.props;
 
 import edu.vt.middleware.ldap.Credential;
-import edu.vt.middleware.ldap.auth.handler.AuthorizationHandler;
+import edu.vt.middleware.ldap.auth.AuthorizationHandler;
 
 /**
  * Handles properties for

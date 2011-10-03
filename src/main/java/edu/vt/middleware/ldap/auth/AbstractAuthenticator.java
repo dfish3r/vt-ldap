@@ -17,11 +17,6 @@ import edu.vt.middleware.ldap.Connection;
 import edu.vt.middleware.ldap.LdapEntry;
 import edu.vt.middleware.ldap.LdapException;
 import edu.vt.middleware.ldap.SearchFilter;
-import edu.vt.middleware.ldap.auth.handler.AuthenticationCriteria;
-import edu.vt.middleware.ldap.auth.handler.AuthenticationHandler;
-import edu.vt.middleware.ldap.auth.handler.AuthenticationResultHandler;
-import edu.vt.middleware.ldap.auth.handler.AuthorizationHandler;
-import edu.vt.middleware.ldap.auth.handler.CompareAuthorizationHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -290,17 +285,19 @@ public abstract class AbstractAuthenticator
    *
    * @param  request  authentication request
    * @param  conn  that authentication occurred on
-   * @param  dn  that authenticated
+   * @param  criteria  needed by the entry resolver
    * @return  ldap entry
    * @throws LdapException  if an error occurs resolving the entry
    */
   protected LdapEntry resolveEntry(
-    final AuthenticationRequest request, final Connection conn, final String dn)
+    final AuthenticationRequest request,
+    final Connection conn,
+    final AuthenticationCriteria criteria)
     throws LdapException
   {
     LdapEntry entry = null;
     if (entryResolver != null) {
-      entry = entryResolver.resolve(conn, dn);
+      entry = entryResolver.resolve(conn, criteria);
     } else {
       EntryResolver er = null;
       if (request.getReturnAttributes() == null ||
@@ -309,7 +306,7 @@ public abstract class AbstractAuthenticator
       } else {
         er = new NoopEntryResolver();
       }
-      entry = er.resolve(conn, dn);
+      entry = er.resolve(conn, criteria);
     }
     return entry;
   }

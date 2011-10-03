@@ -11,7 +11,7 @@
   Version: $Revision$
   Updated: $Date$
 */
-package edu.vt.middleware.ldap.auth.handler;
+package edu.vt.middleware.ldap.auth;
 
 import edu.vt.middleware.ldap.Connection;
 import edu.vt.middleware.ldap.LdapException;
@@ -19,15 +19,14 @@ import edu.vt.middleware.ldap.pool.PooledConnectionFactory;
 import edu.vt.middleware.ldap.pool.PooledConnectionFactoryManager;
 
 /**
- * Provides an LDAP authentication implementation that leverages a pool of ldap
- * connections to perform the compare operation against the userPassword
- * attribute. The default password scheme used is 'SHA'.
+ * Provides an LDAP authentication implementation that leverages a pool of LDAP
+ * connections to perform the LDAP bind operation.
  *
  * @author  Middleware Services
  * @version  $Revision$
  */
-public class PooledCompareAuthenticationHandler
-  extends AbstractCompareAuthenticationHandler
+public class PooledBindAuthenticationHandler
+  extends AbstractAuthenticationHandler
   implements PooledConnectionFactoryManager
 {
 
@@ -36,15 +35,15 @@ public class PooledCompareAuthenticationHandler
 
 
   /** Default constructor. */
-  public PooledCompareAuthenticationHandler() {}
+  public PooledBindAuthenticationHandler() {}
 
 
   /**
-   * Creates a new pooled compare authentication handler.
+   * Creates a new pooled bind authentication handler.
    *
    * @param  cf  connection factory
    */
-  public PooledCompareAuthenticationHandler(final PooledConnectionFactory cf)
+  public PooledBindAuthenticationHandler(final PooledConnectionFactory cf)
   {
     setConnectionFactory(cf);
   }
@@ -75,6 +74,16 @@ public class PooledCompareAuthenticationHandler
   }
 
 
+  /** {@inheritDoc} */
+  @Override
+  protected void authenticateInternal(
+    final Connection c, final AuthenticationCriteria ac)
+    throws LdapException
+  {
+    c.bind(ac.getDn(), ac.getCredential());
+  }
+
+
   /**
    * Provides a descriptive string representation of this instance.
    *
@@ -85,10 +94,9 @@ public class PooledCompareAuthenticationHandler
   {
     return
       String.format(
-        "[%s@%d::factory=%s, passwordScheme=%s]",
+        "[%s@%d::factory=%s]",
         getClass().getName(),
         hashCode(),
-        factory,
-        passwordScheme);
+        factory);
   }
 }

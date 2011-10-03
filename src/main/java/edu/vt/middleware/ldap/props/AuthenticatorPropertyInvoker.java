@@ -13,10 +13,10 @@
 */
 package edu.vt.middleware.ldap.props;
 
+import edu.vt.middleware.ldap.auth.AuthenticationHandler;
+import edu.vt.middleware.ldap.auth.AuthenticationResultHandler;
 import edu.vt.middleware.ldap.auth.DnResolver;
 import edu.vt.middleware.ldap.auth.EntryResolver;
-import edu.vt.middleware.ldap.auth.handler.AuthenticationHandler;
-import edu.vt.middleware.ldap.auth.handler.AuthenticationResultHandler;
 
 /**
  * Handles properties for {@link edu.vt.middleware.ldap.auth.Authenticator}.

@@ -19,11 +19,11 @@ import java.util.Set;
 import edu.vt.middleware.ldap.ConnectionFactory;
 import edu.vt.middleware.ldap.ConnectionFactoryManager;
 import edu.vt.middleware.ldap.DefaultConnectionFactory;
+import edu.vt.middleware.ldap.auth.AuthenticationHandler;
 import edu.vt.middleware.ldap.auth.Authenticator;
+import edu.vt.middleware.ldap.auth.BindAuthenticationHandler;
 import edu.vt.middleware.ldap.auth.DnResolver;
 import edu.vt.middleware.ldap.auth.SearchDnResolver;
-import edu.vt.middleware.ldap.auth.handler.AuthenticationHandler;
-import edu.vt.middleware.ldap.auth.handler.BindAuthenticationHandler;
 import edu.vt.middleware.ldap.pool.PooledConnectionFactory;
 import edu.vt.middleware.ldap.pool.PooledConnectionFactoryManager;
 

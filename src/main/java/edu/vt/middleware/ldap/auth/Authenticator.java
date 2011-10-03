@@ -19,10 +19,6 @@ import edu.vt.middleware.ldap.Credential;
 import edu.vt.middleware.ldap.LdapEntry;
 import edu.vt.middleware.ldap.LdapException;
 import edu.vt.middleware.ldap.Response;
-import edu.vt.middleware.ldap.auth.handler.AuthenticationCriteria;
-import edu.vt.middleware.ldap.auth.handler.AuthenticationHandler;
-import edu.vt.middleware.ldap.auth.handler.AuthenticationResultHandler;
-import edu.vt.middleware.ldap.auth.handler.AuthorizationHandler;
 
 /**
  * Provides functionality to authenticate users against an ldap directory.
@@ -123,7 +119,7 @@ public class Authenticator extends AbstractAuthenticator
       authorize(authzHandler, authenticationResultHandlers, conn, ac);
 
       // resolve entry
-      entry = resolveEntry(request, conn, dn);
+      entry = resolveEntry(request, conn, ac);
 
       // authentication and authorization succeeded, report result
       if (authenticationResultHandlers != null &&

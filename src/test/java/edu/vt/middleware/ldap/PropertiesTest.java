@@ -15,11 +15,11 @@ package edu.vt.middleware.ldap;
 
 import java.util.Arrays;
 import javax.security.auth.login.LoginContext;
+import edu.vt.middleware.ldap.auth.AuthenticationHandler;
 import edu.vt.middleware.ldap.auth.AuthenticationRequest;
 import edu.vt.middleware.ldap.auth.Authenticator;
 import edu.vt.middleware.ldap.auth.PooledSearchDnResolver;
 import edu.vt.middleware.ldap.auth.SearchDnResolver;
-import edu.vt.middleware.ldap.auth.handler.AuthenticationHandler;
 import edu.vt.middleware.ldap.handler.DnAttributeResultHandler;
 import edu.vt.middleware.ldap.handler.LdapResultHandler;
 import edu.vt.middleware.ldap.handler.MergeResultHandler;
@@ -291,7 +291,7 @@ public class PropertiesTest
         "java.naming.authoritative"));
 
     AssertJUnit.assertEquals(
-      edu.vt.middleware.ldap.auth.handler.CompareAuthenticationHandler.class,
+      edu.vt.middleware.ldap.auth.CompareAuthenticationHandler.class,
       auth.getAuthenticationHandler().getClass());
     AssertJUnit.assertEquals(
       edu.vt.middleware.ldap.auth.PooledSearchDnResolver.class,

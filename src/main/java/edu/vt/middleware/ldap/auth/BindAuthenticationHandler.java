@@ -11,7 +11,7 @@
   Version: $Revision$
   Updated: $Date$
 */
-package edu.vt.middleware.ldap.auth.handler;
+package edu.vt.middleware.ldap.auth;
 
 import edu.vt.middleware.ldap.Connection;
 import edu.vt.middleware.ldap.ConnectionFactory;
@@ -19,15 +19,14 @@ import edu.vt.middleware.ldap.ConnectionFactoryManager;
 import edu.vt.middleware.ldap.LdapException;
 
 /**
- * Provides an LDAP authentication implementation that leverages a compare
- * operation against the userPassword attribute. The default password scheme
- * used is 'SHA'.
+ * Provides an LDAP authentication implementation that leverages the LDAP bind
+ * operation.
  *
  * @author  Middleware Services
  * @version  $Revision$
  */
-public class CompareAuthenticationHandler
-  extends AbstractCompareAuthenticationHandler
+public class BindAuthenticationHandler
+  extends AbstractAuthenticationHandler
   implements ConnectionFactoryManager
 {
 
@@ -36,15 +35,15 @@ public class CompareAuthenticationHandler
 
 
   /** Default constructor. */
-  public CompareAuthenticationHandler() {}
+  public BindAuthenticationHandler() {}
 
 
   /**
-   * Creates a new compare authentication handler.
+   * Creates a new bind authentication handler.
    *
    * @param  cf  connection factory
    */
-  public CompareAuthenticationHandler(final ConnectionFactory cf)
+  public BindAuthenticationHandler(final ConnectionFactory cf)
   {
     setConnectionFactory(cf);
   }
@@ -71,9 +70,17 @@ public class CompareAuthenticationHandler
   protected Connection getConnection()
     throws LdapException
   {
-    final Connection conn = factory.getConnection();
-    conn.open();
-    return conn;
+    return factory.getConnection();
+  }
+
+
+  /** {@inheritDoc} */
+  @Override
+  protected void authenticateInternal(
+    final Connection c, final AuthenticationCriteria criteria)
+    throws LdapException
+  {
+    c.open(criteria.getDn(), criteria.getCredential());
   }
 
 
@@ -87,10 +94,9 @@ public class CompareAuthenticationHandler
   {
     return
       String.format(
-        "[%s@%d::factory=%s, passwordScheme=%s]",
+        "[%s@%d::factory=%s]",
         getClass().getName(),
         hashCode(),
-        factory,
-        passwordScheme);
+        factory);
   }
 }

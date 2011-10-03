@@ -29,15 +29,18 @@ public interface EntryResolver
 
 
   /**
-   * Attempts to find the LDAP entry for the supplied DN, using the supplied
-   * connection.
+   * Attempts to find the LDAP entry for the supplied authentication criteria,
+   * using the supplied connection. The supplied connection should <b>not</b> be
+   * closed in this method.
    *
-   * @param  connection  that authentication occurred on
-   * @param  dn  that authenticated
+   * @param  conn  that authentication occurred on
+   * @param  criteria  authentication criteria used to perform the
+   * authentication
    *
    * @return  ldap entry
    *
    * @throws  LdapException  if an LDAP error occurs
    */
-  LdapEntry resolve(Connection connection, String dn) throws LdapException;
+  LdapEntry resolve(Connection conn, AuthenticationCriteria criteria)
+    throws LdapException;
 }

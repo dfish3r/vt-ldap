@@ -16,7 +16,7 @@ package edu.vt.middleware.ldap.props;
 import java.io.InputStream;
 import java.util.Properties;
 import java.util.Set;
-import edu.vt.middleware.ldap.auth.handler.BindAuthenticationHandler;
+import edu.vt.middleware.ldap.auth.BindAuthenticationHandler;
 
 /**
  * Reads properties specific to {@link BindAuthenticationHandler} and returns an

@@ -11,7 +11,7 @@
   Version: $Revision$
   Updated: $Date$
 */
-package edu.vt.middleware.ldap.auth.handler;
+package edu.vt.middleware.ldap.auth;
 
 import edu.vt.middleware.ldap.Connection;
 import edu.vt.middleware.ldap.LdapException;
@@ -32,13 +32,13 @@ public interface AuthenticationHandler
    * resulting connection should be returned so that other operations can be
    * performed on it.
    *
-   * @param  ac  to perform the authentication with
+   * @param  criteria  to perform the authentication with
    *
    * @return  connection created by the authentication operation
    *
    * @throws  AuthenticationException  if authentication fails
    * @throws  LdapException  if ldap operation fails
    */
-  Connection authenticate(AuthenticationCriteria ac)
+  Connection authenticate(AuthenticationCriteria criteria)
     throws LdapException;
 }

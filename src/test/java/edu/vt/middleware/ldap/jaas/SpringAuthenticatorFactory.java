@@ -14,9 +14,9 @@
 package edu.vt.middleware.ldap.jaas;
 
 import java.util.Map;
+import edu.vt.middleware.ldap.auth.AuthenticationHandler;
 import edu.vt.middleware.ldap.auth.AuthenticationRequest;
 import edu.vt.middleware.ldap.auth.Authenticator;
-import edu.vt.middleware.ldap.auth.handler.AuthenticationHandler;
 import edu.vt.middleware.ldap.pool.PooledConnectionFactoryManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -22,7 +22,7 @@ http://www.springframework.org/schema/util http://www.springframework.org/schema
   </bean>
 
   <bean id="authenticationHandler"
-    class="edu.vt.middleware.ldap.auth.handler.PooledBindAuthenticationHandler"
+    class="edu.vt.middleware.ldap.auth.PooledBindAuthenticationHandler"
     p:connectionFactory-ref="ahConnectionFactory"
   />
 

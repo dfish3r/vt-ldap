@@ -16,7 +16,6 @@ package edu.vt.middleware.ldap.auth;
 import java.util.Arrays;
 import edu.vt.middleware.ldap.Credential;
 import edu.vt.middleware.ldap.Request;
-import edu.vt.middleware.ldap.auth.handler.AuthorizationHandler;
 
 /**
  * Contains the data required to perform an ldap authentication.

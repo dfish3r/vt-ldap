@@ -11,39 +11,40 @@
   Version: $Revision$
   Updated: $Date$
 */
-package edu.vt.middleware.ldap.auth.handler;
+package edu.vt.middleware.ldap.auth;
 
 import edu.vt.middleware.ldap.Connection;
-import edu.vt.middleware.ldap.ConnectionFactory;
-import edu.vt.middleware.ldap.ConnectionFactoryManager;
 import edu.vt.middleware.ldap.LdapException;
+import edu.vt.middleware.ldap.pool.PooledConnectionFactory;
+import edu.vt.middleware.ldap.pool.PooledConnectionFactoryManager;
 
 /**
- * Provides an LDAP authentication implementation that leverages the LDAP bind
- * operation.
+ * Provides an LDAP authentication implementation that leverages a pool of ldap
+ * connections to perform the compare operation against the userPassword
+ * attribute. The default password scheme used is 'SHA'.
  *
  * @author  Middleware Services
  * @version  $Revision$
  */
-public class BindAuthenticationHandler
-  extends AbstractAuthenticationHandler
-  implements ConnectionFactoryManager
+public class PooledCompareAuthenticationHandler
+  extends AbstractCompareAuthenticationHandler
+  implements PooledConnectionFactoryManager
 {
 
   /** Connection factory. */
-  protected ConnectionFactory factory;
+  protected PooledConnectionFactory factory;
 
 
   /** Default constructor. */
-  public BindAuthenticationHandler() {}
+  public PooledCompareAuthenticationHandler() {}
 
 
   /**
-   * Creates a new bind authentication handler.
+   * Creates a new pooled compare authentication handler.
    *
    * @param  cf  connection factory
    */
-  public BindAuthenticationHandler(final ConnectionFactory cf)
+  public PooledCompareAuthenticationHandler(final PooledConnectionFactory cf)
   {
     setConnectionFactory(cf);
   }
@@ -51,7 +52,7 @@ public class BindAuthenticationHandler
 
   /** {@inheritDoc} */
   @Override
-  public ConnectionFactory getConnectionFactory()
+  public PooledConnectionFactory getConnectionFactory()
   {
     return factory;
   }
@@ -59,7 +60,7 @@ public class BindAuthenticationHandler
 
   /** {@inheritDoc} */
   @Override
-  public void setConnectionFactory(final ConnectionFactory cf)
+  public void setConnectionFactory(final PooledConnectionFactory cf)
   {
     factory = cf;
   }
@@ -74,16 +75,6 @@ public class BindAuthenticationHandler
   }
 
 
-  /** {@inheritDoc} */
-  @Override
-  protected void authenticateInternal(
-    final Connection c, final AuthenticationCriteria criteria)
-    throws LdapException
-  {
-    c.open(criteria.getDn(), criteria.getCredential());
-  }
-
-
   /**
    * Provides a descriptive string representation of this instance.
    *
@@ -94,9 +85,10 @@ public class BindAuthenticationHandler
   {
     return
       String.format(
-        "[%s@%d::factory=%s]",
+        "[%s@%d::factory=%s, passwordScheme=%s]",
         getClass().getName(),
         hashCode(),
-        factory);
+        factory,
+        passwordScheme);
   }
 }

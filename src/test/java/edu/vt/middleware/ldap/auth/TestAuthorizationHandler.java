@@ -11,13 +11,12 @@
   Version: $Revision$
   Updated: $Date$
 */
-package edu.vt.middleware.ldap.auth.handler;
+package edu.vt.middleware.ldap.auth;
 
 import java.util.ArrayList;
 import java.util.List;
 import edu.vt.middleware.ldap.Connection;
 import edu.vt.middleware.ldap.LdapException;
-import edu.vt.middleware.ldap.auth.AuthorizationException;
 
 /**
  * Class for testing that authorization handlers are firing.
