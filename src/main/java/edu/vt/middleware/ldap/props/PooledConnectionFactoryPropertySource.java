@@ -14,12 +14,14 @@
 package edu.vt.middleware.ldap.props;
 
 import java.io.InputStream;
+import java.util.Collections;
 import java.util.Properties;
 import java.util.Set;
-import edu.vt.middleware.ldap.ConnectionConfig;
-import edu.vt.middleware.ldap.pool.PoolConfig;
+import edu.vt.middleware.ldap.pool.BlockingConnectionPool;
+import edu.vt.middleware.ldap.pool.ConnectionPool;
+import edu.vt.middleware.ldap.pool.ConnectionPoolType;
 import edu.vt.middleware.ldap.pool.PooledConnectionFactory;
-import edu.vt.middleware.ldap.provider.ProviderConfig;
+import edu.vt.middleware.ldap.pool.SoftLimitConnectionPool;
 
 /**
  * Reads properties specific to {@link PooledConnectionFactory} and returns an
@@ -32,9 +34,8 @@ public final class PooledConnectionFactoryPropertySource
   extends AbstractPropertySource<PooledConnectionFactory>
 {
 
-  /** Invoker for connection factory. */
-  private static final PooledConnectionFactoryPropertyInvoker INVOKER =
-    new PooledConnectionFactoryPropertyInvoker(PooledConnectionFactory.class);
+  /** Connection pool type. */
+  private ConnectionPoolType poolType = ConnectionPoolType.BLOCKING;
 
 
   /**
@@ -74,7 +75,7 @@ public final class PooledConnectionFactoryPropertySource
   public PooledConnectionFactoryPropertySource(
     final PooledConnectionFactory cf, final Properties props)
   {
-    this(cf, PropertyDomain.LDAP, props);
+    this(cf, PropertyDomain.POOL, props);
   }
 
 
@@ -96,36 +97,50 @@ public final class PooledConnectionFactoryPropertySource
   }
 
 
+  /**
+   * Returns the pool type.
+   *
+   * @return  pool type
+   */
+  public ConnectionPoolType getPoolType()
+  {
+    return poolType;
+  }
+
+
+  /**
+   *
+   * @param  pt  pool type
+   */
+  public void setPoolType(final ConnectionPoolType pt)
+  {
+    poolType = pt;
+  }
+
+
   /** {@inheritDoc} */
   @Override
   public void initialize()
   {
-    initializeObject(INVOKER);
+    ConnectionPool cp = null;
+    if (poolType == ConnectionPoolType.BLOCKING) {
+      cp = new BlockingConnectionPool();
+      final BlockingConnectionPoolPropertySource cpPropSource =
+        new BlockingConnectionPoolPropertySource(
+          (BlockingConnectionPool) cp, propertiesDomain, properties);
+      cpPropSource.initialize();
+    } else if (poolType == ConnectionPoolType.SOFTLIMIT) {
+      cp = new SoftLimitConnectionPool();
+      final BlockingConnectionPoolPropertySource cpPropSource =
+        new BlockingConnectionPoolPropertySource(
+          (SoftLimitConnectionPool) cp, propertiesDomain, properties);
+      cpPropSource.initialize();
+    } else {
+      throw new IllegalStateException("Unknown pool type: " + poolType);
+    }
 
-    final ConnectionConfig cc = new ConnectionConfig();
-    final ConnectionConfigPropertySource ccPropSource =
-      new ConnectionConfigPropertySource(cc, propertiesDomain, properties);
-    ccPropSource.initialize();
-    object.setConnectionConfig(cc);
-
-    final ProviderConfig providerConfig = new ProviderConfig();
-    final ProviderConfigPropertySource providerPropSource =
-      new ProviderConfigPropertySource(
-        providerConfig, propertiesDomain, properties);
-    providerPropSource.initialize();
-    object.getProvider().getProviderConfig().setConnectionStrategy(
-      providerConfig.getConnectionStrategy());
-    object.getProvider().getProviderConfig().setLogCredentials(
-      providerConfig.getLogCredentials());
-    object.getProvider().getProviderConfig().setOperationRetryResultCodes(
-      providerConfig.getOperationRetryResultCodes());
-    object.getProvider().getProviderConfig().setProperties(extraProps);
-
-    final PoolConfig poolConfig = new PoolConfig();
-    final PoolConfigPropertySource poolPropSource =
-      new PoolConfigPropertySource(poolConfig, propertiesDomain, properties);
-    poolPropSource.initialize();
-    object.setPoolConfig(poolConfig);
+    cp.initialize();
+    object.setConnectionPool(cp);
   }
 
 
@@ -136,6 +151,6 @@ public final class PooledConnectionFactoryPropertySource
    */
   public static Set<String> getProperties()
   {
-    return INVOKER.getProperties();
+    return Collections.emptySet();
   }
 }

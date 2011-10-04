@@ -14,15 +14,16 @@
 package edu.vt.middleware.ldap.auth;
 
 import edu.vt.middleware.ldap.AbstractTest;
-import edu.vt.middleware.ldap.ConnectionConfig;
 import edu.vt.middleware.ldap.ConnectionFactory;
 import edu.vt.middleware.ldap.ConnectionFactoryManager;
 import edu.vt.middleware.ldap.Credential;
+import edu.vt.middleware.ldap.DefaultConnectionFactory;
 import edu.vt.middleware.ldap.LdapEntry;
 import edu.vt.middleware.ldap.LdapException;
 import edu.vt.middleware.ldap.LdapResult;
 import edu.vt.middleware.ldap.SearchFilter;
 import edu.vt.middleware.ldap.TestUtil;
+import edu.vt.middleware.ldap.pool.BlockingConnectionPool;
 import edu.vt.middleware.ldap.pool.PooledConnectionFactory;
 import edu.vt.middleware.ldap.pool.PooledConnectionFactoryManager;
 import org.testng.AssertJUnit;
@@ -94,11 +95,12 @@ public class AuthenticatorTest extends AbstractTest
     throws Exception
   {
     final AuthenticationHandler ah = pooledTLSAuth.getAuthenticationHandler();
-    final ConnectionFactory cf =
-      ((ConnectionFactoryManager) ah).getConnectionFactory();
-    final ConnectionConfig cc = cf.getConnectionConfig();
-    final PooledConnectionFactory pcf = new PooledConnectionFactory(cc);
-    pcf.initialize();
+    final DefaultConnectionFactory cf =
+      (DefaultConnectionFactory)
+        ((ConnectionFactoryManager) ah).getConnectionFactory();
+    final BlockingConnectionPool cp = new BlockingConnectionPool(cf);
+    cp.initialize();
+    final PooledConnectionFactory pcf = new PooledConnectionFactory(cp);
     pooledTLSAuth.setAuthenticationHandler(
       new PooledBindAuthenticationHandler(pcf));
 
@@ -132,7 +134,8 @@ public class AuthenticatorTest extends AbstractTest
     super.deleteLdapEntry(testLdapEntry.getDn());
     super.deleteLdapEntry(specialCharsLdapEntry.getDn());
     final AuthenticationHandler ah = pooledTLSAuth.getAuthenticationHandler();
-    (((PooledConnectionFactoryManager) ah).getConnectionFactory()).close();
+    (((PooledConnectionFactoryManager)
+      ah).getConnectionFactory().getConnectionPool()).close();
   }
 
 
@@ -218,10 +221,12 @@ public class AuthenticatorTest extends AbstractTest
   {
     final Authenticator auth = TestUtil.readAuthenticator(
       TestUtil.class.getResourceAsStream("/ldap.tls.properties"));
+    final SearchDnResolver dnResolver = (SearchDnResolver) auth.getDnResolver();
+    final DefaultConnectionFactory resolverCf =
+      (DefaultConnectionFactory) dnResolver.getConnectionFactory();
     AssertJUnit.assertEquals(
       ldapUrl,
-      ((SearchDnResolver) auth.getDnResolver()).
-        getConnectionFactory().getConnectionConfig().getLdapUrl());
+      resolverCf.getConnectionConfig().getLdapUrl());
     AssertJUnit.assertEquals(
       baseDn, ((SearchDnResolver) auth.getDnResolver()).getBaseDn());
   }

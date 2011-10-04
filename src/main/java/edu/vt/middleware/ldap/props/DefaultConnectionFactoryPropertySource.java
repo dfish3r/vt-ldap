@@ -16,9 +16,8 @@ package edu.vt.middleware.ldap.props;
 import java.io.InputStream;
 import java.util.Properties;
 import java.util.Set;
-
 import edu.vt.middleware.ldap.ConnectionConfig;
-import edu.vt.middleware.ldap.ConnectionFactory;
+import edu.vt.middleware.ldap.DefaultConnectionFactory;
 import edu.vt.middleware.ldap.provider.ProviderConfig;
 
 /**
@@ -30,12 +29,12 @@ import edu.vt.middleware.ldap.provider.ProviderConfig;
  * @version  $Revision$ $Date$
  */
 public final class DefaultConnectionFactoryPropertySource
-  extends AbstractPropertySource<ConnectionFactory>
+  extends AbstractPropertySource<DefaultConnectionFactory>
 {
 
   /** Invoker for connection factory. */
   private static final DefaultConnectionFactoryPropertyInvoker INVOKER =
-    new DefaultConnectionFactoryPropertyInvoker(ConnectionFactory.class);
+    new DefaultConnectionFactoryPropertyInvoker(DefaultConnectionFactory.class);
 
 
   /**
@@ -44,7 +43,8 @@ public final class DefaultConnectionFactoryPropertySource
    *
    * @param  cf  connection factory to invoke properties on
    */
-  public DefaultConnectionFactoryPropertySource(final ConnectionFactory cf)
+  public DefaultConnectionFactoryPropertySource(
+    final DefaultConnectionFactory cf)
   {
     this(
       cf,
@@ -60,7 +60,7 @@ public final class DefaultConnectionFactoryPropertySource
    * @param  is  to read properties from
    */
   public DefaultConnectionFactoryPropertySource(
-    final ConnectionFactory cf, final InputStream is)
+    final DefaultConnectionFactory cf, final InputStream is)
   {
     this(cf, loadProperties(is));
   }
@@ -73,7 +73,7 @@ public final class DefaultConnectionFactoryPropertySource
    * @param  props  to read properties from
    */
   public DefaultConnectionFactoryPropertySource(
-    final ConnectionFactory cf, final Properties props)
+    final DefaultConnectionFactory cf, final Properties props)
   {
     this(cf, PropertyDomain.LDAP, props);
   }
@@ -87,7 +87,7 @@ public final class DefaultConnectionFactoryPropertySource
    * @param  props  to read properties from
    */
   public DefaultConnectionFactoryPropertySource(
-    final ConnectionFactory cf,
+    final DefaultConnectionFactory cf,
     final PropertyDomain domain,
     final Properties props)
   {

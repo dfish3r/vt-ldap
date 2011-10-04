@@ -53,7 +53,7 @@ public class DefaultConnectionFactory implements ConnectionFactory
    */
   public DefaultConnectionFactory(final String ldapUrl)
   {
-    config = new ConnectionConfig(ldapUrl);
+    setConnectionConfig(new ConnectionConfig(ldapUrl));
   }
 
 
@@ -64,7 +64,7 @@ public class DefaultConnectionFactory implements ConnectionFactory
    */
   public DefaultConnectionFactory(final ConnectionConfig cc)
   {
-    config = cc;
+    setConnectionConfig(cc);
   }
 
 
@@ -77,8 +77,8 @@ public class DefaultConnectionFactory implements ConnectionFactory
   public DefaultConnectionFactory(
     final ConnectionConfig cc, final Provider<?> p)
   {
-    config = cc;
-    provider = p;
+    setConnectionConfig(cc);
+    setProvider(p);
   }
 
 
@@ -94,13 +94,15 @@ public class DefaultConnectionFactory implements ConnectionFactory
 
 
   /**
-   * Sets the connection config.
+   * Sets the connection config. Once invoked the supplied connection config is
+   * made immutable. See {@link ConnectionConfig#makeImmutable()}.
    *
    * @param  cc  connection config
    */
   public void setConnectionConfig(final ConnectionConfig cc)
   {
     config = cc;
+    config.makeImmutable();
   }
 
 

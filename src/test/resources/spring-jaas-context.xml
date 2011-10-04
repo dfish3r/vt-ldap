@@ -33,16 +33,41 @@ http://www.springframework.org/schema/util http://www.springframework.org/schema
 
   <bean id="drConnectionFactory"
     class="edu.vt.middleware.ldap.pool.PooledConnectionFactory"
-    p:connectionConfig-ref="connectionConfig"
-    p:poolConfig-ref="poolConfig"
-    init-method="initialize"
+    p:connectionPool-ref="drPool"
   />
 
   <bean id="ahConnectionFactory"
     class="edu.vt.middleware.ldap.pool.PooledConnectionFactory"
+    p:connectionPool-ref="ahPool"
+  />
+
+  <bean id="drPool"
+    class="edu.vt.middleware.ldap.pool.BlockingConnectionPool"
+    init-method="initialize">
+    <constructor-arg index="0" ref="poolConfig"/>
+    <constructor-arg index="1" ref="connectionFactory"/>
+  </bean>
+
+  <bean id="ahPool"
+    class="edu.vt.middleware.ldap.pool.BlockingConnectionPool"
+    init-method="initialize">
+    <constructor-arg index="0" ref="poolConfig"/>
+    <constructor-arg index="1" ref="connectionFactory"/>
+  </bean>
+
+  <bean id="poolConfig"
+    class="edu.vt.middleware.ldap.pool.PoolConfig"
+    p:minPoolSize="5"
+    p:maxPoolSize="20"
+    p:validatePeriodically="true"
+    p:validatePeriod="30"
+    p:expirationTime="600"
+    p:prunePeriod="60"
+  />
+
+  <bean id="connectionFactory"
+    class="edu.vt.middleware.ldap.DefaultConnectionFactory"
     p:connectionConfig-ref="connectionConfig"
-    p:poolConfig-ref="poolConfig"
-    init-method="initialize"
   />
 
   <bean id="connectionConfig"
@@ -63,16 +88,6 @@ http://www.springframework.org/schema/util http://www.springframework.org/schema
       </bean>
     </property>
   </bean>
-
-  <bean id="poolConfig"
-    class="edu.vt.middleware.ldap.pool.PoolConfig"
-    p:minPoolSize="5"
-    p:maxPoolSize="20"
-    p:validatePeriodically="true"
-    p:validatePeriod="30"
-    p:expirationTime="600"
-    p:prunePeriod="60"
-  />
 
   <bean id="hostnameVerifier"
     class="edu.vt.middleware.ldap.AnyHostnameVerifier"

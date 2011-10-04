@@ -44,19 +44,6 @@ public abstract class AbstractPool<T>
 
 
   /**
-   * Creates a new pool with the supplied pool configuration. The pool
-   * configuration will be marked as immutable by this pool.
-   *
-   * @param  pc  pool config
-   */
-  public AbstractPool(final PoolConfig pc)
-  {
-    poolConfig = pc;
-    poolConfig.makeImmutable();
-  }
-
-
-  /**
    * Returns the configuration for this pool.
    *
    * @return  pool config
@@ -64,6 +51,17 @@ public abstract class AbstractPool<T>
   public PoolConfig getPoolConfig()
   {
     return poolConfig;
+  }
+
+
+  /**
+   * Sets the configuration for this pool.
+   *
+   * @param  pc  pool config
+   */
+  public void setPoolConfig(final PoolConfig pc)
+  {
+    poolConfig = pc;
   }
 
 

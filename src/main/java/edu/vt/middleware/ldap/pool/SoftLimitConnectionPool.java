@@ -15,7 +15,7 @@ package edu.vt.middleware.ldap.pool;
 
 import java.util.NoSuchElementException;
 import edu.vt.middleware.ldap.Connection;
-import edu.vt.middleware.ldap.ConnectionFactory;
+import edu.vt.middleware.ldap.DefaultConnectionFactory;
 
 /**
  * Implements a pool of connections that has a set minimum and maximum size. The
@@ -36,10 +36,16 @@ public class SoftLimitConnectionPool extends BlockingConnectionPool
 
   /**
    * Creates a new soft limit pool.
+   */
+  public SoftLimitConnectionPool() {}
+
+
+  /**
+   * Creates a new soft limit pool.
    *
    * @param  cf  connection factory
    */
-  public SoftLimitConnectionPool(final ConnectionFactory cf)
+  public SoftLimitConnectionPool(final DefaultConnectionFactory cf)
   {
     super(new PoolConfig(), cf);
   }
@@ -52,7 +58,7 @@ public class SoftLimitConnectionPool extends BlockingConnectionPool
    * @param  cf  connection factory
    */
   public SoftLimitConnectionPool(
-    final PoolConfig pc, final ConnectionFactory cf)
+    final PoolConfig pc, final DefaultConnectionFactory cf)
   {
     super(pc, cf);
   }

@@ -23,10 +23,8 @@ import edu.vt.middleware.ldap.SearchFilter;
 import edu.vt.middleware.ldap.SearchOperation;
 import edu.vt.middleware.ldap.SearchRequest;
 import edu.vt.middleware.ldap.pool.ConnectionPoolType;
-import edu.vt.middleware.ldap.pool.PoolConfig;
 import edu.vt.middleware.ldap.pool.PoolException;
 import edu.vt.middleware.ldap.pool.PooledConnectionFactory;
-import edu.vt.middleware.ldap.props.PoolConfigPropertySource;
 import edu.vt.middleware.ldap.props.PooledConnectionFactoryPropertySource;
 import edu.vt.middleware.ldap.props.SearchRequestPropertySource;
 import org.slf4j.Logger;
@@ -96,21 +94,13 @@ public abstract class AbstractServlet extends HttpServlet
     final String poolType = getInitParameter(POOL_TYPE);
     logger.debug("{} = {}", POOL_TYPE, poolType);
 
-    final PoolConfig pc = new PoolConfig();
-    final PoolConfigPropertySource pcSource =
-      new PoolConfigPropertySource(
-        pc, SearchServlet.class.getResourceAsStream(poolPropertiesFile));
-    pcSource.initialize();
-
     connectionFactory = new PooledConnectionFactory();
     final PooledConnectionFactoryPropertySource cfPropSource =
       new PooledConnectionFactoryPropertySource(
         connectionFactory,
         SearchServlet.class.getResourceAsStream(propertiesFile));
+    cfPropSource.setPoolType(ConnectionPoolType.valueOf(poolType));
     cfPropSource.initialize();
-    connectionFactory.setPoolConfig(pc);
-    connectionFactory.setPoolType(ConnectionPoolType.valueOf(poolType));
-    connectionFactory.initialize();
   }
 
 
@@ -159,7 +149,7 @@ public abstract class AbstractServlet extends HttpServlet
   public void destroy()
   {
     try {
-      connectionFactory.close();
+      connectionFactory.getConnectionPool().close();
     } finally {
       super.destroy();
     }

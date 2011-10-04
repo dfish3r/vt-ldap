@@ -19,7 +19,6 @@ import java.util.Map;
 import edu.vt.middleware.ldap.AbstractTest;
 import edu.vt.middleware.ldap.Connection;
 import edu.vt.middleware.ldap.ConnectionConfig;
-import edu.vt.middleware.ldap.ConnectionFactory;
 import edu.vt.middleware.ldap.DefaultConnectionFactory;
 import edu.vt.middleware.ldap.LdapEntry;
 import edu.vt.middleware.ldap.LdapResult;
@@ -135,8 +134,8 @@ public class ConnectionPoolTest extends AbstractTest
     final ConnectionConfig connStrategyCc = TestUtil.readConnectionConfig(null);
     connStrategyCc.setLdapUrl(
       String.format("%s ldap://dne.middleware.vt.edu", host));
-    final ConnectionFactory connStrategyCf = new DefaultConnectionFactory(
-      connStrategyCc);
+    final DefaultConnectionFactory connStrategyCf =
+      new DefaultConnectionFactory(connStrategyCc);
     connStrategyCf.getProvider().getProviderConfig().setConnectionStrategy(
       ConnectionStrategy.ROUND_ROBIN);
     connStrategyPool = new BlockingConnectionPool(

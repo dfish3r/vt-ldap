@@ -15,7 +15,6 @@ package edu.vt.middleware.ldap.jaas;
 
 import java.util.HashMap;
 import java.util.Map;
-import edu.vt.middleware.ldap.ConnectionFactory;
 import edu.vt.middleware.ldap.ConnectionFactoryManager;
 import edu.vt.middleware.ldap.DefaultConnectionFactory;
 import edu.vt.middleware.ldap.SearchRequest;
@@ -100,12 +99,11 @@ public class PropertiesRoleResolverFactory extends AbstractPropertiesFactory
         new PooledConnectionFactoryPropertySource(
           cf, PropertyDomain.AUTH, createProperties(options));
       source.initialize();
-      cf.initialize();
       cfm.setConnectionFactory(cf);
     }
     if (rr instanceof ConnectionFactoryManager) {
       final ConnectionFactoryManager cfm = (ConnectionFactoryManager) rr;
-      final ConnectionFactory cf = new DefaultConnectionFactory();
+      final DefaultConnectionFactory cf = new DefaultConnectionFactory();
       final DefaultConnectionFactoryPropertySource source =
         new DefaultConnectionFactoryPropertySource(
           cf, PropertyDomain.AUTH, createProperties(options));
@@ -141,7 +139,7 @@ public class PropertiesRoleResolverFactory extends AbstractPropertiesFactory
       if (rr instanceof PooledConnectionFactoryManager) {
         final PooledConnectionFactoryManager cfm =
           (PooledConnectionFactoryManager) rr;
-        cfm.getConnectionFactory().close();
+        cfm.getConnectionFactory().getConnectionPool().close();
       }
     }
   }

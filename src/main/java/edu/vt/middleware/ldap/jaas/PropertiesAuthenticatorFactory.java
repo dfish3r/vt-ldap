@@ -107,13 +107,13 @@ public class PropertiesAuthenticatorFactory extends AbstractPropertiesFactory
       if (a.getDnResolver() instanceof PooledConnectionFactoryManager) {
         final PooledConnectionFactoryManager cfm =
           (PooledConnectionFactoryManager) a.getDnResolver();
-        cfm.getConnectionFactory().close();
+        cfm.getConnectionFactory().getConnectionPool().close();
       }
       final AuthenticationHandler ah = a.getAuthenticationHandler();
       if (ah instanceof PooledConnectionFactoryManager) {
         final PooledConnectionFactoryManager cfm =
           (PooledConnectionFactoryManager) ah;
-        cfm.getConnectionFactory().close();
+        cfm.getConnectionFactory().getConnectionPool().close();
       }
     }
   }

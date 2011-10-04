@@ -910,7 +910,7 @@ public class SearchOperationTest extends AbstractTest
     throws Exception
   {
     final ResultCode retryResultCode = ResultCode.valueOf(resultCode);
-    final ConnectionFactory cf = new DefaultConnectionFactory(
+    final DefaultConnectionFactory cf = new DefaultConnectionFactory(
       TestUtil.readConnectionConfig(null));
     cf.getProvider().getProviderConfig().setOperationRetryResultCodes(
       new ResultCode[] {retryResultCode, });

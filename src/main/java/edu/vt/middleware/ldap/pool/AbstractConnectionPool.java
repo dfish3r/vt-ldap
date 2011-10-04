@@ -22,7 +22,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
 import edu.vt.middleware.ldap.Connection;
-import edu.vt.middleware.ldap.ConnectionFactory;
+import edu.vt.middleware.ldap.DefaultConnectionFactory;
 import edu.vt.middleware.ldap.LdapException;
 
 /**
@@ -61,7 +61,7 @@ public abstract class AbstractConnectionPool extends AbstractPool<Connection>
   protected Queue<PooledConnection> active = new LinkedList<PooledConnection>();
 
   /** Connection factory to create connections with. */
-  protected ConnectionFactory connectionFactory;
+  protected DefaultConnectionFactory connectionFactory;
 
   /** Whether to connect to the ldap on connection creation. */
   protected boolean connectOnCreate = true;
@@ -80,28 +80,24 @@ public abstract class AbstractConnectionPool extends AbstractPool<Connection>
 
 
   /**
-   * Creates a new pool with the supplied pool configuration and connection
-   * factory. The configurations will be marked as immutable by this pool.
-   *
-   * @param  pc  pool config
-   * @param  cf  connection factory
-   */
-  public AbstractConnectionPool(final PoolConfig pc, final ConnectionFactory cf)
-  {
-    super(pc);
-    connectionFactory = cf;
-    connectionFactory.getConnectionConfig().makeImmutable();
-  }
-
-
-  /**
    * Returns the connection factory for this pool.
    *
    * @return  connection factory
    */
-  public ConnectionFactory getConnectionFactory()
+  public DefaultConnectionFactory getConnectionFactory()
   {
     return connectionFactory;
+  }
+
+
+  /**
+   * Sets the connection factory for this pool.
+   *
+   * @param  cf  connection factory
+   */
+  public void setConnectionFactory(final DefaultConnectionFactory cf)
+  {
+    connectionFactory = cf;
   }
 
 
@@ -129,10 +125,15 @@ public abstract class AbstractConnectionPool extends AbstractPool<Connection>
   }
 
 
-  /** Initialize this pool for use. */
+  /**
+   * Initialize this pool for use. Once invoked the pool config is made
+   * immutable. See {@link PoolConfig#makeImmutable()}.
+   */
   public void initialize()
   {
     logger.debug("beginning pool initialization");
+
+    poolConfig.makeImmutable();
 
     final Runnable prune = new Runnable() {
       public void run()
@@ -607,7 +608,7 @@ public abstract class AbstractConnectionPool extends AbstractPool<Connection>
      *
      * @param  cf  connection factory
      */
-    protected PooledConnection(final ConnectionFactory cf)
+    protected PooledConnection(final DefaultConnectionFactory cf)
     {
       super(
         cf.getConnectionConfig(),

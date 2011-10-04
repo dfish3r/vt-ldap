@@ -108,7 +108,7 @@ public abstract class AbstractCli
     final CommandLine line)
     throws Exception
   {
-    final ConnectionFactory factory = new DefaultConnectionFactory();
+    final DefaultConnectionFactory factory = new DefaultConnectionFactory();
     final DefaultConnectionFactoryPropertySource cfSource =
       new DefaultConnectionFactoryPropertySource(
         factory, getPropertiesFromOptions(PropertyDomain.LDAP.value(), line));

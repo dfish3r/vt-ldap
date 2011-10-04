@@ -16,7 +16,6 @@ package edu.vt.middleware.ldap.props;
 import java.io.InputStream;
 import java.util.Properties;
 import java.util.Set;
-import edu.vt.middleware.ldap.ConnectionFactory;
 import edu.vt.middleware.ldap.ConnectionFactoryManager;
 import edu.vt.middleware.ldap.DefaultConnectionFactory;
 import edu.vt.middleware.ldap.auth.AuthenticationHandler;
@@ -178,7 +177,7 @@ public final class AuthenticatorPropertySource
    */
   private void initConnectionFactoryManager(final ConnectionFactoryManager cfm)
   {
-    final ConnectionFactory cf = new DefaultConnectionFactory();
+    final DefaultConnectionFactory cf = new DefaultConnectionFactory();
     final DefaultConnectionFactoryPropertySource cfPropSource =
       new DefaultConnectionFactoryPropertySource(
         cf, propertiesDomain, properties);
@@ -201,7 +200,6 @@ public final class AuthenticatorPropertySource
       new PooledConnectionFactoryPropertySource(
         cf, propertiesDomain, properties);
     cfPropSource.initialize();
-    cf.initialize();
     cfm.setConnectionFactory(cf);
   }
 
