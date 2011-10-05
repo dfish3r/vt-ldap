@@ -168,7 +168,7 @@ public class BlockingConnectionPool extends AbstractConnectionPool
         "Pool is empty and connection creation failed");
     }
 
-    return pc;
+    return createConnectionProxy(pc);
   }
 
 

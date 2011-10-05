@@ -13,6 +13,9 @@
 */
 package edu.vt.middleware.ldap.pool;
 
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.concurrent.Executors;
@@ -185,7 +188,7 @@ public abstract class AbstractConnectionPool extends AbstractPool<Connection>
           count < poolConfig.getMinPoolSize() * 2) {
         final PooledConnection pc = createAvailable();
         if (poolConfig.isValidateOnCheckIn()) {
-          if (validate(pc)) {
+          if (validate(pc.getConnection())) {
             logger.trace("connection passed initialize validation: {}", pc);
           } else {
             logger.warn("connection failed initialize validation: {}", pc);
@@ -207,12 +210,12 @@ public abstract class AbstractConnectionPool extends AbstractPool<Connection>
     try {
       while (available.size() > 0) {
         final PooledConnection pc = available.remove();
-        pc.destroy();
+        pc.getConnection().close();
         logger.trace("destroyed connection: {}", pc);
       }
       while (active.size() > 0) {
         final PooledConnection pc = active.remove();
-        pc.destroy();
+        pc.getConnection().close();
         logger.trace("destroyed connection: {}", pc);
       }
       logger.debug("pool closed");
@@ -243,9 +246,9 @@ public abstract class AbstractConnectionPool extends AbstractPool<Connection>
   /**
    * Returns a connection to the pool.
    *
-   * @param c  pooled connection
+   * @param pc  pool connection
    */
-  protected abstract void putConnection(final PooledConnection c);
+  protected abstract void putConnection(final PooledConnection pc);
 
 
   /**
@@ -256,10 +259,11 @@ public abstract class AbstractConnectionPool extends AbstractPool<Connection>
    */
   protected PooledConnection createConnection()
   {
-    PooledConnection conn = new PooledConnection(connectionFactory);
+    PooledConnection conn = new PooledConnection(
+      connectionFactory.getConnection());
     if (connectOnCreate) {
       try {
-        conn.open();
+        conn.getConnection().open();
       } catch (LdapException e) {
         logger.error("unabled to connect to the ldap", e);
         conn = null;
@@ -333,7 +337,7 @@ public abstract class AbstractConnectionPool extends AbstractPool<Connection>
     }
     if (destroy) {
       logger.trace("removing available connection: {}", pc);
-      pc.destroy();
+      pc.getConnection().close();
       logger.trace("destroyed connection: {}", pc);
     }
   }
@@ -359,7 +363,7 @@ public abstract class AbstractConnectionPool extends AbstractPool<Connection>
     }
     if (destroy) {
       logger.trace("removing active connection: {}", pc);
-      pc.destroy();
+      pc.getConnection().close();
       logger.trace("destroyed connection: {}", pc);
     }
   }
@@ -390,7 +394,7 @@ public abstract class AbstractConnectionPool extends AbstractPool<Connection>
     }
     if (destroy) {
       logger.trace("removing active connection: {}", pc);
-      pc.destroy();
+      pc.getConnection().close();
       logger.trace("destroyed connection: {}", pc);
     }
   }
@@ -409,12 +413,12 @@ public abstract class AbstractConnectionPool extends AbstractPool<Connection>
   protected void activateAndValidate(final PooledConnection pc)
     throws PoolException
   {
-    if (!activate(pc)) {
+    if (!activate(pc.getConnection())) {
       logger.warn("connection failed activation: {}", pc);
       removeAvailableAndActive(pc);
       throw new ActivationException("Activation of connection failed");
     }
-    if (poolConfig.isValidateOnCheckOut() && !validate(pc)) {
+    if (poolConfig.isValidateOnCheckOut() && !validate(pc.getConnection())) {
       logger.warn("connection failed check out validation: {}", pc);
       removeAvailableAndActive(pc);
       throw new ValidationException("Validation of connection failed");
@@ -434,7 +438,7 @@ public abstract class AbstractConnectionPool extends AbstractPool<Connection>
   {
     boolean valid = false;
     if (poolConfig.isValidateOnCheckIn()) {
-      if (!validate(pc)) {
+      if (!validate(pc.getConnection())) {
         logger.warn("connection failed check in validation: {}", pc);
       } else {
         valid = true;
@@ -442,7 +446,7 @@ public abstract class AbstractConnectionPool extends AbstractPool<Connection>
     } else {
       valid = true;
     }
-    if (valid && !passivate(pc)) {
+    if (valid && !passivate(pc.getConnection())) {
       valid = false;
       logger.warn("connection failed passivation: {}", pc);
     }
@@ -469,7 +473,7 @@ public abstract class AbstractConnectionPool extends AbstractPool<Connection>
               TimeUnit.SECONDS.toMillis(poolConfig.getExpirationTime())) {
             pc = available.remove();
             logger.trace("removing {} in the pool for {}ms", pc, time);
-            pc.destroy();
+            pc.getConnection().close();
             logger.trace("destroyed connection: {}", pc);
           } else {
             break;
@@ -502,7 +506,7 @@ public abstract class AbstractConnectionPool extends AbstractPool<Connection>
             new LinkedList<PooledConnection>();
           for (PooledConnection pc : available) {
             logger.trace("validating {}", pc);
-            if (validate(pc)) {
+            if (validate(pc.getConnection())) {
               logger.trace("connection passed validation: {}", pc);
             } else {
               logger.warn("connection failed validation: {}", pc);
@@ -512,7 +516,7 @@ public abstract class AbstractConnectionPool extends AbstractPool<Connection>
           for (PooledConnection pc : remove) {
             logger.trace("removing {} from the pool", pc);
             available.remove(pc);
-            pc.destroy();
+            pc.getConnection().close();
             logger.trace("destroyed connection: {}", pc);
           }
         }
@@ -547,6 +551,19 @@ public abstract class AbstractConnectionPool extends AbstractPool<Connection>
   public int activeCount()
   {
     return active.size();
+  }
+
+
+  /**
+   * Creates a connection proxy using the supplied pool connection.
+   *
+   * @param  pc  pool connection to create proxy with
+   * @return  connection proxy
+   */
+  protected Connection createConnectionProxy(final PooledConnection pc)
+  {
+    return (Connection) Proxy.newProxyInstance(
+      Connection.class.getClassLoader(), new Class[] {Connection.class}, pc);
   }
 
 
@@ -593,11 +610,14 @@ public abstract class AbstractConnectionPool extends AbstractPool<Connection>
    * @author  Middleware Services
    * @version  $Revision$ $Date$
    */
-  protected class PooledConnection extends Connection
+  protected class PooledConnection implements InvocationHandler
   {
 
     /** hash code seed. */
     protected static final int HASH_CODE_SEED = 89;
+
+    /** Underlying connection. */
+    private Connection conn;
 
     /** Time this connection was created. */
     private long createdTime = System.currentTimeMillis();
@@ -606,13 +626,22 @@ public abstract class AbstractConnectionPool extends AbstractPool<Connection>
     /**
      * Creates a new pooled connection.
      *
-     * @param  cf  connection factory
+     * @param  c  connection to participate in this pool
      */
-    protected PooledConnection(final DefaultConnectionFactory cf)
+    protected PooledConnection(final Connection c)
     {
-      super(
-        cf.getConnectionConfig(),
-        cf.getProvider().getConnectionFactory(cf.getConnectionConfig()));
+      conn = c;
+    }
+
+
+    /**
+     * Returns the connection.
+     *
+     * @return  underlying connection
+     */
+    public Connection getConnection()
+    {
+      return conn;
     }
 
 
@@ -624,20 +653,6 @@ public abstract class AbstractConnectionPool extends AbstractPool<Connection>
     public long getCreatedTime()
     {
       return createdTime;
-    }
-
-
-    /** This will return this connection to it's pool. */
-    public synchronized void close()
-    {
-      putConnection(this);
-    }
-
-
-    /** This will close the connection to the LDAP. */
-    protected synchronized void destroy()
-    {
-      super.close();
     }
 
 
@@ -668,8 +683,25 @@ public abstract class AbstractConnectionPool extends AbstractPool<Connection>
     public int hashCode()
     {
       int hc = HASH_CODE_SEED;
-      hc += super.hashCode();
+      if (conn != null) {
+        hc += conn.hashCode();
+      }
       return hc;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public Object invoke(
+      final Object proxy, final Method method, final Object[] args)
+      throws Throwable
+    {
+      if ("close".equals(method.getName())) {
+        putConnection(this);
+        return null;
+      } else {
+        return method.invoke(conn, args);
+      }
     }
   }
 }

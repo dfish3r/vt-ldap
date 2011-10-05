@@ -56,17 +56,20 @@ public class TestControl
     if (!Boolean.valueOf(ignoreLock)) {
       final Connection conn = TestUtil.createSetupConnection();
       conn.open();
+      final CompareOperation compare = new CompareOperation(conn);
       // wait for other tests to finish
       int i = 1;
-      while (!conn.compare(DN, ATTR_IDLE)) {
+      while (!compare.execute(new CompareRequest(DN, ATTR_IDLE)).getResult()) {
         System.err.println("Waiting for test lock...");
         Thread.sleep(WAIT_TIME * i++);
       }
-      conn.modify(
-        DN,
-        new AttributeModification[] {
-          new AttributeModification(
-            AttributeModificationType.REPLACE, ATTR_RUNNING), });
+      final ModifyOperation modify = new ModifyOperation(conn);
+      modify.execute(
+        new ModifyRequest(
+          DN,
+          new AttributeModification[] {
+            new AttributeModification(
+                AttributeModificationType.REPLACE, ATTR_RUNNING), }));
       conn.close();
     }
   }
@@ -84,11 +87,13 @@ public class TestControl
     final Connection conn = TestUtil.createSetupConnection();
     conn.open();
     // set attribute when tests are finished
-    conn.modify(
-      DN,
-      new AttributeModification[] {
-        new AttributeModification(
-          AttributeModificationType.REPLACE, ATTR_IDLE), });
+    final ModifyOperation modify = new ModifyOperation(conn);
+    modify.execute(
+      new ModifyRequest(
+        DN,
+        new AttributeModification[] {
+          new AttributeModification(
+            AttributeModificationType.REPLACE, ATTR_RUNNING), }));
     conn.close();
   }
 }

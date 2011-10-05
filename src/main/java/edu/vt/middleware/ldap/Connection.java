@@ -13,90 +13,32 @@
 */
 package edu.vt.middleware.ldap;
 
-import java.util.Collection;
-import edu.vt.middleware.ldap.provider.ConnectionFactory;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 /**
- * Class for managing a connection to an LDAP.
+ * Interface for ldap connection implementations.
  *
  * @author  Middleware Services
  * @version  $Revision: 1330 $ $Date: 2010-05-23 18:10:53 -0400 (Sun, 23 May 2010) $
  */
-public class Connection
+public interface Connection
 {
 
-  /** Logger for this class. */
-  protected final Logger logger = LoggerFactory.getLogger(getClass());
-
-  /** Connection configuration. */
-  protected ConnectionConfig config;
-
-  /** Connection factory. */
-  protected ConnectionFactory<?> providerConnectionFactory;
-
-  /** Provider connection. */
-  protected edu.vt.middleware.ldap.provider.Connection providerConnection;
-
 
   /**
-   * Creates a new connection.
+   * Returns the connection config for this connection. The config may be
+   * read-only.
    *
-   * @param  cc  connection configuration
-   * @param  cf  provider connection factory
+   * @return  connection config
    */
-  protected Connection(
-    final ConnectionConfig cc, final ConnectionFactory<?> cf)
-  {
-    config = cc;
-    providerConnectionFactory = cf;
-  }
-
-
-  /**
-   * Returns the connection configuration.
-   *
-   * @return  connection configuration
-   */
-  protected ConnectionConfig getConnectionConfig()
-  {
-    return config;
-  }
-
-
-  /**
-   * Returns the provider specific connection. Must be called after a successful
-   * call to {@link #open()}.
-   *
-   * @return  provider connection
-   *
-   * @throws  IllegalStateException  if the connection is not open
-   */
-  protected edu.vt.middleware.ldap.provider.Connection getProviderConnection()
-  {
-    if (providerConnection == null) {
-      throw new IllegalStateException("Connection is not open");
-    }
-    return providerConnection;
-  }
+  ConnectionConfig getConnectionConfig();
 
 
   /**
    * This will establish a connection if one does not already exist by binding
-   * to the LDAP using parameters given by
-   * {@link ConnectionConfig#getBindDn()} and
-   * {@link ConnectionConfig#getBindCredential()}. If these parameters
-   * have not been set then an anonymous bind will be attempted. This connection
-   * should be closed using {@link #close()}.
+   * to the LDAP.
    *
    * @throws  LdapException  if the LDAP cannot be reached
    */
-  public synchronized void open()
-    throws LdapException
-  {
-    open(config.getBindDn(), config.getBindCredential());
-  }
+  void open() throws LdapException;
 
 
   /**
@@ -110,189 +52,18 @@ public class Connection
    * @throws  IllegalStateExcepiton  if the connection is already open
    * @throws  LdapException  if the LDAP cannot be reached
    */
-  public synchronized void open(
-    final String bindDn, final Credential bindCredential)
-    throws LdapException
-  {
-    if (providerConnection != null) {
-      throw new IllegalStateException("Connection already open");
-    }
-    providerConnection = providerConnectionFactory.create(
-      new BindRequest(bindDn, bindCredential, config.getSaslConfig()));
-  }
+  void open(String bindDn, Credential bindCredential) throws LdapException;
+
+
+  /**
+   * Returns the provider connection to invoke the provider specific
+   * implementation. Must be called after a successful call to {@link #open()}.
+   *
+   * @return  provider connection
+   */
+  edu.vt.middleware.ldap.provider.Connection getProviderConnection();
 
 
   /** This will close the connection to the LDAP. */
-  public synchronized void close()
-  {
-    try {
-      if (providerConnection != null) {
-        providerConnection.close();
-      }
-    } catch (LdapException e) {
-      logger.warn("Error closing connection with the LDAP", e);
-    } finally {
-      providerConnection = null;
-    }
-  }
-
-
-  /**
-   * Convenience method for performing an ldap anonymous bind operation.
-   *
-   * @throws  LdapException  if an error occurs
-   */
-  public void bind()
-    throws LdapException
-  {
-    final BindOperation op = new BindOperation(this);
-    op.execute(new BindRequest());
-  }
-
-
-  /**
-   * Convenience method for performing an ldap bind operation.
-   *
-   * @param  dn  to bind as
-   * @param  c  credential to bind with
-   *
-   * @throws  LdapException  if an error occurs
-   */
-  public void bind(final String dn, final Credential c)
-    throws LdapException
-  {
-    final BindOperation op = new BindOperation(this);
-    op.execute(new BindRequest(dn, c));
-  }
-
-
-  /**
-   * Convenience method for performing an ldap add operation.
-   *
-   * @param  dn  to add
-   * @param  attrs  to add
-   * @throws  LdapException  if an error occurs
-   */
-  public void add(final String dn, final Collection<LdapAttribute> attrs)
-    throws LdapException
-  {
-    final AddOperation op = new AddOperation(this);
-    op.execute(new AddRequest(dn, attrs));
-  }
-
-
-  /**
-   * Convenience method for performing an ldap compare operation.
-   *
-   * @param  dn  to compare
-   * @param  attr  to compare
-   * @return  whether compare succeeded
-   * @throws  LdapException  if an error occurs
-   */
-  public boolean compare(final String dn, final LdapAttribute attr)
-    throws LdapException
-  {
-    final CompareOperation op = new CompareOperation(this);
-    return op.execute(new CompareRequest(dn, attr)).getResult();
-  }
-
-
-  /**
-   * Convenience method for performing an ldap delete operation.
-   *
-   * @param  dn  to delete
-   * @throws  LdapException  if an error occurs
-   */
-  public void delete(final String dn)
-    throws LdapException
-  {
-    final DeleteOperation op = new DeleteOperation(this);
-    op.execute(new DeleteRequest(dn));
-  }
-
-
-  /**
-   * Convenience method for performing an ldap modify operation.
-   *
-   * @param  dn  to modify
-   * @param  mods  to modify
-   * @throws  LdapException  if an error occurs
-   */
-  public void modify(final String dn, final AttributeModification[] mods)
-    throws LdapException
-  {
-    final ModifyOperation op = new ModifyOperation(this);
-    op.execute(new ModifyRequest(dn, mods));
-  }
-
-
-  /**
-   * Convenience method for performing an ldap rename operation.
-   *
-   * @param  oldDn  to rename
-   * @param  newDn  to rename
-   * @throws  LdapException  if an error occurs
-   */
-  public void rename(final String oldDn, final String newDn)
-    throws LdapException
-  {
-    final RenameOperation op = new RenameOperation(this);
-    op.execute(new RenameRequest(oldDn, newDn));
-  }
-
-
-  /**
-   * Convenience method for performing an ldap search operation.
-   *
-   * @param  dn  to search on
-   * @param  filter  to apply to search
-   * @param  retAttrs  attribute names to return
-   * @return  ldap result
-   * @throws  LdapException  if an error occurs
-   */
-  public LdapResult search(
-    final String dn,
-    final SearchFilter filter,
-    final String[] retAttrs)
-    throws LdapException
-  {
-    final SearchOperation op = new SearchOperation(this);
-    return op.execute(new SearchRequest(dn, filter, retAttrs)).getResult();
-  }
-
-
-  /**
-   * Provides a descriptive string representation of this instance.
-   *
-   * @return  string representation
-   */
-  @Override
-  public String toString()
-  {
-    return
-      String.format(
-        "[%s@%d::config=%s, providerConnectionFactory=%s, " +
-        "providerConnection=%s]",
-        getClass().getName(),
-        hashCode(),
-        config,
-        providerConnectionFactory,
-        providerConnection);
-  }
-
-
-  /**
-   * Closes this connection if it is garbage collected.
-   *
-   * @throws  Throwable  if an exception is thrown by this method
-   */
-  protected void finalize()
-    throws Throwable
-  {
-    try {
-      close();
-    } finally {
-      super.finalize();
-    }
-  }
+  void close();
 }

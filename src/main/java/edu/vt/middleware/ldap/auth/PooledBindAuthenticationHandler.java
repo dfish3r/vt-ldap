@@ -13,6 +13,8 @@
 */
 package edu.vt.middleware.ldap.auth;
 
+import edu.vt.middleware.ldap.BindOperation;
+import edu.vt.middleware.ldap.BindRequest;
 import edu.vt.middleware.ldap.Connection;
 import edu.vt.middleware.ldap.LdapException;
 import edu.vt.middleware.ldap.pool.PooledConnectionFactory;
@@ -80,7 +82,8 @@ public class PooledBindAuthenticationHandler
     final Connection c, final AuthenticationCriteria ac)
     throws LdapException
   {
-    c.bind(ac.getDn(), ac.getCredential());
+    final BindOperation op = new BindOperation(c);
+    op.execute(new BindRequest(ac.getDn(), ac.getCredential()));
   }
 
 

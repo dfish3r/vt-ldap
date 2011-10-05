@@ -110,6 +110,6 @@ public class SoftLimitConnectionPool extends BlockingConnectionPool
         "Pool is empty and connection creation failed");
     }
 
-    return pc;
+    return createConnectionProxy(pc);
   }
 }

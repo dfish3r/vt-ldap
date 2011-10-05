@@ -47,7 +47,9 @@ public class ConnectionTest
     testLdapEntry = TestUtil.convertLdifToResult(ldif).getEntry();
     final Connection conn = TestUtil.createConnection();
     conn.open();
-    conn.add(testLdapEntry.getDn(), testLdapEntry.getAttributes());
+    final AddOperation add = new AddOperation(conn);
+    add.execute(
+      new AddRequest(testLdapEntry.getDn(), testLdapEntry.getAttributes()));
     conn.close();
   }
 
@@ -59,8 +61,12 @@ public class ConnectionTest
   {
     final Connection conn = TestUtil.createConnection();
     conn.open();
-    AssertJUnit.assertTrue(conn.compare(
-      testLdapEntry.getDn(), testLdapEntry.getAttribute("mail")));
+    final CompareOperation compare = new CompareOperation(conn);
+    AssertJUnit.assertTrue(
+      compare.execute(
+        new CompareRequest(
+          testLdapEntry.getDn(),
+          testLdapEntry.getAttribute("mail"))).getResult());
     conn.close();
   }
 
@@ -72,7 +78,8 @@ public class ConnectionTest
   {
     final Connection conn = TestUtil.createConnection();
     conn.open();
-    conn.delete(testLdapEntry.getDn());
+    final DeleteOperation delete = new DeleteOperation(conn);
+    delete.execute(new DeleteRequest(testLdapEntry.getDn()));
     conn.close();
   }
 
@@ -84,12 +91,13 @@ public class ConnectionTest
   {
     final Connection conn = TestUtil.createConnection();
     conn.open();
-    conn.modify(
-      testLdapEntry.getDn(),
-      new AttributeModification[] {
-        new AttributeModification(
-          AttributeModificationType.ADD,
-          new LdapAttribute("title", "President")), });
+    final ModifyOperation modify = new ModifyOperation(conn);
+    modify.execute(
+      new ModifyRequest(testLdapEntry.getDn(),
+        new AttributeModification[] {
+          new AttributeModification(
+            AttributeModificationType.ADD,
+            new LdapAttribute("title", "President")), }));
     conn.close();
   }
 
@@ -101,8 +109,13 @@ public class ConnectionTest
   {
     final Connection conn = TestUtil.createConnection();
     conn.open();
-    conn.rename(testLdapEntry.getDn(), "uid=1500,ou=test,dc=vt,dc=edu");
-    conn.rename("uid=1500,ou=test,dc=vt,dc=edu", testLdapEntry.getDn());
+    final RenameOperation rename = new RenameOperation(conn);
+    rename.execute(
+      new RenameRequest(
+        testLdapEntry.getDn(), "uid=1500,ou=test,dc=vt,dc=edu"));
+    rename.execute(
+      new RenameRequest(
+        "uid=1500,ou=test,dc=vt,dc=edu", testLdapEntry.getDn()));
     conn.close();
   }
 
@@ -114,8 +127,10 @@ public class ConnectionTest
   {
     final Connection conn = TestUtil.createConnection();
     conn.open();
-    final LdapResult lr = conn.search(
-      "ou=test,dc=vt,dc=edu", new SearchFilter("(uid=15)"), null);
+    final SearchOperation search = new SearchOperation(conn);
+    final LdapResult lr = search.execute(
+      new SearchRequest(
+        "ou=test,dc=vt,dc=edu", new SearchFilter("(uid=15)"))).getResult();
     AssertJUnit.assertEquals(testLdapEntry.getDn(), lr.getEntry().getDn());
     conn.close();
   }

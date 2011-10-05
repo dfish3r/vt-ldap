@@ -136,7 +136,7 @@ public class DefaultConnectionFactory implements ConnectionFactory
    */
   public Connection getConnection()
   {
-    return new Connection(config, provider.getConnectionFactory(config));
+    return new DefaultConnection(config, provider.getConnectionFactory(config));
   }
 
 
@@ -152,7 +152,7 @@ public class DefaultConnectionFactory implements ConnectionFactory
   {
     final Provider<?> p = DEFAULT_PROVIDER.newInstance();
     final ConnectionConfig cc = new ConnectionConfig(ldapUrl);
-    return new Connection(cc, p.getConnectionFactory(cc));
+    return new DefaultConnection(cc, p.getConnectionFactory(cc));
   }
 
 
@@ -167,7 +167,7 @@ public class DefaultConnectionFactory implements ConnectionFactory
   public static Connection getConnection(final ConnectionConfig cc)
   {
     final Provider<?> p = DEFAULT_PROVIDER.newInstance();
-    return new Connection(cc, p.getConnectionFactory(cc));
+    return new DefaultConnection(cc, p.getConnectionFactory(cc));
   }
 
 
@@ -217,5 +217,163 @@ public class DefaultConnectionFactory implements ConnectionFactory
         hashCode(),
         provider,
         config);
+  }
+
+
+  /**
+   * Default implementation for managing a connection to an LDAP.
+   *
+   * @author  Middleware Services
+   * @version  $Revision$ $Date$
+   */
+  protected static class DefaultConnection implements Connection
+  {
+
+    /** Logger for this class. */
+    protected final Logger logger = LoggerFactory.getLogger(getClass());
+
+    /** Connection configuration. */
+    protected ConnectionConfig config;
+
+    /** Connection factory. */
+    protected edu.vt.middleware.ldap.provider.ConnectionFactory<?>
+    providerConnectionFactory;
+
+    /** Provider connection. */
+    protected edu.vt.middleware.ldap.provider.Connection providerConnection;
+
+
+    /**
+     * Creates a new connection.
+     *
+     * @param  cc  connection configuration
+     * @param  cf  provider connection factory
+     */
+    protected DefaultConnection(
+      final ConnectionConfig cc,
+      final edu.vt.middleware.ldap.provider.ConnectionFactory<?> cf)
+    {
+      config = cc;
+      providerConnectionFactory = cf;
+    }
+
+
+    /**
+     * Returns the connection configuration.
+     *
+     * @return  connection configuration
+     */
+    public ConnectionConfig getConnectionConfig()
+    {
+      return config;
+    }
+
+
+    /**
+     * Returns the provider specific connection. Must be called after a
+     * successful call to {@link #open()}.
+     *
+     * @return  provider connection
+     *
+     * @throws  IllegalStateException  if the connection is not open
+     */
+    public edu.vt.middleware.ldap.provider.Connection getProviderConnection()
+    {
+      if (providerConnection == null) {
+        throw new IllegalStateException("Connection is not open");
+      }
+      return providerConnection;
+    }
+
+
+    /**
+     * This will establish a connection if one does not already exist by binding
+     * to the LDAP using parameters given by
+     * {@link ConnectionConfig#getBindDn()} and
+     * {@link ConnectionConfig#getBindCredential()}. If these parameters
+     * have not been set then an anonymous bind will be attempted. This
+     * connection should be closed using {@link #close()}.
+     *
+     * @throws  LdapException  if the LDAP cannot be reached
+     */
+    public synchronized void open()
+      throws LdapException
+    {
+      open(config.getBindDn(), config.getBindCredential());
+    }
+
+
+    /**
+     * This will establish a connection if one does not already exist by binding
+     * to the LDAP using the supplied dn and credential. This connection should
+     * be closed using {@link #close()}.
+     *
+     * @param  bindDn  to bind to the LDAP as
+     * @param  bindCredential  to bind to the LDAP with
+     *
+     * @throws  IllegalStateExcepiton  if the connection is already open
+     * @throws  LdapException  if the LDAP cannot be reached
+     */
+    public synchronized void open(
+      final String bindDn, final Credential bindCredential)
+      throws LdapException
+    {
+      if (providerConnection != null) {
+        throw new IllegalStateException("Connection already open");
+      }
+      providerConnection = providerConnectionFactory.create(
+        new BindRequest(bindDn, bindCredential, config.getSaslConfig()));
+    }
+
+
+    /** This will close the connection to the LDAP. */
+    public synchronized void close()
+    {
+      try {
+        if (providerConnection != null) {
+          providerConnection.close();
+        }
+      } catch (LdapException e) {
+        logger.warn("Error closing connection with the LDAP", e);
+      } finally {
+        providerConnection = null;
+      }
+    }
+
+
+    /**
+     * Provides a descriptive string representation of this instance.
+     *
+     * @return  string representation
+     */
+    @Override
+    public String toString()
+    {
+      return
+        String.format(
+          "[%s@%d::config=%s, providerConnectionFactory=%s, " +
+          "providerConnection=%s]",
+          getClass().getName(),
+          hashCode(),
+          config,
+          providerConnectionFactory,
+          providerConnection);
+    }
+
+
+    /**
+     * Closes this connection if it is garbage collected.
+     *
+     * @throws  Throwable  if an exception is thrown by this method
+     */
+    protected void finalize()
+      throws Throwable
+    {
+      try {
+        close();
+      } finally {
+        super.finalize();
+      }
+    }
   }
 }

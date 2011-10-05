@@ -759,7 +759,9 @@ public class ConnectionPoolTest extends AbstractTest
       logger.trace("search completed: {}", result);
     } finally {
       logger.trace("returning ldap to pool");
-      conn.close();
+      if (conn != null) {
+        conn.close();
+      }
     }
     final StringWriter sw = new StringWriter();
     final LdifWriter lw = new LdifWriter(sw);
