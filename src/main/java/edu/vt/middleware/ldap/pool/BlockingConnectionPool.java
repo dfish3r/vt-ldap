@@ -101,7 +101,7 @@ public class BlockingConnectionPool extends AbstractConnectionPool
   public Connection getConnection()
     throws PoolException
   {
-    PooledConnection pc = null;
+    PooledConnectionHandler pc = null;
     boolean create = false;
     logger.trace(
       "waiting on pool lock for check out {}", poolLock.getQueueLength());
@@ -113,7 +113,7 @@ public class BlockingConnectionPool extends AbstractConnectionPool
       if (available.size() > 0) {
         try {
           logger.trace("retrieve available connection");
-          pc = retrieveAvailable();
+          pc = retrieveAvailableConnection();
         } catch (NoSuchElementException e) {
           logger.error("could not remove connection from list", e);
           throw new IllegalStateException("Pool is empty", e);
@@ -123,7 +123,7 @@ public class BlockingConnectionPool extends AbstractConnectionPool
         create = true;
       } else {
         logger.trace("pool is full, block until connection is available");
-        pc = blockAvailable();
+        pc = blockAvailableConnection();
       }
     } finally {
       poolLock.unlock();
@@ -148,7 +148,7 @@ public class BlockingConnectionPool extends AbstractConnectionPool
           poolLock.unlock();
         }
         if (b) {
-          pc = createActive();
+          pc = createActiveConnection();
           logger.trace("created new active connection: {}", pc);
         }
       } finally {
@@ -156,12 +156,12 @@ public class BlockingConnectionPool extends AbstractConnectionPool
       }
       if (pc == null) {
         logger.debug("create failed, block until connection is available");
-        pc = blockAvailable();
+        pc = blockAvailableConnection();
       }
     }
 
     if (pc != null) {
-      activateAndValidate(pc);
+      activateAndValidateConnection(pc);
     } else {
       logger.error("Could not service check out request");
       throw new PoolExhaustedException(
@@ -179,9 +179,9 @@ public class BlockingConnectionPool extends AbstractConnectionPool
    *
    * @throws  NoSuchElementException  if the available queue is empty
    */
-  protected PooledConnection retrieveAvailable()
+  protected PooledConnectionHandler retrieveAvailableConnection()
   {
-    PooledConnection pc = null;
+    PooledConnectionHandler pc = null;
     logger.trace(
       "waiting on pool lock for retrieve available {}",
       poolLock.getQueueLength());
@@ -207,10 +207,10 @@ public class BlockingConnectionPool extends AbstractConnectionPool
    * time and it occurs
    * @throws  PoolInterruptedException  if the current thread is interrupted
    */
-  protected PooledConnection blockAvailable()
+  protected PooledConnectionHandler blockAvailableConnection()
     throws PoolException
   {
-    PooledConnection pc = null;
+    PooledConnectionHandler pc = null;
     logger.trace(
       "waiting on pool lock for block available {}",
       poolLock.getQueueLength());
@@ -231,7 +231,7 @@ public class BlockingConnectionPool extends AbstractConnectionPool
         }
         logger.trace("notified to continue...");
         try {
-          pc = retrieveAvailable();
+          pc = retrieveAvailableConnection();
         } catch (NoSuchElementException e) {
           logger.trace("notified to continue but pool was empty");
         }
@@ -250,9 +250,10 @@ public class BlockingConnectionPool extends AbstractConnectionPool
 
   /** {@inheritDoc} */
   @Override
-  protected void putConnection(final PooledConnection pc)
+  public void putConnection(final Connection c)
   {
-    final boolean valid = validateAndPassivate(pc);
+    final PooledConnectionHandler pc = retrieveInvocationHandler(c);
+    final boolean valid = validateAndPassivateConnection(pc);
     logger.trace(
       "waiting on pool lock for check in {}", poolLock.getQueueLength());
     poolLock.lock();

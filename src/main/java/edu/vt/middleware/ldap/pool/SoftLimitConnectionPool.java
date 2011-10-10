@@ -69,7 +69,7 @@ public class SoftLimitConnectionPool extends BlockingConnectionPool
   public Connection getConnection()
     throws PoolException
   {
-    PooledConnection pc = null;
+    PooledConnectionHandler pc = null;
     logger.trace(
       "waiting on pool lock for check out {}", poolLock.getQueueLength());
     poolLock.lock();
@@ -79,7 +79,7 @@ public class SoftLimitConnectionPool extends BlockingConnectionPool
       if (available.size() > 0) {
         try {
           logger.trace("retrieve available connection");
-          pc = retrieveAvailable();
+          pc = retrieveAvailableConnection();
         } catch (NoSuchElementException e) {
           logger.error("could not remove connection from list", e);
           throw new IllegalStateException("Pool is empty", e);
@@ -91,19 +91,19 @@ public class SoftLimitConnectionPool extends BlockingConnectionPool
 
     if (pc == null) {
       // no connection was available, create a new one
-      pc = createActive();
+      pc = createActiveConnection();
       logger.trace("created new active connection: {}", pc);
       if (pc == null) {
         // create failed, block until a connection is available
         logger.debug("created failed, block until a connection is available");
-        pc = blockAvailable();
+        pc = blockAvailableConnection();
       } else {
         logger.trace("created new active connection: {}", pc);
       }
     }
 
     if (pc != null) {
-      activateAndValidate(pc);
+      activateAndValidateConnection(pc);
     } else {
       logger.error("Could not service check out request");
       throw new PoolExhaustedException(
