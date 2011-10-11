@@ -24,6 +24,12 @@ import java.util.Arrays;
 public class SortControl extends AbstractControl
 {
 
+  /** OID of this control. */
+  public static final String REQUEST_OID = "1.2.840.113556.1.4.473";
+
+  /** OID of this control. */
+  public static final String RESPONSE_OID = "1.2.840.113556.1.4.474";
+
   /** sort keys. */
   private SortKey[] sortKeys;
 

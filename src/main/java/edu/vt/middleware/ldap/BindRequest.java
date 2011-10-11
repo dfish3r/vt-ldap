@@ -13,6 +13,7 @@
 */
 package edu.vt.middleware.ldap;
 
+import java.util.Arrays;
 import edu.vt.middleware.ldap.sasl.SaslConfig;
 
 /**
@@ -21,7 +22,7 @@ import edu.vt.middleware.ldap.sasl.SaslConfig;
  * @author  Middleware Services
  * @version  $Revision$ $Date$
  */
-public class BindRequest implements Request
+public class BindRequest extends AbstractRequest
 {
 
   /** DN to bind as before performing operations. */
@@ -156,10 +157,11 @@ public class BindRequest implements Request
   {
     return
       String.format(
-        "[%s@%d::bindDn=%s, saslConfig=%s]",
+        "[%s@%d::bindDn=%s, saslConfig=%s, controls=%s]",
         getClass().getName(),
         hashCode(),
         bindDn,
-        saslConfig);
+        saslConfig,
+        getControls() != null ? Arrays.asList(getControls()) : null);
   }
 }

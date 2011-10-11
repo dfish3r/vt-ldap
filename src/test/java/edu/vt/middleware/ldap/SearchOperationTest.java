@@ -339,7 +339,7 @@ public class SearchOperationTest extends AbstractTest
     // test searching
     final SearchRequest request = new SearchRequest(
       dn, new SearchFilter(filter));
-    request.setPagedResultsControl(new PagedResultsControl(1, true));
+    request.setControls(new PagedResultsControl(1, true));
     final LdapResult result = search.execute(request).getResult();
     AssertJUnit.assertEquals(
       TestUtil.convertLdifToResult(expected), result);
@@ -372,7 +372,7 @@ public class SearchOperationTest extends AbstractTest
     final SearchRequest request = new SearchRequest(
       dn, new SearchFilter(filter));
     request.setSortBehavior(SortBehavior.ORDERED);
-    request.setSortControl(
+    request.setControls(
       new SortControl(
         new SortKey[] {new SortKey("uid", "integerMatch", true)}, true));
     final LdapResult result = search.execute(request).getResult();

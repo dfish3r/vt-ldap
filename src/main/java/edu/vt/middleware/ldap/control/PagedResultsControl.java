@@ -22,8 +22,14 @@ package edu.vt.middleware.ldap.control;
 public class PagedResultsControl extends AbstractControl
 {
 
+  /** OID of this control. */
+  public static final String OID = "1.2.840.113556.1.4.319";
+
   /** paged results size. */
   private int resultSize;
+
+  /** server generated cookie. */
+  private byte[] cookie;
 
 
   /**
@@ -79,6 +85,28 @@ public class PagedResultsControl extends AbstractControl
 
 
   /**
+   * Returns the paged results cookie.
+   *
+   * @return  paged results cookie
+   */
+  public byte[] getCookie()
+  {
+    return cookie;
+  }
+
+
+  /**
+   * Sets the paged results cookie.
+   *
+   * @param  value  paged results cookie
+   */
+  public void setCookie(final byte[] value)
+  {
+    cookie = value;
+  }
+
+
+  /**
    * Provides a descriptive string representation of this instance.
    *
    * @return  string representation
@@ -88,10 +116,11 @@ public class PagedResultsControl extends AbstractControl
   {
     return
       String.format(
-        "[%s@%d::criticality=%s, size=%s]",
+        "[%s@%d::criticality=%s, size=%s, cookie=%s]",
         getClass().getName(),
         hashCode(),
         criticality,
-        resultSize);
+        resultSize,
+        cookie);
   }
 }

@@ -13,7 +13,6 @@
 */
 package edu.vt.middleware.ldap.provider.jndi;
 
-import java.io.IOException;
 import java.net.URI;
 import javax.naming.CompositeName;
 import javax.naming.InvalidNameException;
@@ -21,12 +20,7 @@ import javax.naming.NamingEnumeration;
 import javax.naming.NamingException;
 import javax.naming.directory.SearchControls;
 import javax.naming.directory.SearchResult;
-import javax.naming.ldap.Control;
 import javax.naming.ldap.LdapContext;
-import javax.naming.ldap.PagedResultsControl;
-import javax.naming.ldap.PagedResultsResponseControl;
-import javax.naming.ldap.SortControl;
-import javax.naming.ldap.SortResponseControl;
 import edu.vt.middleware.ldap.LdapEntry;
 import edu.vt.middleware.ldap.LdapException;
 import edu.vt.middleware.ldap.ResultCode;
@@ -78,6 +72,9 @@ public class JndiSearchIterator implements SearchIterator
 
   /** Ldap context to search with. */
   protected LdapContext context;
+
+  /** Any controls associated with this search. */
+  protected JndiControls searchControls;
 
   /** Results read from the search operation. */
   protected NamingEnumeration<SearchResult> results;
@@ -157,30 +154,10 @@ public class JndiSearchIterator implements SearchIterator
   {
     boolean closeContext = false;
     try {
-      try {
-        context = ctx.newInstance(null);
-        initializeSearchContext(context, request);
-        if (request.getPagedResultsControl() != null) {
-          context.setRequestControls(
-            new Control[] {
-              new PagedResultsControl(
-                request.getPagedResultsControl().getSize(),
-                request.getPagedResultsControl().getCriticality()),
-            });
-        }
-        if (request.getSortControl() != null) {
-          context.setRequestControls(
-            new Control[] {
-              new SortControl(
-                JndiUtil.fromSortKey(request.getSortControl().getSortKeys()),
-                request.getSortControl().getCriticality()),
-            });
-        }
-        results = search(context, request);
-      } catch (IOException e) {
-        logger.error("Could not encode request control", e);
-        throw new NamingException(e.getMessage());
-      }
+      searchControls = new JndiControls(request.getControls());
+      context = ctx.newInstance(searchControls.getJndiControls());
+      initializeSearchContext(context, request);
+      results = search(context, request);
     } catch (NamingException e) {
       closeContext = true;
       JndiUtil.throwOperationException(operationRetryExceptions, e);
@@ -316,38 +293,10 @@ public class JndiSearchIterator implements SearchIterator
     try {
       more = results.hasMore();
       if (!more) {
-        boolean searchAgain = false;
-        final Control[] responseControls = context.getResponseControls();
-        if (responseControls != null) {
-          for (Control c : responseControls) {
-            if (c instanceof PagedResultsResponseControl) {
-              final PagedResultsResponseControl prrc =
-                (PagedResultsResponseControl) c;
-              // re-activate paged results
-              if (prrc.getCookie() != null) {
-                try {
-                  context.setRequestControls(
-                    new Control[] {
-                      new PagedResultsControl(
-                        request.getPagedResultsControl().getSize(),
-                        prrc.getCookie(),
-                        request.getPagedResultsControl().getCriticality()),
-                    });
-                  searchAgain = true;
-                } catch (IOException e) {
-                  logger.error("Could not encode request control", e);
-                  throw new NamingException(e.getMessage());
-                }
-              }
-            } else if (c instanceof SortResponseControl) {
-              final SortResponseControl src = (SortResponseControl) c;
-              if (!src.isSorted()) {
-                throw src.getException();
-              }
-            }
-          }
-        }
+        final boolean searchAgain = searchControls.processResponseControls(
+          context.getResponseControls());
         if (searchAgain) {
+          context.setRequestControls(searchControls.getJndiControls());
           results = search(context, request);
           more = results.hasMore();
         }

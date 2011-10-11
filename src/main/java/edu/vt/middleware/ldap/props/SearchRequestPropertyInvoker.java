@@ -47,8 +47,8 @@ public class SearchRequestPropertyInvoker extends AbstractPropertyInvoker
     if (type != String.class) {
       if (SearchFilter.class.isAssignableFrom(type)) {
         newValue = new SearchFilter(value);
-      } else if (Control.class.isAssignableFrom(type)) {
-        newValue = createTypeFromPropertyValue(Control.class, value);
+      } else if (Control[].class.isAssignableFrom(type)) {
+        newValue = createArrayTypeFromPropertyValue(Control.class, value);
       } else if (LdapResultHandler[].class.isAssignableFrom(type)) {
         newValue = createArrayTypeFromPropertyValue(
           LdapResultHandler.class,

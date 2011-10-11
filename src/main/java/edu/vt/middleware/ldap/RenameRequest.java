@@ -13,13 +13,15 @@
 */
 package edu.vt.middleware.ldap;
 
+import java.util.Arrays;
+
 /**
  * Contains the data required to perform an ldap rename operation.
  *
  * @author  Middleware Services
  * @version  $Revision: 1330 $ $Date: 2010-05-23 18:10:53 -0400 (Sun, 23 May 2010) $
  */
-public class RenameRequest implements Request
+public class RenameRequest extends AbstractRequest
 {
 
   /** DN to rename. */
@@ -100,10 +102,11 @@ public class RenameRequest implements Request
   {
     return
       String.format(
-        "[%s@%d::oldRenameDn=%s, newRenameDn=%s]",
+        "[%s@%d::oldRenameDn=%s, newRenameDn=%s, controls=%s]",
         getClass().getName(),
         hashCode(),
         oldRenameDn,
-        newRenameDn);
+        newRenameDn,
+        getControls() != null ? Arrays.asList(getControls()) : null);
   }
 }

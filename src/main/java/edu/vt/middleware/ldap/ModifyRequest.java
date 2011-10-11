@@ -21,7 +21,7 @@ import java.util.Arrays;
  * @author  Middleware Services
  * @version  $Revision: 1330 $ $Date: 2010-05-23 18:10:53 -0400 (Sun, 23 May 2010) $
  */
-public class ModifyRequest implements Request
+public class ModifyRequest extends AbstractRequest
 {
 
   /** DN to modify. */
@@ -115,10 +115,11 @@ public class ModifyRequest implements Request
   {
     return
       String.format(
-        "[%s@%d::modifyDn=%s, attrMods=%s]",
+        "[%s@%d::modifyDn=%s, attrMods=%s, controls=%s]",
         getClass().getName(),
         hashCode(),
         modifyDn,
-        attrMods != null ? Arrays.asList(attrMods) : null);
+        attrMods != null ? Arrays.asList(attrMods) : null,
+        getControls() != null ? Arrays.asList(getControls()) : null);
   }
 }

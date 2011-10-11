@@ -13,13 +13,15 @@
 */
 package edu.vt.middleware.ldap;
 
+import java.util.Arrays;
+
 /**
  * Contains the data required to perform an ldap delete operation.
  *
  * @author  Middleware Services
  * @version  $Revision: 1330 $ $Date: 2010-05-23 18:10:53 -0400 (Sun, 23 May 2010) $
  */
-public class DeleteRequest implements Request
+public class DeleteRequest extends AbstractRequest
 {
 
   /** DN to delete. */
@@ -73,9 +75,10 @@ public class DeleteRequest implements Request
   {
     return
       String.format(
-        "[%s@%d::deleteDn=%s]",
+        "[%s@%d::deleteDn=%s, controls=%s]",
         getClass().getName(),
         hashCode(),
-        deleteDn);
+        deleteDn,
+        getControls() != null ? Arrays.asList(getControls()) : null);
   }
 }

@@ -22,6 +22,9 @@ package edu.vt.middleware.ldap.control;
 public class ManageDsaITControl extends AbstractControl
 {
 
+  /** OID of this control. */
+  public static final String OID = "2.16.840.1.113730.3.4.2";
+
 
   /**
    * Default constructor.

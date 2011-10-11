@@ -13,13 +13,15 @@
 */
 package edu.vt.middleware.ldap;
 
+import java.util.Arrays;
+
 /**
  * Contains the data required to perform an ldap compare operation.
  *
  * @author  Middleware Services
  * @version  $Revision: 1330 $ $Date: 2010-05-23 18:10:53 -0400 (Sun, 23 May 2010) $
  */
-public class CompareRequest implements Request
+public class CompareRequest extends AbstractRequest
 {
 
   /** DN to compare. */
@@ -102,10 +104,11 @@ public class CompareRequest implements Request
   {
     return
       String.format(
-        "[%s@%d::compareDn=%s, attribute=%s]",
+        "[%s@%d::compareDn=%s, attribute=%s, controls=%s]",
         getClass().getName(),
         hashCode(),
         compareDn,
-        attribute);
+        attribute,
+        getControls() != null ? Arrays.asList(getControls()) : null);
   }
 }

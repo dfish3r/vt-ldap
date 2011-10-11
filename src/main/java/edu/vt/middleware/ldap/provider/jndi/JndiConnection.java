@@ -178,7 +178,7 @@ public class JndiConnection implements Connection
       context.addToEnvironment(Context.SECURITY_PRINCIPAL, request.getBindDn());
       context.addToEnvironment(
         Context.SECURITY_CREDENTIALS, request.getBindCredential().getBytes());
-      context.reconnect(context.getConnectControls());
+      context.reconnect(JndiUtil.fromControls(request.getControls()));
     } catch (javax.naming.AuthenticationException e) {
       throw new AuthenticationException(e, ResultCode.INVALID_CREDENTIALS);
     } catch (NamingException e) {
@@ -195,7 +195,7 @@ public class JndiConnection implements Connection
     try {
       LdapContext ctx = null;
       try {
-        ctx = context.newInstance(null);
+        ctx = context.newInstance(JndiUtil.fromControls(request.getControls()));
         final JndiUtil bu = new JndiUtil();
         ctx.createSubcontext(
           new LdapName(request.getDn()),
@@ -221,7 +221,7 @@ public class JndiConnection implements Connection
       LdapContext ctx = null;
       NamingEnumeration<SearchResult> en = null;
       try {
-        ctx = context.newInstance(null);
+        ctx = context.newInstance(JndiUtil.fromControls(request.getControls()));
         en = ctx.search(
           new LdapName(request.getDn()),
           String.format("(%s={0})", request.getAttribute().getName()),
@@ -256,7 +256,7 @@ public class JndiConnection implements Connection
     try {
       LdapContext ctx = null;
       try {
-        ctx = context.newInstance(null);
+        ctx = context.newInstance(JndiUtil.fromControls(request.getControls()));
         ctx.destroySubcontext(new LdapName(request.getDn()));
       } finally {
         if (ctx != null) {
@@ -277,7 +277,7 @@ public class JndiConnection implements Connection
     try {
       LdapContext ctx = null;
       try {
-        ctx = context.newInstance(null);
+        ctx = context.newInstance(JndiUtil.fromControls(request.getControls()));
         final JndiUtil bu = new JndiUtil();
         ctx.modifyAttributes(
           new LdapName(request.getDn()),
@@ -301,7 +301,7 @@ public class JndiConnection implements Connection
     try {
       LdapContext ctx = null;
       try {
-        ctx = context.newInstance(null);
+        ctx = context.newInstance(JndiUtil.fromControls(request.getControls()));
         ctx.rename(
           new LdapName(request.getDn()),
           new LdapName(request.getNewDn()));

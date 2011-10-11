@@ -13,6 +13,7 @@
 */
 package edu.vt.middleware.ldap;
 
+import java.util.Arrays;
 import java.util.Collection;
 
 /**
@@ -21,7 +22,7 @@ import java.util.Collection;
  * @author  Middleware Services
  * @version  $Revision: 1330 $ $Date: 2010-05-23 18:10:53 -0400 (Sun, 23 May 2010) $
  */
-public class AddRequest implements Request
+public class AddRequest extends AbstractRequest
 {
 
   /** DN to create. */
@@ -102,10 +103,11 @@ public class AddRequest implements Request
   {
     return
       String.format(
-        "[%s@%d::createDn=%s, attributes=%s]",
+        "[%s@%d::createDn=%s, attributes=%s, controls=%s]",
         getClass().getName(),
         hashCode(),
         createDn,
-        attributes);
+        attributes,
+        getControls() != null ? Arrays.asList(getControls()) : null);
   }
 }

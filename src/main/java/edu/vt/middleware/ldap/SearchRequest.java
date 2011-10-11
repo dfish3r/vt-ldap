@@ -14,8 +14,6 @@
 package edu.vt.middleware.ldap;
 
 import java.util.Arrays;
-import edu.vt.middleware.ldap.control.PagedResultsControl;
-import edu.vt.middleware.ldap.control.SortControl;
 import edu.vt.middleware.ldap.handler.LdapResultHandler;
 
 /**
@@ -24,7 +22,7 @@ import edu.vt.middleware.ldap.handler.LdapResultHandler;
  * @author  Middleware Services
  * @version  $Revision: 1330 $ $Date: 2010-05-23 18:10:53 -0400 (Sun, 23 May 2010) $
  */
-public class SearchRequest implements Request
+public class SearchRequest extends AbstractRequest
 {
 
   /** hash code seed. */
@@ -59,12 +57,6 @@ public class SearchRequest implements Request
 
   /** Binary attribute names. */
   private String[] binaryAttrs;
-
-  /** Paged results control. */
-  private PagedResultsControl pagedResultsControl;
-
-  /** Sort control. */
-  private SortControl sortControl;
 
   /** Sort behavior of results. */
   private SortBehavior sortBehavior = SortBehavior.getDefaultSortBehavior();
@@ -405,53 +397,6 @@ public class SearchRequest implements Request
 
 
   /**
-   * Returns the paged results control.
-   *
-   * @return  paged results control
-   */
-  public PagedResultsControl getPagedResultsControl()
-  {
-    return pagedResultsControl;
-  }
-
-
-  /**
-   * Sets the paged results control.
-   *
-   * @param  control  paged results control
-   */
-  public void setPagedResultsControl(final PagedResultsControl control)
-  {
-    pagedResultsControl = control;
-  }
-
-
-  /**
-   * Returns the sort control.
-   *
-   * @return  sort control
-   */
-  public SortControl getSortControl()
-  {
-    return sortControl;
-  }
-
-
-  /**
-   * Sets the sort control. When using this control
-   * {@link #setSortBehavior(SortBehavior)} should be invoked with
-   * {@link SortBehavior#ORDERED} so that the sort order will be maintained.
-   * Failure to do this will result in the server side sort order being lost.
-   *
-   * @param  control  sort control
-   */
-  public void setSortControl(final SortControl control)
-  {
-    sortControl = control;
-  }
-
-
-  /**
    * Returns the sort behavior.
    *
    * @return  sort behavior
@@ -530,7 +475,6 @@ public class SearchRequest implements Request
     sr.setBinaryAttributes(request.getBinaryAttributes());
     sr.setDerefAliases(request.getDerefAliases());
     sr.setLdapResultHandlers(request.getLdapResultHandlers());
-    sr.setPagedResultsControl(request.getPagedResultsControl());
     sr.setReferralBehavior(request.getReferralBehavior());
     sr.setReturnAttributes(request.getReturnAttributes());
     sr.setSearchFilter(request.getSearchFilter());
@@ -538,9 +482,9 @@ public class SearchRequest implements Request
     sr.setSearchScope(request.getSearchScope());
     sr.setSizeLimit(request.getSizeLimit());
     sr.setSortBehavior(request.getSortBehavior());
-    sr.setSortControl(request.getSortControl());
     sr.setTimeLimit(request.getTimeLimit());
     sr.setTypesOnly(request.getTypesOnly());
+    sr.setControls(request.getControls());
     return sr;
   }
 
@@ -623,7 +567,6 @@ public class SearchRequest implements Request
     hc += binaryAttrs != null ? Arrays.hashCode(binaryAttrs) : 0;
     hc += derefAliases != null ? derefAliases.hashCode() : 0;
     hc += resultHandlers != null ? Arrays.hashCode(resultHandlers) : 0;
-    hc += pagedResultsControl != null ? pagedResultsControl.hashCode() : 0;
     hc += referralBehavior != null ? referralBehavior.hashCode() : 0;
     hc += retAttrs != null ? Arrays.hashCode(retAttrs) : 0;
     hc += searchFilter != null ? searchFilter.hashCode() : 0;
@@ -632,9 +575,9 @@ public class SearchRequest implements Request
     hc += searchScope != null ? searchScope.hashCode() : 0;
     hc += sizeLimit;
     hc += sortBehavior != null ? sortBehavior.hashCode() : 0;
-    hc += sortControl != null ? sortControl.hashCode() : 0;
     hc += timeLimit;
     hc += Boolean.valueOf(typesOnly).hashCode();
+    hc += getControls() != null ? Arrays.hashCode(getControls()) : 0;
     return hc;
   }
 
@@ -652,8 +595,8 @@ public class SearchRequest implements Request
         "[%s@%d::baseDn=%s, searchFilter=%s, returnAttributes=%s, " +
         "searchScope=%s, timeLimit=%s, sizeLimit=%s, derefAliases=%s, " +
         "referralBehavior=%s, typesOnly=%s, binaryAttributes=%s, " +
-        "pagedResultsControl=%s, sortControl=%s, sortBehavior=%s, " +
-        "ldapResultHandlers=%s, searchIgnoreResultCodes=%s]",
+        "sortBehavior=%s, ldapResultHandlers=%s, searchIgnoreResultCodes=%s, " +
+        "controls=%s]",
         getClass().getName(),
         hashCode(),
         baseDn,
@@ -666,11 +609,10 @@ public class SearchRequest implements Request
         referralBehavior,
         typesOnly,
         binaryAttrs != null ? Arrays.asList(binaryAttrs) : null,
-        pagedResultsControl,
-        sortControl,
         sortBehavior,
         resultHandlers != null ? Arrays.asList(resultHandlers) : null,
         searchIgnoreResultCodes != null ?
-          Arrays.asList(searchIgnoreResultCodes) : null);
+          Arrays.asList(searchIgnoreResultCodes) : null,
+        getControls() != null ? Arrays.asList(getControls()) : null);
   }
 }

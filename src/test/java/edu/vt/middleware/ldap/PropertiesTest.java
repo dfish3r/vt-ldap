@@ -20,6 +20,7 @@ import edu.vt.middleware.ldap.auth.AuthenticationRequest;
 import edu.vt.middleware.ldap.auth.Authenticator;
 import edu.vt.middleware.ldap.auth.PooledSearchDnResolver;
 import edu.vt.middleware.ldap.auth.SearchDnResolver;
+import edu.vt.middleware.ldap.control.PagedResultsControl;
 import edu.vt.middleware.ldap.handler.DnAttributeResultHandler;
 import edu.vt.middleware.ldap.handler.LdapResultHandler;
 import edu.vt.middleware.ldap.handler.MergeResultHandler;
@@ -129,7 +130,8 @@ public class PropertiesTest
     AssertJUnit.assertEquals(SearchScope.OBJECT, sr.getSearchScope());
     AssertJUnit.assertEquals(5000, sr.getTimeLimit());
     AssertJUnit.assertEquals("jpegPhoto", sr.getBinaryAttributes()[0]);
-    AssertJUnit.assertEquals(5, sr.getPagedResultsControl().getSize());
+    AssertJUnit.assertEquals(
+      5, ((PagedResultsControl) sr.getControls()[0]).getSize());
 
     for (LdapResultHandler rh : sr.getLdapResultHandlers()) {
       if (RecursiveResultHandler.class.isInstance(rh)) {

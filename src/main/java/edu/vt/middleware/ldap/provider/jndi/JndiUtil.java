@@ -13,8 +13,11 @@
 */
 package edu.vt.middleware.ldap.provider.jndi;
 
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import javax.naming.NamingEnumeration;
 import javax.naming.NamingException;
@@ -32,6 +35,10 @@ import edu.vt.middleware.ldap.LdapEntry;
 import edu.vt.middleware.ldap.LdapException;
 import edu.vt.middleware.ldap.OperationException;
 import edu.vt.middleware.ldap.SortBehavior;
+import edu.vt.middleware.ldap.control.Control;
+import edu.vt.middleware.ldap.control.ManageDsaITControl;
+import edu.vt.middleware.ldap.control.PagedResultsControl;
+import edu.vt.middleware.ldap.control.SortControl;
 import edu.vt.middleware.ldap.control.SortKey;
 import edu.vt.middleware.ldap.sasl.Mechanism;
 import edu.vt.middleware.ldap.sasl.QualityOfProtection;
@@ -340,5 +347,62 @@ public class JndiUtil
         "Unknown SASL authentication mechanism: " + m);
     }
     return s;
+  }
+
+
+  /**
+   * Converts the supplied controls to a jndi controls.
+   *
+   * @param  ctls  to convert
+   * @return  jndi controls
+   * @throws  NamingException  if a jndi control cannot be created
+   */
+  public static javax.naming.ldap.Control[] fromControls(final Control[] ctls)
+    throws NamingException
+  {
+    if (ctls == null) {
+      return null;
+    }
+    final List<javax.naming.ldap.Control> jndiCtls =
+      new ArrayList<javax.naming.ldap.Control>(ctls.length);
+    for (Control c : ctls) {
+      final javax.naming.ldap.Control jndiCtl = fromControl(c);
+      if (jndiCtl != null) {
+        jndiCtls.add(jndiCtl);
+      }
+    }
+    return jndiCtls.toArray(new javax.naming.ldap.Control[jndiCtls.size()]);
+  }
+
+
+  /**
+   * Converts the supplied control to a jndi control.
+   *
+   * @param  ctl  to convert
+   * @return  jndi control
+   * @throws  NamingException  if the jndi control cannot be created
+   */
+  public static javax.naming.ldap.Control fromControl(final Control ctl)
+    throws NamingException
+  {
+    javax.naming.ldap.Control jndiCtl = null;
+    try {
+      if (ManageDsaITControl.class.isInstance(ctl)) {
+        final ManageDsaITControl mc = (ManageDsaITControl) ctl;
+        jndiCtl = new javax.naming.ldap.ManageReferralControl(
+          mc.getCriticality());
+      } else if (SortControl.class.isInstance(ctl)) {
+        final SortControl sc = (SortControl) ctl;
+        jndiCtl = new javax.naming.ldap.SortControl(
+          JndiUtil.fromSortKey(sc.getSortKeys()), sc.getCriticality());
+      } else if (PagedResultsControl.class.isInstance(ctl)) {
+        final PagedResultsControl prc = (PagedResultsControl) ctl;
+        jndiCtl = new javax.naming.ldap.PagedResultsControl(
+          prc.getSize(), prc.getCookie(), prc.getCriticality());
+      }
+    } catch (IOException e) {
+      throw new NamingException(e.getMessage());
+    }
+    return jndiCtl;
   }
 }
