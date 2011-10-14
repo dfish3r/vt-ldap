@@ -21,6 +21,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Provides methods common to property invokers.
@@ -204,11 +206,17 @@ public abstract class AbstractPropertyInvoker implements PropertyInvoker
   public static <T> T instantiateType(final T type, final String className)
   {
     try {
-      return (T) createClass(className).newInstance();
-    } catch (InstantiationException e) {
-      throw new IllegalArgumentException(e);
-    } catch (IllegalAccessException e) {
-      throw new IllegalArgumentException(e);
+      try {
+        return (T) createClass(className).newInstance();
+      } catch (InstantiationException e) {
+        throw new IllegalArgumentException(e);
+      } catch (IllegalAccessException e) {
+        throw new IllegalArgumentException(e);
+      }
+    } catch (RuntimeException e) {
+      final Logger l = LoggerFactory.getLogger(AbstractPropertyInvoker.class);
+      l.error("Error instantiating type {}, with {}", type, className);
+      throw e;
     }
   }
 
@@ -229,8 +237,7 @@ public abstract class AbstractPropertyInvoker implements PropertyInvoker
       return Class.forName(className);
     } catch (ClassNotFoundException e) {
       throw new IllegalArgumentException(
-        "Could not find class '" + className + "'",
-        e);
+        String.format("Could not find class '%s'", className), e);
     }
   }
 
@@ -352,7 +359,7 @@ public abstract class AbstractPropertyInvoker implements PropertyInvoker
             Array.set(newObject, i, configParser.initializeType());
           } else {
             throw new IllegalArgumentException(
-              "Could not parse property string: " + classes[i]);
+              String.format("Could not parse property string: %s", classes[i]));
           }
         }
       } else {
@@ -421,15 +428,23 @@ public abstract class AbstractPropertyInvoker implements PropertyInvoker
     final Object arg)
   {
     try {
-      Object[] params = new Object[] {arg};
-      if (arg == null && method.getParameterTypes().length == 0) {
-        params = (Object[]) null;
+      try {
+        Object[] params = new Object[] {arg};
+        if (arg == null && method.getParameterTypes().length == 0) {
+          params = (Object[]) null;
+        }
+        return method.invoke(object, params);
+      } catch (InvocationTargetException e) {
+        throw new IllegalArgumentException(e);
+      } catch (IllegalAccessException e) {
+        throw new IllegalArgumentException(e);
       }
-      return method.invoke(object, params);
-    } catch (InvocationTargetException e) {
-      throw new IllegalArgumentException(e);
-    } catch (IllegalAccessException e) {
-      throw new IllegalArgumentException(e);
+    } catch (RuntimeException e) {
+      final Logger l = LoggerFactory.getLogger(AbstractPropertyInvoker.class);
+      l.error(
+        "Error invoking {}, on {}, with params {}",
+        new Object[] {method, object, arg});
+      throw e;
     }
   }
 }
