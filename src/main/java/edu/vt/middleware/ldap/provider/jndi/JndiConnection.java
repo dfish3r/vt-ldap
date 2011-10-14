@@ -175,9 +175,9 @@ public class JndiConnection implements Connection
     try {
       context.addToEnvironment(
         Context.SECURITY_AUTHENTICATION, authenticationType);
-      context.addToEnvironment(Context.SECURITY_PRINCIPAL, request.getBindDn());
+      context.addToEnvironment(Context.SECURITY_PRINCIPAL, request.getDn());
       context.addToEnvironment(
-        Context.SECURITY_CREDENTIALS, request.getBindCredential().getBytes());
+        Context.SECURITY_CREDENTIALS, request.getCredential().getBytes());
       context.reconnect(JndiUtil.fromControls(request.getControls()));
     } catch (javax.naming.AuthenticationException e) {
       throw new AuthenticationException(e, ResultCode.INVALID_CREDENTIALS);

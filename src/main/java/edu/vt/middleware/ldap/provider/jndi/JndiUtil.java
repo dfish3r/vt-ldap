@@ -399,6 +399,8 @@ public class JndiUtil
         final PagedResultsControl prc = (PagedResultsControl) ctl;
         jndiCtl = new javax.naming.ldap.PagedResultsControl(
           prc.getSize(), prc.getCookie(), prc.getCriticality());
+      } else {
+        throw new IllegalArgumentException("Unsupported control: " + ctl);
       }
     } catch (IOException e) {
       throw new NamingException(e.getMessage());

@@ -16,6 +16,7 @@ package edu.vt.middleware.ldap.props;
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLSocketFactory;
 import edu.vt.middleware.ldap.Credential;
+import edu.vt.middleware.ldap.control.Control;
 import edu.vt.middleware.ldap.provider.Provider;
 import edu.vt.middleware.ldap.sasl.SaslConfig;
 import edu.vt.middleware.ldap.ssl.CredentialConfigParser;
@@ -112,6 +113,8 @@ public class ConnectionConfigPropertyInvoker extends AbstractPropertyInvoker
             newValue = instantiateType(SaslConfig.class, value);
           }
         }
+      } else if (Control[].class.isAssignableFrom(type)) {
+        newValue = createArrayTypeFromPropertyValue(Control.class, value);
       } else if (HostnameVerifier.class.isAssignableFrom(type)) {
         newValue = createTypeFromPropertyValue(
           HostnameVerifier.class,

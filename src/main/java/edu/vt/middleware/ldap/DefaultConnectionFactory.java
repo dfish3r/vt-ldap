@@ -152,6 +152,7 @@ public class DefaultConnectionFactory implements ConnectionFactory
   {
     final Provider<?> p = DEFAULT_PROVIDER.newInstance();
     final ConnectionConfig cc = new ConnectionConfig(ldapUrl);
+    cc.makeImmutable();
     return new DefaultConnection(cc, p.getConnectionFactory(cc));
   }
 
@@ -167,6 +168,7 @@ public class DefaultConnectionFactory implements ConnectionFactory
   public static Connection getConnection(final ConnectionConfig cc)
   {
     final Provider<?> p = DEFAULT_PROVIDER.newInstance();
+    cc.makeImmutable();
     return new DefaultConnection(cc, p.getConnectionFactory(cc));
   }
 
@@ -289,8 +291,10 @@ public class DefaultConnectionFactory implements ConnectionFactory
     /**
      * This will establish a connection if one does not already exist by binding
      * to the LDAP using parameters given by
-     * {@link ConnectionConfig#getBindDn()} and
-     * {@link ConnectionConfig#getBindCredential()}. If these parameters
+     * {@link ConnectionConfig#getBindDn()},
+     * {@link ConnectionConfig#getBindCredential()},
+     * {@link ConnectionConfig#getBindSaslConfig()}, and
+     * {@link ConnectionConfig#getBindControls()}. If these parameters
      * have not been set then an anonymous bind will be attempted. This
      * connection should be closed using {@link #close()}.
      *
@@ -299,30 +303,32 @@ public class DefaultConnectionFactory implements ConnectionFactory
     public synchronized void open()
       throws LdapException
     {
-      open(config.getBindDn(), config.getBindCredential());
+      final BindRequest request = new BindRequest();
+      request.setDn(config.getBindDn());
+      request.setCredential(config.getBindCredential());
+      request.setSaslConfig(config.getBindSaslConfig());
+      request.setControls(config.getBindControls());
+      open(request);
     }
 
 
     /**
      * This will establish a connection if one does not already exist by binding
-     * to the LDAP using the supplied dn and credential. This connection should
+     * to the LDAP using the supplied bind request. This connection should
      * be closed using {@link #close()}.
      *
-     * @param  bindDn  to bind to the LDAP as
-     * @param  bindCredential  to bind to the LDAP with
+     * @param  request  bind request
      *
      * @throws  IllegalStateExcepiton  if the connection is already open
      * @throws  LdapException  if the LDAP cannot be reached
      */
-    public synchronized void open(
-      final String bindDn, final Credential bindCredential)
+    public synchronized void open(final BindRequest request)
       throws LdapException
     {
       if (providerConnection != null) {
         throw new IllegalStateException("Connection already open");
       }
-      providerConnection = providerConnectionFactory.create(
-        new BindRequest(bindDn, bindCredential, config.getSaslConfig()));
+      providerConnection = providerConnectionFactory.create(request);
     }
 
 

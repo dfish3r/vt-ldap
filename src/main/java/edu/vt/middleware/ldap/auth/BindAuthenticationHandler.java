@@ -13,6 +13,8 @@
 */
 package edu.vt.middleware.ldap.auth;
 
+import java.util.Arrays;
+import edu.vt.middleware.ldap.BindRequest;
 import edu.vt.middleware.ldap.Connection;
 import edu.vt.middleware.ldap.ConnectionFactory;
 import edu.vt.middleware.ldap.ConnectionFactoryManager;
@@ -26,7 +28,7 @@ import edu.vt.middleware.ldap.LdapException;
  * @version  $Revision$
  */
 public class BindAuthenticationHandler
-  extends AbstractAuthenticationHandler
+  extends AbstractBindAuthenticationHandler
   implements ConnectionFactoryManager
 {
 
@@ -80,7 +82,11 @@ public class BindAuthenticationHandler
     final Connection c, final AuthenticationCriteria criteria)
     throws LdapException
   {
-    c.open(criteria.getDn(), criteria.getCredential());
+    final BindRequest request = new BindRequest(
+      criteria.getDn(), criteria.getCredential());
+    request.setSaslConfig(getAuthenticationSaslConfig());
+    request.setControls(getAuthenticationControls());
+    c.open(request);
   }
 
 
@@ -94,9 +100,12 @@ public class BindAuthenticationHandler
   {
     return
       String.format(
-        "[%s@%d::factory=%s]",
+        "[%s@%d::factory=%s, saslConfig=%s, controls=%s]",
         getClass().getName(),
         hashCode(),
-        factory);
+        factory,
+        getAuthenticationSaslConfig(),
+        getAuthenticationControls() != null ?
+          Arrays.asList(getAuthenticationControls()) : null);
   }
 }

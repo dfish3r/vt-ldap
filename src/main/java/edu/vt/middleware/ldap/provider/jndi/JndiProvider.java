@@ -18,8 +18,6 @@ import java.util.Map;
 import edu.vt.middleware.ldap.ConnectionConfig;
 import edu.vt.middleware.ldap.provider.ConnectionFactory;
 import edu.vt.middleware.ldap.provider.Provider;
-import edu.vt.middleware.ldap.sasl.DigestMd5Config;
-import edu.vt.middleware.ldap.sasl.SaslConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -57,38 +55,6 @@ public class JndiProvider implements Provider<JndiProviderConfig>
    * be made. The value of this constant is {@value}.
    */
   public static final String TIMEOUT = "com.sun.jndi.ldap.connect.timeout";
-
-  /**
-   * The value of this property is a string that specifies the sasl
-   * authorization id. The value of this constant is {@value}.
-   */
-  public static final String SASL_AUTHZ_ID =
-    "java.naming.security.sasl.authorizationId";
-
-  /**
-   * The value of this property is a string that specifies the sasl
-   * quality of protection. The value of this constant is {@value}.
-   */
-  public static final String SASL_QOP = "javax.security.sasl.qop";
-
-  /**
-   * The value of this property is a string that specifies the sasl
-   * security strength. The value of this constant is {@value}.
-   */
-  public static final String SASL_STRENGTH = "javax.security.sasl.strength";
-
-  /**
-   * The value of this property is a string that specifies the sasl
-   * mutual authentication flag. The value of this constant is {@value}.
-   */
-  public static final String SASL_MUTUAL_AUTH =
-    "javax.security.sasl.server.authentication";
-
-  /**
-   * The value of this property is a string that specifies the sasl realm. The
-   * value of this constant is {@value}.
-   */
-  public static final String SASL_REALM = "java.naming.security.sasl.realm";
 
   /** Logger for this class. */
   protected final Logger logger = LoggerFactory.getLogger(getClass());
@@ -160,48 +126,10 @@ public class JndiProvider implements Provider<JndiProviderConfig>
     if (cc.getTimeout() > 0) {
       env.put(TIMEOUT, Long.toString(cc.getTimeout()));
     }
-    if (cc.getSaslConfig() != null) {
-      env.putAll(getSaslProperties(cc.getSaslConfig()));
-    }
     if (!config.getProperties().isEmpty()) {
       for (Map.Entry<String, Object> entry :
            config.getProperties().entrySet()) {
         env.put(entry.getKey(), entry.getValue());
-      }
-    }
-    return env;
-  }
-
-
-  /**
-   * Returns the JNDI properties for the supplied sasl configuration.
-   *
-   * @param  config  sasl configuration
-   * @return  JNDI properties for use in a context environment
-   */
-  protected static Map<String, Object> getSaslProperties(
-    final SaslConfig config)
-  {
-    final Map<String, Object> env = new HashMap<String, Object>();
-    if (config.getAuthorizationId() != null) {
-      env.put(SASL_AUTHZ_ID, config.getAuthorizationId());
-    }
-    if (config.getQualityOfProtection() != null) {
-      env.put(
-        SASL_QOP,
-        JndiUtil.getQualityOfProtection(config.getQualityOfProtection()));
-    }
-    if (config.getSecurityStrength() != null) {
-      env.put(
-        SASL_STRENGTH,
-        JndiUtil.getSecurityStrength(config.getSecurityStrength()));
-    }
-    if (config.getMutualAuthentication() != null) {
-      env.put(SASL_MUTUAL_AUTH, config.getMutualAuthentication().toString());
-    }
-    if (config instanceof DigestMd5Config) {
-      if (((DigestMd5Config) config).getRealm() != null) {
-        env.put(SASL_REALM, ((DigestMd5Config) config).getRealm());
       }
     }
     return env;

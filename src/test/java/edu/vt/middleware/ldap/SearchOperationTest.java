@@ -1132,8 +1132,6 @@ public class SearchOperationTest extends AbstractTest
 
 
   /**
-   * @param  user  to bind as
-   * @param  credential  to bind with
    * @param  dn  to search on.
    * @param  filter  to search with.
    * @param  filterArgs  to replace args in filter with.
@@ -1144,8 +1142,6 @@ public class SearchOperationTest extends AbstractTest
    */
   @Parameters(
     {
-      "digestMd5User",
-      "digestMd5Credential",
       "digestMd5SearchDn",
       "digestMd5SearchFilter",
       "digestMd5SearchFilterArgs",
@@ -1155,8 +1151,6 @@ public class SearchOperationTest extends AbstractTest
   )
   @Test(groups = {"search"})
   public void digestMd5Search(
-    final String user,
-    final String credential,
     final String dn,
     final String filter,
     final String filterArgs,
@@ -1167,8 +1161,6 @@ public class SearchOperationTest extends AbstractTest
     final String expected = TestUtil.readFileIntoString(ldifFile);
 
     final Connection conn = TestUtil.createDigestMd5Connection();
-    conn.getConnectionConfig().setBindDn(user);
-    conn.getConnectionConfig().setBindCredential(new Credential(credential));
     conn.open();
     final SearchOperation search = new SearchOperation(conn);
     final LdapResult result = search.execute(
@@ -1182,8 +1174,6 @@ public class SearchOperationTest extends AbstractTest
 
 
   /**
-   * @param  user  to bind as
-   * @param  credential  to bind with
    * @param  dn  to search on.
    * @param  filter  to search with.
    * @param  filterArgs  to replace args in filter with.
@@ -1194,8 +1184,6 @@ public class SearchOperationTest extends AbstractTest
    */
   @Parameters(
     {
-      "cramMd5User",
-      "cramMd5Credential",
       "cramMd5SearchDn",
       "cramMd5SearchFilter",
       "cramMd5SearchFilterArgs",
@@ -1205,8 +1193,6 @@ public class SearchOperationTest extends AbstractTest
   )
   @Test(groups = {"search"})
   public void cramMd5Search(
-    final String user,
-    final String credential,
     final String dn,
     final String filter,
     final String filterArgs,
@@ -1217,8 +1203,6 @@ public class SearchOperationTest extends AbstractTest
     final String expected = TestUtil.readFileIntoString(ldifFile);
 
     final Connection conn = TestUtil.createCramMd5Connection();
-    conn.getConnectionConfig().setBindDn(user);
-    conn.getConnectionConfig().setBindCredential(new Credential(credential));
     conn.open();
     final SearchOperation search = new SearchOperation(conn);
     final LdapResult result = search.execute(

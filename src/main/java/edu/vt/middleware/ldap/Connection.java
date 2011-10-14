@@ -43,16 +43,15 @@ public interface Connection
 
   /**
    * This will establish a connection if one does not already exist by binding
-   * to the LDAP using the supplied dn and credential. This connection should be
+   * to the LDAP using the supplied bind request. This connection should be
    * closed using {@link #close()}.
    *
-   * @param  bindDn  to bind to the LDAP as
-   * @param  bindCredential  to bind to the LDAP with
+   * @param  request  containing bind information
    *
    * @throws  IllegalStateExcepiton  if the connection is already open
    * @throws  LdapException  if the LDAP cannot be reached
    */
-  void open(String bindDn, Credential bindCredential) throws LdapException;
+  void open(BindRequest request) throws LdapException;
 
 
   /**

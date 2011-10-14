@@ -33,7 +33,7 @@ http://www.springframework.org/schema/util http://www.springframework.org/schema
     class="edu.vt.middleware.ldap.ConnectionConfig"
     p:ldapUrl="${ldapTestHost}"
     p:tls="true">
-    <property name="saslConfig">
+    <property name="bindSaslConfig">
       <bean class="edu.vt.middleware.ldap.sasl.SaslConfig"
         p:mechanism="EXTERNAL"/>
     </property>

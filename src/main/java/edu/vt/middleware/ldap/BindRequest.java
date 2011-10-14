@@ -49,8 +49,8 @@ public class BindRequest extends AbstractRequest
    */
   public BindRequest(final String dn, final Credential credential)
   {
-    setBindDn(dn);
-    setBindCredential(credential);
+    setDn(dn);
+    setCredential(credential);
   }
 
 
@@ -64,8 +64,8 @@ public class BindRequest extends AbstractRequest
   public BindRequest(
     final String dn, final Credential credential, final SaslConfig config)
   {
-    setBindDn(dn);
-    setBindCredential(credential);
+    setDn(dn);
+    setCredential(credential);
     setSaslConfig(config);
   }
 
@@ -75,7 +75,7 @@ public class BindRequest extends AbstractRequest
    *
    * @return  DN to bind as
    */
-  public String getBindDn()
+  public String getDn()
   {
     return bindDn;
   }
@@ -86,7 +86,7 @@ public class BindRequest extends AbstractRequest
    *
    * @param  dn  to bind as
    */
-  public void setBindDn(final String dn)
+  public void setDn(final String dn)
   {
     bindDn = dn;
   }
@@ -97,7 +97,7 @@ public class BindRequest extends AbstractRequest
    *
    * @return  bind DN credential
    */
-  public Credential getBindCredential()
+  public Credential getCredential()
   {
     return bindCredential;
   }
@@ -108,7 +108,7 @@ public class BindRequest extends AbstractRequest
    *
    * @param  credential  to use with bind DN
    */
-  public void setBindCredential(final Credential credential)
+  public void setCredential(final Credential credential)
   {
     bindCredential = credential;
   }

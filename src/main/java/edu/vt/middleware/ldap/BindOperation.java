@@ -41,7 +41,7 @@ public class BindOperation extends AbstractOperation<BindRequest, Void>
   protected Response<Void> invoke(final BindRequest request)
     throws LdapException
   {
-    if (request.getBindDn() == null) {
+    if (request.getDn() == null) {
       connection.getProviderConnection().bind();
     } else {
       connection.getProviderConnection().bind(request);

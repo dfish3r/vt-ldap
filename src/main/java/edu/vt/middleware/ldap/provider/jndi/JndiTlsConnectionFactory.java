@@ -73,13 +73,16 @@ public class JndiTlsConnectionFactory extends AbstractJndiConnectionFactory
     env.put(VERSION, "3");
     boolean closeConn = false;
     try {
-      conn = new JndiTlsConnection(new InitialLdapContext(env, null));
+      conn = new JndiTlsConnection(
+        new InitialLdapContext(
+          env, JndiUtil.fromControls(request.getControls())));
       conn.setStartTlsResponse(startTls(conn.getLdapContext()));
       if (request.isSaslRequest()) {
+        env.putAll(getSaslProperties(request.getSaslConfig()));
         final String authenticationType = JndiUtil.getAuthenticationType(
           request.getSaslConfig().getMechanism());
-        final String username = request.getBindDn();
-        final Credential credential = request.getBindCredential();
+        final String username = request.getDn();
+        final Credential credential = request.getCredential();
         logger.debug(
           "Bind with the following parameters: url = {}, " +
           "authenticationType = {}, username = {}, credential = {}, env = {}",
@@ -101,8 +104,8 @@ public class JndiTlsConnectionFactory extends AbstractJndiConnectionFactory
           }
         }
       } else {
-        final String dn = request.getBindDn();
-        final Credential credential = request.getBindCredential();
+        final String dn = request.getDn();
+        final Credential credential = request.getCredential();
         logger.debug(
           "Bind with the following parameters: url = {}, dn = {}, " +
           "credential = {}, env = {}",
@@ -123,7 +126,8 @@ public class JndiTlsConnectionFactory extends AbstractJndiConnectionFactory
           }
         }
       }
-      conn.getLdapContext().reconnect(null);
+      conn.getLdapContext().reconnect(
+        JndiUtil.fromControls(request.getControls()));
       conn.setRemoveDnUrls(config.getRemoveDnUrls());
       conn.setOperationRetryExceptions(
         NamingExceptionUtil.getNamingExceptions(

@@ -64,10 +64,11 @@ public class JndiConnectionFactory extends AbstractJndiConnectionFactory
     }
 
     if (request.isSaslRequest()) {
+      env.putAll(getSaslProperties(request.getSaslConfig()));
       final String authenticationType = JndiUtil.getAuthenticationType(
         request.getSaslConfig().getMechanism());
-      final String username = request.getBindDn();
-      final Credential credential = request.getBindCredential();
+      final String username = request.getDn();
+      final Credential credential = request.getCredential();
       logger.debug(
         "Bind with the following parameters: url = {}, " +
         "authenticationType = {}, username = {}, credential = {}, env = {}",
@@ -87,8 +88,8 @@ public class JndiConnectionFactory extends AbstractJndiConnectionFactory
         }
       }
     } else {
-      final String dn = request.getBindDn();
-      final Credential credential = request.getBindCredential();
+      final String dn = request.getDn();
+      final Credential credential = request.getCredential();
       logger.debug(
         "Bind with the following parameters: url = {}, dn = {}, " +
         "credential = {}, env = {}",
@@ -112,7 +113,9 @@ public class JndiConnectionFactory extends AbstractJndiConnectionFactory
 
     JndiConnection conn = null;
     try {
-      conn = new JndiConnection(new InitialLdapContext(env, null));
+      conn = new JndiConnection(
+        new InitialLdapContext(
+          env, JndiUtil.fromControls(request.getControls())));
       conn.setRemoveDnUrls(config.getRemoveDnUrls());
       conn.setOperationRetryExceptions(
         NamingExceptionUtil.getNamingExceptions(

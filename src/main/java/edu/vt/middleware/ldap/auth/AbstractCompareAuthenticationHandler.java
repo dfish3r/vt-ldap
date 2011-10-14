@@ -23,9 +23,7 @@ import edu.vt.middleware.ldap.LdapException;
 import edu.vt.middleware.ldap.LdapUtil;
 
 /**
- * Provides an LDAP authentication implementation that leverages a compare
- * operation against the userPassword attribute. The default password scheme
- * used is 'SHA'.
+ * Provides implementation common to compare authentication handlers.
  *
  * @author  Middleware Services
  * @version  $Revision$
@@ -86,8 +84,9 @@ public abstract class AbstractCompareAuthenticationHandler
       String.format(
         "{%s}%s", passwordScheme, LdapUtil.base64Encode(hash)).getBytes());
     final CompareOperation compare = new CompareOperation(c);
-    final boolean success = compare.execute(
-      new CompareRequest(criteria.getDn(), la)).getResult();
+    final CompareRequest request = new CompareRequest(criteria.getDn(), la);
+    request.setControls(getAuthenticationControls());
+    final boolean success = compare.execute(request).getResult();
 
     if (!success) {
       throw new AuthenticationException("Compare authentication failed.");

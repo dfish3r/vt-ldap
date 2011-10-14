@@ -13,6 +13,7 @@
 */
 package edu.vt.middleware.ldap.auth;
 
+import java.util.Arrays;
 import edu.vt.middleware.ldap.BindOperation;
 import edu.vt.middleware.ldap.BindRequest;
 import edu.vt.middleware.ldap.Connection;
@@ -28,7 +29,7 @@ import edu.vt.middleware.ldap.pool.PooledConnectionFactoryManager;
  * @version  $Revision$
  */
 public class PooledBindAuthenticationHandler
-  extends AbstractAuthenticationHandler
+  extends AbstractBindAuthenticationHandler
   implements PooledConnectionFactoryManager
 {
 
@@ -79,11 +80,15 @@ public class PooledBindAuthenticationHandler
   /** {@inheritDoc} */
   @Override
   protected void authenticateInternal(
-    final Connection c, final AuthenticationCriteria ac)
+    final Connection c, final AuthenticationCriteria criteria)
     throws LdapException
   {
+    final BindRequest request = new BindRequest(
+      criteria.getDn(), criteria.getCredential());
+    request.setSaslConfig(getAuthenticationSaslConfig());
+    request.setControls(getAuthenticationControls());
     final BindOperation op = new BindOperation(c);
-    op.execute(new BindRequest(ac.getDn(), ac.getCredential()));
+    op.execute(request);
   }
 
 
@@ -97,9 +102,12 @@ public class PooledBindAuthenticationHandler
   {
     return
       String.format(
-        "[%s@%d::factory=%s]",
+        "[%s@%d::factory=%s, saslConfig=%s, controls=%s]",
         getClass().getName(),
         hashCode(),
-        factory);
+        factory,
+        getAuthenticationSaslConfig(),
+        getAuthenticationControls() != null ?
+          Arrays.asList(getAuthenticationControls()) : null);
   }
 }

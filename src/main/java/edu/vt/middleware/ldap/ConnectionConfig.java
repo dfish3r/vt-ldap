@@ -13,8 +13,10 @@
 */
 package edu.vt.middleware.ldap;
 
+import java.util.Arrays;
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLSocketFactory;
+import edu.vt.middleware.ldap.control.Control;
 import edu.vt.middleware.ldap.sasl.SaslConfig;
 
 /**
@@ -44,8 +46,11 @@ public class ConnectionConfig extends AbstractConfig
   /** Credential for the bind DN. */
   private Credential bindCredential;
 
-  /** Configuration for SASL authentication. */
-  private SaslConfig saslConfig;
+  /** Configuration for bind SASL authentication. */
+  private SaslConfig bindSaslConfig;
+
+  /** Bind controls. */
+  private Control[] bindControls;
 
   /** Number of times to retry ldap operations on exception. */
   private int operationRetry = 1;
@@ -227,26 +232,48 @@ public class ConnectionConfig extends AbstractConfig
 
 
   /**
-   * Returns the sasl config.
+   * Returns the bind sasl config.
    *
    * @return  sasl config
    */
-  public SaslConfig getSaslConfig()
+  public SaslConfig getBindSaslConfig()
   {
-    return saslConfig;
+    return bindSaslConfig;
   }
 
 
   /**
-   * Sets the sasl config.
+   * Sets the bind sasl config.
    *
    * @param  config  sasl config
    */
-  public void setSaslConfig(final SaslConfig config)
+  public void setBindSaslConfig(final SaslConfig config)
   {
     checkImmutable();
-    logger.trace("setting saslConfig: {}", config);
-    saslConfig = config;
+    logger.trace("setting bindSaslConfig: {}", config);
+    bindSaslConfig = config;
+  }
+
+
+  /**
+   * Returns the bind controls.
+   *
+   * @return  controls
+   */
+  public Control[] getBindControls()
+  {
+    return bindControls;
+  }
+
+
+  /**
+   * Sets the bind controls.
+   *
+   * @param  c  controls to set
+   */
+  public void setBindControls(final Control... c)
+  {
+    bindControls = c;
   }
 
 
@@ -409,8 +436,9 @@ public class ConnectionConfig extends AbstractConfig
     return
       String.format(
         "[%s@%d::sslSocketFactory=%s, hostnameVerifier=%s, ldapUrl=%s, " +
-        "timeout=%s, bindDn=%s, saslConfig=%s, operationRetry=%s, " +
-        "operationRetryWait=%s, operationRetryBackoff=%s, ssl=%s, tls=%s]",
+        "timeout=%s, bindDn=%s, bindSaslConfig=%s, bindControls=%s, " +
+        "operationRetry=%s, operationRetryWait=%s, operationRetryBackoff=%s, " +
+        "ssl=%s, tls=%s]",
         getClass().getName(),
         hashCode(),
         sslSocketFactory,
@@ -418,7 +446,8 @@ public class ConnectionConfig extends AbstractConfig
         ldapUrl,
         timeout,
         bindDn,
-        saslConfig,
+        bindSaslConfig,
+        bindControls != null ? Arrays.asList(bindControls) : null,
         operationRetry,
         operationRetryWait,
         operationRetryBackoff,

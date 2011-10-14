@@ -13,6 +13,7 @@
 */
 package edu.vt.middleware.ldap.auth;
 
+import java.util.Arrays;
 import edu.vt.middleware.ldap.Connection;
 import edu.vt.middleware.ldap.LdapException;
 import edu.vt.middleware.ldap.pool.PooledConnectionFactory;
@@ -85,10 +86,12 @@ public class PooledCompareAuthenticationHandler
   {
     return
       String.format(
-        "[%s@%d::factory=%s, passwordScheme=%s]",
+        "[%s@%d::factory=%s, passwordScheme=%s, controls=%s]",
         getClass().getName(),
         hashCode(),
         factory,
-        passwordScheme);
+        passwordScheme,
+        getAuthenticationControls() != null ?
+          Arrays.asList(getAuthenticationControls()) : null);
   }
 }
