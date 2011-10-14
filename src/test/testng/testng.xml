@@ -342,9 +342,6 @@
         <include name="ldif" />
         <include name="ssl" />
         <include name="cache" />
-      <!--
-        <include name="wikitest" />
-      -->
         <include name="ldapcli" />
         <include name="authcli" />
         <include name="conn" />
