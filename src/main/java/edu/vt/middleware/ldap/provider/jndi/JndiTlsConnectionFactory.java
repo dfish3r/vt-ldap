@@ -68,7 +68,7 @@ public class JndiTlsConnectionFactory extends AbstractJndiConnectionFactory
     env.put(VERSION, "3");
     boolean closeConn = false;
     try {
-      conn = new JndiTlsConnection(new InitialLdapContext(env,null));
+      conn = new JndiTlsConnection(new InitialLdapContext(env, null));
       conn.setStartTlsResponse(startTls(conn.getLdapContext()));
       conn.getLdapContext().reconnect(null);
       conn.setRemoveDnUrls(config.getRemoveDnUrls());

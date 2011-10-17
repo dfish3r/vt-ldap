@@ -36,6 +36,8 @@ public interface Connection
   /**
    * Anonymously bind to the ldap.
    *
+   * @return  response associated with the bind operation
+   *
    * @throws  LdapException  if an error occurs
    */
   Response<Void> bind() throws LdapException;
@@ -45,6 +47,9 @@ public interface Connection
    * Bind to the ldap.
    *
    * @param  request  containing the data necessary to perform the operation
+   *
+   * @return  response associated with the bind operation
+   *
    * @throws  LdapException  if an error occurs
    */
   Response<Void> bind(BindRequest request) throws LdapException;
@@ -54,6 +59,9 @@ public interface Connection
    * Add an entry to an ldap.
    *
    * @param  request  containing the data necessary to perform the operation
+   *
+   * @return  response associated with the add operation
+   *
    * @throws  LdapException  if an error occurs
    */
   Response<Void> add(AddRequest request) throws LdapException;
@@ -63,7 +71,9 @@ public interface Connection
    * Compare an entry in the ldap.
    *
    * @param  request  containing the data necessary to perform the operation
-   * @return  whether compare succeeded
+   *
+   * @return  response associated with the compare operation
+   *
    * @throws  LdapException  if an error occurs
    */
   Response<Boolean> compare(CompareRequest request) throws LdapException;
@@ -73,6 +83,9 @@ public interface Connection
    * Delete an entry in the ldap.
    *
    * @param  request  containing the data necessary to perform the operation
+   *
+   * @return  response associated with the delete operation
+   *
    * @throws  LdapException  if an error occurs
    */
   Response<Void> delete(DeleteRequest request) throws LdapException;
@@ -82,6 +95,9 @@ public interface Connection
    * Modify an entry in the ldap.
    *
    * @param  request  containing the data necessary to perform the operation
+   *
+   * @return  response associated with the modify operation
+   *
    * @throws  LdapException  if an error occurs
    */
   Response<Void> modify(ModifyRequest request) throws LdapException;
@@ -91,6 +107,9 @@ public interface Connection
    * Rename an entry in the ldap.
    *
    * @param  request  containing the data necessary to perform the operation
+   *
+   * @return  response associated with the rename operation
+   *
    * @throws  LdapException  if an error occurs
    */
   Response<Void> rename(RenameRequest request) throws LdapException;
@@ -100,7 +119,9 @@ public interface Connection
    * Search the ldap.
    *
    * @param  request  containing the data necessary to perform the operation
+   *
    * @return  search iterator
+   *
    * @throws  LdapException  if an error occurs
    */
   SearchIterator search(SearchRequest request) throws LdapException;
