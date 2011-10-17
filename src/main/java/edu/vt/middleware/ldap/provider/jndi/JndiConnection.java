@@ -13,7 +13,8 @@
 */
 package edu.vt.middleware.ldap.provider.jndi;
 
-import javax.naming.Context;
+import java.util.HashMap;
+import java.util.Map;
 import javax.naming.NamingEnumeration;
 import javax.naming.NamingException;
 import javax.naming.directory.SearchControls;
@@ -33,6 +34,8 @@ import edu.vt.middleware.ldap.SearchScope;
 import edu.vt.middleware.ldap.auth.AuthenticationException;
 import edu.vt.middleware.ldap.provider.Connection;
 import edu.vt.middleware.ldap.provider.SearchIterator;
+import edu.vt.middleware.ldap.sasl.DigestMd5Config;
+import edu.vt.middleware.ldap.sasl.SaslConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -44,6 +47,58 @@ import org.slf4j.LoggerFactory;
  */
 public class JndiConnection implements Connection
 {
+
+  /**
+   * The value of this property is a string that specifies the authentication
+   * mechanism(s) for the provider to use. The value of this constant is
+   * {@value}.
+   */
+  public static final String AUTHENTICATION =
+    "java.naming.security.authentication";
+
+  /**
+   * The value of this property is an object that specifies the credentials of
+   * the principal to be authenticated. The value of this constant is {@value}.
+   */
+  public static final String CREDENTIALS = "java.naming.security.credentials";
+
+  /**
+   * The value of this property is a string that specifies the identity of the
+   * principal to be authenticated. The value of this constant is {@value}.
+   */
+  public static final String PRINCIPAL = "java.naming.security.principal";
+
+  /**
+   * The value of this property is a string that specifies the sasl
+   * authorization id. The value of this constant is {@value}.
+   */
+  public static final String SASL_AUTHZ_ID =
+    "java.naming.security.sasl.authorizationId";
+
+  /**
+   * The value of this property is a string that specifies the sasl
+   * quality of protection. The value of this constant is {@value}.
+   */
+  public static final String SASL_QOP = "javax.security.sasl.qop";
+
+  /**
+   * The value of this property is a string that specifies the sasl
+   * security strength. The value of this constant is {@value}.
+   */
+  public static final String SASL_STRENGTH = "javax.security.sasl.strength";
+
+  /**
+   * The value of this property is a string that specifies the sasl
+   * mutual authentication flag. The value of this constant is {@value}.
+   */
+  public static final String SASL_MUTUAL_AUTH =
+    "javax.security.sasl.server.authentication";
+
+  /**
+   * The value of this property is a string that specifies the sasl realm. The
+   * value of this constant is {@value}.
+   */
+  public static final String SASL_REALM = "java.naming.security.sasl.realm";
 
   /** Logger for this class. */
   protected final Logger logger = LoggerFactory.getLogger(getClass());
@@ -150,9 +205,9 @@ public class JndiConnection implements Connection
     throws LdapException
   {
     try {
-      context.addToEnvironment(Context.SECURITY_AUTHENTICATION, "none");
-      context.removeFromEnvironment(Context.SECURITY_PRINCIPAL);
-      context.removeFromEnvironment(Context.SECURITY_CREDENTIALS);
+      context.addToEnvironment(AUTHENTICATION, "none");
+      context.removeFromEnvironment(PRINCIPAL);
+      context.removeFromEnvironment(CREDENTIALS);
       context.reconnect(context.getConnectControls());
     } catch (javax.naming.AuthenticationException e) {
       throw new AuthenticationException(e, ResultCode.INVALID_CREDENTIALS);
@@ -168,16 +223,23 @@ public class JndiConnection implements Connection
     throws LdapException
   {
     String authenticationType = "simple";
-    if (request.isSaslRequest()) {
-      authenticationType = JndiUtil.getAuthenticationType(
-        request.getSaslConfig().getMechanism());
-    }
     try {
-      context.addToEnvironment(
-        Context.SECURITY_AUTHENTICATION, authenticationType);
-      context.addToEnvironment(Context.SECURITY_PRINCIPAL, request.getDn());
-      context.addToEnvironment(
-        Context.SECURITY_CREDENTIALS, request.getCredential().getBytes());
+      if (request.isSaslRequest()) {
+        authenticationType = JndiUtil.getAuthenticationType(
+          request.getSaslConfig().getMechanism());
+        for (Map.Entry<String, Object> entry :
+             getSaslProperties(request.getSaslConfig()).entrySet()) {
+          context.addToEnvironment(entry.getKey(), entry.getValue());
+        }
+      }
+      context.addToEnvironment(AUTHENTICATION, authenticationType);
+      if (request.getDn() != null) {
+        context.addToEnvironment(PRINCIPAL, request.getDn());
+        if (request.getCredential() != null) {
+          context.addToEnvironment(
+            CREDENTIALS, request.getCredential().getBytes());
+        }
+      }
       context.reconnect(JndiUtil.fromControls(request.getControls()));
     } catch (javax.naming.AuthenticationException e) {
       throw new AuthenticationException(e, ResultCode.INVALID_CREDENTIALS);
@@ -341,5 +403,40 @@ public class JndiConnection implements Connection
     ctls.setReturningAttributes(new String[0]);
     ctls.setSearchScope(SearchScope.OBJECT.ordinal());
     return ctls;
+  }
+
+
+  /**
+   * Returns the JNDI properties for the supplied sasl configuration.
+   *
+   * @param  config  sasl configuration
+   * @return  JNDI properties for use in a context environment
+   */
+  protected static Map<String, Object> getSaslProperties(
+    final SaslConfig config)
+  {
+    final Map<String, Object> env = new HashMap<String, Object>();
+    if (config.getAuthorizationId() != null) {
+      env.put(SASL_AUTHZ_ID, config.getAuthorizationId());
+    }
+    if (config.getQualityOfProtection() != null) {
+      env.put(
+        SASL_QOP,
+        JndiUtil.getQualityOfProtection(config.getQualityOfProtection()));
+    }
+    if (config.getSecurityStrength() != null) {
+      env.put(
+        SASL_STRENGTH,
+        JndiUtil.getSecurityStrength(config.getSecurityStrength()));
+    }
+    if (config.getMutualAuthentication() != null) {
+      env.put(SASL_MUTUAL_AUTH, config.getMutualAuthentication().toString());
+    }
+    if (config instanceof DigestMd5Config) {
+      if (((DigestMd5Config) config).getRealm() != null) {
+        env.put(SASL_REALM, ((DigestMd5Config) config).getRealm());
+      }
+    }
+    return env;
   }
 }

@@ -17,11 +17,7 @@ import java.util.Hashtable;
 import java.util.Map;
 import javax.naming.NamingException;
 import javax.naming.ldap.InitialLdapContext;
-import edu.vt.middleware.ldap.BindRequest;
-import edu.vt.middleware.ldap.Credential;
 import edu.vt.middleware.ldap.LdapException;
-import edu.vt.middleware.ldap.ResultCode;
-import edu.vt.middleware.ldap.auth.AuthenticationException;
 import edu.vt.middleware.ldap.provider.ConnectionException;
 
 /**
@@ -52,8 +48,7 @@ public class JndiConnectionFactory extends AbstractJndiConnectionFactory
 
   /** {@inheritDoc} */
   @Override
-  protected JndiConnection createInternal(
-    final String url, final BindRequest request)
+  protected JndiConnection createInternal(final String url)
     throws LdapException
   {
     final Hashtable<String, Object> env = new Hashtable<String, Object>(
@@ -63,65 +58,13 @@ public class JndiConnectionFactory extends AbstractJndiConnectionFactory
       env.put(TRACE, config.getTracePackets());
     }
 
-    if (request.isSaslRequest()) {
-      env.putAll(getSaslProperties(request.getSaslConfig()));
-      final String authenticationType = JndiUtil.getAuthenticationType(
-        request.getSaslConfig().getMechanism());
-      final String username = request.getDn();
-      final Credential credential = request.getCredential();
-      logger.debug(
-        "Bind with the following parameters: url = {}, " +
-        "authenticationType = {}, username = {}, credential = {}, env = {}",
-        new Object[] {
-          url,
-          authenticationType,
-          username,
-          config.getLogCredentials() || credential == null ?
-            credential : "<suppressed>",
-          environment, });
-
-      env.put(AUTHENTICATION, authenticationType);
-      if (username != null) {
-        env.put(PRINCIPAL, username);
-        if (credential != null) {
-          env.put(CREDENTIALS, credential.getBytes());
-        }
-      }
-    } else {
-      final String dn = request.getDn();
-      final Credential credential = request.getCredential();
-      logger.debug(
-        "Bind with the following parameters: url = {}, dn = {}, " +
-        "credential = {}, env = {}",
-        new Object[] {
-          url,
-          dn,
-          config.getLogCredentials() || credential == null ?
-            credential : "<suppressed>",
-          environment, });
-
-      // note that when using simple authentication (the default),
-      // if the credential is null the provider will automatically revert the
-      // authentication to none
-      if (dn != null) {
-        env.put(PRINCIPAL, dn);
-        if (credential != null) {
-          env.put(CREDENTIALS, credential.getBytes());
-        }
-      }
-    }
-
     JndiConnection conn = null;
     try {
-      conn = new JndiConnection(
-        new InitialLdapContext(
-          env, JndiUtil.fromControls(request.getControls())));
+      conn = new JndiConnection(new InitialLdapContext(env, null));
       conn.setRemoveDnUrls(config.getRemoveDnUrls());
       conn.setOperationRetryExceptions(
         NamingExceptionUtil.getNamingExceptions(
           config.getOperationRetryResultCodes()));
-    } catch (javax.naming.AuthenticationException e) {
-      throw new AuthenticationException(e, ResultCode.INVALID_CREDENTIALS);
     } catch (NamingException e) {
       throw new ConnectionException(
         e, NamingExceptionUtil.getResultCode(e.getClass()));

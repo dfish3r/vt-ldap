@@ -328,7 +328,10 @@ public class DefaultConnectionFactory implements ConnectionFactory
       if (providerConnection != null) {
         throw new IllegalStateException("Connection already open");
       }
-      providerConnection = providerConnectionFactory.create(request);
+      providerConnection = providerConnectionFactory.create();
+      if (request.getDn() != null || request.getSaslConfig() != null) {
+        providerConnection.bind(request);
+      }
     }
 
 

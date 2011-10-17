@@ -13,7 +13,6 @@
 */
 package edu.vt.middleware.ldap.provider;
 
-import edu.vt.middleware.ldap.BindRequest;
 import edu.vt.middleware.ldap.LdapException;
 
 /**
@@ -47,11 +46,9 @@ public interface ConnectionFactory<T extends ProviderConfig>
   /**
    * Create a connection to an LDAP.
    *
-   * @param  request  bind request
-   *
    * @throws  AuthenticationException  if the supplied credentials are invalid
    * @throws  LdapException  if an LDAP error occurs
    */
-  Connection create(BindRequest request)
+  Connection create()
     throws LdapException;
 }

@@ -13,11 +13,8 @@
 */
 package edu.vt.middleware.ldap.provider.jndi;
 
-import java.util.HashMap;
 import java.util.Map;
 import edu.vt.middleware.ldap.provider.AbstractConnectionFactory;
-import edu.vt.middleware.ldap.sasl.DigestMd5Config;
-import edu.vt.middleware.ldap.sasl.SaslConfig;
 
 /**
  * Base class for JNDI connection factory implementations.
@@ -28,26 +25,6 @@ import edu.vt.middleware.ldap.sasl.SaslConfig;
 public abstract class AbstractJndiConnectionFactory
   extends AbstractConnectionFactory<JndiProviderConfig>
 {
-
-  /**
-   * The value of this property is a string that specifies the authentication
-   * mechanism(s) for the provider to use. The value of this constant is
-   * {@value}.
-   */
-  public static final String AUTHENTICATION =
-    "java.naming.security.authentication";
-
-  /**
-   * The value of this property is an object that specifies the credentials of
-   * the principal to be authenticated. The value of this constant is {@value}.
-   */
-  public static final String CREDENTIALS = "java.naming.security.credentials";
-
-  /**
-   * The value of this property is a string that specifies the identity of the
-   * principal to be authenticated. The value of this constant is {@value}.
-   */
-  public static final String PRINCIPAL = "java.naming.security.principal";
 
   /**
    * The value of this property is a URL string that specifies the hostname and
@@ -69,38 +46,6 @@ public abstract class AbstractJndiConnectionFactory
    */
   public static final String VERSION = "java.naming.ldap.version";
 
-  /**
-   * The value of this property is a string that specifies the sasl
-   * authorization id. The value of this constant is {@value}.
-   */
-  public static final String SASL_AUTHZ_ID =
-    "java.naming.security.sasl.authorizationId";
-
-  /**
-   * The value of this property is a string that specifies the sasl
-   * quality of protection. The value of this constant is {@value}.
-   */
-  public static final String SASL_QOP = "javax.security.sasl.qop";
-
-  /**
-   * The value of this property is a string that specifies the sasl
-   * security strength. The value of this constant is {@value}.
-   */
-  public static final String SASL_STRENGTH = "javax.security.sasl.strength";
-
-  /**
-   * The value of this property is a string that specifies the sasl
-   * mutual authentication flag. The value of this constant is {@value}.
-   */
-  public static final String SASL_MUTUAL_AUTH =
-    "javax.security.sasl.server.authentication";
-
-  /**
-   * The value of this property is a string that specifies the sasl realm. The
-   * value of this constant is {@value}.
-   */
-  public static final String SASL_REALM = "java.naming.security.sasl.realm";
-
   /** Environment properties. */
   protected Map<String, Object> environment;
 
@@ -119,40 +64,5 @@ public abstract class AbstractJndiConnectionFactory
         getClass().getName(),
         hashCode(),
         config);
-  }
-
-
-  /**
-   * Returns the JNDI properties for the supplied sasl configuration.
-   *
-   * @param  config  sasl configuration
-   * @return  JNDI properties for use in a context environment
-   */
-  protected static Map<String, Object> getSaslProperties(
-    final SaslConfig config)
-  {
-    final Map<String, Object> env = new HashMap<String, Object>();
-    if (config.getAuthorizationId() != null) {
-      env.put(SASL_AUTHZ_ID, config.getAuthorizationId());
-    }
-    if (config.getQualityOfProtection() != null) {
-      env.put(
-        SASL_QOP,
-        JndiUtil.getQualityOfProtection(config.getQualityOfProtection()));
-    }
-    if (config.getSecurityStrength() != null) {
-      env.put(
-        SASL_STRENGTH,
-        JndiUtil.getSecurityStrength(config.getSecurityStrength()));
-    }
-    if (config.getMutualAuthentication() != null) {
-      env.put(SASL_MUTUAL_AUTH, config.getMutualAuthentication().toString());
-    }
-    if (config instanceof DigestMd5Config) {
-      if (((DigestMd5Config) config).getRealm() != null) {
-        env.put(SASL_REALM, ((DigestMd5Config) config).getRealm());
-      }
-    }
-    return env;
   }
 }

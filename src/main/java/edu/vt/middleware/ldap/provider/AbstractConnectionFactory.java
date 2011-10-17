@@ -17,7 +17,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.StringTokenizer;
-import edu.vt.middleware.ldap.BindRequest;
 import edu.vt.middleware.ldap.LdapException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -88,7 +87,7 @@ AbstractConnectionFactory<T extends ProviderConfig>
 
   /** {@inheritDoc} */
   @Override
-  public Connection create(final BindRequest request)
+  public Connection create()
     throws LdapException
   {
     LdapException lastThrown = null;
@@ -102,7 +101,7 @@ AbstractConnectionFactory<T extends ProviderConfig>
             connectionCount,
             url,
             config.getConnectionStrategy(), });
-        conn = createInternal(url, request);
+        conn = createInternal(url);
         connectionCount.incrementCount();
         lastThrown = null;
         break;
@@ -122,13 +121,11 @@ AbstractConnectionFactory<T extends ProviderConfig>
    * Create the provider connection and prepare the connection for use.
    *
    * @param  url  to connect to
-   * @param  request  bind request data
    * @return  provider connection
    *
    * @throws  LdapException  if a connection cannot be established
    */
-  protected abstract Connection createInternal(
-    final String url, final BindRequest request)
+  protected abstract Connection createInternal(final String url)
     throws LdapException;
 
 
