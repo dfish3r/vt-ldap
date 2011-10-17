@@ -148,6 +148,17 @@ public class BindRequest extends AbstractRequest
 
 
   /**
+   * Returns whether this request is for an anoymous bind.
+   *
+   * @return  whether this request is for an anoymous bind
+   */
+  public boolean isAnonymousBindRequest()
+  {
+    return bindDn == null && saslConfig == null;
+  }
+
+
+  /**
    * Provides a descriptive string representation of this instance.
    *
    * @return  string representation
