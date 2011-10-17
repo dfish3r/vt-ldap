@@ -40,8 +40,7 @@ public class DeleteOperation extends AbstractOperation<DeleteRequest, Void>
   protected Response<Void> invoke(final DeleteRequest request)
     throws LdapException
   {
-    connection.getProviderConnection().delete(request);
-    return new Response<Void>();
+    return connection.getProviderConnection().delete(request);
   }
 
 

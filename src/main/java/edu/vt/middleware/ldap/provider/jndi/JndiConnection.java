@@ -28,6 +28,7 @@ import edu.vt.middleware.ldap.DeleteRequest;
 import edu.vt.middleware.ldap.LdapException;
 import edu.vt.middleware.ldap.ModifyRequest;
 import edu.vt.middleware.ldap.RenameRequest;
+import edu.vt.middleware.ldap.Response;
 import edu.vt.middleware.ldap.ResultCode;
 import edu.vt.middleware.ldap.SearchRequest;
 import edu.vt.middleware.ldap.SearchScope;
@@ -201,27 +202,32 @@ public class JndiConnection implements Connection
 
   /** {@inheritDoc} */
   @Override
-  public void bind()
+  public Response<Void> bind()
     throws LdapException
   {
+    Response<Void> response = null;
     try {
       context.addToEnvironment(AUTHENTICATION, "none");
       context.removeFromEnvironment(PRINCIPAL);
       context.removeFromEnvironment(CREDENTIALS);
       context.reconnect(context.getConnectControls());
+      response = new Response<Void>(
+        null, JndiUtil.toControls(context.getResponseControls()));
     } catch (javax.naming.AuthenticationException e) {
       throw new AuthenticationException(e, ResultCode.INVALID_CREDENTIALS);
     } catch (NamingException e) {
       JndiUtil.throwOperationException(operationRetryExceptions, e);
     }
+    return response;
   }
 
 
   /** {@inheritDoc} */
   @Override
-  public void bind(final BindRequest request)
+  public Response<Void> bind(final BindRequest request)
     throws LdapException
   {
+    Response<Void> response = null;
     String authenticationType = "simple";
     try {
       if (request.isSaslRequest()) {
@@ -241,19 +247,23 @@ public class JndiConnection implements Connection
         }
       }
       context.reconnect(JndiUtil.fromControls(request.getControls()));
+      response = new Response<Void>(
+        null, JndiUtil.toControls(context.getResponseControls()));
     } catch (javax.naming.AuthenticationException e) {
       throw new AuthenticationException(e, ResultCode.INVALID_CREDENTIALS);
     } catch (NamingException e) {
       JndiUtil.throwOperationException(operationRetryExceptions, e);
     }
+    return response;
   }
 
 
   /** {@inheritDoc} */
   @Override
-  public void add(final AddRequest request)
+  public Response<Void> add(final AddRequest request)
     throws LdapException
   {
+    Response<Void> response = null;
     try {
       LdapContext ctx = null;
       try {
@@ -262,6 +272,8 @@ public class JndiConnection implements Connection
         ctx.createSubcontext(
           new LdapName(request.getDn()),
           bu.fromLdapAttributes(request.getLdapAttributes())).close();
+        response = new Response<Void>(
+          null, JndiUtil.toControls(ctx.getResponseControls()));
       } finally {
         if (ctx != null) {
           ctx.close();
@@ -270,14 +282,16 @@ public class JndiConnection implements Connection
     } catch (NamingException e) {
       JndiUtil.throwOperationException(operationRetryExceptions, e);
     }
+    return response;
   }
 
 
   /** {@inheritDoc} */
   @Override
-  public boolean compare(final CompareRequest request)
+  public Response<Boolean> compare(final CompareRequest request)
     throws LdapException
   {
+    Response<Boolean> response = null;
     boolean success = false;
     try {
       LdapContext ctx = null;
@@ -295,6 +309,8 @@ public class JndiConnection implements Connection
         if (en.hasMore()) {
           success = true;
         }
+        response = new Response<Boolean>(
+          success, JndiUtil.toControls(ctx.getResponseControls()));
       } finally {
         if (en != null) {
           en.close();
@@ -306,20 +322,23 @@ public class JndiConnection implements Connection
     } catch (NamingException e) {
       JndiUtil.throwOperationException(operationRetryExceptions, e);
     }
-    return success;
+    return response;
   }
 
 
   /** {@inheritDoc} */
   @Override
-  public void delete(final DeleteRequest request)
+  public Response<Void> delete(final DeleteRequest request)
     throws LdapException
   {
+    Response<Void> response = null;
     try {
       LdapContext ctx = null;
       try {
         ctx = context.newInstance(JndiUtil.fromControls(request.getControls()));
         ctx.destroySubcontext(new LdapName(request.getDn()));
+        response = new Response<Void>(
+          null, JndiUtil.toControls(ctx.getResponseControls()));
       } finally {
         if (ctx != null) {
           ctx.close();
@@ -328,14 +347,16 @@ public class JndiConnection implements Connection
     } catch (NamingException e) {
       JndiUtil.throwOperationException(operationRetryExceptions, e);
     }
+    return response;
   }
 
 
   /** {@inheritDoc} */
   @Override
-  public void modify(final ModifyRequest request)
+  public Response<Void> modify(final ModifyRequest request)
     throws LdapException
   {
+    Response<Void> response = null;
     try {
       LdapContext ctx = null;
       try {
@@ -344,6 +365,8 @@ public class JndiConnection implements Connection
         ctx.modifyAttributes(
           new LdapName(request.getDn()),
           bu.fromAttributeModification(request.getAttributeModifications()));
+        response = new Response<Void>(
+          null, JndiUtil.toControls(ctx.getResponseControls()));
       } finally {
         if (ctx != null) {
           ctx.close();
@@ -352,14 +375,16 @@ public class JndiConnection implements Connection
     } catch (NamingException e) {
       JndiUtil.throwOperationException(operationRetryExceptions, e);
     }
+    return response;
   }
 
 
   /** {@inheritDoc} */
   @Override
-  public void rename(final RenameRequest request)
+  public Response<Void> rename(final RenameRequest request)
     throws LdapException
   {
+    Response<Void> response = null;
     try {
       LdapContext ctx = null;
       try {
@@ -367,6 +392,8 @@ public class JndiConnection implements Connection
         ctx.rename(
           new LdapName(request.getDn()),
           new LdapName(request.getNewDn()));
+        response = new Response<Void>(
+          null, JndiUtil.toControls(ctx.getResponseControls()));
       } finally {
         if (ctx != null) {
           ctx.close();
@@ -375,6 +402,7 @@ public class JndiConnection implements Connection
     } catch (NamingException e) {
       JndiUtil.throwOperationException(operationRetryExceptions, e);
     }
+    return response;
   }
 
 

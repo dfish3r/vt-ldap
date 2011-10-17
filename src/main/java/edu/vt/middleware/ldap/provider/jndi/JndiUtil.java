@@ -351,7 +351,7 @@ public class JndiUtil
 
 
   /**
-   * Converts the supplied controls to a jndi controls.
+   * Converts the supplied controls to jndi controls.
    *
    * @param  ctls  to convert
    * @return  jndi controls
@@ -385,6 +385,9 @@ public class JndiUtil
   public static javax.naming.ldap.Control fromControl(final Control ctl)
     throws NamingException
   {
+    if (ctl == null) {
+      return null;
+    }
     javax.naming.ldap.Control jndiCtl = null;
     try {
       if (ManageDsaITControl.class.isInstance(ctl)) {
@@ -406,5 +409,48 @@ public class JndiUtil
       throw new NamingException(e.getMessage());
     }
     return jndiCtl;
+  }
+
+
+  /**
+   * Converts the supplied jndi controls to controls.
+   *
+   * @param  jndiCtls  to convert
+   * @return  controls
+   */
+  public static Control[] toControls(final javax.naming.ldap.Control[] jndiCtls)
+  {
+    if (jndiCtls == null) {
+      return null;
+    }
+    final List<Control> ctls = new ArrayList<Control>(jndiCtls.length);
+    for (javax.naming.ldap.Control c : jndiCtls) {
+      final Control ctl = toControl(c);
+      if (ctl != null) {
+        ctls.add(ctl);
+      }
+    }
+    return ctls.toArray(new Control[ctls.size()]);
+  }
+
+
+  /**
+   * Converts the supplied jndi control to a control.
+   *
+   * @param  jndiCtl  to convert
+   * @return  control
+   */
+  public static Control toControl(final javax.naming.ldap.Control jndiCtl)
+  {
+    if (jndiCtl == null) {
+      return null;
+    }
+    Control ctl = null;
+    if (ManageDsaITControl.OID.equals(jndiCtl.getID())) {
+      ctl = new ManageDsaITControl(jndiCtl.isCritical());
+    } else {
+      throw new IllegalArgumentException("Unsupported control: " + ctl);
+    }
+    return ctl;
   }
 }

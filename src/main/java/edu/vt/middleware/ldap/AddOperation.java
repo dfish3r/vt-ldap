@@ -40,8 +40,7 @@ public class AddOperation extends AbstractOperation<AddRequest, Void>
   protected Response<Void> invoke(final AddRequest request)
     throws LdapException
   {
-    connection.getProviderConnection().add(request);
-    return new Response<Void>();
+    return connection.getProviderConnection().add(request);
   }
 
 

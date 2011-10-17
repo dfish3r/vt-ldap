@@ -41,8 +41,7 @@ public class CompareOperation
   protected Response<Boolean> invoke(final CompareRequest request)
     throws LdapException
   {
-    return new Response<Boolean>(
-      connection.getProviderConnection().compare(request));
+    return connection.getProviderConnection().compare(request);
   }
 
 

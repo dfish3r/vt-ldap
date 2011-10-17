@@ -40,8 +40,7 @@ public class RenameOperation extends AbstractOperation<RenameRequest, Void>
   protected Response<Void> invoke(final RenameRequest request)
     throws LdapException
   {
-    connection.getProviderConnection().rename(request);
-    return new Response<Void>();
+    return connection.getProviderConnection().rename(request);
   }
 
 

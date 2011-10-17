@@ -40,8 +40,7 @@ public class ModifyOperation extends AbstractOperation<ModifyRequest, Void>
   protected Response<Void> invoke(final ModifyRequest request)
     throws LdapException
   {
-    connection.getProviderConnection().modify(request);
-    return new Response<Void>();
+    return connection.getProviderConnection().modify(request);
   }
 
 

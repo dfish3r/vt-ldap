@@ -20,6 +20,7 @@ import edu.vt.middleware.ldap.DeleteRequest;
 import edu.vt.middleware.ldap.LdapException;
 import edu.vt.middleware.ldap.ModifyRequest;
 import edu.vt.middleware.ldap.RenameRequest;
+import edu.vt.middleware.ldap.Response;
 import edu.vt.middleware.ldap.SearchRequest;
 
 /**
@@ -37,7 +38,7 @@ public interface Connection
    *
    * @throws  LdapException  if an error occurs
    */
-  void bind() throws LdapException;
+  Response<Void> bind() throws LdapException;
 
 
   /**
@@ -46,7 +47,7 @@ public interface Connection
    * @param  request  containing the data necessary to perform the operation
    * @throws  LdapException  if an error occurs
    */
-  void bind(BindRequest request) throws LdapException;
+  Response<Void> bind(BindRequest request) throws LdapException;
 
 
   /**
@@ -55,7 +56,7 @@ public interface Connection
    * @param  request  containing the data necessary to perform the operation
    * @throws  LdapException  if an error occurs
    */
-  void add(AddRequest request) throws LdapException;
+  Response<Void> add(AddRequest request) throws LdapException;
 
 
   /**
@@ -65,7 +66,7 @@ public interface Connection
    * @return  whether compare succeeded
    * @throws  LdapException  if an error occurs
    */
-  boolean compare(CompareRequest request) throws LdapException;
+  Response<Boolean> compare(CompareRequest request) throws LdapException;
 
 
   /**
@@ -74,7 +75,7 @@ public interface Connection
    * @param  request  containing the data necessary to perform the operation
    * @throws  LdapException  if an error occurs
    */
-  void delete(DeleteRequest request) throws LdapException;
+  Response<Void> delete(DeleteRequest request) throws LdapException;
 
 
   /**
@@ -83,7 +84,7 @@ public interface Connection
    * @param  request  containing the data necessary to perform the operation
    * @throws  LdapException  if an error occurs
    */
-  void modify(ModifyRequest request) throws LdapException;
+  Response<Void> modify(ModifyRequest request) throws LdapException;
 
 
   /**
@@ -92,7 +93,7 @@ public interface Connection
    * @param  request  containing the data necessary to perform the operation
    * @throws  LdapException  if an error occurs
    */
-  void rename(RenameRequest request) throws LdapException;
+  Response<Void> rename(RenameRequest request) throws LdapException;
 
 
   /**
