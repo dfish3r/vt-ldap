@@ -13,6 +13,7 @@
 */
 package edu.vt.middleware.ldap;
 
+import edu.vt.middleware.ldap.control.Control;
 
 /**
  * Base exception for all ldap related exceptions. Provider specific exception
@@ -21,14 +22,17 @@ package edu.vt.middleware.ldap;
  * @author  Middleware Services
  * @version  $Revision: 1330 $
  */
-public class LdapException extends Exception
+public class LdapException extends Exception implements Message
 {
 
   /** serialVersionUID. */
   private static final long serialVersionUID = 7149010199182440257L;
 
   /** ldap result code. */
-  private ResultCode resultCode;
+  private final ResultCode resultCode;
+
+  /** response controls. */
+  private final Control[] controls;
 
 
   /**
@@ -39,6 +43,8 @@ public class LdapException extends Exception
   public LdapException(final String msg)
   {
     super(msg);
+    resultCode = null;
+    controls = null;
   }
 
 
@@ -52,6 +58,23 @@ public class LdapException extends Exception
   {
     super(msg);
     resultCode = code;
+    controls = null;
+  }
+
+
+  /**
+   * Creates a new ldap exception.
+   *
+   * @param  msg  describing this exception
+   * @param  code  result code
+   * @param  c  response controls
+   */
+  public LdapException(
+    final String msg, final ResultCode code, final Control[] c)
+  {
+    super(msg);
+    resultCode = code;
+    controls = c;
   }
 
 
@@ -63,6 +86,8 @@ public class LdapException extends Exception
   public LdapException(final Exception e)
   {
     super(e);
+    resultCode = null;
+    controls = null;
   }
 
 
@@ -76,6 +101,23 @@ public class LdapException extends Exception
   {
     super(e);
     resultCode = code;
+    controls = null;
+  }
+
+
+  /**
+   * Creates a new ldap exception.
+   *
+   * @param  e  provider specific exception
+   * @param  code  result code
+   * @param  c  response controls
+   */
+  public LdapException(
+    final Exception e, final ResultCode code, final Control[] c)
+  {
+    super(e);
+    resultCode = code;
+    controls = c;
   }
 
 
@@ -88,6 +130,8 @@ public class LdapException extends Exception
   public LdapException(final String msg, final Exception e)
   {
     super(msg, e);
+    resultCode = null;
+    controls = null;
   }
 
 
@@ -103,6 +147,27 @@ public class LdapException extends Exception
   {
     super(msg, e);
     resultCode = code;
+    controls = null;
+  }
+
+
+  /**
+   * Creates a new ldap exception.
+   *
+   * @param  msg  describing this exception
+   * @param  e  provider specific exception
+   * @param  code  result code
+   * @param  c  response controls
+   */
+  public LdapException(
+    final String msg,
+    final Exception e,
+    final ResultCode code,
+    final Control[] c)
+  {
+    super(msg, e);
+    resultCode = code;
+    controls = c;
   }
 
 
@@ -115,5 +180,13 @@ public class LdapException extends Exception
   public ResultCode getResultCode()
   {
     return resultCode;
+  }
+
+
+  /** {@inheritDoc} */
+  @Override
+  public Control[] getControls()
+  {
+    return controls;
   }
 }

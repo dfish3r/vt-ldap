@@ -15,6 +15,7 @@ package edu.vt.middleware.ldap.auth;
 
 import edu.vt.middleware.ldap.LdapException;
 import edu.vt.middleware.ldap.ResultCode;
+import edu.vt.middleware.ldap.control.Control;
 
 /**
  * Base exception for all authorization related exceptions. Provider specific
@@ -56,6 +57,20 @@ public class AuthorizationException extends LdapException
   /**
    * Creates a new authorization exception.
    *
+   * @param  msg  describing this exception
+   * @param  code  result code
+   * @param  c  response controls
+   */
+  public AuthorizationException(
+    final String msg, final ResultCode code, final Control[] c)
+  {
+    super(msg, code);
+  }
+
+
+  /**
+   * Creates a new authorization exception.
+   *
    * @param  e  provider specific exception
    */
   public AuthorizationException(final Exception e)
@@ -73,6 +88,20 @@ public class AuthorizationException extends LdapException
   public AuthorizationException(final Exception e, final ResultCode code)
   {
     super(e, code);
+  }
+
+
+  /**
+   * Creates a new authorization exception.
+   *
+   * @param  e  provider specific exception
+   * @param  code  result code
+   * @param  c  response controls
+   */
+  public AuthorizationException(
+    final Exception e, final ResultCode code, final Control[] c)
+  {
+    super(e, code, c);
   }
 
 
@@ -99,5 +128,23 @@ public class AuthorizationException extends LdapException
     final String msg, final Exception e, final ResultCode code)
   {
     super(msg, e, code);
+  }
+
+
+  /**
+   * Creates a new authorization exception.
+   *
+   * @param  msg  describing this exception
+   * @param  e  provider specific exception
+   * @param  code  result code
+   * @param  c  response controls
+   */
+  public AuthorizationException(
+    final String msg,
+    final Exception e,
+    final ResultCode code,
+    final Control[] c)
+  {
+    super(msg, e, code, c);
   }
 }

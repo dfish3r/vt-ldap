@@ -15,7 +15,6 @@ package edu.vt.middleware.ldap.auth;
 
 import java.util.Arrays;
 import edu.vt.middleware.ldap.Credential;
-import edu.vt.middleware.ldap.Request;
 
 /**
  * Contains the data required to perform an ldap authentication.
@@ -23,7 +22,7 @@ import edu.vt.middleware.ldap.Request;
  * @author  Middleware Services
  * @version  $Revision: 1330 $ $Date: 2010-05-23 18:10:53 -0400 (Sun, 23 May 2010) $
  */
-public class AuthenticationRequest implements Request
+public class AuthenticationRequest
 {
 
   /** User identifier. */

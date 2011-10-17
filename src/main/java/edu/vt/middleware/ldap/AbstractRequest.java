@@ -28,11 +28,8 @@ public abstract class AbstractRequest implements Request
   private Control[] controls;
 
 
-  /**
-   * Returns the controls for this request.
-   *
-   * @return  controls
-   */
+  /** {@inheritDoc} */
+  @Override
   public Control[] getControls()
   {
     return controls;

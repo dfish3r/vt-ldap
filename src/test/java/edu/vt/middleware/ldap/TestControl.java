@@ -93,7 +93,7 @@ public class TestControl
         DN,
         new AttributeModification[] {
           new AttributeModification(
-            AttributeModificationType.REPLACE, ATTR_RUNNING), }));
+            AttributeModificationType.REPLACE, ATTR_IDLE), }));
     conn.close();
   }
 }

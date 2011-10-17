@@ -13,6 +13,8 @@
 */
 package edu.vt.middleware.ldap;
 
+import edu.vt.middleware.ldap.control.Control;
+
 /**
  * Wrapper class for all operation responses.
  *
@@ -21,11 +23,14 @@ package edu.vt.middleware.ldap;
  * @author  Middleware Services
  * @version  $Revision: 1330 $ $Date: 2010-05-23 18:10:53 -0400 (Sun, 23 May 2010) $
  */
-public class Response<T>
+public class Response<T> implements Message
 {
 
   /** Operation response. */
   private T result;
+
+  /** request controls. */
+  private Control[] controls;
 
 
   /** Default constructor. */
@@ -44,6 +49,19 @@ public class Response<T>
 
 
   /**
+   * Creates a new ldap response.
+   *
+   * @param  t  response type
+   * @param  c  response controls
+   */
+  public Response(final T t, final Control[] c)
+  {
+    result = t;
+    controls = c;
+  }
+
+
+  /**
    * Returns the result of the ldap operation.
    *
    * @return  operation result
@@ -51,5 +69,13 @@ public class Response<T>
   public T getResult()
   {
     return result;
+  }
+
+
+  /** {@inheritDoc} */
+  @Override
+  public Control[] getControls()
+  {
+    return controls;
   }
 }

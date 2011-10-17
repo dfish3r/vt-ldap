@@ -13,10 +13,22 @@
 */
 package edu.vt.middleware.ldap;
 
+import edu.vt.middleware.ldap.control.Control;
+
 /**
- * Marker interface for all ldap requests.
+ * Interface for ldap messages.
  *
  * @author  Middleware Services
- * @version  $Revision: 1330 $ $Date: 2010-05-23 18:10:53 -0400 (Sun, 23 May 2010) $
+ * @version  $Revision$ $Date$
  */
-public interface Request extends Message {}
+public interface Message
+{
+
+
+  /**
+   * Returns the controls for this message.
+   *
+   * @return  controls
+   */
+  Control[] getControls();
+}

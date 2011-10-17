@@ -13,6 +13,8 @@
 */
 package edu.vt.middleware.ldap;
 
+import edu.vt.middleware.ldap.control.Control;
+
 /**
  * Exception thrown when an ldap operation attempt fails.
  *
@@ -52,6 +54,20 @@ public class OperationException extends LdapException
   /**
    * Creates a new operation exception.
    *
+   * @param  msg  describing this exception
+   * @param  code  result code
+   * @param  c  response controls
+   */
+  public OperationException(
+    final String msg, final ResultCode code, final Control[] c)
+  {
+    super(msg, code, c);
+  }
+
+
+  /**
+   * Creates a new operation exception.
+   *
    * @param  e  provider specific exception
    */
   public OperationException(final Exception e)
@@ -69,6 +85,20 @@ public class OperationException extends LdapException
   public OperationException(final Exception e, final ResultCode code)
   {
     super(e, code);
+  }
+
+
+  /**
+   * Creates a new operation exception.
+   *
+   * @param  e  provider specific exception
+   * @param  code  result code
+   * @param  c  response controls
+   */
+  public OperationException(
+    final Exception e, final ResultCode code, final Control[] c)
+  {
+    super(e, code, c);
   }
 
 
@@ -95,5 +125,23 @@ public class OperationException extends LdapException
     final String msg, final Exception e, final ResultCode code)
   {
     super(msg, e, code);
+  }
+
+
+  /**
+   * Creates a new operation exception.
+   *
+   * @param  msg  describing this exception
+   * @param  e  provider specific exception
+   * @param  code  result code
+   * @param  c  response controls
+   */
+  public OperationException(
+    final String msg,
+    final Exception e,
+    final ResultCode code,
+    final Control[] c)
+  {
+    super(msg, e, code, c);
   }
 }
