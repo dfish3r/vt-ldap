@@ -113,6 +113,9 @@ public class JndiConnection implements Connection
   /** Exceptions to retry operations on. */
   private Class<?>[] operationRetryExceptions;
 
+  /** Control handler. */
+  private JndiControlHandler controlHandler;
+
 
   /**
    * Creates a new jndi connection.
@@ -172,6 +175,28 @@ public class JndiConnection implements Connection
 
 
   /**
+   * Returns the control handler.
+   *
+   * @return  control handler
+   */
+  public JndiControlHandler getControlHandler()
+  {
+    return controlHandler;
+  }
+
+
+  /**
+   * Sets the control handler.
+   *
+   * @param  handler  control handler
+   */
+  public void setControlHandler(final JndiControlHandler handler)
+  {
+    controlHandler = handler;
+  }
+
+
+  /**
    * Returns the underlying ldap context.
    *
    * @return  ldap context
@@ -212,11 +237,17 @@ public class JndiConnection implements Connection
       context.removeFromEnvironment(CREDENTIALS);
       context.reconnect(context.getConnectControls());
       response = new Response<Void>(
-        null, JndiUtil.toControls(context.getResponseControls()));
+        null, JndiUtil.processResponseControls(controlHandler, context));
     } catch (javax.naming.AuthenticationException e) {
-      throw new AuthenticationException(e, ResultCode.INVALID_CREDENTIALS);
+      throw new AuthenticationException(
+        e,
+        ResultCode.INVALID_CREDENTIALS,
+        JndiUtil.processResponseControls(controlHandler, context));
     } catch (NamingException e) {
-      JndiUtil.throwOperationException(operationRetryExceptions, e);
+      JndiUtil.throwOperationException(
+        operationRetryExceptions,
+        e,
+        JndiUtil.processResponseControls(controlHandler, context));
     }
     return response;
   }
@@ -246,13 +277,20 @@ public class JndiConnection implements Connection
             CREDENTIALS, request.getCredential().getBytes());
         }
       }
-      context.reconnect(JndiUtil.fromControls(request.getControls()));
+      context.reconnect(
+        controlHandler.processRequestControls(request.getControls()));
       response = new Response<Void>(
-        null, JndiUtil.toControls(context.getResponseControls()));
+        null, JndiUtil.processResponseControls(controlHandler, context));
     } catch (javax.naming.AuthenticationException e) {
-      throw new AuthenticationException(e, ResultCode.INVALID_CREDENTIALS);
+      throw new AuthenticationException(
+        e,
+        ResultCode.INVALID_CREDENTIALS,
+        JndiUtil.processResponseControls(controlHandler, context));
     } catch (NamingException e) {
-      JndiUtil.throwOperationException(operationRetryExceptions, e);
+      JndiUtil.throwOperationException(
+        operationRetryExceptions,
+        e,
+        JndiUtil.processResponseControls(controlHandler, context));
     }
     return response;
   }
@@ -264,23 +302,27 @@ public class JndiConnection implements Connection
     throws LdapException
   {
     Response<Void> response = null;
+    LdapContext ctx = null;
     try {
-      LdapContext ctx = null;
       try {
-        ctx = context.newInstance(JndiUtil.fromControls(request.getControls()));
+        ctx = context.newInstance(
+          controlHandler.processRequestControls(request.getControls()));
         final JndiUtil bu = new JndiUtil();
         ctx.createSubcontext(
           new LdapName(request.getDn()),
           bu.fromLdapAttributes(request.getLdapAttributes())).close();
         response = new Response<Void>(
-          null, JndiUtil.toControls(ctx.getResponseControls()));
+          null, JndiUtil.processResponseControls(controlHandler, ctx));
       } finally {
         if (ctx != null) {
           ctx.close();
         }
       }
     } catch (NamingException e) {
-      JndiUtil.throwOperationException(operationRetryExceptions, e);
+      JndiUtil.throwOperationException(
+        operationRetryExceptions,
+        e,
+        JndiUtil.processResponseControls(controlHandler, ctx));
     }
     return response;
   }
@@ -292,12 +334,12 @@ public class JndiConnection implements Connection
     throws LdapException
   {
     Response<Boolean> response = null;
-    boolean success = false;
+    LdapContext ctx = null;
     try {
-      LdapContext ctx = null;
       NamingEnumeration<SearchResult> en = null;
       try {
-        ctx = context.newInstance(JndiUtil.fromControls(request.getControls()));
+        ctx = context.newInstance(
+          controlHandler.processRequestControls(request.getControls()));
         en = ctx.search(
           new LdapName(request.getDn()),
           String.format("(%s={0})", request.getAttribute().getName()),
@@ -306,11 +348,9 @@ public class JndiConnection implements Connection
             new Object[] {request.getAttribute().getStringValue()},
           getCompareSearchControls());
 
-        if (en.hasMore()) {
-          success = true;
-        }
+        final boolean success = en.hasMore() ? true : false;
         response = new Response<Boolean>(
-          success, JndiUtil.toControls(ctx.getResponseControls()));
+          success, JndiUtil.processResponseControls(controlHandler, ctx));
       } finally {
         if (en != null) {
           en.close();
@@ -320,7 +360,10 @@ public class JndiConnection implements Connection
         }
       }
     } catch (NamingException e) {
-      JndiUtil.throwOperationException(operationRetryExceptions, e);
+      JndiUtil.throwOperationException(
+        operationRetryExceptions,
+        e,
+        JndiUtil.processResponseControls(controlHandler, ctx));
     }
     return response;
   }
@@ -332,20 +375,24 @@ public class JndiConnection implements Connection
     throws LdapException
   {
     Response<Void> response = null;
+    LdapContext ctx = null;
     try {
-      LdapContext ctx = null;
       try {
-        ctx = context.newInstance(JndiUtil.fromControls(request.getControls()));
+        ctx = context.newInstance(
+          controlHandler.processRequestControls(request.getControls()));
         ctx.destroySubcontext(new LdapName(request.getDn()));
         response = new Response<Void>(
-          null, JndiUtil.toControls(ctx.getResponseControls()));
+          null, JndiUtil.processResponseControls(controlHandler, ctx));
       } finally {
         if (ctx != null) {
           ctx.close();
         }
       }
     } catch (NamingException e) {
-      JndiUtil.throwOperationException(operationRetryExceptions, e);
+      JndiUtil.throwOperationException(
+        operationRetryExceptions,
+        e,
+        JndiUtil.processResponseControls(controlHandler, ctx));
     }
     return response;
   }
@@ -357,23 +404,27 @@ public class JndiConnection implements Connection
     throws LdapException
   {
     Response<Void> response = null;
+    LdapContext ctx = null;
     try {
-      LdapContext ctx = null;
       try {
-        ctx = context.newInstance(JndiUtil.fromControls(request.getControls()));
+        ctx = context.newInstance(
+          controlHandler.processRequestControls(request.getControls()));
         final JndiUtil bu = new JndiUtil();
         ctx.modifyAttributes(
           new LdapName(request.getDn()),
           bu.fromAttributeModification(request.getAttributeModifications()));
         response = new Response<Void>(
-          null, JndiUtil.toControls(ctx.getResponseControls()));
+          null, JndiUtil.processResponseControls(controlHandler, ctx));
       } finally {
         if (ctx != null) {
           ctx.close();
         }
       }
     } catch (NamingException e) {
-      JndiUtil.throwOperationException(operationRetryExceptions, e);
+      JndiUtil.throwOperationException(
+        operationRetryExceptions,
+        e,
+        JndiUtil.processResponseControls(controlHandler, ctx));
     }
     return response;
   }
@@ -385,22 +436,26 @@ public class JndiConnection implements Connection
     throws LdapException
   {
     Response<Void> response = null;
+    LdapContext ctx = null;
     try {
-      LdapContext ctx = null;
       try {
-        ctx = context.newInstance(JndiUtil.fromControls(request.getControls()));
+        ctx = context.newInstance(
+          controlHandler.processRequestControls(request.getControls()));
         ctx.rename(
           new LdapName(request.getDn()),
           new LdapName(request.getNewDn()));
         response = new Response<Void>(
-          null, JndiUtil.toControls(ctx.getResponseControls()));
+          null, JndiUtil.processResponseControls(controlHandler, ctx));
       } finally {
         if (ctx != null) {
           ctx.close();
         }
       }
     } catch (NamingException e) {
-      JndiUtil.throwOperationException(operationRetryExceptions, e);
+      JndiUtil.throwOperationException(
+        operationRetryExceptions,
+        e,
+        JndiUtil.processResponseControls(controlHandler, ctx));
     }
     return response;
   }
@@ -411,7 +466,8 @@ public class JndiConnection implements Connection
   public SearchIterator search(final SearchRequest request)
     throws LdapException
   {
-    final JndiSearchIterator i = new JndiSearchIterator(request);
+    final JndiSearchIterator i = new JndiSearchIterator(
+      request, controlHandler);
     i.setRemoveDnUrls(removeDnUrls);
     i.setOperationRetryExceptions(operationRetryExceptions);
     i.initialize(context);

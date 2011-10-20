@@ -13,20 +13,31 @@
 */
 package edu.vt.middleware.ldap.auth;
 
+import java.util.Arrays;
 import edu.vt.middleware.ldap.AbstractTest;
+import edu.vt.middleware.ldap.AttributeModification;
+import edu.vt.middleware.ldap.AttributeModificationType;
+import edu.vt.middleware.ldap.Connection;
 import edu.vt.middleware.ldap.ConnectionFactory;
 import edu.vt.middleware.ldap.ConnectionFactoryManager;
 import edu.vt.middleware.ldap.Credential;
 import edu.vt.middleware.ldap.DefaultConnectionFactory;
+import edu.vt.middleware.ldap.LdapAttribute;
 import edu.vt.middleware.ldap.LdapEntry;
 import edu.vt.middleware.ldap.LdapException;
 import edu.vt.middleware.ldap.LdapResult;
+import edu.vt.middleware.ldap.ModifyOperation;
+import edu.vt.middleware.ldap.ModifyRequest;
+import edu.vt.middleware.ldap.Response;
 import edu.vt.middleware.ldap.SearchFilter;
 import edu.vt.middleware.ldap.TestUtil;
+import edu.vt.middleware.ldap.control.PasswordPolicyControl;
 import edu.vt.middleware.ldap.pool.BlockingConnectionPool;
 import edu.vt.middleware.ldap.pool.PooledConnectionFactory;
 import edu.vt.middleware.ldap.pool.PooledConnectionFactoryManager;
+import edu.vt.middleware.ldap.sasl.Mechanism;
 import org.testng.AssertJUnit;
+import org.testng.SkipException;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Parameters;
@@ -558,6 +569,14 @@ public class AuthenticatorTest extends AbstractTest
   public void authenticateDigestMd5(final String user, final String credential)
     throws Exception
   {
+    final String[] supportedMechanisms =
+      DefaultConnectionFactory.getDefaultProvider().
+        getSupportedSaslMechanisms();
+    if (!Arrays.asList(
+        supportedMechanisms).contains(Mechanism.DIGEST_MD5.toString())) {
+      throw new SkipException("DIGEST-MD5 not supported.");
+    }
+
     final Authenticator auth = TestUtil.createDigestMD5Authenticator();
     try {
       auth.authenticate(
@@ -584,6 +603,14 @@ public class AuthenticatorTest extends AbstractTest
   public void authenticateCramMd5(final String user, final String credential)
     throws Exception
   {
+    final String[] supportedMechanisms =
+      DefaultConnectionFactory.getDefaultProvider().
+        getSupportedSaslMechanisms();
+    if (!Arrays.asList(
+        supportedMechanisms).contains(Mechanism.CRAM_MD5.toString())) {
+      throw new SkipException("CRAM-MD5 not supported.");
+    }
+
     final Authenticator auth = TestUtil.createCramMD5Authenticator();
     try {
       auth.authenticate(
@@ -1031,5 +1058,81 @@ public class AuthenticatorTest extends AbstractTest
     }
     auth.authenticate(
       new AuthenticationRequest(user, new Credential(credential)));
+  }
+
+
+  /**
+   * @param  user  to authenticate.
+   * @param  credential  to authenticate with.
+   *
+   * @throws  Exception  On test failure.
+   */
+  @Parameters(
+    {
+      "authenticateUser",
+      "authenticateCredential"
+    }
+  )
+  @Test(groups = {"auth"})
+  public void authenticatePasswordPolicy(
+    final String user, final String credential)
+    throws Exception
+  {
+    final String[] supportedControls =
+      DefaultConnectionFactory.getDefaultProvider().getSupportedControls();
+    if (!Arrays.asList(supportedControls).contains(PasswordPolicyControl.OID)) {
+      throw new SkipException("Password Policy not supported.");
+    }
+
+    final Connection conn = TestUtil.createSetupConnection();
+    conn.open();
+
+    final Authenticator auth = createTLSAuthenticator(true);
+    final BindAuthenticationHandler ah =
+      (BindAuthenticationHandler) auth.getAuthenticationHandler();
+    ah.setAuthenticationControls(new PasswordPolicyControl());
+
+    // test bind sending ppolicy control
+    final LdapEntry entry = auth.authenticate(
+      new AuthenticationRequest(user, new Credential(credential))).getResult();
+
+    // test bind on locked account
+    final ModifyOperation modify = new ModifyOperation(conn);
+    modify.execute(
+      new ModifyRequest(
+        entry.getDn(),
+        new AttributeModification[] {
+          new AttributeModification(
+            AttributeModificationType.ADD,
+            new LdapAttribute("pwdAccountLockedTime", "000001010000Z")), }));
+
+    try {
+      auth.authenticate(
+        new AuthenticationRequest(user, new Credential(credential)));
+      AssertJUnit.fail("Should have thrown AuthenticationException");
+    } catch (LdapException e) {
+      AssertJUnit.assertEquals(
+        AuthenticationException.class, e.getClass());
+      final PasswordPolicyControl ppc =
+        (PasswordPolicyControl) ((AuthenticationException) e).getControls()[0];
+      AssertJUnit.assertEquals(
+        PasswordPolicyControl.Error.ACCOUNT_LOCKED, ppc.getError());
+    }
+
+    // test bind with expiration time
+    modify.execute(
+      new ModifyRequest(
+        entry.getDn(),
+        new AttributeModification[] {
+          new AttributeModification(
+            AttributeModificationType.REMOVE,
+            new LdapAttribute("pwdAccountLockedTime")), }));
+    conn.close();
+
+    final Response<LdapEntry> response = auth.authenticate(
+      new AuthenticationRequest(user, new Credential(credential)));
+    final PasswordPolicyControl ppc =
+      (PasswordPolicyControl) response.getControls()[0];
+    AssertJUnit.assertTrue(ppc.getTimeBeforeExpiration() > 0);
   }
 }

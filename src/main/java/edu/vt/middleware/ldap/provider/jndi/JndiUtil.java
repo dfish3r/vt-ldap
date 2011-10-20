@@ -13,11 +13,8 @@
 */
 package edu.vt.middleware.ldap.provider.jndi;
 
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 import javax.naming.NamingEnumeration;
 import javax.naming.NamingException;
@@ -36,13 +33,12 @@ import edu.vt.middleware.ldap.LdapException;
 import edu.vt.middleware.ldap.OperationException;
 import edu.vt.middleware.ldap.SortBehavior;
 import edu.vt.middleware.ldap.control.Control;
-import edu.vt.middleware.ldap.control.ManageDsaITControl;
-import edu.vt.middleware.ldap.control.PagedResultsControl;
-import edu.vt.middleware.ldap.control.SortControl;
 import edu.vt.middleware.ldap.control.SortKey;
 import edu.vt.middleware.ldap.sasl.Mechanism;
 import edu.vt.middleware.ldap.sasl.QualityOfProtection;
 import edu.vt.middleware.ldap.sasl.SecurityStrength;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Provides methods for converting between JNDI specific objects and vt-ldap
@@ -201,11 +197,15 @@ public class JndiUtil
    *
    * @param  operationRetryExceptions  types to compare e against
    * @param  e  naming exception to examine
+   * @param  respControls  response controls
+   *
    * @throws  OperationException  if the operation should be retried
    * @throws  LdapException  to propagate the exception out
    */
   public static void throwOperationException(
-    final Class<?>[] operationRetryExceptions, final NamingException e)
+    final Class<?>[] operationRetryExceptions,
+    final NamingException e,
+    final Control[] respControls)
     throws LdapException
   {
     if (operationRetryExceptions != null &&
@@ -213,11 +213,12 @@ public class JndiUtil
       for (Class<?> ne : operationRetryExceptions) {
         if (ne.isInstance(e)) {
           throw new OperationException(
-            e, NamingExceptionUtil.getResultCode(e.getClass()));
+            e, NamingExceptionUtil.getResultCode(e.getClass()), respControls);
         }
       }
     }
-    throw new LdapException(e, NamingExceptionUtil.getResultCode(e.getClass()));
+    throw new LdapException(
+      e, NamingExceptionUtil.getResultCode(e.getClass()), respControls);
   }
 
 
@@ -351,106 +352,26 @@ public class JndiUtil
 
 
   /**
-   * Converts the supplied controls to jndi controls.
+   * Retrieves the response controls from the supplied context and processes
+   * them with the supplied control handler. Logs a warning if controls cannot
+   * be retrieved.
    *
-   * @param  ctls  to convert
-   * @return  jndi controls
-   * @throws  NamingException  if a jndi control cannot be created
+   * @param  handler  control handler
+   * @param  ctx  to get controls from
+   * @return  response controls
    */
-  public static javax.naming.ldap.Control[] fromControls(final Control[] ctls)
-    throws NamingException
+  public static Control[] processResponseControls(
+    final JndiControlHandler handler, final LdapContext ctx)
   {
-    if (ctls == null) {
-      return null;
-    }
-    final List<javax.naming.ldap.Control> jndiCtls =
-      new ArrayList<javax.naming.ldap.Control>(ctls.length);
-    for (Control c : ctls) {
-      final javax.naming.ldap.Control jndiCtl = fromControl(c);
-      if (jndiCtl != null) {
-        jndiCtls.add(jndiCtl);
+    Control[] ctls = null;
+    if (ctx != null) {
+      try {
+        ctls = handler.processResponseControls(null, ctx.getResponseControls());
+      } catch (NamingException e) {
+        final Logger l = LoggerFactory.getLogger(JndiUtil.class);
+        l.warn("Error retrieving response controls.", e);
       }
     }
-    return jndiCtls.toArray(new javax.naming.ldap.Control[jndiCtls.size()]);
-  }
-
-
-  /**
-   * Converts the supplied control to a jndi control.
-   *
-   * @param  ctl  to convert
-   * @return  jndi control
-   * @throws  NamingException  if the jndi control cannot be created
-   */
-  public static javax.naming.ldap.Control fromControl(final Control ctl)
-    throws NamingException
-  {
-    if (ctl == null) {
-      return null;
-    }
-    javax.naming.ldap.Control jndiCtl = null;
-    try {
-      if (ManageDsaITControl.class.isInstance(ctl)) {
-        final ManageDsaITControl mc = (ManageDsaITControl) ctl;
-        jndiCtl = new javax.naming.ldap.ManageReferralControl(
-          mc.getCriticality());
-      } else if (SortControl.class.isInstance(ctl)) {
-        final SortControl sc = (SortControl) ctl;
-        jndiCtl = new javax.naming.ldap.SortControl(
-          JndiUtil.fromSortKey(sc.getSortKeys()), sc.getCriticality());
-      } else if (PagedResultsControl.class.isInstance(ctl)) {
-        final PagedResultsControl prc = (PagedResultsControl) ctl;
-        jndiCtl = new javax.naming.ldap.PagedResultsControl(
-          prc.getSize(), prc.getCookie(), prc.getCriticality());
-      } else {
-        throw new IllegalArgumentException("Unsupported control: " + ctl);
-      }
-    } catch (IOException e) {
-      throw new NamingException(e.getMessage());
-    }
-    return jndiCtl;
-  }
-
-
-  /**
-   * Converts the supplied jndi controls to controls.
-   *
-   * @param  jndiCtls  to convert
-   * @return  controls
-   */
-  public static Control[] toControls(final javax.naming.ldap.Control[] jndiCtls)
-  {
-    if (jndiCtls == null) {
-      return null;
-    }
-    final List<Control> ctls = new ArrayList<Control>(jndiCtls.length);
-    for (javax.naming.ldap.Control c : jndiCtls) {
-      final Control ctl = toControl(c);
-      if (ctl != null) {
-        ctls.add(ctl);
-      }
-    }
-    return ctls.toArray(new Control[ctls.size()]);
-  }
-
-
-  /**
-   * Converts the supplied jndi control to a control.
-   *
-   * @param  jndiCtl  to convert
-   * @return  control
-   */
-  public static Control toControl(final javax.naming.ldap.Control jndiCtl)
-  {
-    if (jndiCtl == null) {
-      return null;
-    }
-    Control ctl = null;
-    if (ManageDsaITControl.OID.equals(jndiCtl.getID())) {
-      ctl = new ManageDsaITControl(jndiCtl.isCritical());
-    } else {
-      throw new IllegalArgumentException("Unsupported control: " + ctl);
-    }
-    return ctl;
+    return ctls;
   }
 }

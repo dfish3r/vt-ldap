@@ -14,7 +14,7 @@
 package edu.vt.middleware.ldap.control;
 
 /**
- * Used by {@link SortControl} to declare how sorting should occur.
+ * Used by {@link SortRequestControl} to declare how sorting should occur.
  *
  * @author  Middleware Services
  * @version  $Revision$ $Date$

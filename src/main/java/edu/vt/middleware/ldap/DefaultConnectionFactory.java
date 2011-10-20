@@ -184,7 +184,7 @@ public class DefaultConnectionFactory implements ConnectionFactory
     Provider<?> p = null;
     final String providerClass = System.getProperty(PROVIDER);
     if (providerClass != null) {
-      final Logger l = LoggerFactory.getLogger(ConnectionConfig.class);
+      final Logger l = LoggerFactory.getLogger(DefaultConnectionFactory.class);
       try {
         if (l.isInfoEnabled()) {
           l.info("Setting ldap provider to {}", providerClass);
@@ -298,9 +298,11 @@ public class DefaultConnectionFactory implements ConnectionFactory
      * have not been set then an anonymous bind will be attempted. This
      * connection should be closed using {@link #close()}.
      *
+     * @return  response associated with the bind operation
+     *
      * @throws  LdapException  if the LDAP cannot be reached
      */
-    public synchronized void open()
+    public synchronized Response<Void> open()
       throws LdapException
     {
       final BindRequest request = new BindRequest();
@@ -308,7 +310,7 @@ public class DefaultConnectionFactory implements ConnectionFactory
       request.setCredential(config.getBindCredential());
       request.setSaslConfig(config.getBindSaslConfig());
       request.setControls(config.getBindControls());
-      open(request);
+      return open(request);
     }
 
 
@@ -319,18 +321,22 @@ public class DefaultConnectionFactory implements ConnectionFactory
      *
      * @param  request  bind request
      *
+     * @return  response associated with the bind operation
+     *
      * @throws  IllegalStateExcepiton  if the connection is already open
      * @throws  LdapException  if the LDAP cannot be reached
      */
-    public synchronized void open(final BindRequest request)
+    public synchronized Response<Void> open(final BindRequest request)
       throws LdapException
     {
       if (providerConnection != null) {
         throw new IllegalStateException("Connection already open");
       }
       providerConnection = providerConnectionFactory.create();
-      if (!request.isAnonymousBindRequest()) {
-        providerConnection.bind(request);
+      if (request.isAnonymousBindRequest()) {
+        return providerConnection.bind();
+      } else {
+        return providerConnection.bind(request);
       }
     }
 

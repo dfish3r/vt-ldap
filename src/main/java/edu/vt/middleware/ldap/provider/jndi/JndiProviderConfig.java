@@ -41,12 +41,16 @@ public class JndiProviderConfig extends ProviderConfig
   /** hostname verifier for TLS connections. */
   protected HostnameVerifier hostnameVerifier;
 
+  /** JNDI specific control handler. */
+  protected JndiControlHandler controlHandler;
+
 
   /** Default constructor. */
   public JndiProviderConfig()
   {
     operationRetryResultCodes = new ResultCode[] {
       ResultCode.PROTOCOL_ERROR, ResultCode.BUSY, ResultCode.UNAVAILABLE, };
+    controlHandler = new JndiControlHandler();
   }
 
 
@@ -145,6 +149,29 @@ public class JndiProviderConfig extends ProviderConfig
 
 
   /**
+   * Returns the control handler.
+   *
+   * @return  control handler
+   */
+  public JndiControlHandler getControlHandler()
+  {
+    return controlHandler;
+  }
+
+
+  /**
+   * Sets the control handler.
+   *
+   * @param  handler  control handler
+   */
+  public void setControlHandler(final JndiControlHandler handler)
+  {
+    logger.trace("setting controlHandler: {}", handler);
+    controlHandler = handler;
+  }
+
+
+  /**
    * Provides a descriptive string representation of this instance.
    *
    * @return  string representation
@@ -155,7 +182,8 @@ public class JndiProviderConfig extends ProviderConfig
     return String.format(
       "[%s@%d::operationRetryResultCodes=%s, properties=%s, " +
       "connectionStrategy=%s, logCredentials=%s, tracePackets=%s, " +
-      "removeDnUrls=%s, sslSocketFactory=%s, hostnameVerifier=%s]",
+      "removeDnUrls=%s, sslSocketFactory=%s, hostnameVerifier=%s, " +
+      "controlHandler=%s]",
       getClass().getName(),
       hashCode(),
       operationRetryResultCodes != null ?
@@ -166,6 +194,7 @@ public class JndiProviderConfig extends ProviderConfig
       tracePackets,
       removeDnUrls,
       sslSocketFactory,
-      hostnameVerifier);
+      hostnameVerifier,
+      controlHandler);
   }
 }

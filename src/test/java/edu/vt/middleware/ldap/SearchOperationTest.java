@@ -13,13 +13,14 @@
 */
 package edu.vt.middleware.ldap;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import edu.vt.middleware.ldap.control.PagedResultsControl;
-import edu.vt.middleware.ldap.control.SortControl;
 import edu.vt.middleware.ldap.control.SortKey;
+import edu.vt.middleware.ldap.control.SortRequestControl;
 import edu.vt.middleware.ldap.handler.CaseChangeResultHandler;
 import edu.vt.middleware.ldap.handler.CaseChangeResultHandler.CaseChange;
 import edu.vt.middleware.ldap.handler.CopyLdapResultHandler;
@@ -30,7 +31,9 @@ import edu.vt.middleware.ldap.handler.MergeAttributeResultHandler;
 import edu.vt.middleware.ldap.handler.MergeResultHandler;
 import edu.vt.middleware.ldap.handler.RecursiveAttributeHandler;
 import edu.vt.middleware.ldap.handler.RecursiveResultHandler;
+import edu.vt.middleware.ldap.sasl.Mechanism;
 import org.testng.AssertJUnit;
+import org.testng.SkipException;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Parameters;
@@ -331,6 +334,14 @@ public class SearchOperationTest extends AbstractTest
     final String ldifFile)
     throws Exception
   {
+    final String[] supportedControls =
+      DefaultConnectionFactory.getDefaultProvider().
+        getSupportedControls();
+    if (!Arrays.asList(
+        supportedControls).contains(PagedResultsControl.OID)) {
+      throw new SkipException("Sort control not supported.");
+    }
+
     final Connection conn = TestUtil.createConnection();
     conn.open();
     final SearchOperation search = new SearchOperation(conn);
@@ -364,6 +375,14 @@ public class SearchOperationTest extends AbstractTest
     final String filter)
     throws Exception
   {
+    final String[] supportedControls =
+      DefaultConnectionFactory.getDefaultProvider().
+        getSupportedControls();
+    if (!Arrays.asList(
+        supportedControls).contains(SortRequestControl.OID)) {
+      throw new SkipException("Sort control not supported.");
+    }
+
     final Connection conn = TestUtil.createConnection();
     conn.open();
     final SearchOperation search = new SearchOperation(conn);
@@ -373,7 +392,7 @@ public class SearchOperationTest extends AbstractTest
       dn, new SearchFilter(filter));
     request.setSortBehavior(SortBehavior.ORDERED);
     request.setControls(
-      new SortControl(
+      new SortRequestControl(
         new SortKey[] {new SortKey("uid", "integerMatch", true)}, true));
     final LdapResult result = search.execute(request).getResult();
 
@@ -1158,6 +1177,14 @@ public class SearchOperationTest extends AbstractTest
     final String ldifFile)
     throws Exception
   {
+    final String[] supportedMechanisms =
+      DefaultConnectionFactory.getDefaultProvider().
+        getSupportedSaslMechanisms();
+    if (!Arrays.asList(
+        supportedMechanisms).contains(Mechanism.DIGEST_MD5.toString())) {
+      throw new SkipException("DIGEST-MD5 not supported.");
+    }
+
     final String expected = TestUtil.readFileIntoString(ldifFile);
 
     final Connection conn = TestUtil.createDigestMd5Connection();
@@ -1200,6 +1227,14 @@ public class SearchOperationTest extends AbstractTest
     final String ldifFile)
     throws Exception
   {
+    final String[] supportedMechanisms =
+      DefaultConnectionFactory.getDefaultProvider().
+        getSupportedSaslMechanisms();
+    if (!Arrays.asList(
+        supportedMechanisms).contains(Mechanism.CRAM_MD5.toString())) {
+      throw new SkipException("CRAM-MD5 not supported.");
+    }
+
     final String expected = TestUtil.readFileIntoString(ldifFile);
 
     final Connection conn = TestUtil.createCramMd5Connection();
@@ -1242,6 +1277,14 @@ public class SearchOperationTest extends AbstractTest
     final String ldifFile)
     throws Exception
   {
+    final String[] supportedMechanisms =
+      DefaultConnectionFactory.getDefaultProvider().
+        getSupportedSaslMechanisms();
+    if (!Arrays.asList(
+        supportedMechanisms).contains(Mechanism.EXTERNAL.toString())) {
+      throw new SkipException("SASL External not supported.");
+    }
+
     final String expected = TestUtil.readFileIntoString(ldifFile);
 
     final Connection conn = TestUtil.createSaslExternalConnection();
@@ -1290,6 +1333,14 @@ public class SearchOperationTest extends AbstractTest
     final String ldifFile)
     throws Exception
   {
+    final String[] supportedMechanisms =
+      DefaultConnectionFactory.getDefaultProvider().
+        getSupportedSaslMechanisms();
+    if (!Arrays.asList(
+        supportedMechanisms).contains(Mechanism.GSSAPI.toString())) {
+      throw new SkipException("GSSAPI not supported.");
+    }
+
     System.setProperty(
       "java.security.auth.login.config",
       "target/test-classes/ldap_jaas.config");

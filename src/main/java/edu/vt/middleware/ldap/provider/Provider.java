@@ -28,6 +28,22 @@ public interface Provider<T extends ProviderConfig>
 
 
   /**
+   * Returns the SASL mechanisms supported by this provider.
+   *
+   * @return  supported mechanisms
+   */
+  String[] getSupportedSaslMechanisms();
+
+
+  /**
+   * Returns the OIDs of controls that are supported by this provider.
+   *
+   * @return  supported controls
+   */
+  String[] getSupportedControls();
+
+
+  /**
    * Returns the provider configuration.
    *
    * @return  provider configuration

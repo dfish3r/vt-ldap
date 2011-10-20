@@ -24,6 +24,14 @@ public interface Control
 
 
   /**
+   * Returns the OID for this control.
+   *
+   * @return  oid
+   */
+  String getOID();
+
+
+  /**
    * Returns whether the control is critical.
    *
    * @return  whether the control is critical

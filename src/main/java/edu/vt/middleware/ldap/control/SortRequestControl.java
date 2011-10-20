@@ -21,14 +21,11 @@ import java.util.Arrays;
  * @author  Middleware Services
  * @version  $Revision$ $Date$
  */
-public class SortControl extends AbstractControl
+public class SortRequestControl extends AbstractControl
 {
 
   /** OID of this control. */
-  public static final String REQUEST_OID = "1.2.840.113556.1.4.473";
-
-  /** OID of this control. */
-  public static final String RESPONSE_OID = "1.2.840.113556.1.4.474";
+  public static final String OID = "1.2.840.113556.1.4.473";
 
   /** sort keys. */
   private SortKey[] sortKeys;
@@ -37,30 +34,38 @@ public class SortControl extends AbstractControl
   /**
    * Default constructor.
    */
-  public SortControl() {}
+  public SortRequestControl() {}
 
 
   /**
-   * Creates a new sort control.
+   * Creates a new sort request control.
    *
    * @param  keys  sort keys
    */
-  public SortControl(final SortKey[] keys)
+  public SortRequestControl(final SortKey[] keys)
   {
     setSortKeys(keys);
   }
 
 
   /**
-   * Creates a new sort control.
+   * Creates a new sort request control.
    *
    * @param  keys  sort keys
    * @param  critical  whether this control is critical
    */
-  public SortControl(final SortKey[] keys, final boolean critical)
+  public SortRequestControl(final SortKey[] keys, final boolean critical)
   {
     setSortKeys(keys);
     setCriticality(critical);
+  }
+
+
+  /** {@inheritDoc} */
+  @Override
+  public String getOID()
+  {
+    return OID;
   }
 
 

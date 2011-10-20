@@ -26,6 +26,9 @@ import edu.vt.middleware.ldap.LdapException;
 import edu.vt.middleware.ldap.ResultCode;
 import edu.vt.middleware.ldap.SearchRequest;
 import edu.vt.middleware.ldap.SearchScope;
+import edu.vt.middleware.ldap.control.Control;
+import edu.vt.middleware.ldap.control.PagedResultsControl;
+import edu.vt.middleware.ldap.provider.ControlHandler;
 import edu.vt.middleware.ldap.provider.SearchIterator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -70,11 +73,11 @@ public class JndiSearchIterator implements SearchIterator
   /** Search request. */
   protected SearchRequest request;
 
+  /** Control handler. */
+  protected JndiControlHandler controlHandler;
+
   /** Ldap context to search with. */
   protected LdapContext context;
-
-  /** Any controls associated with this search. */
-  protected JndiControls searchControls;
 
   /** Results read from the search operation. */
   protected NamingEnumeration<SearchResult> results;
@@ -90,10 +93,13 @@ public class JndiSearchIterator implements SearchIterator
    * Creates a new jndi search iterator.
    *
    * @param  sr  search request
+   * @param  handler  control handler
    */
-  public JndiSearchIterator(final SearchRequest sr)
+  public JndiSearchIterator(
+    final SearchRequest sr, final JndiControlHandler handler)
   {
     request = sr;
+    controlHandler = handler;
   }
 
 
@@ -154,13 +160,16 @@ public class JndiSearchIterator implements SearchIterator
   {
     boolean closeContext = false;
     try {
-      searchControls = new JndiControls(request.getControls());
-      context = ctx.newInstance(searchControls.getJndiControls());
+      context = ctx.newInstance(
+        controlHandler.processRequestControls(request.getControls()));
       initializeSearchContext(context, request);
       results = search(context, request);
     } catch (NamingException e) {
       closeContext = true;
-      JndiUtil.throwOperationException(operationRetryExceptions, e);
+      JndiUtil.throwOperationException(
+        operationRetryExceptions,
+        e,
+        JndiUtil.processResponseControls(controlHandler, context));
     } finally {
       if (closeContext) {
         try {
@@ -293,16 +302,23 @@ public class JndiSearchIterator implements SearchIterator
     try {
       more = results.hasMore();
       if (!more) {
-        final boolean searchAgain = searchControls.processResponseControls(
+        final Control[] respControls = controlHandler.processResponseControls(
+          request.getControls(),
           context.getResponseControls());
+        final boolean searchAgain = ControlHandler.findControl(
+          respControls, PagedResultsControl.OID) != null;
         if (searchAgain) {
-          context.setRequestControls(searchControls.getJndiControls());
+          context.setRequestControls(
+            controlHandler.processRequestControls(respControls));
           results = search(context, request);
           more = results.hasMore();
         }
       }
     } catch (NamingException e) {
-      JndiUtil.throwOperationException(operationRetryExceptions, e);
+      JndiUtil.throwOperationException(
+        operationRetryExceptions,
+        e,
+        JndiUtil.processResponseControls(controlHandler, context));
     }
     return more;
   }
@@ -333,7 +349,10 @@ public class JndiSearchIterator implements SearchIterator
         }
       }
       if (!ignoreException) {
-        JndiUtil.throwOperationException(operationRetryExceptions, e);
+        JndiUtil.throwOperationException(
+          operationRetryExceptions,
+          e,
+          JndiUtil.processResponseControls(controlHandler, context));
       }
     }
     return le;

@@ -65,6 +65,7 @@ public class JndiConnectionFactory extends AbstractJndiConnectionFactory
       conn.setOperationRetryExceptions(
         NamingExceptionUtil.getNamingExceptions(
           config.getOperationRetryResultCodes()));
+      conn.setControlHandler(config.getControlHandler());
     } catch (NamingException e) {
       throw new ConnectionException(
         e, NamingExceptionUtil.getResultCode(e.getClass()));

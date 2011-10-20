@@ -43,6 +43,14 @@ public class ManageDsaITControl extends AbstractControl
   }
 
 
+  /** {@inheritDoc} */
+  @Override
+  public String getOID()
+  {
+    return OID;
+  }
+
+
   /**
    * Provides a descriptive string representation of this instance.
    *

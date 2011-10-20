@@ -39,7 +39,7 @@ public class PagedResultsControl extends AbstractControl
 
 
   /**
-   * Creates a new paged results.
+   * Creates a new paged results control.
    *
    * @param  size  paged results size
    */
@@ -50,7 +50,7 @@ public class PagedResultsControl extends AbstractControl
 
 
   /**
-   * Creates a new paged results.
+   * Creates a new paged results control.
    *
    * @param  size  paged results size
    * @param  critical  whether this control is critical
@@ -59,6 +59,30 @@ public class PagedResultsControl extends AbstractControl
   {
     setSize(size);
     setCriticality(critical);
+  }
+
+
+  /**
+   * Creates a new paged results control.
+   *
+   * @param  size  paged results size
+   * @param  value  paged results cookie
+   * @param  critical  whether this control is critical
+   */
+  public PagedResultsControl(
+    final int size, final byte[] value, final boolean critical)
+  {
+    setSize(size);
+    setCookie(value);
+    setCriticality(critical);
+  }
+
+
+  /** {@inheritDoc} */
+  @Override
+  public String getOID()
+  {
+    return OID;
   }
 
 

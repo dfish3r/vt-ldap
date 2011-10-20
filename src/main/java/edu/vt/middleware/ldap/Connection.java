@@ -33,12 +33,13 @@ public interface Connection
 
 
   /**
-   * This will establish a connection if one does not already exist by binding
-   * to the LDAP.
+   * This will establish a connection if one does not already exist to the LDAP.
+   *
+   * @return  response associated with the bind operation
    *
    * @throws  LdapException  if the LDAP cannot be reached
    */
-  void open() throws LdapException;
+  Response<Void> open() throws LdapException;
 
 
   /**
@@ -48,10 +49,12 @@ public interface Connection
    *
    * @param  request  containing bind information
    *
+   * @return  response associated with the bind operation
+   *
    * @throws  IllegalStateExcepiton  if the connection is already open
    * @throws  LdapException  if the LDAP cannot be reached
    */
-  void open(BindRequest request) throws LdapException;
+  Response<Void> open(BindRequest request) throws LdapException;
 
 
   /**
