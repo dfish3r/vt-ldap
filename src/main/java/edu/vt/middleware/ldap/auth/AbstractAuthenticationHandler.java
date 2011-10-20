@@ -80,7 +80,8 @@ public abstract class AbstractAuthenticationHandler
 
 
   /**
-   * Returns a connection that the bind operation should be performed on.
+   * Returns a connection that the authentication operation should be performed
+   * on.
    *
    * @return  connection
    *
@@ -90,12 +91,14 @@ public abstract class AbstractAuthenticationHandler
 
 
   /**
-   * Performs a bind on the supplied connection using the supplied criteria.
+   * Authenticate on the supplied connection using the supplied criteria.
    *
-   * @param  c  to bind on
-   * @param  criteria  criteria to bind with
+   * @param  c  to authenticate on
+   * @param  criteria  criteria to authenticate with
    *
-   * @throws  LdapException  if the bind fails
+   * @return  response associated with the authentication
+   *
+   * @throws  LdapException  if the authentication fails
    */
   protected abstract void authenticateInternal(
     final Connection c, final AuthenticationCriteria criteria)
