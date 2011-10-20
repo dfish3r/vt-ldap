@@ -430,7 +430,7 @@ public abstract class AbstractConnectionPool extends AbstractPool<Connection>
 
   /**
    * Attempts to validate and passivate a connection. Performed when a
-   * connection is given to {@link #putConnection(PooledConnectionHandler)}.
+   * connection is given to {@link #putConnection(Connection)}.
    *
    * @param  pc  connection
    *

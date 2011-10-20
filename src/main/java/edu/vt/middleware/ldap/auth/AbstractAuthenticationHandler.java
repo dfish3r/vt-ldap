@@ -96,8 +96,6 @@ public abstract class AbstractAuthenticationHandler
    * @param  c  to authenticate on
    * @param  criteria  criteria to authenticate with
    *
-   * @return  response associated with the authentication
-   *
    * @throws  LdapException  if the authentication fails
    */
   protected abstract void authenticateInternal(
