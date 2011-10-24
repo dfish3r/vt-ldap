@@ -109,7 +109,7 @@ public abstract class AbstractSearchOperation<Q extends SearchRequest>
    * @return  ldap result
    * @throws LdapException if an error occurs
    */
-  protected abstract LdapResult executeSearch(final Q request)
+  protected abstract Response<LdapResult> executeSearch(final Q request)
     throws LdapException;
 
 
@@ -118,17 +118,19 @@ public abstract class AbstractSearchOperation<Q extends SearchRequest>
   protected Response<LdapResult> invoke(final Q request)
     throws LdapException
   {
-    LdapResult lr = null;
+    Response<LdapResult> response = null;
     if (cache != null) {
-      lr = cache.get(request);
+      final LdapResult lr = cache.get(request);
       if (lr == null) {
-        lr = executeSearch(request);
-        cache.put(request, lr);
+        response = executeSearch(request);
+        cache.put(request, response.getResult());
+      } else {
+        response = new Response<LdapResult>(lr, null);
       }
     } else {
-      lr = executeSearch(request);
+      response = executeSearch(request);
     }
-    return new Response<LdapResult>(lr);
+    return response;
   }
 
 

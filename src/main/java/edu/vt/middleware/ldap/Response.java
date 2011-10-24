@@ -27,24 +27,26 @@ public class Response<T> implements Message
 {
 
   /** Operation response. */
-  private T result;
+  private final T result;
+
+  /** Operation result code. */
+  private final ResultCode code;
 
   /** request controls. */
-  private Control[] controls;
-
-
-  /** Default constructor. */
-  public Response() {}
+  private final Control[] controls;
 
 
   /**
    * Creates a new ldap response.
    *
    * @param  t  response type
+   * @param  rc  result code
    */
-  public Response(final T t)
+  public Response(final T t, final ResultCode rc)
   {
     result = t;
+    code = rc;
+    controls = null;
   }
 
 
@@ -52,11 +54,13 @@ public class Response<T> implements Message
    * Creates a new ldap response.
    *
    * @param  t  response type
+   * @param  rc  result code
    * @param  c  response controls
    */
-  public Response(final T t, final Control[] c)
+  public Response(final T t, final ResultCode rc, final Control[] c)
   {
     result = t;
+    code = rc;
     controls = c;
   }
 
@@ -69,6 +73,17 @@ public class Response<T> implements Message
   public T getResult()
   {
     return result;
+  }
+
+
+  /**
+   * Returns the result code of the ldap operation.
+   *
+   * @return  operation result code
+   */
+  public ResultCode getResultCode()
+  {
+    return code;
   }
 
 

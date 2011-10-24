@@ -55,7 +55,7 @@ public class SearchOperation extends AbstractSearchOperation<SearchRequest>
 
   /** {@inheritDoc} */
   @Override
-  protected LdapResult executeSearch(final SearchRequest request)
+  protected Response<LdapResult> executeSearch(final SearchRequest request)
     throws LdapException
   {
     final LdapResult lr = new LdapResult(request.getSortBehavior());
@@ -69,6 +69,6 @@ public class SearchOperation extends AbstractSearchOperation<SearchRequest>
       si.close();
     }
     executeLdapResultHandlers(request, lr);
-    return lr;
+    return new Response<LdapResult>(lr, null);
   }
 }
