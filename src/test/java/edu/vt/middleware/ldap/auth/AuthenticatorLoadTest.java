@@ -20,7 +20,6 @@ import edu.vt.middleware.ldap.ConnectionFactoryManager;
 import edu.vt.middleware.ldap.Credential;
 import edu.vt.middleware.ldap.DefaultConnectionFactory;
 import edu.vt.middleware.ldap.LdapEntry;
-import edu.vt.middleware.ldap.SearchFilter;
 import edu.vt.middleware.ldap.TestUtil;
 import edu.vt.middleware.ldap.pool.BlockingConnectionPool;
 import edu.vt.middleware.ldap.pool.PooledConnectionFactory;
@@ -294,7 +293,7 @@ public class AuthenticatorLoadTest extends AbstractTest
     invocationCount = 1000,
     timeOut = 60000
   )
-  public void authenticateAndAuthorize(
+  public void authenticate(
     final String user,
     final String credential,
     final String filter,
@@ -306,16 +305,11 @@ public class AuthenticatorLoadTest extends AbstractTest
     // test auth with return attributes
     final LdapEntry expected = TestUtil.convertStringToEntry(
       null, expectedAttrs);
-    final LdapEntry entry = singleTLSAuth.authenticate(
+    final AuthenticationResponse response = singleTLSAuth.authenticate(
       new AuthenticationRequest(
-        user,
-        new Credential(credential),
-        returnAttrs.split("\\|"),
-        new AuthorizationHandler[]{
-          new CompareAuthorizationHandler(
-            new SearchFilter(filter, filterArgs.split("\\|"))), })).getResult();
-    expected.setDn(entry.getDn());
-    AssertJUnit.assertEquals(expected, entry);
+        user, new Credential(credential), returnAttrs.split("\\|")));
+    expected.setDn(response.getLdapEntry().getDn());
+    AssertJUnit.assertEquals(expected, response.getLdapEntry());
   }
 
 
@@ -337,7 +331,7 @@ public class AuthenticatorLoadTest extends AbstractTest
     timeOut = 60000,
     dependsOnMethods = {"authenticateAndAuthorize"}
   )
-  public void authenticateAndAuthorizePooled(
+  public void authenticatePooled(
     final String user,
     final String credential,
     final String filter,
@@ -349,15 +343,10 @@ public class AuthenticatorLoadTest extends AbstractTest
     // test auth with return attributes
     final LdapEntry expected = TestUtil.convertStringToEntry(
       null, expectedAttrs);
-    final LdapEntry entry = pooledTLSAuth.authenticate(
+    final AuthenticationResponse response = pooledTLSAuth.authenticate(
       new AuthenticationRequest(
-        user,
-        new Credential(credential),
-        returnAttrs.split("\\|"),
-        new AuthorizationHandler[]{
-          new CompareAuthorizationHandler(
-            new SearchFilter(filter, filterArgs.split("\\|"))), })).getResult();
-    expected.setDn(entry.getDn());
-    AssertJUnit.assertEquals(expected, entry);
+        user, new Credential(credential), returnAttrs.split("\\|")));
+    expected.setDn(response.getLdapEntry().getDn());
+    AssertJUnit.assertEquals(expected, response.getLdapEntry());
   }
 }

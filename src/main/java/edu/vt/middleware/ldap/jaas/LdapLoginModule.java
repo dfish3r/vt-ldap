@@ -29,8 +29,8 @@ import com.sun.security.auth.callback.TextCallbackHandler;
 import edu.vt.middleware.ldap.Credential;
 import edu.vt.middleware.ldap.LdapEntry;
 import edu.vt.middleware.ldap.LdapException;
-import edu.vt.middleware.ldap.auth.AuthenticationException;
 import edu.vt.middleware.ldap.auth.AuthenticationRequest;
+import edu.vt.middleware.ldap.auth.AuthenticationResponse;
 import edu.vt.middleware.ldap.auth.Authenticator;
 
 /**
@@ -125,10 +125,10 @@ public class LdapLoginModule extends AbstractLoginModule implements LoginModule
       authRequest.setUser(nameCb.getName());
       authRequest.setCredential(new Credential(passCb.getPassword()));
 
-      LdapException authEx = null;
+      AuthenticationResponse response = auth.authenticate(authRequest);
       LdapEntry entry = null;
-      try {
-        entry = auth.authenticate(authRequest).getResult();
+      if (response.getResult()) {
+        entry = response.getLdapEntry();
         if (entry != null) {
           roles.addAll(LdapRole.toRoles(entry));
           if (defaultRole != null && !defaultRole.isEmpty()) {
@@ -136,11 +136,12 @@ public class LdapLoginModule extends AbstractLoginModule implements LoginModule
           }
         }
         loginSuccess = true;
-      } catch (AuthenticationException e) {
+      } else {
         if (tryFirstPass) {
           getCredentials(nameCb, passCb, true);
-          try {
-            entry = auth.authenticate(authRequest).getResult();
+          response = auth.authenticate(authRequest);
+          if (response.getResult()) {
+            entry = response.getLdapEntry();
             if (entry != null) {
               roles.addAll(LdapRole.toRoles(entry));
             }
@@ -148,19 +149,17 @@ public class LdapLoginModule extends AbstractLoginModule implements LoginModule
               roles.addAll(defaultRole);
             }
             loginSuccess = true;
-          } catch (AuthenticationException e2) {
-            authEx = e;
+          } else {
             loginSuccess = false;
           }
         } else {
-          authEx = e;
           loginSuccess = false;
         }
       }
+
       if (!loginSuccess) {
-        logger.debug("Authentication failed", authEx);
-        throw new LoginException(
-          authEx != null ? authEx.getMessage() : "Authentication failed");
+        logger.debug("Authentication failed: " + response);
+        throw new LoginException("Authentication failed: " + response);
       } else {
         if (setLdapPrincipal) {
           final LdapPrincipal lp = new LdapPrincipal(nameCb.getName(), entry);

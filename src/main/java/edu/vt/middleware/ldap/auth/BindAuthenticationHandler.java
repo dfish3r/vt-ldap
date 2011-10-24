@@ -19,6 +19,8 @@ import edu.vt.middleware.ldap.Connection;
 import edu.vt.middleware.ldap.ConnectionFactory;
 import edu.vt.middleware.ldap.ConnectionFactoryManager;
 import edu.vt.middleware.ldap.LdapException;
+import edu.vt.middleware.ldap.Response;
+import edu.vt.middleware.ldap.ResultCode;
 
 /**
  * Provides an LDAP authentication implementation that leverages the LDAP bind
@@ -78,7 +80,7 @@ public class BindAuthenticationHandler
 
   /** {@inheritDoc} */
   @Override
-  protected void authenticateInternal(
+  protected AuthenticationHandlerResponse authenticateInternal(
     final Connection c, final AuthenticationCriteria criteria)
     throws LdapException
   {
@@ -86,7 +88,12 @@ public class BindAuthenticationHandler
       criteria.getDn(), criteria.getCredential());
     request.setSaslConfig(getAuthenticationSaslConfig());
     request.setControls(getAuthenticationControls());
-    c.open(request);
+    final Response<Void> response = c.open(request);
+    return new AuthenticationHandlerResponse(
+      ResultCode.SUCCESS == response.getResultCode(),
+      response.getResultCode(),
+      c,
+      response.getControls());
   }
 
 

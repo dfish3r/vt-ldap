@@ -21,6 +21,7 @@ import edu.vt.middleware.ldap.Connection;
 import edu.vt.middleware.ldap.LdapAttribute;
 import edu.vt.middleware.ldap.LdapException;
 import edu.vt.middleware.ldap.LdapUtil;
+import edu.vt.middleware.ldap.Response;
 
 /**
  * Provides implementation common to compare authentication handlers.
@@ -66,7 +67,7 @@ public abstract class AbstractCompareAuthenticationHandler
 
   /** {@inheritDoc} */
   @Override
-  protected void authenticateInternal(
+  protected AuthenticationHandlerResponse authenticateInternal(
     final Connection c, final AuthenticationCriteria criteria)
     throws LdapException
   {
@@ -86,11 +87,12 @@ public abstract class AbstractCompareAuthenticationHandler
     final CompareOperation compare = new CompareOperation(c);
     final CompareRequest request = new CompareRequest(criteria.getDn(), la);
     request.setControls(getAuthenticationControls());
-    final boolean success = compare.execute(request).getResult();
-
-    if (!success) {
-      throw new AuthenticationException("Compare authentication failed.");
-    }
+    final Response<Boolean> compareResponse = compare.execute(request);
+    return new AuthenticationHandlerResponse(
+      compareResponse.getResult(),
+      compareResponse.getResultCode(),
+      c,
+      compareResponse.getControls());
   }
 
 

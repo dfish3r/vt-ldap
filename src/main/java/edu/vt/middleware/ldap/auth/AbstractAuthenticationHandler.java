@@ -60,13 +60,15 @@ public abstract class AbstractAuthenticationHandler
 
   /** {@inheritDoc} */
   @Override
-  public Connection authenticate(final AuthenticationCriteria ac)
+  public AuthenticationHandlerResponse authenticate(
+    final AuthenticationCriteria ac)
     throws LdapException
   {
+    AuthenticationHandlerResponse response = null;
     final Connection conn = getConnection();
     boolean closeConn = false;
     try {
-      authenticateInternal(conn, ac);
+      response = authenticateInternal(conn, ac);
     } catch (LdapException e) {
       closeConn = true;
       throw e;
@@ -75,7 +77,7 @@ public abstract class AbstractAuthenticationHandler
         conn.close();
       }
     }
-    return conn;
+    return response;
   }
 
 
@@ -96,9 +98,11 @@ public abstract class AbstractAuthenticationHandler
    * @param  c  to authenticate on
    * @param  criteria  criteria to authenticate with
    *
+   * @return  authentication handler response
+   *
    * @throws  LdapException  if the authentication fails
    */
-  protected abstract void authenticateInternal(
+  protected abstract AuthenticationHandlerResponse authenticateInternal(
     final Connection c, final AuthenticationCriteria criteria)
     throws LdapException;
 }

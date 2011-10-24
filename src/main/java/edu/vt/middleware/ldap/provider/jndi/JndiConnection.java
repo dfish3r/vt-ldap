@@ -32,7 +32,6 @@ import edu.vt.middleware.ldap.Response;
 import edu.vt.middleware.ldap.ResultCode;
 import edu.vt.middleware.ldap.SearchRequest;
 import edu.vt.middleware.ldap.SearchScope;
-import edu.vt.middleware.ldap.auth.AuthenticationException;
 import edu.vt.middleware.ldap.provider.Connection;
 import edu.vt.middleware.ldap.provider.SearchIterator;
 import edu.vt.middleware.ldap.sasl.DigestMd5Config;
@@ -237,10 +236,12 @@ public class JndiConnection implements Connection
       context.removeFromEnvironment(CREDENTIALS);
       context.reconnect(context.getConnectControls());
       response = new Response<Void>(
-        null, JndiUtil.processResponseControls(controlHandler, context));
+        null,
+        ResultCode.SUCCESS,
+        JndiUtil.processResponseControls(controlHandler, context));
     } catch (javax.naming.AuthenticationException e) {
-      throw new AuthenticationException(
-        e,
+      response = new Response<Void>(
+        null,
         ResultCode.INVALID_CREDENTIALS,
         JndiUtil.processResponseControls(controlHandler, context));
     } catch (NamingException e) {
@@ -280,10 +281,12 @@ public class JndiConnection implements Connection
       context.reconnect(
         controlHandler.processRequestControls(request.getControls()));
       response = new Response<Void>(
-        null, JndiUtil.processResponseControls(controlHandler, context));
+        null,
+        ResultCode.SUCCESS,
+        JndiUtil.processResponseControls(controlHandler, context));
     } catch (javax.naming.AuthenticationException e) {
-      throw new AuthenticationException(
-        e,
+      response = new Response<Void>(
+        null,
         ResultCode.INVALID_CREDENTIALS,
         JndiUtil.processResponseControls(controlHandler, context));
     } catch (NamingException e) {
@@ -312,7 +315,9 @@ public class JndiConnection implements Connection
           new LdapName(request.getDn()),
           bu.fromLdapAttributes(request.getLdapAttributes())).close();
         response = new Response<Void>(
-          null, JndiUtil.processResponseControls(controlHandler, ctx));
+          null,
+          ResultCode.SUCCESS,
+          JndiUtil.processResponseControls(controlHandler, ctx));
       } finally {
         if (ctx != null) {
           ctx.close();
@@ -350,7 +355,9 @@ public class JndiConnection implements Connection
 
         final boolean success = en.hasMore() ? true : false;
         response = new Response<Boolean>(
-          success, JndiUtil.processResponseControls(controlHandler, ctx));
+          success,
+          success ? ResultCode.COMPARE_TRUE : ResultCode.COMPARE_FALSE,
+          JndiUtil.processResponseControls(controlHandler, ctx));
       } finally {
         if (en != null) {
           en.close();
@@ -382,7 +389,9 @@ public class JndiConnection implements Connection
           controlHandler.processRequestControls(request.getControls()));
         ctx.destroySubcontext(new LdapName(request.getDn()));
         response = new Response<Void>(
-          null, JndiUtil.processResponseControls(controlHandler, ctx));
+          null,
+          ResultCode.SUCCESS,
+          JndiUtil.processResponseControls(controlHandler, ctx));
       } finally {
         if (ctx != null) {
           ctx.close();
@@ -414,7 +423,9 @@ public class JndiConnection implements Connection
           new LdapName(request.getDn()),
           bu.fromAttributeModification(request.getAttributeModifications()));
         response = new Response<Void>(
-          null, JndiUtil.processResponseControls(controlHandler, ctx));
+          null,
+          ResultCode.SUCCESS,
+          JndiUtil.processResponseControls(controlHandler, ctx));
       } finally {
         if (ctx != null) {
           ctx.close();
@@ -445,7 +456,9 @@ public class JndiConnection implements Connection
           new LdapName(request.getDn()),
           new LdapName(request.getNewDn()));
         response = new Response<Void>(
-          null, JndiUtil.processResponseControls(controlHandler, ctx));
+          null,
+          ResultCode.SUCCESS,
+          JndiUtil.processResponseControls(controlHandler, ctx));
       } finally {
         if (ctx != null) {
           ctx.close();

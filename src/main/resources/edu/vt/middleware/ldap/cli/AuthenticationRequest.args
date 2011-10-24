@@ -1,6 +1,3 @@
-authorizationFilter:LDAP filter to authorize the user
-authorizationFilterArgs:LDAP filter arguments to apply to the authorizationFilter
-authorizationHandlers:LDAP handlers for performing authorization
 credential:to authenticate user with
 returnAttributes:attributes to return from the search
 user:to authenticate

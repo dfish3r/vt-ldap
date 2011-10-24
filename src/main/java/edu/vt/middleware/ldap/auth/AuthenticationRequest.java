@@ -34,15 +34,6 @@ public class AuthenticationRequest
   /** User attributes to return. */
   private String[] retAttrs = new String[0];
 
-  /** Filter for authorizing user. */
-  private String authzFilter;
-
-  /** Filter arguments for authorizing user. */
-  private Object[] authzFilterArgs;
-
-  /** Handlers to authorize the user. */
-  private AuthorizationHandler[] authzHandlers;
-
 
   /** Default constructor. */
   public AuthenticationRequest() {}
@@ -74,45 +65,6 @@ public class AuthenticationRequest
     setUser(id);
     setCredential(c);
     setReturnAttributes(attrs);
-  }
-
-
-  /**
-   * Creates a new authentication request.
-   *
-   * @param  id  that identifies the user
-   * @param  c  credential to authenticate the user
-   * @param  handlers  authorization handlers
-   */
-  public AuthenticationRequest(
-    final String id,
-    final Credential c,
-    final AuthorizationHandler[] handlers)
-  {
-    setUser(id);
-    setCredential(c);
-    setAuthorizationHandlers(handlers);
-  }
-
-
-  /**
-   * Creates a new authentication request.
-   *
-   * @param  id  that identifies the user
-   * @param  c  credential to authenticate the user
-   * @param  attrs  attributes to return
-   * @param  handlers  authorization handlers
-   */
-  public AuthenticationRequest(
-    final String id,
-    final Credential c,
-    final String[] attrs,
-    final AuthorizationHandler[] handlers)
-  {
-    setUser(id);
-    setCredential(c);
-    setReturnAttributes(attrs);
-    setAuthorizationHandlers(handlers);
   }
 
 
@@ -182,73 +134,6 @@ public class AuthenticationRequest
 
 
   /**
-   * Returns the filter used to authorize the user.
-   *
-   * @return  filter
-   */
-  public String getAuthorizationFilter()
-  {
-    return authzFilter;
-  }
-
-
-  /**
-   * Sets the filter used to authorize the user. If not set, no authorization
-   * is performed.
-   *
-   * @param  filter  for authorization
-   */
-  public void setAuthorizationFilter(final String filter)
-  {
-    authzFilter = filter;
-  }
-
-
-  /**
-   * Returns the filter arguments used to authorize the user.
-   *
-   * @return  filter arguments
-   */
-  public Object[] getAuthorizationFilterArgs()
-  {
-    return authzFilterArgs;
-  }
-
-
-  /**
-   * Sets the filter arguments used to authorize the user.
-   *
-   * @param  filterArgs  filter arguments
-   */
-  public void setAuthorizationFilterArgs(final Object[] filterArgs)
-  {
-    authzFilterArgs = filterArgs;
-  }
-
-
-  /**
-   * Returns the authorization handlers.
-   *
-   * @return  authorization handlers
-   */
-  public AuthorizationHandler[] getAuthorizationHandlers()
-  {
-    return authzHandlers;
-  }
-
-
-  /**
-   * Sets the authorization handlers.
-   *
-   * @param  handlers  authorization handlers
-   */
-  public void setAuthorizationHandlers(final AuthorizationHandler[] handlers)
-  {
-    authzHandlers = handlers;
-  }
-
-
-  /**
    * Provides a descriptive string representation of this instance.
    *
    * @return  string representation
@@ -258,15 +143,10 @@ public class AuthenticationRequest
   {
     return
       String.format(
-        "[%s@%d::user=%s, retAttrs=%s, authzFilter=%s, " +
-        "authzFilterArgs=%s, authzHandlers=%s]",
+        "[%s@%d::user=%s, retAttrs=%s]",
         getClass().getName(),
         hashCode(),
         user,
-        retAttrs != null ? Arrays.asList(retAttrs) : null,
-        authzFilter,
-        authzFilterArgs != null ?
-          Arrays.asList(authzFilterArgs) : null,
-        authzHandlers != null ? Arrays.asList(authzHandlers) : null);
+        retAttrs != null ? Arrays.asList(retAttrs) : null);
   }
 }

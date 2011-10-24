@@ -18,6 +18,8 @@ import edu.vt.middleware.ldap.BindOperation;
 import edu.vt.middleware.ldap.BindRequest;
 import edu.vt.middleware.ldap.Connection;
 import edu.vt.middleware.ldap.LdapException;
+import edu.vt.middleware.ldap.Response;
+import edu.vt.middleware.ldap.ResultCode;
 import edu.vt.middleware.ldap.pool.PooledConnectionFactory;
 import edu.vt.middleware.ldap.pool.PooledConnectionFactoryManager;
 
@@ -79,7 +81,7 @@ public class PooledBindAuthenticationHandler
 
   /** {@inheritDoc} */
   @Override
-  protected void authenticateInternal(
+  protected AuthenticationHandlerResponse authenticateInternal(
     final Connection c, final AuthenticationCriteria criteria)
     throws LdapException
   {
@@ -88,7 +90,12 @@ public class PooledBindAuthenticationHandler
     request.setSaslConfig(getAuthenticationSaslConfig());
     request.setControls(getAuthenticationControls());
     final BindOperation op = new BindOperation(c);
-    op.execute(request);
+    final Response<Void> response = op.execute(request);
+    return new AuthenticationHandlerResponse(
+      ResultCode.SUCCESS == response.getResultCode(),
+      response.getResultCode(),
+      c,
+      response.getControls());
   }
 
 

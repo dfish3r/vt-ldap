@@ -242,32 +242,6 @@ public class LdapLoginModuleTest extends AbstractTest
     invocationCount = TEST_INVOCATION_COUNT,
     timeOut = TEST_TIME_OUT
   )
-  public void authzContextTest(
-    final String dn,
-    final String user,
-    final String role,
-    final String credential)
-    throws Exception
-  {
-    doContextTest("vt-ldap-authz", dn, user, role, credential, true);
-  }
-
-
-  /**
-   * @param  dn  of this user
-   * @param  user  to authenticate.
-   * @param  role  to set for this user
-   * @param  credential  to authenticate with.
-   *
-   * @throws  Exception  On test failure.
-   */
-  @Parameters({ "jaasDn", "jaasUser", "jaasUserRole", "jaasCredential" })
-  @Test(
-    groups = {"jaas"},
-    threadPoolSize = TEST_THREAD_POOL_SIZE,
-    invocationCount = TEST_INVOCATION_COUNT,
-    timeOut = TEST_TIME_OUT
-  )
   public void randomContextTest(
     final String dn,
     final String user,
@@ -276,30 +250,6 @@ public class LdapLoginModuleTest extends AbstractTest
     throws Exception
   {
     doContextTest("vt-ldap-random", dn, user, role, credential, true);
-  }
-
-
-  /**
-   * @param  dn  of this user
-   * @param  user  to authenticate.
-   * @param  credential  to authenticate with.
-   *
-   * @throws  Exception  On test failure.
-   */
-  @Parameters({ "jaasDn", "jaasUser", "jaasCredential" })
-  @Test(
-    groups = {"jaas"},
-    threadPoolSize = TEST_THREAD_POOL_SIZE,
-    invocationCount = TEST_INVOCATION_COUNT,
-    timeOut = TEST_TIME_OUT
-  )
-  public void filterContextTest(
-    final String dn,
-    final String user,
-    final String credential)
-    throws Exception
-  {
-    doContextTest("vt-ldap-filter", dn, user, "", credential, false);
   }
 
 
@@ -348,38 +298,6 @@ public class LdapLoginModuleTest extends AbstractTest
     throws Exception
   {
     doContextTest("vt-ldap-pooled-dnr-spring", dn, user, "", credential, false);
-  }
-
-
-  /**
-   * @param  dn  of this user
-   * @param  user  to authenticate.
-   * @param  role  to set for this user
-   * @param  credential  to authenticate with.
-   *
-   * @throws  Exception  On test failure.
-   */
-  @Parameters({ "jaasDn", "jaasUser", "jaasUserRole", "jaasCredential" })
-  @Test(groups = {"jaas"})
-  public void handlerContextTest(
-    final String dn,
-    final String user,
-    final String role,
-    final String credential)
-    throws Exception
-  {
-    final TestCallbackHandler callback = new TestCallbackHandler();
-    callback.setName(user);
-    callback.setPassword(credential);
-
-    final LoginContext lc = new LoginContext("vt-ldap-handler", callback);
-    try {
-      lc.login();
-      AssertJUnit.fail(
-        "Handler succeed set to false, login should have failed");
-    } catch (Exception e) {
-      AssertJUnit.assertEquals(e.getClass(), LoginException.class);
-    }
   }
 
 

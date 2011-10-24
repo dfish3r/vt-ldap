@@ -290,7 +290,7 @@
              value="-ldapUrl|${ldapTestHost}|-bindDn|uid=1,ou=test,dc=vt,dc=edu|-bindCredential|VKSxXwlU7YssGl1foLMH2mGMWkifbODb1djfJ4t2|-dn|uid=8,ou=test,dc=vt,dc=edu"/>
 
   <parameter name="cliAuthArgs"
-             value="-ldapUrl|${ldapTestHost}|-baseDn|ou=test,dc=vt,dc=edu|-tls|true|-hostnameVerifier|edu.vt.middleware.ldap.AnyHostnameVerifier|-bindDn|uid=1,ou=test,dc=vt,dc=edu|-bindCredential|VKSxXwlU7YssGl1foLMH2mGMWkifbODb1djfJ4t2|-userFilter|(mail={0})|-user|whharrison@vt.edu|-credential|password9|-authorizationFilter|(departmentNumber=0829)|-returnAttributes|departmentNumber,givenName,sn"/>
+             value="-ldapUrl|${ldapTestHost}|-baseDn|ou=test,dc=vt,dc=edu|-tls|true|-hostnameVerifier|edu.vt.middleware.ldap.AnyHostnameVerifier|-bindDn|uid=1,ou=test,dc=vt,dc=edu|-bindCredential|VKSxXwlU7YssGl1foLMH2mGMWkifbODb1djfJ4t2|-userFilter|(mail={0})|-user|whharrison@vt.edu|-credential|password9|-returnAttributes|departmentNumber,givenName,sn"/>
   <parameter name="cliAuthResults"
              value="/edu/vt/middleware/ldap/searchResults-9.ldif"/>
 

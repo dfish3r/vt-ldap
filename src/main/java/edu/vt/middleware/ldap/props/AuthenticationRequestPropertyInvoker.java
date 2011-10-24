@@ -14,7 +14,6 @@
 package edu.vt.middleware.ldap.props;
 
 import edu.vt.middleware.ldap.Credential;
-import edu.vt.middleware.ldap.auth.AuthorizationHandler;
 
 /**
  * Handles properties for
@@ -48,10 +47,6 @@ public class AuthenticationRequestPropertyInvoker
     if (type != String.class) {
       if (Credential.class.isAssignableFrom(type)) {
         newValue = new Credential(value);
-      } else if (AuthorizationHandler[].class.isAssignableFrom(type)) {
-        newValue = createArrayTypeFromPropertyValue(
-          AuthorizationHandler.class,
-          value);
       } else {
         newValue = convertSimpleType(type, value);
       }

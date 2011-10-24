@@ -21,6 +21,7 @@ import edu.vt.middleware.ldap.Credential;
 import edu.vt.middleware.ldap.LdapEntry;
 import edu.vt.middleware.ldap.LdapResult;
 import edu.vt.middleware.ldap.auth.AuthenticationRequest;
+import edu.vt.middleware.ldap.auth.AuthenticationResponse;
 import edu.vt.middleware.ldap.auth.Authenticator;
 import edu.vt.middleware.ldap.auth.SearchDnResolver;
 import edu.vt.middleware.ldap.io.Dsmlv1Writer;
@@ -183,7 +184,8 @@ public class AuthenticatorCli extends AbstractCli
         request.getReturnAttributes().length == 0) {
       request.setReturnAttributes(null);
     }
-    final LdapEntry entry = auth.authenticate(request).getResult();
+    final AuthenticationResponse response = auth.authenticate(request);
+    final LdapEntry entry = response.getLdapEntry();
     if (entry != null) {
       LdapResultWriter writer = null;
       if (outputDsmlv1) {

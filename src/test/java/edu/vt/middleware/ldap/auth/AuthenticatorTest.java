@@ -18,7 +18,6 @@ import edu.vt.middleware.ldap.AbstractTest;
 import edu.vt.middleware.ldap.AttributeModification;
 import edu.vt.middleware.ldap.AttributeModificationType;
 import edu.vt.middleware.ldap.Connection;
-import edu.vt.middleware.ldap.ConnectionFactory;
 import edu.vt.middleware.ldap.ConnectionFactoryManager;
 import edu.vt.middleware.ldap.Credential;
 import edu.vt.middleware.ldap.DefaultConnectionFactory;
@@ -28,8 +27,6 @@ import edu.vt.middleware.ldap.LdapException;
 import edu.vt.middleware.ldap.LdapResult;
 import edu.vt.middleware.ldap.ModifyOperation;
 import edu.vt.middleware.ldap.ModifyRequest;
-import edu.vt.middleware.ldap.Response;
-import edu.vt.middleware.ldap.SearchFilter;
 import edu.vt.middleware.ldap.TestUtil;
 import edu.vt.middleware.ldap.control.PasswordPolicyControl;
 import edu.vt.middleware.ldap.pool.BlockingConnectionPool;
@@ -329,23 +326,22 @@ public class AuthenticatorTest extends AbstractTest
   {
     // test plain auth
     final Authenticator auth = createTLSDnAuthenticator(false);
-    try {
-      auth.authenticate(
-        new AuthenticationRequest(dn, new Credential(INVALID_PASSWD)));
-      AssertJUnit.fail("Should have thrown AuthenticationException");
-    } catch (LdapException e) {
-      AssertJUnit.assertEquals(AuthenticationException.class, e.getClass());
-    }
-    auth.authenticate(
+    AuthenticationResponse response = auth.authenticate(
+      new AuthenticationRequest(dn, new Credential(INVALID_PASSWD)));
+    AssertJUnit.assertFalse(response.getResult());
+
+    response = auth.authenticate(
       new AuthenticationRequest(dn, new Credential(credential)));
+    AssertJUnit.assertTrue(response.getResult());
 
     // test auth with return attributes
     final String expected = TestUtil.readFileIntoString(ldifFile);
-    final LdapEntry entry = auth.authenticate(
+    response = auth.authenticate(
       new AuthenticationRequest(
-        dn, new Credential(credential), returnAttrs.split("\\|"))).getResult();
+        dn, new Credential(credential), returnAttrs.split("\\|")));
     AssertJUnit.assertEquals(
-      TestUtil.convertLdifToResult(expected), new LdapResult(entry));
+      TestUtil.convertLdifToResult(expected),
+      new LdapResult(response.getLdapEntry()));
   }
 
 
@@ -380,102 +376,22 @@ public class AuthenticatorTest extends AbstractTest
   {
     // test plain auth
     final Authenticator auth = createSSLDnAuthenticator(false);
-    try {
-      auth.authenticate(
-        new AuthenticationRequest(dn, new Credential(INVALID_PASSWD)));
-      AssertJUnit.fail("Should have thrown AuthenticationException");
-    } catch (LdapException e) {
-      AssertJUnit.assertEquals(AuthenticationException.class, e.getClass());
-    }
-    auth.authenticate(
+    AuthenticationResponse response = auth.authenticate(
+      new AuthenticationRequest(dn, new Credential(INVALID_PASSWD)));
+    AssertJUnit.assertFalse(response.getResult());
+
+    response = auth.authenticate(
       new AuthenticationRequest(dn, new Credential(credential)));
+    AssertJUnit.assertTrue(response.getResult());
 
     // test auth with return attributes
     final String expected = TestUtil.readFileIntoString(ldifFile);
-    final LdapEntry entry = auth.authenticate(
+    response = auth.authenticate(
       new AuthenticationRequest(
-        dn, new Credential(credential), returnAttrs.split("\\|"))).getResult();
+        dn, new Credential(credential), returnAttrs.split("\\|")));
     AssertJUnit.assertEquals(
-      TestUtil.convertLdifToResult(expected), new LdapResult(entry));
-  }
-
-
-  /**
-   * @param  dn  to authenticate.
-   * @param  credential  to authenticate with.
-   * @param  filter  to authorize with.
-   * @param  filterArgs  to authorize with.
-   * @param  returnAttrs  to search for.
-   * @param  ldifFile  to expect from the search.
-   *
-   * @throws  Exception  On test failure.
-   */
-  @Parameters(
-    {
-      "authenticateDn",
-      "authenticateDnCredential",
-      "authenticateDnFilter",
-      "authenticateDnFilterArgs",
-      "authenticateDnReturnAttrs",
-      "authenticateDnResults"
-    }
-  )
-  @Test(
-    groups = {"auth"},
-    threadPoolSize = TEST_THREAD_POOL_SIZE,
-    invocationCount = TEST_INVOCATION_COUNT,
-    timeOut = TEST_TIME_OUT
-  )
-  public void authenticateDnAndAuthorize(
-    final String dn,
-    final String credential,
-    final String filter,
-    final String filterArgs,
-    final String returnAttrs,
-    final String ldifFile)
-    throws Exception
-  {
-    final Authenticator auth = createTLSDnAuthenticator(false);
-
-    // test plain auth
-    try {
-      auth.authenticate(
-        new AuthenticationRequest(
-          dn,
-          new Credential(INVALID_PASSWD),
-          new AuthorizationHandler[] {
-            new CompareAuthorizationHandler(new SearchFilter(filter)), }));
-      AssertJUnit.fail("Should have thrown AuthenticationException");
-    } catch (LdapException e) {
-      AssertJUnit.assertEquals(AuthenticationException.class, e.getClass());
-    }
-    try {
-      auth.authenticate(
-        new AuthenticationRequest(
-          dn,
-          new Credential(credential),
-          new AuthorizationHandler[] {
-            new CompareAuthorizationHandler(
-              new SearchFilter(INVALID_FILTER)), }));
-      AssertJUnit.fail("Should have thrown AuthorizationException");
-    } catch (LdapException e) {
-      AssertJUnit.assertEquals(AuthorizationException.class, e.getClass());
-    }
-    auth.authenticate(
-      new AuthenticationRequest(
-        dn,
-        new Credential(credential),
-        new AuthorizationHandler[] {
-          new CompareAuthorizationHandler(
-            new SearchFilter(filter, filterArgs.split("\\|"))), }));
-
-    // test auth with return attributes
-    final String expected = TestUtil.readFileIntoString(ldifFile);
-    final LdapEntry entry = auth.authenticate(
-      new AuthenticationRequest(
-        dn, new Credential(credential), returnAttrs.split("\\|"))).getResult();
-    AssertJUnit.assertEquals(
-      TestUtil.convertLdifToResult(expected), new LdapResult(entry));
+      TestUtil.convertLdifToResult(expected),
+      new LdapResult(response.getLdapEntry()));
   }
 
 
@@ -510,51 +426,23 @@ public class AuthenticatorTest extends AbstractTest
     auth.setAuthenticationResultHandlers(
       new AuthenticationResultHandler[] {authHandler});
 
-    final TestAuthorizationHandler testAuthzHandler =
-      new TestAuthorizationHandler();
-    final AuthorizationHandler[] authzHandlers =
-      new AuthorizationHandler[] {testAuthzHandler};
-
-    try {
-      auth.authenticate(
-        new AuthenticationRequest(
-          dn, new Credential(INVALID_PASSWD), authzHandlers));
-      AssertJUnit.fail("Should have thrown AuthenticationException");
-    } catch (LdapException e) {
-      AssertJUnit.assertEquals(AuthenticationException.class, e.getClass());
-    }
+    AuthenticationResponse response = auth.authenticate(
+      new AuthenticationRequest(dn, new Credential(INVALID_PASSWD)));
+    AssertJUnit.assertFalse(response.getResult());
     AssertJUnit.assertTrue(!authHandler.getResults().isEmpty());
     AssertJUnit.assertFalse(authHandler.getResults().get(dn).booleanValue());
-    AssertJUnit.assertTrue(testAuthzHandler.getResults().isEmpty());
 
-    try {
-      auth.authenticate(
-        new AuthenticationRequest(
-          dn, new Credential(credential), authzHandlers));
-      AssertJUnit.fail("Should have thrown AuthorizationException");
-    } catch (LdapException e) {
-      AssertJUnit.assertEquals(AuthorizationException.class, e.getClass());
-    }
-    AssertJUnit.assertFalse(authHandler.getResults().get(dn).booleanValue());
-    AssertJUnit.assertFalse(!testAuthzHandler.getResults().isEmpty());
-
-    testAuthzHandler.setSucceed(true);
-
-    auth.authenticate(
-      new AuthenticationRequest(dn, new Credential(credential), authzHandlers));
+    response = auth.authenticate(
+      new AuthenticationRequest(dn, new Credential(credential)));
+    AssertJUnit.assertTrue(response.getResult());
     AssertJUnit.assertTrue(authHandler.getResults().get(dn).booleanValue());
-    AssertJUnit.assertTrue(testAuthzHandler.getResults().get(0).equals(dn));
 
     authHandler.getResults().clear();
-    testAuthzHandler.getResults().clear();
 
-    final AuthenticationRequest authRequest = new AuthenticationRequest(
-      dn, new Credential(credential), authzHandlers);
-    authRequest.setAuthorizationFilter(filter);
-    authRequest.setAuthorizationFilterArgs(filterArgs.split("\\|"));
-    auth.authenticate(authRequest);
+    response = auth.authenticate(
+      new AuthenticationRequest(dn, new Credential(credential)));
+    AssertJUnit.assertTrue(response.getResult());
     AssertJUnit.assertTrue(authHandler.getResults().get(dn).booleanValue());
-    AssertJUnit.assertTrue(testAuthzHandler.getResults().get(0).equals(dn));
   }
 
 
@@ -578,17 +466,16 @@ public class AuthenticatorTest extends AbstractTest
     }
 
     final Authenticator auth = TestUtil.createDigestMD5Authenticator();
-    try {
-      auth.authenticate(
-        new AuthenticationRequest(
-          user, new Credential(INVALID_PASSWD), new String[0]));
-      AssertJUnit.fail("Should have thrown AuthenticationException");
-    } catch (LdapException e) {
-      AssertJUnit.assertEquals(AuthenticationException.class, e.getClass());
-    }
-    auth.authenticate(
+
+    AuthenticationResponse response = auth.authenticate(
+      new AuthenticationRequest(
+        user, new Credential(INVALID_PASSWD), new String[0]));
+    AssertJUnit.assertFalse(response.getResult());
+
+    response = auth.authenticate(
       new AuthenticationRequest(
         user, new Credential(credential), new String[0]));
+    AssertJUnit.assertTrue(response.getResult());
   }
 
 
@@ -612,17 +499,15 @@ public class AuthenticatorTest extends AbstractTest
     }
 
     final Authenticator auth = TestUtil.createCramMD5Authenticator();
-    try {
-      auth.authenticate(
-        new AuthenticationRequest(
-          user, new Credential(INVALID_PASSWD), new String[0]));
-      AssertJUnit.fail("Should have thrown AuthenticationException");
-    } catch (LdapException e) {
-      AssertJUnit.assertEquals(AuthenticationException.class, e.getClass());
-    }
-    auth.authenticate(
+    AuthenticationResponse response = auth.authenticate(
+      new AuthenticationRequest(
+        user, new Credential(INVALID_PASSWD), new String[0]));
+    AssertJUnit.assertFalse(response.getResult());
+
+    response = auth.authenticate(
       new AuthenticationRequest(
         user, new Credential(credential), new String[0]));
+    AssertJUnit.assertTrue(response.getResult());
   }
 
 
@@ -658,26 +543,24 @@ public class AuthenticatorTest extends AbstractTest
     final Authenticator auth = createTLSAuthenticator(false);
 
     // test plain auth
-    try {
-      auth.authenticate(
-        new AuthenticationRequest(user, new Credential(INVALID_PASSWD)));
-      AssertJUnit.fail("Should have thrown AuthenticationException");
-    } catch (LdapException e) {
-      AssertJUnit.assertEquals(
-        AuthenticationException.class, e.getClass());
-    }
-    auth.authenticate(
+    AuthenticationResponse response = auth.authenticate(
+      new AuthenticationRequest(user, new Credential(INVALID_PASSWD)));
+    AssertJUnit.assertFalse(response.getResult());
+
+    response = auth.authenticate(
       new AuthenticationRequest(user, new Credential(credential)));
+    AssertJUnit.assertTrue(response.getResult());
 
     // test auth with return attributes
     final String expected = TestUtil.readFileIntoString(ldifFile);
-    final LdapEntry entry = auth.authenticate(
+    response = auth.authenticate(
       new AuthenticationRequest(
         user,
         new Credential(credential),
-        returnAttrs.split("\\|"))).getResult();
+        returnAttrs.split("\\|")));
     AssertJUnit.assertEquals(
-      TestUtil.convertLdifToResult(expected), new LdapResult(entry));
+      TestUtil.convertLdifToResult(expected),
+      new LdapResult(response.getLdapEntry()));
   }
 
 
@@ -713,186 +596,24 @@ public class AuthenticatorTest extends AbstractTest
     final Authenticator auth = createSSLAuthenticator(false);
 
     // test plain auth
-    try {
-      auth.authenticate(
-        new AuthenticationRequest(user, new Credential(INVALID_PASSWD)));
-      AssertJUnit.fail("Should have thrown AuthenticationException");
-    } catch (LdapException e) {
-      AssertJUnit.assertEquals(AuthenticationException.class, e.getClass());
-    }
-    auth.authenticate(
+    AuthenticationResponse response = auth.authenticate(
+      new AuthenticationRequest(user, new Credential(INVALID_PASSWD)));
+    AssertJUnit.assertFalse(response.getResult());
+
+    response = auth.authenticate(
       new AuthenticationRequest(user, new Credential(credential)));
+    AssertJUnit.assertTrue(response.getResult());
 
     // test auth with return attributes
     final String expected = TestUtil.readFileIntoString(ldifFile);
-    final LdapEntry entry = auth.authenticate(
+    response = auth.authenticate(
       new AuthenticationRequest(
         user,
         new Credential(credential),
-        returnAttrs.split("\\|"))).getResult();
+        returnAttrs.split("\\|")));
     AssertJUnit.assertEquals(
-      TestUtil.convertLdifToResult(expected), new LdapResult(entry));
-  }
-
-
-  /**
-   * @param  user  to authenticate.
-   * @param  credential  to authenticate with.
-   * @param  filter  to authorize with.
-   * @param  returnAttrs  to search for.
-   * @param  ldifFile  to expect from the search.
-   *
-   * @throws  Exception  On test failure.
-   */
-  @Parameters(
-    {
-      "authenticateUser",
-      "authenticateCredential",
-      "authenticateFilter",
-      "authenticateReturnAttrs",
-      "authenticateResults"
-    }
-  )
-  @Test(
-    groups = {"auth"},
-    threadPoolSize = TEST_THREAD_POOL_SIZE,
-    invocationCount = TEST_INVOCATION_COUNT,
-    timeOut = TEST_TIME_OUT
-  )
-  public void authenticateAndAuthorize(
-    final String user,
-    final String credential,
-    final String filter,
-    final String returnAttrs,
-    final String ldifFile)
-    throws Exception
-  {
-    final Authenticator auth = createTLSAuthenticator(false);
-
-    // test plain auth
-    try {
-      auth.authenticate(
-        new AuthenticationRequest(
-          user,
-          new Credential(INVALID_PASSWD),
-          new AuthorizationHandler[] {
-            new CompareAuthorizationHandler(new SearchFilter(filter)), }));
-      AssertJUnit.fail("Should have thrown AuthenticationException");
-    } catch (LdapException e) {
-      AssertJUnit.assertEquals(AuthenticationException.class, e.getClass());
-    }
-    try {
-      auth.authenticate(
-        new AuthenticationRequest(
-          user,
-          new Credential(credential),
-          new AuthorizationHandler[] {
-            new CompareAuthorizationHandler(
-              new SearchFilter(INVALID_FILTER)), }));
-      AssertJUnit.fail("Should have thrown AuthorizationException");
-    } catch (LdapException e) {
-      AssertJUnit.assertEquals(AuthorizationException.class, e.getClass());
-    }
-    auth.authenticate(
-      new AuthenticationRequest(
-        user,
-        new Credential(credential),
-        new AuthorizationHandler[] {
-          new CompareAuthorizationHandler(new SearchFilter(filter)), }));
-
-    // test auth with return attributes
-    final String expected = TestUtil.readFileIntoString(ldifFile);
-    final LdapEntry entry = auth.authenticate(
-      new AuthenticationRequest(
-        user,
-        new Credential(credential),
-        returnAttrs.split("\\|"),
-        new AuthorizationHandler[] {
-          new CompareAuthorizationHandler(
-            new SearchFilter(filter)), })).getResult();
-    AssertJUnit.assertEquals(
-      TestUtil.convertLdifToResult(expected), new LdapResult(entry));
-  }
-
-
-  /**
-   * @param  user  to authenticate.
-   * @param  credential  to authenticate with.
-   * @param  filter  to authorize with.
-   * @param  returnAttrs  to search for.
-   * @param  ldifFile  to expect from the search.
-   *
-   * @throws  Exception  On test failure.
-   */
-  @Parameters(
-    {
-      "authenticateUser",
-      "authenticateCredential",
-      "authenticateFilter",
-      "authenticateReturnAttrs",
-      "authenticateResults"
-    }
-  )
-  @Test(
-    groups = {"auth"},
-    threadPoolSize = TEST_THREAD_POOL_SIZE,
-    invocationCount = TEST_INVOCATION_COUNT,
-    timeOut = TEST_TIME_OUT
-  )
-  public void authenticateAndAuthorizeCompare(
-    final String user,
-    final String credential,
-    final String filter,
-    final String returnAttrs,
-    final String ldifFile)
-    throws Exception
-  {
-    final Authenticator auth = createTLSAuthenticator(true);
-    final AuthenticationHandler ah = auth.getAuthenticationHandler();
-    final ConnectionFactory authCf =
-      ((ConnectionFactoryManager) ah).getConnectionFactory();
-    auth.setAuthenticationHandler(new CompareAuthenticationHandler(authCf));
-
-    // test plain auth
-    try {
-      auth.authenticate(
-        new AuthenticationRequest(
-          user,
-          new Credential(INVALID_PASSWD),
-          new AuthorizationHandler[] {
-            new CompareAuthorizationHandler(new SearchFilter(filter)), }));
-      AssertJUnit.fail("Should have thrown AuthenticationException");
-    } catch (LdapException e) {
-      AssertJUnit.assertEquals(AuthenticationException.class, e.getClass());
-    }
-    try {
-      auth.authenticate(
-        new AuthenticationRequest(
-          user,
-          new Credential(credential),
-          new AuthorizationHandler[] {
-            new CompareAuthorizationHandler(
-              new SearchFilter(INVALID_FILTER)), }));
-      AssertJUnit.fail("Should have thrown AuthorizationException");
-    } catch (LdapException e) {
-      AssertJUnit.assertEquals(AuthorizationException.class, e.getClass());
-    }
-    auth.authenticate(
-      new AuthenticationRequest(
-        user,
-        new Credential(credential),
-        new AuthorizationHandler[] {
-          new CompareAuthorizationHandler(new SearchFilter(filter)), }));
-
-    // test auth with return attributes
-    final String expected = TestUtil.readFileIntoString(ldifFile);
-    final LdapEntry entry = auth.authenticate(
-      new AuthenticationRequest(
-        user,
-        new Credential(credential),
-        returnAttrs.split("\\|"))).getResult();
-    AssertJUnit.assertEquals(
-      TestUtil.convertLdifToResult(expected), new LdapResult(entry));
+      TestUtil.convertLdifToResult(expected),
+      new LdapResult(response.getLdapEntry()));
   }
 
 
@@ -929,26 +650,24 @@ public class AuthenticatorTest extends AbstractTest
     throws Exception
   {
     // test plain auth
-    try {
-      pooledTLSAuth.authenticate(
-        new AuthenticationRequest(user, new Credential(INVALID_PASSWD)));
-      AssertJUnit.fail("Should have thrown AuthenticationException");
-    } catch (LdapException e) {
-      AssertJUnit.assertEquals(AuthenticationException.class, e.getClass());
-    }
+    AuthenticationResponse response = pooledTLSAuth.authenticate(
+      new AuthenticationRequest(user, new Credential(INVALID_PASSWD)));
+    AssertJUnit.assertFalse(response.getResult());
 
-    pooledTLSAuth.authenticate(
+    response = pooledTLSAuth.authenticate(
       new AuthenticationRequest(user, new Credential(credential)));
+    AssertJUnit.assertTrue(response.getResult());
 
     // test auth with return attributes
     final String expected = TestUtil.readFileIntoString(ldifFile);
-    final LdapEntry entry = pooledTLSAuth.authenticate(
+    response = pooledTLSAuth.authenticate(
       new AuthenticationRequest(
         user,
         new Credential(credential),
-        returnAttrs.split("\\|"))).getResult();
+        returnAttrs.split("\\|")));
     AssertJUnit.assertEquals(
-      TestUtil.convertLdifToResult(expected), new LdapResult(entry));
+      TestUtil.convertLdifToResult(expected),
+      new LdapResult(response.getLdapEntry()));
   }
 
 
@@ -978,38 +697,37 @@ public class AuthenticatorTest extends AbstractTest
     try {
       auth.authenticate(
         new AuthenticationRequest(
+          user, null, returnAttrs.split("\\|")));
+      AssertJUnit.fail("Should have thrown IllegalArgumentException");
+    } catch (Exception e) {
+      AssertJUnit.assertEquals(IllegalArgumentException.class, e.getClass());
+    }
+
+    try {
+      auth.authenticate(
+        new AuthenticationRequest(
           user, new Credential(""), returnAttrs.split("\\|")));
-      AssertJUnit.fail("Should have thrown AuthenticationException");
-    } catch (LdapException e) {
-      AssertJUnit.assertEquals(AuthenticationException.class, e.getClass());
+      AssertJUnit.fail("Should have thrown IllegalArgumentException");
+    } catch (Exception e) {
+      AssertJUnit.assertEquals(IllegalArgumentException.class, e.getClass());
     }
 
     try {
       auth.authenticate(
         new AuthenticationRequest(
           null, new Credential(credential), returnAttrs.split("\\|")));
-      AssertJUnit.fail("Should have thrown AuthenticationException");
-    } catch (LdapException e) {
-      AssertJUnit.assertEquals(AuthenticationException.class, e.getClass());
+      AssertJUnit.fail("Should have thrown IllegalArgumentException");
+    } catch (Exception e) {
+      AssertJUnit.assertEquals(IllegalArgumentException.class, e.getClass());
     }
 
     try {
       auth.authenticate(
         new AuthenticationRequest(
           "", new Credential(credential), returnAttrs.split("\\|")));
-      AssertJUnit.fail("Should have thrown AuthenticationException");
-    } catch (LdapException e) {
-      AssertJUnit.assertEquals(AuthenticationException.class, e.getClass());
-    }
-
-    final AuthenticationRequest authRequest = new AuthenticationRequest(
-      user, new Credential(credential), returnAttrs.split("\\|"));
-    authRequest.setAuthorizationFilter(INVALID_FILTER);
-    try {
-      auth.authenticate(authRequest);
-      AssertJUnit.fail("Should have thrown AuthorizationException");
-    } catch (LdapException e) {
-      AssertJUnit.assertEquals(AuthorizationException.class, e.getClass());
+      AssertJUnit.fail("Should have thrown IllegalArgumentException");
+    } catch (Exception e) {
+      AssertJUnit.assertEquals(IllegalArgumentException.class, e.getClass());
     }
   }
 
@@ -1034,30 +752,24 @@ public class AuthenticatorTest extends AbstractTest
     final Authenticator auth = createTLSAuthenticator(true);
 
     // test without rewrite
-    try {
-      auth.authenticate(
-        new AuthenticationRequest(user, new Credential(INVALID_PASSWD)));
-      AssertJUnit.fail("Should have thrown AuthenticationException");
-    } catch (LdapException e) {
-      AssertJUnit.assertEquals(
-        AuthenticationException.class, e.getClass());
-    }
-    auth.authenticate(
+    AuthenticationResponse response = auth.authenticate(
+      new AuthenticationRequest(user, new Credential(INVALID_PASSWD)));
+    AssertJUnit.assertFalse(response.getResult());
+
+    response = auth.authenticate(
       new AuthenticationRequest(user, new Credential(credential)));
+    AssertJUnit.assertTrue(response.getResult());
 
     // test with rewrite
     ((SearchDnResolver) auth.getDnResolver()).setBaseDn("dc=blah");
     ((SearchDnResolver) auth.getDnResolver()).setSubtreeSearch(true);
-    try {
-      auth.authenticate(
-        new AuthenticationRequest(user, new Credential(INVALID_PASSWD)));
-      AssertJUnit.fail("Should have thrown AuthenticationException");
-    } catch (LdapException e) {
-      AssertJUnit.assertEquals(
-        AuthenticationException.class, e.getClass());
-    }
-    auth.authenticate(
+    response = auth.authenticate(
+      new AuthenticationRequest(user, new Credential(INVALID_PASSWD)));
+    AssertJUnit.assertFalse(response.getResult());
+
+    response = auth.authenticate(
       new AuthenticationRequest(user, new Credential(credential)));
+    AssertJUnit.assertTrue(response.getResult());
   }
 
 
@@ -1093,8 +805,9 @@ public class AuthenticatorTest extends AbstractTest
     ah.setAuthenticationControls(new PasswordPolicyControl());
 
     // test bind sending ppolicy control
-    final LdapEntry entry = auth.authenticate(
-      new AuthenticationRequest(user, new Credential(credential))).getResult();
+    AuthenticationResponse response = auth.authenticate(
+      new AuthenticationRequest(user, new Credential(credential)));
+    final LdapEntry entry = response.getLdapEntry();
 
     // test bind on locked account
     final ModifyOperation modify = new ModifyOperation(conn);
@@ -1106,18 +819,13 @@ public class AuthenticatorTest extends AbstractTest
             AttributeModificationType.ADD,
             new LdapAttribute("pwdAccountLockedTime", "000001010000Z")), }));
 
-    try {
-      auth.authenticate(
-        new AuthenticationRequest(user, new Credential(credential)));
-      AssertJUnit.fail("Should have thrown AuthenticationException");
-    } catch (LdapException e) {
-      AssertJUnit.assertEquals(
-        AuthenticationException.class, e.getClass());
-      final PasswordPolicyControl ppc =
-        (PasswordPolicyControl) ((AuthenticationException) e).getControls()[0];
-      AssertJUnit.assertEquals(
-        PasswordPolicyControl.Error.ACCOUNT_LOCKED, ppc.getError());
-    }
+    response = auth.authenticate(
+      new AuthenticationRequest(user, new Credential(credential)));
+    AssertJUnit.assertFalse(response.getResult());
+    PasswordPolicyControl ppc =
+      (PasswordPolicyControl) response.getControls()[0];
+    AssertJUnit.assertEquals(
+      PasswordPolicyControl.Error.ACCOUNT_LOCKED, ppc.getError());
 
     // test bind with expiration time
     modify.execute(
@@ -1129,10 +837,9 @@ public class AuthenticatorTest extends AbstractTest
             new LdapAttribute("pwdAccountLockedTime")), }));
     conn.close();
 
-    final Response<LdapEntry> response = auth.authenticate(
+    response = auth.authenticate(
       new AuthenticationRequest(user, new Credential(credential)));
-    final PasswordPolicyControl ppc =
-      (PasswordPolicyControl) response.getControls()[0];
+    ppc = (PasswordPolicyControl) response.getControls()[0];
     AssertJUnit.assertTrue(ppc.getTimeBeforeExpiration() > 0);
   }
 }
