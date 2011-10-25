@@ -328,8 +328,7 @@ public class AuthenticatorLoadTest extends AbstractTest
     dataProvider = "auth-data",
     threadPoolSize = 50,
     invocationCount = 1000,
-    timeOut = 60000,
-    dependsOnMethods = {"authenticateAndAuthorize"}
+    timeOut = 60000
   )
   public void authenticatePooled(
     final String user,
