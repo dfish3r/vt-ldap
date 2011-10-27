@@ -15,6 +15,7 @@ package edu.vt.middleware.ldap.provider;
 
 import edu.vt.middleware.ldap.LdapEntry;
 import edu.vt.middleware.ldap.LdapException;
+import edu.vt.middleware.ldap.Response;
 
 /**
  * Search results iterator.
@@ -44,6 +45,15 @@ public interface SearchIterator
    * @throws  LdapException  if an error occurs
    */
   LdapEntry next() throws LdapException;
+
+
+  /**
+   * Returns the response data associated with this search or null if this
+   * iterator has more ldap entries to return.
+   *
+   * @return  response data
+   */
+  Response<Void> getResponse();
 
 
   /**

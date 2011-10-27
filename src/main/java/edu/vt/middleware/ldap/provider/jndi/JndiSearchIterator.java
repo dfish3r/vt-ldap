@@ -23,6 +23,7 @@ import javax.naming.directory.SearchResult;
 import javax.naming.ldap.LdapContext;
 import edu.vt.middleware.ldap.LdapEntry;
 import edu.vt.middleware.ldap.LdapException;
+import edu.vt.middleware.ldap.Response;
 import edu.vt.middleware.ldap.ResultCode;
 import edu.vt.middleware.ldap.SearchRequest;
 import edu.vt.middleware.ldap.SearchScope;
@@ -76,14 +77,17 @@ public class JndiSearchIterator implements SearchIterator
   /** Control handler. */
   protected JndiControlHandler controlHandler;
 
+  /** Response data. */
+  protected Response<Void> response;
+
   /** Ldap context to search with. */
   protected LdapContext context;
 
   /** Results read from the search operation. */
   protected NamingEnumeration<SearchResult> results;
 
-  /** Exceptions to retry operations on. */
-  private Class<?>[] operationRetryExceptions;
+  /** Codes to retry operations on. */
+  private ResultCode[] operationRetryResultCodes;
 
   /** Whether to remove the URL from any DNs which are not relative. */
   private boolean removeDnUrls;
@@ -128,24 +132,24 @@ public class JndiSearchIterator implements SearchIterator
 
 
   /**
-   * Returns the naming exceptions to retry operations on.
+   * Returns the ldap result codes to retry operations on.
    *
-   * @return  naming exceptions
+   * @return  result codes
    */
-  public Class<?>[] getOperationRetryExceptions()
+  public ResultCode[] getOperationRetryResultCodes()
   {
-    return operationRetryExceptions;
+    return operationRetryResultCodes;
   }
 
 
   /**
-   * Sets the naming exceptions to retry operations on.
+   * Sets the ldap result codes to retry operations on.
    *
-   * @param  exceptions  naming exceptions
+   * @param  codes  result codes
    */
-  public void setOperationRetryExceptions(final Class<?>[] exceptions)
+  public void setOperationRetryResultCodes(final ResultCode[] codes)
   {
-    operationRetryExceptions = exceptions;
+    operationRetryResultCodes = codes;
   }
 
 
@@ -167,7 +171,7 @@ public class JndiSearchIterator implements SearchIterator
     } catch (NamingException e) {
       closeContext = true;
       JndiUtil.throwOperationException(
-        operationRetryExceptions,
+        operationRetryResultCodes,
         e,
         JndiUtil.processResponseControls(controlHandler, context));
     } finally {
@@ -299,6 +303,9 @@ public class JndiSearchIterator implements SearchIterator
     throws LdapException
   {
     boolean more = false;
+    if (results == null) {
+      return false;
+    }
     try {
       more = results.hasMore();
       if (!more) {
@@ -312,11 +319,13 @@ public class JndiSearchIterator implements SearchIterator
             controlHandler.processRequestControls(respControls));
           results = search(context, request);
           more = results.hasMore();
+        } else {
+          response = new Response<Void>(null, ResultCode.SUCCESS, respControls);
         }
       }
     } catch (NamingException e) {
       JndiUtil.throwOperationException(
-        operationRetryExceptions,
+        operationRetryResultCodes,
         e,
         JndiUtil.processResponseControls(controlHandler, context));
     }
@@ -350,12 +359,20 @@ public class JndiSearchIterator implements SearchIterator
       }
       if (!ignoreException) {
         JndiUtil.throwOperationException(
-          operationRetryExceptions,
+          operationRetryResultCodes,
           e,
           JndiUtil.processResponseControls(controlHandler, context));
       }
     }
     return le;
+  }
+
+
+  /** {@inheritDoc} */
+  @Override
+  public Response<Void> getResponse()
+  {
+    return response;
   }
 
 

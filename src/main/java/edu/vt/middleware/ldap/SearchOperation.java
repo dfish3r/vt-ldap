@@ -69,6 +69,8 @@ public class SearchOperation extends AbstractSearchOperation<SearchRequest>
       si.close();
     }
     executeLdapResultHandlers(request, lr);
-    return new Response<LdapResult>(lr, null);
+    final Response<Void> response = si.getResponse();
+    return new Response<LdapResult>(
+      lr, response.getResultCode(), response.getControls());
   }
 }

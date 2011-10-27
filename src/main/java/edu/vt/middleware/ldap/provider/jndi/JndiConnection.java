@@ -109,8 +109,8 @@ public class JndiConnection implements Connection
   /** Whether to remove the URL from any DNs which are not relative. */
   private boolean removeDnUrls;
 
-  /** Exceptions to retry operations on. */
-  private Class<?>[] operationRetryExceptions;
+  /** Codes to retry operations on. */
+  private ResultCode[] operationRetryResultCodes;
 
   /** Control handler. */
   private JndiControlHandler controlHandler;
@@ -152,24 +152,24 @@ public class JndiConnection implements Connection
 
 
   /**
-   * Returns the naming exceptions to retry operations on.
+   * Returns the ldap result codes to retry operations on.
    *
-   * @return  naming exceptions
+   * @return  result codes
    */
-  public Class<?>[] getOperationRetryExceptions()
+  public ResultCode[] getOperationRetryResultCodes()
   {
-    return operationRetryExceptions;
+    return operationRetryResultCodes;
   }
 
 
   /**
-   * Sets the naming exceptions to retry operations on.
+   * Sets the ldap result codes to retry operations on.
    *
-   * @param  exceptions  naming exceptions
+   * @param  codes  result codes
    */
-  public void setOperationRetryExceptions(final Class<?>[] exceptions)
+  public void setOperationRetryResultCodes(final ResultCode[] codes)
   {
-    operationRetryExceptions = exceptions;
+    operationRetryResultCodes = codes;
   }
 
 
@@ -239,14 +239,9 @@ public class JndiConnection implements Connection
         null,
         ResultCode.SUCCESS,
         JndiUtil.processResponseControls(controlHandler, context));
-    } catch (javax.naming.AuthenticationException e) {
-      response = new Response<Void>(
-        null,
-        ResultCode.INVALID_CREDENTIALS,
-        JndiUtil.processResponseControls(controlHandler, context));
     } catch (NamingException e) {
       JndiUtil.throwOperationException(
-        operationRetryExceptions,
+        operationRetryResultCodes,
         e,
         JndiUtil.processResponseControls(controlHandler, context));
     }
@@ -284,14 +279,9 @@ public class JndiConnection implements Connection
         null,
         ResultCode.SUCCESS,
         JndiUtil.processResponseControls(controlHandler, context));
-    } catch (javax.naming.AuthenticationException e) {
-      response = new Response<Void>(
-        null,
-        ResultCode.INVALID_CREDENTIALS,
-        JndiUtil.processResponseControls(controlHandler, context));
     } catch (NamingException e) {
       JndiUtil.throwOperationException(
-        operationRetryExceptions,
+        operationRetryResultCodes,
         e,
         JndiUtil.processResponseControls(controlHandler, context));
     }
@@ -325,7 +315,7 @@ public class JndiConnection implements Connection
       }
     } catch (NamingException e) {
       JndiUtil.throwOperationException(
-        operationRetryExceptions,
+        operationRetryResultCodes,
         e,
         JndiUtil.processResponseControls(controlHandler, ctx));
     }
@@ -368,7 +358,7 @@ public class JndiConnection implements Connection
       }
     } catch (NamingException e) {
       JndiUtil.throwOperationException(
-        operationRetryExceptions,
+        operationRetryResultCodes,
         e,
         JndiUtil.processResponseControls(controlHandler, ctx));
     }
@@ -399,7 +389,7 @@ public class JndiConnection implements Connection
       }
     } catch (NamingException e) {
       JndiUtil.throwOperationException(
-        operationRetryExceptions,
+        operationRetryResultCodes,
         e,
         JndiUtil.processResponseControls(controlHandler, ctx));
     }
@@ -433,7 +423,7 @@ public class JndiConnection implements Connection
       }
     } catch (NamingException e) {
       JndiUtil.throwOperationException(
-        operationRetryExceptions,
+        operationRetryResultCodes,
         e,
         JndiUtil.processResponseControls(controlHandler, ctx));
     }
@@ -466,7 +456,7 @@ public class JndiConnection implements Connection
       }
     } catch (NamingException e) {
       JndiUtil.throwOperationException(
-        operationRetryExceptions,
+        operationRetryResultCodes,
         e,
         JndiUtil.processResponseControls(controlHandler, ctx));
     }
@@ -482,7 +472,7 @@ public class JndiConnection implements Connection
     final JndiSearchIterator i = new JndiSearchIterator(
       request, controlHandler);
     i.setRemoveDnUrls(removeDnUrls);
-    i.setOperationRetryExceptions(operationRetryExceptions);
+    i.setOperationRetryResultCodes(operationRetryResultCodes);
     i.initialize(context);
     return i;
   }

@@ -31,6 +31,7 @@ import edu.vt.middleware.ldap.LdapAttribute;
 import edu.vt.middleware.ldap.LdapEntry;
 import edu.vt.middleware.ldap.LdapException;
 import edu.vt.middleware.ldap.OperationException;
+import edu.vt.middleware.ldap.ResultCode;
 import edu.vt.middleware.ldap.SortBehavior;
 import edu.vt.middleware.ldap.control.Control;
 import edu.vt.middleware.ldap.control.SortKey;
@@ -195,7 +196,7 @@ public class JndiUtil
    * operation exception is thrown, the operation will be retried. Otherwise
    * the exception is propagated out.
    *
-   * @param  operationRetryExceptions  types to compare e against
+   * @param  operationRetryResultCodes  to compare result code against
    * @param  e  naming exception to examine
    * @param  respControls  response controls
    *
@@ -203,22 +204,22 @@ public class JndiUtil
    * @throws  LdapException  to propagate the exception out
    */
   public static void throwOperationException(
-    final Class<?>[] operationRetryExceptions,
+    final ResultCode[] operationRetryResultCodes,
     final NamingException e,
     final Control[] respControls)
     throws LdapException
   {
-    if (operationRetryExceptions != null &&
-        operationRetryExceptions.length > 0) {
-      for (Class<?> ne : operationRetryExceptions) {
-        if (ne.isInstance(e)) {
-          throw new OperationException(
-            e, NamingExceptionUtil.getResultCode(e.getClass()), respControls);
+    final ResultCode exResultCode = NamingExceptionUtil.getResultCode(
+      e.getClass());
+    if (operationRetryResultCodes != null &&
+        operationRetryResultCodes.length > 0) {
+      for (ResultCode rc : operationRetryResultCodes) {
+        if (rc == exResultCode) {
+          throw new OperationException(e, exResultCode, respControls);
         }
       }
     }
-    throw new LdapException(
-      e, NamingExceptionUtil.getResultCode(e.getClass()), respControls);
+    throw new LdapException(e, exResultCode, respControls);
   }
 
 

@@ -84,16 +84,30 @@ public class BindAuthenticationHandler
     final Connection c, final AuthenticationCriteria criteria)
     throws LdapException
   {
+    AuthenticationHandlerResponse response = null;
     final BindRequest request = new BindRequest(
       criteria.getDn(), criteria.getCredential());
     request.setSaslConfig(getAuthenticationSaslConfig());
     request.setControls(getAuthenticationControls());
-    final Response<Void> response = c.open(request);
-    return new AuthenticationHandlerResponse(
-      ResultCode.SUCCESS == response.getResultCode(),
-      response.getResultCode(),
-      c,
-      response.getControls());
+    try {
+      final Response<Void> connResponse = c.open(request);
+      response = new AuthenticationHandlerResponse(
+        ResultCode.SUCCESS == connResponse.getResultCode(),
+        connResponse.getResultCode(),
+        c,
+        connResponse.getControls());
+    } catch (LdapException e) {
+      if (ResultCode.INVALID_CREDENTIALS == e.getResultCode()) {
+        response = new AuthenticationHandlerResponse(
+          false,
+          e.getResultCode(),
+          c,
+          e.getControls());
+      } else {
+        throw e;
+      }
+    }
+    return response;
   }
 
 

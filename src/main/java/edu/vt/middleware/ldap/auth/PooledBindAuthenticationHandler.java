@@ -85,17 +85,31 @@ public class PooledBindAuthenticationHandler
     final Connection c, final AuthenticationCriteria criteria)
     throws LdapException
   {
+    AuthenticationHandlerResponse response = null;
     final BindRequest request = new BindRequest(
       criteria.getDn(), criteria.getCredential());
     request.setSaslConfig(getAuthenticationSaslConfig());
     request.setControls(getAuthenticationControls());
     final BindOperation op = new BindOperation(c);
-    final Response<Void> response = op.execute(request);
-    return new AuthenticationHandlerResponse(
-      ResultCode.SUCCESS == response.getResultCode(),
-      response.getResultCode(),
-      c,
-      response.getControls());
+    try {
+      final Response<Void> bindResponse = op.execute(request);
+      response = new AuthenticationHandlerResponse(
+        ResultCode.SUCCESS == bindResponse.getResultCode(),
+        bindResponse.getResultCode(),
+        c,
+        bindResponse.getControls());
+    } catch (LdapException e) {
+      if (ResultCode.INVALID_CREDENTIALS == e.getResultCode()) {
+        response = new AuthenticationHandlerResponse(
+          false,
+          e.getResultCode(),
+          c,
+          e.getControls());
+      } else {
+        throw e;
+      }
+    }
+    return response;
   }
 
 
