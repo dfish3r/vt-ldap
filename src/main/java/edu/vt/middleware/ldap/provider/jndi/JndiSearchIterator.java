@@ -302,10 +302,10 @@ public class JndiSearchIterator implements SearchIterator
   public boolean hasNext()
     throws LdapException
   {
-    boolean more = false;
     if (results == null) {
       return false;
     }
+    boolean more = false;
     try {
       more = results.hasMore();
       if (!more) {

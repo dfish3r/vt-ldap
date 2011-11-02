@@ -34,16 +34,6 @@ public interface Connection
 
 
   /**
-   * Anonymously bind to the ldap.
-   *
-   * @return  response associated with the bind operation
-   *
-   * @throws  LdapException  if an error occurs
-   */
-  Response<Void> bind() throws LdapException;
-
-
-  /**
    * Bind to the ldap.
    *
    * @param  request  containing the data necessary to perform the operation

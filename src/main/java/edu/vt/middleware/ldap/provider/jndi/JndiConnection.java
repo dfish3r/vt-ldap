@@ -226,7 +226,29 @@ public class JndiConnection implements Connection
 
   /** {@inheritDoc} */
   @Override
-  public Response<Void> bind()
+  public Response<Void> bind(final BindRequest request)
+    throws LdapException
+  {
+    Response<Void> response = null;
+    if (request.getSaslConfig() != null) {
+      response = saslBind(request);
+    } else if (request.getDn() == null && request.getCredential() == null) {
+      response = anonymousBind(request);
+    } else {
+      response = simpleBind(request);
+    }
+    return response;
+  }
+
+
+  /**
+   * Performs an anonymous bind.
+   *
+   * @param  request  to bind with
+   * @return  bind response
+   * @throws  LdapException  if an error occurs
+   */
+  protected Response<Void> anonymousBind(final BindRequest request)
     throws LdapException
   {
     Response<Void> response = null;
@@ -234,7 +256,8 @@ public class JndiConnection implements Connection
       context.addToEnvironment(AUTHENTICATION, "none");
       context.removeFromEnvironment(PRINCIPAL);
       context.removeFromEnvironment(CREDENTIALS);
-      context.reconnect(context.getConnectControls());
+      context.reconnect(
+        controlHandler.processRequestControls(request.getControls()));
       response = new Response<Void>(
         null,
         ResultCode.SUCCESS,
@@ -249,21 +272,54 @@ public class JndiConnection implements Connection
   }
 
 
-  /** {@inheritDoc} */
-  @Override
-  public Response<Void> bind(final BindRequest request)
+  /**
+   * Performs a simple bind.
+   *
+   * @param  request  to bind with
+   * @return  bind response
+   * @throws  LdapException  if an error occurs
+   */
+  protected Response<Void> simpleBind(final BindRequest request)
     throws LdapException
   {
     Response<Void> response = null;
-    String authenticationType = "simple";
     try {
-      if (request.isSaslRequest()) {
-        authenticationType = JndiUtil.getAuthenticationType(
-          request.getSaslConfig().getMechanism());
-        for (Map.Entry<String, Object> entry :
-             getSaslProperties(request.getSaslConfig()).entrySet()) {
-          context.addToEnvironment(entry.getKey(), entry.getValue());
-        }
+      context.addToEnvironment(AUTHENTICATION, "simple");
+      context.addToEnvironment(PRINCIPAL, request.getDn());
+      context.addToEnvironment(CREDENTIALS, request.getCredential().getBytes());
+      context.reconnect(
+        controlHandler.processRequestControls(request.getControls()));
+      response = new Response<Void>(
+        null,
+        ResultCode.SUCCESS,
+        JndiUtil.processResponseControls(controlHandler, context));
+    } catch (NamingException e) {
+      JndiUtil.throwOperationException(
+        operationRetryResultCodes,
+        e,
+        JndiUtil.processResponseControls(controlHandler, context));
+    }
+    return response;
+  }
+
+
+  /**
+   * Performs a sasl bind.
+   *
+   * @param  request  to bind with
+   * @return  bind response
+   * @throws  LdapException  if an error occurs
+   */
+  protected Response<Void> saslBind(final BindRequest request)
+    throws LdapException
+  {
+    Response<Void> response = null;
+    try {
+      final String authenticationType = JndiUtil.getAuthenticationType(
+        request.getSaslConfig().getMechanism());
+      for (Map.Entry<String, Object> entry :
+           getSaslProperties(request.getSaslConfig()).entrySet()) {
+        context.addToEnvironment(entry.getKey(), entry.getValue());
       }
       context.addToEnvironment(AUTHENTICATION, authenticationType);
       if (request.getDn() != null) {

@@ -333,11 +333,7 @@ public class DefaultConnectionFactory implements ConnectionFactory
         throw new IllegalStateException("Connection already open");
       }
       providerConnection = providerConnectionFactory.create();
-      if (request.isAnonymousBindRequest()) {
-        return providerConnection.bind();
-      } else {
-        return providerConnection.bind(request);
-      }
+      return providerConnection.bind(request);
     }
 
 

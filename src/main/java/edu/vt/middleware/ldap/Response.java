@@ -13,6 +13,7 @@
 */
 package edu.vt.middleware.ldap;
 
+import java.util.Arrays;
 import edu.vt.middleware.ldap.control.Control;
 
 /**
@@ -92,5 +93,24 @@ public class Response<T> implements Message
   public Control[] getControls()
   {
     return controls;
+  }
+
+
+  /**
+   * Provides a descriptive string representation of this instance.
+   *
+   * @return  string representation
+   */
+  @Override
+  public String toString()
+  {
+    return
+      String.format(
+        "[%s@%d::result=%s, resultCode=%s, controls=%s]",
+        getClass().getName(),
+        hashCode(),
+        result,
+        code,
+        controls != null ? Arrays.asList(controls) : null);
   }
 }

@@ -137,28 +137,6 @@ public class BindRequest extends AbstractRequest
 
 
   /**
-   * Returns whether this request contains a sasl config.
-   *
-   * @return  whether this request contains a sasl config
-   */
-  public boolean isSaslRequest()
-  {
-    return saslConfig != null;
-  }
-
-
-  /**
-   * Returns whether this request is for an anoymous bind.
-   *
-   * @return  whether this request is for an anoymous bind
-   */
-  public boolean isAnonymousBindRequest()
-  {
-    return bindDn == null && saslConfig == null;
-  }
-
-
-  /**
    * Provides a descriptive string representation of this instance.
    *
    * @return  string representation

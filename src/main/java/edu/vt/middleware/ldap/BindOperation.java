@@ -14,8 +14,7 @@
 package edu.vt.middleware.ldap;
 
 /**
- * Executes an ldap bind operation. If the bind request contains a null dn, then
- * an anonymous bind will be executed.
+ * Executes an ldap bind operation.
  *
  * @author  Middleware Services
  * @version  $Revision$ $Date$
@@ -41,11 +40,7 @@ public class BindOperation extends AbstractOperation<BindRequest, Void>
   protected Response<Void> invoke(final BindRequest request)
     throws LdapException
   {
-    if (request.isAnonymousBindRequest()) {
-      return connection.getProviderConnection().bind();
-    } else {
-      return connection.getProviderConnection().bind(request);
-    }
+    return connection.getProviderConnection().bind(request);
   }
 
 
