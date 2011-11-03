@@ -5,7 +5,6 @@ ldapResultHandlers:LDAP handlers for post processing results
 referralBehavior:how to handle referrals (FOLLOW|THROW|IGNORE)
 returnAttributes:attributes to return from the search
 searchFilter:LDAP filter to execute
-searchIgnoreResultCodes:LDAP result codes to ignore (TIME_LIMIT_EXCEEDED|PARTIAL_RESULTS|...)
 searchScope:scope of the search (OBJECT|ONELEVEL|SUBTREE)
 sizeLimit:maximum number of entries to return
 sortBehavior:how search results should be sorted

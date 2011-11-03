@@ -82,7 +82,6 @@ public class PropertiesTest
     srSource.initialize();
 
     AssertJUnit.assertNull(sr.getLdapResultHandlers());
-    AssertJUnit.assertNull(sr.getSearchIgnoreResultCodes());
   }
 
 
@@ -150,12 +149,6 @@ public class PropertiesTest
         throw new Exception("Unknown search result handler type " + rh);
       }
     }
-
-    AssertJUnit.assertEquals(2, sr.getSearchIgnoreResultCodes().length);
-    AssertJUnit.assertEquals(
-      ResultCode.SIZE_LIMIT_EXCEEDED, sr.getSearchIgnoreResultCodes()[0]);
-    AssertJUnit.assertEquals(
-      ResultCode.PARTIAL_RESULTS, sr.getSearchIgnoreResultCodes()[1]);
 
     final Authenticator auth = new Authenticator();
     final AuthenticatorPropertySource aSource =
@@ -272,15 +265,6 @@ public class PropertiesTest
         throw new Exception("Unknown search result handler type " + srh);
       }
     }
-
-    AssertJUnit.assertEquals(
-      2, searchRequest.getSearchIgnoreResultCodes().length);
-    AssertJUnit.assertEquals(
-      ResultCode.SIZE_LIMIT_EXCEEDED,
-      searchRequest.getSearchIgnoreResultCodes()[0]);
-    AssertJUnit.assertEquals(
-      ResultCode.PARTIAL_RESULTS,
-      searchRequest.getSearchIgnoreResultCodes()[1]);
 
     final PooledConnectionFactory authCf =
       ((PooledSearchDnResolver) auth.getDnResolver()).getConnectionFactory();

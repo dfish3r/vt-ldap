@@ -63,6 +63,7 @@ public class JndiConnectionFactory extends AbstractJndiConnectionFactory
       conn = new JndiConnection(new InitialLdapContext(env, null));
       conn.setRemoveDnUrls(config.getRemoveDnUrls());
       conn.setOperationRetryResultCodes(config.getOperationRetryResultCodes());
+      conn.setSearchIgnoreResultCodes(config.getSearchIgnoreResultCodes());
       conn.setControlHandler(config.getControlHandler());
     } catch (NamingException e) {
       throw new ConnectionException(

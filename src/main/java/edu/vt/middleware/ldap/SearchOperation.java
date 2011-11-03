@@ -63,7 +63,10 @@ public class SearchOperation extends AbstractSearchOperation<SearchRequest>
       request);
     try {
       while (si.hasNext()) {
-        lr.addEntry(si.next());
+        final LdapEntry le = si.next();
+        if (le != null) {
+          lr.addEntry(le);
+        }
       }
     } finally {
       si.close();

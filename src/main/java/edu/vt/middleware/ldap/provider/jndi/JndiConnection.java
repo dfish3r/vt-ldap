@@ -112,6 +112,9 @@ public class JndiConnection implements Connection
   /** Codes to retry operations on. */
   private ResultCode[] operationRetryResultCodes;
 
+  /** Search result codes to ignore. */
+  private ResultCode[] searchIgnoreResultCodes;
+
   /** Control handler. */
   private JndiControlHandler controlHandler;
 
@@ -170,6 +173,28 @@ public class JndiConnection implements Connection
   public void setOperationRetryResultCodes(final ResultCode[] codes)
   {
     operationRetryResultCodes = codes;
+  }
+
+
+  /**
+   * Returns the search ignore result codes.
+   *
+   * @return  result codes to ignore
+   */
+  public ResultCode[] getSearchIgnoreResultCodes()
+  {
+    return searchIgnoreResultCodes;
+  }
+
+
+  /**
+   * Sets the search ignore result codes.
+   *
+   * @param  codes  to ignore
+   */
+  public void setSearchIgnoreResultCodes(final ResultCode[] codes)
+  {
+    searchIgnoreResultCodes = codes;
   }
 
 
@@ -529,6 +554,7 @@ public class JndiConnection implements Connection
       request, controlHandler);
     i.setRemoveDnUrls(removeDnUrls);
     i.setOperationRetryResultCodes(operationRetryResultCodes);
+    i.setSearchIgnoreResultCodes(searchIgnoreResultCodes);
     i.initialize(context);
     return i;
   }

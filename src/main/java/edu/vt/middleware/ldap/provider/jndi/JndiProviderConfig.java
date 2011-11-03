@@ -35,6 +35,9 @@ public class JndiProviderConfig extends ProviderConfig
   /** Whether to remove the URL from any DNs which are not relative. */
   protected boolean removeDnUrls = true;
 
+  /** Search result codes to ignore. */
+  protected ResultCode[] searchIgnoreResultCodes;
+
   /** ldap socket factory used for SSL and TLS. */
   protected SSLSocketFactory sslSocketFactory;
 
@@ -50,6 +53,8 @@ public class JndiProviderConfig extends ProviderConfig
   {
     operationRetryResultCodes = new ResultCode[] {
       ResultCode.PROTOCOL_ERROR, ResultCode.BUSY, ResultCode.UNAVAILABLE, };
+    searchIgnoreResultCodes = new ResultCode[] {
+      ResultCode.TIME_LIMIT_EXCEEDED, ResultCode.SIZE_LIMIT_EXCEEDED, };
     controlHandler = new JndiControlHandler();
   }
 
@@ -99,6 +104,31 @@ public class JndiProviderConfig extends ProviderConfig
   {
     logger.trace("setting removeDnUrls: {}", b);
     removeDnUrls = b;
+  }
+
+
+  /**
+   * Returns the search ignore result codes.
+   *
+   * @return  result codes to ignore
+   */
+  public ResultCode[] getSearchIgnoreResultCodes()
+  {
+    return searchIgnoreResultCodes;
+  }
+
+
+  /**
+   * Sets the search ignore result codes.
+   *
+   * @param  codes  to ignore
+   */
+  public void setSearchIgnoreResultCodes(final ResultCode[] codes)
+  {
+    logger.trace(
+      "setting searchIgnoreResultCodes: {}",
+      codes != null ? Arrays.asList(codes) : null);
+    searchIgnoreResultCodes = codes;
   }
 
 
@@ -182,8 +212,8 @@ public class JndiProviderConfig extends ProviderConfig
     return String.format(
       "[%s@%d::operationRetryResultCodes=%s, properties=%s, " +
       "connectionStrategy=%s, logCredentials=%s, tracePackets=%s, " +
-      "removeDnUrls=%s, sslSocketFactory=%s, hostnameVerifier=%s, " +
-      "controlHandler=%s]",
+      "removeDnUrls=%s, searchIgnoreResultCodes=%s, sslSocketFactory=%s, " +
+      "hostnameVerifier=%s, controlHandler=%s]",
       getClass().getName(),
       hashCode(),
       operationRetryResultCodes != null ?
@@ -193,6 +223,8 @@ public class JndiProviderConfig extends ProviderConfig
       logCredentials,
       tracePackets,
       removeDnUrls,
+      searchIgnoreResultCodes != null ?
+        Arrays.asList(searchIgnoreResultCodes) : null,
       sslSocketFactory,
       hostnameVerifier,
       controlHandler);

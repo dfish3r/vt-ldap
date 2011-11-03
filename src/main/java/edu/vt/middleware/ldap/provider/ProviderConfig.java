@@ -68,7 +68,9 @@ public class ProviderConfig extends AbstractConfig
    */
   public void setOperationRetryResultCodes(final ResultCode[] codes)
   {
-    logger.trace("setting operationRetryResultCodes: {}", codes);
+    logger.trace(
+      "setting operationRetryResultCodes: {}",
+      codes != null ? Arrays.asList(codes) : null);
     operationRetryResultCodes = codes;
   }
 

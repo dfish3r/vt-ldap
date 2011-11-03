@@ -92,6 +92,9 @@ public class JndiSearchIterator implements SearchIterator
   /** Whether to remove the URL from any DNs which are not relative. */
   private boolean removeDnUrls;
 
+  /** Search result codes to ignore. */
+  private ResultCode[] searchIgnoreResultCodes;
+
 
   /**
    * Creates a new jndi search iterator.
@@ -150,6 +153,28 @@ public class JndiSearchIterator implements SearchIterator
   public void setOperationRetryResultCodes(final ResultCode[] codes)
   {
     operationRetryResultCodes = codes;
+  }
+
+
+  /**
+   * Returns the search ignore result codes.
+   *
+   * @return  result codes to ignore
+   */
+  public ResultCode[] getSearchIgnoreResultCodes()
+  {
+    return searchIgnoreResultCodes;
+  }
+
+
+  /**
+   * Sets the search ignore result codes.
+   *
+   * @param  codes  to ignore
+   */
+  public void setSearchIgnoreResultCodes(final ResultCode[] codes)
+  {
+    searchIgnoreResultCodes = codes;
   }
 
 
@@ -302,7 +327,7 @@ public class JndiSearchIterator implements SearchIterator
   public boolean hasNext()
     throws LdapException
   {
-    if (results == null) {
+    if (results == null || response != null) {
       return false;
     }
     boolean more = false;
@@ -324,10 +349,15 @@ public class JndiSearchIterator implements SearchIterator
         }
       }
     } catch (NamingException e) {
-      JndiUtil.throwOperationException(
-        operationRetryResultCodes,
-        e,
-        JndiUtil.processResponseControls(controlHandler, context));
+      final ResultCode rc = ignoreSearchException(searchIgnoreResultCodes, e);
+      if (rc == null) {
+        JndiUtil.throwOperationException(
+          operationRetryResultCodes,
+          e,
+          JndiUtil.processResponseControls(controlHandler, context));
+      }
+      response = new Response<Void>(
+        null, rc, JndiUtil.processResponseControls(controlHandler, context));
     }
     return more;
   }
@@ -346,25 +376,41 @@ public class JndiSearchIterator implements SearchIterator
       result.setName(formatDn(result, getSearchDn(context, request)));
       le = bu.toLdapEntry(result);
     } catch (NamingException e) {
-      boolean ignoreException = false;
-      if (request.getSearchIgnoreResultCodes() != null &&
-          request.getSearchIgnoreResultCodes().length > 0) {
-        for (ResultCode rc : request.getSearchIgnoreResultCodes()) {
-          if (NamingExceptionUtil.matches(e.getClass(), rc)) {
-            logger.debug("Ignoring naming exception", e);
-            ignoreException = true;
-            break;
-          }
-        }
-      }
-      if (!ignoreException) {
+      final ResultCode rc = ignoreSearchException(searchIgnoreResultCodes, e);
+      if (rc == null) {
         JndiUtil.throwOperationException(
           operationRetryResultCodes,
           e,
           JndiUtil.processResponseControls(controlHandler, context));
       }
+      response = new Response<Void>(
+        null, rc, JndiUtil.processResponseControls(controlHandler, context));
     }
     return le;
+  }
+
+
+  /**
+   * Determines whether the supplied naming exception should be ignored.
+   *
+   * @param  ignoreResultCodes  to match against the exception
+   * @param  e  naming exception to match
+   * @return  result code that should be ignored or null
+   */
+  protected ResultCode ignoreSearchException(
+    final ResultCode[] ignoreResultCodes, final NamingException e)
+  {
+    ResultCode ignore = null;
+    if (ignoreResultCodes != null && ignoreResultCodes.length > 0) {
+      for (ResultCode rc : ignoreResultCodes) {
+        if (NamingExceptionUtil.matches(e.getClass(), rc)) {
+          logger.debug("Ignoring naming exception", e);
+          ignore = rc;
+          break;
+        }
+      }
+    }
+    return ignore;
   }
 
 

@@ -64,10 +64,6 @@ public class SearchRequest extends AbstractRequest
   /** Ldap result handlers. */
   private LdapResultHandler[] resultHandlers;
 
-  /** Search result codes to ignore. */
-  private ResultCode[] searchIgnoreResultCodes = new ResultCode[] {
-    ResultCode.TIME_LIMIT_EXCEEDED, ResultCode.SIZE_LIMIT_EXCEEDED, };
-
 
   /** Default constructor. */
   public SearchRequest() {}
@@ -441,28 +437,6 @@ public class SearchRequest extends AbstractRequest
 
 
   /**
-   * Returns the search ignore result codes.
-   *
-   * @return  result codes to ignore
-   */
-  public ResultCode[] getSearchIgnoreResultCodes()
-  {
-    return searchIgnoreResultCodes;
-  }
-
-
-  /**
-   * Sets the search ignore result codes.
-   *
-   * @param  codes  to ignore
-   */
-  public void setSearchIgnoreResultCodes(final ResultCode[] codes)
-  {
-    searchIgnoreResultCodes = codes;
-  }
-
-
-  /**
    * Returns a search request initialized with the supplied request.
    *
    * @param  request  search request to read properties from
@@ -478,7 +452,6 @@ public class SearchRequest extends AbstractRequest
     sr.setReferralBehavior(request.getReferralBehavior());
     sr.setReturnAttributes(request.getReturnAttributes());
     sr.setSearchFilter(request.getSearchFilter());
-    sr.setSearchIgnoreResultCodes(request.getSearchIgnoreResultCodes());
     sr.setSearchScope(request.getSearchScope());
     sr.setSizeLimit(request.getSizeLimit());
     sr.setSortBehavior(request.getSortBehavior());
@@ -570,8 +543,6 @@ public class SearchRequest extends AbstractRequest
     hc += referralBehavior != null ? referralBehavior.hashCode() : 0;
     hc += retAttrs != null ? Arrays.hashCode(retAttrs) : 0;
     hc += searchFilter != null ? searchFilter.hashCode() : 0;
-    hc += searchIgnoreResultCodes != null ?
-      Arrays.hashCode(searchIgnoreResultCodes) : 0;
     hc += searchScope != null ? searchScope.hashCode() : 0;
     hc += sizeLimit;
     hc += sortBehavior != null ? sortBehavior.hashCode() : 0;
@@ -595,8 +566,7 @@ public class SearchRequest extends AbstractRequest
         "[%s@%d::baseDn=%s, searchFilter=%s, returnAttributes=%s, " +
         "searchScope=%s, timeLimit=%s, sizeLimit=%s, derefAliases=%s, " +
         "referralBehavior=%s, typesOnly=%s, binaryAttributes=%s, " +
-        "sortBehavior=%s, ldapResultHandlers=%s, searchIgnoreResultCodes=%s, " +
-        "controls=%s]",
+        "sortBehavior=%s, ldapResultHandlers=%s, controls=%s]",
         getClass().getName(),
         hashCode(),
         baseDn,
@@ -611,8 +581,6 @@ public class SearchRequest extends AbstractRequest
         binaryAttrs != null ? Arrays.asList(binaryAttrs) : null,
         sortBehavior,
         resultHandlers != null ? Arrays.asList(resultHandlers) : null,
-        searchIgnoreResultCodes != null ?
-          Arrays.asList(searchIgnoreResultCodes) : null,
         getControls() != null ? Arrays.asList(getControls()) : null);
   }
 }

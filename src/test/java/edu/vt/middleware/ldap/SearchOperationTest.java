@@ -866,13 +866,13 @@ public class SearchOperationTest extends AbstractTest
    */
   @Parameters(
     {
-      "searchExceptionDn",
-      "searchExceptionFilter",
-      "searchExceptionResultsSize"
+      "searchExceededDn",
+      "searchExceededFilter",
+      "searchExceededResultsSize"
     }
   )
   @Test(groups = {"search"})
-  public void searchWithException(
+  public void searchExceeded(
     final String dn,
     final String filter,
     final int resultsSize)
@@ -880,40 +880,22 @@ public class SearchOperationTest extends AbstractTest
   {
     final Connection conn = createLdapConnection(true);
     conn.open();
+
     final SearchOperation search = new SearchOperation(conn);
     final SearchRequest request = new SearchRequest();
-
-    // test exception searching
     request.setBaseDn(dn);
     request.setSizeLimit(resultsSize);
-    request.setSearchIgnoreResultCodes(null);
 
     request.setSearchFilter(new SearchFilter("(uugid=*)"));
-    try {
-      search.execute(request);
-      AssertJUnit.fail("Should have thrown SizeLimitExceededException");
-    } catch (LdapException e) {
-      AssertJUnit.assertEquals(
-        ResultCode.SIZE_LIMIT_EXCEEDED, e.getResultCode());
-    }
+    Response<LdapResult> response = search.execute(request);
+    AssertJUnit.assertEquals(resultsSize, response.getResult().size());
+    AssertJUnit.assertEquals(
+      ResultCode.SIZE_LIMIT_EXCEEDED, response.getResultCode());
 
-    request.setSearchIgnoreResultCodes(
-      new ResultCode[] {ResultCode.TIME_LIMIT_EXCEEDED, });
-    try {
-      search.execute(request);
-      AssertJUnit.fail("Should have thrown SizeLimitExceededException");
-    } catch (LdapException e) {
-      AssertJUnit.assertEquals(
-        ResultCode.SIZE_LIMIT_EXCEEDED, e.getResultCode());
-    }
-
-    request.setSearchIgnoreResultCodes(
-      new ResultCode[] {
-        ResultCode.TIME_LIMIT_EXCEEDED, ResultCode.SIZE_LIMIT_EXCEEDED, });
     request.setSearchFilter(new SearchFilter(filter));
-
-    final LdapResult result = search.execute(request).getResult();
-    AssertJUnit.assertEquals(resultsSize, result.size());
+    response = search.execute(request);
+    AssertJUnit.assertEquals(resultsSize, response.getResult().size());
+    AssertJUnit.assertEquals(ResultCode.SUCCESS, response.getResultCode());
     conn.close();
   }
 
