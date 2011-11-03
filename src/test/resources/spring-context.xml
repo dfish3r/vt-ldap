@@ -14,11 +14,9 @@ http://www.springframework.org/schema/beans http://www.springframework.org/schem
   <bean id="connectionConfig"
     class="edu.vt.middleware.ldap.ConnectionConfig"
     p:ldapUrl="${ldapTestHost}"
+    p:bindDn="uid=1,ou=test,dc=vt,dc=edu"
+    p:bindCredential="VKSxXwlU7YssGl1foLMH2mGMWkifbODb1djfJ4t2"
     p:tls="true">
-    <property name="bindSaslConfig">
-      <bean class="edu.vt.middleware.ldap.sasl.SaslConfig"
-        p:mechanism="EXTERNAL"/>
-    </property>
     <property name="sslSocketFactory">
       <bean class="edu.vt.middleware.ldap.ssl.TLSSocketFactory"
         init-method="initialize">
