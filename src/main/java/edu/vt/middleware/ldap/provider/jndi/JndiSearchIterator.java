@@ -80,6 +80,9 @@ public class JndiSearchIterator implements SearchIterator
   /** Response data. */
   protected Response<Void> response;
 
+  /** Response result code. */
+  protected ResultCode responseResultCode;
+
   /** Ldap context to search with. */
   protected LdapContext context;
 
@@ -345,7 +348,11 @@ public class JndiSearchIterator implements SearchIterator
           results = search(context, request);
           more = results.hasMore();
         } else {
-          response = new Response<Void>(null, ResultCode.SUCCESS, respControls);
+          response = new Response<Void>(
+            null,
+            responseResultCode != null ?
+              responseResultCode : ResultCode.SUCCESS,
+            respControls);
         }
       }
     } catch (NamingException e) {
@@ -383,8 +390,7 @@ public class JndiSearchIterator implements SearchIterator
           e,
           JndiUtil.processResponseControls(controlHandler, context));
       }
-      response = new Response<Void>(
-        null, rc, JndiUtil.processResponseControls(controlHandler, context));
+      responseResultCode = rc;
     }
     return le;
   }

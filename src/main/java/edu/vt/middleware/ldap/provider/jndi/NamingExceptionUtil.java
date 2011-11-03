@@ -52,15 +52,17 @@ public final class NamingExceptionUtil
 {
 
   /** Map of naming exceptions to ldap result codes. */
-  private static final Map<Class<?>, ResultCode[]> EXCEPTIONS_TO_RESULT_CODES;
+  private static final Map<Class<? extends NamingException>, ResultCode[]>
+  EXCEPTIONS_TO_RESULT_CODES;
 
   /** Map of ldap result codes to naming exceptions. */
-  private static final Map<ResultCode, Class<?>> RESULT_CODES_TO_EXCEPTION;
+  private static final Map<ResultCode, Class<? extends NamingException>>
+  RESULT_CODES_TO_EXCEPTION;
 
   /** initialize map of exceptions to result codes. */
   static {
     EXCEPTIONS_TO_RESULT_CODES =
-      new HashMap<Class<?>, ResultCode[]>();
+      new HashMap<Class<? extends NamingException>, ResultCode[]>();
     EXCEPTIONS_TO_RESULT_CODES.put(
       NamingException.class,
       new ResultCode[] {
@@ -155,7 +157,8 @@ public final class NamingExceptionUtil
 
   /** initialize map of result codes to exceptions. */
   static {
-    RESULT_CODES_TO_EXCEPTION = new HashMap<ResultCode, Class<?>>();
+    RESULT_CODES_TO_EXCEPTION = new
+      HashMap<ResultCode, Class<? extends NamingException>>();
     RESULT_CODES_TO_EXCEPTION.put(ResultCode.SUCCESS, null);
     RESULT_CODES_TO_EXCEPTION.put(
       ResultCode.OPERATIONS_ERROR, NamingException.class);
@@ -273,9 +276,17 @@ public final class NamingExceptionUtil
    * @return  ldap result codes
    */
   public static ResultCode[] getResultCodes(
-    final Class<?> clazz)
+    final Class<? extends NamingException> clazz)
   {
-    return EXCEPTIONS_TO_RESULT_CODES.get(clazz);
+    Class<?> c = clazz;
+    do {
+      final ResultCode[] codes = EXCEPTIONS_TO_RESULT_CODES.get(c);
+      if (codes != null) {
+        return codes;
+      }
+      c = c.getSuperclass();
+    } while (!c.equals(NamingException.class));
+    return null;
   }
 
 
@@ -287,9 +298,9 @@ public final class NamingExceptionUtil
    * @return  ldap result code
    */
   public static ResultCode getResultCode(
-    final Class<?> clazz)
+    final Class<? extends NamingException> clazz)
   {
-    final ResultCode[] codes = EXCEPTIONS_TO_RESULT_CODES.get(clazz);
+    final ResultCode[] codes = getResultCodes(clazz);
     if (codes != null && codes.length == 1) {
       return codes[0];
     } else {
@@ -307,13 +318,16 @@ public final class NamingExceptionUtil
    * @return  whether the naming exception matches the result code
    */
   public static boolean matches(
-    final Class<?> clazz, final ResultCode code)
+    final Class<? extends NamingException> clazz, final ResultCode code)
   {
     boolean match = false;
-    for (ResultCode rc : getResultCodes(clazz)) {
-      if (rc == code) {
-        match = true;
-        break;
+    final ResultCode[] matchingCodes = getResultCodes(clazz);
+    if (matchingCodes != null) {
+      for (ResultCode rc : matchingCodes) {
+        if (rc == code) {
+          match = true;
+          break;
+        }
       }
     }
     return match;
@@ -327,7 +341,8 @@ public final class NamingExceptionUtil
    * @param  code  ldap result code
    * @return  array of naming exception classes
    */
-  public static Class<?> getNamingException(final ResultCode code)
+  public static Class<? extends NamingException> getNamingException(
+    final ResultCode code)
   {
     return RESULT_CODES_TO_EXCEPTION.get(code);
   }
@@ -340,14 +355,15 @@ public final class NamingExceptionUtil
    * @param  codes  ldap result codes
    * @return  array of naming exception classes
    */
-  public static Class<?>[] getNamingExceptions(final ResultCode[] codes)
+  public static Class<?>[] getNamingExceptions(
+    final ResultCode[] codes)
   {
     final List<Class<?>> l = new ArrayList<Class<?>>();
     if (codes != null) {
       for (ResultCode rc : codes) {
         final Class<?> c = getNamingException(rc);
         if (c != null) {
-          l.add(getNamingException(rc));
+          l.add(c);
         }
       }
     }

@@ -849,10 +849,10 @@ public class SearchOperationTest extends AbstractTest
       specialCharsResult.getEntry().getDn().replaceAll("\\\\", ""));
 
     // test special character searching
-    final LdapResult result = search.execute(
-      new SearchRequest(
-        dn,
-        new SearchFilter(filter))).getResult();
+    final SearchRequest request = new SearchRequest(
+      dn, new SearchFilter(filter));
+    request.setReferralBehavior(ReferralBehavior.IGNORE);
+    final LdapResult result = search.execute(request).getResult();
     AssertJUnit.assertEquals(specialCharsResult, result);
   }
 
@@ -896,6 +896,54 @@ public class SearchOperationTest extends AbstractTest
     response = search.execute(request);
     AssertJUnit.assertEquals(resultsSize, response.getResult().size());
     AssertJUnit.assertEquals(ResultCode.SUCCESS, response.getResultCode());
+    conn.close();
+  }
+
+
+  /**
+   * @param  dn  to search on.
+   * @param  filter  to search with.
+   *
+   * @throws  Exception  On test failure.
+   */
+  @Parameters(
+    {
+      "searchReferralDn",
+      "searchReferralFilter"
+    }
+  )
+  @Test(groups = {"search"})
+  public void searchReferral(final String dn, final String filter)
+    throws Exception
+  {
+    final Connection conn = createLdapConnection(true);
+    conn.open();
+
+    // expects a referral on dc=vt,dc=edu that points to ou=people,dc=vt,dc=edu
+    final SearchOperation search = new SearchOperation(conn);
+    final SearchRequest request = new SearchRequest();
+    request.setBaseDn(dn);
+    request.setSearchScope(SearchScope.ONELEVEL);
+    request.setReturnAttributes(new String[0]);
+    request.setSearchFilter(new SearchFilter(filter));
+
+    request.setReferralBehavior(ReferralBehavior.FOLLOW);
+    Response<LdapResult> response = search.execute(request);
+    AssertJUnit.assertTrue(response.getResult().size() > 0);
+    AssertJUnit.assertEquals(ResultCode.SUCCESS, response.getResultCode());
+
+    request.setReferralBehavior(ReferralBehavior.IGNORE);
+    response = search.execute(request);
+    AssertJUnit.assertTrue(response.getResult().size() > 0);
+    AssertJUnit.assertEquals(ResultCode.SUCCESS, response.getResultCode());
+
+    request.setReferralBehavior(ReferralBehavior.THROW);
+    try {
+      response = search.execute(request);
+      AssertJUnit.fail("Should have thrown LdapException");
+    } catch (LdapException e) {
+      AssertJUnit.assertEquals(ResultCode.REFERRAL, e.getResultCode());
+    }
     conn.close();
   }
 
