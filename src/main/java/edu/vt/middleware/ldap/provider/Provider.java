@@ -14,6 +14,9 @@
 package edu.vt.middleware.ldap.provider;
 
 import edu.vt.middleware.ldap.ConnectionConfig;
+import edu.vt.middleware.ldap.ReferralBehavior;
+import edu.vt.middleware.ldap.control.Control;
+import edu.vt.middleware.ldap.sasl.Mechanism;
 
 /**
  * Provides access to a provider specific connection factory.
@@ -28,19 +31,34 @@ public interface Provider<T extends ProviderConfig>
 
 
   /**
-   * Returns the SASL mechanisms supported by this provider.
+   * Returns whether the supplied SASL mechanism is supported by this provider.
    *
-   * @return  supported mechanisms
+   * @param  mechanism  to check support for
+   *
+   * @return  whether mechanism is supported
    */
-  String[] getSupportedSaslMechanisms();
+  boolean isSupported(Mechanism mechanism);
 
 
   /**
-   * Returns the OIDs of controls that are supported by this provider.
+   * Returns whether the supplied control is supported by this provider.
    *
-   * @return  supported controls
+   * @param  control  to check support for
+   *
+   * @return  whether control is supported
    */
-  String[] getSupportedControls();
+  boolean isSupported(Control control);
+
+
+  /**
+   * Returns whether the supplied referral behavior is supported by this
+   * provider.
+   *
+   * @param  behavior  to check support for
+   *
+   * @return  whether behavior is supported
+   */
+  boolean isSupported(ReferralBehavior behavior);
 
 
   /**

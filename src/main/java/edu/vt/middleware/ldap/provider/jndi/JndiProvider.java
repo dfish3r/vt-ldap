@@ -16,6 +16,8 @@ package edu.vt.middleware.ldap.provider.jndi;
 import java.util.HashMap;
 import java.util.Map;
 import edu.vt.middleware.ldap.ConnectionConfig;
+import edu.vt.middleware.ldap.ReferralBehavior;
+import edu.vt.middleware.ldap.control.Control;
 import edu.vt.middleware.ldap.provider.ConnectionFactory;
 import edu.vt.middleware.ldap.provider.Provider;
 import edu.vt.middleware.ldap.sasl.Mechanism;
@@ -66,22 +68,63 @@ public class JndiProvider implements Provider<JndiProviderConfig>
 
   /** {@inheritDoc} */
   @Override
-  public String[] getSupportedSaslMechanisms()
+  public boolean isSupported(final Mechanism mechanism)
   {
-    return new String[] {
-      Mechanism.CRAM_MD5.toString(),
-      Mechanism.DIGEST_MD5.toString(),
-      Mechanism.GSSAPI.toString(),
-      Mechanism.EXTERNAL.toString(),
-    };
+    boolean supported = false;
+    switch (mechanism) {
+    case CRAM_MD5:
+      supported = true;
+      break;
+    case DIGEST_MD5:
+      supported = true;
+      break;
+    case GSSAPI:
+      supported = true;
+      break;
+    case EXTERNAL:
+      supported = true;
+      break;
+    default:
+      supported = false;
+    }
+    return supported;
   }
 
 
   /** {@inheritDoc} */
   @Override
-  public String[] getSupportedControls()
+  public boolean isSupported(final Control control)
   {
-    return config.getControlHandler().getSupportedControls();
+    final String[] supportedOIDs =
+      config.getControlHandler().getSupportedControls();
+    for (String s : supportedOIDs) {
+      if (s.equals(control.getOID())) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+
+  /** {@inheritDoc} */
+  @Override
+  public boolean isSupported(final ReferralBehavior behavior)
+  {
+    boolean supported = false;
+    switch (behavior) {
+    case FOLLOW:
+      supported = true;
+      break;
+    case THROW:
+      supported = true;
+      break;
+    case IGNORE:
+      supported = true;
+      break;
+    default:
+      supported = false;
+    }
+    return supported;
   }
 
 

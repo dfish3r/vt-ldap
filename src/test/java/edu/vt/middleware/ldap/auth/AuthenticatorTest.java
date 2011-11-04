@@ -13,7 +13,6 @@
 */
 package edu.vt.middleware.ldap.auth;
 
-import java.util.Arrays;
 import edu.vt.middleware.ldap.AbstractTest;
 import edu.vt.middleware.ldap.AttributeModification;
 import edu.vt.middleware.ldap.AttributeModificationType;
@@ -457,11 +456,8 @@ public class AuthenticatorTest extends AbstractTest
   public void authenticateDigestMd5(final String user, final String credential)
     throws Exception
   {
-    final String[] supportedMechanisms =
-      DefaultConnectionFactory.getDefaultProvider().
-        getSupportedSaslMechanisms();
-    if (!Arrays.asList(
-        supportedMechanisms).contains(Mechanism.DIGEST_MD5.toString())) {
+    if (!DefaultConnectionFactory.getDefaultProvider().isSupported(
+        Mechanism.DIGEST_MD5)) {
       throw new SkipException("DIGEST-MD5 not supported.");
     }
 
@@ -490,11 +486,8 @@ public class AuthenticatorTest extends AbstractTest
   public void authenticateCramMd5(final String user, final String credential)
     throws Exception
   {
-    final String[] supportedMechanisms =
-      DefaultConnectionFactory.getDefaultProvider().
-        getSupportedSaslMechanisms();
-    if (!Arrays.asList(
-        supportedMechanisms).contains(Mechanism.CRAM_MD5.toString())) {
+    if (!DefaultConnectionFactory.getDefaultProvider().isSupported(
+        Mechanism.CRAM_MD5)) {
       throw new SkipException("CRAM-MD5 not supported.");
     }
 
@@ -790,10 +783,9 @@ public class AuthenticatorTest extends AbstractTest
     final String user, final String credential)
     throws Exception
   {
-    final String[] supportedControls =
-      DefaultConnectionFactory.getDefaultProvider().getSupportedControls();
-    if (!Arrays.asList(supportedControls).contains(PasswordPolicyControl.OID)) {
-      throw new SkipException("Password Policy not supported.");
+    PasswordPolicyControl ppc = new PasswordPolicyControl();
+    if (!DefaultConnectionFactory.getDefaultProvider().isSupported(ppc)) {
+      throw new SkipException("Password policy control not supported.");
     }
 
     final Connection conn = TestUtil.createSetupConnection();
@@ -802,7 +794,7 @@ public class AuthenticatorTest extends AbstractTest
     final Authenticator auth = createTLSAuthenticator(true);
     final BindAuthenticationHandler ah =
       (BindAuthenticationHandler) auth.getAuthenticationHandler();
-    ah.setAuthenticationControls(new PasswordPolicyControl());
+    ah.setAuthenticationControls(ppc);
 
     // test bind sending ppolicy control
     AuthenticationResponse response = auth.authenticate(
@@ -822,10 +814,10 @@ public class AuthenticatorTest extends AbstractTest
     response = auth.authenticate(
       new AuthenticationRequest(user, new Credential(credential)));
     AssertJUnit.assertFalse(response.getResult());
-    PasswordPolicyControl ppc =
+    PasswordPolicyControl ppcResponse =
       (PasswordPolicyControl) response.getControls()[0];
     AssertJUnit.assertEquals(
-      PasswordPolicyControl.Error.ACCOUNT_LOCKED, ppc.getError());
+      PasswordPolicyControl.Error.ACCOUNT_LOCKED, ppcResponse.getError());
 
     // test bind with expiration time
     modify.execute(
@@ -839,7 +831,7 @@ public class AuthenticatorTest extends AbstractTest
 
     response = auth.authenticate(
       new AuthenticationRequest(user, new Credential(credential)));
-    ppc = (PasswordPolicyControl) response.getControls()[0];
-    AssertJUnit.assertTrue(ppc.getTimeBeforeExpiration() > 0);
+    ppcResponse = (PasswordPolicyControl) response.getControls()[0];
+    AssertJUnit.assertTrue(ppcResponse.getTimeBeforeExpiration() > 0);
   }
 }

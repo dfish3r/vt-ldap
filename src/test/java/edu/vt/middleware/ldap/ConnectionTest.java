@@ -13,7 +13,6 @@
 */
 package edu.vt.middleware.ldap;
 
-import java.util.Arrays;
 import edu.vt.middleware.ldap.provider.ConnectionStrategy;
 import edu.vt.middleware.ldap.sasl.Mechanism;
 import org.testng.AssertJUnit;
@@ -144,13 +143,11 @@ public class ConnectionTest
   public void saslExternalConnect()
     throws Exception
   {
-    final String[] supportedMechanisms =
-      DefaultConnectionFactory.getDefaultProvider().
-        getSupportedSaslMechanisms();
-    if (!Arrays.asList(
-        supportedMechanisms).contains(Mechanism.EXTERNAL.toString())) {
+    if (!DefaultConnectionFactory.getDefaultProvider().isSupported(
+        Mechanism.EXTERNAL)) {
       throw new SkipException("SASL External not supported.");
     }
+
     final Connection conn = TestUtil.createSaslExternalConnection();
     conn.open();
     conn.close();

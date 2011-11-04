@@ -13,7 +13,6 @@
 */
 package edu.vt.middleware.ldap;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -334,12 +333,9 @@ public class SearchOperationTest extends AbstractTest
     final String ldifFile)
     throws Exception
   {
-    final String[] supportedControls =
-      DefaultConnectionFactory.getDefaultProvider().
-        getSupportedControls();
-    if (!Arrays.asList(
-        supportedControls).contains(PagedResultsControl.OID)) {
-      throw new SkipException("Sort control not supported.");
+    final PagedResultsControl prc = new PagedResultsControl(1, true);
+    if (!DefaultConnectionFactory.getDefaultProvider().isSupported(prc)) {
+      throw new SkipException("Paged results control not supported.");
     }
 
     final Connection conn = TestUtil.createConnection();
@@ -350,7 +346,7 @@ public class SearchOperationTest extends AbstractTest
     // test searching
     final SearchRequest request = new SearchRequest(
       dn, new SearchFilter(filter));
-    request.setControls(new PagedResultsControl(1, true));
+    request.setControls(prc);
     final LdapResult result = search.execute(request).getResult();
     AssertJUnit.assertEquals(
       TestUtil.convertLdifToResult(expected), result);
@@ -375,11 +371,9 @@ public class SearchOperationTest extends AbstractTest
     final String filter)
     throws Exception
   {
-    final String[] supportedControls =
-      DefaultConnectionFactory.getDefaultProvider().
-        getSupportedControls();
-    if (!Arrays.asList(
-        supportedControls).contains(SortRequestControl.OID)) {
+    final SortRequestControl src = new SortRequestControl(
+      new SortKey[] {new SortKey("uid", "integerMatch", true)}, true);
+    if (!DefaultConnectionFactory.getDefaultProvider().isSupported(src)) {
       throw new SkipException("Sort control not supported.");
     }
 
@@ -391,9 +385,7 @@ public class SearchOperationTest extends AbstractTest
     final SearchRequest request = new SearchRequest(
       dn, new SearchFilter(filter));
     request.setSortBehavior(SortBehavior.ORDERED);
-    request.setControls(
-      new SortRequestControl(
-        new SortKey[] {new SortKey("uid", "integerMatch", true)}, true));
+    request.setControls(src);
     final LdapResult result = search.execute(request).getResult();
 
     // confirm sorted
@@ -927,23 +919,34 @@ public class SearchOperationTest extends AbstractTest
     request.setReturnAttributes(new String[0]);
     request.setSearchFilter(new SearchFilter(filter));
 
-    request.setReferralBehavior(ReferralBehavior.FOLLOW);
-    Response<LdapResult> response = search.execute(request);
-    AssertJUnit.assertTrue(response.getResult().size() > 0);
-    AssertJUnit.assertEquals(ResultCode.SUCCESS, response.getResultCode());
-
-    request.setReferralBehavior(ReferralBehavior.IGNORE);
-    response = search.execute(request);
-    AssertJUnit.assertTrue(response.getResult().size() > 0);
-    AssertJUnit.assertEquals(ResultCode.SUCCESS, response.getResultCode());
-
-    request.setReferralBehavior(ReferralBehavior.THROW);
-    try {
+    Response<LdapResult> response = null;
+    if (DefaultConnectionFactory.getDefaultProvider().isSupported(
+        ReferralBehavior.FOLLOW)) {
+      request.setReferralBehavior(ReferralBehavior.FOLLOW);
       response = search.execute(request);
-      AssertJUnit.fail("Should have thrown LdapException");
-    } catch (LdapException e) {
-      AssertJUnit.assertEquals(ResultCode.REFERRAL, e.getResultCode());
+      AssertJUnit.assertTrue(response.getResult().size() > 0);
+      AssertJUnit.assertEquals(ResultCode.SUCCESS, response.getResultCode());
     }
+
+    if (DefaultConnectionFactory.getDefaultProvider().isSupported(
+        ReferralBehavior.IGNORE)) {
+      request.setReferralBehavior(ReferralBehavior.IGNORE);
+      response = search.execute(request);
+      AssertJUnit.assertTrue(response.getResult().size() > 0);
+      AssertJUnit.assertEquals(ResultCode.SUCCESS, response.getResultCode());
+    }
+
+    if (DefaultConnectionFactory.getDefaultProvider().isSupported(
+        ReferralBehavior.THROW)) {
+      request.setReferralBehavior(ReferralBehavior.THROW);
+      try {
+        response = search.execute(request);
+        AssertJUnit.fail("Should have thrown LdapException");
+      } catch (LdapException e) {
+        AssertJUnit.assertEquals(ResultCode.REFERRAL, e.getResultCode());
+      }
+    }
+
     conn.close();
   }
 
@@ -1008,10 +1011,11 @@ public class SearchOperationTest extends AbstractTest
 
     conn.open();
     try {
-      search.execute(
+      final Response<LdapResult> response = search.execute(
         new SearchRequest(
           "ou=dne,dc=vt,dc=edu", new SearchFilter("(objectclass=*)")));
-      AssertJUnit.fail("Should have thrown LdapException");
+      AssertJUnit.assertEquals(
+        ResultCode.NO_SUCH_OBJECT, response.getResultCode());
     } catch (LdapException e) {
       AssertJUnit.assertEquals(
         ResultCode.NO_SUCH_OBJECT, e.getResultCode());
@@ -1207,11 +1211,8 @@ public class SearchOperationTest extends AbstractTest
     final String ldifFile)
     throws Exception
   {
-    final String[] supportedMechanisms =
-      DefaultConnectionFactory.getDefaultProvider().
-        getSupportedSaslMechanisms();
-    if (!Arrays.asList(
-        supportedMechanisms).contains(Mechanism.DIGEST_MD5.toString())) {
+    if (!DefaultConnectionFactory.getDefaultProvider().isSupported(
+        Mechanism.DIGEST_MD5)) {
       throw new SkipException("DIGEST-MD5 not supported.");
     }
 
@@ -1257,11 +1258,8 @@ public class SearchOperationTest extends AbstractTest
     final String ldifFile)
     throws Exception
   {
-    final String[] supportedMechanisms =
-      DefaultConnectionFactory.getDefaultProvider().
-        getSupportedSaslMechanisms();
-    if (!Arrays.asList(
-        supportedMechanisms).contains(Mechanism.CRAM_MD5.toString())) {
+    if (!DefaultConnectionFactory.getDefaultProvider().isSupported(
+        Mechanism.CRAM_MD5)) {
       throw new SkipException("CRAM-MD5 not supported.");
     }
 
@@ -1307,11 +1305,8 @@ public class SearchOperationTest extends AbstractTest
     final String ldifFile)
     throws Exception
   {
-    final String[] supportedMechanisms =
-      DefaultConnectionFactory.getDefaultProvider().
-        getSupportedSaslMechanisms();
-    if (!Arrays.asList(
-        supportedMechanisms).contains(Mechanism.EXTERNAL.toString())) {
+    if (!DefaultConnectionFactory.getDefaultProvider().isSupported(
+        Mechanism.EXTERNAL)) {
       throw new SkipException("SASL External not supported.");
     }
 
@@ -1363,11 +1358,8 @@ public class SearchOperationTest extends AbstractTest
     final String ldifFile)
     throws Exception
   {
-    final String[] supportedMechanisms =
-      DefaultConnectionFactory.getDefaultProvider().
-        getSupportedSaslMechanisms();
-    if (!Arrays.asList(
-        supportedMechanisms).contains(Mechanism.GSSAPI.toString())) {
+    if (!DefaultConnectionFactory.getDefaultProvider().isSupported(
+        Mechanism.GSSAPI)) {
       throw new SkipException("GSSAPI not supported.");
     }
 
