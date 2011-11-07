@@ -14,9 +14,7 @@
 package edu.vt.middleware.ldap;
 
 import edu.vt.middleware.ldap.provider.ConnectionStrategy;
-import edu.vt.middleware.ldap.sasl.Mechanism;
 import org.testng.AssertJUnit;
-import org.testng.SkipException;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterSuite;
 import org.testng.annotations.BeforeClass;
@@ -50,8 +48,9 @@ public class ConnectionTest
     final Connection conn = TestUtil.createConnection();
     conn.open();
     final AddOperation add = new AddOperation(conn);
-    add.execute(
+    final Response<Void> response = add.execute(
       new AddRequest(testLdapEntry.getDn(), testLdapEntry.getAttributes()));
+    AssertJUnit.assertEquals(ResultCode.SUCCESS, response.getResultCode());
     conn.close();
   }
 
@@ -81,7 +80,9 @@ public class ConnectionTest
     final Connection conn = TestUtil.createConnection();
     conn.open();
     final DeleteOperation delete = new DeleteOperation(conn);
-    delete.execute(new DeleteRequest(testLdapEntry.getDn()));
+    final Response<Void> response = delete.execute(
+      new DeleteRequest(testLdapEntry.getDn()));
+    AssertJUnit.assertEquals(ResultCode.SUCCESS, response.getResultCode());
     conn.close();
   }
 
@@ -94,12 +95,13 @@ public class ConnectionTest
     final Connection conn = TestUtil.createConnection();
     conn.open();
     final ModifyOperation modify = new ModifyOperation(conn);
-    modify.execute(
+    final Response<Void> response = modify.execute(
       new ModifyRequest(testLdapEntry.getDn(),
         new AttributeModification[] {
           new AttributeModification(
             AttributeModificationType.ADD,
             new LdapAttribute("title", "President")), }));
+    AssertJUnit.assertEquals(ResultCode.SUCCESS, response.getResultCode());
     conn.close();
   }
 
@@ -112,12 +114,14 @@ public class ConnectionTest
     final Connection conn = TestUtil.createConnection();
     conn.open();
     final RenameOperation rename = new RenameOperation(conn);
-    rename.execute(
+    Response<Void> response = rename.execute(
       new RenameRequest(
         testLdapEntry.getDn(), "uid=1500,ou=test,dc=vt,dc=edu"));
-    rename.execute(
+    AssertJUnit.assertEquals(ResultCode.SUCCESS, response.getResultCode());
+    response = rename.execute(
       new RenameRequest(
         "uid=1500,ou=test,dc=vt,dc=edu", testLdapEntry.getDn()));
+    AssertJUnit.assertEquals(ResultCode.SUCCESS, response.getResultCode());
     conn.close();
   }
 
@@ -134,22 +138,6 @@ public class ConnectionTest
       new SearchRequest(
         "ou=test,dc=vt,dc=edu", new SearchFilter("(uid=15)"))).getResult();
     AssertJUnit.assertEquals(testLdapEntry.getDn(), lr.getEntry().getDn());
-    conn.close();
-  }
-
-
-  /** @throws  Exception  On test failure. */
-  @Test(groups = {"conn"}, timeOut = 5000)
-  public void saslExternalConnect()
-    throws Exception
-  {
-    if (!DefaultConnectionFactory.getDefaultProvider().isSupported(
-        Mechanism.EXTERNAL)) {
-      throw new SkipException("SASL External not supported.");
-    }
-
-    final Connection conn = TestUtil.createSaslExternalConnection();
-    conn.open();
     conn.close();
   }
 
