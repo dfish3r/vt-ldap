@@ -31,6 +31,9 @@ public class RenameOperationTest extends AbstractTest
   /** Entry created for ldap tests. */
   private static LdapEntry testLdapEntry;
 
+  /** Entry created for ldap tests. */
+  private static LdapEntry renameLdapEntry;
+
 
   /**
    * @param  ldifFile  to create.
@@ -54,6 +57,9 @@ public class RenameOperationTest extends AbstractTest
     throws Exception
   {
     super.deleteLdapEntry(testLdapEntry.getDn());
+    if (renameLdapEntry != null) {
+      super.deleteLdapEntry(renameLdapEntry.getDn());
+    }
   }
 
 
@@ -76,33 +82,36 @@ public class RenameOperationTest extends AbstractTest
         SearchRequest.newObjectScopeSearchRequest(
           oldDn)).getResult().size() > 0);
     final RenameOperation rename = new RenameOperation(conn);
-    rename.execute(new RenameRequest(oldDn, newDn));
-    AssertJUnit.assertTrue(
-      search.execute(
-        SearchRequest.newObjectScopeSearchRequest(
-          newDn)).getResult().size() > 0);
+    Response<Void> response = rename.execute(
+      new RenameRequest(oldDn, newDn));
+    AssertJUnit.assertEquals(ResultCode.SUCCESS, response.getResultCode());
+    renameLdapEntry = search.execute(
+      SearchRequest.newObjectScopeSearchRequest(
+        newDn)).getResult().getEntry();
+    AssertJUnit.assertNotNull(renameLdapEntry);
     try {
-      search.execute(SearchRequest.newObjectScopeSearchRequest(oldDn));
-      AssertJUnit.fail(
-        "Should have thrown NameNotFoundException, no exception thrown");
+      final Response<LdapResult> r = search.execute(
+        SearchRequest.newObjectScopeSearchRequest(oldDn));
+      AssertJUnit.assertEquals(ResultCode.NO_SUCH_OBJECT, r.getResultCode());
     } catch (LdapException e) {
       AssertJUnit.assertEquals(ResultCode.NO_SUCH_OBJECT, e.getResultCode());
     } catch (Exception e) {
-      AssertJUnit.fail("Should have thrown NameNotFoundException, threw " + e);
+      AssertJUnit.fail("Should have thrown LdapException, threw " + e);
     }
-    rename.execute(new RenameRequest(newDn, oldDn));
+    response = rename.execute(new RenameRequest(newDn, oldDn));
+    AssertJUnit.assertEquals(ResultCode.SUCCESS, response.getResultCode());
     AssertJUnit.assertTrue(
       search.execute(
         SearchRequest.newObjectScopeSearchRequest(
           oldDn)).getResult().size() > 0);
     try {
-      search.execute(SearchRequest.newObjectScopeSearchRequest(newDn));
-      AssertJUnit.fail(
-        "Should have thrown NameNotFoundException, no exception thrown");
+      final Response<LdapResult> r = search.execute(
+        SearchRequest.newObjectScopeSearchRequest(newDn));
+      AssertJUnit.assertEquals(ResultCode.NO_SUCH_OBJECT, r.getResultCode());
     } catch (LdapException e) {
       AssertJUnit.assertEquals(ResultCode.NO_SUCH_OBJECT, e.getResultCode());
     } catch (Exception e) {
-      AssertJUnit.fail("Should have thrown NameNotFoundException, threw " + e);
+      AssertJUnit.fail("Should have thrown LdapException, threw " + e);
     }
     conn.close();
   }
