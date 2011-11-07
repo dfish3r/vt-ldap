@@ -26,6 +26,7 @@ import edu.vt.middleware.ldap.LdapException;
 import edu.vt.middleware.ldap.LdapResult;
 import edu.vt.middleware.ldap.ModifyOperation;
 import edu.vt.middleware.ldap.ModifyRequest;
+import edu.vt.middleware.ldap.ReferralBehavior;
 import edu.vt.middleware.ldap.TestUtil;
 import edu.vt.middleware.ldap.control.PasswordPolicyControl;
 import edu.vt.middleware.ldap.pool.BlockingConnectionPool;
@@ -288,6 +289,7 @@ public class AuthenticatorTest extends AbstractTest
 
     // test subtree searching
     resolver.setSubtreeSearch(true);
+    resolver.setReferralBehavior(ReferralBehavior.IGNORE);
     final String baseDn = resolver.getBaseDn();
     resolver.setBaseDn(baseDn.substring(baseDn.indexOf(",") + 1));
     AssertJUnit.assertEquals(testLdapEntry.getDn(), auth.resolveDn(user));
@@ -756,6 +758,8 @@ public class AuthenticatorTest extends AbstractTest
     // test with rewrite
     ((SearchDnResolver) auth.getDnResolver()).setBaseDn("dc=blah");
     ((SearchDnResolver) auth.getDnResolver()).setSubtreeSearch(true);
+    ((SearchDnResolver) auth.getDnResolver()).setReferralBehavior(
+      ReferralBehavior.IGNORE);
     response = auth.authenticate(
       new AuthenticationRequest(user, new Credential(INVALID_PASSWD)));
     AssertJUnit.assertFalse(response.getResult());
@@ -783,7 +787,7 @@ public class AuthenticatorTest extends AbstractTest
     final String user, final String credential)
     throws Exception
   {
-    PasswordPolicyControl ppc = new PasswordPolicyControl();
+    final PasswordPolicyControl ppc = new PasswordPolicyControl();
     if (!DefaultConnectionFactory.getDefaultProvider().isSupported(ppc)) {
       throw new SkipException("Password policy control not supported.");
     }

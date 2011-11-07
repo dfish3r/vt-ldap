@@ -18,9 +18,11 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import edu.vt.middleware.ldap.Connection;
+import edu.vt.middleware.ldap.DerefAliases;
 import edu.vt.middleware.ldap.LdapEntry;
 import edu.vt.middleware.ldap.LdapException;
 import edu.vt.middleware.ldap.LdapResult;
+import edu.vt.middleware.ldap.ReferralBehavior;
 import edu.vt.middleware.ldap.SearchFilter;
 import edu.vt.middleware.ldap.SearchOperation;
 import edu.vt.middleware.ldap.SearchRequest;
@@ -54,6 +56,12 @@ public abstract class AbstractSearchDnResolver implements DnResolver
 
   /** Whether to use a subtree search when resolving DNs. */
   protected boolean subtreeSearch;
+
+  /** How to handle aliases. */
+  protected DerefAliases derefAliases;
+
+  /** How to handle referrals. */
+  protected ReferralBehavior referralBehavior;
 
 
   /**
@@ -178,6 +186,50 @@ public abstract class AbstractSearchDnResolver implements DnResolver
 
 
   /**
+   * Returns how to dereference aliases.
+   *
+   * @return  how to dereference aliases
+   */
+  public DerefAliases getDerefAliases()
+  {
+    return derefAliases;
+  }
+
+
+  /**
+   * Sets how to dereference aliases.
+   *
+   * @param  da  how to dereference aliases
+   */
+  public void setDerefAliases(final DerefAliases da)
+  {
+    derefAliases = da;
+  }
+
+
+  /**
+   * Returns how to handle referrals.
+   *
+   * @return  how to handle referrals
+   */
+  public ReferralBehavior getReferralBehavior()
+  {
+    return referralBehavior;
+  }
+
+
+  /**
+   * Sets how to handle referrals.
+   *
+   * @param  rb  how to handle referrals
+   */
+  public void setReferralBehavior(final ReferralBehavior rb)
+  {
+    referralBehavior = rb;
+  }
+
+
+  /**
    * Attempts to find the DN for the supplied user. {@link
    * #getUserFilter()} is used to look up the DN. The user is
    * provided as the {0} variable filter argument. If more than one entry
@@ -276,6 +328,8 @@ public abstract class AbstractSearchDnResolver implements DnResolver
     } else {
       request.setSearchScope(SearchScope.ONELEVEL);
     }
+    request.setDerefAliases(derefAliases);
+    request.setReferralBehavior(referralBehavior);
     return request;
   }
 
