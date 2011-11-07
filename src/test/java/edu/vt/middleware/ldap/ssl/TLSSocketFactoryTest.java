@@ -81,8 +81,8 @@ public class TLSSocketFactoryTest
 
   /** List of protocols. */
   public static final String[] UNKNOWN_PROTOCOLS = new String[] {
-    "SSLv2Hello",
     "SSLv3Hello",
+    "SSLv2Hello",
     "TLSv1",
   };
 
@@ -139,14 +139,8 @@ public class TLSSocketFactoryTest
     conn = DefaultConnectionFactory.getConnection(cc);
     try {
       conn.open();
-      AssertJUnit.fail(
-        "Should have thrown IllegalArgumentException, no exception thrown");
-    } catch (IllegalArgumentException e) {
-      AssertJUnit.assertEquals(IllegalArgumentException.class, e.getClass());
-    } catch (Exception e) {
-      AssertJUnit.fail(
-        "Should have thrown IllegalArgumentException, threw " + e);
-    }
+      AssertJUnit.fail("Should have thrown Exception, no exception thrown");
+    } catch (Exception e) {}
 
     sf.setEnabledCipherSuites(CIPHERS);
     conn = DefaultConnectionFactory.getConnection(cc);
@@ -186,27 +180,15 @@ public class TLSSocketFactoryTest
     conn = DefaultConnectionFactory.getConnection(cc);
     try {
       conn.open();
-      AssertJUnit.fail(
-        "Should have thrown IllegalArgumentException, no exception thrown");
-    } catch (IllegalArgumentException e) {
-      AssertJUnit.assertEquals(IllegalArgumentException.class, e.getClass());
-    } catch (Exception e) {
-      AssertJUnit.fail(
-        "Should have thrown IllegalArgumentException, threw " + e);
-    }
+      AssertJUnit.fail("Should have thrown Exception, no exception thrown");
+    } catch (Exception e) {}
 
     sf.setEnabledProtocols(UNKNOWN_PROTOCOLS);
     conn = DefaultConnectionFactory.getConnection(cc);
     try {
       conn.open();
-      AssertJUnit.fail(
-        "Should have thrown IllegalArgumentException, no exception thrown");
-    } catch (IllegalArgumentException e) {
-      AssertJUnit.assertEquals(IllegalArgumentException.class, e.getClass());
-    } catch (Exception e) {
-      AssertJUnit.fail(
-        "Should have thrown IllegalArgumentException, threw " + e);
-    }
+      AssertJUnit.fail("Should have thrown Exception, no exception thrown");
+    } catch (Exception e) {}
 
     sf.setEnabledProtocols(PROTOCOLS);
     conn = DefaultConnectionFactory.getConnection(cc);
