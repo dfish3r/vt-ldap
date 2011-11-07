@@ -230,6 +230,21 @@ public class SearchFilter
 
 
   /**
+   * Returns a search filter initialized with the supplied filter.
+   *
+   * @param  filter  search filter to read properties from
+   * @return  search filter
+   */
+  public static SearchFilter newSearchFilter(final SearchFilter filter)
+  {
+    final SearchFilter sf = new SearchFilter();
+    sf.setFilter(filter.getFilter());
+    sf.setFilterArgs(new ArrayList<Object>(filter.getFilterArgs()));
+    return sf;
+  }
+
+
+  /**
    * Returns whether the supplied object contains the same data as this filter.
    * Delegates to {@link #hashCode()} implementation.
    *

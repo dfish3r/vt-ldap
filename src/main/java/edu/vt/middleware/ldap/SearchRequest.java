@@ -451,7 +451,10 @@ public class SearchRequest extends AbstractRequest
     sr.setLdapResultHandlers(request.getLdapResultHandlers());
     sr.setReferralBehavior(request.getReferralBehavior());
     sr.setReturnAttributes(request.getReturnAttributes());
-    sr.setSearchFilter(request.getSearchFilter());
+    sr.setSearchFilter(
+      request.getSearchFilter() != null ?
+        SearchFilter.newSearchFilter(request.getSearchFilter()) :
+        null);
     sr.setSearchScope(request.getSearchScope());
     sr.setSizeLimit(request.getSizeLimit());
     sr.setSortBehavior(request.getSortBehavior());
