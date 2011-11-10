@@ -22,6 +22,7 @@ import javax.naming.ldap.LdapContext;
 import javax.naming.ldap.StartTlsRequest;
 import javax.naming.ldap.StartTlsResponse;
 import edu.vt.middleware.ldap.LdapException;
+import edu.vt.middleware.ldap.provider.AbstractConnectionFactory;
 import edu.vt.middleware.ldap.provider.ConnectionException;
 
 /**
@@ -31,8 +32,12 @@ import edu.vt.middleware.ldap.provider.ConnectionException;
  * @author  Middleware Services
  * @version  $Revision$
  */
-public class JndiTlsConnectionFactory extends AbstractJndiConnectionFactory
+public class JndiTlsConnectionFactory extends
+  AbstractConnectionFactory<JndiProviderConfig>
 {
+
+  /** Environment properties. */
+  private Map<String, Object> environment;
 
 
   /**
@@ -59,10 +64,9 @@ public class JndiTlsConnectionFactory extends AbstractJndiConnectionFactory
   {
     final Hashtable<String, Object> env = new Hashtable<String, Object>(
       environment);
-    env.put(VERSION, "3");
-    env.put(PROVIDER_URL, url);
+    env.put(JndiProvider.PROVIDER_URL, url);
     if (config.getTracePackets() != null) {
-      env.put(TRACE, config.getTracePackets());
+      env.put(JndiProvider.TRACE, config.getTracePackets());
     }
 
     JndiTlsConnection conn = null;
@@ -111,7 +115,7 @@ public class JndiTlsConnectionFactory extends AbstractJndiConnectionFactory
    * operation
    * @throws  IOException  if an error occurs while negotiating TLS
    */
-  public StartTlsResponse startTls(final LdapContext ctx)
+  protected StartTlsResponse startTls(final LdapContext ctx)
     throws NamingException, IOException
   {
     final StartTlsResponse tls = (StartTlsResponse) ctx.extendedOperation(
@@ -127,5 +131,22 @@ public class JndiTlsConnectionFactory extends AbstractJndiConnectionFactory
       tls.negotiate();
     }
     return tls;
+  }
+
+
+  /**
+   * Provides a descriptive string representation of this instance.
+   *
+   * @return  string representation
+   */
+  @Override
+  public String toString()
+  {
+    return
+      String.format(
+        "[%s@%d::config=%s]",
+        getClass().getName(),
+        hashCode(),
+        config);
   }
 }

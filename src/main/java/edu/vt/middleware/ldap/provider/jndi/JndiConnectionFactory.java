@@ -18,6 +18,7 @@ import java.util.Map;
 import javax.naming.NamingException;
 import javax.naming.ldap.InitialLdapContext;
 import edu.vt.middleware.ldap.LdapException;
+import edu.vt.middleware.ldap.provider.AbstractConnectionFactory;
 import edu.vt.middleware.ldap.provider.ConnectionException;
 
 /**
@@ -26,8 +27,12 @@ import edu.vt.middleware.ldap.provider.ConnectionException;
  * @author  Middleware Services
  * @version  $Revision$
  */
-public class JndiConnectionFactory extends AbstractJndiConnectionFactory
+public class JndiConnectionFactory extends
+  AbstractConnectionFactory<JndiProviderConfig>
 {
+
+  /** Environment properties. */
+  private Map<String, Object> environment;
 
 
   /**
@@ -53,10 +58,9 @@ public class JndiConnectionFactory extends AbstractJndiConnectionFactory
   {
     final Hashtable<String, Object> env = new Hashtable<String, Object>(
       environment);
-    env.put(VERSION, "3");
-    env.put(PROVIDER_URL, url);
+    env.put(JndiProvider.PROVIDER_URL, url);
     if (config.getTracePackets() != null) {
-      env.put(TRACE, config.getTracePackets());
+      env.put(JndiProvider.TRACE, config.getTracePackets());
     }
 
     JndiConnection conn = null;
@@ -71,5 +75,22 @@ public class JndiConnectionFactory extends AbstractJndiConnectionFactory
         e, NamingExceptionUtil.getResultCode(e.getClass()));
     }
     return conn;
+  }
+
+
+  /**
+   * Provides a descriptive string representation of this instance.
+   *
+   * @return  string representation
+   */
+  @Override
+  public String toString()
+  {
+    return
+      String.format(
+        "[%s@%d::config=%s]",
+        getClass().getName(),
+        hashCode(),
+        config);
   }
 }

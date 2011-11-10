@@ -41,6 +41,19 @@ public class JndiProvider implements Provider<JndiProviderConfig>
   public static final String CONTEXT_FACTORY = "java.naming.factory.initial";
 
   /**
+   * The value of this property is a string that specifies the protocol version
+   * for the provider. The value of this constant is {@value}.
+   */
+  public static final String VERSION = "java.naming.ldap.version";
+
+  /**
+   * The value of this property is a URL string that specifies the hostname and
+   * port number of the LDAP server, and the root distinguished name of the
+   * naming context to use. The value of this constant is {@value}.
+   */
+  public static final String PROVIDER_URL = "java.naming.provider.url";
+
+  /**
    * The value of this property is a string that specifies the security protocol
    * for the provider to use. The value of this constant is {@value}.
    */
@@ -58,6 +71,13 @@ public class JndiProvider implements Provider<JndiProviderConfig>
    * be made. The value of this constant is {@value}.
    */
   public static final String TIMEOUT = "com.sun.jndi.ldap.connect.timeout";
+
+  /**
+   * The value of this property is a java.io.OutputStream object into which a
+   * hexadecimal dump of the incoming and outgoing LDAP ASN.1 BER packets is
+   * written. The value of this constant is {@value}.
+   */
+  public static final String TRACE = "com.sun.jndi.ldap.trace.ber";
 
   /** Logger for this class. */
   protected final Logger logger = LoggerFactory.getLogger(getClass());
@@ -182,6 +202,7 @@ public class JndiProvider implements Provider<JndiProviderConfig>
   {
     final Map<String, Object> env = new HashMap<String, Object>();
     env.put(CONTEXT_FACTORY, "com.sun.jndi.ldap.LdapCtxFactory");
+    env.put(VERSION, "3");
     if (cc.isSslEnabled()) {
       env.put(PROTOCOL, "ssl");
       if (cc.getSslSocketFactory() != null) {
