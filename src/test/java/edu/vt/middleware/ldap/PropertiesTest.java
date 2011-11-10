@@ -69,7 +69,8 @@ public class PropertiesTest
     final ConnectionConfig cc = new ConnectionConfig();
     final ConnectionConfigPropertySource ccSource =
       new ConnectionConfigPropertySource(
-        cc, PropertiesTest.class.getResourceAsStream("/ldap.null.properties"));
+        cc, PropertiesTest.class.getResourceAsStream(
+          "/edu/vt/middleware/ldap/ldap.null.properties"));
     ccSource.initialize();
 
     AssertJUnit.assertNull(cc.getSslSocketFactory());
@@ -78,7 +79,8 @@ public class PropertiesTest
     final SearchRequest sr = new SearchRequest();
     final SearchRequestPropertySource srSource =
       new SearchRequestPropertySource(
-        sr, PropertiesTest.class.getResourceAsStream("/ldap.null.properties"));
+        sr, PropertiesTest.class.getResourceAsStream(
+          "/edu/vt/middleware/ldap/ldap.null.properties"));
     srSource.initialize();
 
     AssertJUnit.assertNull(sr.getLdapResultHandlers());
@@ -99,7 +101,8 @@ public class PropertiesTest
     final DefaultConnectionFactoryPropertySource cfSource =
       new DefaultConnectionFactoryPropertySource(
         cf,
-        PropertiesTest.class.getResourceAsStream("/ldap.parser.properties"));
+        PropertiesTest.class.getResourceAsStream(
+          "/edu/vt/middleware/ldap/ldap.parser.properties"));
     cfSource.initialize();
 
     final ConnectionConfig cc = cf.getConnectionConfig();
@@ -122,7 +125,8 @@ public class PropertiesTest
     final SearchRequestPropertySource srSource =
       new SearchRequestPropertySource(
         sr,
-        PropertiesTest.class.getResourceAsStream("/ldap.parser.properties"));
+        PropertiesTest.class.getResourceAsStream(
+          "/edu/vt/middleware/ldap/ldap.parser.properties"));
     srSource.initialize();
 
     AssertJUnit.assertEquals("ou=test,dc=vt,dc=edu", sr.getBaseDn());
@@ -154,7 +158,8 @@ public class PropertiesTest
     final AuthenticatorPropertySource aSource =
       new AuthenticatorPropertySource(
         auth,
-        PropertiesTest.class.getResourceAsStream("/ldap.parser.properties"));
+        PropertiesTest.class.getResourceAsStream(
+          "/edu/vt/middleware/ldap/ldap.parser.properties"));
     aSource.initialize();
 
     final SearchDnResolver dnResolver = (SearchDnResolver) auth.getDnResolver();

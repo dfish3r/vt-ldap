@@ -34,7 +34,8 @@ public abstract class AbstractPropertySource<T> implements PropertySource<T>
 {
 
   /** Default file to read properties from, value is {@value}. */
-  public static final String PROPERTIES_FILE = "/ldap.properties";
+  public static final String PROPERTIES_FILE =
+    "/edu/vt/middleware/ldap/ldap.properties";
 
   /** Logger for this class. */
   protected final Logger logger = LoggerFactory.getLogger(getClass());
@@ -68,7 +69,9 @@ public abstract class AbstractPropertySource<T> implements PropertySource<T>
         properties.load(is);
         return properties;
       } finally {
-        is.close();
+        if (is != null) {
+          is.close();
+        }
       }
     } catch (IOException e) {
       throw new IllegalArgumentException(e);

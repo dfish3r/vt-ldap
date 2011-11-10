@@ -88,7 +88,8 @@ public final class TestUtil
   {
     return DefaultConnectionFactory.getConnection(
       readConnectionConfig(
-        TestUtil.class.getResourceAsStream("/ldap.setup.properties")));
+        TestUtil.class.getResourceAsStream(
+          "/edu/vt/middleware/ldap/ldap.setup.properties")));
   }
 
 
@@ -116,7 +117,8 @@ public final class TestUtil
   {
     return DefaultConnectionFactory.getConnection(
       readConnectionConfig(
-        TestUtil.class.getResourceAsStream("/ldap.external.properties")));
+        TestUtil.class.getResourceAsStream(
+          "/edu/vt/middleware/ldap/ldap.external.properties")));
   }
 
 
@@ -131,7 +133,8 @@ public final class TestUtil
   {
     return DefaultConnectionFactory.getConnection(
       readConnectionConfig(
-        TestUtil.class.getResourceAsStream("/ldap.digest-md5.properties")));
+        TestUtil.class.getResourceAsStream(
+          "/edu/vt/middleware/ldap/ldap.digest-md5.properties")));
   }
 
 
@@ -146,7 +149,8 @@ public final class TestUtil
   {
     return DefaultConnectionFactory.getConnection(
       readConnectionConfig(
-        TestUtil.class.getResourceAsStream("/ldap.cram-md5.properties")));
+        TestUtil.class.getResourceAsStream(
+          "/edu/vt/middleware/ldap/ldap.cram-md5.properties")));
   }
 
 
@@ -161,7 +165,8 @@ public final class TestUtil
   {
     return DefaultConnectionFactory.getConnection(
       readConnectionConfig(
-        TestUtil.class.getResourceAsStream("/ldap.gssapi.properties")));
+        TestUtil.class.getResourceAsStream(
+          "/edu/vt/middleware/ldap/ldap.gssapi.properties")));
   }
 
 
@@ -175,7 +180,8 @@ public final class TestUtil
     throws Exception
   {
     return readAuthenticator(
-      TestUtil.class.getResourceAsStream("/ldap.ssl.properties"));
+      TestUtil.class.getResourceAsStream(
+        "/edu/vt/middleware/ldap/ldap.ssl.properties"));
   }
 
 
@@ -189,7 +195,8 @@ public final class TestUtil
     throws Exception
   {
     final Authenticator auth = readAuthenticator(
-        TestUtil.class.getResourceAsStream("/ldap.ssl.properties"));
+        TestUtil.class.getResourceAsStream(
+          "/edu/vt/middleware/ldap/ldap.ssl.properties"));
     auth.setDnResolver(new NoopDnResolver());
     return auth;
   }
@@ -205,7 +212,8 @@ public final class TestUtil
     throws Exception
   {
     return readAuthenticator(
-      TestUtil.class.getResourceAsStream("/ldap.tls.properties"));
+      TestUtil.class.getResourceAsStream(
+        "/edu/vt/middleware/ldap/ldap.tls.properties"));
   }
 
 
@@ -219,7 +227,8 @@ public final class TestUtil
     throws Exception
   {
     final Authenticator auth = readAuthenticator(
-      TestUtil.class.getResourceAsStream("/ldap.tls.properties"));
+      TestUtil.class.getResourceAsStream(
+        "/edu/vt/middleware/ldap/ldap.tls.properties"));
     auth.setDnResolver(new NoopDnResolver());
     return auth;
   }
@@ -235,7 +244,8 @@ public final class TestUtil
     throws Exception
   {
     final Authenticator auth = readAuthenticator(
-      TestUtil.class.getResourceAsStream("/ldap.digest-md5.properties"));
+      TestUtil.class.getResourceAsStream(
+        "/edu/vt/middleware/ldap/ldap.digest-md5.properties"));
     auth.setDnResolver(new NoopDnResolver());
     return auth;
   }
@@ -251,7 +261,8 @@ public final class TestUtil
     throws Exception
   {
     final Authenticator auth = readAuthenticator(
-      TestUtil.class.getResourceAsStream("/ldap.cram-md5.properties"));
+      TestUtil.class.getResourceAsStream(
+        "/edu/vt/middleware/ldap/ldap.cram-md5.properties"));
     auth.setDnResolver(new NoopDnResolver());
     return auth;
   }

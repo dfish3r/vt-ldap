@@ -149,7 +149,8 @@ public class ConnectionTest
   {
     final DefaultConnectionFactory connFactory = new DefaultConnectionFactory(
       TestUtil.readConnectionConfig(
-        TestUtil.class.getResourceAsStream("/ldap.conn.properties")));
+        TestUtil.class.getResourceAsStream(
+          "/edu/vt/middleware/ldap/ldap.conn.properties")));
     Connection conn = connFactory.getConnection();
 
     conn.open();

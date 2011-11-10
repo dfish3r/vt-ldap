@@ -9,11 +9,11 @@
     <servlet-class>edu.vt.middleware.ldap.servlets.SearchServlet</servlet-class>
     <init-param>
       <param-name>edu.vt.middleware.ldap.servlets.propertiesFile</param-name>
-      <param-value>/ldap.properties</param-value>
+      <param-value>/edu/vt/middleware/ldap/ldap.properties</param-value>
     </init-param>
     <init-param>
       <param-name>edu.vt.middleware.ldap.servlets.poolPropertiesFile</param-name>
-      <param-value>/ldap.pool.properties</param-value>
+      <param-value>/edu/vt/middleware/ldap/ldap.pool.properties</param-value>
     </init-param>
     <init-param>
       <param-name>edu.vt.middleware.ldap.servlets.poolType</param-name>
@@ -29,11 +29,11 @@
     <servlet-class>edu.vt.middleware.ldap.servlets.SearchServlet</servlet-class>
     <init-param>
       <param-name>edu.vt.middleware.ldap.servlets.propertiesFile</param-name>
-      <param-value>/ldap.properties</param-value>
+      <param-value>/edu/vt/middleware/ldap/ldap.properties</param-value>
     </init-param>
     <init-param>
       <param-name>edu.vt.middleware.ldap.servlets.poolPropertiesFile</param-name>
-      <param-value>/ldap.pool.properties</param-value>
+      <param-value>/edu/vt/middleware/ldap/ldap.pool.properties</param-value>
     </init-param>
     <init-param>
       <param-name>edu.vt.middleware.ldap.servlets.poolType</param-name>
@@ -49,11 +49,11 @@
     <servlet-class>edu.vt.middleware.ldap.servlets.AttributeServlet</servlet-class>
     <init-param>
       <param-name>edu.vt.middleware.ldap.servlets.propertiesFile</param-name>
-      <param-value>/ldap.properties</param-value>
+      <param-value>/edu/vt/middleware/ldap/ldap.properties</param-value>
     </init-param>
     <init-param>
       <param-name>edu.vt.middleware.ldap.servlets.poolPropertiesFile</param-name>
-      <param-value>/ldap.pool.properties</param-value>
+      <param-value>/edu/vt/middleware/ldap/ldap.pool.properties</param-value>
     </init-param>
     <init-param>
       <param-name>edu.vt.middleware.ldap.servlets.poolType</param-name>
