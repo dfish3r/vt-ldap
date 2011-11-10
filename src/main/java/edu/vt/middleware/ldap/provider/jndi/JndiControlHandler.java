@@ -68,8 +68,8 @@ public class JndiControlHandler
     {
       javax.naming.ldap.ManageReferralControl ctl = null;
       if (ManageDsaITControl.OID.equals(requestControl.getOID())) {
-        final ManageDsaITControl mc = (ManageDsaITControl) requestControl;
-        ctl =  new javax.naming.ldap.ManageReferralControl(mc.getCriticality());
+        final ManageDsaITControl c = (ManageDsaITControl) requestControl;
+        ctl =  new javax.naming.ldap.ManageReferralControl(c.getCriticality());
       }
       return ctl;
     }
@@ -112,10 +112,10 @@ public class JndiControlHandler
     {
       javax.naming.ldap.SortControl ctl = null;
       if (SortRequestControl.OID.equals(requestControl.getOID())) {
-        final SortRequestControl sc = (SortRequestControl) requestControl;
+        final SortRequestControl c = (SortRequestControl) requestControl;
         try {
           ctl = new javax.naming.ldap.SortControl(
-            JndiUtil.fromSortKey(sc.getSortKeys()), sc.getCriticality());
+            JndiUtil.fromSortKey(c.getSortKeys()), c.getCriticality());
         } catch (IOException e) {
           logger.warn("Error creating control.", e);
         }
@@ -169,12 +169,12 @@ public class JndiControlHandler
       SortResponseControl ctl = null;
       if (SortResponseControl.OID.equals(responseControl.getID())) {
         ctl = (SortResponseControl) requestControl;
-        final javax.naming.ldap.SortResponseControl src =
+        final javax.naming.ldap.SortResponseControl c =
           (javax.naming.ldap.SortResponseControl) responseControl;
         ctl = new SortResponseControl(
-          ResultCode.valueOf(src.getResultCode()),
-          src.getAttributeID(),
-          src.isCritical());
+          ResultCode.valueOf(c.getResultCode()),
+          c.getAttributeID(),
+          c.isCritical());
       }
       return ctl;
     }
@@ -207,10 +207,10 @@ public class JndiControlHandler
     {
       javax.naming.ldap.PagedResultsControl ctl = null;
       if (PagedResultsControl.OID.equals(requestControl.getOID())) {
-        final PagedResultsControl prc = (PagedResultsControl) requestControl;
+        final PagedResultsControl c = (PagedResultsControl) requestControl;
         try {
           ctl = new javax.naming.ldap.PagedResultsControl(
-            prc.getSize(), prc.getCookie(), prc.getCriticality());
+            c.getSize(), c.getCookie(), c.getCriticality());
         } catch (IOException e) {
           logger.warn("Error creating control.", e);
         }
@@ -227,16 +227,16 @@ public class JndiControlHandler
     {
       PagedResultsControl ctl = null;
       if (PagedResultsControl.OID.equals(responseControl.getID())) {
-        final javax.naming.ldap.PagedResultsResponseControl prrc =
+        final javax.naming.ldap.PagedResultsResponseControl c =
           (javax.naming.ldap.PagedResultsResponseControl) responseControl;
         // set paged result cookie if found
-        if (prrc.getCookie() != null) {
+        if (c.getCookie() != null && c.getCookie().length > 0) {
           ctl = (PagedResultsControl) requestControl;
           if (ctl != null) {
-            ctl.setCookie(prrc.getCookie());
+            ctl.setCookie(c.getCookie());
           } else {
             ctl = new PagedResultsControl(
-              prrc.getResultSize(), prrc.getCookie(), prrc.isCritical());
+              c.getResultSize(), c.getCookie(), c.isCritical());
           }
         }
       }
