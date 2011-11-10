@@ -49,13 +49,7 @@ public abstract class AbstractTest
     conn.close();
     conn = TestUtil.createConnection();
     conn.open();
-    final CompareOperation compare = new CompareOperation(conn);
-    final LdapAttribute la = new LdapAttribute();
-    la.setName(entry.getDn().split(",ou=")[0].split("=", 2)[0]);
-    la.addStringValue(
-      entry.getDn().split(",ou=")[0].split("=", 2)[1].replaceAll("\\\\", ""));
-    while (
-      !compare.execute(new CompareRequest(entry.getDn(), la)).getResult()) {
+    while (!entryExists(conn, entry)) {
       Thread.sleep(100);
     }
     conn.close();
@@ -63,7 +57,7 @@ public abstract class AbstractTest
 
 
   /**
-   * Deletes the supplied dn.
+   * Deletes the supplied dn if it exists.
    *
    * @param  dn  to delete
    *
@@ -74,8 +68,38 @@ public abstract class AbstractTest
   {
     final Connection conn = TestUtil.createSetupConnection();
     conn.open();
-    final DeleteOperation delete = new DeleteOperation(conn);
-    delete.execute(new DeleteRequest(dn));
+    if (entryExists(conn, new LdapEntry(dn))) {
+      final DeleteOperation delete = new DeleteOperation(conn);
+      delete.execute(new DeleteRequest(dn));
+    }
     conn.close();
+  }
+
+
+  /**
+   * Performs a compare on the supplied entry to determine if it exists in the
+   * LDAP.
+   *
+   * @param  conn  to perform compare with
+   * @param  entry  to perform compare on
+   * @return  whether the supplied entry exists
+   * @throws  Exception  On failure.
+   */
+  protected boolean entryExists(final Connection conn, final LdapEntry entry)
+    throws Exception
+  {
+    final CompareOperation compare = new CompareOperation(conn);
+    final LdapAttribute la = new LdapAttribute();
+    la.setName(entry.getDn().split(",ou=")[0].split("=", 2)[0]);
+    la.addStringValue(
+      entry.getDn().split(",ou=")[0].split("=", 2)[1].replaceAll("\\\\", ""));
+    try {
+      return compare.execute(new CompareRequest(entry.getDn(), la)).getResult();
+    } catch (LdapException e) {
+      if (ResultCode.NO_SUCH_OBJECT == e.getResultCode()) {
+        return false;
+      }
+      throw e;
+    }
   }
 }
