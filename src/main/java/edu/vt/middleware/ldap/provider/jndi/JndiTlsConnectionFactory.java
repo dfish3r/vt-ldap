@@ -59,18 +59,17 @@ public class JndiTlsConnectionFactory extends AbstractJndiConnectionFactory
   {
     final Hashtable<String, Object> env = new Hashtable<String, Object>(
       environment);
+    env.put(VERSION, "3");
     env.put(PROVIDER_URL, url);
     if (config.getTracePackets() != null) {
       env.put(TRACE, config.getTracePackets());
     }
 
     JndiTlsConnection conn = null;
-    env.put(VERSION, "3");
     boolean closeConn = false;
     try {
       conn = new JndiTlsConnection(new InitialLdapContext(env, null));
       conn.setStartTlsResponse(startTls(conn.getLdapContext()));
-      conn.getLdapContext().reconnect(null);
       conn.setRemoveDnUrls(config.getRemoveDnUrls());
       conn.setOperationRetryResultCodes(config.getOperationRetryResultCodes());
       conn.setSearchIgnoreResultCodes(config.getSearchIgnoreResultCodes());

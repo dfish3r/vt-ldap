@@ -53,6 +53,7 @@ public class JndiConnectionFactory extends AbstractJndiConnectionFactory
   {
     final Hashtable<String, Object> env = new Hashtable<String, Object>(
       environment);
+    env.put(VERSION, "3");
     env.put(PROVIDER_URL, url);
     if (config.getTracePackets() != null) {
       env.put(TRACE, config.getTracePackets());
