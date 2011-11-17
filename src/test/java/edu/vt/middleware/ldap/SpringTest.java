@@ -46,16 +46,22 @@ public class SpringTest
     final ConnectionFactory cf =
       (ConnectionFactory) context.getBean("connectionFactory");
     final Connection conn = cf.getConnection();
-    conn.open();
-    conn.close();
+    try {
+      conn.open();
+    } finally {
+      conn.close();
+    }
 
     final ClassPathXmlApplicationContext poolContext =
       new ClassPathXmlApplicationContext(new String[] {
         "/spring-pool-context.xml",
       });
     AssertJUnit.assertTrue(poolContext.getBeanDefinitionCount() > 0);
-    final BlockingConnectionPool pool =
-      (BlockingConnectionPool) poolContext.getBean("pool");
-    pool.close();
+    BlockingConnectionPool pool = null;
+    try {
+      pool = (BlockingConnectionPool) poolContext.getBean("pool");
+    } finally {
+      pool.close();
+    }
   }
 }

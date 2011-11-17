@@ -51,16 +51,19 @@ public abstract class AbstractTest
     throws Exception
   {
     Connection conn = TestUtil.createSetupConnection();
-    conn.open();
-    final AddOperation create = new AddOperation(conn);
-    create.execute(new AddRequest(entry.getDn(), entry.getAttributes()));
-    conn.close();
-    conn = TestUtil.createConnection();
-    conn.open();
-    while (!entryExists(conn, entry)) {
-      Thread.sleep(100);
+    try {
+      conn.open();
+      final AddOperation create = new AddOperation(conn);
+      create.execute(new AddRequest(entry.getDn(), entry.getAttributes()));
+      conn.close();
+      conn = TestUtil.createConnection();
+      conn.open();
+      while (!entryExists(conn, entry)) {
+        Thread.sleep(100);
+      }
+    } finally {
+      conn.close();
     }
-    conn.close();
   }
 
 
@@ -75,12 +78,15 @@ public abstract class AbstractTest
     throws Exception
   {
     final Connection conn = TestUtil.createSetupConnection();
-    conn.open();
-    if (entryExists(conn, new LdapEntry(dn))) {
-      final DeleteOperation delete = new DeleteOperation(conn);
-      delete.execute(new DeleteRequest(dn));
+    try {
+      conn.open();
+      if (entryExists(conn, new LdapEntry(dn))) {
+        final DeleteOperation delete = new DeleteOperation(conn);
+        delete.execute(new DeleteRequest(dn));
+      }
+    } finally {
+      conn.close();
     }
-    conn.close();
   }
 
 

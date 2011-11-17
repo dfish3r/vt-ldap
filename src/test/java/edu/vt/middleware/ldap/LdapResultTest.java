@@ -82,14 +82,17 @@ public class LdapResultTest extends AbstractTest
     throws Exception
   {
     final Connection conn = TestUtil.createConnection();
-    conn.open();
-    final SearchOperation search = new SearchOperation(conn);
+    try {
+      conn.open();
+      final SearchOperation search = new SearchOperation(conn);
 
-    final LdapResult result = search.execute(
-      new SearchRequest(
-        dn, new SearchFilter(filter), returnAttrs.split("\\|"))).getResult();
-    final String expected = TestUtil.readFileIntoString(ldifFile);
-    AssertJUnit.assertEquals(TestUtil.convertLdifToResult(expected), result);
-    conn.close();
+      final LdapResult result = search.execute(
+        new SearchRequest(
+          dn, new SearchFilter(filter), returnAttrs.split("\\|"))).getResult();
+      final String expected = TestUtil.readFileIntoString(ldifFile);
+      AssertJUnit.assertEquals(TestUtil.convertLdifToResult(expected), result);
+    } finally {
+      conn.close();
+    }
   }
 }

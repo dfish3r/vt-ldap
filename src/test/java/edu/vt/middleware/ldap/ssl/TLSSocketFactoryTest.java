@@ -123,35 +123,43 @@ public class TLSSocketFactoryTest
     final ConnectionConfig cc = createTLSLdapConnectionConfig();
     final TLSSocketFactory sf = (TLSSocketFactory) cc.getSslSocketFactory();
     Connection conn = DefaultConnectionFactory.getConnection(cc);
-
-    conn.open();
     SearchOperation search = new SearchOperation(conn);
-    search.execute(
-      SearchRequest.newObjectScopeSearchRequest("ou=test,dc=vt,dc=edu"));
-    AssertJUnit.assertEquals(
-      Arrays.asList(((SSLSocket) sf.createSocket()).getEnabledCipherSuites()),
-      Arrays.asList(sf.getDefaultCipherSuites()));
-    AssertJUnit.assertNotSame(
-      Arrays.asList(sf.getDefaultCipherSuites()), Arrays.asList(CIPHERS));
-    conn.close();
+
+    try {
+      conn.open();
+      search.execute(
+        SearchRequest.newObjectScopeSearchRequest("ou=test,dc=vt,dc=edu"));
+      AssertJUnit.assertEquals(
+        Arrays.asList(((SSLSocket) sf.createSocket()).getEnabledCipherSuites()),
+        Arrays.asList(sf.getDefaultCipherSuites()));
+      AssertJUnit.assertNotSame(
+        Arrays.asList(sf.getDefaultCipherSuites()), Arrays.asList(CIPHERS));
+    } finally {
+      conn.close();
+    }
 
     sf.setEnabledCipherSuites(UNKNOWN_CIPHERS);
     conn = DefaultConnectionFactory.getConnection(cc);
     try {
       conn.open();
       AssertJUnit.fail("Should have thrown Exception, no exception thrown");
-    } catch (Exception e) {}
+    } catch (Exception e) {
+      AssertJUnit.assertNotNull(e);
+    }
 
     sf.setEnabledCipherSuites(CIPHERS);
     conn = DefaultConnectionFactory.getConnection(cc);
-    conn.open();
-    search = new SearchOperation(conn);
-    search.execute(
-      SearchRequest.newObjectScopeSearchRequest("ou=test,dc=vt,dc=edu"));
-    AssertJUnit.assertEquals(
-      Arrays.asList(((SSLSocket) sf.createSocket()).getEnabledCipherSuites()),
-      Arrays.asList(CIPHERS));
-    conn.close();
+    try {
+      conn.open();
+      search = new SearchOperation(conn);
+      search.execute(
+        SearchRequest.newObjectScopeSearchRequest("ou=test,dc=vt,dc=edu"));
+      AssertJUnit.assertEquals(
+        Arrays.asList(((SSLSocket) sf.createSocket()).getEnabledCipherSuites()),
+        Arrays.asList(CIPHERS));
+    } finally {
+      conn.close();
+    }
   }
 
 
@@ -163,42 +171,52 @@ public class TLSSocketFactoryTest
     final ConnectionConfig cc = createTLSLdapConnectionConfig();
     final TLSSocketFactory sf = (TLSSocketFactory) cc.getSslSocketFactory();
     Connection conn = DefaultConnectionFactory.getConnection(cc);
-
-    conn.open();
     SearchOperation search = new SearchOperation(conn);
-    search.execute(
-      SearchRequest.newObjectScopeSearchRequest("ou=test,dc=vt,dc=edu"));
-    AssertJUnit.assertEquals(
-      Arrays.asList(((SSLSocket) sf.createSocket()).getEnabledProtocols()),
-      Arrays.asList(ALL_PROTOCOLS));
-    AssertJUnit.assertNotSame(
-      Arrays.asList(((SSLSocket) sf.createSocket()).getEnabledProtocols()),
-      Arrays.asList(PROTOCOLS));
-    conn.close();
+
+    try {
+      conn.open();
+      search.execute(
+        SearchRequest.newObjectScopeSearchRequest("ou=test,dc=vt,dc=edu"));
+      AssertJUnit.assertEquals(
+        Arrays.asList(((SSLSocket) sf.createSocket()).getEnabledProtocols()),
+        Arrays.asList(ALL_PROTOCOLS));
+      AssertJUnit.assertNotSame(
+        Arrays.asList(((SSLSocket) sf.createSocket()).getEnabledProtocols()),
+        Arrays.asList(PROTOCOLS));
+    } finally {
+      conn.close();
+    }
 
     sf.setEnabledProtocols(FAIL_PROTOCOLS);
     conn = DefaultConnectionFactory.getConnection(cc);
     try {
       conn.open();
       AssertJUnit.fail("Should have thrown Exception, no exception thrown");
-    } catch (Exception e) {}
+    } catch (Exception e) {
+      AssertJUnit.assertNotNull(e);
+    }
 
     sf.setEnabledProtocols(UNKNOWN_PROTOCOLS);
     conn = DefaultConnectionFactory.getConnection(cc);
     try {
       conn.open();
       AssertJUnit.fail("Should have thrown Exception, no exception thrown");
-    } catch (Exception e) {}
+    } catch (Exception e) {
+      AssertJUnit.assertNotNull(e);
+    }
 
     sf.setEnabledProtocols(PROTOCOLS);
     conn = DefaultConnectionFactory.getConnection(cc);
-    conn.open();
-    search = new SearchOperation(conn);
-    search.execute(
-      SearchRequest.newObjectScopeSearchRequest("ou=test,dc=vt,dc=edu"));
-    AssertJUnit.assertEquals(
-      Arrays.asList(((SSLSocket) sf.createSocket()).getEnabledProtocols()),
-      Arrays.asList(PROTOCOLS));
-    conn.close();
+    try {
+      conn.open();
+      search = new SearchOperation(conn);
+      search.execute(
+        SearchRequest.newObjectScopeSearchRequest("ou=test,dc=vt,dc=edu"));
+      AssertJUnit.assertEquals(
+        Arrays.asList(((SSLSocket) sf.createSocket()).getEnabledProtocols()),
+        Arrays.asList(PROTOCOLS));
+    } finally {
+      conn.close();
+    }
   }
 }

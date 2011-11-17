@@ -70,21 +70,24 @@ public class ModifyOperationTest extends AbstractTest
   {
     final LdapEntry expected = TestUtil.convertStringToEntry(dn, attrs);
     final Connection conn = TestUtil.createConnection();
-    conn.open();
-    final ModifyOperation modify = new ModifyOperation(conn);
-    modify.execute(
-      new ModifyRequest(
-        dn,
-        new AttributeModification(
-          AttributeModificationType.ADD, expected.getAttribute())));
+    try {
+      conn.open();
+      final ModifyOperation modify = new ModifyOperation(conn);
+      modify.execute(
+        new ModifyRequest(
+          dn,
+          new AttributeModification(
+            AttributeModificationType.ADD, expected.getAttribute())));
 
-    final SearchOperation search = new SearchOperation(conn);
-    final LdapResult result = search.execute(
-      SearchRequest.newObjectScopeSearchRequest(
-        dn, new String[] {expected.getAttribute().getName()})).getResult();
-    AssertJUnit.assertEquals(
-      expected.getAttribute(), result.getEntry().getAttribute());
-    conn.close();
+      final SearchOperation search = new SearchOperation(conn);
+      final LdapResult result = search.execute(
+        SearchRequest.newObjectScopeSearchRequest(
+          dn, new String[] {expected.getAttribute().getName()})).getResult();
+      AssertJUnit.assertEquals(
+        expected.getAttribute(), result.getEntry().getAttribute());
+    } finally {
+      conn.close();
+    }
   }
 
 
@@ -101,23 +104,26 @@ public class ModifyOperationTest extends AbstractTest
   {
     final LdapEntry expected = TestUtil.convertStringToEntry(dn, attrs);
     final Connection conn = TestUtil.createConnection();
-    conn.open();
-    final ModifyOperation modify = new ModifyOperation(conn);
-    final AttributeModification[] mods =
-      new AttributeModification[expected.size()];
-    int i = 0;
-    for (LdapAttribute la : expected.getAttributes()) {
-      mods[i] = new AttributeModification(AttributeModificationType.ADD, la);
-      i++;
-    }
-    modify.execute(new ModifyRequest(dn, mods));
+    try {
+      conn.open();
+      final ModifyOperation modify = new ModifyOperation(conn);
+      final AttributeModification[] mods =
+        new AttributeModification[expected.size()];
+      int i = 0;
+      for (LdapAttribute la : expected.getAttributes()) {
+        mods[i] = new AttributeModification(AttributeModificationType.ADD, la);
+        i++;
+      }
+      modify.execute(new ModifyRequest(dn, mods));
 
-    final SearchOperation search = new SearchOperation(conn);
-    final LdapResult result = search.execute(
-      SearchRequest.newObjectScopeSearchRequest(
-        dn, expected.getAttributeNames())).getResult();
-    AssertJUnit.assertEquals(expected, result.getEntry());
-    conn.close();
+      final SearchOperation search = new SearchOperation(conn);
+      final LdapResult result = search.execute(
+        SearchRequest.newObjectScopeSearchRequest(
+          dn, expected.getAttributeNames())).getResult();
+      AssertJUnit.assertEquals(expected, result.getEntry());
+    } finally {
+      conn.close();
+    }
   }
 
 
@@ -137,19 +143,22 @@ public class ModifyOperationTest extends AbstractTest
   {
     final LdapEntry expected = TestUtil.convertStringToEntry(dn, attrs);
     final Connection conn = TestUtil.createConnection();
-    conn.open();
-    final ModifyOperation modify = new ModifyOperation(conn);
-    modify.execute(new ModifyRequest(
-      dn,
-      new AttributeModification(
-        AttributeModificationType.REPLACE, expected.getAttribute())));
+    try {
+      conn.open();
+      final ModifyOperation modify = new ModifyOperation(conn);
+      modify.execute(new ModifyRequest(
+        dn,
+        new AttributeModification(
+          AttributeModificationType.REPLACE, expected.getAttribute())));
 
-    final SearchOperation search = new SearchOperation(conn);
-    final LdapResult result = search.execute(
-      SearchRequest.newObjectScopeSearchRequest(
-        dn, new String[] {expected.getAttribute().getName()})).getResult();
-    AssertJUnit.assertEquals(expected, result.getEntry());
-    conn.close();
+      final SearchOperation search = new SearchOperation(conn);
+      final LdapResult result = search.execute(
+        SearchRequest.newObjectScopeSearchRequest(
+          dn, new String[] {expected.getAttribute().getName()})).getResult();
+      AssertJUnit.assertEquals(expected, result.getEntry());
+    } finally {
+      conn.close();
+    }
   }
 
 
@@ -169,24 +178,27 @@ public class ModifyOperationTest extends AbstractTest
   {
     final LdapEntry expected = TestUtil.convertStringToEntry(dn, attrs);
     final Connection conn = TestUtil.createConnection();
-    conn.open();
-    final ModifyOperation modify = new ModifyOperation(conn);
-    final AttributeModification[] mods =
-      new AttributeModification[expected.size()];
-    int i = 0;
-    for (LdapAttribute la : expected.getAttributes()) {
-      mods[i] = new AttributeModification(
-        AttributeModificationType.REPLACE, la);
-      i++;
-    }
-    modify.execute(new ModifyRequest(dn, mods));
+    try {
+      conn.open();
+      final ModifyOperation modify = new ModifyOperation(conn);
+      final AttributeModification[] mods =
+        new AttributeModification[expected.size()];
+      int i = 0;
+      for (LdapAttribute la : expected.getAttributes()) {
+        mods[i] = new AttributeModification(
+          AttributeModificationType.REPLACE, la);
+        i++;
+      }
+      modify.execute(new ModifyRequest(dn, mods));
 
-    final SearchOperation search = new SearchOperation(conn);
-    final LdapResult result = search.execute(
-      SearchRequest.newObjectScopeSearchRequest(
-        dn, expected.getAttributeNames())).getResult();
-    AssertJUnit.assertEquals(expected, result.getEntry());
-    conn.close();
+      final SearchOperation search = new SearchOperation(conn);
+      final LdapResult result = search.execute(
+        SearchRequest.newObjectScopeSearchRequest(
+          dn, expected.getAttributeNames())).getResult();
+      AssertJUnit.assertEquals(expected, result.getEntry());
+    } finally {
+      conn.close();
+    }
   }
 
 
@@ -210,20 +222,23 @@ public class ModifyOperationTest extends AbstractTest
     expected.getAttribute().removeStringValue("Best Test User");
 
     final Connection conn = TestUtil.createConnection();
-    conn.open();
-    final ModifyOperation modify = new ModifyOperation(conn);
-    modify.execute(new ModifyRequest(
-      dn,
-      new AttributeModification(
-        AttributeModificationType.REMOVE, remove.getAttribute())));
+    try {
+      conn.open();
+      final ModifyOperation modify = new ModifyOperation(conn);
+      modify.execute(new ModifyRequest(
+        dn,
+        new AttributeModification(
+          AttributeModificationType.REMOVE, remove.getAttribute())));
 
-    final SearchOperation search = new SearchOperation(conn);
-    final LdapResult result = search.execute(
-      SearchRequest.newObjectScopeSearchRequest(
-        dn, new String[] {expected.getAttribute().getName()})).getResult();
-    AssertJUnit.assertEquals(
-      expected.getAttribute(), result.getEntry().getAttribute());
-    conn.close();
+      final SearchOperation search = new SearchOperation(conn);
+      final LdapResult result = search.execute(
+        SearchRequest.newObjectScopeSearchRequest(
+          dn, new String[] {expected.getAttribute().getName()})).getResult();
+      AssertJUnit.assertEquals(
+        expected.getAttribute(), result.getEntry().getAttribute());
+    } finally {
+      conn.close();
+    }
   }
 
 
@@ -249,22 +264,25 @@ public class ModifyOperationTest extends AbstractTest
     expected.getAttributes().remove(expected.getAttribute(attrsName[1]));
 
     final Connection conn = TestUtil.createConnection();
-    conn.open();
-    final ModifyOperation modify = new ModifyOperation(conn);
-    final AttributeModification[] mods =
-      new AttributeModification[expected.size()];
-    int i = 0;
-    for (LdapAttribute la : remove.getAttributes()) {
-      mods[i] = new AttributeModification(AttributeModificationType.REMOVE, la);
-      i++;
-    }
-    modify.execute(new ModifyRequest(dn, mods));
+    try {
+      conn.open();
+      final ModifyOperation modify = new ModifyOperation(conn);
+      final AttributeModification[] mods =
+        new AttributeModification[expected.size()];
+      int i = 0;
+      for (LdapAttribute la : remove.getAttributes()) {
+        mods[i++] = new AttributeModification(
+          AttributeModificationType.REMOVE, la);
+      }
+      modify.execute(new ModifyRequest(dn, mods));
 
-    final SearchOperation search = new SearchOperation(conn);
-    final LdapResult result = search.execute(
-      SearchRequest.newObjectScopeSearchRequest(
-        dn, expected.getAttributeNames())).getResult();
-    AssertJUnit.assertEquals(expected, result.getEntry());
-    conn.close();
+      final SearchOperation search = new SearchOperation(conn);
+      final LdapResult result = search.execute(
+        SearchRequest.newObjectScopeSearchRequest(
+          dn, expected.getAttributeNames())).getResult();
+      AssertJUnit.assertEquals(expected, result.getEntry());
+    } finally {
+      conn.close();
+    }
   }
 }

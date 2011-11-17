@@ -39,10 +39,13 @@ public class CompareValidatorTest extends AbstractTest
     throws Exception
   {
     final Connection c = TestUtil.createConnection();
-    c.open();
     final CompareValidator sv = new CompareValidator();
-    AssertJUnit.assertTrue(sv.validate(c));
-    c.close();
+    try {
+      c.open();
+      AssertJUnit.assertTrue(sv.validate(c));
+    } finally {
+      c.close();
+    }
     AssertJUnit.assertFalse(sv.validate(c));
   }
 
@@ -55,15 +58,18 @@ public class CompareValidatorTest extends AbstractTest
     throws Exception
   {
     final Connection c = TestUtil.createConnection();
-    c.open();
     final CompareValidator cv = new CompareValidator(
       new CompareRequest(
         "uid=1,ou=test,dc=vt,dc=edu",
         new LdapAttribute("objectClass", "inetOrgPerson")));
-    AssertJUnit.assertTrue(cv.validate(c));
-    cv.getCompareRequest().setDn("uid=dne,ou=test,dc=vt,dc=edu");
-    AssertJUnit.assertFalse(cv.validate(c));
-    c.close();
+    try {
+      c.open();
+      AssertJUnit.assertTrue(cv.validate(c));
+      cv.getCompareRequest().setDn("uid=dne,ou=test,dc=vt,dc=edu");
+      AssertJUnit.assertFalse(cv.validate(c));
+    } finally {
+      c.close();
+    }
     AssertJUnit.assertFalse(cv.validate(c));
   }
 }

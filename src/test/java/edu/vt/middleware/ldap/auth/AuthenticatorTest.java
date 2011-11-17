@@ -32,9 +32,7 @@ import edu.vt.middleware.ldap.control.PasswordPolicyControl;
 import edu.vt.middleware.ldap.pool.BlockingConnectionPool;
 import edu.vt.middleware.ldap.pool.PooledConnectionFactory;
 import edu.vt.middleware.ldap.pool.PooledConnectionFactoryManager;
-import edu.vt.middleware.ldap.sasl.Mechanism;
 import org.testng.AssertJUnit;
-import org.testng.SkipException;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Parameters;
@@ -102,19 +100,24 @@ public class AuthenticatorTest extends AbstractTest
   public void createAuthEntry(final String ldifFile)
     throws Exception
   {
+    final String ldif = TestUtil.readFileIntoString(ldifFile);
+    testLdapEntry = TestUtil.convertLdifToResult(ldif).getEntry();
+    super.createLdapEntry(testLdapEntry);
+
     final AuthenticationHandler ah = pooledTLSAuth.getAuthenticationHandler();
     final DefaultConnectionFactory cf =
       (DefaultConnectionFactory)
         ((ConnectionFactoryManager) ah).getConnectionFactory();
     final BlockingConnectionPool cp = new BlockingConnectionPool(cf);
-    cp.initialize();
     final PooledConnectionFactory pcf = new PooledConnectionFactory(cp);
     pooledTLSAuth.setAuthenticationHandler(
       new PooledBindAuthenticationHandler(pcf));
-
-    final String ldif = TestUtil.readFileIntoString(ldifFile);
-    testLdapEntry = TestUtil.convertLdifToResult(ldif).getEntry();
-    super.createLdapEntry(testLdapEntry);
+    try {
+      cp.initialize();
+    } catch (UnsupportedOperationException e) {
+      // ignore if not supported
+      AssertJUnit.assertNotNull(e);
+    }
   }
 
 
@@ -459,11 +462,6 @@ public class AuthenticatorTest extends AbstractTest
   public void authenticateDigestMd5(final String user, final String credential)
     throws Exception
   {
-    if (!DefaultConnectionFactory.getDefaultProvider().isSupported(
-        Mechanism.DIGEST_MD5)) {
-      throw new SkipException("DIGEST-MD5 not supported.");
-    }
-
     final Authenticator auth = TestUtil.createDigestMD5Authenticator();
 
     AuthenticationResponse response = auth.authenticate(
@@ -489,11 +487,6 @@ public class AuthenticatorTest extends AbstractTest
   public void authenticateCramMd5(final String user, final String credential)
     throws Exception
   {
-    if (!DefaultConnectionFactory.getDefaultProvider().isSupported(
-        Mechanism.CRAM_MD5)) {
-      throw new SkipException("CRAM-MD5 not supported.");
-    }
-
     final Authenticator auth = TestUtil.createCramMD5Authenticator();
     AuthenticationResponse response = auth.authenticate(
       new AuthenticationRequest(
@@ -695,6 +688,8 @@ public class AuthenticatorTest extends AbstractTest
         new AuthenticationRequest(
           user, null, returnAttrs.split("\\|")));
       AssertJUnit.fail("Should have thrown IllegalArgumentException");
+    } catch (UnsupportedOperationException e) {
+      throw e;
     } catch (Exception e) {
       AssertJUnit.assertEquals(IllegalArgumentException.class, e.getClass());
     }
@@ -789,50 +784,50 @@ public class AuthenticatorTest extends AbstractTest
     throws Exception
   {
     final PasswordPolicyControl ppc = new PasswordPolicyControl();
-    if (!DefaultConnectionFactory.getDefaultProvider().isSupported(ppc)) {
-      throw new SkipException("Password policy control not supported.");
-    }
-
     final Connection conn = TestUtil.createSetupConnection();
-    conn.open();
-
+    AuthenticationResponse response = null;
+    PasswordPolicyControl ppcResponse = null;
     final Authenticator auth = createTLSAuthenticator(true);
-    final BindAuthenticationHandler ah =
-      (BindAuthenticationHandler) auth.getAuthenticationHandler();
-    ah.setAuthenticationControls(ppc);
+    try {
+      conn.open();
 
-    // test bind sending ppolicy control
-    AuthenticationResponse response = auth.authenticate(
-      new AuthenticationRequest(user, new Credential(credential)));
-    final LdapEntry entry = response.getLdapEntry();
+      final BindAuthenticationHandler ah =
+        (BindAuthenticationHandler) auth.getAuthenticationHandler();
+      ah.setAuthenticationControls(ppc);
 
-    // test bind on locked account
-    final ModifyOperation modify = new ModifyOperation(conn);
-    modify.execute(
-      new ModifyRequest(
-        entry.getDn(),
-        new AttributeModification[] {
-          new AttributeModification(
-            AttributeModificationType.ADD,
-            new LdapAttribute("pwdAccountLockedTime", "000001010000Z")), }));
+      // test bind sending ppolicy control
+      response = auth.authenticate(
+        new AuthenticationRequest(user, new Credential(credential)));
+      final LdapEntry entry = response.getLdapEntry();
 
-    response = auth.authenticate(
-      new AuthenticationRequest(user, new Credential(credential)));
-    AssertJUnit.assertFalse(response.getResult());
-    PasswordPolicyControl ppcResponse =
-      (PasswordPolicyControl) response.getControls()[0];
-    AssertJUnit.assertEquals(
-      PasswordPolicyControl.Error.ACCOUNT_LOCKED, ppcResponse.getError());
+      // test bind on locked account
+      final ModifyOperation modify = new ModifyOperation(conn);
+      modify.execute(
+        new ModifyRequest(
+          entry.getDn(),
+          new AttributeModification[] {
+            new AttributeModification(
+              AttributeModificationType.ADD,
+              new LdapAttribute("pwdAccountLockedTime", "000001010000Z")), }));
 
-    // test bind with expiration time
-    modify.execute(
-      new ModifyRequest(
-        entry.getDn(),
-        new AttributeModification[] {
-          new AttributeModification(
-            AttributeModificationType.REMOVE,
-            new LdapAttribute("pwdAccountLockedTime")), }));
-    conn.close();
+      response = auth.authenticate(
+        new AuthenticationRequest(user, new Credential(credential)));
+      AssertJUnit.assertFalse(response.getResult());
+      ppcResponse = (PasswordPolicyControl) response.getControls()[0];
+      AssertJUnit.assertEquals(
+        PasswordPolicyControl.Error.ACCOUNT_LOCKED, ppcResponse.getError());
+
+      // test bind with expiration time
+      modify.execute(
+        new ModifyRequest(
+          entry.getDn(),
+          new AttributeModification[] {
+            new AttributeModification(
+              AttributeModificationType.REMOVE,
+              new LdapAttribute("pwdAccountLockedTime")), }));
+    } finally {
+      conn.close();
+    }
 
     response = auth.authenticate(
       new AuthenticationRequest(user, new Credential(credential)));

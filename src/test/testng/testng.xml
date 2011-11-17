@@ -328,6 +328,10 @@
 
   <parameter name="sleepTime" value="10000"/>
 
+  <listeners>
+    <listener class-name="edu.vt.middleware.ldap.SkipTestInvokedMethodListener" />
+  </listeners>
+
   <test name="tests">
     <groups>
       <define name="core">

@@ -30,9 +30,7 @@ import edu.vt.middleware.ldap.handler.MergeAttributeResultHandler;
 import edu.vt.middleware.ldap.handler.MergeResultHandler;
 import edu.vt.middleware.ldap.handler.RecursiveAttributeHandler;
 import edu.vt.middleware.ldap.handler.RecursiveResultHandler;
-import edu.vt.middleware.ldap.sasl.Mechanism;
 import org.testng.AssertJUnit;
-import org.testng.SkipException;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Parameters;
@@ -148,32 +146,35 @@ public class SearchOperationTest extends AbstractTest
 
     // setup group relationships
     final Connection conn = TestUtil.createSetupConnection();
-    conn.open();
-    final ModifyOperation modify = new ModifyOperation(conn);
-    modify.execute(new ModifyRequest(
-      groupEntries.get("2")[0].getDn(),
-      new AttributeModification(
-        AttributeModificationType.ADD,
-        new LdapAttribute(
-          "member",
-          new String[]{"uugid=group3,ou=test,dc=vt,dc=edu"}))));
-    modify.execute(new ModifyRequest(
-      groupEntries.get("3")[0].getDn(),
-      new AttributeModification(
-        AttributeModificationType.ADD,
-        new LdapAttribute(
-          "member",
-          new String[]{
-            "uugid=group4,ou=test,dc=vt,dc=edu",
-            "uugid=group5,ou=test,dc=vt,dc=edu", }))));
-    modify.execute(new ModifyRequest(
-      groupEntries.get("4")[0].getDn(),
-      new AttributeModification(
-        AttributeModificationType.ADD,
-        new LdapAttribute(
-          "member",
-          new String[]{"uugid=group3,ou=test,dc=vt,dc=edu"}))));
-    conn.close();
+    try {
+      conn.open();
+      final ModifyOperation modify = new ModifyOperation(conn);
+      modify.execute(new ModifyRequest(
+        groupEntries.get("2")[0].getDn(),
+        new AttributeModification(
+          AttributeModificationType.ADD,
+          new LdapAttribute(
+            "member",
+            new String[]{"uugid=group3,ou=test,dc=vt,dc=edu"}))));
+      modify.execute(new ModifyRequest(
+        groupEntries.get("3")[0].getDn(),
+        new AttributeModification(
+          AttributeModificationType.ADD,
+          new LdapAttribute(
+            "member",
+            new String[]{
+              "uugid=group4,ou=test,dc=vt,dc=edu",
+              "uugid=group5,ou=test,dc=vt,dc=edu", }))));
+      modify.execute(new ModifyRequest(
+        groupEntries.get("4")[0].getDn(),
+        new AttributeModification(
+          AttributeModificationType.ADD,
+          new LdapAttribute(
+            "member",
+            new String[]{"uugid=group3,ou=test,dc=vt,dc=edu"}))));
+    } finally {
+      conn.close();
+    }
   }
 
 
@@ -334,24 +335,22 @@ public class SearchOperationTest extends AbstractTest
     throws Exception
   {
     final PagedResultsControl prc = new PagedResultsControl(1, true);
-    if (!DefaultConnectionFactory.getDefaultProvider().isSupported(prc)) {
-      throw new SkipException("Paged results control not supported.");
-    }
-
     final Connection conn = TestUtil.createConnection();
-    conn.open();
-    final SearchOperation search = new SearchOperation(conn);
-    final String expected = TestUtil.readFileIntoString(ldifFile);
+    try {
+      conn.open();
+      final SearchOperation search = new SearchOperation(conn);
+      final String expected = TestUtil.readFileIntoString(ldifFile);
 
-    // test searching
-    final SearchRequest request = new SearchRequest(
-      dn, new SearchFilter(filter));
-    request.setControls(prc);
-    final LdapResult result = search.execute(request).getResult();
-    AssertJUnit.assertEquals(
-      TestUtil.convertLdifToResult(expected), result);
-
-    conn.close();
+      // test searching
+      final SearchRequest request = new SearchRequest(
+        dn, new SearchFilter(filter));
+      request.setControls(prc);
+      final LdapResult result = search.execute(request).getResult();
+      AssertJUnit.assertEquals(
+        TestUtil.convertLdifToResult(expected), result);
+    } finally {
+      conn.close();
+    }
   }
 
 
@@ -373,30 +372,28 @@ public class SearchOperationTest extends AbstractTest
   {
     final SortRequestControl src = new SortRequestControl(
       new SortKey[] {new SortKey("uid", "integerMatch", true)}, true);
-    if (!DefaultConnectionFactory.getDefaultProvider().isSupported(src)) {
-      throw new SkipException("Sort control not supported.");
-    }
-
     final Connection conn = TestUtil.createConnection();
-    conn.open();
-    final SearchOperation search = new SearchOperation(conn);
+    try {
+      conn.open();
+      final SearchOperation search = new SearchOperation(conn);
 
-    // test searching
-    final SearchRequest request = new SearchRequest(
-      dn, new SearchFilter(filter));
-    request.setSortBehavior(SortBehavior.ORDERED);
-    request.setControls(src);
-    final LdapResult result = search.execute(request).getResult();
+      // test searching
+      final SearchRequest request = new SearchRequest(
+        dn, new SearchFilter(filter));
+      request.setSortBehavior(SortBehavior.ORDERED);
+      request.setControls(src);
+      final LdapResult result = search.execute(request).getResult();
 
-    // confirm sorted
-    int i = 5;
-    for (LdapEntry e : result.getEntries()) {
-      AssertJUnit.assertEquals(
-        String.valueOf(2000 + i), e.getAttribute("uid").getStringValue());
-      i--;
+      // confirm sorted
+      int i = 5;
+      for (LdapEntry e : result.getEntries()) {
+        AssertJUnit.assertEquals(
+          String.valueOf(2000 + i), e.getAttribute("uid").getStringValue());
+        i--;
+      }
+    } finally {
+      conn.close();
     }
-
-    conn.close();
   }
 
 
@@ -508,23 +505,26 @@ public class SearchOperationTest extends AbstractTest
     throws Exception
   {
     final Connection conn = createLdapConnection(true);
-    conn.open();
-    final SearchOperation search = new SearchOperation(conn);
+    try {
+      conn.open();
+      final SearchOperation search = new SearchOperation(conn);
 
-    final String expected = TestUtil.readFileIntoString(ldifFile);
+      final String expected = TestUtil.readFileIntoString(ldifFile);
 
-    // test merge searching
-    final MergeResultHandler handler = new MergeResultHandler();
+      // test merge searching
+      final MergeResultHandler handler = new MergeResultHandler();
 
-    final SearchRequest sr = new SearchRequest(
-      dn,
-      new SearchFilter(filter),
-      null,
-      new LdapResultHandler[]{handler});
-    sr.setSortBehavior(SortBehavior.SORTED);
-    final LdapResult result = search.execute(sr).getResult();
-    AssertJUnit.assertEquals(TestUtil.convertLdifToResult(expected), result);
-    conn.close();
+      final SearchRequest sr = new SearchRequest(
+        dn,
+        new SearchFilter(filter),
+        null,
+        new LdapResultHandler[]{handler});
+      sr.setSortBehavior(SortBehavior.SORTED);
+      final LdapResult result = search.execute(sr).getResult();
+      AssertJUnit.assertEquals(TestUtil.convertLdifToResult(expected), result);
+    } finally {
+      conn.close();
+    }
   }
 
 
@@ -550,23 +550,26 @@ public class SearchOperationTest extends AbstractTest
     throws Exception
   {
     final Connection conn = createLdapConnection(true);
-    conn.open();
-    final SearchOperation search = new SearchOperation(conn);
+    try {
+      conn.open();
+      final SearchOperation search = new SearchOperation(conn);
 
-    final String expected = TestUtil.readFileIntoString(ldifFile);
+      final String expected = TestUtil.readFileIntoString(ldifFile);
 
-    // test merge searching
-    final MergeResultHandler handler = new MergeResultHandler();
+      // test merge searching
+      final MergeResultHandler handler = new MergeResultHandler();
 
-    final SearchRequest sr = new SearchRequest(
-      dn,
-      new SearchFilter(filter),
-      null,
-      new LdapResultHandler[]{handler});
-    sr.setSortBehavior(SortBehavior.SORTED);
-    final LdapResult result = search.execute(sr).getResult();
-    AssertJUnit.assertEquals(TestUtil.convertLdifToResult(expected), result);
-    conn.close();
+      final SearchRequest sr = new SearchRequest(
+        dn,
+        new SearchFilter(filter),
+        null,
+        new LdapResultHandler[]{handler});
+      sr.setSortBehavior(SortBehavior.SORTED);
+      final LdapResult result = search.execute(sr).getResult();
+      AssertJUnit.assertEquals(TestUtil.convertLdifToResult(expected), result);
+    } finally {
+      conn.close();
+    }
   }
 
 
@@ -593,27 +596,30 @@ public class SearchOperationTest extends AbstractTest
     throws Exception
   {
     final Connection conn = createLdapConnection(true);
-    conn.open();
-    final SearchOperation search = new SearchOperation(conn);
+    try {
+      conn.open();
+      final SearchOperation search = new SearchOperation(conn);
 
-    final String expected = TestUtil.readFileIntoString(ldifFile);
+      final String expected = TestUtil.readFileIntoString(ldifFile);
 
-    // test merge searching
-    final MergeAttributeResultHandler handler =
-      new MergeAttributeResultHandler();
-    handler.setMergeAttributeName("cn");
-    handler.setAttributeNames(
-      new String[] {"displayName", "givenName", "sn", });
+      // test merge searching
+      final MergeAttributeResultHandler handler =
+        new MergeAttributeResultHandler();
+      handler.setMergeAttributeName("cn");
+      handler.setAttributeNames(
+        new String[] {"displayName", "givenName", "sn", });
 
-    final SearchRequest sr = new SearchRequest(
-      dn,
-      new SearchFilter(filter),
-      returnAttrs.split("\\|"),
-      new LdapResultHandler[]{handler});
-    sr.setSortBehavior(SortBehavior.SORTED);
-    final LdapResult result = search.execute(sr).getResult();
-    AssertJUnit.assertEquals(TestUtil.convertLdifToResult(expected), result);
-    conn.close();
+      final SearchRequest sr = new SearchRequest(
+        dn,
+        new SearchFilter(filter),
+        returnAttrs.split("\\|"),
+        new LdapResultHandler[]{handler});
+      sr.setSortBehavior(SortBehavior.SORTED);
+      final LdapResult result = search.execute(sr).getResult();
+      AssertJUnit.assertEquals(TestUtil.convertLdifToResult(expected), result);
+    } finally {
+      conn.close();
+    }
   }
 
 
@@ -693,83 +699,86 @@ public class SearchOperationTest extends AbstractTest
     throws Exception
   {
     final Connection conn = createLdapConnection(true);
-    conn.open();
-    final SearchOperation search = new SearchOperation(conn);
-    final CaseChangeResultHandler srh =
-      new CaseChangeResultHandler();
-    final String expected = TestUtil.readFileIntoString(ldifFile);
+    try {
+      conn.open();
+      final SearchOperation search = new SearchOperation(conn);
+      final CaseChangeResultHandler srh =
+        new CaseChangeResultHandler();
+      final String expected = TestUtil.readFileIntoString(ldifFile);
 
-    // test no case change
-    final LdapResult noChangeResult = TestUtil.convertLdifToResult(expected);
-    LdapResult result = search.execute(
-      new SearchRequest(
-        dn,
-        new SearchFilter(filter, filterArgs.split("\\|")),
-        returnAttrs.split("\\|"),
-        new LdapResultHandler[]{srh})).getResult();
-    AssertJUnit.assertEquals(noChangeResult, result);
+      // test no case change
+      final LdapResult noChangeResult = TestUtil.convertLdifToResult(expected);
+      LdapResult result = search.execute(
+        new SearchRequest(
+          dn,
+          new SearchFilter(filter, filterArgs.split("\\|")),
+          returnAttrs.split("\\|"),
+          new LdapResultHandler[]{srh})).getResult();
+      AssertJUnit.assertEquals(noChangeResult, result);
 
-    // test lower case attribute values
-    srh.setAttributeValueCaseChange(CaseChange.LOWER);
-    final LdapResult lcValuesChangeResult = TestUtil.convertLdifToResult(
-      expected);
-    for (LdapAttribute la : lcValuesChangeResult.getEntry().getAttributes()) {
-      final Set<String> s = new HashSet<String>();
-      for (String value : la.getStringValues()) {
-        s.add(value.toLowerCase());
+      // test lower case attribute values
+      srh.setAttributeValueCaseChange(CaseChange.LOWER);
+      final LdapResult lcValuesChangeResult = TestUtil.convertLdifToResult(
+        expected);
+      for (LdapAttribute la : lcValuesChangeResult.getEntry().getAttributes()) {
+        final Set<String> s = new HashSet<String>();
+        for (String value : la.getStringValues()) {
+          s.add(value.toLowerCase());
+        }
+        la.clear();
+        la.addStringValues(s);
       }
-      la.clear();
-      la.addStringValues(s);
-    }
-    result = search.execute(
-      new SearchRequest(
-        dn,
-        new SearchFilter(filter, filterArgs.split("\\|")),
-        returnAttrs.split("\\|"),
-        new LdapResultHandler[]{srh})).getResult();
-    AssertJUnit.assertEquals(lcValuesChangeResult, result);
+      result = search.execute(
+        new SearchRequest(
+          dn,
+          new SearchFilter(filter, filterArgs.split("\\|")),
+          returnAttrs.split("\\|"),
+          new LdapResultHandler[]{srh})).getResult();
+      AssertJUnit.assertEquals(lcValuesChangeResult, result);
 
-    // test upper case attribute names
-    srh.setAttributeValueCaseChange(CaseChange.NONE);
-    srh.setAttributeNameCaseChange(CaseChange.UPPER);
-    final LdapResult ucNamesChangeResult = TestUtil.convertLdifToResult(
-      expected);
-    for (LdapAttribute la : ucNamesChangeResult.getEntry().getAttributes()) {
-      la.setName(la.getName().toUpperCase());
-    }
-    result = search.execute(
-      new SearchRequest(
-        dn,
-        new SearchFilter(filter, filterArgs.split("\\|")),
-        returnAttrs.split("\\|"),
-        new LdapResultHandler[]{srh})).getResult();
-    AssertJUnit.assertEquals(ucNamesChangeResult, result);
-
-    // test lower case everything
-    srh.setAttributeValueCaseChange(CaseChange.LOWER);
-    srh.setAttributeNameCaseChange(CaseChange.LOWER);
-    srh.setDnCaseChange(CaseChange.LOWER);
-    final LdapResult lcAllChangeResult = TestUtil.convertLdifToResult(expected);
-    for (LdapAttribute la : ucNamesChangeResult.getEntry().getAttributes()) {
-      lcAllChangeResult.getEntry().setDn(
-        lcAllChangeResult.getEntry().getDn().toLowerCase());
-      la.setName(la.getName().toLowerCase());
-      final Set<String> s = new HashSet<String>();
-      for (String value : la.getStringValues()) {
-        s.add(value.toLowerCase());
+      // test upper case attribute names
+      srh.setAttributeValueCaseChange(CaseChange.NONE);
+      srh.setAttributeNameCaseChange(CaseChange.UPPER);
+      final LdapResult ucNamesChangeResult = TestUtil.convertLdifToResult(
+        expected);
+      for (LdapAttribute la : ucNamesChangeResult.getEntry().getAttributes()) {
+        la.setName(la.getName().toUpperCase());
       }
-      la.clear();
-      la.addStringValues(s);
-    }
-    result = search.execute(
-      new SearchRequest(
-        dn,
-        new SearchFilter(filter, filterArgs.split("\\|")),
-        returnAttrs.split("\\|"),
-        new LdapResultHandler[]{srh})).getResult();
-    AssertJUnit.assertEquals(ucNamesChangeResult, result);
+      result = search.execute(
+        new SearchRequest(
+          dn,
+          new SearchFilter(filter, filterArgs.split("\\|")),
+          returnAttrs.split("\\|"),
+          new LdapResultHandler[]{srh})).getResult();
+      AssertJUnit.assertEquals(ucNamesChangeResult, result);
 
-    conn.close();
+      // test lower case everything
+      srh.setAttributeValueCaseChange(CaseChange.LOWER);
+      srh.setAttributeNameCaseChange(CaseChange.LOWER);
+      srh.setDnCaseChange(CaseChange.LOWER);
+      final LdapResult lcAllChangeResult = TestUtil.convertLdifToResult(
+        expected);
+      for (LdapAttribute la : ucNamesChangeResult.getEntry().getAttributes()) {
+        lcAllChangeResult.getEntry().setDn(
+          lcAllChangeResult.getEntry().getDn().toLowerCase());
+        la.setName(la.getName().toLowerCase());
+        final Set<String> s = new HashSet<String>();
+        for (String value : la.getStringValues()) {
+          s.add(value.toLowerCase());
+        }
+        la.clear();
+        la.addStringValues(s);
+      }
+      result = search.execute(
+        new SearchRequest(
+          dn,
+          new SearchFilter(filter, filterArgs.split("\\|")),
+          returnAttrs.split("\\|"),
+          new LdapResultHandler[]{srh})).getResult();
+      AssertJUnit.assertEquals(ucNamesChangeResult, result);
+    } finally {
+      conn.close();
+    }
   }
 
 
@@ -871,24 +880,27 @@ public class SearchOperationTest extends AbstractTest
     throws Exception
   {
     final Connection conn = createLdapConnection(true);
-    conn.open();
+    try {
+      conn.open();
 
-    final SearchOperation search = new SearchOperation(conn);
-    final SearchRequest request = new SearchRequest();
-    request.setBaseDn(dn);
-    request.setSizeLimit(resultsSize);
+      final SearchOperation search = new SearchOperation(conn);
+      final SearchRequest request = new SearchRequest();
+      request.setBaseDn(dn);
+      request.setSizeLimit(resultsSize);
 
-    request.setSearchFilter(new SearchFilter("(uugid=*)"));
-    Response<LdapResult> response = search.execute(request);
-    AssertJUnit.assertEquals(resultsSize, response.getResult().size());
-    AssertJUnit.assertEquals(
-      ResultCode.SIZE_LIMIT_EXCEEDED, response.getResultCode());
+      request.setSearchFilter(new SearchFilter("(uugid=*)"));
+      Response<LdapResult> response = search.execute(request);
+      AssertJUnit.assertEquals(resultsSize, response.getResult().size());
+      AssertJUnit.assertEquals(
+        ResultCode.SIZE_LIMIT_EXCEEDED, response.getResultCode());
 
-    request.setSearchFilter(new SearchFilter(filter));
-    response = search.execute(request);
-    AssertJUnit.assertEquals(resultsSize, response.getResult().size());
-    AssertJUnit.assertEquals(ResultCode.SUCCESS, response.getResultCode());
-    conn.close();
+      request.setSearchFilter(new SearchFilter(filter));
+      response = search.execute(request);
+      AssertJUnit.assertEquals(resultsSize, response.getResult().size());
+      AssertJUnit.assertEquals(ResultCode.SUCCESS, response.getResultCode());
+    } finally {
+      conn.close();
+    }
   }
 
 
@@ -909,35 +921,34 @@ public class SearchOperationTest extends AbstractTest
     throws Exception
   {
     final Connection conn = createLdapConnection(true);
-    conn.open();
+    try {
+      conn.open();
 
-    // expects a referral on dc=vt,dc=edu that points to ou=people,dc=vt,dc=edu
-    final SearchOperation search = new SearchOperation(conn);
-    final SearchRequest request = new SearchRequest();
-    request.setBaseDn(dn);
-    request.setSearchScope(SearchScope.ONELEVEL);
-    request.setReturnAttributes(new String[0]);
-    request.setSearchFilter(new SearchFilter(filter));
+      // expects a referral on dc=vt,dc=edu that points to
+      // ou=people,dc=vt,dc=edu
+      final SearchOperation search = new SearchOperation(conn);
+      final SearchRequest request = new SearchRequest();
+      request.setBaseDn(dn);
+      request.setSearchScope(SearchScope.ONELEVEL);
+      request.setReturnAttributes(new String[0]);
+      request.setSearchFilter(new SearchFilter(filter));
 
-    Response<LdapResult> response = null;
-    if (DefaultConnectionFactory.getDefaultProvider().isSupported(
-        ReferralBehavior.FOLLOW)) {
+      Response<LdapResult> response = null;
       request.setReferralBehavior(ReferralBehavior.FOLLOW);
-      response = search.execute(request);
-      AssertJUnit.assertTrue(response.getResult().size() > 0);
-      AssertJUnit.assertEquals(ResultCode.SUCCESS, response.getResultCode());
-    }
+      try {
+        response = search.execute(request);
+        AssertJUnit.assertTrue(response.getResult().size() > 0);
+        AssertJUnit.assertEquals(ResultCode.SUCCESS, response.getResultCode());
+      } catch (UnsupportedOperationException e) {
+        // ignore this test if not supported
+        AssertJUnit.assertNotNull(e);
+      }
 
-    if (DefaultConnectionFactory.getDefaultProvider().isSupported(
-        ReferralBehavior.IGNORE)) {
       request.setReferralBehavior(ReferralBehavior.IGNORE);
       response = search.execute(request);
       AssertJUnit.assertTrue(response.getResult().size() > 0);
       AssertJUnit.assertEquals(ResultCode.SUCCESS, response.getResultCode());
-    }
 
-    if (DefaultConnectionFactory.getDefaultProvider().isSupported(
-        ReferralBehavior.THROW)) {
       request.setReferralBehavior(ReferralBehavior.THROW);
       try {
         response = search.execute(request);
@@ -945,9 +956,9 @@ public class SearchOperationTest extends AbstractTest
       } catch (LdapException e) {
         AssertJUnit.assertEquals(ResultCode.REFERRAL, e.getResultCode());
       }
+    } finally {
+      conn.close();
     }
-
-    conn.close();
   }
 
 
@@ -968,64 +979,68 @@ public class SearchOperationTest extends AbstractTest
       new ResultCode[] {retryResultCode, });
 
     Connection conn = cf.getConnection();
-
-    conn.open();
     RetrySearchOperation search = new RetrySearchOperation(conn);
 
-    // test defaults
     try {
-      search.execute(
-        new SearchRequest(
-          "ou=dne,dc=vt,dc=edu", new SearchFilter("(objectclass=*)")));
-      AssertJUnit.fail("Should have thrown LdapException");
-    } catch (LdapException e) {
-      AssertJUnit.assertEquals(
-        ResultCode.NO_SUCH_OBJECT, e.getResultCode());
-    }
-    AssertJUnit.assertEquals(1, search.getRetryCount());
-    AssertJUnit.assertTrue(search.getRunTime() > 0);
+      conn.open();
 
-    // test no retry
-    search.reset();
-    search.setOperationRetry(0);
+      // test defaults
+      try {
+        search.execute(
+          new SearchRequest(
+            "ou=dne,dc=vt,dc=edu", new SearchFilter("(objectclass=*)")));
+        AssertJUnit.fail("Should have thrown LdapException");
+      } catch (LdapException e) {
+        AssertJUnit.assertEquals(
+          ResultCode.NO_SUCH_OBJECT, e.getResultCode());
+      }
+      AssertJUnit.assertEquals(1, search.getRetryCount());
+      AssertJUnit.assertTrue(search.getRunTime() > 0);
 
-    try {
-      search.execute(
-        new SearchRequest(
-          "ou=dne,dc=vt,dc=edu", new SearchFilter("(objectclass=*)")));
-      AssertJUnit.fail("Should have thrown LdapException");
-    } catch (LdapException e) {
-      AssertJUnit.assertEquals(
-        ResultCode.NO_SUCH_OBJECT, e.getResultCode());
+      // test no retry
+      search.reset();
+      search.setOperationRetry(0);
+
+      try {
+        search.execute(
+          new SearchRequest(
+            "ou=dne,dc=vt,dc=edu", new SearchFilter("(objectclass=*)")));
+        AssertJUnit.fail("Should have thrown LdapException");
+      } catch (LdapException e) {
+        AssertJUnit.assertEquals(
+          ResultCode.NO_SUCH_OBJECT, e.getResultCode());
+      }
+      AssertJUnit.assertEquals(0, search.getRetryCount());
+      AssertJUnit.assertEquals(0, search.getRunTime());
+    } finally {
+      conn.close();
     }
-    AssertJUnit.assertEquals(0, search.getRetryCount());
-    AssertJUnit.assertEquals(0, search.getRunTime());
 
     // test no exception
-    conn.close();
-
     cf.getProvider().getProviderConfig().setOperationRetryResultCodes(null);
     conn = cf.getConnection();
     search = new RetrySearchOperation(conn);
     search.setOperationRetry(1);
 
-    conn.open();
     try {
-      final Response<LdapResult> response = search.execute(
-        new SearchRequest(
-          "ou=dne,dc=vt,dc=edu", new SearchFilter("(objectclass=*)")));
-      AssertJUnit.assertEquals(
-        ResultCode.NO_SUCH_OBJECT, response.getResultCode());
-    } catch (LdapException e) {
-      AssertJUnit.assertEquals(
-        ResultCode.NO_SUCH_OBJECT, e.getResultCode());
+      conn.open();
+      try {
+        final Response<LdapResult> response = search.execute(
+          new SearchRequest(
+            "ou=dne,dc=vt,dc=edu", new SearchFilter("(objectclass=*)")));
+        AssertJUnit.assertEquals(
+          ResultCode.NO_SUCH_OBJECT, response.getResultCode());
+      } catch (LdapException e) {
+        AssertJUnit.assertEquals(
+          ResultCode.NO_SUCH_OBJECT, e.getResultCode());
+      }
+      AssertJUnit.assertEquals(0, search.getRetryCount());
+      AssertJUnit.assertEquals(0, search.getRunTime());
+    } finally {
+      conn.close();
     }
-    AssertJUnit.assertEquals(0, search.getRetryCount());
-    AssertJUnit.assertEquals(0, search.getRunTime());
 
     // test retry count and wait time
-    conn.close();
-
     cf.getProvider().getProviderConfig().setOperationRetryResultCodes(
       new ResultCode[] {retryResultCode, });
     conn = cf.getConnection();
@@ -1033,50 +1048,53 @@ public class SearchOperationTest extends AbstractTest
     search.setOperationRetry(3);
     search.setOperationRetryWait(1000);
 
-    conn.open();
     try {
-      search.execute(
-        new SearchRequest(
-          "ou=dne,dc=vt,dc=edu", new SearchFilter("(objectclass=*)")));
-      AssertJUnit.fail("Should have thrown LdapException");
-    } catch (LdapException e) {
-      AssertJUnit.assertEquals(
-        ResultCode.NO_SUCH_OBJECT, e.getResultCode());
-    }
-    AssertJUnit.assertEquals(3, search.getRetryCount());
-    AssertJUnit.assertTrue(search.getRunTime() > 0);
+      conn.open();
+      try {
+        search.execute(
+          new SearchRequest(
+            "ou=dne,dc=vt,dc=edu", new SearchFilter("(objectclass=*)")));
+        AssertJUnit.fail("Should have thrown LdapException");
+      } catch (LdapException e) {
+        AssertJUnit.assertEquals(
+          ResultCode.NO_SUCH_OBJECT, e.getResultCode());
+      }
+      AssertJUnit.assertEquals(3, search.getRetryCount());
+      AssertJUnit.assertTrue(search.getRunTime() > 0);
 
-    // test backoff interval
-    search.reset();
-    search.setOperationRetryBackoff(2);
-    try {
-      search.execute(
-        new SearchRequest(
-          "ou=dne,dc=vt,dc=edu", new SearchFilter("(objectclass=*)")));
-      AssertJUnit.fail("Should have thrown LdapException");
-    } catch (LdapException e) {
-      AssertJUnit.assertEquals(
-        ResultCode.NO_SUCH_OBJECT, e.getResultCode());
-    }
-    AssertJUnit.assertEquals(3, search.getRetryCount());
-    AssertJUnit.assertTrue(search.getRunTime() > 0);
+      // test backoff interval
+      search.reset();
+      search.setOperationRetryBackoff(2);
+      try {
+        search.execute(
+          new SearchRequest(
+            "ou=dne,dc=vt,dc=edu", new SearchFilter("(objectclass=*)")));
+        AssertJUnit.fail("Should have thrown LdapException");
+      } catch (LdapException e) {
+        AssertJUnit.assertEquals(
+          ResultCode.NO_SUCH_OBJECT, e.getResultCode());
+      }
+      AssertJUnit.assertEquals(3, search.getRetryCount());
+      AssertJUnit.assertTrue(search.getRunTime() > 0);
 
-    // test infinite retries
-    search.reset();
-    search.setStopCount(10);
-    search.setOperationRetry(-1);
-    try {
-      search.execute(
-        new SearchRequest(
-          "ou=dne,dc=vt,dc=edu", new SearchFilter("(objectclass=*)")));
-      AssertJUnit.fail("Should have thrown LdapException");
-    } catch (LdapException e) {
-      AssertJUnit.assertEquals(
-        ResultCode.NO_SUCH_OBJECT, e.getResultCode());
+      // test infinite retries
+      search.reset();
+      search.setStopCount(10);
+      search.setOperationRetry(-1);
+      try {
+        search.execute(
+          new SearchRequest(
+            "ou=dne,dc=vt,dc=edu", new SearchFilter("(objectclass=*)")));
+        AssertJUnit.fail("Should have thrown LdapException");
+      } catch (LdapException e) {
+        AssertJUnit.assertEquals(
+          ResultCode.NO_SUCH_OBJECT, e.getResultCode());
+      }
+      AssertJUnit.assertEquals(10, search.getRetryCount());
+      AssertJUnit.assertTrue(search.getRunTime() > 0);
+    } finally {
+      conn.close();
     }
-    AssertJUnit.assertEquals(10, search.getRetryCount());
-    AssertJUnit.assertTrue(search.getRunTime() > 0);
-    conn.close();
   }
 
 
@@ -1138,17 +1156,20 @@ public class SearchOperationTest extends AbstractTest
     throws Exception
   {
     final Connection conn = createLdapConnection(true);
-    conn.open();
-    final SearchOperation search = new SearchOperation(conn);
-    final SearchRequest request = SearchRequest.newObjectScopeSearchRequest(
-      dn, returnAttrs.split("\\|"));
-    request.setBinaryAttributes(new String[]{"jpegPhoto"});
-    final LdapResult result = search.execute(request).getResult();
-    AssertJUnit.assertEquals(
-      TestUtil.convertStringToEntry(
-        dn, results).getAttribute("jpegPhoto").getStringValue(),
-      result.getEntry().getAttribute("jpegPhoto").getStringValue());
-    conn.close();
+    try {
+      conn.open();
+      final SearchOperation search = new SearchOperation(conn);
+      final SearchRequest request = SearchRequest.newObjectScopeSearchRequest(
+        dn, returnAttrs.split("\\|"));
+      request.setBinaryAttributes(new String[]{"jpegPhoto"});
+      final LdapResult result = search.execute(request).getResult();
+      AssertJUnit.assertEquals(
+        TestUtil.convertStringToEntry(
+          dn, results).getAttribute("jpegPhoto").getStringValue(),
+        result.getEntry().getAttribute("jpegPhoto").getStringValue());
+    } finally {
+      conn.close();
+    }
   }
 
 
@@ -1158,13 +1179,16 @@ public class SearchOperationTest extends AbstractTest
     throws Exception
   {
     final Connection conn = createLdapConnection(true);
-    conn.open();
-    final SearchOperation search = new SearchOperation(conn);
-    final LdapResult result = search.execute(
-      SearchRequest.newObjectScopeSearchRequest(
-        "", new String[] {"supportedSASLMechanisms"})).getResult();
-    AssertJUnit.assertTrue(result.getEntry().getAttributes().size() > 0);
-    conn.close();
+    try {
+      conn.open();
+      final SearchOperation search = new SearchOperation(conn);
+      final LdapResult result = search.execute(
+        SearchRequest.newObjectScopeSearchRequest(
+          "", new String[] {"supportedSASLMechanisms"})).getResult();
+      AssertJUnit.assertTrue(result.getEntry().getAttributes().size() > 0);
+    } finally {
+      conn.close();
+    }
   }
 
 
@@ -1174,13 +1198,16 @@ public class SearchOperationTest extends AbstractTest
     throws Exception
   {
     final Connection conn = createLdapConnection(true);
-    conn.open();
-    final SearchOperation search = new SearchOperation(conn);
-    final LdapResult result = search.execute(
-      SearchRequest.newObjectScopeSearchRequest(
-        "", new String[] {"supportedcontrol"})).getResult();
-    AssertJUnit.assertTrue(result.getEntry().getAttributes().size() > 0);
-    conn.close();
+    try {
+      conn.open();
+      final SearchOperation search = new SearchOperation(conn);
+      final LdapResult result = search.execute(
+        SearchRequest.newObjectScopeSearchRequest(
+          "", new String[] {"supportedcontrol"})).getResult();
+      AssertJUnit.assertTrue(result.getEntry().getAttributes().size() > 0);
+    } finally {
+      conn.close();
+    }
   }
 
 
@@ -1211,23 +1238,20 @@ public class SearchOperationTest extends AbstractTest
     final String ldifFile)
     throws Exception
   {
-    if (!DefaultConnectionFactory.getDefaultProvider().isSupported(
-        Mechanism.DIGEST_MD5)) {
-      throw new SkipException("DIGEST-MD5 not supported.");
-    }
-
     final String expected = TestUtil.readFileIntoString(ldifFile);
-
     final Connection conn = TestUtil.createDigestMd5Connection();
-    conn.open();
-    final SearchOperation search = new SearchOperation(conn);
-    final LdapResult result = search.execute(
-      new SearchRequest(
-        dn,
-        new SearchFilter(filter, filterArgs.split("\\|")),
-        returnAttrs.split("\\|"))).getResult();
-    AssertJUnit.assertEquals(TestUtil.convertLdifToResult(expected), result);
-    conn.close();
+    try {
+      conn.open();
+      final SearchOperation search = new SearchOperation(conn);
+      final LdapResult result = search.execute(
+        new SearchRequest(
+          dn,
+          new SearchFilter(filter, filterArgs.split("\\|")),
+          returnAttrs.split("\\|"))).getResult();
+      AssertJUnit.assertEquals(TestUtil.convertLdifToResult(expected), result);
+    } finally {
+      conn.close();
+    }
   }
 
 
@@ -1258,23 +1282,20 @@ public class SearchOperationTest extends AbstractTest
     final String ldifFile)
     throws Exception
   {
-    if (!DefaultConnectionFactory.getDefaultProvider().isSupported(
-        Mechanism.CRAM_MD5)) {
-      throw new SkipException("CRAM-MD5 not supported.");
-    }
-
     final String expected = TestUtil.readFileIntoString(ldifFile);
-
     final Connection conn = TestUtil.createCramMd5Connection();
-    conn.open();
-    final SearchOperation search = new SearchOperation(conn);
-    final LdapResult result = search.execute(
-      new SearchRequest(
-        dn,
-        new SearchFilter(filter, filterArgs.split("\\|")),
-        returnAttrs.split("\\|"))).getResult();
-    AssertJUnit.assertEquals(TestUtil.convertLdifToResult(expected), result);
-    conn.close();
+    try {
+      conn.open();
+      final SearchOperation search = new SearchOperation(conn);
+      final LdapResult result = search.execute(
+        new SearchRequest(
+          dn,
+          new SearchFilter(filter, filterArgs.split("\\|")),
+          returnAttrs.split("\\|"))).getResult();
+      AssertJUnit.assertEquals(TestUtil.convertLdifToResult(expected), result);
+    } finally {
+      conn.close();
+    }
   }
 
 
@@ -1305,23 +1326,20 @@ public class SearchOperationTest extends AbstractTest
     final String ldifFile)
     throws Exception
   {
-    if (!DefaultConnectionFactory.getDefaultProvider().isSupported(
-        Mechanism.EXTERNAL)) {
-      throw new SkipException("SASL External not supported.");
-    }
-
     final String expected = TestUtil.readFileIntoString(ldifFile);
-
     final Connection conn = TestUtil.createSaslExternalConnection();
-    conn.open();
-    final SearchOperation search = new SearchOperation(conn);
-    final LdapResult result = search.execute(
-      new SearchRequest(
-        dn,
-        new SearchFilter(filter, filterArgs.split("\\|")),
-        returnAttrs.split("\\|"))).getResult();
-    AssertJUnit.assertEquals(TestUtil.convertLdifToResult(expected), result);
-    conn.close();
+    try {
+      conn.open();
+      final SearchOperation search = new SearchOperation(conn);
+      final LdapResult result = search.execute(
+        new SearchRequest(
+          dn,
+          new SearchFilter(filter, filterArgs.split("\\|")),
+          returnAttrs.split("\\|"))).getResult();
+      AssertJUnit.assertEquals(TestUtil.convertLdifToResult(expected), result);
+    } finally {
+      conn.close();
+    }
   }
 
 
@@ -1358,11 +1376,6 @@ public class SearchOperationTest extends AbstractTest
     final String ldifFile)
     throws Exception
   {
-    if (!DefaultConnectionFactory.getDefaultProvider().isSupported(
-        Mechanism.GSSAPI)) {
-      throw new SkipException("GSSAPI not supported.");
-    }
-
     System.setProperty(
       "java.security.auth.login.config",
       "target/test-classes/ldap_jaas.config");
@@ -1374,19 +1387,21 @@ public class SearchOperationTest extends AbstractTest
     final String expected = TestUtil.readFileIntoString(ldifFile);
 
     final Connection conn = TestUtil.createGssApiConnection();
-    conn.open();
-    final SearchOperation search = new SearchOperation(conn);
-    final LdapResult result = search.execute(
-      new SearchRequest(
-        dn,
-        new SearchFilter(filter, filterArgs.split("\\|")),
-        returnAttrs.split("\\|"))).getResult();
-    AssertJUnit.assertEquals(TestUtil.convertLdifToResult(expected), result);
-    conn.close();
-
-    System.clearProperty("java.security.auth.login.config");
-    System.clearProperty("javax.security.auth.useSubjectCredsOnly");
-    System.clearProperty("java.security.krb5.realm");
-    System.clearProperty("java.security.krb5.kdc");
+    try {
+      conn.open();
+      final SearchOperation search = new SearchOperation(conn);
+      final LdapResult result = search.execute(
+        new SearchRequest(
+          dn,
+          new SearchFilter(filter, filterArgs.split("\\|")),
+          returnAttrs.split("\\|"))).getResult();
+      AssertJUnit.assertEquals(TestUtil.convertLdifToResult(expected), result);
+    } finally {
+      System.clearProperty("java.security.auth.login.config");
+      System.clearProperty("javax.security.auth.useSubjectCredsOnly");
+      System.clearProperty("java.security.krb5.realm");
+      System.clearProperty("java.security.krb5.kdc");
+      conn.close();
+    }
   }
 }

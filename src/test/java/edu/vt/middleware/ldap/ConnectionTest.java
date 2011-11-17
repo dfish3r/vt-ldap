@@ -46,12 +46,15 @@ public class ConnectionTest
     final String ldif = TestUtil.readFileIntoString(ldifFile);
     testLdapEntry = TestUtil.convertLdifToResult(ldif).getEntry();
     final Connection conn = TestUtil.createConnection();
-    conn.open();
-    final AddOperation add = new AddOperation(conn);
-    final Response<Void> response = add.execute(
-      new AddRequest(testLdapEntry.getDn(), testLdapEntry.getAttributes()));
-    AssertJUnit.assertEquals(ResultCode.SUCCESS, response.getResultCode());
-    conn.close();
+    try {
+      conn.open();
+      final AddOperation add = new AddOperation(conn);
+      final Response<Void> response = add.execute(
+        new AddRequest(testLdapEntry.getDn(), testLdapEntry.getAttributes()));
+      AssertJUnit.assertEquals(ResultCode.SUCCESS, response.getResultCode());
+    } finally {
+      conn.close();
+    }
   }
 
 
@@ -61,14 +64,17 @@ public class ConnectionTest
     throws Exception
   {
     final Connection conn = TestUtil.createConnection();
-    conn.open();
-    final CompareOperation compare = new CompareOperation(conn);
-    AssertJUnit.assertTrue(
-      compare.execute(
-        new CompareRequest(
-          testLdapEntry.getDn(),
-          testLdapEntry.getAttribute("mail"))).getResult());
-    conn.close();
+    try {
+      conn.open();
+      final CompareOperation compare = new CompareOperation(conn);
+      AssertJUnit.assertTrue(
+        compare.execute(
+          new CompareRequest(
+            testLdapEntry.getDn(),
+            testLdapEntry.getAttribute("mail"))).getResult());
+    } finally {
+      conn.close();
+    }
   }
 
 
@@ -78,12 +84,15 @@ public class ConnectionTest
     throws Exception
   {
     final Connection conn = TestUtil.createConnection();
-    conn.open();
-    final DeleteOperation delete = new DeleteOperation(conn);
-    final Response<Void> response = delete.execute(
-      new DeleteRequest(testLdapEntry.getDn()));
-    AssertJUnit.assertEquals(ResultCode.SUCCESS, response.getResultCode());
-    conn.close();
+    try {
+      conn.open();
+      final DeleteOperation delete = new DeleteOperation(conn);
+      final Response<Void> response = delete.execute(
+        new DeleteRequest(testLdapEntry.getDn()));
+      AssertJUnit.assertEquals(ResultCode.SUCCESS, response.getResultCode());
+    } finally {
+      conn.close();
+    }
   }
 
 
@@ -93,16 +102,19 @@ public class ConnectionTest
     throws Exception
   {
     final Connection conn = TestUtil.createConnection();
-    conn.open();
-    final ModifyOperation modify = new ModifyOperation(conn);
-    final Response<Void> response = modify.execute(
-      new ModifyRequest(testLdapEntry.getDn(),
-        new AttributeModification[] {
-          new AttributeModification(
-            AttributeModificationType.ADD,
-            new LdapAttribute("title", "President")), }));
-    AssertJUnit.assertEquals(ResultCode.SUCCESS, response.getResultCode());
-    conn.close();
+    try {
+      conn.open();
+      final ModifyOperation modify = new ModifyOperation(conn);
+      final Response<Void> response = modify.execute(
+        new ModifyRequest(testLdapEntry.getDn(),
+          new AttributeModification[] {
+            new AttributeModification(
+              AttributeModificationType.ADD,
+              new LdapAttribute("title", "President")), }));
+      AssertJUnit.assertEquals(ResultCode.SUCCESS, response.getResultCode());
+    } finally {
+      conn.close();
+    }
   }
 
 
@@ -112,17 +124,20 @@ public class ConnectionTest
     throws Exception
   {
     final Connection conn = TestUtil.createConnection();
-    conn.open();
-    final RenameOperation rename = new RenameOperation(conn);
-    Response<Void> response = rename.execute(
-      new RenameRequest(
-        testLdapEntry.getDn(), "uid=1500,ou=test,dc=vt,dc=edu"));
-    AssertJUnit.assertEquals(ResultCode.SUCCESS, response.getResultCode());
-    response = rename.execute(
-      new RenameRequest(
-        "uid=1500,ou=test,dc=vt,dc=edu", testLdapEntry.getDn()));
-    AssertJUnit.assertEquals(ResultCode.SUCCESS, response.getResultCode());
-    conn.close();
+    try {
+      conn.open();
+      final RenameOperation rename = new RenameOperation(conn);
+      Response<Void> response = rename.execute(
+        new RenameRequest(
+          testLdapEntry.getDn(), "uid=1500,ou=test,dc=vt,dc=edu"));
+      AssertJUnit.assertEquals(ResultCode.SUCCESS, response.getResultCode());
+      response = rename.execute(
+        new RenameRequest(
+          "uid=1500,ou=test,dc=vt,dc=edu", testLdapEntry.getDn()));
+      AssertJUnit.assertEquals(ResultCode.SUCCESS, response.getResultCode());
+    } finally {
+      conn.close();
+    }
   }
 
 
@@ -132,13 +147,16 @@ public class ConnectionTest
     throws Exception
   {
     final Connection conn = TestUtil.createConnection();
-    conn.open();
-    final SearchOperation search = new SearchOperation(conn);
-    final LdapResult lr = search.execute(
-      new SearchRequest(
-        "ou=test,dc=vt,dc=edu", new SearchFilter("(uid=15)"))).getResult();
-    AssertJUnit.assertEquals(testLdapEntry.getDn(), lr.getEntry().getDn());
-    conn.close();
+    try {
+      conn.open();
+      final SearchOperation search = new SearchOperation(conn);
+      final LdapResult lr = search.execute(
+        new SearchRequest(
+          "ou=test,dc=vt,dc=edu", new SearchFilter("(uid=15)"))).getResult();
+      AssertJUnit.assertEquals(testLdapEntry.getDn(), lr.getEntry().getDn());
+    } finally {
+      conn.close();
+    }
   }
 
 
@@ -153,42 +171,78 @@ public class ConnectionTest
           "/edu/vt/middleware/ldap/ldap.conn.properties")));
     Connection conn = connFactory.getConnection();
 
-    conn.open();
-    conn.close();
-    conn.open();
-    conn.close();
-    conn.open();
-    conn.close();
+    try {
+      conn.open();
+    } finally {
+      conn.close();
+    }
+    try {
+      conn.open();
+    } finally {
+      conn.close();
+    }
+    try {
+      conn.open();
+    } finally {
+      conn.close();
+    }
 
     connFactory.getProvider().getProviderConfig().setConnectionStrategy(
       ConnectionStrategy.DEFAULT);
     conn = connFactory.getConnection();
-    conn.open();
-    conn.close();
-    conn.open();
-    conn.close();
-    conn.open();
-    conn.close();
+    try {
+      conn.open();
+    } finally {
+      conn.close();
+    }
+    try {
+      conn.open();
+    } finally {
+      conn.close();
+    }
+    try {
+      conn.open();
+    } finally {
+      conn.close();
+    }
 
     connFactory.getProvider().getProviderConfig().setConnectionStrategy(
       ConnectionStrategy.ACTIVE_PASSIVE);
     conn = connFactory.getConnection();
-    conn.open();
-    conn.close();
-    conn.open();
-    conn.close();
-    conn.open();
-    conn.close();
+    try {
+      conn.open();
+    } finally {
+      conn.close();
+    }
+    try {
+      conn.open();
+    } finally {
+      conn.close();
+    }
+    try {
+      conn.open();
+    } finally {
+      conn.close();
+    }
 
     connFactory.getProvider().getProviderConfig().setConnectionStrategy(
       ConnectionStrategy.RANDOM);
     conn = connFactory.getConnection();
-    conn.open();
-    conn.close();
-    conn.open();
-    conn.close();
-    conn.open();
-    conn.close();
+    try {
+      conn.open();
+    } finally {
+      conn.close();
+    }
+    try {
+      conn.open();
+    } finally {
+      conn.close();
+    }
+    try {
+      conn.open();
+    } finally {
+      conn.close();
+    }
   }
 
 

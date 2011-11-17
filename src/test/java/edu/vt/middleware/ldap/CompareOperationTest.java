@@ -78,19 +78,22 @@ public class CompareOperationTest extends AbstractTest
     throws Exception
   {
     final Connection conn = TestUtil.createConnection();
-    conn.open();
-    final CompareOperation compare = new CompareOperation(conn);
-    LdapAttribute la = new LdapAttribute();
-    la.setName("cn");
-    la.addStringValue("not-a-name");
-    AssertJUnit.assertFalse(
-      compare.execute(new CompareRequest(dn, la)).getResult());
+    try {
+      conn.open();
+      final CompareOperation compare = new CompareOperation(conn);
+      LdapAttribute la = new LdapAttribute();
+      la.setName("cn");
+      la.addStringValue("not-a-name");
+      AssertJUnit.assertFalse(
+        compare.execute(new CompareRequest(dn, la)).getResult());
 
-    la = new LdapAttribute();
-    la.setName(attrName);
-    la.addStringValue(attrValue);
-    AssertJUnit.assertTrue(
-      compare.execute(new CompareRequest(dn, la)).getResult());
-    conn.close();
+      la = new LdapAttribute();
+      la.setName(attrName);
+      la.addStringValue(attrValue);
+      AssertJUnit.assertTrue(
+        compare.execute(new CompareRequest(dn, la)).getResult());
+    } finally {
+      conn.close();
+    }
   }
 }

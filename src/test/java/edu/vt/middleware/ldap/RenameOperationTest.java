@@ -75,44 +75,47 @@ public class RenameOperationTest extends AbstractTest
     throws Exception
   {
     final Connection conn = TestUtil.createConnection();
-    conn.open();
-    final SearchOperation search = new SearchOperation(conn);
-    AssertJUnit.assertTrue(
-      search.execute(
-        SearchRequest.newObjectScopeSearchRequest(
-          oldDn)).getResult().size() > 0);
-    final RenameOperation rename = new RenameOperation(conn);
-    Response<Void> response = rename.execute(
-      new RenameRequest(oldDn, newDn));
-    AssertJUnit.assertEquals(ResultCode.SUCCESS, response.getResultCode());
-    renameLdapEntry = search.execute(
-      SearchRequest.newObjectScopeSearchRequest(
-        newDn)).getResult().getEntry();
-    AssertJUnit.assertNotNull(renameLdapEntry);
     try {
-      final Response<LdapResult> r = search.execute(
-        SearchRequest.newObjectScopeSearchRequest(oldDn));
-      AssertJUnit.assertEquals(ResultCode.NO_SUCH_OBJECT, r.getResultCode());
-    } catch (LdapException e) {
-      AssertJUnit.assertEquals(ResultCode.NO_SUCH_OBJECT, e.getResultCode());
-    } catch (Exception e) {
-      AssertJUnit.fail("Should have thrown LdapException, threw " + e);
-    }
-    response = rename.execute(new RenameRequest(newDn, oldDn));
-    AssertJUnit.assertEquals(ResultCode.SUCCESS, response.getResultCode());
-    AssertJUnit.assertTrue(
-      search.execute(
+      conn.open();
+      final SearchOperation search = new SearchOperation(conn);
+      AssertJUnit.assertTrue(
+        search.execute(
+          SearchRequest.newObjectScopeSearchRequest(
+            oldDn)).getResult().size() > 0);
+      final RenameOperation rename = new RenameOperation(conn);
+      Response<Void> response = rename.execute(
+        new RenameRequest(oldDn, newDn));
+      AssertJUnit.assertEquals(ResultCode.SUCCESS, response.getResultCode());
+      renameLdapEntry = search.execute(
         SearchRequest.newObjectScopeSearchRequest(
-          oldDn)).getResult().size() > 0);
-    try {
-      final Response<LdapResult> r = search.execute(
-        SearchRequest.newObjectScopeSearchRequest(newDn));
-      AssertJUnit.assertEquals(ResultCode.NO_SUCH_OBJECT, r.getResultCode());
-    } catch (LdapException e) {
-      AssertJUnit.assertEquals(ResultCode.NO_SUCH_OBJECT, e.getResultCode());
-    } catch (Exception e) {
-      AssertJUnit.fail("Should have thrown LdapException, threw " + e);
+          newDn)).getResult().getEntry();
+      AssertJUnit.assertNotNull(renameLdapEntry);
+      try {
+        final Response<LdapResult> r = search.execute(
+          SearchRequest.newObjectScopeSearchRequest(oldDn));
+        AssertJUnit.assertEquals(ResultCode.NO_SUCH_OBJECT, r.getResultCode());
+      } catch (LdapException e) {
+        AssertJUnit.assertEquals(ResultCode.NO_SUCH_OBJECT, e.getResultCode());
+      } catch (Exception e) {
+        AssertJUnit.fail("Should have thrown LdapException, threw " + e);
+      }
+      response = rename.execute(new RenameRequest(newDn, oldDn));
+      AssertJUnit.assertEquals(ResultCode.SUCCESS, response.getResultCode());
+      AssertJUnit.assertTrue(
+        search.execute(
+          SearchRequest.newObjectScopeSearchRequest(
+            oldDn)).getResult().size() > 0);
+      try {
+        final Response<LdapResult> r = search.execute(
+          SearchRequest.newObjectScopeSearchRequest(newDn));
+        AssertJUnit.assertEquals(ResultCode.NO_SUCH_OBJECT, r.getResultCode());
+      } catch (LdapException e) {
+        AssertJUnit.assertEquals(ResultCode.NO_SUCH_OBJECT, e.getResultCode());
+      } catch (Exception e) {
+        AssertJUnit.fail("Should have thrown LdapException, threw " + e);
+      }
+    } finally {
+      conn.close();
     }
-    conn.close();
   }
 }

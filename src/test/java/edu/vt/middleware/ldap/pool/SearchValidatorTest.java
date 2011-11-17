@@ -39,10 +39,13 @@ public class SearchValidatorTest extends AbstractTest
     throws Exception
   {
     final Connection c = TestUtil.createConnection();
-    c.open();
     final SearchValidator sv = new SearchValidator();
-    AssertJUnit.assertTrue(sv.validate(c));
-    c.close();
+    try {
+      c.open();
+      AssertJUnit.assertTrue(sv.validate(c));
+    } finally {
+      c.close();
+    }
     AssertJUnit.assertFalse(sv.validate(c));
   }
 
@@ -55,13 +58,16 @@ public class SearchValidatorTest extends AbstractTest
     throws Exception
   {
     final Connection c = TestUtil.createConnection();
-    c.open();
     final SearchValidator sv = new SearchValidator(
       new SearchRequest("ou=test,dc=vt,dc=edu", new SearchFilter("uid=*")));
-    AssertJUnit.assertTrue(sv.validate(c));
-    sv.getSearchRequest().setSearchFilter(new SearchFilter("dne=*"));
-    AssertJUnit.assertFalse(sv.validate(c));
-    c.close();
+    try {
+      c.open();
+      AssertJUnit.assertTrue(sv.validate(c));
+      sv.getSearchRequest().setSearchFilter(new SearchFilter("dne=*"));
+      AssertJUnit.assertFalse(sv.validate(c));
+    } finally {
+      c.close();
+    }
     AssertJUnit.assertFalse(sv.validate(c));
   }
 }

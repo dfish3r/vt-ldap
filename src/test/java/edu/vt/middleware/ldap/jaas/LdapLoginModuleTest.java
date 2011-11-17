@@ -125,34 +125,37 @@ public class LdapLoginModuleTest extends AbstractTest
 
     // setup group relationships
     final Connection conn = TestUtil.createSetupConnection();
-    conn.open();
-    final ModifyOperation modify = new ModifyOperation(conn);
-    modify.execute(new ModifyRequest(
-      groupEntries.get("6")[0].getDn(),
-      new AttributeModification(
-        AttributeModificationType.ADD,
-        new LdapAttribute(
-          "member",
-          new String[]{
-            "uid=10,ou=test,dc=vt,dc=edu",
-            "uugid=group7,ou=test,dc=vt,dc=edu", }))));
-    modify.execute(new ModifyRequest(
-      groupEntries.get("7")[0].getDn(),
-      new AttributeModification(
-        AttributeModificationType.ADD,
-        new LdapAttribute(
-          "member",
-          new String[]{
-            "uugid=group8,ou=test,dc=vt,dc=edu",
-            "uugid=group9,ou=test,dc=vt,dc=edu", }))));
-    modify.execute(new ModifyRequest(
-      groupEntries.get("8")[0].getDn(),
-      new AttributeModification(
-        AttributeModificationType.ADD,
-        new LdapAttribute(
-          "member",
-          new String[]{"uugid=group7,ou=test,dc=vt,dc=edu"}))));
-    conn.close();
+    try {
+      conn.open();
+      final ModifyOperation modify = new ModifyOperation(conn);
+      modify.execute(new ModifyRequest(
+        groupEntries.get("6")[0].getDn(),
+        new AttributeModification(
+          AttributeModificationType.ADD,
+          new LdapAttribute(
+            "member",
+            new String[]{
+              "uid=10,ou=test,dc=vt,dc=edu",
+              "uugid=group7,ou=test,dc=vt,dc=edu", }))));
+      modify.execute(new ModifyRequest(
+        groupEntries.get("7")[0].getDn(),
+        new AttributeModification(
+          AttributeModificationType.ADD,
+          new LdapAttribute(
+            "member",
+            new String[]{
+              "uugid=group8,ou=test,dc=vt,dc=edu",
+              "uugid=group9,ou=test,dc=vt,dc=edu", }))));
+      modify.execute(new ModifyRequest(
+        groupEntries.get("8")[0].getDn(),
+        new AttributeModification(
+          AttributeModificationType.ADD,
+          new LdapAttribute(
+            "member",
+            new String[]{"uugid=group7,ou=test,dc=vt,dc=edu"}))));
+    } finally {
+      conn.close();
+    }
   }
 
 
@@ -163,15 +166,30 @@ public class LdapLoginModuleTest extends AbstractTest
   {
     System.clearProperty("java.security.auth.login.config");
 
-    PropertiesAuthenticatorFactory.close();
-    PropertiesRoleResolverFactory.close();
-    SpringAuthenticatorFactory.close();
-
     super.deleteLdapEntry(testLdapEntry.getDn());
     super.deleteLdapEntry(groupEntries.get("6")[0].getDn());
     super.deleteLdapEntry(groupEntries.get("7")[0].getDn());
     super.deleteLdapEntry(groupEntries.get("8")[0].getDn());
     super.deleteLdapEntry(groupEntries.get("9")[0].getDn());
+
+    try {
+      PropertiesAuthenticatorFactory.close();
+    } catch (UnsupportedOperationException e) {
+      // ignore if not supported
+      AssertJUnit.assertNotNull(e);
+    }
+    try {
+      PropertiesRoleResolverFactory.close();
+    } catch (UnsupportedOperationException e) {
+      // ignore if not supported
+      AssertJUnit.assertNotNull(e);
+    }
+    try {
+      SpringAuthenticatorFactory.close();
+    } catch (UnsupportedOperationException e) {
+      // ignore if not supported
+      AssertJUnit.assertNotNull(e);
+    }
   }
 
 
@@ -448,6 +466,8 @@ public class LdapLoginModuleTest extends AbstractTest
     try {
       lc.login();
       AssertJUnit.fail("Invalid password, login should have failed");
+    } catch (UnsupportedOperationException e) {
+      throw e;
     } catch (Exception e) {
       AssertJUnit.assertEquals(e.getClass(), LoginException.class);
     }
@@ -456,6 +476,8 @@ public class LdapLoginModuleTest extends AbstractTest
     lc = new LoginContext(name, callback);
     try {
       lc.login();
+    } catch (UnsupportedOperationException e) {
+      throw e;
     } catch (Exception e) {
       AssertJUnit.fail(e.getMessage());
     }
@@ -616,6 +638,8 @@ public class LdapLoginModuleTest extends AbstractTest
     final LoginContext lc = new LoginContext(name, callback);
     try {
       lc.login();
+    } catch (UnsupportedOperationException e) {
+      throw e;
     } catch (Exception e) {
       AssertJUnit.fail(e.getMessage());
     }
