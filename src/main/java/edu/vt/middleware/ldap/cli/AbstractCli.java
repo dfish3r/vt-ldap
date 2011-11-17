@@ -81,6 +81,8 @@ public abstract class AbstractCli
         msg += " Underlying reason: " + iaex.getCause().getMessage();
       }
       System.err.println(msg);
+    } catch (RuntimeException rex) {
+      throw rex;
     } catch (Exception ex) {
       System.err.println("Operation failed:");
       ex.printStackTrace(System.err);
