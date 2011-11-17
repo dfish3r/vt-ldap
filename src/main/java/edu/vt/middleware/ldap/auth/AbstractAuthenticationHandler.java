@@ -72,6 +72,9 @@ public abstract class AbstractAuthenticationHandler
     } catch (LdapException e) {
       closeConn = true;
       throw e;
+    } catch (RuntimeException e) {
+      closeConn = true;
+      throw e;
     } finally {
       if (closeConn) {
         conn.close();
