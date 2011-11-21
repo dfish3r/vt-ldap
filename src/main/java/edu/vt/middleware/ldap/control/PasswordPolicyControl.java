@@ -13,6 +13,13 @@
 */
 package edu.vt.middleware.ldap.control;
 
+import java.nio.ByteBuffer;
+import edu.vt.middleware.ldap.asn1.DERParser;
+import edu.vt.middleware.ldap.asn1.DERPath;
+import edu.vt.middleware.ldap.asn1.IntegerConverter;
+import edu.vt.middleware.ldap.asn1.ParseHandler;
+import edu.vt.middleware.ldap.asn1.SimpleDERTag;
+
 /**
  * Request control for password policy. See
  * http://tools.ietf.org/html/draft-behera-ldap-password-policy-10.
@@ -218,5 +225,115 @@ public class PasswordPolicyControl extends AbstractControl
         timeBeforeExpiration,
         graceAuthNsRemaining,
         error);
+  }
+
+
+  /**
+   * Returns a password policy control parsed from the supplied BER value.
+   *
+   * @param  isCritical  whether this control is critical
+   * @param  berValue  to parse
+   * @return  password policy control
+   */
+  public static PasswordPolicyControl parsePasswordPolicy(
+    final boolean isCritical, final byte[] berValue)
+  {
+    final PasswordPolicyControl ppc = new PasswordPolicyControl(isCritical);
+    final PasswordPolicyHandler handler = new PasswordPolicyHandler(ppc);
+    final DERParser parser = new DERParser(
+      new SimpleDERTag(0, "CHOICE", true), new SimpleDERTag(1, "ENUM", true));
+    parser.registerHandler(PasswordPolicyHandler.WARNING_PATH, handler);
+    parser.registerHandler(PasswordPolicyHandler.ERROR_PATH, handler);
+    parser.parse(ByteBuffer.wrap(berValue));
+    return ppc;
+  }
+
+
+  /**
+   * Parse handler implementation for the password policy control.
+   */
+  private static class PasswordPolicyHandler implements ParseHandler
+  {
+
+    /** DER path to warnings. */
+    public static final DERPath WARNING_PATH = new DERPath("/SEQ/CHOICE");
+
+    /** DER path to errors. */
+    public static final DERPath ERROR_PATH = new DERPath("/SEQ/ENUM");
+
+    /** Choice time before expiration constant. */
+    private static final byte CHOICE_TIME_BEFORE_EXPIRATION = (byte) 0x80;
+
+    /** Choice grace auths remaining constant. */
+    private static final byte CHOICE_GRACE_AUTHNS_REMAINING = (byte) 0x81;
+
+    /** Integer converter. */
+    private static final IntegerConverter INT_CONV = new IntegerConverter();
+
+    /** Password policy control to configure with this handler. */
+    private final PasswordPolicyControl passwordPolicy;
+
+
+    /**
+     * Creates a new password policy handler.
+     *
+     * @param  control  to configure
+     */
+    public PasswordPolicyHandler(final PasswordPolicyControl control)
+    {
+      passwordPolicy = control;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void handle(final DERParser parser, final ByteBuffer encoded)
+    {
+      if (WARNING_PATH.equals(parser.getCurrentPath())) {
+        handleWarning(parser, encoded);
+      } else if (ERROR_PATH.equals(parser.getCurrentPath())) {
+        handleError(parser, encoded);
+      }
+    }
+
+
+    /**
+     * Decode password policy warnings.
+     *
+     * @param  parser  to parse byte buffer
+     * @param  encoded  containing ppolicy value
+     */
+    private void handleWarning(final DERParser parser, final ByteBuffer encoded)
+    {
+      final byte tag = encoded.get();
+      encoded.limit(parser.readLength(encoded) + encoded.position());
+      if (tag == CHOICE_TIME_BEFORE_EXPIRATION) {
+        passwordPolicy.setTimeBeforeExpiration(
+          INT_CONV.decode(encoded).intValue());
+      } else if (tag == CHOICE_GRACE_AUTHNS_REMAINING) {
+        passwordPolicy.setGraceAuthNsRemaining(
+          INT_CONV.decode(encoded).intValue());
+      } else {
+        throw new IllegalArgumentException("Unknown warning tag " + tag);
+      }
+    }
+
+
+    /**
+     * Decode password policy errors.
+     *
+     * @param  parser  to parse byte buffer
+     * @param  encoded  containing ppolicy value
+     */
+    private void handleError(final DERParser parser, final ByteBuffer encoded)
+    {
+      final int errValue = INT_CONV.decode(encoded).intValue();
+      final PasswordPolicyControl.Error e =
+        PasswordPolicyControl.Error.valueOf(errValue);
+      if (e == null) {
+        throw new IllegalArgumentException("Unknown error code " + errValue);
+      }
+      passwordPolicy.setError(e);
+    }
   }
 }

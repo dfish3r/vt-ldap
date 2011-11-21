@@ -15,10 +15,17 @@ package edu.vt.middleware.ldap.provider.jndi;
 
 import java.io.OutputStream;
 import java.util.Arrays;
+import javax.naming.ldap.Control;
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLSocketFactory;
 import edu.vt.middleware.ldap.ResultCode;
 import edu.vt.middleware.ldap.provider.ProviderConfig;
+import edu.vt.middleware.ldap.provider.control.ControlProcessor;
+import edu.vt.middleware.ldap.provider.jndi.control.ManageDsaITControlHandler;
+import edu.vt.middleware.ldap.provider.jndi.control.PagedResultsControlHandler;
+import edu.vt.middleware.ldap.provider.jndi.control.PasswordPolicyControlHandler;
+import edu.vt.middleware.ldap.provider.jndi.control.SortRequestControlHandler;
+import edu.vt.middleware.ldap.provider.jndi.control.SortResponseControlHandler;
 
 /**
  * Contains configuration data for the JNDI provider.
@@ -45,7 +52,7 @@ public class JndiProviderConfig extends ProviderConfig
   protected HostnameVerifier hostnameVerifier;
 
   /** JNDI specific control handler. */
-  protected JndiControlHandler controlHandler;
+  protected ControlProcessor<Control> controlProcessor;
 
 
   /** Default constructor. */
@@ -55,7 +62,18 @@ public class JndiProviderConfig extends ProviderConfig
       ResultCode.PROTOCOL_ERROR, ResultCode.BUSY, ResultCode.UNAVAILABLE, };
     searchIgnoreResultCodes = new ResultCode[] {
       ResultCode.TIME_LIMIT_EXCEEDED, ResultCode.SIZE_LIMIT_EXCEEDED, };
-    controlHandler = new JndiControlHandler();
+    controlProcessor = new ControlProcessor<Control>();
+    controlProcessor.addRequestControlHandler(new ManageDsaITControlHandler());
+    controlProcessor.addRequestControlHandler(new SortRequestControlHandler());
+    controlProcessor.addResponseControlHandler(
+      new SortResponseControlHandler());
+    controlProcessor.addRequestControlHandler(new PagedResultsControlHandler());
+    controlProcessor.addResponseControlHandler(
+      new PagedResultsControlHandler());
+    controlProcessor.addRequestControlHandler(
+      new PasswordPolicyControlHandler());
+    controlProcessor.addResponseControlHandler(
+      new PasswordPolicyControlHandler());
   }
 
 
@@ -179,25 +197,25 @@ public class JndiProviderConfig extends ProviderConfig
 
 
   /**
-   * Returns the control handler.
+   * Returns the control processor.
    *
-   * @return  control handler
+   * @return  control processor
    */
-  public JndiControlHandler getControlHandler()
+  public ControlProcessor<Control> getControlProcessor()
   {
-    return controlHandler;
+    return controlProcessor;
   }
 
 
   /**
-   * Sets the control handler.
+   * Sets the control processor.
    *
-   * @param  handler  control handler
+   * @param  processor  control processor
    */
-  public void setControlHandler(final JndiControlHandler handler)
+  public void setControlProcessor(final ControlProcessor<Control> processor)
   {
-    logger.trace("setting controlHandler: {}", handler);
-    controlHandler = handler;
+    logger.trace("setting controlProcessor: {}", processor);
+    controlProcessor = processor;
   }
 
 
@@ -213,7 +231,7 @@ public class JndiProviderConfig extends ProviderConfig
       "[%s@%d::operationRetryResultCodes=%s, properties=%s, " +
       "connectionStrategy=%s, logCredentials=%s, tracePackets=%s, " +
       "removeDnUrls=%s, searchIgnoreResultCodes=%s, sslSocketFactory=%s, " +
-      "hostnameVerifier=%s, controlHandler=%s]",
+      "hostnameVerifier=%s, controlProcessor=%s]",
       getClass().getName(),
       hashCode(),
       operationRetryResultCodes != null ?
@@ -227,6 +245,6 @@ public class JndiProviderConfig extends ProviderConfig
         Arrays.asList(searchIgnoreResultCodes) : null,
       sslSocketFactory,
       hostnameVerifier,
-      controlHandler);
+      controlProcessor);
   }
 }

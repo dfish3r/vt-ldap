@@ -29,8 +29,8 @@ import edu.vt.middleware.ldap.SearchRequest;
 import edu.vt.middleware.ldap.SearchScope;
 import edu.vt.middleware.ldap.control.Control;
 import edu.vt.middleware.ldap.control.PagedResultsControl;
-import edu.vt.middleware.ldap.provider.ControlHandler;
 import edu.vt.middleware.ldap.provider.SearchIterator;
+import edu.vt.middleware.ldap.provider.control.ControlProcessor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -74,8 +74,8 @@ public class JndiSearchIterator implements SearchIterator
   /** Search request. */
   protected SearchRequest request;
 
-  /** Control handler. */
-  protected JndiControlHandler controlHandler;
+  /** Control processor. */
+  protected ControlProcessor<javax.naming.ldap.Control> controlProcessor;
 
   /** Response data. */
   protected Response<Void> response;
@@ -103,13 +103,14 @@ public class JndiSearchIterator implements SearchIterator
    * Creates a new jndi search iterator.
    *
    * @param  sr  search request
-   * @param  handler  control handler
+   * @param  processor  control processor
    */
   public JndiSearchIterator(
-    final SearchRequest sr, final JndiControlHandler handler)
+    final SearchRequest sr,
+    final ControlProcessor<javax.naming.ldap.Control> processor)
   {
     request = sr;
-    controlHandler = handler;
+    controlProcessor = processor;
   }
 
 
@@ -193,7 +194,7 @@ public class JndiSearchIterator implements SearchIterator
     boolean closeContext = false;
     try {
       context = ctx.newInstance(
-        controlHandler.processRequestControls(request.getControls()));
+        controlProcessor.processRequestControls(request.getControls()));
       initializeSearchContext(context, request);
       results = search(context, request);
     } catch (NamingException e) {
@@ -201,7 +202,7 @@ public class JndiSearchIterator implements SearchIterator
       JndiUtil.throwOperationException(
         operationRetryResultCodes,
         e,
-        JndiUtil.processResponseControls(controlHandler, context));
+        JndiUtil.processResponseControls(controlProcessor, context));
     } finally {
       if (closeContext) {
         try {
@@ -337,14 +338,14 @@ public class JndiSearchIterator implements SearchIterator
     try {
       more = results.hasMore();
       if (!more) {
-        final Control[] respControls = controlHandler.processResponseControls(
+        final Control[] respControls = controlProcessor.processResponseControls(
           request.getControls(),
           context.getResponseControls());
-        final boolean searchAgain = ControlHandler.findControl(
+        final boolean searchAgain = ControlProcessor.findControl(
           respControls, PagedResultsControl.OID) != null;
         if (searchAgain) {
           context.setRequestControls(
-            controlHandler.processRequestControls(respControls));
+            controlProcessor.processRequestControls(respControls));
           results = search(context, request);
           more = results.hasMore();
         } else {
@@ -361,10 +362,10 @@ public class JndiSearchIterator implements SearchIterator
         JndiUtil.throwOperationException(
           operationRetryResultCodes,
           e,
-          JndiUtil.processResponseControls(controlHandler, context));
+          JndiUtil.processResponseControls(controlProcessor, context));
       }
       response = new Response<Void>(
-        null, rc, JndiUtil.processResponseControls(controlHandler, context));
+        null, rc, JndiUtil.processResponseControls(controlProcessor, context));
     }
     return more;
   }
@@ -388,7 +389,7 @@ public class JndiSearchIterator implements SearchIterator
         JndiUtil.throwOperationException(
           operationRetryResultCodes,
           e,
-          JndiUtil.processResponseControls(controlHandler, context));
+          JndiUtil.processResponseControls(controlProcessor, context));
       }
       responseResultCode = rc;
     }

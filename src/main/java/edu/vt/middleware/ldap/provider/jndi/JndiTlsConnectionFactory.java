@@ -77,7 +77,7 @@ public class JndiTlsConnectionFactory extends
       conn.setRemoveDnUrls(config.getRemoveDnUrls());
       conn.setOperationRetryResultCodes(config.getOperationRetryResultCodes());
       conn.setSearchIgnoreResultCodes(config.getSearchIgnoreResultCodes());
-      conn.setControlHandler(config.getControlHandler());
+      conn.setControlProcessor(config.getControlProcessor());
     } catch (NamingException e) {
       closeConn = true;
       throw new ConnectionException(

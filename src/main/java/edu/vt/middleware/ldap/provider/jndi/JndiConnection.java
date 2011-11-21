@@ -19,6 +19,7 @@ import javax.naming.NamingEnumeration;
 import javax.naming.NamingException;
 import javax.naming.directory.SearchControls;
 import javax.naming.directory.SearchResult;
+import javax.naming.ldap.Control;
 import javax.naming.ldap.LdapContext;
 import javax.naming.ldap.LdapName;
 import edu.vt.middleware.ldap.AddRequest;
@@ -34,6 +35,7 @@ import edu.vt.middleware.ldap.SearchRequest;
 import edu.vt.middleware.ldap.SearchScope;
 import edu.vt.middleware.ldap.provider.Connection;
 import edu.vt.middleware.ldap.provider.SearchIterator;
+import edu.vt.middleware.ldap.provider.control.ControlProcessor;
 import edu.vt.middleware.ldap.sasl.DigestMd5Config;
 import edu.vt.middleware.ldap.sasl.SaslConfig;
 import org.slf4j.Logger;
@@ -115,8 +117,8 @@ public class JndiConnection implements Connection
   /** Search result codes to ignore. */
   private ResultCode[] searchIgnoreResultCodes;
 
-  /** Control handler. */
-  private JndiControlHandler controlHandler;
+  /** Control processor. */
+  private ControlProcessor<Control> controlProcessor;
 
 
   /**
@@ -199,24 +201,24 @@ public class JndiConnection implements Connection
 
 
   /**
-   * Returns the control handler.
+   * Returns the control processor.
    *
-   * @return  control handler
+   * @return  control processor
    */
-  public JndiControlHandler getControlHandler()
+  public ControlProcessor<Control> getControlProcessor()
   {
-    return controlHandler;
+    return controlProcessor;
   }
 
 
   /**
-   * Sets the control handler.
+   * Sets the control processor.
    *
-   * @param  handler  control handler
+   * @param  processor  control processor
    */
-  public void setControlHandler(final JndiControlHandler handler)
+  public void setControlProcessor(final ControlProcessor<Control> processor)
   {
-    controlHandler = handler;
+    controlProcessor = processor;
   }
 
 
@@ -282,16 +284,16 @@ public class JndiConnection implements Connection
       context.removeFromEnvironment(PRINCIPAL);
       context.removeFromEnvironment(CREDENTIALS);
       context.reconnect(
-        controlHandler.processRequestControls(request.getControls()));
+        controlProcessor.processRequestControls(request.getControls()));
       response = new Response<Void>(
         null,
         ResultCode.SUCCESS,
-        JndiUtil.processResponseControls(controlHandler, context));
+        JndiUtil.processResponseControls(controlProcessor, context));
     } catch (NamingException e) {
       JndiUtil.throwOperationException(
         operationRetryResultCodes,
         e,
-        JndiUtil.processResponseControls(controlHandler, context));
+        JndiUtil.processResponseControls(controlProcessor, context));
     }
     return response;
   }
@@ -313,16 +315,16 @@ public class JndiConnection implements Connection
       context.addToEnvironment(PRINCIPAL, request.getDn());
       context.addToEnvironment(CREDENTIALS, request.getCredential().getBytes());
       context.reconnect(
-        controlHandler.processRequestControls(request.getControls()));
+        controlProcessor.processRequestControls(request.getControls()));
       response = new Response<Void>(
         null,
         ResultCode.SUCCESS,
-        JndiUtil.processResponseControls(controlHandler, context));
+        JndiUtil.processResponseControls(controlProcessor, context));
     } catch (NamingException e) {
       JndiUtil.throwOperationException(
         operationRetryResultCodes,
         e,
-        JndiUtil.processResponseControls(controlHandler, context));
+        JndiUtil.processResponseControls(controlProcessor, context));
     }
     return response;
   }
@@ -355,16 +357,16 @@ public class JndiConnection implements Connection
         }
       }
       context.reconnect(
-        controlHandler.processRequestControls(request.getControls()));
+        controlProcessor.processRequestControls(request.getControls()));
       response = new Response<Void>(
         null,
         ResultCode.SUCCESS,
-        JndiUtil.processResponseControls(controlHandler, context));
+        JndiUtil.processResponseControls(controlProcessor, context));
     } catch (NamingException e) {
       JndiUtil.throwOperationException(
         operationRetryResultCodes,
         e,
-        JndiUtil.processResponseControls(controlHandler, context));
+        JndiUtil.processResponseControls(controlProcessor, context));
     }
     return response;
   }
@@ -380,7 +382,7 @@ public class JndiConnection implements Connection
     try {
       try {
         ctx = context.newInstance(
-          controlHandler.processRequestControls(request.getControls()));
+          controlProcessor.processRequestControls(request.getControls()));
         final JndiUtil bu = new JndiUtil();
         ctx.createSubcontext(
           new LdapName(request.getDn()),
@@ -388,7 +390,7 @@ public class JndiConnection implements Connection
         response = new Response<Void>(
           null,
           ResultCode.SUCCESS,
-          JndiUtil.processResponseControls(controlHandler, ctx));
+          JndiUtil.processResponseControls(controlProcessor, ctx));
       } finally {
         if (ctx != null) {
           ctx.close();
@@ -398,7 +400,7 @@ public class JndiConnection implements Connection
       JndiUtil.throwOperationException(
         operationRetryResultCodes,
         e,
-        JndiUtil.processResponseControls(controlHandler, ctx));
+        JndiUtil.processResponseControls(controlProcessor, ctx));
     }
     return response;
   }
@@ -415,7 +417,7 @@ public class JndiConnection implements Connection
       NamingEnumeration<SearchResult> en = null;
       try {
         ctx = context.newInstance(
-          controlHandler.processRequestControls(request.getControls()));
+          controlProcessor.processRequestControls(request.getControls()));
         en = ctx.search(
           new LdapName(request.getDn()),
           String.format("(%s={0})", request.getAttribute().getName()),
@@ -428,7 +430,7 @@ public class JndiConnection implements Connection
         response = new Response<Boolean>(
           success,
           success ? ResultCode.COMPARE_TRUE : ResultCode.COMPARE_FALSE,
-          JndiUtil.processResponseControls(controlHandler, ctx));
+          JndiUtil.processResponseControls(controlProcessor, ctx));
       } finally {
         if (en != null) {
           en.close();
@@ -441,7 +443,7 @@ public class JndiConnection implements Connection
       JndiUtil.throwOperationException(
         operationRetryResultCodes,
         e,
-        JndiUtil.processResponseControls(controlHandler, ctx));
+        JndiUtil.processResponseControls(controlProcessor, ctx));
     }
     return response;
   }
@@ -457,12 +459,12 @@ public class JndiConnection implements Connection
     try {
       try {
         ctx = context.newInstance(
-          controlHandler.processRequestControls(request.getControls()));
+          controlProcessor.processRequestControls(request.getControls()));
         ctx.destroySubcontext(new LdapName(request.getDn()));
         response = new Response<Void>(
           null,
           ResultCode.SUCCESS,
-          JndiUtil.processResponseControls(controlHandler, ctx));
+          JndiUtil.processResponseControls(controlProcessor, ctx));
       } finally {
         if (ctx != null) {
           ctx.close();
@@ -472,7 +474,7 @@ public class JndiConnection implements Connection
       JndiUtil.throwOperationException(
         operationRetryResultCodes,
         e,
-        JndiUtil.processResponseControls(controlHandler, ctx));
+        JndiUtil.processResponseControls(controlProcessor, ctx));
     }
     return response;
   }
@@ -488,7 +490,7 @@ public class JndiConnection implements Connection
     try {
       try {
         ctx = context.newInstance(
-          controlHandler.processRequestControls(request.getControls()));
+          controlProcessor.processRequestControls(request.getControls()));
         final JndiUtil bu = new JndiUtil();
         ctx.modifyAttributes(
           new LdapName(request.getDn()),
@@ -496,7 +498,7 @@ public class JndiConnection implements Connection
         response = new Response<Void>(
           null,
           ResultCode.SUCCESS,
-          JndiUtil.processResponseControls(controlHandler, ctx));
+          JndiUtil.processResponseControls(controlProcessor, ctx));
       } finally {
         if (ctx != null) {
           ctx.close();
@@ -506,7 +508,7 @@ public class JndiConnection implements Connection
       JndiUtil.throwOperationException(
         operationRetryResultCodes,
         e,
-        JndiUtil.processResponseControls(controlHandler, ctx));
+        JndiUtil.processResponseControls(controlProcessor, ctx));
     }
     return response;
   }
@@ -522,14 +524,14 @@ public class JndiConnection implements Connection
     try {
       try {
         ctx = context.newInstance(
-          controlHandler.processRequestControls(request.getControls()));
+          controlProcessor.processRequestControls(request.getControls()));
         ctx.rename(
           new LdapName(request.getDn()),
           new LdapName(request.getNewDn()));
         response = new Response<Void>(
           null,
           ResultCode.SUCCESS,
-          JndiUtil.processResponseControls(controlHandler, ctx));
+          JndiUtil.processResponseControls(controlProcessor, ctx));
       } finally {
         if (ctx != null) {
           ctx.close();
@@ -539,7 +541,7 @@ public class JndiConnection implements Connection
       JndiUtil.throwOperationException(
         operationRetryResultCodes,
         e,
-        JndiUtil.processResponseControls(controlHandler, ctx));
+        JndiUtil.processResponseControls(controlProcessor, ctx));
     }
     return response;
   }
@@ -551,7 +553,7 @@ public class JndiConnection implements Connection
     throws LdapException
   {
     final JndiSearchIterator i = new JndiSearchIterator(
-      request, controlHandler);
+      request, controlProcessor);
     i.setRemoveDnUrls(removeDnUrls);
     i.setOperationRetryResultCodes(operationRetryResultCodes);
     i.setSearchIgnoreResultCodes(searchIgnoreResultCodes);

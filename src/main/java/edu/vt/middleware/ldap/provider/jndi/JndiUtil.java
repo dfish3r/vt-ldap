@@ -35,6 +35,7 @@ import edu.vt.middleware.ldap.ResultCode;
 import edu.vt.middleware.ldap.SortBehavior;
 import edu.vt.middleware.ldap.control.Control;
 import edu.vt.middleware.ldap.control.SortKey;
+import edu.vt.middleware.ldap.provider.control.ControlProcessor;
 import edu.vt.middleware.ldap.sasl.Mechanism;
 import edu.vt.middleware.ldap.sasl.QualityOfProtection;
 import edu.vt.middleware.ldap.sasl.SecurityStrength;
@@ -354,20 +355,22 @@ public class JndiUtil
 
   /**
    * Retrieves the response controls from the supplied context and processes
-   * them with the supplied control handler. Logs a warning if controls cannot
+   * them with the supplied control processor. Logs a warning if controls cannot
    * be retrieved.
    *
-   * @param  handler  control handler
+   * @param  processor  control processor
    * @param  ctx  to get controls from
    * @return  response controls
    */
   public static Control[] processResponseControls(
-    final JndiControlHandler handler, final LdapContext ctx)
+    final ControlProcessor<javax.naming.ldap.Control> processor,
+    final LdapContext ctx)
   {
     Control[] ctls = null;
     if (ctx != null) {
       try {
-        ctls = handler.processResponseControls(null, ctx.getResponseControls());
+        ctls = processor.processResponseControls(
+          null, ctx.getResponseControls());
       } catch (NamingException e) {
         final Logger l = LoggerFactory.getLogger(JndiUtil.class);
         l.warn("Error retrieving response controls.", e);

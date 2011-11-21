@@ -11,11 +11,13 @@
   Version: $Revision$
   Updated: $Date$
 */
-package edu.vt.middleware.ldap.provider;
+package edu.vt.middleware.ldap.provider.control;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import edu.vt.middleware.ldap.control.Control;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,44 +30,44 @@ import org.slf4j.LoggerFactory;
  * @author  Middleware Services
  * @version  $Revision$ $Date$
  */
-public class ControlHandler<T>
+public class ControlProcessor<T>
 {
 
   /** Logger for this class. */
   protected final Logger logger = LoggerFactory.getLogger(getClass());
 
-  /** Control processors. */
-  private List<ControlProcessor<T>> controlProcessors =
-    new ArrayList<ControlProcessor<T>>();
+  /** Request control handlers. */
+  private Set<RequestControlHandler<T>> requestHandlers =
+    new HashSet<RequestControlHandler<T>>();
+
+  /** Response control handlers. */
+  private Set<ResponseControlHandler<T>> responseHandlers =
+    new HashSet<ResponseControlHandler<T>>();
 
 
   /** Default constructor. */
-  public ControlHandler() {}
+  public ControlProcessor() {}
 
 
   /**
-   * Returns the OIDs of controls that are supported by this control handler.
+   * Adds a request control handler to this control processor.
    *
-   * @return  list of control OIDs
+   * @param  handler  to add
    */
-  public String[] getSupportedControls()
+  public void addRequestControlHandler(final RequestControlHandler<T> handler)
   {
-    final String[] controls = new String[controlProcessors.size()];
-    for (int i = 0; i < controlProcessors.size(); i++) {
-      controls[i] = controlProcessors.get(i).getOID();
-    }
-    return controls;
+    requestHandlers.add(handler);
   }
 
 
   /**
-   * Adds a control processor to this control handler.
+   * Adds a response control handler to this control processor.
    *
-   * @param  processor  to add
+   * @param  handler  to add
    */
-  public void addControlProcessor(final ControlProcessor<T> processor)
+  public void addResponseControlHandler(final ResponseControlHandler<T> handler)
   {
-    controlProcessors.add(processor);
+    responseHandlers.add(handler);
   }
 
 
@@ -84,7 +86,7 @@ public class ControlHandler<T>
     }
     final List<T> providerCtls = new ArrayList<T>(requestControls.length);
     for (Control c : requestControls) {
-      final T providerCtl = processRequestControl(c);
+      final T providerCtl = processRequest(c);
       if (providerCtl != null) {
         providerCtls.add(providerCtl);
       }
@@ -103,14 +105,14 @@ public class ControlHandler<T>
    * @param  ctl  to convert
    * @return  provider control
    */
-  protected T processRequestControl(final Control ctl)
+  protected T processRequest(final Control ctl)
   {
-    if (ctl == null || controlProcessors == null) {
+    if (ctl == null) {
       return null;
     }
     T providerCtl = null;
-    for (ControlProcessor<T> ch : controlProcessors) {
-      providerCtl = ch.processRequestControl(ctl);
+    for (RequestControlHandler<T> ch : requestHandlers) {
+      providerCtl = ch.processRequest(ctl);
       if (providerCtl != null) {
         break;
       }
@@ -139,7 +141,7 @@ public class ControlHandler<T>
     }
     final List<Control> ctls = new ArrayList<Control>(responseControls.length);
     for (T c : responseControls) {
-      final Control ctl = processResponseControl(requestControls, c);
+      final Control ctl = processResponse(requestControls, c);
       if (ctl != null) {
         ctls.add(ctl);
       }
@@ -155,19 +157,23 @@ public class ControlHandler<T>
    * @param  providerCtl  to convert
    * @return  control
    */
-  protected Control processResponseControl(
+  protected Control processResponse(
     final Control[] requestControls, final T providerCtl)
   {
-    if (providerCtl == null || controlProcessors == null) {
+    if (providerCtl == null) {
       return null;
     }
     Control ctl = null;
-    for (ControlProcessor<T> cp : controlProcessors) {
-      ctl = cp.processResponseControl(
-        findControl(requestControls, cp.getOID()), providerCtl);
+    for (ResponseControlHandler<T> ch : responseHandlers) {
+      ctl = ch.processResponse(
+        findControl(requestControls, ch.getOID()), providerCtl);
       if (ctl != null) {
         break;
       }
+    }
+    if (ctl == null) {
+      throw new UnsupportedOperationException(
+        "Response Control not supported: " + providerCtl);
     }
     return ctl;
   }
@@ -194,47 +200,5 @@ public class ControlHandler<T>
       }
     }
     return match;
-  }
-
-
-  /**
-   * Handles provider specific request and response controls.
-   *
-   * @param  <T>  type of provider specific control
-   *
-   * @author  Middleware Services
-   * @version  $Revision$ $Date$
-   */
-  public interface ControlProcessor<T>
-  {
-
-
-    /**
-     * Returns the OID of the control processed by this instance.
-     *
-     * @return  control oid
-     */
-    String getOID();
-
-
-    /**
-     * Converts the supplied control to a provider specific request control.
-     *
-     * @param  requestControl  to convert
-     * @return  provider specific controls
-     */
-    T processRequestControl(Control requestControl);
-
-
-    /**
-     * Converts the supplied provider control to a response control. The request
-     * control is provided if there is an associated request control for the
-     * response control. Otherwise it is null.
-     *
-     * @param  requestControl  that produced the response
-     * @param  responseControl  to convert
-     * @return  control
-     */
-    Control processResponseControl(Control requestControl, T responseControl);
   }
 }
