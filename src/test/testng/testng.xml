@@ -352,6 +352,8 @@
         <include name="ldapcli" />
         <include name="authcli" />
         <include name="conn" />
+        <include name="asn1" />
+        <include name="control" />
       </define>
       <define name="load">
         <include name="authload" />

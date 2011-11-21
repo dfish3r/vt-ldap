@@ -231,6 +231,18 @@ public class PasswordPolicyControl extends AbstractControl
   /**
    * Returns a password policy control parsed from the supplied BER value.
    *
+   * @param  berValue  to parse
+   * @return  password policy control
+   */
+  public static PasswordPolicyControl parsePasswordPolicy(final byte[] berValue)
+  {
+    return parsePasswordPolicy(false, berValue);
+  }
+
+
+  /**
+   * Returns a password policy control parsed from the supplied BER value.
+   *
    * @param  isCritical  whether this control is critical
    * @param  berValue  to parse
    * @return  password policy control
