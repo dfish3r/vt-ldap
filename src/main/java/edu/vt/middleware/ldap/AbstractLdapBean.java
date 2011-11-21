@@ -59,6 +59,7 @@ public abstract class AbstractLdapBean
    *
    * @return  equality result
    */
+  @Override
   public boolean equals(final Object o)
   {
     if (o == null) {
