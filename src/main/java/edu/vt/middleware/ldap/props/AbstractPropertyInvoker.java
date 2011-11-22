@@ -60,39 +60,39 @@ public abstract class AbstractPropertyInvoker implements PropertyInvoker
       properties = new HashMap<String, Method[]>();
       PROPERTIES_CACHE.put(cacheKey, properties);
       for (Method method : c.getMethods()) {
-        if (
-          method.getName().startsWith("set") &&
-            method.getParameterTypes().length == 1) {
-          final String mName = method.getName().substring(3);
-          final String pName = new StringBuilder(
-            mName.substring(0, 1).toLowerCase()).append(
-              mName.substring(1, mName.length())).toString();
-          if (properties.containsKey(pName)) {
-            final Method[] m = properties.get(pName);
-            m[1] = method;
-            properties.put(pName, m);
-          } else {
-            properties.put(pName, new Method[] {null, method});
+        if (!method.isBridge()) {
+          if (method.getName().startsWith("set") &&
+              method.getParameterTypes().length == 1) {
+            final String mName = method.getName().substring(3);
+            final String pName = new StringBuilder(
+              mName.substring(0, 1).toLowerCase()).append(
+                mName.substring(1, mName.length())).toString();
+            if (properties.containsKey(pName)) {
+              final Method[] m = properties.get(pName);
+              m[1] = method;
+              properties.put(pName, m);
+            } else {
+              properties.put(pName, new Method[] {null, method});
+            }
+          } else if (method.getName().startsWith("get") &&
+                     method.getParameterTypes().length == 0) {
+            final String mName = method.getName().substring(3);
+            final String pName = new StringBuilder(
+              mName.substring(0, 1).toLowerCase()).append(
+                mName.substring(1, mName.length())).toString();
+            if (properties.containsKey(pName)) {
+              final Method[] m = properties.get(pName);
+              m[0] = method;
+              properties.put(pName, m);
+            } else {
+              properties.put(pName, new Method[] {method, null});
+            }
+          } else if (
+            "initialize".equals(method.getName()) &&
+              method.getParameterTypes().length == 0) {
+            final String pName = new StringBuilder(method.getName()).toString();
+            properties.put(pName, new Method[] {method, method});
           }
-        } else if (
-          method.getName().startsWith("get") &&
-            method.getParameterTypes().length == 0) {
-          final String mName = method.getName().substring(3);
-          final String pName = new StringBuilder(
-            mName.substring(0, 1).toLowerCase()).append(
-              mName.substring(1, mName.length())).toString();
-          if (properties.containsKey(pName)) {
-            final Method[] m = properties.get(pName);
-            m[0] = method;
-            properties.put(pName, m);
-          } else {
-            properties.put(pName, new Method[] {method, null});
-          }
-        } else if (
-          "initialize".equals(method.getName()) &&
-            method.getParameterTypes().length == 0) {
-          final String pName = new StringBuilder(method.getName()).toString();
-          properties.put(pName, new Method[] {method, method});
         }
       }
       // remove any properties that don't have both getters and setters
