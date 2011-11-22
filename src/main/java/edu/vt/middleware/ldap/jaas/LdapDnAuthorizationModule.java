@@ -64,9 +64,9 @@ public class LdapDnAuthorizationModule extends AbstractLoginModule
     while (i.hasNext()) {
       final String key = i.next();
       final String value = (String) options.get(key);
-      if (key.equalsIgnoreCase("noResultsIsError")) {
+      if ("noResultsIsError".equalsIgnoreCase(key)) {
         noResultsIsError = Boolean.valueOf(value);
-      } else if (key.equalsIgnoreCase("authenticatorFactory")) {
+      } else if ("authenticatorFactory".equalsIgnoreCase(key)) {
         try {
           authenticatorFactory =
             (AuthenticatorFactory) Class.forName(value).newInstance();

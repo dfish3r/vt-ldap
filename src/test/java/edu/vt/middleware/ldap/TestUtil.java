@@ -40,6 +40,10 @@ public final class TestUtil
   public static final int NETSTAT_HOST_INDEX = 4;
 
 
+  /** Default constructor. */
+  private TestUtil() {}
+
+
   /**
    * @param  is  to read properties from, if null use default properties
    * @return  authenticator config

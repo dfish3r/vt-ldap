@@ -175,7 +175,7 @@ public class ConnectionPoolTest extends AbstractTest
       "blockingpool",
       "blockingtimeoutpool",
       "connstrategypool"
-    }
+      }
   )
   public void createPoolEntry(
     final String ldifFile2,
@@ -189,6 +189,7 @@ public class ConnectionPoolTest extends AbstractTest
     final String ldifFile10)
     throws Exception
   {
+    // CheckStyle:Indentation OFF
     entries.get("2")[0] = TestUtil.convertLdifToResult(
       TestUtil.readFileIntoString(ldifFile2)).getEntry();
     entries.get("3")[0] = TestUtil.convertLdifToResult(
@@ -207,6 +208,7 @@ public class ConnectionPoolTest extends AbstractTest
       TestUtil.readFileIntoString(ldifFile9)).getEntry();
     entries.get("10")[0] = TestUtil.convertLdifToResult(
       TestUtil.readFileIntoString(ldifFile10)).getEntry();
+    // CheckStyle:Indentation ON
 
     for (Map.Entry<String, LdapEntry[]> e : entries.entrySet()) {
       super.createLdapEntry(e.getValue()[0]);
@@ -251,7 +253,7 @@ public class ConnectionPoolTest extends AbstractTest
       "blockingpool",
       "blockingtimeoutpool",
       "connstrategypool"
-    }
+      }
   )
   public void loadPoolSearchResults(
     final String ldifFile2,
@@ -265,6 +267,7 @@ public class ConnectionPoolTest extends AbstractTest
     final String ldifFile10)
     throws Exception
   {
+    // CheckStyle:Indentation OFF
     entries.get("2")[1] = TestUtil.convertLdifToResult(
       TestUtil.readFileIntoString(ldifFile2)).getEntry();
     entries.get("3")[1] = TestUtil.convertLdifToResult(
@@ -283,6 +286,7 @@ public class ConnectionPoolTest extends AbstractTest
       TestUtil.readFileIntoString(ldifFile9)).getEntry();
     entries.get("10")[1] = TestUtil.convertLdifToResult(
       TestUtil.readFileIntoString(ldifFile10)).getEntry();
+    // CheckStyle:Indentation ON
   }
 
 
@@ -293,7 +297,7 @@ public class ConnectionPoolTest extends AbstractTest
       "blockingpool",
       "blockingtimeoutpool",
       "connstrategypool"
-    }
+      }
   )
   public void deletePoolEntry()
     throws Exception

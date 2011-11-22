@@ -205,7 +205,8 @@ public class SearchFilter
     final StringBuffer sb = new StringBuffer(len);
     char ch;
     for (int i = 0; i < len; i++) {
-      switch (ch = s.charAt(i)) {
+      ch = s.charAt(i);
+      switch (ch) {
       case '*':
         sb.append("\\2a");
         break;

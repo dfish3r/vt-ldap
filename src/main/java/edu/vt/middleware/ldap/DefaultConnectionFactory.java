@@ -323,7 +323,7 @@ public class DefaultConnectionFactory implements ConnectionFactory
      *
      * @return  response associated with the bind operation
      *
-     * @throws  IllegalStateExcepiton  if the connection is already open
+     * @throws  IllegalStateException  if the connection is already open
      * @throws  LdapException  if the LDAP cannot be reached
      */
     public synchronized Response<Void> open(final BindRequest request)

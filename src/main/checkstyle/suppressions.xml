@@ -4,12 +4,11 @@
     "http://www.puppycrawl.com/dtds/suppressions_1_0.dtd">
 
 <suppressions>
-  <!-- classloader problem with custom exception -->
-  <suppress checks=".*"
-            files=".*\.java"
-            lines="0"/>
-
   <!-- nothing magic about test data -->
   <suppress checks="MagicNumber"
+            files=".*Test\.java" />
+
+  <!-- tests need lots of parameters -->
+  <suppress checks="ParameterNumber"
             files=".*Test\.java" />
 </suppressions>

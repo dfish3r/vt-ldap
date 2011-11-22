@@ -79,7 +79,7 @@ public final class AttributeServlet extends AbstractServlet
     byte[] value = null;
     final String content = request.getParameter("content-type");
 
-    if (content != null && content.equalsIgnoreCase("octet")) {
+    if (content != null && "octet".equalsIgnoreCase(content)) {
       response.setContentType("application/octet-stream");
       response.setHeader(
         "Content-Disposition",

@@ -56,8 +56,11 @@ public class JndiConnectionFactory extends
   protected JndiConnection createInternal(final String url)
     throws LdapException
   {
+    // CheckStyle:IllegalType OFF
+    // the JNDI API requires the Hashtable type
     final Hashtable<String, Object> env = new Hashtable<String, Object>(
       environment);
+    // CheckStyle:IllegalType ON
     env.put(JndiProvider.PROVIDER_URL, url);
     if (config.getTracePackets() != null) {
       env.put(JndiProvider.TRACE, config.getTracePackets());

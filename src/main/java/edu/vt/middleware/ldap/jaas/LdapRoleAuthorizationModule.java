@@ -75,17 +75,17 @@ public class LdapRoleAuthorizationModule extends AbstractLoginModule
     while (i.hasNext()) {
       final String key = i.next();
       final String value = (String) options.get(key);
-      if (key.equalsIgnoreCase("roleFilter")) {
+      if ("roleFilter".equalsIgnoreCase(key)) {
         roleFilter = value;
-      } else if (key.equalsIgnoreCase("roleAttribute")) {
+      } else if ("roleAttribute".equalsIgnoreCase(key)) {
         if ("*".equals(value)) {
           roleAttribute = null;
         } else {
           roleAttribute = value.split(",");
         }
-      } else if (key.equalsIgnoreCase("noResultsIsError")) {
+      } else if ("noResultsIsError".equalsIgnoreCase(key)) {
         noResultsIsError = Boolean.valueOf(value);
-      } else if (key.equalsIgnoreCase("roleResolverFactory")) {
+      } else if ("roleResolverFactory".equalsIgnoreCase(key)) {
         try {
           roleResolverFactory =
             (RoleResolverFactory) Class.forName(value).newInstance();

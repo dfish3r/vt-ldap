@@ -32,7 +32,6 @@ public interface AuthenticationHandler
    *
    * @return  authentication handler response
    *
-   * @throws  AuthenticationException  if authentication fails
    * @throws  LdapException  if ldap operation fails
    */
   AuthenticationHandlerResponse authenticate(AuthenticationCriteria criteria)

@@ -153,7 +153,7 @@ public class Dsmlv1Writer implements LdapResultWriter
     for (LdapAttribute attr : attrs) {
       final String attrName = attr.getName();
       Element attrElement = null;
-      if (attrName.equalsIgnoreCase("objectclass")) {
+      if ("objectclass".equalsIgnoreCase(attrName)) {
         attrElement = createObjectclassElement(doc, attr);
         if (attrElement.hasChildNodes()) {
           attrElements.add(0, attrElement);

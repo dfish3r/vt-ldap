@@ -143,6 +143,7 @@ public class AuthenticatorLoadTest extends AbstractTest
     ah = new PooledBindAuthenticationHandler(ahFactory);
     pooledTLSAuth.setAuthenticationHandler(ah);
 
+    // CheckStyle:Indentation OFF
     entries.get("2")[0] = TestUtil.convertLdifToResult(
       TestUtil.readFileIntoString(ldifFile2)).getEntry();
     entries.get("3")[0] = TestUtil.convertLdifToResult(
@@ -161,6 +162,7 @@ public class AuthenticatorLoadTest extends AbstractTest
       TestUtil.readFileIntoString(ldifFile9)).getEntry();
     entries.get("10")[0] = TestUtil.convertLdifToResult(
       TestUtil.readFileIntoString(ldifFile10)).getEntry();
+    // CheckStyle:Indentation ON
 
     for (Map.Entry<String, LdapEntry[]> e : entries.entrySet()) {
       super.createLdapEntry(e.getValue()[0]);

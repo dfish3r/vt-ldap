@@ -131,6 +131,7 @@ public class SearchOperationTest extends AbstractTest
     final String ldifFile5)
     throws Exception
   {
+    // CheckStyle:Indentation OFF
     groupEntries.get("2")[0] = TestUtil.convertLdifToResult(
       TestUtil.readFileIntoString(ldifFile2)).getEntry();
     groupEntries.get("3")[0] = TestUtil.convertLdifToResult(
@@ -139,6 +140,7 @@ public class SearchOperationTest extends AbstractTest
       TestUtil.readFileIntoString(ldifFile4)).getEntry();
     groupEntries.get("5")[0] = TestUtil.convertLdifToResult(
       TestUtil.readFileIntoString(ldifFile5)).getEntry();
+    // CheckStyle:Indentation ON
 
     for (Map.Entry<String, LdapEntry[]> e : groupEntries.entrySet()) {
       super.createLdapEntry(e.getValue()[0]);

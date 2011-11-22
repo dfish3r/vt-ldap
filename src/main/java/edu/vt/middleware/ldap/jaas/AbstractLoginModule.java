@@ -131,27 +131,27 @@ public abstract class AbstractLoginModule implements LoginModule
     while (i.hasNext()) {
       final String key = i.next();
       final String value = (String) options.get(key);
-      if (key.equalsIgnoreCase("useFirstPass")) {
+      if ("useFirstPass".equalsIgnoreCase(key)) {
         useFirstPass = Boolean.valueOf(value);
-      } else if (key.equalsIgnoreCase("tryFirstPass")) {
+      } else if ("tryFirstPass".equalsIgnoreCase(key)) {
         tryFirstPass = Boolean.valueOf(value);
-      } else if (key.equalsIgnoreCase("storePass")) {
+      } else if ("storePass".equalsIgnoreCase(key)) {
         storePass = Boolean.valueOf(value);
-      } else if (key.equalsIgnoreCase("clearPass")) {
+      } else if ("clearPass".equalsIgnoreCase(key)) {
         clearPass = Boolean.valueOf(value);
-      } else if (key.equalsIgnoreCase("setLdapPrincipal")) {
+      } else if ("setLdapPrincipal".equalsIgnoreCase(key)) {
         setLdapPrincipal = Boolean.valueOf(value);
-      } else if (key.equalsIgnoreCase("setLdapDnPrincipal")) {
+      } else if ("setLdapDnPrincipal".equalsIgnoreCase(key)) {
         setLdapDnPrincipal = Boolean.valueOf(value);
-      } else if (key.equalsIgnoreCase("setLdapCredential")) {
+      } else if ("setLdapCredential".equalsIgnoreCase(key)) {
         setLdapCredential = Boolean.valueOf(value);
-      } else if (key.equalsIgnoreCase("defaultRole")) {
+      } else if ("defaultRole".equalsIgnoreCase(key)) {
         for (String s : value.split(",")) {
           defaultRole.add(new LdapRole(s.trim()));
         }
-      } else if (key.equalsIgnoreCase("principalGroupName")) {
+      } else if ("principalGroupName".equalsIgnoreCase(key)) {
         principalGroupName = value;
-      } else if (key.equalsIgnoreCase("roleGroupName")) {
+      } else if ("roleGroupName".equalsIgnoreCase(key)) {
         roleGroupName = value;
       }
     }

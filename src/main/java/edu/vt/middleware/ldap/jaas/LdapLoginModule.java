@@ -72,13 +72,13 @@ public class LdapLoginModule extends AbstractLoginModule implements LoginModule
     while (i.hasNext()) {
       final String key = i.next();
       final String value = (String) options.get(key);
-      if (key.equalsIgnoreCase("userRoleAttribute")) {
+      if ("userRoleAttribute".equalsIgnoreCase(key)) {
         if ("*".equals(value)) {
           userRoleAttribute = null;
         } else {
           userRoleAttribute = value.split(",");
         }
-      } else if (key.equalsIgnoreCase("authenticatorFactory")) {
+      } else if ("authenticatorFactory".equalsIgnoreCase(key)) {
         try {
           authenticatorFactory =
             (AuthenticatorFactory) Class.forName(value).newInstance();

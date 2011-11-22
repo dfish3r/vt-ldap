@@ -46,7 +46,8 @@ public interface ConnectionFactory<T extends ProviderConfig>
   /**
    * Create a connection to an LDAP.
    *
-   * @throws  AuthenticationException  if the supplied credentials are invalid
+   * @return  provider connection
+   *
    * @throws  LdapException  if an LDAP error occurs
    */
   Connection create()

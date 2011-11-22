@@ -110,6 +110,7 @@ public class LdapLoginModuleTest extends AbstractTest
     final String ldifFile9)
     throws Exception
   {
+    // CheckStyle:Indentation OFF
     groupEntries.get("6")[0] = TestUtil.convertLdifToResult(
       TestUtil.readFileIntoString(ldifFile6)).getEntry();
     groupEntries.get("7")[0] = TestUtil.convertLdifToResult(
@@ -118,6 +119,7 @@ public class LdapLoginModuleTest extends AbstractTest
       TestUtil.readFileIntoString(ldifFile8)).getEntry();
     groupEntries.get("9")[0] = TestUtil.convertLdifToResult(
       TestUtil.readFileIntoString(ldifFile9)).getEntry();
+    // CheckStyle:Indentation ON
 
     for (Map.Entry<String, LdapEntry[]> e : groupEntries.entrySet()) {
       super.createLdapEntry(e.getValue()[0]);
