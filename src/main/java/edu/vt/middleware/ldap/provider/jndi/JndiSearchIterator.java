@@ -28,8 +28,8 @@ import edu.vt.middleware.ldap.ResultCode;
 import edu.vt.middleware.ldap.SearchRequest;
 import edu.vt.middleware.ldap.SearchScope;
 import edu.vt.middleware.ldap.control.ResponseControl;
+import edu.vt.middleware.ldap.provider.ControlProcessor;
 import edu.vt.middleware.ldap.provider.SearchIterator;
-import edu.vt.middleware.ldap.provider.control.ControlProcessor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -201,7 +201,8 @@ public class JndiSearchIterator implements SearchIterator
       JndiUtil.throwOperationException(
         operationRetryResultCodes,
         e,
-        JndiUtil.processResponseControls(controlProcessor, context));
+        JndiUtil.processResponseControls(
+          controlProcessor, request.getControls(), context));
     } finally {
       if (closeContext) {
         try {
@@ -338,8 +339,8 @@ public class JndiSearchIterator implements SearchIterator
       more = results.hasMore();
       if (!more) {
         final ResponseControl[] respControls =
-          controlProcessor.processResponseControls(
-            request.getControls(), context.getResponseControls());
+          JndiUtil.processResponseControls(
+            controlProcessor, request.getControls(), context);
         final boolean searchAgain = ControlProcessor.searchAgain(respControls);
         if (searchAgain) {
           context.setRequestControls(
@@ -360,10 +361,14 @@ public class JndiSearchIterator implements SearchIterator
         JndiUtil.throwOperationException(
           operationRetryResultCodes,
           e,
-          JndiUtil.processResponseControls(controlProcessor, context));
+          JndiUtil.processResponseControls(
+            controlProcessor, request.getControls(), context));
       }
       response = new Response<Void>(
-        null, rc, JndiUtil.processResponseControls(controlProcessor, context));
+        null,
+        rc,
+        JndiUtil.processResponseControls(
+          controlProcessor, request.getControls(), context));
     }
     return more;
   }
@@ -387,7 +392,8 @@ public class JndiSearchIterator implements SearchIterator
         JndiUtil.throwOperationException(
           operationRetryResultCodes,
           e,
-          JndiUtil.processResponseControls(controlProcessor, context));
+          JndiUtil.processResponseControls(
+            controlProcessor, request.getControls(), context));
       }
       responseResultCode = rc;
     }

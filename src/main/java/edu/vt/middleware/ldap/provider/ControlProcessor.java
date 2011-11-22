@@ -11,13 +11,11 @@
   Version: $Revision$
   Updated: $Date$
 */
-package edu.vt.middleware.ldap.provider.control;
+package edu.vt.middleware.ldap.provider;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import edu.vt.middleware.ldap.control.Control;
 import edu.vt.middleware.ldap.control.PagedResultsControl;
 import edu.vt.middleware.ldap.control.RequestControl;
@@ -39,38 +37,18 @@ public class ControlProcessor<T>
   /** Logger for this class. */
   protected final Logger logger = LoggerFactory.getLogger(getClass());
 
-  /** Request control handlers. */
-  private Set<RequestControlHandler<T>> requestHandlers =
-    new HashSet<RequestControlHandler<T>>();
-
-  /** Response control handlers. */
-  private Set<ResponseControlHandler<T>> responseHandlers =
-    new HashSet<ResponseControlHandler<T>>();
-
-
-  /** Default constructor. */
-  public ControlProcessor() {}
+  /** Control handler. */
+  private ControlHandler<T> controlHandler;
 
 
   /**
-   * Adds a request control handler to this control processor.
+   * Creates a new control processor.
    *
-   * @param  handler  to add
+   * @param  handler  to process controls with
    */
-  public void addRequestControlHandler(final RequestControlHandler<T> handler)
+  public ControlProcessor(final ControlHandler<T> handler)
   {
-    requestHandlers.add(handler);
-  }
-
-
-  /**
-   * Adds a response control handler to this control processor.
-   *
-   * @param  handler  to add
-   */
-  public void addResponseControlHandler(final ResponseControlHandler<T> handler)
-  {
-    responseHandlers.add(handler);
+    controlHandler = handler;
   }
 
 
@@ -115,16 +93,10 @@ public class ControlProcessor<T>
     if (ctl == null) {
       return null;
     }
-    T providerCtl = null;
-    for (RequestControlHandler<T> ch : requestHandlers) {
-      providerCtl = ch.processRequest(ctl);
-      if (providerCtl != null) {
-        break;
-      }
-    }
+    final T providerCtl = controlHandler.processRequest(ctl);
     if (providerCtl == null) {
       throw new UnsupportedOperationException(
-        "Request Control not supported: " + ctl);
+        "Request control not supported: " + ctl);
     }
     return providerCtl;
   }
@@ -171,17 +143,12 @@ public class ControlProcessor<T>
     if (providerCtl == null) {
       return null;
     }
-    ResponseControl ctl = null;
-    for (ResponseControlHandler<T> ch : responseHandlers) {
-      ctl = ch.processResponse(
-        findControl(requestControls, ch.getOID()), providerCtl);
-      if (ctl != null) {
-        break;
-      }
-    }
+    final ResponseControl ctl = controlHandler.processResponse(
+      findControl(requestControls, controlHandler.getOID(providerCtl)),
+      providerCtl);
     if (ctl == null) {
       throw new UnsupportedOperationException(
-        "Response Control not supported: " + providerCtl);
+        "Response control not supported: " + providerCtl);
     }
     return ctl;
   }
@@ -220,7 +187,7 @@ public class ControlProcessor<T>
   private static <T extends Control> T findControl(
     final T[] controls, final String oid)
   {
-    if (controls == null) {
+    if (controls == null || controls.length == 0) {
       return null;
     }
     T match = null;

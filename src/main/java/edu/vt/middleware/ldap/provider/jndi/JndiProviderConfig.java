@@ -19,13 +19,8 @@ import javax.naming.ldap.Control;
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLSocketFactory;
 import edu.vt.middleware.ldap.ResultCode;
+import edu.vt.middleware.ldap.provider.ControlProcessor;
 import edu.vt.middleware.ldap.provider.ProviderConfig;
-import edu.vt.middleware.ldap.provider.control.ControlProcessor;
-import edu.vt.middleware.ldap.provider.jndi.control.ManageDsaITControlHandler;
-import edu.vt.middleware.ldap.provider.jndi.control.PagedResultsControlHandler;
-import edu.vt.middleware.ldap.provider.jndi.control.PasswordPolicyControlHandler;
-import edu.vt.middleware.ldap.provider.jndi.control.SortRequestControlHandler;
-import edu.vt.middleware.ldap.provider.jndi.control.SortResponseControlHandler;
 
 /**
  * Contains configuration data for the JNDI provider.
@@ -62,18 +57,7 @@ public class JndiProviderConfig extends ProviderConfig
       ResultCode.PROTOCOL_ERROR, ResultCode.BUSY, ResultCode.UNAVAILABLE, };
     searchIgnoreResultCodes = new ResultCode[] {
       ResultCode.TIME_LIMIT_EXCEEDED, ResultCode.SIZE_LIMIT_EXCEEDED, };
-    controlProcessor = new ControlProcessor<Control>();
-    controlProcessor.addRequestControlHandler(new ManageDsaITControlHandler());
-    controlProcessor.addRequestControlHandler(new SortRequestControlHandler());
-    controlProcessor.addResponseControlHandler(
-      new SortResponseControlHandler());
-    controlProcessor.addRequestControlHandler(new PagedResultsControlHandler());
-    controlProcessor.addResponseControlHandler(
-      new PagedResultsControlHandler());
-    controlProcessor.addRequestControlHandler(
-      new PasswordPolicyControlHandler());
-    controlProcessor.addResponseControlHandler(
-      new PasswordPolicyControlHandler());
+    controlProcessor = new ControlProcessor<Control>(new JndiControlHandler());
   }
 
 

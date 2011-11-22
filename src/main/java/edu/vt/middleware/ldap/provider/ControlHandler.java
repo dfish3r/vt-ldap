@@ -11,21 +11,39 @@
   Version: $Revision$
   Updated: $Date$
 */
-package edu.vt.middleware.ldap.provider.control;
+package edu.vt.middleware.ldap.provider;
 
 import edu.vt.middleware.ldap.control.RequestControl;
 import edu.vt.middleware.ldap.control.ResponseControl;
 
 /**
- * Handles provider specific response controls.
+ * Handles provider specific request and response controls.
  *
- * @param  <T>  type of provider specific control
+ * @param  <T>  type of provider control
  *
  * @author  Middleware Services
  * @version  $Revision$ $Date$
  */
-public interface ResponseControlHandler<T> extends ControlHandler
+public interface ControlHandler<T>
 {
+
+
+  /**
+   * Returns the OID of the supplied control
+   *
+   * @param  control  to return oid for
+   * @return  control oid
+   */
+  String getOID(T control);
+
+
+  /**
+   * Converts the supplied control to a provider specific request control.
+   *
+   * @param  requestControl  to convert
+   * @return  provider specific controls
+   */
+  T processRequest(RequestControl requestControl);
 
 
   /**
