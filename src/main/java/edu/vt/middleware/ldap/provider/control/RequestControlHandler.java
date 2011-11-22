@@ -13,7 +13,7 @@
 */
 package edu.vt.middleware.ldap.provider.control;
 
-import edu.vt.middleware.ldap.control.Control;
+import edu.vt.middleware.ldap.control.RequestControl;
 
 /**
  * Handles provider specific request controls.
@@ -23,7 +23,7 @@ import edu.vt.middleware.ldap.control.Control;
  * @author  Middleware Services
  * @version  $Revision$ $Date$
  */
-public interface RequestControlHandler<T> extends ControlHandler<T>
+public interface RequestControlHandler<T> extends ControlHandler
 {
 
 
@@ -33,5 +33,5 @@ public interface RequestControlHandler<T> extends ControlHandler<T>
    * @param  requestControl  to convert
    * @return  provider specific controls
    */
-  T processRequest(Control requestControl);
+  T processRequest(RequestControl requestControl);
 }

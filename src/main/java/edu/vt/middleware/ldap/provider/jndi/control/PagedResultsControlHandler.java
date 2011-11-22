@@ -14,8 +14,9 @@
 package edu.vt.middleware.ldap.provider.jndi.control;
 
 import java.io.IOException;
-import edu.vt.middleware.ldap.control.Control;
 import edu.vt.middleware.ldap.control.PagedResultsControl;
+import edu.vt.middleware.ldap.control.RequestControl;
+import edu.vt.middleware.ldap.control.ResponseControl;
 import edu.vt.middleware.ldap.provider.control.RequestControlHandler;
 import edu.vt.middleware.ldap.provider.control.ResponseControlHandler;
 
@@ -41,7 +42,8 @@ public class PagedResultsControlHandler
 
   /** {@inheritDoc} */
   @Override
-  public javax.naming.ldap.Control processRequest(final Control requestControl)
+  public javax.naming.ldap.Control processRequest(
+    final RequestControl requestControl)
   {
     javax.naming.ldap.PagedResultsControl ctl = null;
     if (PagedResultsControl.OID.equals(requestControl.getOID())) {
@@ -59,24 +61,16 @@ public class PagedResultsControlHandler
 
   /** {@inheritDoc} */
   @Override
-  public Control processResponse(
-    final Control requestControl,
+  public ResponseControl processResponse(
+    final RequestControl requestControl,
     final javax.naming.ldap.Control responseControl)
   {
     PagedResultsControl ctl = null;
     if (PagedResultsControl.OID.equals(responseControl.getID())) {
       final javax.naming.ldap.PagedResultsResponseControl c =
         (javax.naming.ldap.PagedResultsResponseControl) responseControl;
-      // set paged result cookie if found
-      if (c.getCookie() != null && c.getCookie().length > 0) {
-        ctl = (PagedResultsControl) requestControl;
-        if (ctl != null) {
-          ctl.setCookie(c.getCookie());
-        } else {
-          ctl = new PagedResultsControl(
-            c.getResultSize(), c.getCookie(), c.isCritical());
-        }
-      }
+      ctl = (PagedResultsControl) requestControl;
+      ctl.setCookie(c.getCookie());
     }
     return ctl;
   }

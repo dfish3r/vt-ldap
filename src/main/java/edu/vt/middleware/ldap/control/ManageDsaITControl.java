@@ -20,6 +20,7 @@ package edu.vt.middleware.ldap.control;
  * @version  $Revision$ $Date$
  */
 public class ManageDsaITControl extends AbstractControl
+                                implements RequestControl
 {
 
   /** OID of this control. */

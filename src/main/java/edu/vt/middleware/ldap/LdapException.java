@@ -13,7 +13,7 @@
 */
 package edu.vt.middleware.ldap;
 
-import edu.vt.middleware.ldap.control.Control;
+import edu.vt.middleware.ldap.control.ResponseControl;
 
 /**
  * Base exception for all ldap related exceptions. Provider specific exception
@@ -22,7 +22,7 @@ import edu.vt.middleware.ldap.control.Control;
  * @author  Middleware Services
  * @version  $Revision: 1330 $
  */
-public class LdapException extends Exception implements Message
+public class LdapException extends Exception implements Message<ResponseControl>
 {
 
   /** serialVersionUID. */
@@ -32,7 +32,7 @@ public class LdapException extends Exception implements Message
   private final ResultCode resultCode;
 
   /** response controls. */
-  private final Control[] controls;
+  private final ResponseControl[] controls;
 
 
   /**
@@ -70,7 +70,7 @@ public class LdapException extends Exception implements Message
    * @param  c  response controls
    */
   public LdapException(
-    final String msg, final ResultCode code, final Control[] c)
+    final String msg, final ResultCode code, final ResponseControl[] c)
   {
     super(msg);
     resultCode = code;
@@ -113,7 +113,7 @@ public class LdapException extends Exception implements Message
    * @param  c  response controls
    */
   public LdapException(
-    final Exception e, final ResultCode code, final Control[] c)
+    final Exception e, final ResultCode code, final ResponseControl[] c)
   {
     super(e);
     resultCode = code;
@@ -163,7 +163,7 @@ public class LdapException extends Exception implements Message
     final String msg,
     final Exception e,
     final ResultCode code,
-    final Control[] c)
+    final ResponseControl[] c)
   {
     super(msg, e);
     resultCode = code;
@@ -185,7 +185,7 @@ public class LdapException extends Exception implements Message
 
   /** {@inheritDoc} */
   @Override
-  public Control[] getControls()
+  public ResponseControl[] getControls()
   {
     return controls;
   }

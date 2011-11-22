@@ -22,6 +22,7 @@ import java.util.Arrays;
  * @version  $Revision$ $Date$
  */
 public class SortRequestControl extends AbstractControl
+                                implements RequestControl
 {
 
   /** OID of this control. */

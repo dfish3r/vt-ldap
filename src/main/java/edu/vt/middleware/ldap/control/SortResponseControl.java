@@ -22,6 +22,7 @@ import edu.vt.middleware.ldap.ResultCode;
  * @version  $Revision$ $Date$
  */
 public class SortResponseControl extends AbstractControl
+                                 implements ResponseControl
 {
 
   /** OID of this control. */

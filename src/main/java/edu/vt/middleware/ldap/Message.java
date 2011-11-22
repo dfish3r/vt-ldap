@@ -18,10 +18,12 @@ import edu.vt.middleware.ldap.control.Control;
 /**
  * Interface for ldap messages.
  *
+ * @param  <T>  type of control
+ *
  * @author  Middleware Services
  * @version  $Revision$ $Date$
  */
-public interface Message
+public interface Message<T extends Control>
 {
 
 
@@ -30,5 +32,5 @@ public interface Message
    *
    * @return  controls
    */
-  Control[] getControls();
+  T[] getControls();
 }

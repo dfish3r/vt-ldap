@@ -19,6 +19,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import edu.vt.middleware.ldap.control.Control;
+import edu.vt.middleware.ldap.control.PagedResultsControl;
+import edu.vt.middleware.ldap.control.RequestControl;
+import edu.vt.middleware.ldap.control.ResponseControl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -79,18 +82,20 @@ public class ControlProcessor<T>
    * @return  provider specific controls
    */
   @SuppressWarnings("unchecked")
-  public T[] processRequestControls(final Control[] requestControls)
+  public T[] processRequestControls(final RequestControl[] requestControls)
   {
     if (requestControls == null) {
       return null;
     }
+    logger.debug("processing request controls: {}", requestControls);
     final List<T> providerCtls = new ArrayList<T>(requestControls.length);
-    for (Control c : requestControls) {
+    for (RequestControl c : requestControls) {
       final T providerCtl = processRequest(c);
       if (providerCtl != null) {
         providerCtls.add(providerCtl);
       }
     }
+    logger.debug("produced provider request controls: {}", providerCtls);
     return !providerCtls.isEmpty() ?
       providerCtls.toArray(
         (T[]) Array.newInstance(
@@ -105,7 +110,7 @@ public class ControlProcessor<T>
    * @param  ctl  to convert
    * @return  provider control
    */
-  protected T processRequest(final Control ctl)
+  protected T processRequest(final RequestControl ctl)
   {
     if (ctl == null) {
       return null;
@@ -133,20 +138,23 @@ public class ControlProcessor<T>
    * @param  responseControls  to convert
    * @return  controls
    */
-  public Control[] processResponseControls(
-    final Control[] requestControls, final T[] responseControls)
+  public ResponseControl[] processResponseControls(
+    final RequestControl[] requestControls, final T[] responseControls)
   {
     if (responseControls == null) {
       return null;
     }
-    final List<Control> ctls = new ArrayList<Control>(responseControls.length);
+    logger.debug("processing provider response controls: {}", responseControls);
+    final List<ResponseControl> ctls = new ArrayList<ResponseControl>(
+      responseControls.length);
     for (T c : responseControls) {
-      final Control ctl = processResponse(requestControls, c);
+      final ResponseControl ctl = processResponse(requestControls, c);
       if (ctl != null) {
         ctls.add(ctl);
       }
     }
-    return ctls.toArray(new Control[ctls.size()]);
+    logger.debug("produced response controls: {}", ctls);
+    return ctls.toArray(new ResponseControl[ctls.size()]);
   }
 
 
@@ -157,13 +165,13 @@ public class ControlProcessor<T>
    * @param  providerCtl  to convert
    * @return  control
    */
-  protected Control processResponse(
-    final Control[] requestControls, final T providerCtl)
+  protected ResponseControl processResponse(
+    final RequestControl[] requestControls, final T providerCtl)
   {
     if (providerCtl == null) {
       return null;
     }
-    Control ctl = null;
+    ResponseControl ctl = null;
     for (ResponseControlHandler<T> ch : responseHandlers) {
       ctl = ch.processResponse(
         findControl(requestControls, ch.getOID()), providerCtl);
@@ -180,20 +188,43 @@ public class ControlProcessor<T>
 
 
   /**
+   * Examines the supplied response controls and determines whether another
+   * search should be executed.
+   *
+   * @param  responseControls  to inspect
+   * @return  whether another search should be executed
+   */
+  public static boolean searchAgain(
+    final ResponseControl[] responseControls)
+  {
+    boolean b = false;
+    final PagedResultsControl ctl = (PagedResultsControl) findControl(
+      responseControls, PagedResultsControl.OID);
+    if (ctl != null) {
+      if (ctl.getCookie() != null && ctl.getCookie().length > 0) {
+        b = true;
+      }
+    }
+    return b;
+  }
+
+
+  /**
    * Searches the supplied array for a control that matches the supplied OID.
    *
+   * @param  <T>  type of control
    * @param  controls  to search
    * @param  oid  to search for
    * @return  control that matches the oid
    */
-  public static Control findControl(
-    final Control[] controls, final String oid)
+  private static <T extends Control> T findControl(
+    final T[] controls, final String oid)
   {
     if (controls == null) {
       return null;
     }
-    Control match = null;
-    for (Control c : controls) {
+    T match = null;
+    for (T c : controls) {
       if (c.getOID().equals(oid)) {
         match = c;
         break;

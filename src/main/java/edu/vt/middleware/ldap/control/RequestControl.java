@@ -11,22 +11,12 @@
   Version: $Revision$
   Updated: $Date$
 */
-package edu.vt.middleware.ldap.provider.control;
+package edu.vt.middleware.ldap.control;
 
 /**
- * Handles provider specific request and response controls.
+ * Marker interface for ldap request controls.
  *
  * @author  Middleware Services
  * @version  $Revision$ $Date$
  */
-public interface ControlHandler
-{
-
-
-  /**
-   * Returns the OID of the control processed by this instance.
-   *
-   * @return  control oid
-   */
-  String getOID();
-}
+public interface RequestControl extends Control {}

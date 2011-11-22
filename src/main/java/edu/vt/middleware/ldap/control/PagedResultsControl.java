@@ -20,6 +20,7 @@ package edu.vt.middleware.ldap.control;
  * @version  $Revision$ $Date$
  */
 public class PagedResultsControl extends AbstractControl
+                                 implements RequestControl, ResponseControl
 {
 
   /** OID of this control. */

@@ -13,7 +13,7 @@
 */
 package edu.vt.middleware.ldap;
 
-import edu.vt.middleware.ldap.control.Control;
+import edu.vt.middleware.ldap.control.ResponseControl;
 
 /**
  * Exception thrown when an ldap operation attempt fails.
@@ -59,7 +59,7 @@ public class OperationException extends LdapException
    * @param  c  response controls
    */
   public OperationException(
-    final String msg, final ResultCode code, final Control[] c)
+    final String msg, final ResultCode code, final ResponseControl[] c)
   {
     super(msg, code, c);
   }
@@ -96,7 +96,7 @@ public class OperationException extends LdapException
    * @param  c  response controls
    */
   public OperationException(
-    final Exception e, final ResultCode code, final Control[] c)
+    final Exception e, final ResultCode code, final ResponseControl[] c)
   {
     super(e, code, c);
   }
@@ -140,7 +140,7 @@ public class OperationException extends LdapException
     final String msg,
     final Exception e,
     final ResultCode code,
-    final Control[] c)
+    final ResponseControl[] c)
   {
     super(msg, e, code, c);
   }

@@ -14,7 +14,7 @@
 package edu.vt.middleware.ldap;
 
 import java.util.Arrays;
-import edu.vt.middleware.ldap.control.Control;
+import edu.vt.middleware.ldap.control.ResponseControl;
 
 /**
  * Wrapper class for all operation responses.
@@ -24,7 +24,7 @@ import edu.vt.middleware.ldap.control.Control;
  * @author  Middleware Services
  * @version  $Revision: 1330 $ $Date: 2010-05-23 18:10:53 -0400 (Sun, 23 May 2010) $
  */
-public class Response<T> implements Message
+public class Response<T> implements Message<ResponseControl>
 {
 
   /** Operation response. */
@@ -33,8 +33,8 @@ public class Response<T> implements Message
   /** Operation result code. */
   private final ResultCode code;
 
-  /** request controls. */
-  private final Control[] controls;
+  /** Response controls. */
+  private final ResponseControl[] controls;
 
 
   /**
@@ -58,7 +58,7 @@ public class Response<T> implements Message
    * @param  rc  result code
    * @param  c  response controls
    */
-  public Response(final T t, final ResultCode rc, final Control[] c)
+  public Response(final T t, final ResultCode rc, final ResponseControl[] c)
   {
     result = t;
     code = rc;
@@ -90,7 +90,7 @@ public class Response<T> implements Message
 
   /** {@inheritDoc} */
   @Override
-  public Control[] getControls()
+  public ResponseControl[] getControls()
   {
     return controls;
   }

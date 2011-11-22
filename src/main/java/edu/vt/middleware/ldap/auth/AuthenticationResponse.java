@@ -16,7 +16,7 @@ package edu.vt.middleware.ldap.auth;
 import edu.vt.middleware.ldap.LdapEntry;
 import edu.vt.middleware.ldap.Response;
 import edu.vt.middleware.ldap.ResultCode;
-import edu.vt.middleware.ldap.control.Control;
+import edu.vt.middleware.ldap.control.ResponseControl;
 
 /**
  * Response object for authenticator.
@@ -58,7 +58,7 @@ public class AuthenticationResponse extends Response<Boolean>
     final Boolean success,
     final ResultCode rc,
     final LdapEntry entry,
-    final Control[] controls)
+    final ResponseControl[] controls)
   {
     super(success, rc, controls);
     ldapEntry = entry;

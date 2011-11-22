@@ -13,8 +13,8 @@
 */
 package edu.vt.middleware.ldap.provider.jndi.control;
 
-import edu.vt.middleware.ldap.control.Control;
 import edu.vt.middleware.ldap.control.ManageDsaITControl;
+import edu.vt.middleware.ldap.control.RequestControl;
 import edu.vt.middleware.ldap.provider.control.RequestControlHandler;
 
 /**
@@ -38,7 +38,8 @@ public class ManageDsaITControlHandler
 
   /** {@inheritDoc} */
   @Override
-  public javax.naming.ldap.Control processRequest(final Control requestControl)
+  public javax.naming.ldap.Control processRequest(
+    final RequestControl requestControl)
   {
     javax.naming.ldap.ManageReferralControl ctl = null;
     if (ManageDsaITControl.OID.equals(requestControl.getOID())) {

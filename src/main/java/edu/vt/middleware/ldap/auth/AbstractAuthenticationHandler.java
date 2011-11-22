@@ -15,7 +15,7 @@ package edu.vt.middleware.ldap.auth;
 
 import edu.vt.middleware.ldap.Connection;
 import edu.vt.middleware.ldap.LdapException;
-import edu.vt.middleware.ldap.control.Control;
+import edu.vt.middleware.ldap.control.RequestControl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -33,7 +33,7 @@ public abstract class AbstractAuthenticationHandler
   protected final Logger logger = LoggerFactory.getLogger(getClass());
 
   /** controls used by this handler. */
-  private Control[] authenticationControls;
+  private RequestControl[] authenticationControls;
 
 
   /**
@@ -41,7 +41,7 @@ public abstract class AbstractAuthenticationHandler
    *
    * @return  controls
    */
-  public Control[] getAuthenticationControls()
+  public RequestControl[] getAuthenticationControls()
   {
     return authenticationControls;
   }
@@ -52,7 +52,7 @@ public abstract class AbstractAuthenticationHandler
    *
    * @param  c  controls to set
    */
-  public void setAuthenticationControls(final Control... c)
+  public void setAuthenticationControls(final RequestControl... c)
   {
     authenticationControls = c;
   }

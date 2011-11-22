@@ -33,7 +33,7 @@ import edu.vt.middleware.ldap.LdapException;
 import edu.vt.middleware.ldap.OperationException;
 import edu.vt.middleware.ldap.ResultCode;
 import edu.vt.middleware.ldap.SortBehavior;
-import edu.vt.middleware.ldap.control.Control;
+import edu.vt.middleware.ldap.control.ResponseControl;
 import edu.vt.middleware.ldap.control.SortKey;
 import edu.vt.middleware.ldap.provider.control.ControlProcessor;
 import edu.vt.middleware.ldap.sasl.Mechanism;
@@ -207,7 +207,7 @@ public class JndiUtil
   public static void throwOperationException(
     final ResultCode[] operationRetryResultCodes,
     final NamingException e,
-    final Control[] respControls)
+    final ResponseControl[] respControls)
     throws LdapException
   {
     final ResultCode exResultCode = NamingExceptionUtil.getResultCode(
@@ -362,11 +362,11 @@ public class JndiUtil
    * @param  ctx  to get controls from
    * @return  response controls
    */
-  public static Control[] processResponseControls(
+  public static ResponseControl[] processResponseControls(
     final ControlProcessor<javax.naming.ldap.Control> processor,
     final LdapContext ctx)
   {
-    Control[] ctls = null;
+    ResponseControl[] ctls = null;
     if (ctx != null) {
       try {
         ctls = processor.processResponseControls(

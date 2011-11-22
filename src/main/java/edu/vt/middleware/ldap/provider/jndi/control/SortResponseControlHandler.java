@@ -14,7 +14,8 @@
 package edu.vt.middleware.ldap.provider.jndi.control;
 
 import edu.vt.middleware.ldap.ResultCode;
-import edu.vt.middleware.ldap.control.Control;
+import edu.vt.middleware.ldap.control.RequestControl;
+import edu.vt.middleware.ldap.control.ResponseControl;
 import edu.vt.middleware.ldap.control.SortResponseControl;
 import edu.vt.middleware.ldap.provider.control.ResponseControlHandler;
 
@@ -39,13 +40,12 @@ public class SortResponseControlHandler
 
   /** {@inheritDoc} */
   @Override
-  public Control processResponse(
-    final Control requestControl,
+  public ResponseControl processResponse(
+    final RequestControl requestControl,
     final javax.naming.ldap.Control responseControl)
   {
     SortResponseControl ctl = null;
     if (SortResponseControl.OID.equals(responseControl.getID())) {
-      ctl = (SortResponseControl) requestControl;
       final javax.naming.ldap.SortResponseControl c =
         (javax.naming.ldap.SortResponseControl) responseControl;
       ctl = new SortResponseControl(

@@ -13,7 +13,7 @@
 */
 package edu.vt.middleware.ldap;
 
-import edu.vt.middleware.ldap.control.Control;
+import edu.vt.middleware.ldap.control.RequestControl;
 
 /**
  * Contains the data common to all request objects.
@@ -25,12 +25,12 @@ public abstract class AbstractRequest implements Request
 {
 
   /** request controls. */
-  private Control[] controls;
+  private RequestControl[] controls;
 
 
   /** {@inheritDoc} */
   @Override
-  public Control[] getControls()
+  public RequestControl[] getControls()
   {
     return controls;
   }
@@ -41,7 +41,7 @@ public abstract class AbstractRequest implements Request
    *
    * @param  c  controls to set
    */
-  public void setControls(final Control... c)
+  public void setControls(final RequestControl... c)
   {
     controls = c;
   }

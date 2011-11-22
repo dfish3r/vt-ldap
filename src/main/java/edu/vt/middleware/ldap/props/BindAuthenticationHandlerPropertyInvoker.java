@@ -13,7 +13,7 @@
 */
 package edu.vt.middleware.ldap.props;
 
-import edu.vt.middleware.ldap.control.Control;
+import edu.vt.middleware.ldap.control.RequestControl;
 import edu.vt.middleware.ldap.sasl.SaslConfig;
 
 /**
@@ -63,8 +63,9 @@ public class BindAuthenticationHandlerPropertyInvoker
             newValue = instantiateType(SaslConfig.class, value);
           }
         }
-      } else if (Control[].class.isAssignableFrom(type)) {
-        newValue = createArrayTypeFromPropertyValue(Control.class, value);
+      } else if (RequestControl[].class.isAssignableFrom(type)) {
+        newValue = createArrayTypeFromPropertyValue(
+          RequestControl.class, value);
       } else {
         newValue = convertSimpleType(type, value);
       }

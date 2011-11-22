@@ -16,7 +16,7 @@ package edu.vt.middleware.ldap;
 import java.util.Arrays;
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLSocketFactory;
-import edu.vt.middleware.ldap.control.Control;
+import edu.vt.middleware.ldap.control.RequestControl;
 import edu.vt.middleware.ldap.sasl.SaslConfig;
 
 /**
@@ -50,7 +50,7 @@ public class ConnectionConfig extends AbstractConfig
   private SaslConfig bindSaslConfig;
 
   /** Bind controls. */
-  private Control[] bindControls;
+  private RequestControl[] bindControls;
 
   /** Number of times to retry ldap operations on exception. */
   private int operationRetry = 1;
@@ -260,7 +260,7 @@ public class ConnectionConfig extends AbstractConfig
    *
    * @return  controls
    */
-  public Control[] getBindControls()
+  public RequestControl[] getBindControls()
   {
     return bindControls;
   }
@@ -271,7 +271,7 @@ public class ConnectionConfig extends AbstractConfig
    *
    * @param  c  controls to set
    */
-  public void setBindControls(final Control... c)
+  public void setBindControls(final RequestControl... c)
   {
     bindControls = c;
   }

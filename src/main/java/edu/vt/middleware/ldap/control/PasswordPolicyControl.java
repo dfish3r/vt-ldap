@@ -28,6 +28,7 @@ import edu.vt.middleware.ldap.asn1.SimpleDERTag;
  * @version  $Revision$ $Date$
  */
 public class PasswordPolicyControl extends AbstractControl
+                                   implements RequestControl, ResponseControl
 {
 
   /** Enum for ppolicy errors. */

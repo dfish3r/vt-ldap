@@ -15,7 +15,7 @@ package edu.vt.middleware.ldap.provider;
 
 import edu.vt.middleware.ldap.LdapException;
 import edu.vt.middleware.ldap.ResultCode;
-import edu.vt.middleware.ldap.control.Control;
+import edu.vt.middleware.ldap.control.ResponseControl;
 
 /**
  * Exception thrown when a connection attempt fails.
@@ -61,7 +61,7 @@ public class ConnectionException extends LdapException
    * @param  c  response controls
    */
   public ConnectionException(
-    final String msg, final ResultCode code, final Control[] c)
+    final String msg, final ResultCode code, final ResponseControl[] c)
   {
     super(msg, code, c);
   }
@@ -98,7 +98,7 @@ public class ConnectionException extends LdapException
    * @param  c  response controls
    */
   public ConnectionException(
-    final Exception e, final ResultCode code, final Control[] c)
+    final Exception e, final ResultCode code, final ResponseControl[] c)
   {
     super(e, code, c);
   }
@@ -142,7 +142,7 @@ public class ConnectionException extends LdapException
     final String msg,
     final Exception e,
     final ResultCode code,
-    final Control[] c)
+    final ResponseControl[] c)
   {
     super(msg, e, code, c);
   }

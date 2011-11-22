@@ -15,7 +15,7 @@ package edu.vt.middleware.ldap.props;
 
 import edu.vt.middleware.ldap.ResultCode;
 import edu.vt.middleware.ldap.SearchFilter;
-import edu.vt.middleware.ldap.control.Control;
+import edu.vt.middleware.ldap.control.RequestControl;
 import edu.vt.middleware.ldap.handler.LdapResultHandler;
 
 /**
@@ -47,8 +47,9 @@ public class SearchRequestPropertyInvoker extends AbstractPropertyInvoker
     if (type != String.class) {
       if (SearchFilter.class.isAssignableFrom(type)) {
         newValue = new SearchFilter(value);
-      } else if (Control[].class.isAssignableFrom(type)) {
-        newValue = createArrayTypeFromPropertyValue(Control.class, value);
+      } else if (RequestControl[].class.isAssignableFrom(type)) {
+        newValue = createArrayTypeFromPropertyValue(
+          RequestControl.class, value);
       } else if (LdapResultHandler[].class.isAssignableFrom(type)) {
         newValue = createArrayTypeFromPropertyValue(
           LdapResultHandler.class,

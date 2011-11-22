@@ -13,8 +13,9 @@
 */
 package edu.vt.middleware.ldap.provider.jndi.control;
 
-import edu.vt.middleware.ldap.control.Control;
 import edu.vt.middleware.ldap.control.PasswordPolicyControl;
+import edu.vt.middleware.ldap.control.RequestControl;
+import edu.vt.middleware.ldap.control.ResponseControl;
 import edu.vt.middleware.ldap.provider.control.RequestControlHandler;
 import edu.vt.middleware.ldap.provider.control.ResponseControlHandler;
 
@@ -40,7 +41,8 @@ public class PasswordPolicyControlHandler
 
   /** {@inheritDoc} */
   @Override
-  public javax.naming.ldap.Control processRequest(final Control requestControl)
+  public javax.naming.ldap.Control processRequest(
+    final RequestControl requestControl)
   {
     javax.naming.ldap.BasicControl ctl = null;
     if (PasswordPolicyControl.OID.equals(requestControl.getOID())) {
@@ -54,8 +56,8 @@ public class PasswordPolicyControlHandler
 
   /** {@inheritDoc} */
   @Override
-  public Control processResponse(
-    final Control requestControl,
+  public ResponseControl processResponse(
+    final RequestControl requestControl,
     final javax.naming.ldap.Control responseControl)
   {
     PasswordPolicyControl ctl = null;

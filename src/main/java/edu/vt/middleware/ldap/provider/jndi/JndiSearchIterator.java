@@ -27,8 +27,7 @@ import edu.vt.middleware.ldap.Response;
 import edu.vt.middleware.ldap.ResultCode;
 import edu.vt.middleware.ldap.SearchRequest;
 import edu.vt.middleware.ldap.SearchScope;
-import edu.vt.middleware.ldap.control.Control;
-import edu.vt.middleware.ldap.control.PagedResultsControl;
+import edu.vt.middleware.ldap.control.ResponseControl;
 import edu.vt.middleware.ldap.provider.SearchIterator;
 import edu.vt.middleware.ldap.provider.control.ControlProcessor;
 import org.slf4j.Logger;
@@ -338,14 +337,13 @@ public class JndiSearchIterator implements SearchIterator
     try {
       more = results.hasMore();
       if (!more) {
-        final Control[] respControls = controlProcessor.processResponseControls(
-          request.getControls(),
-          context.getResponseControls());
-        final boolean searchAgain = ControlProcessor.findControl(
-          respControls, PagedResultsControl.OID) != null;
+        final ResponseControl[] respControls =
+          controlProcessor.processResponseControls(
+            request.getControls(), context.getResponseControls());
+        final boolean searchAgain = ControlProcessor.searchAgain(respControls);
         if (searchAgain) {
           context.setRequestControls(
-            controlProcessor.processRequestControls(respControls));
+            controlProcessor.processRequestControls(request.getControls()));
           results = search(context, request);
           more = results.hasMore();
         } else {

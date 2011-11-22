@@ -14,7 +14,7 @@
 package edu.vt.middleware.ldap.provider.jndi.control;
 
 import java.io.IOException;
-import edu.vt.middleware.ldap.control.Control;
+import edu.vt.middleware.ldap.control.RequestControl;
 import edu.vt.middleware.ldap.control.SortRequestControl;
 import edu.vt.middleware.ldap.provider.control.RequestControlHandler;
 import edu.vt.middleware.ldap.provider.jndi.JndiUtil;
@@ -40,7 +40,8 @@ public class SortRequestControlHandler
 
   /** {@inheritDoc} */
   @Override
-  public javax.naming.ldap.Control processRequest(final Control requestControl)
+  public javax.naming.ldap.Control processRequest(
+    final RequestControl requestControl)
   {
     javax.naming.ldap.SortControl ctl = null;
     if (SortRequestControl.OID.equals(requestControl.getOID())) {
