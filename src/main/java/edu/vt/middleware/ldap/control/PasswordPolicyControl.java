@@ -21,7 +21,7 @@ import edu.vt.middleware.ldap.asn1.ParseHandler;
 import edu.vt.middleware.ldap.asn1.SimpleDERTag;
 
 /**
- * Request control for password policy. See
+ * Request/response control for password policy. See
  * http://tools.ietf.org/html/draft-behera-ldap-password-policy-10.
  *
  * @author  Middleware Services

@@ -14,7 +14,7 @@
 package edu.vt.middleware.ldap.control;
 
 /**
- * Request control for PagedResults. See RFC 2696.
+ * Request/response control for PagedResults. See RFC 2696.
  *
  * @author  Middleware Services
  * @version  $Revision$ $Date$
