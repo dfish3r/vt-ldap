@@ -91,9 +91,7 @@ public final class PooledConnectionFactoryPropertySource
     final PropertyDomain domain,
     final Properties props)
   {
-    object = cf;
-    propertiesDomain = domain;
-    properties = props;
+    super(cf, domain, props);
   }
 
 

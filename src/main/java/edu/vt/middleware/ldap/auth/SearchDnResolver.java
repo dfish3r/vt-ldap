@@ -30,7 +30,7 @@ public class SearchDnResolver extends AbstractSearchDnResolver
 {
 
   /** Connection factory. */
-  protected ConnectionFactory factory;
+  private ConnectionFactory factory;
 
 
   /** Default constructor. */
@@ -97,12 +97,12 @@ public class SearchDnResolver extends AbstractSearchDnResolver
         getClass().getName(),
         hashCode(),
         factory,
-        baseDn,
-        userFilter,
-        userFilterArgs != null ? Arrays.asList(userFilterArgs) : null,
-        allowMultipleDns,
-        subtreeSearch,
-        derefAliases,
-        referralBehavior);
+        getBaseDn(),
+        getUserFilter(),
+        getUserFilterArgs() != null ? Arrays.asList(getUserFilterArgs()) : null,
+        getAllowMultipleDns(),
+        getSubtreeSearch(),
+        getDerefAliases(),
+        getReferralBehavior());
   }
 }

@@ -144,7 +144,7 @@ public class PagedResultsControl extends AbstractControl
         "[%s@%d::criticality=%s, size=%s, cookie=%s]",
         getClass().getName(),
         hashCode(),
-        criticality,
+        getCriticality(),
         resultSize,
         cookie);
   }

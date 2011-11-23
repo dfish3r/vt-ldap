@@ -89,9 +89,7 @@ public final class AuthenticationRequestPropertySource
     final PropertyDomain domain,
     final Properties props)
   {
-    object = request;
-    propertiesDomain = domain;
-    properties = props;
+    super(request, domain, props);
   }
 
 

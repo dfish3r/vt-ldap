@@ -57,7 +57,7 @@ public class JndiUtil
   public static final boolean DEFAULT_IGNORE_CASE = true;
 
   /** Ldap result sort behavior. */
-  protected SortBehavior sortBehavior;
+  private SortBehavior sortBehavior;
 
 
   /** Default constructor. */

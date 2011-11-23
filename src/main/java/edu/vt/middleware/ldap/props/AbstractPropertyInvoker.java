@@ -38,10 +38,10 @@ public abstract class AbstractPropertyInvoker implements PropertyInvoker
     new HashMap<String, Map<String, Method[]>>();
 
   /** Class to invoke methods on. */
-  protected Class<?> clazz;
+  private Class<?> clazz;
 
   /** Map of all properties to their getter and setter methods. */
-  protected Map<String, Method[]> properties;
+  private Map<String, Method[]> properties;
 
 
   /**

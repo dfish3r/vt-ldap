@@ -28,7 +28,7 @@ public class ExternalConfig extends SaslConfig
    */
   public ExternalConfig()
   {
-    mechanism = Mechanism.EXTERNAL;
+    setMechanism(Mechanism.EXTERNAL);
   }
 
 
@@ -46,10 +46,10 @@ public class ExternalConfig extends SaslConfig
         "qualityOfProtection=%s, securityStrength=%s]",
         getClass().getName(),
         hashCode(),
-        mechanism,
-        authorizationId,
-        mutualAuthentication,
-        qualityOfProtection,
-        securityStrength);
+        getMechanism(),
+        getAuthorizationId(),
+        getMutualAuthentication(),
+        getQualityOfProtection(),
+        getSecurityStrength());
   }
 }

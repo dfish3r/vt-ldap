@@ -32,29 +32,29 @@ public class JndiProviderConfig extends ProviderConfig
 {
 
   /** Stream to print LDAP ASN.1 BER packets. */
-  protected OutputStream tracePackets;
+  private OutputStream tracePackets;
 
   /** Whether to remove the URL from any DNs which are not relative. */
-  protected boolean removeDnUrls = true;
+  private boolean removeDnUrls = true;
 
   /** Search result codes to ignore. */
-  protected ResultCode[] searchIgnoreResultCodes;
+  private ResultCode[] searchIgnoreResultCodes;
 
   /** ldap socket factory used for SSL and TLS. */
-  protected SSLSocketFactory sslSocketFactory;
+  private SSLSocketFactory sslSocketFactory;
 
   /** hostname verifier for TLS connections. */
-  protected HostnameVerifier hostnameVerifier;
+  private HostnameVerifier hostnameVerifier;
 
   /** JNDI specific control handler. */
-  protected ControlProcessor<Control> controlProcessor;
+  private ControlProcessor<Control> controlProcessor;
 
 
   /** Default constructor. */
   public JndiProviderConfig()
   {
-    operationRetryResultCodes = new ResultCode[] {
-      ResultCode.PROTOCOL_ERROR, ResultCode.BUSY, ResultCode.UNAVAILABLE, };
+    setOperationRetryResultCodes(new ResultCode[] {
+      ResultCode.PROTOCOL_ERROR, ResultCode.BUSY, ResultCode.UNAVAILABLE, });
     searchIgnoreResultCodes = new ResultCode[] {
       ResultCode.TIME_LIMIT_EXCEEDED, ResultCode.SIZE_LIMIT_EXCEEDED, };
     controlProcessor = new ControlProcessor<Control>(new JndiControlHandler());
@@ -218,11 +218,11 @@ public class JndiProviderConfig extends ProviderConfig
       "hostnameVerifier=%s, controlProcessor=%s]",
       getClass().getName(),
       hashCode(),
-      operationRetryResultCodes != null ?
-        Arrays.asList(operationRetryResultCodes) : null,
-      properties,
-      connectionStrategy,
-      logCredentials,
+      getOperationRetryResultCodes() != null ?
+        Arrays.asList(getOperationRetryResultCodes()) : null,
+      getProperties(),
+      getConnectionStrategy(),
+      getLogCredentials(),
       tracePackets,
       removeDnUrls,
       searchIgnoreResultCodes != null ?

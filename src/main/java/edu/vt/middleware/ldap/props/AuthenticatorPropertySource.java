@@ -93,9 +93,7 @@ public final class AuthenticatorPropertySource
   public AuthenticatorPropertySource(
     final Authenticator a, final PropertyDomain domain, final Properties props)
   {
-    object = a;
-    propertiesDomain = domain;
-    properties = props;
+    super(a, domain, props);
   }
 
 

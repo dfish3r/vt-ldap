@@ -25,10 +25,10 @@ public class RenameRequest extends AbstractRequest
 {
 
   /** DN to rename. */
-  protected String oldRenameDn;
+  private String oldRenameDn;
 
   /** New DN. */
-  protected String newRenameDn;
+  private String newRenameDn;
 
 
   /** Default constructor. */

@@ -32,16 +32,16 @@ public abstract class AbstractAuthenticator
   protected final Logger logger = LoggerFactory.getLogger(getClass());
 
   /** For finding user DNs. */
-  protected DnResolver dnResolver;
+  private DnResolver dnResolver;
 
   /** Handler to process authentication. */
-  protected AuthenticationHandler authenticationHandler;
+  private AuthenticationHandler authenticationHandler;
 
   /** For finding user entries. */
-  protected EntryResolver entryResolver;
+  private EntryResolver entryResolver;
 
   /** Handlers to process authentication results. */
-  protected AuthenticationResultHandler[] authenticationResultHandlers;
+  private AuthenticationResultHandler[] authenticationResultHandlers;
 
 
   /**

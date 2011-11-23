@@ -38,13 +38,27 @@ AbstractConnectionFactory<T extends ProviderConfig>
   protected final Logger logger = LoggerFactory.getLogger(getClass());
 
   /** Provider configuration. */
-  protected T config;
+  private T config;
 
   /** LDAP URL for connections. */
-  protected String ldapUrl;
+  private String ldapUrl;
 
   /** Number of connections made. */
   private ConnectionCount connectionCount = new ConnectionCount();
+
+
+  /**
+   * Creates a new abstract connection factory.
+   *
+   * @param  url  of the ldap to connect to
+   */
+  public AbstractConnectionFactory(final String url)
+  {
+    if (url == null) {
+      throw new IllegalArgumentException("LDAP URL cannot be null");
+    }
+    ldapUrl = url;
+  }
 
 
   /** {@inheritDoc} */

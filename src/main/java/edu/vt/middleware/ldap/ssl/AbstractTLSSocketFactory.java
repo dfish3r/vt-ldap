@@ -36,10 +36,10 @@ public abstract class AbstractTLSSocketFactory extends SSLSocketFactory
   protected SSLSocketFactory factory;
 
   /** Enabled cipher suites. */
-  protected String[] cipherSuites;
+  private String[] cipherSuites;
 
   /** Enabled protocol versions. */
-  protected String[] enabledProtocols;
+  private String[] enabledProtocols;
 
 
   /**

@@ -77,10 +77,8 @@ public final class SimplePropertySource<T> extends AbstractPropertySource<T>
   public SimplePropertySource(
     final T t, final PropertyDomain domain, final Properties props)
   {
+    super(t, domain, props);
     invoker = new SimplePropertyInvoker(t.getClass());
-    object = t;
-    propertiesDomain = domain;
-    properties = props;
   }
 
 

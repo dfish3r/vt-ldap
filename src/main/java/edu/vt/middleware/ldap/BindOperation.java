@@ -26,12 +26,11 @@ public class BindOperation extends AbstractOperation<BindRequest, Void>
   /**
    * Creates a new add operation.
    *
-   * @param  c  connection
+   * @param  conn  connection
    */
-  public BindOperation(final Connection c)
+  public BindOperation(final Connection conn)
   {
-    connection = c;
-    initialize(c.getConnectionConfig());
+    super(conn);
   }
 
 
@@ -40,7 +39,7 @@ public class BindOperation extends AbstractOperation<BindRequest, Void>
   protected Response<Void> invoke(final BindRequest request)
     throws LdapException
   {
-    return connection.getProviderConnection().bind(request);
+    return getConnection().getProviderConnection().bind(request);
   }
 
 

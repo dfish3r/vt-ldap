@@ -26,12 +26,11 @@ public class AddOperation extends AbstractOperation<AddRequest, Void>
   /**
    * Creates a new add operation.
    *
-   * @param  c  connection
+   * @param  conn  connection
    */
-  public AddOperation(final Connection c)
+  public AddOperation(final Connection conn)
   {
-    connection = c;
-    initialize(c.getConnectionConfig());
+    super(conn);
   }
 
 
@@ -40,7 +39,7 @@ public class AddOperation extends AbstractOperation<AddRequest, Void>
   protected Response<Void> invoke(final AddRequest request)
     throws LdapException
   {
-    return connection.getProviderConnection().add(request);
+    return getConnection().getProviderConnection().add(request);
   }
 
 

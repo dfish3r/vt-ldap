@@ -33,7 +33,20 @@ public abstract class AbstractSearchOperation<Q extends SearchRequest>
 {
 
   /** Cache to use when performing searches. */
-  protected Cache<Q> cache;
+  private Cache<Q> cache;
+
+
+  /**
+   * Creates a new abstract search connection.
+   *
+   * @param  conn  to use for this operation
+   * @param  c  cache
+   */
+  public AbstractSearchOperation(final Connection conn, final Cache<Q> c)
+  {
+    super(conn);
+    cache = c;
+  }
 
 
   /**
@@ -66,7 +79,7 @@ public abstract class AbstractSearchOperation<Q extends SearchRequest>
     final Q request, final ConnectionConfig cc)
   {
     request.setLdapResultHandlers(
-      initializeLdapResultHandlers(request, connection));
+      initializeLdapResultHandlers(request, getConnection()));
   }
 
 

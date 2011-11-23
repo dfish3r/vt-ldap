@@ -31,7 +31,7 @@ public class DigestMd5Config extends SaslConfig
    */
   public DigestMd5Config()
   {
-    mechanism = Mechanism.DIGEST_MD5;
+    setMechanism(Mechanism.DIGEST_MD5);
   }
 
 
@@ -73,11 +73,11 @@ public class DigestMd5Config extends SaslConfig
         "qualityOfProtection=%s, securityStrength=%s, realm=%s]",
         getClass().getName(),
         hashCode(),
-        mechanism,
-        authorizationId,
-        mutualAuthentication,
-        qualityOfProtection,
-        securityStrength,
+        getMechanism(),
+        getAuthorizationId(),
+        getMutualAuthentication(),
+        getQualityOfProtection(),
+        getSecurityStrength(),
         saslRealm);
   }
 }

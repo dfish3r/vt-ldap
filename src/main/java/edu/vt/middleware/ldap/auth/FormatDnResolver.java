@@ -30,10 +30,10 @@ public class FormatDnResolver implements DnResolver
   protected final Logger logger = LoggerFactory.getLogger(getClass());
 
   /** format of DN. */
-  protected String formatString;
+  private String formatString;
 
   /** format arguments. */
-  protected Object[] formatArgs;
+  private Object[] formatArgs;
 
 
   /** Default constructor. */

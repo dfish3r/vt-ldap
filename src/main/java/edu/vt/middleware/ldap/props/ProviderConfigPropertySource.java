@@ -87,9 +87,7 @@ public final class ProviderConfigPropertySource
     final PropertyDomain domain,
     final Properties props)
   {
-    object = pc;
-    propertiesDomain = domain;
-    properties = props;
+    super(pc, domain, props);
   }
 
 

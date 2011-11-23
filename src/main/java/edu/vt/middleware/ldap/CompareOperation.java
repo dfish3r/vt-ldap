@@ -27,12 +27,11 @@ public class CompareOperation
   /**
    * Creates a new compare operation.
    *
-   * @param  c  connection
+   * @param  conn  connection
    */
-  public CompareOperation(final Connection c)
+  public CompareOperation(final Connection conn)
   {
-    connection = c;
-    initialize(c.getConnectionConfig());
+    super(conn);
   }
 
 
@@ -41,7 +40,7 @@ public class CompareOperation
   protected Response<Boolean> invoke(final CompareRequest request)
     throws LdapException
   {
-    return connection.getProviderConnection().compare(request);
+    return getConnection().getProviderConnection().compare(request);
   }
 
 

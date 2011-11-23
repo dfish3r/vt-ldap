@@ -71,22 +71,22 @@ public class JndiSearchIterator implements SearchIterator
   protected final Logger logger = LoggerFactory.getLogger(getClass());
 
   /** Search request. */
-  protected SearchRequest request;
+  private SearchRequest request;
 
   /** Control processor. */
-  protected ControlProcessor<javax.naming.ldap.Control> controlProcessor;
+  private ControlProcessor<javax.naming.ldap.Control> controlProcessor;
 
   /** Response data. */
-  protected Response<Void> response;
+  private Response<Void> response;
 
   /** Response result code. */
-  protected ResultCode responseResultCode;
+  private ResultCode responseResultCode;
 
   /** Ldap context to search with. */
-  protected LdapContext context;
+  private LdapContext context;
 
   /** Results read from the search operation. */
-  protected NamingEnumeration<SearchResult> results;
+  private NamingEnumeration<SearchResult> results;
 
   /** Codes to retry operations on. */
   private ResultCode[] operationRetryResultCodes;

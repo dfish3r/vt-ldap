@@ -25,10 +25,10 @@ public class ModifyRequest extends AbstractRequest
 {
 
   /** DN to modify. */
-  protected String modifyDn;
+  private String modifyDn;
 
   /** Attribute modifications. */
-  protected AttributeModification[] attrMods;
+  private AttributeModification[] attrMods;
 
 
   /** Default constructor. */

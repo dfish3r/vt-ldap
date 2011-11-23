@@ -40,7 +40,7 @@ public abstract class AbstractCompareAuthenticationHandler
   protected static final String DEFAULT_SCHEME = "SHA";
 
   /** Password scheme. */
-  protected String passwordScheme = DEFAULT_SCHEME;
+  private String passwordScheme = DEFAULT_SCHEME;
 
 
   /**

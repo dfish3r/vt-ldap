@@ -65,6 +65,6 @@ public class ManageDsaITControl extends AbstractControl
         "[%s@%d::criticality=%s]",
         getClass().getName(),
         hashCode(),
-        criticality);
+        getCriticality());
   }
 }

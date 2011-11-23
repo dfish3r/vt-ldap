@@ -106,7 +106,7 @@ public class JndiConnection implements Connection
   protected final Logger logger = LoggerFactory.getLogger(getClass());
 
   /** Ldap context. */
-  protected LdapContext context;
+  private LdapContext context;
 
   /** Whether to remove the URL from any DNs which are not relative. */
   private boolean removeDnUrls;

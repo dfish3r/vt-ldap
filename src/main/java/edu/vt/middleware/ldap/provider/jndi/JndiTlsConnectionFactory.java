@@ -49,10 +49,7 @@ public class JndiTlsConnectionFactory extends
   public JndiTlsConnectionFactory(
     final String url, final Map<String, Object> env)
   {
-    if (url == null) {
-      throw new IllegalArgumentException("LDAP URL cannot be null");
-    }
-    ldapUrl = url;
+    super(url);
     environment = env;
   }
 
@@ -68,8 +65,8 @@ public class JndiTlsConnectionFactory extends
       environment);
     // CheckStyle:IllegalType ON
     env.put(JndiProvider.PROVIDER_URL, url);
-    if (config.getTracePackets() != null) {
-      env.put(JndiProvider.TRACE, config.getTracePackets());
+    if (getProviderConfig().getTracePackets() != null) {
+      env.put(JndiProvider.TRACE, getProviderConfig().getTracePackets());
     }
 
     JndiTlsConnection conn = null;
@@ -77,10 +74,12 @@ public class JndiTlsConnectionFactory extends
     try {
       conn = new JndiTlsConnection(new InitialLdapContext(env, null));
       conn.setStartTlsResponse(startTls(conn.getLdapContext()));
-      conn.setRemoveDnUrls(config.getRemoveDnUrls());
-      conn.setOperationRetryResultCodes(config.getOperationRetryResultCodes());
-      conn.setSearchIgnoreResultCodes(config.getSearchIgnoreResultCodes());
-      conn.setControlProcessor(config.getControlProcessor());
+      conn.setRemoveDnUrls(getProviderConfig().getRemoveDnUrls());
+      conn.setOperationRetryResultCodes(
+        getProviderConfig().getOperationRetryResultCodes());
+      conn.setSearchIgnoreResultCodes(
+        getProviderConfig().getSearchIgnoreResultCodes());
+      conn.setControlProcessor(getProviderConfig().getControlProcessor());
     } catch (NamingException e) {
       closeConn = true;
       throw new ConnectionException(
@@ -123,13 +122,15 @@ public class JndiTlsConnectionFactory extends
   {
     final StartTlsResponse tls = (StartTlsResponse) ctx.extendedOperation(
       new StartTlsRequest());
-    if (config.getHostnameVerifier() != null) {
-      logger.trace("TLS hostnameVerifier = {}", config.getHostnameVerifier());
-      tls.setHostnameVerifier(config.getHostnameVerifier());
+    if (getProviderConfig().getHostnameVerifier() != null) {
+      logger.trace(
+        "TLS hostnameVerifier = {}", getProviderConfig().getHostnameVerifier());
+      tls.setHostnameVerifier(getProviderConfig().getHostnameVerifier());
     }
-    if (config.getSslSocketFactory() != null) {
-      logger.trace("TLS sslSocketFactory = {}", config.getSslSocketFactory());
-      tls.negotiate(config.getSslSocketFactory());
+    if (getProviderConfig().getSslSocketFactory() != null) {
+      logger.trace(
+        "TLS sslSocketFactory = {}", getProviderConfig().getSslSocketFactory());
+      tls.negotiate(getProviderConfig().getSslSocketFactory());
     } else {
       tls.negotiate();
     }
@@ -150,6 +151,6 @@ public class JndiTlsConnectionFactory extends
         "[%s@%d::config=%s]",
         getClass().getName(),
         hashCode(),
-        config);
+        getProviderConfig());
   }
 }

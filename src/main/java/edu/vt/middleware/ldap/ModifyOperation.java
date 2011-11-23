@@ -26,12 +26,11 @@ public class ModifyOperation extends AbstractOperation<ModifyRequest, Void>
   /**
    * Creates a new modify operation.
    *
-   * @param  c  connection
+   * @param  conn  connection
    */
-  public ModifyOperation(final Connection c)
+  public ModifyOperation(final Connection conn)
   {
-    connection = c;
-    initialize(c.getConnectionConfig());
+    super(conn);
   }
 
 
@@ -40,7 +39,7 @@ public class ModifyOperation extends AbstractOperation<ModifyRequest, Void>
   protected Response<Void> invoke(final ModifyRequest request)
     throws LdapException
   {
-    return connection.getProviderConnection().modify(request);
+    return getConnection().getProviderConnection().modify(request);
   }
 
 

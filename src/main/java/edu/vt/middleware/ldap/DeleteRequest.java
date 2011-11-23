@@ -25,7 +25,7 @@ public class DeleteRequest extends AbstractRequest
 {
 
   /** DN to delete. */
-  protected String deleteDn;
+  private String deleteDn;
 
 
   /** Default constructor. */

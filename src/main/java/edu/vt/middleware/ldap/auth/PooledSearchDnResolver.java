@@ -30,7 +30,7 @@ public class PooledSearchDnResolver extends AbstractSearchDnResolver
 {
 
   /** Connection factory. */
-  protected PooledConnectionFactory factory;
+  private PooledConnectionFactory factory;
 
 
   /** Default constructor. */
@@ -95,12 +95,12 @@ public class PooledSearchDnResolver extends AbstractSearchDnResolver
         getClass().getName(),
         hashCode(),
         factory,
-        baseDn,
-        userFilter,
-        userFilterArgs != null ? Arrays.asList(userFilterArgs) : null,
-        allowMultipleDns,
-        subtreeSearch,
-        derefAliases,
-        referralBehavior);
+        getBaseDn(),
+        getUserFilter(),
+        getUserFilterArgs() != null ? Arrays.asList(getUserFilterArgs()) : null,
+        getAllowMultipleDns(),
+        getSubtreeSearch(),
+        getDerefAliases(),
+        getReferralBehavior());
   }
 }

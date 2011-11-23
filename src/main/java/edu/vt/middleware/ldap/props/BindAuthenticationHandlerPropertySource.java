@@ -89,9 +89,7 @@ public final class BindAuthenticationHandlerPropertySource
     final PropertyDomain domain,
     final Properties props)
   {
-    object = handler;
-    propertiesDomain = domain;
-    properties = props;
+    super(handler, domain, props);
   }
 
 

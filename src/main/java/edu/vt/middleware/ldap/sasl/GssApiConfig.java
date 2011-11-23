@@ -23,7 +23,7 @@ public class GssApiConfig extends SaslConfig
 {
 
   /** sasl realm. */
-  protected String saslRealm;
+  private String saslRealm;
 
 
   /**
@@ -31,7 +31,7 @@ public class GssApiConfig extends SaslConfig
    */
   public GssApiConfig()
   {
-    mechanism = Mechanism.GSSAPI;
+    setMechanism(Mechanism.GSSAPI);
   }
 
 
@@ -73,11 +73,11 @@ public class GssApiConfig extends SaslConfig
         "qualityOfProtection=%s, securityStrength=%s, realm=%s]",
         getClass().getName(),
         hashCode(),
-        mechanism,
-        authorizationId,
-        mutualAuthentication,
-        qualityOfProtection,
-        securityStrength,
+        getMechanism(),
+        getAuthorizationId(),
+        getMutualAuthentication(),
+        getQualityOfProtection(),
+        getSecurityStrength(),
         saslRealm);
   }
 }

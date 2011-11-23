@@ -222,7 +222,7 @@ public class PasswordPolicyControl extends AbstractControl
         "graceAuthNsRemaining=%s, error=%s]",
         getClass().getName(),
         hashCode(),
-        criticality,
+        getCriticality(),
         timeBeforeExpiration,
         graceAuthNsRemaining,
         error);

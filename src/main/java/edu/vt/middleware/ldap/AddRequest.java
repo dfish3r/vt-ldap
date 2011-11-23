@@ -26,10 +26,10 @@ public class AddRequest extends AbstractRequest
 {
 
   /** DN to create. */
-  protected String createDn;
+  private String createDn;
 
   /** Attributes to add to the newly created entry. */
-  protected Collection<LdapAttribute> attributes;
+  private Collection<LdapAttribute> attributes;
 
 
   /** Default constructor. */

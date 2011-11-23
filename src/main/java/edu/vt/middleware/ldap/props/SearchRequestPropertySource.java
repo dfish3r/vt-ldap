@@ -85,9 +85,7 @@ public final class SearchRequestPropertySource
     final PropertyDomain domain,
     final Properties props)
   {
-    object = request;
-    propertiesDomain = domain;
-    properties = props;
+    super(request, domain, props);
   }
 
 

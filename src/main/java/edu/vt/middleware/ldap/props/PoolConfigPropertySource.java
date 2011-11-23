@@ -81,9 +81,7 @@ public final class PoolConfigPropertySource
   public PoolConfigPropertySource(
     final PoolConfig pc, final PropertyDomain domain, final Properties props)
   {
-    object = pc;
-    propertiesDomain = domain;
-    properties = props;
+    super(pc, domain, props);
   }
 
 

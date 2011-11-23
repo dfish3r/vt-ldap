@@ -25,19 +25,19 @@ public class SaslConfig extends AbstractConfig
 {
 
   /** sasl mechanism. */
-  protected Mechanism mechanism;
+  private Mechanism mechanism;
 
   /** sasl authorization id. */
-  protected String authorizationId;
+  private String authorizationId;
 
   /** perform mutual authentication. */
-  protected Boolean mutualAuthentication;
+  private Boolean mutualAuthentication;
 
   /** sasl quality of protection. */
-  protected QualityOfProtection qualityOfProtection;
+  private QualityOfProtection qualityOfProtection;
 
   /** sasl security strength. */
-  protected SecurityStrength securityStrength;
+  private SecurityStrength securityStrength;
 
 
   /**

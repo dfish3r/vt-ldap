@@ -57,21 +57,21 @@ public abstract class AbstractConnectionPool extends AbstractPool<Connection>
   protected final ReentrantLock checkOutLock = new ReentrantLock();
 
   /** List of available connections in the pool. */
-  protected Queue<PooledConnectionHandler> available =
+  protected final Queue<PooledConnectionHandler> available =
     new LinkedList<PooledConnectionHandler>();
 
   /** List of connections in use. */
-  protected Queue<PooledConnectionHandler> active =
+  protected final Queue<PooledConnectionHandler> active =
     new LinkedList<PooledConnectionHandler>();
 
   /** Connection factory to create connections with. */
-  protected DefaultConnectionFactory connectionFactory;
+  private DefaultConnectionFactory connectionFactory;
 
   /** Whether to connect to the ldap on connection creation. */
-  protected boolean connectOnCreate = true;
+  private boolean connectOnCreate = true;
 
   /** Executor for scheduling pool tasks. */
-  protected ScheduledExecutorService poolExecutor =
+  private ScheduledExecutorService poolExecutor =
     Executors.newSingleThreadScheduledExecutor(
       new ThreadFactory() {
         public Thread newThread(final Runnable r)
@@ -137,7 +137,7 @@ public abstract class AbstractConnectionPool extends AbstractPool<Connection>
   {
     logger.debug("beginning pool initialization");
 
-    poolConfig.makeImmutable();
+    getPoolConfig().makeImmutable();
 
     final Runnable prune = new Runnable() {
       public void run()
@@ -149,8 +149,8 @@ public abstract class AbstractConnectionPool extends AbstractPool<Connection>
     };
     poolExecutor.scheduleAtFixedRate(
       prune,
-      poolConfig.getPrunePeriod(),
-      poolConfig.getPrunePeriod(),
+      getPoolConfig().getPrunePeriod(),
+      getPoolConfig().getPrunePeriod(),
       TimeUnit.SECONDS);
     logger.debug("prune pool task scheduled");
 
@@ -164,8 +164,8 @@ public abstract class AbstractConnectionPool extends AbstractPool<Connection>
     };
     poolExecutor.scheduleAtFixedRate(
       validate,
-      poolConfig.getValidatePeriod(),
-      poolConfig.getValidatePeriod(),
+      getPoolConfig().getValidatePeriod(),
+      getPoolConfig().getValidatePeriod(),
       TimeUnit.SECONDS);
     logger.debug("validate pool task scheduled");
 
@@ -179,16 +179,16 @@ public abstract class AbstractConnectionPool extends AbstractPool<Connection>
   private void initializePool()
   {
     logger.debug(
-      "checking ldap pool size >= {}", poolConfig.getMinPoolSize());
+      "checking ldap pool size >= {}", getPoolConfig().getMinPoolSize());
 
     int count = 0;
     poolLock.lock();
     try {
       while (
-        available.size() < poolConfig.getMinPoolSize() &&
-          count < poolConfig.getMinPoolSize() * 2) {
+        available.size() < getPoolConfig().getMinPoolSize() &&
+          count < getPoolConfig().getMinPoolSize() * 2) {
         final PooledConnectionHandler pc = createAvailableConnection();
-        if (poolConfig.isValidateOnCheckIn()) {
+        if (getPoolConfig().isValidateOnCheckIn()) {
           if (validate(pc.getConnection())) {
             logger.trace("connection passed initialize validation: {}", pc);
           } else {
@@ -420,7 +420,8 @@ public abstract class AbstractConnectionPool extends AbstractPool<Connection>
       removeAvailableAndActiveConnection(pc);
       throw new ActivationException("Activation of connection failed");
     }
-    if (poolConfig.isValidateOnCheckOut() && !validate(pc.getConnection())) {
+    if (getPoolConfig().isValidateOnCheckOut() &&
+        !validate(pc.getConnection())) {
       logger.warn("connection failed check out validation: {}", pc);
       removeAvailableAndActiveConnection(pc);
       throw new ValidationException("Validation of connection failed");
@@ -440,7 +441,7 @@ public abstract class AbstractConnectionPool extends AbstractPool<Connection>
     final PooledConnectionHandler pc)
   {
     boolean valid = false;
-    if (poolConfig.isValidateOnCheckIn()) {
+    if (getPoolConfig().isValidateOnCheckIn()) {
       if (!validate(pc.getConnection())) {
         logger.warn("connection failed check in validation: {}", pc);
       } else {
@@ -469,11 +470,11 @@ public abstract class AbstractConnectionPool extends AbstractPool<Connection>
     try {
       if (active.size() == 0) {
         logger.debug("pruning pool of size {}", available.size());
-        while (available.size() > poolConfig.getMinPoolSize()) {
+        while (available.size() > getPoolConfig().getMinPoolSize()) {
           PooledConnectionHandler pc = available.peek();
           final long time = System.currentTimeMillis() - pc.getCreatedTime();
           if (time >
-              TimeUnit.SECONDS.toMillis(poolConfig.getExpirationTime())) {
+              TimeUnit.SECONDS.toMillis(getPoolConfig().getExpirationTime())) {
             pc = available.remove();
             logger.trace("removing {} in the pool for {}ms", pc, time);
             pc.getConnection().close();
@@ -501,7 +502,7 @@ public abstract class AbstractConnectionPool extends AbstractPool<Connection>
     poolLock.lock();
     try {
       if (active.size() == 0) {
-        if (poolConfig.isValidatePeriodically()) {
+        if (getPoolConfig().isValidatePeriodically()) {
           logger.debug(
             "validate for pool of size {}", available.size());
 
@@ -615,7 +616,7 @@ public abstract class AbstractConnectionPool extends AbstractPool<Connection>
         hashCode(),
         connectOnCreate,
         connectionFactory,
-        poolConfig);
+        getPoolConfig());
   }
 
 
@@ -644,7 +645,7 @@ public abstract class AbstractConnectionPool extends AbstractPool<Connection>
      *
      * @param  c  connection to participate in this pool
      */
-    protected PooledConnectionHandler(final Connection c)
+    public PooledConnectionHandler(final Connection c)
     {
       conn = c;
     }

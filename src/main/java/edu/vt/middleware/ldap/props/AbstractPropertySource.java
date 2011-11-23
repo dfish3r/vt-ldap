@@ -41,16 +41,33 @@ public abstract class AbstractPropertySource<T> implements PropertySource<T>
   protected final Logger logger = LoggerFactory.getLogger(getClass());
 
   /** Object to initialize with properties. */
-  protected T object;
+  protected final T object;
 
   /** Domain that properties are in. */
-  protected PropertyDomain propertiesDomain;
+  protected final PropertyDomain propertiesDomain;
 
   /** Properties to set. */
-  protected Properties properties;
+  protected final Properties properties;
 
   /** Properties that are not in the vt-ldap domain. */
-  protected Map<String, Object> extraProps = new HashMap<String, Object>();
+  protected final Map<String, Object> extraProps =
+    new HashMap<String, Object>();
+
+
+  /**
+   * Creates a new abstract property source.
+   *
+   * @param  t  to set properties on
+   * @param  pd  domain that properties reside in
+   * @param  p  properties to set
+   */
+  public AbstractPropertySource(
+    final T t, final PropertyDomain pd, final Properties p)
+  {
+    object = t;
+    propertiesDomain = pd;
+    properties = p;
+  }
 
 
   /**

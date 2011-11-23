@@ -43,25 +43,25 @@ public abstract class AbstractSearchDnResolver implements DnResolver
   protected final Logger logger = LoggerFactory.getLogger(getClass());
 
   /** DN to search. */
-  protected String baseDn = "";
+  private String baseDn = "";
 
   /** Filter for searching for the user. */
-  protected String userFilter;
+  private String userFilter;
 
   /** Filter arguments for searching for the user. */
-  protected Object[] userFilterArgs;
+  private Object[] userFilterArgs;
 
   /** Whether to throw an exception if multiple DNs are found. */
-  protected boolean allowMultipleDns;
+  private boolean allowMultipleDns;
 
   /** Whether to use a subtree search when resolving DNs. */
-  protected boolean subtreeSearch;
+  private boolean subtreeSearch;
 
   /** How to handle aliases. */
-  protected DerefAliases derefAliases;
+  private DerefAliases derefAliases;
 
   /** How to handle referrals. */
-  protected ReferralBehavior referralBehavior;
+  private ReferralBehavior referralBehavior;
 
 
   /**

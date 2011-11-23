@@ -33,29 +33,41 @@ public abstract class AbstractOperation<Q extends Request, S>
   protected final Logger logger = LoggerFactory.getLogger(getClass());
 
   /** Connection to perform operation. */
-  protected Connection connection;
+  private Connection connection;
 
   /** Number of times to retry ldap operations. */
-  protected int operationRetry;
+  private int operationRetry;
 
   /** Amount of time in milliseconds to wait before retrying. */
-  protected long operationRetryWait;
+  private long operationRetryWait;
 
   /** Factor to multiply operation retry wait by. */
-  protected int operationRetryBackoff;
+  private int operationRetryBackoff;
 
 
   /**
-   * Sets the properties of this operation with values from the supplied
-   * connection configuration.
+   * Creates a new abstract connection.
    *
-   * @param  cc  connection configuration to read properties from
+   * @param  conn  to use for this operation
    */
-  protected void initialize(final ConnectionConfig cc)
+  public AbstractOperation(final Connection conn)
   {
+    connection = conn;
+    final ConnectionConfig cc = conn.getConnectionConfig();
     operationRetry = cc.getOperationRetry();
     operationRetryWait = cc.getOperationRetryWait();
     operationRetryBackoff = cc.getOperationRetryBackoff();
+  }
+
+
+  /**
+   * Returns the connection used for this operation.
+   *
+   * @return  connection
+   */
+  protected Connection getConnection()
+  {
+    return connection;
   }
 
 

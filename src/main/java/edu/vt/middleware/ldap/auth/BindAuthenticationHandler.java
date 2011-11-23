@@ -35,7 +35,7 @@ public class BindAuthenticationHandler
 {
 
   /** Connection factory. */
-  protected ConnectionFactory factory;
+  private ConnectionFactory factory;
 
 
   /** Default constructor. */

@@ -34,16 +34,16 @@ public class ProviderConfig extends AbstractConfig
   protected final Logger logger = LoggerFactory.getLogger(getClass());
 
   /** Result codes indicating that an operation should be retried. */
-  protected ResultCode[] operationRetryResultCodes;
+  private ResultCode[] operationRetryResultCodes;
 
   /** Additional provider properties. */
-  protected Map<String, Object> properties = new HashMap<String, Object>();
+  private Map<String, Object> properties = new HashMap<String, Object>();
 
   /** Connection strategy. */
-  protected ConnectionStrategy connectionStrategy = ConnectionStrategy.DEFAULT;
+  private ConnectionStrategy connectionStrategy = ConnectionStrategy.DEFAULT;
 
   /** Whether to log authentication credentials. */
-  protected boolean logCredentials;
+  private boolean logCredentials;
 
 
   /** Default constructor. */

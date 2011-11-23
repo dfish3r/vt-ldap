@@ -33,7 +33,7 @@ public class PooledCompareAuthenticationHandler
 {
 
   /** Connection factory. */
-  protected PooledConnectionFactory factory;
+  private PooledConnectionFactory factory;
 
 
   /** Default constructor. */
@@ -90,7 +90,7 @@ public class PooledCompareAuthenticationHandler
         getClass().getName(),
         hashCode(),
         factory,
-        passwordScheme,
+        getPasswordScheme(),
         getAuthenticationControls() != null ?
           Arrays.asList(getAuthenticationControls()) : null);
   }

@@ -647,11 +647,11 @@ public class LdapAttribute extends AbstractLdapBean
     private <E> Set<E> createSortBehaviorSet(final Class<E> c)
     {
       Set<E> s = null;
-      if (SortBehavior.UNORDERED == sortBehavior) {
+      if (SortBehavior.UNORDERED == LdapAttribute.this.getSortBehavior()) {
         s = new HashSet<E>();
-      } else if (SortBehavior.ORDERED == sortBehavior) {
+      } else if (SortBehavior.ORDERED == LdapAttribute.this.getSortBehavior()) {
         s = new LinkedHashSet<E>();
-      } else if (SortBehavior.SORTED == sortBehavior) {
+      } else if (SortBehavior.SORTED == LdapAttribute.this.getSortBehavior()) {
         s = new TreeSet<E>();
       }
       return s;

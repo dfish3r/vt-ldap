@@ -36,7 +36,7 @@ public class SearchEntryResolver implements EntryResolver
   protected final Logger logger = LoggerFactory.getLogger(getClass());
 
   /** User attributes to return. */
-  protected String[] returnAttributes;
+  private String[] returnAttributes;
 
 
   /** Default constructor. */

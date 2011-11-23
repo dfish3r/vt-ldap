@@ -43,10 +43,7 @@ public class JndiConnectionFactory extends
    */
   public JndiConnectionFactory(final String url, final Map<String, Object> env)
   {
-    if (url == null) {
-      throw new IllegalArgumentException("LDAP URL cannot be null");
-    }
-    ldapUrl = url;
+    super(url);
     environment = env;
   }
 
@@ -62,17 +59,19 @@ public class JndiConnectionFactory extends
       environment);
     // CheckStyle:IllegalType ON
     env.put(JndiProvider.PROVIDER_URL, url);
-    if (config.getTracePackets() != null) {
-      env.put(JndiProvider.TRACE, config.getTracePackets());
+    if (getProviderConfig().getTracePackets() != null) {
+      env.put(JndiProvider.TRACE, getProviderConfig().getTracePackets());
     }
 
     JndiConnection conn = null;
     try {
       conn = new JndiConnection(new InitialLdapContext(env, null));
-      conn.setRemoveDnUrls(config.getRemoveDnUrls());
-      conn.setOperationRetryResultCodes(config.getOperationRetryResultCodes());
-      conn.setSearchIgnoreResultCodes(config.getSearchIgnoreResultCodes());
-      conn.setControlProcessor(config.getControlProcessor());
+      conn.setRemoveDnUrls(getProviderConfig().getRemoveDnUrls());
+      conn.setOperationRetryResultCodes(
+        getProviderConfig().getOperationRetryResultCodes());
+      conn.setSearchIgnoreResultCodes(
+        getProviderConfig().getSearchIgnoreResultCodes());
+      conn.setControlProcessor(getProviderConfig().getControlProcessor());
     } catch (NamingException e) {
       throw new ConnectionException(
         e, NamingExceptionUtil.getResultCode(e.getClass()));
@@ -94,6 +93,6 @@ public class JndiConnectionFactory extends
         "[%s@%d::config=%s]",
         getClass().getName(),
         hashCode(),
-        config);
+        getProviderConfig());
   }
 }

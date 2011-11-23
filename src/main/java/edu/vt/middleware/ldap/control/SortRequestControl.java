@@ -105,7 +105,7 @@ public class SortRequestControl extends AbstractControl
         "[%s@%d::criticality=%s, sortKeys=%s]",
         getClass().getName(),
         hashCode(),
-        criticality,
+        getCriticality(),
         sortKeys != null ? Arrays.asList(sortKeys) : null);
   }
 }

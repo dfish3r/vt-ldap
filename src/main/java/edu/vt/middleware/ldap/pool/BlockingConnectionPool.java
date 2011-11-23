@@ -118,7 +118,7 @@ public class BlockingConnectionPool extends AbstractConnectionPool
           logger.error("could not remove connection from list", e);
           throw new IllegalStateException("Pool is empty", e);
         }
-      } else if (active.size() < poolConfig.getMaxPoolSize()) {
+      } else if (active.size() < getPoolConfig().getMaxPoolSize()) {
         logger.trace("pool can grow, attempt to create connection");
         create = true;
       } else {
@@ -141,7 +141,7 @@ public class BlockingConnectionPool extends AbstractConnectionPool
         try {
           if (
             available.size() + active.size() ==
-              poolConfig.getMaxPoolSize()) {
+              getPoolConfig().getMaxPoolSize()) {
             b = false;
           }
         } finally {

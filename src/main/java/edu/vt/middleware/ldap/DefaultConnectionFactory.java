@@ -235,14 +235,14 @@ public class DefaultConnectionFactory implements ConnectionFactory
     protected final Logger logger = LoggerFactory.getLogger(getClass());
 
     /** Connection configuration. */
-    protected ConnectionConfig config;
+    private ConnectionConfig config;
 
     /** Connection factory. */
-    protected edu.vt.middleware.ldap.provider.ConnectionFactory<?>
+    private edu.vt.middleware.ldap.provider.ConnectionFactory<?>
     providerConnectionFactory;
 
     /** Provider connection. */
-    protected edu.vt.middleware.ldap.provider.Connection providerConnection;
+    private edu.vt.middleware.ldap.provider.Connection providerConnection;
 
 
     /**
@@ -251,7 +251,7 @@ public class DefaultConnectionFactory implements ConnectionFactory
      * @param  cc  connection configuration
      * @param  cf  provider connection factory
      */
-    protected DefaultConnection(
+    public DefaultConnection(
       final ConnectionConfig cc,
       final edu.vt.middleware.ldap.provider.ConnectionFactory<?> cf)
     {

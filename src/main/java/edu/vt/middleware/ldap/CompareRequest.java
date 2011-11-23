@@ -25,10 +25,10 @@ public class CompareRequest extends AbstractRequest
 {
 
   /** DN to compare. */
-  protected String compareDn = "";
+  private String compareDn = "";
 
   /** Attribute to compare. */
-  protected LdapAttribute attribute;
+  private LdapAttribute attribute;
 
 
   /** Default constructor. */

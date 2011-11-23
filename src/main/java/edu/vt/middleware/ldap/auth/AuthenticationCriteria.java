@@ -25,10 +25,10 @@ public class AuthenticationCriteria
 {
 
   /** dn. */
-  protected String authenticationDn;
+  private String authenticationDn;
 
   /** credential. */
-  protected Credential credential;
+  private Credential credential;
 
 
   /** Default constructor. */

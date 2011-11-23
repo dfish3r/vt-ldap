@@ -28,7 +28,7 @@ public class CramMd5Config extends SaslConfig
    */
   public CramMd5Config()
   {
-    mechanism = Mechanism.CRAM_MD5;
+    setMechanism(Mechanism.CRAM_MD5);
   }
 
 
@@ -46,10 +46,10 @@ public class CramMd5Config extends SaslConfig
         "qualityOfProtection=%s, securityStrength=%s]",
         getClass().getName(),
         hashCode(),
-        mechanism,
-        authorizationId,
-        mutualAuthentication,
-        qualityOfProtection,
-        securityStrength);
+        getMechanism(),
+        getAuthorizationId(),
+        getMutualAuthentication(),
+        getQualityOfProtection(),
+        getSecurityStrength());
   }
 }

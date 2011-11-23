@@ -104,24 +104,26 @@ public class Authenticator extends AbstractAuthenticator
       ac.setCredential(request.getCredential());
 
       // attempt to bind as this dn
-      response = authenticationHandler.authenticate(ac);
+      response = getAuthenticationHandler().authenticate(ac);
       conn = response.getConnection();
       if (response.getResult()) {
         // resolve entry
         entry = resolveEntry(request, conn, ac);
 
         logger.info("Authentication succeeded for dn: {}", ac.getDn());
-        if (authenticationResultHandlers != null &&
-            authenticationResultHandlers.length > 0) {
-          for (AuthenticationResultHandler ah : authenticationResultHandlers) {
+        if (getAuthenticationResultHandlers() != null &&
+            getAuthenticationResultHandlers().length > 0) {
+          for (AuthenticationResultHandler ah :
+               getAuthenticationResultHandlers()) {
             ah.process(ac, true);
           }
         }
       } else {
         logger.info("Authentication failed for dn: {}", ac.getDn());
-        if (authenticationResultHandlers != null &&
-            authenticationResultHandlers.length > 0) {
-          for (AuthenticationResultHandler ah : authenticationResultHandlers) {
+        if (getAuthenticationResultHandlers() != null &&
+            getAuthenticationResultHandlers().length > 0) {
+          for (AuthenticationResultHandler ah :
+               getAuthenticationResultHandlers()) {
             ah.process(ac, false);
           }
         }
@@ -155,10 +157,10 @@ public class Authenticator extends AbstractAuthenticator
         "entryResolver=%s, authenticationResultHandlers=%s]",
         getClass().getName(),
         hashCode(),
-        dnResolver,
-        authenticationHandler,
-        entryResolver,
-        authenticationResultHandlers != null ?
-          Arrays.asList(authenticationResultHandlers) : null);
+        getDnResolver(),
+        getAuthenticationHandler(),
+        getEntryResolver(),
+        getAuthenticationResultHandlers() != null ?
+          Arrays.asList(getAuthenticationResultHandlers()) : null);
   }
 }

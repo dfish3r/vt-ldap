@@ -33,7 +33,7 @@ public class CompareAuthenticationHandler
 {
 
   /** Connection factory. */
-  protected ConnectionFactory factory;
+  private ConnectionFactory factory;
 
 
   /** Default constructor. */
@@ -92,7 +92,7 @@ public class CompareAuthenticationHandler
         getClass().getName(),
         hashCode(),
         factory,
-        passwordScheme,
+        getPasswordScheme(),
         getAuthenticationControls() != null ?
           Arrays.asList(getAuthenticationControls()) : null);
   }

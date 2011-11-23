@@ -29,12 +29,11 @@ public class SearchOperation extends AbstractSearchOperation<SearchRequest>
   /**
    * Creates a new search operation.
    *
-   * @param  c  connection
+   * @param  conn  connection
    */
-  public SearchOperation(final Connection c)
+  public SearchOperation(final Connection conn)
   {
-    connection = c;
-    initialize(c.getConnectionConfig());
+    super(conn, null);
   }
 
 
@@ -47,9 +46,7 @@ public class SearchOperation extends AbstractSearchOperation<SearchRequest>
   public SearchOperation(
     final Connection conn, final Cache<SearchRequest> c)
   {
-    connection = conn;
-    cache = c;
-    initialize(conn.getConnectionConfig());
+    super(conn, c);
   }
 
 
@@ -59,7 +56,7 @@ public class SearchOperation extends AbstractSearchOperation<SearchRequest>
     throws LdapException
   {
     final LdapResult lr = new LdapResult(request.getSortBehavior());
-    final SearchIterator si = connection.getProviderConnection().search(
+    final SearchIterator si = getConnection().getProviderConnection().search(
       request);
     try {
       while (si.hasNext()) {

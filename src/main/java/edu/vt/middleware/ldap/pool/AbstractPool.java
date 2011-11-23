@@ -31,16 +31,16 @@ public abstract class AbstractPool<T>
   protected final Logger logger = LoggerFactory.getLogger(getClass());
 
   /** Pool config. */
-  protected PoolConfig poolConfig;
+  private PoolConfig poolConfig;
 
   /** For activating pooled objects. */
-  protected Activator<T> activator;
+  private Activator<T> activator;
 
   /** For passivating pooled objects. */
-  protected Passivator<T> passivator;
+  private Passivator<T> passivator;
 
   /** For validating pooled objects. */
-  protected Validator<T> validator;
+  private Validator<T> validator;
 
 
   /**

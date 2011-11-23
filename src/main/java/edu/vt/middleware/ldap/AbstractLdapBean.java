@@ -23,7 +23,7 @@ public abstract class AbstractLdapBean
 {
 
   /** Sort behavior. */
-  protected SortBehavior sortBehavior;
+  private SortBehavior sortBehavior;
 
 
   /**

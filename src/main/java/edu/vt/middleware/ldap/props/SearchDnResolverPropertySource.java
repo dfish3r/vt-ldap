@@ -87,9 +87,7 @@ public final class SearchDnResolverPropertySource
     final PropertyDomain domain,
     final Properties props)
   {
-    object = resolver;
-    propertiesDomain = domain;
-    properties = props;
+    super(resolver, domain, props);
   }
 
 

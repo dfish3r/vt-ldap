@@ -146,7 +146,7 @@ public class SortResponseControl extends AbstractControl
         "[%s@%d::criticality=%s, sortResult=%s, attributeName=%s]",
         getClass().getName(),
         hashCode(),
-        criticality,
+        getCriticality(),
         sortResult,
         attributeName);
   }

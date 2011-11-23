@@ -23,7 +23,7 @@ public abstract class AbstractControl implements Control
 {
 
   /** is control critical. */
-  protected boolean criticality;
+  private boolean criticality;
 
 
   /** {@inheritDoc} */

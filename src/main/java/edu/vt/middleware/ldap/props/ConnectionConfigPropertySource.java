@@ -87,9 +87,7 @@ public final class ConnectionConfigPropertySource
     final PropertyDomain domain,
     final Properties props)
   {
-    object = cc;
-    propertiesDomain = domain;
-    properties = props;
+    super(cc, domain, props);
   }
 
 

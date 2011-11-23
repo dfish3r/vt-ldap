@@ -26,12 +26,11 @@ public class RenameOperation extends AbstractOperation<RenameRequest, Void>
   /**
    * Creates a new rename operation.
    *
-   * @param  c  connection
+   * @param  conn  connection
    */
-  public RenameOperation(final Connection c)
+  public RenameOperation(final Connection conn)
   {
-    connection = c;
-    initialize(c.getConnectionConfig());
+    super(conn);
   }
 
 
@@ -40,7 +39,7 @@ public class RenameOperation extends AbstractOperation<RenameRequest, Void>
   protected Response<Void> invoke(final RenameRequest request)
     throws LdapException
   {
-    return connection.getProviderConnection().rename(request);
+    return getConnection().getProviderConnection().rename(request);
   }
 
 

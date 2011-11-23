@@ -89,9 +89,7 @@ public final class BlockingConnectionPoolPropertySource
     final PropertyDomain domain,
     final Properties props)
   {
-    object = cp;
-    propertiesDomain = domain;
-    properties = props;
+    super(cp, domain, props);
   }
 
 
