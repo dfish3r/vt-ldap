@@ -21,7 +21,7 @@ import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
 import edu.vt.middleware.ldap.auth.Authenticator;
-import edu.vt.middleware.ldap.auth.NoopDnResolver;
+import edu.vt.middleware.ldap.auth.NoOpDnResolver;
 import edu.vt.middleware.ldap.io.LdifReader;
 import edu.vt.middleware.ldap.props.AuthenticatorPropertySource;
 import edu.vt.middleware.ldap.props.ConnectionConfigPropertySource;
@@ -201,7 +201,7 @@ public final class TestUtil
     final Authenticator auth = readAuthenticator(
         TestUtil.class.getResourceAsStream(
           "/edu/vt/middleware/ldap/ldap.ssl.properties"));
-    auth.setDnResolver(new NoopDnResolver());
+    auth.setDnResolver(new NoOpDnResolver());
     return auth;
   }
 
@@ -233,7 +233,7 @@ public final class TestUtil
     final Authenticator auth = readAuthenticator(
       TestUtil.class.getResourceAsStream(
         "/edu/vt/middleware/ldap/ldap.tls.properties"));
-    auth.setDnResolver(new NoopDnResolver());
+    auth.setDnResolver(new NoOpDnResolver());
     return auth;
   }
 
@@ -250,7 +250,7 @@ public final class TestUtil
     final Authenticator auth = readAuthenticator(
       TestUtil.class.getResourceAsStream(
         "/edu/vt/middleware/ldap/ldap.digest-md5.properties"));
-    auth.setDnResolver(new NoopDnResolver());
+    auth.setDnResolver(new NoOpDnResolver());
     return auth;
   }
 
@@ -267,7 +267,7 @@ public final class TestUtil
     final Authenticator auth = readAuthenticator(
       TestUtil.class.getResourceAsStream(
         "/edu/vt/middleware/ldap/ldap.cram-md5.properties"));
-    auth.setDnResolver(new NoopDnResolver());
+    auth.setDnResolver(new NoOpDnResolver());
     return auth;
   }
 

@@ -176,7 +176,7 @@ public abstract class AbstractAuthenticator
           request.getReturnAttributes().length > 0) {
         er = new SearchEntryResolver(request.getReturnAttributes());
       } else {
-        er = new NoopEntryResolver();
+        er = new NoOpEntryResolver();
       }
       entry = er.resolve(conn, criteria);
     }
