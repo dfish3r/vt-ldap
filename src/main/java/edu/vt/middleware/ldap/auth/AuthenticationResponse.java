@@ -30,6 +30,9 @@ public class AuthenticationResponse extends Response<Boolean>
   /** Ldap entry of authenticated user. */
   private final LdapEntry ldapEntry;
 
+  /** Authentication message. */
+  private final String message;
+
 
   /**
    * Creates a new authentication response.
@@ -43,25 +46,49 @@ public class AuthenticationResponse extends Response<Boolean>
   {
     super(success, rc);
     ldapEntry = entry;
+    message = null;
   }
 
 
   /**
-   * Creates a new ldap response.
+   * Creates a new authentication response.
    *
    * @param  success  authentication result
    * @param  rc  result code from the underlying ldap operation
    * @param  entry  of the authenticated user
+   * @param  msg  authentication message
+   */
+  public AuthenticationResponse(
+    final Boolean success,
+    final ResultCode rc,
+    final LdapEntry entry,
+    final String msg)
+  {
+    super(success, rc);
+    ldapEntry = entry;
+    message = msg;
+  }
+
+
+  /**
+   * Creates a new authentication response.
+   *
+   * @param  success  authentication result
+   * @param  rc  result code from the underlying ldap operation
+   * @param  entry  of the authenticated user
+   * @param  msg  authentication message
    * @param  controls  response controls from the underlying ldap operation
    */
   public AuthenticationResponse(
     final Boolean success,
     final ResultCode rc,
     final LdapEntry entry,
+    final String msg,
     final ResponseControl[] controls)
   {
     super(success, rc, controls);
     ldapEntry = entry;
+    message = msg;
   }
 
 
@@ -73,5 +100,16 @@ public class AuthenticationResponse extends Response<Boolean>
   public LdapEntry getLdapEntry()
   {
     return ldapEntry;
+  }
+
+
+  /**
+   * Returns any message associated with the authentication of a user.
+   *
+   * @return  message
+   */
+  public String getMessage()
+  {
+    return message;
   }
 }

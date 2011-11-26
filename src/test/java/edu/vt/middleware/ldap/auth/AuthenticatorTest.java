@@ -535,10 +535,12 @@ public class AuthenticatorTest extends AbstractTest
     AuthenticationResponse response = auth.authenticate(
       new AuthenticationRequest(user, new Credential(INVALID_PASSWD)));
     AssertJUnit.assertFalse(response.getResult());
+    AssertJUnit.assertNotNull(response.getMessage());
 
     response = auth.authenticate(
       new AuthenticationRequest(user, new Credential(credential)));
     AssertJUnit.assertTrue(response.getResult());
+    AssertJUnit.assertNull(response.getMessage());
 
     // test auth with return attributes
     final String expected = TestUtil.readFileIntoString(ldifFile);
@@ -547,6 +549,8 @@ public class AuthenticatorTest extends AbstractTest
         user,
         new Credential(credential),
         returnAttrs.split("\\|")));
+    AssertJUnit.assertTrue(response.getResult());
+    AssertJUnit.assertNull(response.getMessage());
     AssertJUnit.assertEquals(
       TestUtil.convertLdifToResult(expected),
       new LdapResult(response.getLdapEntry()));

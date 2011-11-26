@@ -30,6 +30,9 @@ public class AuthenticationHandlerResponse extends Response<Boolean>
   /** Connection that authentication occurred on. */
   private final Connection connection;
 
+  /** Authentication message. */
+  private final String message;
+
 
   /**
    * Creates a new authentication response.
@@ -43,6 +46,27 @@ public class AuthenticationHandlerResponse extends Response<Boolean>
   {
     super(success, rc);
     connection = conn;
+    message = null;
+  }
+
+
+  /**
+   * Creates a new authentication response.
+   *
+   * @param  success  authentication result
+   * @param  rc  result code from the underlying ldap operation
+   * @param  conn  connection the authentication occurred on
+   * @param  msg  authentication message
+   */
+  public AuthenticationHandlerResponse(
+    final Boolean success,
+    final ResultCode rc,
+    final Connection conn,
+    final String msg)
+  {
+    super(success, rc);
+    connection = conn;
+    message = msg;
   }
 
 
@@ -52,16 +76,19 @@ public class AuthenticationHandlerResponse extends Response<Boolean>
    * @param  success  authentication result
    * @param  rc  result code from the underlying ldap operation
    * @param  conn  connection the authentication occurred on
+   * @param  msg  authentication message
    * @param  controls  response controls from the underlying ldap operation
    */
   public AuthenticationHandlerResponse(
     final Boolean success,
     final ResultCode rc,
     final Connection conn,
+    final String msg,
     final ResponseControl[] controls)
   {
     super(success, rc, controls);
     connection = conn;
+    message = msg;
   }
 
 
@@ -73,5 +100,16 @@ public class AuthenticationHandlerResponse extends Response<Boolean>
   public Connection getConnection()
   {
     return connection;
+  }
+
+
+  /**
+   * Returns the authentication message.
+   *
+   * @return  message
+   */
+  public String getMessage()
+  {
+    return message;
   }
 }

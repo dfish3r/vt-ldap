@@ -95,6 +95,7 @@ public class BindAuthenticationHandler
         ResultCode.SUCCESS == connResponse.getResultCode(),
         connResponse.getResultCode(),
         c,
+        null,
         connResponse.getControls());
     } catch (LdapException e) {
       if (ResultCode.INVALID_CREDENTIALS == e.getResultCode()) {
@@ -102,6 +103,7 @@ public class BindAuthenticationHandler
           false,
           e.getResultCode(),
           c,
+          e.getMessage(),
           e.getControls());
       } else {
         throw e;

@@ -139,6 +139,7 @@ public class Authenticator extends AbstractAuthenticator
       response.getResult(),
       response.getResultCode(),
       entry,
+      response.getMessage(),
       response.getControls());
   }
 
