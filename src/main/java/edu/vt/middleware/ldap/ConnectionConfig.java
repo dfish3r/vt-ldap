@@ -37,8 +37,11 @@ public class ConnectionConfig extends AbstractConfig
   /** URL to the LDAP(s). */
   private String ldapUrl;
 
-  /** Amount of time in milliseconds that connect operations will block. */
-  private long timeout = -1;
+  /** Amount of time in milliseconds that connects will block. */
+  private long connectTimeout = -1;
+
+  /** Amount of time in milliseconds to wait for responses. */
+  private long responseTimeout = -1;
 
   /** DN to bind as before performing operations. */
   private String bindDn;
@@ -157,28 +160,53 @@ public class ConnectionConfig extends AbstractConfig
 
 
   /**
-   * Returns the connect timeout. If this value is 0, then connect operations
-   * will wait indefinitely.
+   * Returns the connect timeout. If this value is <= 0, then connects will wait
+   * indefinitely.
    *
    * @return  timeout
    */
-  public long getTimeout()
+  public long getConnectTimeout()
   {
-    return timeout;
+    return connectTimeout;
   }
 
 
   /**
-   * Sets the maximum amount of time in milliseconds that connect operations
-   * will block.
+   * Sets the maximum amount of time in milliseconds that connects will block.
    *
-   * @param  time  timeout for connect operations
+   * @param  time  timeout for connects
    */
-  public void setTimeout(final long time)
+  public void setConnectTimeout(final long time)
   {
     checkImmutable();
-    logger.trace("setting timeout: {}", time);
-    timeout = time;
+    logger.trace("setting connectTimeout: {}", time);
+    connectTimeout = time;
+  }
+
+
+  /**
+   * Returns the response timeout. If this value is <= 0, then operations will
+   * wait indefinitely for a response.
+   *
+   * @return  timeout
+   */
+  public long getResponseTimeout()
+  {
+    return responseTimeout;
+  }
+
+
+  /**
+   * Sets the maximum amount of time in milliseconds that operations will wait
+   * for a response.
+   *
+   * @param  time  timeout for responses
+   */
+  public void setResponseTimeout(final long time)
+  {
+    checkImmutable();
+    logger.trace("setting responseTimeout: {}", time);
+    responseTimeout = time;
   }
 
 
@@ -436,15 +464,16 @@ public class ConnectionConfig extends AbstractConfig
     return
       String.format(
         "[%s@%d::sslSocketFactory=%s, hostnameVerifier=%s, ldapUrl=%s, " +
-        "timeout=%s, bindDn=%s, bindSaslConfig=%s, bindControls=%s, " +
-        "operationRetry=%s, operationRetryWait=%s, operationRetryBackoff=%s, " +
-        "ssl=%s, tls=%s]",
+        "connectTimeout=%s, responseTimeout=%s, bindDn=%s, " +
+        "bindSaslConfig=%s, bindControls=%s, operationRetry=%s, " +
+        "operationRetryWait=%s, operationRetryBackoff=%s, ssl=%s, tls=%s]",
         getClass().getName(),
         hashCode(),
         sslSocketFactory,
         hostnameVerifier,
         ldapUrl,
-        timeout,
+        connectTimeout,
+        responseTimeout,
         bindDn,
         bindSaslConfig,
         bindControls != null ? Arrays.asList(bindControls) : null,

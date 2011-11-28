@@ -418,7 +418,7 @@ public class ConnectionPoolTest extends AbstractTest
     }
 
     try {
-      softLimitPool.getConnectionFactory().getConnectionConfig().setTimeout(
+      softLimitPool.getConnectionFactory().getConnectionConfig().setConnectTimeout(
         10000);
       AssertJUnit.fail("Expected illegalstateexception to be thrown");
     } catch (IllegalStateException e) {
@@ -507,7 +507,7 @@ public class ConnectionPoolTest extends AbstractTest
     }
 
     try {
-      blockingPool.getConnectionFactory().getConnectionConfig().setTimeout(
+      blockingPool.getConnectionFactory().getConnectionConfig().setConnectTimeout(
         10000);
       AssertJUnit.fail("Expected illegalstateexception to be thrown");
     } catch (IllegalStateException e) {

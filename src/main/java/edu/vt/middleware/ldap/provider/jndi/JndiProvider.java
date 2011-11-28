@@ -67,7 +67,16 @@ public class JndiProvider implements Provider<JndiProviderConfig>
    * milliseconds that a connection attempt will abort if the connection cannot
    * be made. The value of this constant is {@value}.
    */
-  public static final String TIMEOUT = "com.sun.jndi.ldap.connect.timeout";
+  public static final String CONNECT_TIMEOUT =
+    "com.sun.jndi.ldap.connect.timeout";
+
+  /**
+   * The value of this property is a string that specifies the time in
+   * milliseconds that an operation will abort if a response is not received.
+   * The value of this constant is {@value}.
+   */
+  public static final String READ_TIMEOUT =
+    "com.sun.jndi.ldap.read.timeout";
 
   /**
    * The value of this property is a java.io.OutputStream object into which a
@@ -144,8 +153,11 @@ public class JndiProvider implements Provider<JndiProviderConfig>
         env.put(SOCKET_FACTORY, cc.getSslSocketFactory().getClass().getName());
       }
     }
-    if (cc.getTimeout() > 0) {
-      env.put(TIMEOUT, Long.toString(cc.getTimeout()));
+    if (cc.getConnectTimeout() > 0) {
+      env.put(CONNECT_TIMEOUT, Long.toString(cc.getConnectTimeout()));
+    }
+    if (cc.getResponseTimeout() > 0) {
+      env.put(READ_TIMEOUT, Long.toString(cc.getResponseTimeout()));
     }
     if (!config.getProperties().isEmpty()) {
       for (Map.Entry<String, Object> entry :
