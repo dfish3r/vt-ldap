@@ -28,6 +28,9 @@ import org.slf4j.LoggerFactory;
 public abstract class AbstractAuthenticator
 {
 
+  /** NoOp entry resolver. */
+  private static final EntryResolver NOOP_RESOLVER = new NoOpEntryResolver();
+
   /** Logger for this class. */
   protected final Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -40,8 +43,8 @@ public abstract class AbstractAuthenticator
   /** For finding user entries. */
   private EntryResolver entryResolver;
 
-  /** Handlers to process authentication results. */
-  private AuthenticationResultHandler[] authenticationResultHandlers;
+  /** Handlers to process authentication responses. */
+  private AuthenticationResponseHandler[] authenticationResponseHandlers;
 
 
   /**
@@ -111,25 +114,25 @@ public abstract class AbstractAuthenticator
 
 
   /**
-   * Returns the authentication result handlers.
+   * Returns the authentication response handlers.
    *
-   * @return  authentication result handlers
+   * @return  authentication response handlers
    */
-  public AuthenticationResultHandler[] getAuthenticationResultHandlers()
+  public AuthenticationResponseHandler[] getAuthenticationResponseHandlers()
   {
-    return authenticationResultHandlers;
+    return authenticationResponseHandlers;
   }
 
 
   /**
-   * Sets the authentication result handlers.
+   * Sets the authentication response handlers.
    *
-   * @param  handlers  authentication result handlers
+   * @param  handlers  authentication response handlers
    */
-  public void setAuthenticationResultHandlers(
-    final AuthenticationResultHandler[] handlers)
+  public void setAuthenticationResponseHandlers(
+    final AuthenticationResponseHandler[] handlers)
   {
-    authenticationResultHandlers = handlers;
+    authenticationResponseHandlers = handlers;
   }
 
 
@@ -151,9 +154,11 @@ public abstract class AbstractAuthenticator
 
 
   /**
-   * Attempts to find the ldap entry for the supplied DN. If an entry resolver
-   * has been provided it is used, otherwise a {@link SearchEntryResolver} is
-   * used if return attributes have been requested.
+   * Attempts to find the ldap entry for the supplied DN. If the supplied
+   * connection is null, a {@link NoOpEntryResolver} is used. If an entry
+   * resolver has been provided it is used, otherwise a
+   * {@link SearchEntryResolver} is used if return attributes have been
+   * requested.
    *
    * @param  request  authentication request
    * @param  conn  that authentication occurred on
@@ -168,17 +173,19 @@ public abstract class AbstractAuthenticator
     throws LdapException
   {
     LdapEntry entry = null;
-    if (entryResolver != null) {
+    if (conn == null) {
+      entry = NOOP_RESOLVER.resolve(conn, criteria);
+    } else if (entryResolver != null) {
       entry = entryResolver.resolve(conn, criteria);
     } else {
-      EntryResolver er = null;
       if (request.getReturnAttributes() == null ||
           request.getReturnAttributes().length > 0) {
-        er = new SearchEntryResolver(request.getReturnAttributes());
+        final EntryResolver er = new SearchEntryResolver(
+          request.getReturnAttributes());
+        entry = er.resolve(conn, criteria);
       } else {
-        er = new NoOpEntryResolver();
+        entry = NOOP_RESOLVER.resolve(conn, criteria);
       }
-      entry = er.resolve(conn, criteria);
     }
     return entry;
   }

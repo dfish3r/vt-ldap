@@ -426,10 +426,10 @@ public class AuthenticatorTest extends AbstractTest
   {
     final Authenticator auth = createTLSDnAuthenticator(true);
 
-    final TestAuthenticationResultHandler authHandler =
-      new TestAuthenticationResultHandler();
-    auth.setAuthenticationResultHandlers(
-      new AuthenticationResultHandler[] {authHandler});
+    final TestAuthenticationResponseHandler authHandler =
+      new TestAuthenticationResponseHandler();
+    auth.setAuthenticationResponseHandlers(
+      new AuthenticationResponseHandler[] {authHandler});
 
     AuthenticationResponse response = auth.authenticate(
       new AuthenticationRequest(dn, new Credential(INVALID_PASSWD)));

@@ -17,13 +17,13 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Class for testing that authentication result handlers are firing.
+ * Class for testing that authentication response handlers are firing.
  *
  * @author  Middleware Services
  * @version  $Revision$ $Date$
  */
-public class TestAuthenticationResultHandler
-  implements AuthenticationResultHandler
+public class TestAuthenticationResponseHandler
+  implements AuthenticationResponseHandler
 {
 
   /** results. */
@@ -32,9 +32,9 @@ public class TestAuthenticationResultHandler
 
   /** {@inheritDoc} */
   @Override
-  public void process(final AuthenticationCriteria ac, final boolean success)
+  public void process(final AuthenticationResponse response)
   {
-    results.put(ac.getDn(), Boolean.valueOf(success));
+    results.put(response.getLdapEntry().getDn(), response.getResult());
   }
 
 

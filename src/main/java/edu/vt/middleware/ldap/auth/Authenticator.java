@@ -14,7 +14,6 @@
 package edu.vt.middleware.ldap.auth;
 
 import java.util.Arrays;
-import edu.vt.middleware.ldap.Connection;
 import edu.vt.middleware.ldap.Credential;
 import edu.vt.middleware.ldap.LdapEntry;
 import edu.vt.middleware.ldap.LdapException;
@@ -98,49 +97,42 @@ public class Authenticator extends AbstractAuthenticator
     LdapEntry entry = null;
 
     AuthenticationHandlerResponse response = null;
-    Connection conn = null;
     try {
       final AuthenticationCriteria ac = new AuthenticationCriteria(dn);
       ac.setCredential(request.getCredential());
 
       // attempt to bind as this dn
       response = getAuthenticationHandler().authenticate(ac);
-      conn = response.getConnection();
-      if (response.getResult()) {
-        // resolve entry
-        entry = resolveEntry(request, conn, ac);
-
-        logger.info("Authentication succeeded for dn: {}", ac.getDn());
-        if (getAuthenticationResultHandlers() != null &&
-            getAuthenticationResultHandlers().length > 0) {
-          for (AuthenticationResultHandler ah :
-               getAuthenticationResultHandlers()) {
-            ah.process(ac, true);
-          }
-        }
-      } else {
-        logger.info("Authentication failed for dn: {}", ac.getDn());
-        if (getAuthenticationResultHandlers() != null &&
-            getAuthenticationResultHandlers().length > 0) {
-          for (AuthenticationResultHandler ah :
-               getAuthenticationResultHandlers()) {
-            ah.process(ac, false);
-          }
-        }
-      }
-
+      // resolve the entry
+      entry = resolveEntry(request, response.getConnection(), ac);
     } finally {
-      if (conn != null) {
-        conn.close();
+      if (response.getConnection() != null) {
+        response.getConnection().close();
       }
     }
 
-    return new AuthenticationResponse(
-      response.getResult(),
-      response.getResultCode(),
-      entry,
-      response.getMessage(),
-      response.getControls());
+    logger.info(
+      "Authentication {} for dn: {}",
+      response.getResult() ? "succeeded" : "failed", dn);
+
+    final AuthenticationResponse authResponse =
+      new AuthenticationResponse(
+        response.getResult(),
+        response.getResultCode(),
+        entry,
+        response.getMessage(),
+        response.getControls());
+
+    // execute authentication response handlers
+    if (getAuthenticationResponseHandlers() != null &&
+        getAuthenticationResponseHandlers().length > 0) {
+      for (AuthenticationResponseHandler ah :
+           getAuthenticationResponseHandlers()) {
+        ah.process(authResponse);
+      }
+    }
+
+    return authResponse;
   }
 
 
@@ -155,13 +147,13 @@ public class Authenticator extends AbstractAuthenticator
     return
       String.format(
         "[%s@%d::dnResolver=%s, authenticationHandler=%s, " +
-        "entryResolver=%s, authenticationResultHandlers=%s]",
+        "entryResolver=%s, authenticationResponseHandlers=%s]",
         getClass().getName(),
         hashCode(),
         getDnResolver(),
         getAuthenticationHandler(),
         getEntryResolver(),
-        getAuthenticationResultHandlers() != null ?
-          Arrays.asList(getAuthenticationResultHandlers()) : null);
+        getAuthenticationResponseHandlers() != null ?
+          Arrays.asList(getAuthenticationResponseHandlers()) : null);
   }
 }
