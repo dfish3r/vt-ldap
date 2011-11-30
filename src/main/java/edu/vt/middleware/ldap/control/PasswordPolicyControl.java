@@ -14,11 +14,17 @@
 package edu.vt.middleware.ldap.control;
 
 import java.nio.ByteBuffer;
+import javax.security.auth.login.AccountException;
+import javax.security.auth.login.AccountLockedException;
+import javax.security.auth.login.CredentialException;
+import javax.security.auth.login.CredentialExpiredException;
+import javax.security.auth.login.LoginException;
 import edu.vt.middleware.ldap.asn1.DERParser;
 import edu.vt.middleware.ldap.asn1.DERPath;
 import edu.vt.middleware.ldap.asn1.IntegerConverter;
 import edu.vt.middleware.ldap.asn1.ParseHandler;
 import edu.vt.middleware.ldap.asn1.SimpleDERTag;
+import edu.vt.middleware.ldap.auth.AccountState;
 
 /**
  * Request/response control for password policy. See
@@ -32,7 +38,8 @@ public class PasswordPolicyControl extends AbstractControl
 {
 
   /** Enum for ppolicy errors. */
-  public enum Error {
+  public enum Error implements AccountState.Error
+  {
 
     /** password expired. */
     PASSWORD_EXPIRED(0),
@@ -76,14 +83,50 @@ public class PasswordPolicyControl extends AbstractControl
     }
 
 
-    /**
-     * Returns the error code value.
-     *
-     * @return  ppolicy error code
-     */
-    public int value()
+    /** {@inheritDoc} */
+    @Override
+    public int getCode()
     {
       return code;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public String getMessage()
+    {
+      return name();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void throwSecurityException()
+      throws LoginException
+    {
+      switch (this) {
+      case PASSWORD_EXPIRED:
+        throw new CredentialExpiredException(name());
+      case ACCOUNT_LOCKED:
+        throw new AccountLockedException(name());
+      case CHANGE_AFTER_RESET:
+        throw new CredentialExpiredException(name());
+      case PASSWORD_MOD_NOT_ALLOWED:
+        throw new AccountException(name());
+      case MUST_SUPPLY_OLD_PASSWORD:
+        throw new AccountException(name());
+      case INSUFFICIENT_PASSWORD_QUALITY:
+        throw new CredentialException(name());
+      case PASSWORD_TOO_SHORT:
+        throw new CredentialException(name());
+      case PASSWORD_TOO_YOUNG:
+        throw new CredentialException(name());
+      case PASSWORD_IN_HISTORY:
+        throw new CredentialException(name());
+      default:
+        throw new IllegalStateException(
+          "Unknown password policy error: " + this);
+      }
     }
 
 
@@ -96,7 +139,7 @@ public class PasswordPolicyControl extends AbstractControl
     public static Error valueOf(final int code)
     {
       for (Error e : Error.values()) {
-        if (e.value() == code) {
+        if (e.getCode() == code) {
           return e;
         }
       }

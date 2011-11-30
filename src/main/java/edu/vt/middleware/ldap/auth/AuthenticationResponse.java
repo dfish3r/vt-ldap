@@ -34,7 +34,7 @@ public class AuthenticationResponse extends Response<Boolean>
   private final String message;
 
   /** Account state. */
-  private AccountState<?> accountState;
+  private AccountState accountState;
 
 
   /**
@@ -122,7 +122,7 @@ public class AuthenticationResponse extends Response<Boolean>
    *
    * @return  account state
    */
-  public AccountState<?> getAccountState()
+  public AccountState getAccountState()
   {
     return accountState;
   }
@@ -133,7 +133,7 @@ public class AuthenticationResponse extends Response<Boolean>
    *
    * @param  state  for this user
    */
-  public void setAccountState(final AccountState<?> state)
+  public void setAccountState(final AccountState state)
   {
     accountState = state;
   }

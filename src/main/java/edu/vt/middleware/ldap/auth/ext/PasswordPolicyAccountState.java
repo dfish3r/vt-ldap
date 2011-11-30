@@ -23,7 +23,7 @@ import edu.vt.middleware.ldap.control.PasswordPolicyControl;
  * @author  Middleware Services
  * @version  $Revision: 1330 $ $Date: 2010-05-23 18:10:53 -0400 (Sun, 23 May 2010) $
  */
-public class PasswordPolicyAccountState extends AccountState<Integer>
+public class PasswordPolicyAccountState extends AccountState
 {
 
   /** password policy specific enum. */
@@ -50,7 +50,7 @@ public class PasswordPolicyAccountState extends AccountState<Integer>
    */
   public PasswordPolicyAccountState(final PasswordPolicyControl.Error error)
   {
-    super(new AccountState.Error(error.value(), error.name()));
+    super(error);
     ppError = error;
   }
 

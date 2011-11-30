@@ -825,7 +825,7 @@ public class AuthenticatorTest extends AbstractTest
       AssertJUnit.assertEquals(
         PasswordPolicyControl.Error.ACCOUNT_LOCKED, ppcResponse.getError());
       AssertJUnit.assertEquals(
-        PasswordPolicyControl.Error.ACCOUNT_LOCKED.value(),
+        PasswordPolicyControl.Error.ACCOUNT_LOCKED.getCode(),
         response.getAccountState().getError().getCode());
 
       // test bind with expiration time

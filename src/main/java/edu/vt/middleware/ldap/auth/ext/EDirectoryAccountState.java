@@ -14,7 +14,6 @@
 package edu.vt.middleware.ldap.auth.ext;
 
 import java.util.Calendar;
-import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.security.auth.login.AccountExpiredException;
@@ -32,7 +31,7 @@ import org.slf4j.LoggerFactory;
  * @author  Middleware Services
  * @version  $Revision: 1330 $ $Date: 2010-05-23 18:10:53 -0400 (Sun, 23 May 2010) $
  */
-public class EDirectoryAccountState extends AccountState<Date>
+public class EDirectoryAccountState extends AccountState
 {
 
   /**
@@ -40,7 +39,7 @@ public class EDirectoryAccountState extends AccountState<Date>
    * See http://support.novell.com/docs/Tids/Solutions/10067240.html and
    * http://www.novell.com/documentation/nwec/nwec_enu/nwec_nds_error_codes.html
    */
-  public enum Error
+  public enum Error implements AccountState.Error
   {
 
     /** failed authentication. */
@@ -83,22 +82,24 @@ public class EDirectoryAccountState extends AccountState<Date>
     }
 
 
-    /**
-     * Returns the error code value.
-     *
-     * @return  edirectory error code
-     */
-    public int value()
+    /** {@inheritDoc} */
+    @Override
+    public int getCode()
     {
       return code;
     }
 
 
-    /**
-     * Throws the LoginException that best maps to the edirectory error.
-     *
-     * @throws  LoginException  for this edirectory account state
-     */
+    /** {@inheritDoc} */
+    @Override
+    public String getMessage()
+    {
+      return name();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
     public void throwSecurityException()
       throws LoginException
     {
@@ -134,7 +135,7 @@ public class EDirectoryAccountState extends AccountState<Date>
     public static Error valueOf(final int code)
     {
       for (Error e : Error.values()) {
-        if (e.value() == code) {
+        if (e.getCode() == code) {
           return e;
         }
       }
@@ -192,7 +193,7 @@ public class EDirectoryAccountState extends AccountState<Date>
    */
   public EDirectoryAccountState(final EDirectoryAccountState.Error error)
   {
-    super(new AccountState.Error(error.value(), error.name()));
+    super(error);
     edError = error;
   }
 

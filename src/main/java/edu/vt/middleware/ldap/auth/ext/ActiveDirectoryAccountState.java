@@ -33,7 +33,7 @@ import org.slf4j.LoggerFactory;
  * @author  Middleware Services
  * @version  $Revision: 1330 $ $Date: 2010-05-23 18:10:53 -0400 (Sun, 23 May 2010) $
  */
-public class ActiveDirectoryAccountState extends AccountState<Integer>
+public class ActiveDirectoryAccountState extends AccountState
 {
 
   /**
@@ -42,7 +42,7 @@ public class ActiveDirectoryAccountState extends AccountState<Integer>
    * http://ldapwiki.willeke.com/wiki/
    * Common%20Active%20Directory%20Bind%20Errors
    */
-  public enum Error
+  public enum Error implements AccountState.Error
   {
 
     /** no such user. 0x525. */
@@ -93,22 +93,24 @@ public class ActiveDirectoryAccountState extends AccountState<Integer>
     }
 
 
-    /**
-     * Returns the error code value.
-     *
-     * @return  active directory error code
-     */
-    public int value()
+    /** {@inheritDoc} */
+    @Override
+    public int getCode()
     {
       return code;
     }
 
 
-    /**
-     * Throws the LoginException that best maps to the active directory error.
-     *
-     * @throws  LoginException  for this active directory account state
-     */
+    /** {@inheritDoc} */
+    @Override
+    public String getMessage()
+    {
+      return name();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
     public void throwSecurityException()
       throws LoginException
     {
@@ -148,7 +150,7 @@ public class ActiveDirectoryAccountState extends AccountState<Integer>
     public static Error valueOf(final int code)
     {
       for (Error e : Error.values()) {
-        if (e.value() == code) {
+        if (e.getCode() == code) {
           return e;
         }
       }
@@ -195,7 +197,7 @@ public class ActiveDirectoryAccountState extends AccountState<Integer>
   public ActiveDirectoryAccountState(
     final ActiveDirectoryAccountState.Error error)
   {
-    super(new AccountState.Error(error.value(), error.name()));
+    super(error);
     adError = error;
   }
 
