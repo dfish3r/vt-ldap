@@ -33,6 +33,9 @@ public class AuthenticationResponse extends Response<Boolean>
   /** Authentication message. */
   private final String message;
 
+  /** Account state. */
+  private AccountState<?> accountState;
+
 
   /**
    * Creates a new authentication response.
@@ -111,5 +114,27 @@ public class AuthenticationResponse extends Response<Boolean>
   public String getMessage()
   {
     return message;
+  }
+
+
+  /**
+   * Returns the account state associated with the authenticated user.
+   *
+   * @return  account state
+   */
+  public AccountState<?> getAccountState()
+  {
+    return accountState;
+  }
+
+
+  /**
+   * Sets the account state for the authenticated user.
+   *
+   * @param  state  for this user
+   */
+  public void setAccountState(final AccountState<?> state)
+  {
+    accountState = state;
   }
 }

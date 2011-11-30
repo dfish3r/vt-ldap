@@ -28,6 +28,7 @@ import edu.vt.middleware.ldap.ModifyOperation;
 import edu.vt.middleware.ldap.ModifyRequest;
 import edu.vt.middleware.ldap.ReferralBehavior;
 import edu.vt.middleware.ldap.TestUtil;
+import edu.vt.middleware.ldap.auth.ext.PasswordPolicyAuthenticationResponseHandler;
 import edu.vt.middleware.ldap.control.PasswordPolicyControl;
 import edu.vt.middleware.ldap.pool.BlockingConnectionPool;
 import edu.vt.middleware.ldap.pool.PooledConnectionFactory;
@@ -792,6 +793,9 @@ public class AuthenticatorTest extends AbstractTest
     AuthenticationResponse response = null;
     PasswordPolicyControl ppcResponse = null;
     final Authenticator auth = createTLSAuthenticator(true);
+    auth.setAuthenticationResponseHandlers(
+      new AuthenticationResponseHandler[] {
+        new PasswordPolicyAuthenticationResponseHandler(), });
     try {
       conn.open();
 
@@ -820,6 +824,9 @@ public class AuthenticatorTest extends AbstractTest
       ppcResponse = (PasswordPolicyControl) response.getControls()[0];
       AssertJUnit.assertEquals(
         PasswordPolicyControl.Error.ACCOUNT_LOCKED, ppcResponse.getError());
+      AssertJUnit.assertEquals(
+        PasswordPolicyControl.Error.ACCOUNT_LOCKED.value(),
+        response.getAccountState().getError().getCode());
 
       // test bind with expiration time
       modify.execute(
@@ -837,5 +844,7 @@ public class AuthenticatorTest extends AbstractTest
       new AuthenticationRequest(user, new Credential(credential)));
     ppcResponse = (PasswordPolicyControl) response.getControls()[0];
     AssertJUnit.assertTrue(ppcResponse.getTimeBeforeExpiration() > 0);
+    AssertJUnit.assertNotNull(
+      response.getAccountState().getWarning().getExpiration());
   }
 }
