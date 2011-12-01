@@ -42,9 +42,9 @@ public class SimpleDERTag implements DERTag
   public SimpleDERTag(
     final int number, final String name, final boolean isConstructed)
   {
-    this.tagNo = number;
-    this.tagName = name;
-    this.constructed = isConstructed;
+    tagNo = number;
+    tagName = name;
+    constructed = isConstructed;
   }
 
 
