@@ -47,7 +47,10 @@ public enum UniversalDERTag implements DERTag
   SEQ(16, true),
 
   /** SET type */
-  SET(17, true);
+  SET(17, true),
+
+  /** CONTEXT type */
+  CTX(128, false);
 
 
   /** Maps tag values to tags. */

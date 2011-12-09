@@ -133,7 +133,6 @@ public class DERParser
   }
 
 
-
   /**
    * Reads a DER tag from a single byte at the current position of the given
    * buffer.  The buffer position is naturally advanced one byte in this
@@ -191,7 +190,7 @@ public class DERParser
       final int len = b & 0x7F;
       if (len > 0 && len < 0x7F) {
         encoded.limit(encoded.position() + len);
-        return new IntegerConverter().decode(encoded).intValue();
+        return IntegerType.decode(encoded).intValue();
       } else {
         throw new IllegalArgumentException("Invalid length");
       }
