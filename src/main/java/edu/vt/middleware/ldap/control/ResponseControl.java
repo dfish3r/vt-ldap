@@ -19,4 +19,14 @@ package edu.vt.middleware.ldap.control;
  * @author  Middleware Services
  * @version  $Revision$ $Date$
  */
-public interface ResponseControl extends Control {}
+public interface ResponseControl extends Control
+{
+
+
+  /**
+   * Initializes this response control with the supplied BER encoded data.
+   *
+   * @param  encoded  BER encoded response control
+   */
+  void decode(byte[] encoded);
+}

@@ -21,14 +21,31 @@ import javax.security.auth.login.CredentialExpiredException;
 import javax.security.auth.login.LoginException;
 import edu.vt.middleware.ldap.asn1.DERParser;
 import edu.vt.middleware.ldap.asn1.DERPath;
-import edu.vt.middleware.ldap.asn1.IntegerConverter;
+import edu.vt.middleware.ldap.asn1.IntegerType;
 import edu.vt.middleware.ldap.asn1.ParseHandler;
 import edu.vt.middleware.ldap.asn1.SimpleDERTag;
 import edu.vt.middleware.ldap.auth.AccountState;
 
 /**
  * Request/response control for password policy. See
- * http://tools.ietf.org/html/draft-behera-ldap-password-policy-10.
+ * http://tools.ietf.org/html/draft-behera-ldap-password-policy-10. Control is
+ * defined as:
+ * <pre>
+ * PasswordPolicyResponseValue ::= SEQUENCE {
+ *    warning [0] CHOICE {
+ *    timeBeforeExpiration [0] INTEGER (0 .. maxInt),
+ *    graceAuthNsRemaining [1] INTEGER (0 .. maxInt) } OPTIONAL,
+ *    error   [1] ENUMERATED {
+ *    passwordExpired             (0),
+ *    accountLocked               (1),
+ *    changeAfterReset            (2),
+ *    passwordModNotAllowed       (3),
+ *    mustSupplyOldPassword       (4),
+ *    insufficientPasswordQuality (5),
+ *    passwordTooShort            (6),
+ *    passwordTooYoung            (7),
+ *    passwordInHistory           (8) } OPTIONAL }
+ * </pre>
  *
  * @author  Middleware Services
  * @version  $Revision$ $Date$
@@ -163,7 +180,10 @@ public class PasswordPolicyControl extends AbstractControl
   /**
    * Default constructor.
    */
-  public PasswordPolicyControl() {}
+  public PasswordPolicyControl()
+  {
+    super(OID);
+  }
 
 
   /**
@@ -173,15 +193,7 @@ public class PasswordPolicyControl extends AbstractControl
    */
   public PasswordPolicyControl(final boolean critical)
   {
-    setCriticality(critical);
-  }
-
-
-  /** {@inheritDoc} */
-  @Override
-  public String getOID()
-  {
-    return OID;
+    super(OID, critical);
   }
 
 
@@ -251,6 +263,18 @@ public class PasswordPolicyControl extends AbstractControl
   }
 
 
+  /** {@inheritDoc} */
+  @Override
+  public int hashCode()
+  {
+    int hc = super.hashCode();
+    hc = (hc * HASH_CODE_SEED) + timeBeforeExpiration;
+    hc = (hc * HASH_CODE_SEED) + graceAuthNsRemaining;
+    hc = (hc * HASH_CODE_SEED) + (error != null ? error.getCode() : 0);
+    return hc;
+  }
+
+
   /**
    * Provides a descriptive string representation of this instance.
    *
@@ -272,36 +296,24 @@ public class PasswordPolicyControl extends AbstractControl
   }
 
 
-  /**
-   * Returns a password policy control parsed from the supplied BER value.
-   *
-   * @param  berValue  to parse
-   * @return  password policy control
-   */
-  public static PasswordPolicyControl parsePasswordPolicy(final byte[] berValue)
+  /** {@inheritDoc} */
+  @Override
+  public byte[] encode()
   {
-    return parsePasswordPolicy(false, berValue);
+    return null;
   }
 
 
-  /**
-   * Returns a password policy control parsed from the supplied BER value.
-   *
-   * @param  isCritical  whether this control is critical
-   * @param  berValue  to parse
-   * @return  password policy control
-   */
-  public static PasswordPolicyControl parsePasswordPolicy(
-    final boolean isCritical, final byte[] berValue)
+  /** {@inheritDoc} */
+  @Override
+  public void decode(final byte[] encoded)
   {
-    final PasswordPolicyControl ppc = new PasswordPolicyControl(isCritical);
-    final PasswordPolicyHandler handler = new PasswordPolicyHandler(ppc);
+    final PasswordPolicyHandler handler = new PasswordPolicyHandler(this);
     final DERParser parser = new DERParser(
       new SimpleDERTag(0, "CHOICE", true), new SimpleDERTag(1, "ENUM", true));
     parser.registerHandler(PasswordPolicyHandler.WARNING_PATH, handler);
     parser.registerHandler(PasswordPolicyHandler.ERROR_PATH, handler);
-    parser.parse(ByteBuffer.wrap(berValue));
-    return ppc;
+    parser.parse(ByteBuffer.wrap(encoded));
   }
 
 
@@ -322,9 +334,6 @@ public class PasswordPolicyControl extends AbstractControl
 
     /** Choice grace auths remaining constant. */
     private static final byte CHOICE_GRACE_AUTHNS_REMAINING = (byte) 0x81;
-
-    /** Integer converter. */
-    private static final IntegerConverter INT_CONV = new IntegerConverter();
 
     /** Password policy control to configure with this handler. */
     private final PasswordPolicyControl passwordPolicy;
@@ -365,10 +374,10 @@ public class PasswordPolicyControl extends AbstractControl
       encoded.limit(parser.readLength(encoded) + encoded.position());
       if (tag == CHOICE_TIME_BEFORE_EXPIRATION) {
         passwordPolicy.setTimeBeforeExpiration(
-          INT_CONV.decode(encoded).intValue());
+          IntegerType.decode(encoded).intValue());
       } else if (tag == CHOICE_GRACE_AUTHNS_REMAINING) {
         passwordPolicy.setGraceAuthNsRemaining(
-          INT_CONV.decode(encoded).intValue());
+          IntegerType.decode(encoded).intValue());
       } else {
         throw new IllegalArgumentException("Unknown warning tag " + tag);
       }
@@ -383,7 +392,7 @@ public class PasswordPolicyControl extends AbstractControl
      */
     private void handleError(final DERParser parser, final ByteBuffer encoded)
     {
-      final int errValue = INT_CONV.decode(encoded).intValue();
+      final int errValue = IntegerType.decode(encoded).intValue();
       final PasswordPolicyControl.Error e =
         PasswordPolicyControl.Error.valueOf(errValue);
       if (e == null) {

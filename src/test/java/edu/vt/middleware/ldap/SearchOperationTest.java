@@ -372,22 +372,37 @@ public class SearchOperationTest extends AbstractTest
     final String filter)
     throws Exception
   {
-    final SortRequestControl src = new SortRequestControl(
-      new SortKey[] {new SortKey("uid", "integerMatch", true)}, true);
     final Connection conn = TestUtil.createConnection();
     try {
       conn.open();
       final SearchOperation search = new SearchOperation(conn);
 
-      // test searching
       final SearchRequest request = new SearchRequest(
         dn, new SearchFilter(filter));
       request.setSortBehavior(SortBehavior.ORDERED);
+
+      // test sort by uugid
+      SortRequestControl src = new SortRequestControl(
+        new SortKey[] {new SortKey("uugid", "caseExactMatch")}, true);
       request.setControls(src);
-      final LdapResult result = search.execute(request).getResult();
+      LdapResult result = search.execute(request).getResult();
 
       // confirm sorted
-      int i = 5;
+      int i = 2;
+      for (LdapEntry e : result.getEntries()) {
+        AssertJUnit.assertEquals(
+          String.valueOf(2000 + i), e.getAttribute("uid").getStringValue());
+        i++;
+      }
+
+      // test sort by uid
+      src = new SortRequestControl(
+        new SortKey[] {new SortKey("uid", "integerMatch", true)}, true);
+      request.setControls(src);
+      result = search.execute(request).getResult();
+
+      // confirm sorted
+      i = 5;
       for (LdapEntry e : result.getEntries()) {
         AssertJUnit.assertEquals(
           String.valueOf(2000 + i), e.getAttribute("uid").getStringValue());

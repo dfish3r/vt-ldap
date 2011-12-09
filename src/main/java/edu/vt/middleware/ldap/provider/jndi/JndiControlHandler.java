@@ -13,16 +13,9 @@
 */
 package edu.vt.middleware.ldap.provider.jndi;
 
-import java.io.IOException;
-
-import edu.vt.middleware.ldap.ResultCode;
-import edu.vt.middleware.ldap.control.ManageDsaITControl;
-import edu.vt.middleware.ldap.control.PagedResultsControl;
-import edu.vt.middleware.ldap.control.PasswordPolicyControl;
+import edu.vt.middleware.ldap.control.ControlFactory;
 import edu.vt.middleware.ldap.control.RequestControl;
 import edu.vt.middleware.ldap.control.ResponseControl;
-import edu.vt.middleware.ldap.control.SortRequestControl;
-import edu.vt.middleware.ldap.control.SortResponseControl;
 import edu.vt.middleware.ldap.provider.ControlHandler;
 
 /**
@@ -49,58 +42,21 @@ public class JndiControlHandler
   public javax.naming.ldap.Control processRequest(
     final RequestControl requestControl)
   {
-    javax.naming.ldap.Control ctl = null;
-    if (ManageDsaITControl.OID.equals(requestControl.getOID())) {
-      ctl =  new javax.naming.ldap.ManageReferralControl(
-        requestControl.getCriticality());
-    } else if (SortRequestControl.OID.equals(requestControl.getOID())) {
-      final SortRequestControl c = (SortRequestControl) requestControl;
-      try {
-        ctl = new javax.naming.ldap.SortControl(
-          JndiUtil.fromSortKey(c.getSortKeys()), c.getCriticality());
-      } catch (IOException e) {
-        throw new IllegalArgumentException("Error creating control.", e);
-      }
-    } else if (PagedResultsControl.OID.equals(requestControl.getOID())) {
-      final PagedResultsControl c = (PagedResultsControl) requestControl;
-      try {
-        ctl = new javax.naming.ldap.PagedResultsControl(
-          c.getSize(), c.getCookie(), c.getCriticality());
-      } catch (IOException e) {
-        throw new IllegalArgumentException("Error creating control.", e);
-      }
-    } else if (PasswordPolicyControl.OID.equals(requestControl.getOID())) {
-      final PasswordPolicyControl c = (PasswordPolicyControl) requestControl;
-      ctl =  new javax.naming.ldap.BasicControl(
-        c.getOID(), c.getCriticality(), null);
-    }
-    return ctl;
+    return new javax.naming.ldap.BasicControl(
+      requestControl.getOID(),
+      requestControl.getCriticality(),
+      requestControl.encode());
   }
 
 
   /** {@inheritDoc} */
   @Override
   public ResponseControl processResponse(
-    final RequestControl requestControl,
     final javax.naming.ldap.Control responseControl)
   {
-    ResponseControl ctl = null;
-    if (SortResponseControl.OID.equals(responseControl.getID())) {
-      final javax.naming.ldap.SortResponseControl c =
-        (javax.naming.ldap.SortResponseControl) responseControl;
-      ctl = new SortResponseControl(
-        ResultCode.valueOf(c.getResultCode()),
-        c.getAttributeID(),
-        c.isCritical());
-    } else if (PagedResultsControl.OID.equals(responseControl.getID())) {
-      final javax.naming.ldap.PagedResultsResponseControl c =
-        (javax.naming.ldap.PagedResultsResponseControl) responseControl;
-      ctl = (PagedResultsControl) requestControl;
-      ((PagedResultsControl) ctl).setCookie(c.getCookie());
-    } else if (PasswordPolicyControl.OID.equals(responseControl.getID())) {
-      ctl = PasswordPolicyControl.parsePasswordPolicy(
-        responseControl.isCritical(), responseControl.getEncodedValue());
-    }
-    return ctl;
+    return ControlFactory.createResponseControl(
+      responseControl.getID(),
+      responseControl.isCritical(),
+      responseControl.getEncodedValue());
   }
 }

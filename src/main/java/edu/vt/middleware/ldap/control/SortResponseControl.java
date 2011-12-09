@@ -13,10 +13,42 @@
 */
 package edu.vt.middleware.ldap.control;
 
+import java.nio.ByteBuffer;
 import edu.vt.middleware.ldap.ResultCode;
+import edu.vt.middleware.ldap.asn1.DERParser;
+import edu.vt.middleware.ldap.asn1.DERPath;
+import edu.vt.middleware.ldap.asn1.IntegerType;
+import edu.vt.middleware.ldap.asn1.OctetStringType;
+import edu.vt.middleware.ldap.asn1.ParseHandler;
 
 /**
- * Response control for server side sorting. See RFC 2891.
+ * Response control for server side sorting. See RFC 2891. Control is defined
+ * as:
+ * <pre>
+ *     SortResult ::= SEQUENCE {
+ *        sortResult  ENUMERATED {
+ *            success                   (0), -- results are sorted
+ *            operationsError           (1), -- server internal failure
+ *            timeLimitExceeded         (3), -- timelimit reached before
+ *                                           -- sorting was completed
+ *            strongAuthRequired        (8), -- refused to return sorted
+ *                                           -- results via insecure
+ *                                           -- protocol
+ *            adminLimitExceeded       (11), -- too many matching entries
+ *                                           -- for the server to sort
+ *            noSuchAttribute          (16), -- unrecognized attribute
+ *                                           -- type in sort key
+ *            inappropriateMatching    (18), -- unrecognized or
+ *                                           -- inappropriate matching
+ *                                           -- rule in sort key
+ *            insufficientAccessRights (50), -- refused to return sorted
+ *                                           -- results to this client
+ *            busy                     (51), -- too busy to process
+ *            unwillingToPerform       (53), -- unable to sort
+ *            other                    (80)
+ *            },
+ *      attributeType [0] AttributeDescription OPTIONAL }
+ * </pre>
  *
  * @author  Middleware Services
  * @version  $Revision$ $Date$
@@ -38,7 +70,10 @@ public class SortResponseControl extends AbstractControl
   /**
    * Default constructor.
    */
-  public SortResponseControl() {}
+  public SortResponseControl()
+  {
+    super(OID);
+  }
 
 
   /**
@@ -48,7 +83,7 @@ public class SortResponseControl extends AbstractControl
    */
   public SortResponseControl(final boolean critical)
   {
-    setCriticality(critical);
+    super(OID, critical);
   }
 
 
@@ -60,8 +95,8 @@ public class SortResponseControl extends AbstractControl
    */
   public SortResponseControl(final ResultCode code, final boolean critical)
   {
+    super(OID, critical);
     setSortResult(code);
-    setCriticality(critical);
   }
 
 
@@ -75,17 +110,9 @@ public class SortResponseControl extends AbstractControl
   public SortResponseControl(
     final ResultCode code, final String attrName, final boolean critical)
   {
+    super(OID, critical);
     setSortResult(code);
     setAttributeName(attrName);
-    setCriticality(critical);
-  }
-
-
-  /** {@inheritDoc} */
-  @Override
-  public String getOID()
-  {
-    return OID;
   }
 
 
@@ -133,6 +160,19 @@ public class SortResponseControl extends AbstractControl
   }
 
 
+  /** {@inheritDoc} */
+  @Override
+  public int hashCode()
+  {
+    int hc = super.hashCode();
+    hc = (hc * HASH_CODE_SEED) + (sortResult != null ? sortResult.value() : 0);
+    hc =
+      (hc * HASH_CODE_SEED) +
+      (attributeName != null ? attributeName.hashCode() : 0);
+    return hc;
+  }
+
+
   /**
    * Provides a descriptive string representation of this instance.
    *
@@ -149,5 +189,63 @@ public class SortResponseControl extends AbstractControl
         getCriticality(),
         sortResult,
         attributeName);
+  }
+
+
+  /** {@inheritDoc} */
+  @Override
+  public void decode(final byte[] berValue)
+  {
+    final SortResponseHandler handler = new SortResponseHandler(this);
+    final DERParser parser = new DERParser();
+    parser.registerHandler(SortResponseHandler.RESULT_PATH, handler);
+    parser.registerHandler(SortResponseHandler.ATTR_PATH, handler);
+    parser.parse(ByteBuffer.wrap(berValue));
+  }
+
+
+  /**
+   * Parse handler implementation for the sort response control.
+   */
+  private static class SortResponseHandler implements ParseHandler
+  {
+
+    /** DER path to result code. */
+    public static final DERPath RESULT_PATH = new DERPath("/SEQ/ENUM");
+
+    /** DER path to attr value. */
+    public static final DERPath ATTR_PATH = new DERPath("/SEQ/CTX[1]");
+
+    /** Sort response control to configure with this handler. */
+    private final SortResponseControl sortResponse;
+
+
+    /**
+     * Creates a new sort response handler.
+     *
+     * @param  control  to configure
+     */
+    public SortResponseHandler(final SortResponseControl control)
+    {
+      sortResponse = control;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void handle(final DERParser parser, final ByteBuffer encoded)
+    {
+      if (RESULT_PATH.equals(parser.getCurrentPath())) {
+        final int resultValue = IntegerType.decode(encoded).intValue();
+        final ResultCode rc = ResultCode.valueOf(resultValue);
+        if (rc == null) {
+          throw new IllegalArgumentException(
+            "Unknown result code " + resultValue);
+        }
+        sortResponse.setSortResult(rc);
+      } else if (ATTR_PATH.equals(parser.getCurrentPath())) {
+        sortResponse.setAttributeName(OctetStringType.decode(encoded));
+      }
+    }
   }
 }

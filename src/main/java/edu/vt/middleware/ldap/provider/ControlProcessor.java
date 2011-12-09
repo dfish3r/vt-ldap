@@ -143,14 +143,32 @@ public class ControlProcessor<T>
     if (providerCtl == null) {
       return null;
     }
-    final ResponseControl ctl = controlHandler.processResponse(
-      findControl(requestControls, controlHandler.getOID(providerCtl)),
-      providerCtl);
+    final ResponseControl ctl = controlHandler.processResponse(providerCtl);
     if (ctl == null) {
       throw new UnsupportedOperationException(
         "Response control not supported: " + providerCtl);
     }
+    final RequestControl rc = findControl(requestControls, ctl.getOID());
+    if (rc != null) {
+      updateRequestControl(ctl, rc);
+    }
     return ctl;
+  }
+
+
+  /**
+   * Some request controls need data injected from the response control.
+   *
+   * @param  responseControl  to inspect
+   * @param  requestControl  to update if necessary
+   */
+  protected void updateRequestControl(
+    final ResponseControl responseControl, final RequestControl requestControl)
+  {
+    if (PagedResultsControl.OID.equals(responseControl.getOID())) {
+      ((PagedResultsControl) requestControl).setCookie(
+        ((PagedResultsControl) responseControl).getCookie());
+    }
   }
 
 

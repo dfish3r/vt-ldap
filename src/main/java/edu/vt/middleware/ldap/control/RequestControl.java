@@ -19,4 +19,14 @@ package edu.vt.middleware.ldap.control;
  * @author  Middleware Services
  * @version  $Revision$ $Date$
  */
-public interface RequestControl extends Control {}
+public interface RequestControl extends Control
+{
+
+
+  /**
+   * Provides the BER encoding of this control.
+   *
+   * @return  BER encoded request control
+   */
+  byte[] encode();
+}

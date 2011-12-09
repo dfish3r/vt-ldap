@@ -22,8 +22,47 @@ package edu.vt.middleware.ldap.control;
 public abstract class AbstractControl implements Control
 {
 
+  /** hash code seed. */
+  protected static final int HASH_CODE_SEED = 797;
+
+  /** control oid. */
+  private final String oid;
+
   /** is control critical. */
-  private boolean criticality;
+  private final boolean criticality;
+
+
+  /**
+   * Creates a new abstract control.
+   *
+   * @param  id  OID of this control
+   */
+  public AbstractControl(final String id)
+  {
+    oid = id;
+    criticality = false;
+  }
+
+
+  /**
+   * Creates a new abstract control.
+   *
+   * @param  id  OID of this control
+   * @param  b  whether this control is critical
+   */
+  public AbstractControl(final String id, final boolean b)
+  {
+    oid = id;
+    criticality = b;
+  }
+
+
+  /** {@inheritDoc} */
+  @Override
+  public String getOID()
+  {
+    return oid;
+  }
 
 
   /** {@inheritDoc} */
@@ -34,10 +73,36 @@ public abstract class AbstractControl implements Control
   }
 
 
-  /** {@inheritDoc} */
+  /**
+   * Returns whether the supplied object contains the same data as this control.
+   * Delegates to {@link #hashCode()} implementation.
+   *
+   * @param  o  to compare for equality
+   *
+   * @return  equality result
+   */
   @Override
-  public void setCriticality(final boolean b)
+  public boolean equals(final Object o)
   {
-    criticality = b;
+    if (o == null) {
+      return false;
+    }
+    return
+      o == this ||
+        (getClass() == o.getClass() && o.hashCode() == hashCode());
+  }
+
+
+  /**
+   * Returns the hash code for this object.
+   *
+   * @return  hash code
+   */
+  @Override
+  public int hashCode()
+  {
+    int hc = HASH_CODE_SEED + (getOID() != null ? getOID().hashCode() : 0);
+    hc = (hc * HASH_CODE_SEED) + (getCriticality() ? 1 : 0);
+    return hc;
   }
 }

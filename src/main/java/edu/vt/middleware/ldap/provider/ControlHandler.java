@@ -47,14 +47,10 @@ public interface ControlHandler<T>
 
 
   /**
-   * Converts the supplied provider control to a response control. The request
-   * control is provided if there is an associated request control for the
-   * response control. Otherwise it is null.
+   * Converts the supplied provider control to a response control.
    *
-   * @param  requestControl  with the same oid
    * @param  responseControl  to convert
    * @return  control
    */
-  ResponseControl processResponse(
-    RequestControl requestControl, T responseControl);
+  ResponseControl processResponse(T responseControl);
 }

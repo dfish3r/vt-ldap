@@ -30,7 +30,10 @@ public class ManageDsaITControl extends AbstractControl
   /**
    * Default constructor.
    */
-  public ManageDsaITControl() {}
+  public ManageDsaITControl()
+  {
+    super(OID);
+  }
 
 
   /**
@@ -40,15 +43,7 @@ public class ManageDsaITControl extends AbstractControl
    */
   public ManageDsaITControl(final boolean critical)
   {
-    setCriticality(critical);
-  }
-
-
-  /** {@inheritDoc} */
-  @Override
-  public String getOID()
-  {
-    return OID;
+    super(OID, critical);
   }
 
 
@@ -66,5 +61,13 @@ public class ManageDsaITControl extends AbstractControl
         getClass().getName(),
         hashCode(),
         getCriticality());
+  }
+
+
+  /** {@inheritDoc} */
+  @Override
+  public byte[] encode()
+  {
+    return null;
   }
 }

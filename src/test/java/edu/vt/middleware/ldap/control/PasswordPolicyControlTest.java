@@ -34,7 +34,7 @@ public class PasswordPolicyControlTest
    * @return  response test data
    */
   @DataProvider(name = "response")
-  public Object[][] createResponseData()
+  public Object[][] createData()
   {
     final PasswordPolicyControl p1 = new PasswordPolicyControl();
     p1.setTimeBeforeExpiration(2513067);
@@ -80,17 +80,13 @@ public class PasswordPolicyControlTest
    * @throws  Exception  On test failure.
    */
   @Test(groups = {"control"}, dataProvider = "response")
-  public void testParsePassordPolicyControl(
+  public void decode(
     final byte[] berValue, final PasswordPolicyControl expected)
     throws Exception
   {
-    final PasswordPolicyControl actual =
-      PasswordPolicyControl.parsePasswordPolicy(berValue);
-
-    Assert.assertEquals(
-        actual.getTimeBeforeExpiration(), expected.getTimeBeforeExpiration());
-    Assert.assertEquals(
-      actual.getGraceAuthNsRemaining(), expected.getGraceAuthNsRemaining());
-    Assert.assertEquals(actual.getError(), expected.getError());
+    final PasswordPolicyControl actual = new PasswordPolicyControl(
+      expected.getCriticality());
+    actual.decode(berValue);
+    Assert.assertEquals(actual, expected);
   }
 }

@@ -37,12 +37,4 @@ public interface Control
    * @return  whether the control is critical
    */
   boolean getCriticality();
-
-
-  /**
-   * Sets whether the control is critical.
-   *
-   * @param  b  whether the control is critical
-   */
-  void setCriticality(boolean b);
 }

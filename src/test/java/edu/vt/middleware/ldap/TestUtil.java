@@ -411,4 +411,26 @@ public final class TestUtil
     }
     return newUrl;
   }
+
+
+  /**
+   * Returns a string representation of the supplied byte array in hex format.
+   *
+   * @param  b  to create hex string with
+   * @return  hex string
+   */
+  public static String bytesToString(final byte[] b)
+  {
+    final StringBuilder sb = new StringBuilder(b.length * 2);
+    // CheckStyle:MagicNumber OFF
+    for (int i = 0; i < b.length; i++) {
+      final int v = b[i] & 0xff;
+      if (v < 16) {
+        sb.append('0');
+      }
+      sb.append(Integer.toHexString(v)).append(":");
+    }
+    // CheckStyle:MagicNumber ON
+    return sb.toString().toUpperCase();
+  }
 }

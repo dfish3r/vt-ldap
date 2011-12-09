@@ -13,10 +13,22 @@
 */
 package edu.vt.middleware.ldap.control;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
+import edu.vt.middleware.ldap.asn1.ContextType;
+import edu.vt.middleware.ldap.asn1.DEREncoder;
+import edu.vt.middleware.ldap.asn1.OctetStringType;
+import edu.vt.middleware.ldap.asn1.SequenceEncoder;
 
 /**
- * Request control for server side sorting. See RFC 2891.
+ * Request control for server side sorting. See RFC 2891. Control is defined as:
+ * <pre>
+ * SortKeyList ::= SEQUENCE OF SEQUENCE {
+ *    attributeType   AttributeDescription,
+ *    orderingRule    [0] MatchingRuleId OPTIONAL,
+ *    reverseOrder    [1] BOOLEAN DEFAULT FALSE }
+ * </pre>
  *
  * @author  Middleware Services
  * @version  $Revision$ $Date$
@@ -35,7 +47,10 @@ public class SortRequestControl extends AbstractControl
   /**
    * Default constructor.
    */
-  public SortRequestControl() {}
+  public SortRequestControl()
+  {
+    super(OID);
+  }
 
 
   /**
@@ -45,6 +60,7 @@ public class SortRequestControl extends AbstractControl
    */
   public SortRequestControl(final SortKey[] keys)
   {
+    super(OID);
     setSortKeys(keys);
   }
 
@@ -57,16 +73,8 @@ public class SortRequestControl extends AbstractControl
    */
   public SortRequestControl(final SortKey[] keys, final boolean critical)
   {
+    super(OID, critical);
     setSortKeys(keys);
-    setCriticality(critical);
-  }
-
-
-  /** {@inheritDoc} */
-  @Override
-  public String getOID()
-  {
-    return OID;
   }
 
 
@@ -92,6 +100,19 @@ public class SortRequestControl extends AbstractControl
   }
 
 
+  /** {@inheritDoc} */
+  @Override
+  public int hashCode()
+  {
+    int hc = super.hashCode();
+    hc = (hc * HASH_CODE_SEED) + (getCriticality() ? 1 : 0);
+    hc =
+      (hc * HASH_CODE_SEED) +
+      (sortKeys != null ? Arrays.hashCode(sortKeys) : 0);
+    return hc;
+  }
+
+
   /**
    * Provides a descriptive string representation of this instance.
    *
@@ -107,5 +128,26 @@ public class SortRequestControl extends AbstractControl
         hashCode(),
         getCriticality(),
         sortKeys != null ? Arrays.asList(sortKeys) : null);
+  }
+
+
+  /** {@inheritDoc} */
+  @Override
+  public byte[] encode()
+  {
+    final DEREncoder[] keyEncoders = new DEREncoder[sortKeys.length];
+    for (int i = 0; i < sortKeys.length; i++) {
+      final List<DEREncoder> l = new ArrayList<DEREncoder>();
+      l.add(new OctetStringType(sortKeys[i].getAttributeDescription()));
+      if (sortKeys[i].getMatchingRuleId() != null) {
+        l.add(new ContextType(0, sortKeys[i].getMatchingRuleId()));
+      }
+      if (sortKeys[i].getReverseOrder()) {
+        l.add(new ContextType(1, sortKeys[i].getReverseOrder()));
+      }
+      keyEncoders[i] = new SequenceEncoder(l.toArray(new DEREncoder[l.size()]));
+    }
+    final SequenceEncoder se = new SequenceEncoder(keyEncoders);
+    return se.encode();
   }
 }
