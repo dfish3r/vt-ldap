@@ -22,6 +22,9 @@ package edu.vt.middleware.ldap.control;
 public class SortKey
 {
 
+  /** hash code seed. */
+  private static final int HASH_CODE_SEED = 727;
+
   /** attribute description. */
   private String attributeDescription;
 
@@ -46,6 +49,19 @@ public class SortKey
   public SortKey(final String attrDescription)
   {
     setAttributeDescription(attrDescription);
+  }
+
+
+  /**
+   * Creates a new sort key.
+   *
+   * @param  attrDescription  attribute description
+   * @param  ruleId  matching rule id
+   */
+  public SortKey(final String attrDescription, final String ruleId)
+  {
+    setAttributeDescription(attrDescription);
+    setMatchingRuleId(ruleId);
   }
 
 
@@ -130,6 +146,41 @@ public class SortKey
   public void setReverseOrder(final boolean b)
   {
     reverseOrder = b;
+  }
+
+
+  /**
+   * Returns whether the supplied object contains the same data as this control.
+   * Delegates to {@link #hashCode()} implementation.
+   *
+   * @param  o  to compare for equality
+   *
+   * @return  equality result
+   */
+  @Override
+  public boolean equals(final Object o)
+  {
+    if (o == null) {
+      return false;
+    }
+    return
+      o == this ||
+        (getClass() == o.getClass() && o.hashCode() == hashCode());
+  }
+
+
+  /** {@inheritDoc} */
+  @Override
+  public int hashCode()
+  {
+    int hc =
+      HASH_CODE_SEED +
+      (attributeDescription != null ? attributeDescription.hashCode() : 0);
+    hc =
+      (hc * HASH_CODE_SEED) +
+      (matchingRuleId != null ? matchingRuleId.hashCode() : 0);
+    hc = (hc * HASH_CODE_SEED) + (reverseOrder ? 1 : 0);
+    return hc;
   }
 
 
