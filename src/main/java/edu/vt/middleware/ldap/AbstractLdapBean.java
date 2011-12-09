@@ -76,5 +76,6 @@ public abstract class AbstractLdapBean
    *
    * @return  hash code
    */
+  @Override
   public abstract int hashCode();
 }
