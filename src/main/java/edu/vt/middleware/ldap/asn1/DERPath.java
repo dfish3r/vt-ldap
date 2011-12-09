@@ -211,6 +211,7 @@ public class DERPath
    */
   private class Node
   {
+
     /** Name of this node. */
     private final String name;
 
@@ -278,6 +279,18 @@ public class DERPath
       hash = HASH_CODE_SEED * hash + name.hashCode();
       hash = HASH_CODE_SEED * hash + childIndex;
       return hash;
+    }
+
+
+    /**
+     * Provides a descriptive string representation of this instance.
+     *
+     * @return  string representation
+     */
+    @Override
+    public String toString()
+    {
+      return String.format("%s[%s]", name, childIndex);
     }
   }
 }
