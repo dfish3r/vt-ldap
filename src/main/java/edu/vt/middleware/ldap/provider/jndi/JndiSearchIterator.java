@@ -347,7 +347,8 @@ public class JndiSearchIterator implements SearchIterator
             controlProcessor.processRequestControls(request.getControls()));
           results = search(context, request);
           more = results.hasMore();
-        } else {
+        }
+        if (!more) {
           response = new Response<Void>(
             null,
             responseResultCode != null ?

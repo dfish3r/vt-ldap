@@ -39,6 +39,7 @@ public final class LdapUtil
   /** Size of buffer in bytes to use when reading files. */
   private static final int READ_BUFFER_SIZE = 128;
 
+
   /** Default constructor. */
   private LdapUtil() {}
 
