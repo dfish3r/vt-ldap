@@ -127,9 +127,7 @@ public class JndiProviderConfig extends ProviderConfig
    */
   public void setSearchIgnoreResultCodes(final ResultCode[] codes)
   {
-    logger.trace(
-      "setting searchIgnoreResultCodes: {}",
-      codes != null ? Arrays.asList(codes) : null);
+    logger.trace("setting searchIgnoreResultCodes: {}", Arrays.toString(codes));
     searchIgnoreResultCodes = codes;
   }
 
@@ -218,15 +216,13 @@ public class JndiProviderConfig extends ProviderConfig
       "hostnameVerifier=%s, controlProcessor=%s]",
       getClass().getName(),
       hashCode(),
-      getOperationRetryResultCodes() != null ?
-        Arrays.asList(getOperationRetryResultCodes()) : null,
+      Arrays.toString(getOperationRetryResultCodes()),
       getProperties(),
       getConnectionStrategy(),
       getLogCredentials(),
       tracePackets,
       removeDnUrls,
-      searchIgnoreResultCodes != null ?
-        Arrays.asList(searchIgnoreResultCodes) : null,
+      Arrays.toString(searchIgnoreResultCodes),
       sslSocketFactory,
       hostnameVerifier,
       controlProcessor);

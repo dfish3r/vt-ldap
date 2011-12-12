@@ -91,7 +91,6 @@ public class PooledCompareAuthenticationHandler
         hashCode(),
         factory,
         getPasswordScheme(),
-        getAuthenticationControls() != null ?
-          Arrays.asList(getAuthenticationControls()) : null);
+        Arrays.toString(getAuthenticationControls()));
   }
 }

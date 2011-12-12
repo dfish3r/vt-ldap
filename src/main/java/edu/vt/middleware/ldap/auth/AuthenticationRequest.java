@@ -147,6 +147,6 @@ public class AuthenticationRequest
         getClass().getName(),
         hashCode(),
         user,
-        retAttrs != null ? Arrays.asList(retAttrs) : null);
+        Arrays.toString(retAttrs));
   }
 }

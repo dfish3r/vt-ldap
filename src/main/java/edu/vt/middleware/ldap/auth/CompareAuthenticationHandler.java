@@ -93,7 +93,6 @@ public class CompareAuthenticationHandler
         hashCode(),
         factory,
         getPasswordScheme(),
-        getAuthenticationControls() != null ?
-          Arrays.asList(getAuthenticationControls()) : null);
+        Arrays.toString(getAuthenticationControls()));
   }
 }

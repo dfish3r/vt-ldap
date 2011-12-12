@@ -128,7 +128,6 @@ public class BindAuthenticationHandler
         hashCode(),
         factory,
         getAuthenticationSaslConfig(),
-        getAuthenticationControls() != null ?
-          Arrays.asList(getAuthenticationControls()) : null);
+        Arrays.toString(getAuthenticationControls()));
   }
 }

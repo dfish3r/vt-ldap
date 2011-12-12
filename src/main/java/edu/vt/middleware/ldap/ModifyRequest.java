@@ -119,7 +119,7 @@ public class ModifyRequest extends AbstractRequest
         getClass().getName(),
         hashCode(),
         modifyDn,
-        attrMods != null ? Arrays.asList(attrMods) : null,
-        getControls() != null ? Arrays.asList(getControls()) : null);
+        Arrays.toString(attrMods),
+        Arrays.toString(getControls()));
   }
 }

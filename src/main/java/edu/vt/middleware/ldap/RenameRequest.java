@@ -107,6 +107,6 @@ public class RenameRequest extends AbstractRequest
         hashCode(),
         oldRenameDn,
         newRenameDn,
-        getControls() != null ? Arrays.asList(getControls()) : null);
+        Arrays.toString(getControls()));
   }
 }

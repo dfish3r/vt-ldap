@@ -108,6 +108,6 @@ public class AddRequest extends AbstractRequest
         hashCode(),
         createDn,
         attributes,
-        getControls() != null ? Arrays.asList(getControls()) : null);
+        Arrays.toString(getControls()));
   }
 }

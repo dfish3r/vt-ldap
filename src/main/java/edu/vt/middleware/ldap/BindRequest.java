@@ -151,6 +151,6 @@ public class BindRequest extends AbstractRequest
         hashCode(),
         bindDn,
         saslConfig,
-        getControls() != null ? Arrays.asList(getControls()) : null);
+        Arrays.toString(getControls()));
   }
 }

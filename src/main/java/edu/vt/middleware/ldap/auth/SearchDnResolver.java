@@ -99,7 +99,7 @@ public class SearchDnResolver extends AbstractSearchDnResolver
         factory,
         getBaseDn(),
         getUserFilter(),
-        getUserFilterArgs() != null ? Arrays.asList(getUserFilterArgs()) : null,
+        Arrays.toString(getUserFilterArgs()),
         getAllowMultipleDns(),
         getSubtreeSearch(),
         getDerefAliases(),

@@ -79,6 +79,6 @@ public class DeleteRequest extends AbstractRequest
         getClass().getName(),
         hashCode(),
         deleteDn,
-        getControls() != null ? Arrays.asList(getControls()) : null);
+        Arrays.toString(getControls()));
   }
 }

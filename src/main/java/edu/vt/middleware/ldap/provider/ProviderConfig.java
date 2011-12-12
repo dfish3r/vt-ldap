@@ -69,8 +69,7 @@ public class ProviderConfig extends AbstractConfig
   public void setOperationRetryResultCodes(final ResultCode[] codes)
   {
     logger.trace(
-      "setting operationRetryResultCodes: {}",
-      codes != null ? Arrays.asList(codes) : null);
+      "setting operationRetryResultCodes: {}", Arrays.toString(codes));
     operationRetryResultCodes = codes;
   }
 
@@ -158,8 +157,7 @@ public class ProviderConfig extends AbstractConfig
         "connectionStrategy=%s, logCredentials=%s]",
         getClass().getName(),
         hashCode(),
-        operationRetryResultCodes != null ?
-          Arrays.asList(operationRetryResultCodes) : null,
+        Arrays.toString(operationRetryResultCodes),
         properties,
         connectionStrategy,
         logCredentials);

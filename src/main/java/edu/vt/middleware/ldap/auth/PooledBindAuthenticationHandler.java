@@ -130,7 +130,6 @@ public class PooledBindAuthenticationHandler
         hashCode(),
         factory,
         getAuthenticationSaslConfig(),
-        getAuthenticationControls() != null ?
-          Arrays.asList(getAuthenticationControls()) : null);
+        Arrays.toString(getAuthenticationControls()));
   }
 }

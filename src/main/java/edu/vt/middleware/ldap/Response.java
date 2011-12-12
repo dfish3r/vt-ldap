@@ -111,6 +111,6 @@ public class Response<T> implements Message<ResponseControl>
         hashCode(),
         result,
         code,
-        controls != null ? Arrays.asList(controls) : null);
+        Arrays.toString(controls));
   }
 }

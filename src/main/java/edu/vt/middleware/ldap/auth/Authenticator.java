@@ -153,7 +153,6 @@ public class Authenticator extends AbstractAuthenticator
         getDnResolver(),
         getAuthenticationHandler(),
         getEntryResolver(),
-        getAuthenticationResponseHandlers() != null ?
-          Arrays.asList(getAuthenticationResponseHandlers()) : null);
+        Arrays.toString(getAuthenticationResponseHandlers()));
   }
 }

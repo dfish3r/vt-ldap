@@ -127,7 +127,7 @@ public class SortRequestControl extends AbstractControl
         getClass().getName(),
         hashCode(),
         getCriticality(),
-        sortKeys != null ? Arrays.asList(sortKeys) : null);
+        Arrays.toString(sortKeys));
   }
 
 

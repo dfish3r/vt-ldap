@@ -109,6 +109,6 @@ public class CompareRequest extends AbstractRequest
         hashCode(),
         compareDn,
         attribute,
-        getControls() != null ? Arrays.asList(getControls()) : null);
+        Arrays.toString(getControls()));
   }
 }

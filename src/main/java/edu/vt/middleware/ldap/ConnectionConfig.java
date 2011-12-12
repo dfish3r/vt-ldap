@@ -476,7 +476,7 @@ public class ConnectionConfig extends AbstractConfig
         responseTimeout,
         bindDn,
         bindSaslConfig,
-        bindControls != null ? Arrays.asList(bindControls) : null,
+        Arrays.toString(bindControls),
         operationRetry,
         operationRetryWait,
         operationRetryBackoff,

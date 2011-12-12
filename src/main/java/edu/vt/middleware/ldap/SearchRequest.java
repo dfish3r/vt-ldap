@@ -574,16 +574,16 @@ public class SearchRequest extends AbstractRequest
         hashCode(),
         baseDn,
         searchFilter,
-        retAttrs != null ? Arrays.asList(retAttrs) : null,
+        Arrays.toString(retAttrs),
         searchScope,
         timeLimit,
         sizeLimit,
         derefAliases,
         referralBehavior,
         typesOnly,
-        binaryAttrs != null ? Arrays.asList(binaryAttrs) : null,
+        Arrays.toString(binaryAttrs),
         sortBehavior,
-        resultHandlers != null ? Arrays.asList(resultHandlers) : null,
-        getControls() != null ? Arrays.asList(getControls()) : null);
+        Arrays.toString(resultHandlers),
+        Arrays.toString(getControls()));
   }
 }
