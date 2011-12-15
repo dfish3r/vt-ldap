@@ -20,6 +20,7 @@ import edu.vt.middleware.ldap.LdapAttribute;
 import edu.vt.middleware.ldap.LdapEntry;
 import edu.vt.middleware.ldap.LdapException;
 import edu.vt.middleware.ldap.LdapResult;
+import edu.vt.middleware.ldap.LdapUtil;
 import edu.vt.middleware.ldap.SearchOperation;
 import edu.vt.middleware.ldap.SearchRequest;
 
@@ -33,6 +34,9 @@ import edu.vt.middleware.ldap.SearchRequest;
 public class RecursiveAttributeHandler extends CopyLdapAttributeHandler
   implements ExtendedLdapAttributeHandler
 {
+
+  /** hash code seed. */
+  private static final int HASH_CODE_SEED = 853;
 
   /** Connection to use for searching. */
   private Connection connection;
@@ -176,5 +180,13 @@ public class RecursiveAttributeHandler extends CopyLdapAttributeHandler
       }
     }
     return results;
+  }
+
+
+  /** {@inheritDoc} */
+  @Override
+  public int hashCode()
+  {
+    return LdapUtil.computeHashCode(HASH_CODE_SEED, attributeName);
   }
 }

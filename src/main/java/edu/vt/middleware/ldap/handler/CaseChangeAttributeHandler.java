@@ -13,6 +13,7 @@
 */
 package edu.vt.middleware.ldap.handler;
 
+import edu.vt.middleware.ldap.LdapUtil;
 import edu.vt.middleware.ldap.handler.CaseChangeResultHandler.CaseChange;
 
 /**
@@ -24,6 +25,9 @@ import edu.vt.middleware.ldap.handler.CaseChangeResultHandler.CaseChange;
  */
 public class CaseChangeAttributeHandler extends CopyLdapAttributeHandler
 {
+
+  /** hash code seed. */
+  private static final int HASH_CODE_SEED = 811;
 
   /** Type of case modification to make to the attribute names. */
   private CaseChange attributeNameCaseChange = CaseChange.NONE;
@@ -97,5 +101,14 @@ public class CaseChangeAttributeHandler extends CopyLdapAttributeHandler
   protected byte[] processValue(final SearchCriteria sc, final byte[] value)
   {
     return value;
+  }
+
+
+  /** {@inheritDoc} */
+  @Override
+  public int hashCode()
+  {
+    return LdapUtil.computeHashCode(
+      HASH_CODE_SEED, attributeNameCaseChange, attributeValueCaseChange);
   }
 }

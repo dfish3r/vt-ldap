@@ -17,6 +17,7 @@ import edu.vt.middleware.ldap.LdapAttribute;
 import edu.vt.middleware.ldap.LdapEntry;
 import edu.vt.middleware.ldap.LdapException;
 import edu.vt.middleware.ldap.LdapResult;
+import edu.vt.middleware.ldap.LdapUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -29,6 +30,9 @@ import org.slf4j.LoggerFactory;
 public class CopyLdapResultHandler implements LdapResultHandler
 {
 
+  /** hash code seed. */
+  private static final int HASH_CODE_SEED = 809;
+
   /** Log for this class. */
   protected final Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -38,7 +42,7 @@ public class CopyLdapResultHandler implements LdapResultHandler
 
   /** {@inheritDoc} */
   @Override
-  public LdapAttributeHandler[] getAttributeHandler()
+  public LdapAttributeHandler[] getAttributeHandlers()
   {
     return attributeHandler;
   }
@@ -46,7 +50,7 @@ public class CopyLdapResultHandler implements LdapResultHandler
 
   /** {@inheritDoc} */
   @Override
-  public void setAttributeHandler(final LdapAttributeHandler[] handlers)
+  public void setAttributeHandlers(final LdapAttributeHandler[] handlers)
   {
     attributeHandler = handlers;
   }
@@ -101,5 +105,26 @@ public class CopyLdapResultHandler implements LdapResultHandler
         }
       }
     }
+  }
+
+
+  /** {@inheritDoc} */
+  @Override
+  public boolean equals(final Object o)
+  {
+    if (o == null) {
+      return false;
+    }
+    return
+      o == this ||
+        (getClass() == o.getClass() && o.hashCode() == hashCode());
+  }
+
+
+  /** {@inheritDoc} */
+  @Override
+  public int hashCode()
+  {
+    return LdapUtil.computeHashCode(HASH_CODE_SEED, (Object) attributeHandler);
   }
 }

@@ -445,7 +445,7 @@ public class SearchOperationTest extends AbstractTest
 
     // test recursive searching
     final CopyLdapResultHandler handler = new CopyLdapResultHandler();
-    handler.setAttributeHandler(
+    handler.setAttributeHandlers(
       new LdapAttributeHandler[] {new RecursiveAttributeHandler("member")});
 
     final LdapResult result = search.execute(

@@ -17,6 +17,7 @@ import edu.vt.middleware.ldap.LdapAttribute;
 import edu.vt.middleware.ldap.LdapEntry;
 import edu.vt.middleware.ldap.LdapException;
 import edu.vt.middleware.ldap.LdapResult;
+import edu.vt.middleware.ldap.LdapUtil;
 
 /**
  * Merges the attributes found in each search result into the first search
@@ -27,6 +28,9 @@ import edu.vt.middleware.ldap.LdapResult;
  */
 public class MergeResultHandler extends CopyLdapResultHandler
 {
+
+  /** hash code seed. */
+  private static final int HASH_CODE_SEED = 839;
 
 
   /** {@inheritDoc} */
@@ -76,5 +80,14 @@ public class MergeResultHandler extends CopyLdapResultHandler
     if (mergedEntry != null) {
       results.addEntry(mergedEntry);
     }
+  }
+
+
+  /** {@inheritDoc} */
+  @Override
+  public int hashCode()
+  {
+    return LdapUtil.computeHashCode(
+      HASH_CODE_SEED, (Object) getAttributeHandlers());
   }
 }

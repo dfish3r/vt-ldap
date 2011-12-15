@@ -13,6 +13,7 @@
 */
 package edu.vt.middleware.ldap.handler;
 
+import java.util.Arrays;
 import edu.vt.middleware.ldap.SearchRequest;
 
 /**
@@ -171,7 +172,7 @@ public class SearchCriteria
         hashCode(),
         searchDn,
         searchFilter,
-        filterArgs,
-        returnAttrs);
+        Arrays.toString(filterArgs),
+        Arrays.toString(returnAttrs));
   }
 }

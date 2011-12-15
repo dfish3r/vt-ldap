@@ -17,6 +17,7 @@ import java.util.HashSet;
 import java.util.Set;
 import edu.vt.middleware.ldap.LdapAttribute;
 import edu.vt.middleware.ldap.LdapException;
+import edu.vt.middleware.ldap.LdapUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -28,6 +29,9 @@ import org.slf4j.LoggerFactory;
  */
 public class CopyLdapAttributeHandler implements LdapAttributeHandler
 {
+
+  /** hash code seed. */
+  private static final int HASH_CODE_SEED = 857;
 
   /** Log for this class. */
   protected final Logger logger = LoggerFactory.getLogger(getClass());
@@ -102,5 +106,26 @@ public class CopyLdapAttributeHandler implements LdapAttributeHandler
     final SearchCriteria criteria, final byte[] value)
   {
     return value;
+  }
+
+
+  /** {@inheritDoc} */
+  @Override
+  public boolean equals(final Object o)
+  {
+    if (o == null) {
+      return false;
+    }
+    return
+      o == this ||
+        (getClass() == o.getClass() && o.hashCode() == hashCode());
+  }
+
+
+  /** {@inheritDoc} */
+  @Override
+  public int hashCode()
+  {
+    return LdapUtil.computeHashCode(HASH_CODE_SEED, (Object) null);
   }
 }

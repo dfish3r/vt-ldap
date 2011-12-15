@@ -16,6 +16,7 @@ package edu.vt.middleware.ldap.handler;
 import edu.vt.middleware.ldap.LdapAttribute;
 import edu.vt.middleware.ldap.LdapEntry;
 import edu.vt.middleware.ldap.LdapException;
+import edu.vt.middleware.ldap.LdapUtil;
 
 /**
  * Merges the values of one or more attributes into a single attribute. The
@@ -27,6 +28,9 @@ import edu.vt.middleware.ldap.LdapException;
  */
 public class MergeAttributeResultHandler extends CopyLdapResultHandler
 {
+
+  /** hash code seed. */
+  private static final int HASH_CODE_SEED = 827;
 
   /** Attribute name to add merge values into. */
   private String mergeAttributeName;
@@ -106,5 +110,14 @@ public class MergeAttributeResultHandler extends CopyLdapResultHandler
     if (mergedAttribute.size() > 0 && newAttribute) {
       entry.addAttribute(mergedAttribute);
     }
+  }
+
+
+  /** {@inheritDoc} */
+  @Override
+  public int hashCode()
+  {
+    return LdapUtil.computeHashCode(
+      HASH_CODE_SEED, attributeNames, mergeAttributeName);
   }
 }

@@ -101,7 +101,7 @@ public abstract class AbstractSearchOperation<Q extends SearchRequest>
           ((ExtendedLdapResultHandler) h).setResultConnection(c);
         }
 
-        final LdapAttributeHandler[] attrHandler = h.getAttributeHandler();
+        final LdapAttributeHandler[] attrHandler = h.getAttributeHandlers();
         if (attrHandler != null && attrHandler.length > 0) {
           for (LdapAttributeHandler ah : attrHandler) {
             if (ExtendedLdapAttributeHandler.class.isInstance(ah)) {

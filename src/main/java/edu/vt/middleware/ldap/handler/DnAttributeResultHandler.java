@@ -16,6 +16,7 @@ package edu.vt.middleware.ldap.handler;
 import edu.vt.middleware.ldap.LdapAttribute;
 import edu.vt.middleware.ldap.LdapEntry;
 import edu.vt.middleware.ldap.LdapException;
+import edu.vt.middleware.ldap.LdapUtil;
 
 /**
  * Adds the search result DN as an attribute to the result set. Provides a
@@ -26,6 +27,9 @@ import edu.vt.middleware.ldap.LdapException;
  */
 public class DnAttributeResultHandler extends CopyLdapResultHandler
 {
+
+  /** hash code seed. */
+  private static final int HASH_CODE_SEED = 823;
 
   /**
    * Attribute name for the entry dn. The value of this constant is {@value}.
@@ -95,5 +99,14 @@ public class DnAttributeResultHandler extends CopyLdapResultHandler
     } else if (addIfExists) {
       entry.getAttribute(dnAttributeName).addStringValue(entry.getDn());
     }
+  }
+
+
+  /** {@inheritDoc} */
+  @Override
+  public int hashCode()
+  {
+    return LdapUtil.computeHashCode(
+      HASH_CODE_SEED, addIfExists, dnAttributeName);
   }
 }

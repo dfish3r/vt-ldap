@@ -30,7 +30,7 @@ public interface LdapResultHandler extends ResultHandler<LdapResult>
    *
    * @return  attribute handlers
    */
-  LdapAttributeHandler[] getAttributeHandler();
+  LdapAttributeHandler[] getAttributeHandlers();
 
 
   /**
@@ -38,5 +38,5 @@ public interface LdapResultHandler extends ResultHandler<LdapResult>
    *
    * @param  handlers  attribute handlers
    */
-  void setAttributeHandler(final LdapAttributeHandler[] handlers);
+  void setAttributeHandlers(final LdapAttributeHandler[] handlers);
 }
