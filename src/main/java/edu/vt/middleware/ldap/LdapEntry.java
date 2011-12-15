@@ -29,13 +29,13 @@ public class LdapEntry extends AbstractLdapBean
 {
 
   /** hash code seed. */
-  private static final int HASH_CODE_SEED = 43;
+  private static final int HASH_CODE_SEED = 331;
 
   /** Distinguished name for this entry. */
   private String entryDn;
 
   /** Attributes contained in this bean. */
-  private Map<String, LdapAttribute> entryAttributes;
+  private final Map<String, LdapAttribute> entryAttributes;
 
 
   /** Default constructor. */
@@ -60,6 +60,8 @@ public class LdapEntry extends AbstractLdapBean
     } else if (SortBehavior.SORTED == sb) {
       entryAttributes = new TreeMap<String, LdapAttribute>(
         String.CASE_INSENSITIVE_ORDER);
+    } else {
+      throw new IllegalArgumentException("Unknown sort behavior: " + sb);
     }
   }
 
@@ -273,14 +275,10 @@ public class LdapEntry extends AbstractLdapBean
   @Override
   public int hashCode()
   {
-    int hc = HASH_CODE_SEED;
-    hc += entryDn != null ? entryDn.toLowerCase().hashCode() : 0;
-    for (LdapAttribute la : entryAttributes.values()) {
-      if (la != null) {
-        hc += la.hashCode();
-      }
-    }
-    return hc;
+    return LdapUtil.computeHashCode(
+      HASH_CODE_SEED,
+      entryDn != null ? entryDn.toLowerCase() : null,
+      entryAttributes.values());
   }
 
 

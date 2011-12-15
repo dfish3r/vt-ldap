@@ -13,6 +13,8 @@
 */
 package edu.vt.middleware.ldap.control;
 
+import edu.vt.middleware.ldap.LdapUtil;
+
 /**
  * Used by {@link SortRequestControl} to declare how sorting should occur.
  *
@@ -23,7 +25,7 @@ public class SortKey
 {
 
   /** hash code seed. */
-  private static final int HASH_CODE_SEED = 727;
+  private static final int HASH_CODE_SEED = 739;
 
   /** attribute description. */
   private String attributeDescription;
@@ -173,14 +175,8 @@ public class SortKey
   @Override
   public int hashCode()
   {
-    int hc =
-      HASH_CODE_SEED +
-      (attributeDescription != null ? attributeDescription.hashCode() : 0);
-    hc =
-      (hc * HASH_CODE_SEED) +
-      (matchingRuleId != null ? matchingRuleId.hashCode() : 0);
-    hc = (hc * HASH_CODE_SEED) + (reverseOrder ? 1 : 0);
-    return hc;
+    return LdapUtil.computeHashCode(
+      HASH_CODE_SEED, attributeDescription, matchingRuleId, reverseOrder);
   }
 
 

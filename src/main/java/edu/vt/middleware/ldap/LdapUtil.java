@@ -19,6 +19,7 @@ import java.io.InputStream;
 import java.net.URL;
 import java.nio.charset.Charset;
 import java.util.Arrays;
+import java.util.Collection;
 import org.apache.commons.codec.binary.Base64;
 
 /**
@@ -38,6 +39,9 @@ public final class LdapUtil
 
   /** Size of buffer in bytes to use when reading files. */
   private static final int READ_BUFFER_SIZE = 128;
+
+  /** Prime number to assist in calculating hash codes. */
+  private static final int HASH_CODE_PRIME = 113;
 
 
   /** Default constructor. */
@@ -169,5 +173,59 @@ public final class LdapUtil
       }
     }
     return result;
+  }
+
+
+  /**
+   * Computes a hash code for the supplied objects using the supplied seed.
+   * If a Collection type is found it is iterated over.
+   *
+   * @param  seed  odd/prime number
+   * @param  objects  to calculate hashCode for
+   *
+   * @return  hash code for the supplied objects
+   */
+  public static int computeHashCode(final int seed, final Object ... objects)
+  {
+    if (objects == null || objects.length == 0) {
+      return seed * HASH_CODE_PRIME;
+    }
+    int hc = seed;
+    for (Object object : objects) {
+      hc = HASH_CODE_PRIME * hc;
+      if (object != null) {
+        if (object instanceof Collection<?>) {
+          for (Object o : (Collection<?>) object) {
+            hc += computeHashCode(o);
+          }
+        } else {
+          hc += computeHashCode(object);
+        }
+      }
+    }
+    return hc;
+  }
+
+
+  /**
+   * Computes a hash code for the supplied object. Checks for arrays of type
+   * byte[] and Object[] and delegates to the {@link Arrays} class. Otherwise
+   * {@link Object#hashCode()} is invoked.
+   *
+   * @param  object  to calculate hash code for
+   *
+   * @return  hash code
+   */
+  private static int computeHashCode(final Object object)
+  {
+    int hc = 0;
+    if (object instanceof byte[]) {
+      hc += Arrays.hashCode((byte[]) object);
+    } else if (object instanceof Object[]) {
+      hc += Arrays.hashCode((Object[]) object);
+    } else {
+      hc += object.hashCode();
+    }
+    return hc;
   }
 }

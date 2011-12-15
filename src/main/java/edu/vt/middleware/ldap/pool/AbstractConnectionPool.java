@@ -27,6 +27,7 @@ import java.util.concurrent.locks.ReentrantLock;
 import edu.vt.middleware.ldap.Connection;
 import edu.vt.middleware.ldap.DefaultConnectionFactory;
 import edu.vt.middleware.ldap.LdapException;
+import edu.vt.middleware.ldap.LdapUtil;
 
 /**
  * Contains the base implementation for pooling connections. The main design
@@ -590,6 +591,7 @@ public abstract class AbstractConnectionPool extends AbstractPool<Connection>
    *
    * @throws  Throwable  if an exception is thrown by this method
    */
+  @Override
   protected void finalize()
     throws Throwable
   {
@@ -631,7 +633,7 @@ public abstract class AbstractConnectionPool extends AbstractPool<Connection>
   {
 
     /** hash code seed. */
-    protected static final int HASH_CODE_SEED = 89;
+    private static final int HASH_CODE_SEED = 503;
 
     /** Underlying connection. */
     private Connection conn;
@@ -680,15 +682,14 @@ public abstract class AbstractConnectionPool extends AbstractPool<Connection>
      *
      * @return  whether the supplied object is the same as this one
      */
+    @Override
     public boolean equals(final Object o)
     {
       if (o == null) {
         return false;
       }
       return
-        o == this ||
-          (getClass() == o.getClass() &&
-            o.hashCode() == hashCode());
+        o == this || (getClass() == o.getClass() && o.hashCode() == hashCode());
     }
 
 
@@ -697,13 +698,10 @@ public abstract class AbstractConnectionPool extends AbstractPool<Connection>
      *
      * @return  hash code
      */
+    @Override
     public int hashCode()
     {
-      int hc = HASH_CODE_SEED;
-      if (conn != null) {
-        hc += conn.hashCode();
-      }
-      return hc;
+      return LdapUtil.computeHashCode(HASH_CODE_SEED, conn);
     }
 
 

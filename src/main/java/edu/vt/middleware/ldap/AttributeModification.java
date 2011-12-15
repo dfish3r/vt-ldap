@@ -93,7 +93,7 @@ public class AttributeModification
   /**
    * Provides a descriptive string representation of this instance.
    *
-   * @return  String of the form $Classname@hashCode::propName=propValue.
+   * @return  string representation
    */
   @Override
   public String toString()

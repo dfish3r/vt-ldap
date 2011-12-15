@@ -21,6 +21,7 @@ import java.util.Set;
 import edu.vt.middleware.ldap.LdapAttribute;
 import edu.vt.middleware.ldap.LdapEntry;
 import edu.vt.middleware.ldap.LdapResult;
+import edu.vt.middleware.ldap.LdapUtil;
 
 /**
  * Provides a custom implementation for adding LDAP principals to a subject
@@ -31,6 +32,9 @@ import edu.vt.middleware.ldap.LdapResult;
  */
 public class LdapRole implements Principal, Serializable, Comparable<Principal>
 {
+
+  /** hash code seed. */
+  private static final int HASH_CODE_SEED = 419;
 
   /** serial version uid. */
   private static final long serialVersionUID = 1427032827399935399L;
@@ -68,6 +72,7 @@ public class LdapRole implements Principal, Serializable, Comparable<Principal>
    *
    * @return  whether the supplied object is equal
    */
+  @Override
   public boolean equals(final Object o)
   {
     boolean b = false;
@@ -91,9 +96,10 @@ public class LdapRole implements Principal, Serializable, Comparable<Principal>
    *
    * @return  hash code
    */
+  @Override
   public int hashCode()
   {
-    return roleName.hashCode();
+    return LdapUtil.computeHashCode(HASH_CODE_SEED, roleName);
   }
 
 
@@ -122,6 +128,7 @@ public class LdapRole implements Principal, Serializable, Comparable<Principal>
    * @return  a negative integer, zero, or a positive integer as this object is
    * less than, equal to, or greater than the specified object.
    */
+  @Override
   public int compareTo(final Principal p)
   {
     return roleName.compareTo(p.getName());

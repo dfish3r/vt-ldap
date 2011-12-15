@@ -15,6 +15,7 @@ package edu.vt.middleware.ldap.control;
 
 import java.nio.ByteBuffer;
 import java.util.Arrays;
+import edu.vt.middleware.ldap.LdapUtil;
 import edu.vt.middleware.ldap.asn1.DERParser;
 import edu.vt.middleware.ldap.asn1.DERPath;
 import edu.vt.middleware.ldap.asn1.IntegerType;
@@ -43,6 +44,9 @@ public class PagedResultsControl extends AbstractControl
 
   /** OID of this control. */
   public static final String OID = "1.2.840.113556.1.4.319";
+
+  /** hash code seed. */
+  private static final int HASH_CODE_SEED = 709;
 
   /** Empty byte array used for null cookies. */
   private static final byte[] EMPTY_COOKIE = new byte[0];
@@ -173,10 +177,8 @@ public class PagedResultsControl extends AbstractControl
   @Override
   public int hashCode()
   {
-    int hc = super.hashCode();
-    hc = (hc * HASH_CODE_SEED) + resultSize;
-    hc = (hc * HASH_CODE_SEED) + (cookie != null ? Arrays.hashCode(cookie) : 0);
-    return hc;
+    return LdapUtil.computeHashCode(
+      HASH_CODE_SEED, getOID(), getCriticality(), resultSize, cookie);
   }
 
 

@@ -13,6 +13,8 @@
 */
 package edu.vt.middleware.ldap.control;
 
+import edu.vt.middleware.ldap.LdapUtil;
+
 /**
  * Request control for ManageDsaIT. See RFC 3296.
  *
@@ -25,6 +27,9 @@ public class ManageDsaITControl extends AbstractControl
 
   /** OID of this control. */
   public static final String OID = "2.16.840.1.113730.3.4.2";
+
+  /** hash code seed. */
+  private static final int HASH_CODE_SEED = 701;
 
 
   /**
@@ -44,6 +49,18 @@ public class ManageDsaITControl extends AbstractControl
   public ManageDsaITControl(final boolean critical)
   {
     super(OID, critical);
+  }
+
+
+  /**
+   * Returns the hash code for this object.
+   *
+   * @return  hash code
+   */
+  @Override
+  public int hashCode()
+  {
+    return LdapUtil.computeHashCode(HASH_CODE_SEED, getOID(), getCriticality());
   }
 
 

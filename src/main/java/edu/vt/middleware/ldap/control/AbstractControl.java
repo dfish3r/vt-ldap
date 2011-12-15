@@ -22,9 +22,6 @@ package edu.vt.middleware.ldap.control;
 public abstract class AbstractControl implements Control
 {
 
-  /** hash code seed. */
-  protected static final int HASH_CODE_SEED = 797;
-
   /** control oid. */
   private final String oid;
 
@@ -99,10 +96,5 @@ public abstract class AbstractControl implements Control
    * @return  hash code
    */
   @Override
-  public int hashCode()
-  {
-    int hc = HASH_CODE_SEED + (getOID() != null ? getOID().hashCode() : 0);
-    hc = (hc * HASH_CODE_SEED) + (getCriticality() ? 1 : 0);
-    return hc;
-  }
+  public abstract int hashCode();
 }

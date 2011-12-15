@@ -28,7 +28,7 @@ public class SearchFilter
 {
 
   /** hash code seed. */
-  private static final int HASH_CODE_SEED = 89;
+  private static final int HASH_CODE_SEED = 311;
 
   /** filter. */
   private String searchFilter;
@@ -268,11 +268,8 @@ public class SearchFilter
   @Override
   public int hashCode()
   {
-    int hc = HASH_CODE_SEED;
-    hc += searchFilter != null ? searchFilter.hashCode() : 0;
-    hc += searchFilterArgs != null && !searchFilterArgs.isEmpty() ?
-      searchFilterArgs.hashCode() : 0;
-    return hc;
+    return LdapUtil.computeHashCode(
+      HASH_CODE_SEED, searchFilter, searchFilterArgs);
   }
 
 

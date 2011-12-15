@@ -13,7 +13,6 @@
 */
 package edu.vt.middleware.ldap;
 
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
@@ -32,13 +31,13 @@ public class LdapAttribute extends AbstractLdapBean
 {
 
   /** hash code seed. */
-  private static final int HASH_CODE_SEED = 41;
+  private static final int HASH_CODE_SEED = 313;
 
   /** Name for this attribute. */
   private String attributeName;
 
   /** Values for this attribute. */
-  private LdapAttributeValues<?> attributeValues;
+  private final LdapAttributeValues<?> attributeValues;
 
 
   /** Default constructor. */
@@ -354,10 +353,10 @@ public class LdapAttribute extends AbstractLdapBean
   @Override
   public int hashCode()
   {
-    int hc = HASH_CODE_SEED;
-    hc += attributeName != null ? attributeName.toLowerCase().hashCode() : 0;
-    hc += attributeValues.hashCode();
-    return hc;
+    return LdapUtil.computeHashCode(
+      HASH_CODE_SEED,
+      attributeName != null ? attributeName.toLowerCase() : null,
+      attributeValues);
   }
 
 
@@ -423,11 +422,15 @@ public class LdapAttribute extends AbstractLdapBean
    */
   private class LdapAttributeValues<T>
   {
+
+    /** hash code seed. */
+    private static final int HASH_CODE_SEED = 317;
+
     /** Type of values. */
-    private Class<T> type;
+    private final Class<T> type;
 
     /** Set of values. */
-    private Set<T> values;
+    private final Set<T> values;
 
 
     /**
@@ -571,21 +574,10 @@ public class LdapAttribute extends AbstractLdapBean
 
 
     /** {@inheritDoc} */
-    @SuppressWarnings("unchecked")
     @Override
     public int hashCode()
     {
-      int hc = 0;
-      if (isType(byte[].class)) {
-        for (byte[] b : (Set<byte[]>) values) {
-          hc += b != null ? Arrays.hashCode(b) : 0;
-        }
-      } else {
-        for (String s : (Set<String>) values) {
-          hc += s != null ? s.hashCode() : 0;
-        }
-      }
-      return hc;
+      return LdapUtil.computeHashCode(HASH_CODE_SEED, values);
     }
 
 

@@ -14,6 +14,7 @@
 package edu.vt.middleware.ldap.control;
 
 import java.nio.ByteBuffer;
+import edu.vt.middleware.ldap.LdapUtil;
 import edu.vt.middleware.ldap.ResultCode;
 import edu.vt.middleware.ldap.asn1.DERParser;
 import edu.vt.middleware.ldap.asn1.DERPath;
@@ -59,6 +60,9 @@ public class SortResponseControl extends AbstractControl
 
   /** OID of this control. */
   public static final String OID = "1.2.840.113556.1.4.474";
+
+  /** hash code seed. */
+  private static final int HASH_CODE_SEED = 733;
 
   /** Result of the server side sorting. */
   private ResultCode sortResult;
@@ -164,12 +168,8 @@ public class SortResponseControl extends AbstractControl
   @Override
   public int hashCode()
   {
-    int hc = super.hashCode();
-    hc = (hc * HASH_CODE_SEED) + (sortResult != null ? sortResult.value() : 0);
-    hc =
-      (hc * HASH_CODE_SEED) +
-      (attributeName != null ? attributeName.hashCode() : 0);
-    return hc;
+    return LdapUtil.computeHashCode(
+      HASH_CODE_SEED, getOID(), getCriticality(), sortResult, attributeName);
   }
 
 

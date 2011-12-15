@@ -16,6 +16,7 @@ package edu.vt.middleware.ldap.jaas;
 import java.io.Serializable;
 import java.security.Principal;
 import edu.vt.middleware.ldap.LdapEntry;
+import edu.vt.middleware.ldap.LdapUtil;
 
 /**
  * Provides a custom implementation for adding LDAP principals to a subject.
@@ -28,7 +29,7 @@ public class LdapPrincipal
 {
 
   /** hash code seed. */
-  private static final int HASH_CODE_SEED = 79;
+  private static final int HASH_CODE_SEED = 419;
 
   /** serial version uid. */
   private static final long serialVersionUID = -1043578648596801523L;
@@ -82,6 +83,7 @@ public class LdapPrincipal
    *
    * @return  whether the supplied object is equal
    */
+  @Override
   public boolean equals(final Object o)
   {
     if (o == null) {
@@ -98,13 +100,10 @@ public class LdapPrincipal
    *
    * @return  hash code
    */
+  @Override
   public int hashCode()
   {
-    int hc = HASH_CODE_SEED;
-    if (ldapName != null) {
-      hc += ldapName.hashCode();
-    }
-    return hc;
+    return LdapUtil.computeHashCode(HASH_CODE_SEED, ldapName);
   }
 
 
@@ -134,6 +133,7 @@ public class LdapPrincipal
    * @return  a negative integer, zero, or a positive integer as this object is
    * less than, equal to, or greater than the specified object.
    */
+  @Override
   public int compareTo(final Principal p)
   {
     return ldapName.compareTo(p.getName());

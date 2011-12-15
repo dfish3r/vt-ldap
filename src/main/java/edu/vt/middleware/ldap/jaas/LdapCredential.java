@@ -14,6 +14,7 @@
 package edu.vt.middleware.ldap.jaas;
 
 import java.io.Serializable;
+import edu.vt.middleware.ldap.LdapUtil;
 
 /**
  * Provides a custom implementation for adding LDAP credentials to a subject.
@@ -25,7 +26,7 @@ public class LdapCredential implements Serializable
 {
 
   /** hash code seed. */
-  private static final int HASH_CODE_SEED = 89;
+  private static final int HASH_CODE_SEED = 401;
 
   /** serial version uid. */
   private static final long serialVersionUID = 6571981350905290712L;
@@ -63,6 +64,7 @@ public class LdapCredential implements Serializable
    *
    * @return  whether the supplied object is equal
    */
+  @Override
   public boolean equals(final Object o)
   {
     if (o == null) {
@@ -79,13 +81,10 @@ public class LdapCredential implements Serializable
    *
    * @return  hash code
    */
+  @Override
   public int hashCode()
   {
-    int hc = HASH_CODE_SEED;
-    if (credential != null) {
-      hc += credential.hashCode();
-    }
-    return hc;
+    return LdapUtil.computeHashCode(HASH_CODE_SEED, credential);
   }
 
 

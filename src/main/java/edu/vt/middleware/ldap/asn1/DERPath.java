@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import edu.vt.middleware.ldap.LdapUtil;
 
 /**
  * Describes paths to individual elements of an encoded DER object that may
@@ -66,7 +67,7 @@ public class DERPath
   private static final int CHILD_INDEX_PATTERN_GROUP = 3;
 
   /** hash code seed. */
-  private static final int HASH_CODE_SEED = 31;
+  private static final int HASH_CODE_SEED = 601;
 
   /** Path nodes in this DER path. */
   private final List<Node> nodeList = new ArrayList<Node>();
@@ -180,7 +181,7 @@ public class DERPath
   @Override
   public int hashCode()
   {
-    return HASH_CODE_SEED + nodeList.hashCode();
+    return LdapUtil.computeHashCode(HASH_CODE_SEED, nodeList);
   }
 
 
@@ -211,6 +212,9 @@ public class DERPath
    */
   private class Node
   {
+
+    /** hash code seed. */
+    private static final int HASH_CODE_SEED = 607;
 
     /** Name of this node. */
     private final String name;
@@ -275,10 +279,7 @@ public class DERPath
     @Override
     public int hashCode()
     {
-      int hash = HASH_CODE_SEED;
-      hash = HASH_CODE_SEED * hash + name.hashCode();
-      hash = HASH_CODE_SEED * hash + childIndex;
-      return hash;
+      return LdapUtil.computeHashCode(HASH_CODE_SEED, name, childIndex);
     }
 
 

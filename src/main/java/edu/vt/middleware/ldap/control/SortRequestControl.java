@@ -16,6 +16,7 @@ package edu.vt.middleware.ldap.control;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import edu.vt.middleware.ldap.LdapUtil;
 import edu.vt.middleware.ldap.asn1.ContextType;
 import edu.vt.middleware.ldap.asn1.DEREncoder;
 import edu.vt.middleware.ldap.asn1.OctetStringType;
@@ -39,6 +40,9 @@ public class SortRequestControl extends AbstractControl
 
   /** OID of this control. */
   public static final String OID = "1.2.840.113556.1.4.473";
+
+  /** hash code seed. */
+  private static final int HASH_CODE_SEED = 727;
 
   /** sort keys. */
   private SortKey[] sortKeys;
@@ -104,12 +108,8 @@ public class SortRequestControl extends AbstractControl
   @Override
   public int hashCode()
   {
-    int hc = super.hashCode();
-    hc = (hc * HASH_CODE_SEED) + (getCriticality() ? 1 : 0);
-    hc =
-      (hc * HASH_CODE_SEED) +
-      (sortKeys != null ? Arrays.hashCode(sortKeys) : 0);
-    return hc;
+    return LdapUtil.computeHashCode(
+      HASH_CODE_SEED, getOID(), getCriticality(), sortKeys);
   }
 
 

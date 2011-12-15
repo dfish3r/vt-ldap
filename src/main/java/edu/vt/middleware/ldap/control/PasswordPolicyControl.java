@@ -19,6 +19,7 @@ import javax.security.auth.login.AccountLockedException;
 import javax.security.auth.login.CredentialException;
 import javax.security.auth.login.CredentialExpiredException;
 import javax.security.auth.login.LoginException;
+import edu.vt.middleware.ldap.LdapUtil;
 import edu.vt.middleware.ldap.asn1.DERParser;
 import edu.vt.middleware.ldap.asn1.DERPath;
 import edu.vt.middleware.ldap.asn1.IntegerType;
@@ -167,6 +168,9 @@ public class PasswordPolicyControl extends AbstractControl
   /** OID of this control. */
   public static final String OID = "1.3.6.1.4.1.42.2.27.8.5.1";
 
+  /** hash code seed. */
+  private static final int HASH_CODE_SEED = 719;
+
   /** Ppolicy warning. */
   private int timeBeforeExpiration;
 
@@ -267,11 +271,13 @@ public class PasswordPolicyControl extends AbstractControl
   @Override
   public int hashCode()
   {
-    int hc = super.hashCode();
-    hc = (hc * HASH_CODE_SEED) + timeBeforeExpiration;
-    hc = (hc * HASH_CODE_SEED) + graceAuthNsRemaining;
-    hc = (hc * HASH_CODE_SEED) + (error != null ? error.getCode() : 0);
-    return hc;
+    return LdapUtil.computeHashCode(
+      HASH_CODE_SEED,
+      getOID(),
+      getCriticality(),
+      timeBeforeExpiration,
+      graceAuthNsRemaining,
+      error);
   }
 
 

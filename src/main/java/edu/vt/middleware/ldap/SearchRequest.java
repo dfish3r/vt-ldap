@@ -26,7 +26,7 @@ public class SearchRequest extends AbstractRequest
 {
 
   /** hash code seed. */
-  private static final int HASH_CODE_SEED = 93;
+  private static final int HASH_CODE_SEED = 307;
 
   /** DN to search. */
   private String baseDn = "";
@@ -538,21 +538,21 @@ public class SearchRequest extends AbstractRequest
   @Override
   public int hashCode()
   {
-    int hc = HASH_CODE_SEED;
-    hc += baseDn != null ? baseDn.hashCode() : 0;
-    hc += binaryAttrs != null ? Arrays.hashCode(binaryAttrs) : 0;
-    hc += derefAliases != null ? derefAliases.hashCode() : 0;
-    hc += resultHandlers != null ? Arrays.hashCode(resultHandlers) : 0;
-    hc += referralBehavior != null ? referralBehavior.hashCode() : 0;
-    hc += retAttrs != null ? Arrays.hashCode(retAttrs) : 0;
-    hc += searchFilter != null ? searchFilter.hashCode() : 0;
-    hc += searchScope != null ? searchScope.hashCode() : 0;
-    hc += sizeLimit;
-    hc += sortBehavior != null ? sortBehavior.hashCode() : 0;
-    hc += timeLimit;
-    hc += Boolean.valueOf(typesOnly).hashCode();
-    hc += getControls() != null ? Arrays.hashCode(getControls()) : 0;
-    return hc;
+    return LdapUtil.computeHashCode(
+      HASH_CODE_SEED,
+      baseDn,
+      binaryAttrs,
+      derefAliases,
+      referralBehavior,
+      resultHandlers,
+      retAttrs,
+      searchFilter,
+      searchScope,
+      sizeLimit,
+      sortBehavior,
+      timeLimit,
+      typesOnly,
+      getControls());
   }
 
 
