@@ -2,6 +2,7 @@ dn: uugid=group2,ou=test,dc=vt,dc=edu
 contactPerson: uid=2,ou=test,dc=vt,dc=edu
 creationDate: 2010-06-06T12:00:00
 objectClass: virginiaTechGroup
+objectClass: top
 member: uugid=group3,ou=test,dc=vt,dc=edu
 uid: 2002
 uugid: group2
@@ -10,6 +11,7 @@ dn: uugid=group3,ou=test,dc=vt,dc=edu
 contactPerson: uid=2,ou=test,dc=vt,dc=edu
 creationDate: 2010-06-06T12:00:00
 objectClass: virginiaTechGroup
+objectClass: top
 member: uugid=group4,ou=test,dc=vt,dc=edu
 member: uugid=group5,ou=test,dc=vt,dc=edu
 uid: 2003
@@ -19,6 +21,7 @@ dn: uugid=group4,ou=test,dc=vt,dc=edu
 contactPerson: uid=2,ou=test,dc=vt,dc=edu
 creationDate: 2010-06-06T12:00:00
 objectClass: virginiaTechGroup
+objectClass: top
 member: uugid=group3,ou=test,dc=vt,dc=edu
 uid: 2004
 uugid: group4
@@ -27,6 +30,7 @@ dn: uugid=group5,ou=test,dc=vt,dc=edu
 contactPerson: uid=2,ou=test,dc=vt,dc=edu
 creationDate: 2010-06-06T12:00:00
 objectClass: virginiaTechGroup
+objectClass: top
 uid: 2005
 uugid: group5
 

@@ -11,6 +11,9 @@ member: uugid=group5,ou=test,dc=vt,dc=edu
 objectClass: virginiaTechGroup
 objectClass: virginiaTechGroup
 objectClass: virginiaTechGroup
+objectClass: top
+objectClass: top
+objectClass: top
 uid: 2003
 uid: 2004
 uid: 2005
