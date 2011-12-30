@@ -14,6 +14,7 @@
 package edu.vt.middleware.ldap;
 
 import edu.vt.middleware.ldap.cache.Cache;
+import edu.vt.middleware.ldap.handler.HandlerResult;
 import edu.vt.middleware.ldap.provider.SearchIterator;
 
 /**
@@ -62,13 +63,19 @@ public class SearchOperation extends AbstractSearchOperation<SearchRequest>
       while (si.hasNext()) {
         final LdapEntry le = si.next();
         if (le != null) {
-          lr.addEntry(le);
+          final HandlerResult hr = executeLdapEntryHandlers(request, le);
+          if (hr.getLdapEntry() != null) {
+            lr.addEntry(hr.getLdapEntry());
+          }
+          if (hr.getAbortSearch()) {
+            logger.debug("Aborting search on entry=%s", le);
+            break;
+          }
         }
       }
     } finally {
       si.close();
     }
-    executeLdapResultHandlers(request, lr);
     final Response<Void> response = si.getResponse();
     return new Response<LdapResult>(
       lr, response.getResultCode(), response.getControls());

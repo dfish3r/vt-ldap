@@ -20,16 +20,13 @@ import java.util.Set;
 import edu.vt.middleware.ldap.control.PagedResultsControl;
 import edu.vt.middleware.ldap.control.SortKey;
 import edu.vt.middleware.ldap.control.SortRequestControl;
-import edu.vt.middleware.ldap.handler.CaseChangeResultHandler;
-import edu.vt.middleware.ldap.handler.CaseChangeResultHandler.CaseChange;
-import edu.vt.middleware.ldap.handler.CopyLdapResultHandler;
-import edu.vt.middleware.ldap.handler.DnAttributeResultHandler;
-import edu.vt.middleware.ldap.handler.LdapAttributeHandler;
-import edu.vt.middleware.ldap.handler.LdapResultHandler;
-import edu.vt.middleware.ldap.handler.MergeAttributeResultHandler;
-import edu.vt.middleware.ldap.handler.MergeResultHandler;
-import edu.vt.middleware.ldap.handler.RecursiveAttributeHandler;
-import edu.vt.middleware.ldap.handler.RecursiveResultHandler;
+import edu.vt.middleware.ldap.handler.CaseChangeEntryHandler;
+import edu.vt.middleware.ldap.handler.CaseChangeEntryHandler.CaseChange;
+import edu.vt.middleware.ldap.handler.DnAttributeEntryHandler;
+import edu.vt.middleware.ldap.handler.LdapEntryHandler;
+import edu.vt.middleware.ldap.handler.MergeAttributeEntryHandler;
+import edu.vt.middleware.ldap.handler.NoOpEntryHandler;
+import edu.vt.middleware.ldap.handler.RecursiveEntryHandler;
 import org.testng.AssertJUnit;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
@@ -290,18 +287,18 @@ public class SearchOperationTest extends AbstractTest
         dn,
         new SearchFilter(filter, filterArgs.split("\\|")),
         returnAttrs.split("\\|"),
-        new LdapResultHandler[0])).getResult();
+        new LdapEntryHandler[0])).getResult();
     AssertJUnit.assertEquals(TestUtil.convertLdifToResult(expected), result);
 
     // test searching with multiple handlers
-    final DnAttributeResultHandler srh = new DnAttributeResultHandler();
+    final DnAttributeEntryHandler srh = new DnAttributeEntryHandler();
     result = search.execute(
       new SearchRequest(
         dn,
         new SearchFilter(filter, filterArgs.split("\\|")),
         returnAttrs.split("\\|"),
-        new LdapResultHandler[]{
-          new CopyLdapResultHandler(), srh, })).getResult();
+        new LdapEntryHandler[]{
+          new NoOpEntryHandler(), srh, })).getResult();
     AssertJUnit.assertEquals(entryDnResult, result);
 
     // test that entry dn handler is no-op if attribute name conflicts
@@ -311,8 +308,8 @@ public class SearchOperationTest extends AbstractTest
         dn,
         new SearchFilter(filter, filterArgs.split("\\|")),
         returnAttrs.split("\\|"),
-        new LdapResultHandler[]{
-          new CopyLdapResultHandler(), srh, })).getResult();
+        new LdapEntryHandler[]{
+          new NoOpEntryHandler(), srh, })).getResult();
     AssertJUnit.assertEquals(TestUtil.convertLdifToResult(expected), result);
   }
 
@@ -427,11 +424,11 @@ public class SearchOperationTest extends AbstractTest
       "recursiveSearchDn",
       "recursiveSearchFilter",
       "recursiveSearchFilterArgs",
-      "recursiveAttributeHandlerResults"
+      "recursiveHandlerResults"
     }
   )
   @Test(groups = {"search"})
-  public void recursiveAttributeHandlerSearch(
+  public void recursiveHandlerSearch(
     final String dn,
     final String filter,
     final String filterArgs,
@@ -444,51 +441,7 @@ public class SearchOperationTest extends AbstractTest
     final String expected = TestUtil.readFileIntoString(ldifFile);
 
     // test recursive searching
-    final CopyLdapResultHandler handler = new CopyLdapResultHandler();
-    handler.setAttributeHandlers(
-      new LdapAttributeHandler[] {new RecursiveAttributeHandler("member")});
-
-    final LdapResult result = search.execute(
-      new SearchRequest(
-        dn,
-        new SearchFilter(filter, filterArgs.split("\\|")),
-        null,
-        new LdapResultHandler[]{handler})).getResult();
-    AssertJUnit.assertEquals(TestUtil.convertLdifToResult(expected), result);
-  }
-
-
-  /**
-   * @param  dn  to search on.
-   * @param  filter  to search with.
-   * @param  filterArgs  to replace args in filter with.
-   * @param  ldifFile  to compare with
-   *
-   * @throws  Exception  On test failure.
-   */
-  @Parameters(
-    {
-      "recursiveSearchDn",
-      "recursiveSearchFilter",
-      "recursiveSearchFilterArgs",
-      "recursiveSearchResultHandlerResults"
-    }
-  )
-  @Test(groups = {"search"})
-  public void recursiveSearchResultHandlerSearch(
-    final String dn,
-    final String filter,
-    final String filterArgs,
-    final String ldifFile)
-    throws Exception
-  {
-    final SearchOperation search = new SearchOperation(
-      createLdapConnection(false));
-
-    final String expected = TestUtil.readFileIntoString(ldifFile);
-
-    // test recursive searching
-    final RecursiveResultHandler rsrh = new RecursiveResultHandler(
+    final RecursiveEntryHandler rsrh = new RecursiveEntryHandler(
       "member",
       new String[] {"uugid", "uid"});
 
@@ -497,7 +450,7 @@ public class SearchOperationTest extends AbstractTest
         dn,
         new SearchFilter(filter, filterArgs.split("\\|")),
         null,
-        new LdapResultHandler[]{rsrh})).getResult();
+        new LdapEntryHandler[]{rsrh})).getResult();
     AssertJUnit.assertEquals(TestUtil.convertLdifToResult(expected), result);
   }
 
@@ -528,17 +481,13 @@ public class SearchOperationTest extends AbstractTest
 
       final String expected = TestUtil.readFileIntoString(ldifFile);
 
-      // test merge searching
-      final MergeResultHandler handler = new MergeResultHandler();
-
-      final SearchRequest sr = new SearchRequest(
-        dn,
-        new SearchFilter(filter),
-        null,
-        new LdapResultHandler[]{handler});
+      // test result merge
+      final SearchRequest sr = new SearchRequest(dn, new SearchFilter(filter));
       sr.setSortBehavior(SortBehavior.SORTED);
       final LdapResult result = search.execute(sr).getResult();
-      AssertJUnit.assertEquals(TestUtil.convertLdifToResult(expected), result);
+      AssertJUnit.assertEquals(
+        TestUtil.convertLdifToResult(expected),
+        LdapResult.mergeResults(result));
     } finally {
       conn.close();
     }
@@ -573,17 +522,13 @@ public class SearchOperationTest extends AbstractTest
 
       final String expected = TestUtil.readFileIntoString(ldifFile);
 
-      // test merge searching
-      final MergeResultHandler handler = new MergeResultHandler();
-
-      final SearchRequest sr = new SearchRequest(
-        dn,
-        new SearchFilter(filter),
-        null,
-        new LdapResultHandler[]{handler});
+      // test result merge
+      final SearchRequest sr = new SearchRequest(dn, new SearchFilter(filter));
       sr.setSortBehavior(SortBehavior.SORTED);
       final LdapResult result = search.execute(sr).getResult();
-      AssertJUnit.assertEquals(TestUtil.convertLdifToResult(expected), result);
+      AssertJUnit.assertEquals(
+        TestUtil.convertLdifToResult(expected),
+        LdapResult.mergeResults(result));
     } finally {
       conn.close();
     }
@@ -620,8 +565,8 @@ public class SearchOperationTest extends AbstractTest
       final String expected = TestUtil.readFileIntoString(ldifFile);
 
       // test merge searching
-      final MergeAttributeResultHandler handler =
-        new MergeAttributeResultHandler();
+      final MergeAttributeEntryHandler handler =
+        new MergeAttributeEntryHandler();
       handler.setMergeAttributeName("cn");
       handler.setAttributeNames(
         new String[] {"displayName", "givenName", "sn", });
@@ -630,7 +575,7 @@ public class SearchOperationTest extends AbstractTest
         dn,
         new SearchFilter(filter),
         returnAttrs.split("\\|"),
-        new LdapResultHandler[]{handler});
+        new LdapEntryHandler[]{handler});
       sr.setSortBehavior(SortBehavior.SORTED);
       final LdapResult result = search.execute(sr).getResult();
       AssertJUnit.assertEquals(TestUtil.convertLdifToResult(expected), result);
@@ -719,8 +664,8 @@ public class SearchOperationTest extends AbstractTest
     try {
       conn.open();
       final SearchOperation search = new SearchOperation(conn);
-      final CaseChangeResultHandler srh =
-        new CaseChangeResultHandler();
+      final CaseChangeEntryHandler srh =
+        new CaseChangeEntryHandler();
       final String expected = TestUtil.readFileIntoString(ldifFile);
 
       // test no case change
@@ -730,7 +675,7 @@ public class SearchOperationTest extends AbstractTest
           dn,
           new SearchFilter(filter, filterArgs.split("\\|")),
           returnAttrs.split("\\|"),
-          new LdapResultHandler[]{srh})).getResult();
+          new LdapEntryHandler[]{srh})).getResult();
       AssertJUnit.assertEquals(noChangeResult, result);
 
       // test lower case attribute values
@@ -750,7 +695,7 @@ public class SearchOperationTest extends AbstractTest
           dn,
           new SearchFilter(filter, filterArgs.split("\\|")),
           returnAttrs.split("\\|"),
-          new LdapResultHandler[]{srh})).getResult();
+          new LdapEntryHandler[]{srh})).getResult();
       AssertJUnit.assertEquals(lcValuesChangeResult, result);
 
       // test upper case attribute names
@@ -766,7 +711,7 @@ public class SearchOperationTest extends AbstractTest
           dn,
           new SearchFilter(filter, filterArgs.split("\\|")),
           returnAttrs.split("\\|"),
-          new LdapResultHandler[]{srh})).getResult();
+          new LdapEntryHandler[]{srh})).getResult();
       AssertJUnit.assertEquals(ucNamesChangeResult, result);
 
       // test lower case everything
@@ -791,7 +736,7 @@ public class SearchOperationTest extends AbstractTest
           dn,
           new SearchFilter(filter, filterArgs.split("\\|")),
           returnAttrs.split("\\|"),
-          new LdapResultHandler[]{srh})).getResult();
+          new LdapEntryHandler[]{srh})).getResult();
       AssertJUnit.assertEquals(ucNamesChangeResult, result);
     } finally {
       conn.close();

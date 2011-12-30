@@ -1,5 +1,5 @@
 /*
-  $Id$
+  $Id: DnAttributeResultHandler.java 2193 2011-12-15 22:01:04Z dfisher $
 
   Copyright (C) 2003-2010 Virginia Tech.
   All rights reserved.
@@ -8,8 +8,8 @@
 
   Author:  Middleware Services
   Email:   middleware@vt.edu
-  Version: $Revision$
-  Updated: $Date$
+  Version: $Revision: 2193 $
+  Updated: $Date: 2011-12-15 17:01:04 -0500 (Thu, 15 Dec 2011) $
 */
 package edu.vt.middleware.ldap.handler;
 
@@ -19,26 +19,27 @@ import edu.vt.middleware.ldap.LdapException;
 import edu.vt.middleware.ldap.LdapUtil;
 
 /**
- * Adds the search result DN as an attribute to the result set. Provides a
- * client side implementation of RFC 5020.
+ * Adds the entry DN as an attribute to the result set. Provides a client side
+ * implementation of RFC 5020.
  *
  * @author  Middleware Services
- * @version  $Revision$ $Date$
+ * @version  $Revision: 2193 $ $Date: 2011-12-15 17:01:04 -0500 (Thu, 15 Dec 2011) $
  */
-public class DnAttributeResultHandler extends CopyLdapResultHandler
+public class DnAttributeEntryHandler extends AbstractLdapEntryHandler
 {
 
   /** hash code seed. */
   private static final int HASH_CODE_SEED = 823;
 
   /**
-   * Attribute name for the entry dn. The value of this constant is {@value}.
+   * Attribute name for the entry dn. The default value of this variable is
+   * {@value}.
    */
   private String dnAttributeName = "entryDN";
 
   /**
    * Whether to add the entry dn if an attribute of the same name exists. The
-   * value of this constant is {@value}.
+   * default value of this variable is {@value}.
    */
   private boolean addIfExists;
 

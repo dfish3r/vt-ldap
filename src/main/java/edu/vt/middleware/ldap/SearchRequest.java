@@ -14,7 +14,7 @@
 package edu.vt.middleware.ldap;
 
 import java.util.Arrays;
-import edu.vt.middleware.ldap.handler.LdapResultHandler;
+import edu.vt.middleware.ldap.handler.LdapEntryHandler;
 
 /**
  * Contains the data required to perform an ldap search operation.
@@ -61,8 +61,8 @@ public class SearchRequest extends AbstractRequest
   /** Sort behavior of results. */
   private SortBehavior sortBehavior = SortBehavior.getDefaultSortBehavior();
 
-  /** Ldap result handlers. */
-  private LdapResultHandler[] resultHandlers;
+  /** Ldap entry handlers. */
+  private LdapEntryHandler[] entryHandlers;
 
 
   /** Default constructor. */
@@ -98,16 +98,16 @@ public class SearchRequest extends AbstractRequest
    *
    * @param  filter  search filter
    * @param  attrs  to return
-   * @param  handlers  ldap result handlers
+   * @param  handlers  ldap entry handlers
    */
   public SearchRequest(
     final SearchFilter filter,
     final String[] attrs,
-    final LdapResultHandler[] handlers)
+    final LdapEntryHandler[] handlers)
   {
     setSearchFilter(filter);
     setReturnAttributes(attrs);
-    setLdapResultHandlers(handlers);
+    setLdapEntryHandlers(handlers);
   }
 
 
@@ -157,18 +157,18 @@ public class SearchRequest extends AbstractRequest
    * @param  dn  to search
    * @param  filter  search filter
    * @param  attrs  to return
-   * @param  handlers  ldap result handlers
+   * @param  handlers  ldap entry handlers
    */
   public SearchRequest(
     final String dn,
     final SearchFilter filter,
     final String[] attrs,
-    final LdapResultHandler[] handlers)
+    final LdapEntryHandler[] handlers)
   {
     setBaseDn(dn);
     setSearchFilter(filter);
     setReturnAttributes(attrs);
-    setLdapResultHandlers(handlers);
+    setLdapEntryHandlers(handlers);
   }
 
 
@@ -415,24 +415,24 @@ public class SearchRequest extends AbstractRequest
 
 
   /**
-   * Returns the ldap result handlers.
+   * Returns the ldap entry handlers.
    *
-   * @return  ldap result handlers
+   * @return  ldap entry handlers
    */
-  public LdapResultHandler[] getLdapResultHandlers()
+  public LdapEntryHandler[] getLdapEntryHandlers()
   {
-    return resultHandlers;
+    return entryHandlers;
   }
 
 
   /**
-   * Sets the ldap result handlers.
+   * Sets the ldap entry handlers.
    *
-   * @param  handlers  ldap result handlers
+   * @param  handlers  ldap entry handlers
    */
-  public void setLdapResultHandlers(final LdapResultHandler[] handlers)
+  public void setLdapEntryHandlers(final LdapEntryHandler[] handlers)
   {
-    resultHandlers = handlers;
+    entryHandlers = handlers;
   }
 
 
@@ -448,7 +448,7 @@ public class SearchRequest extends AbstractRequest
     sr.setBaseDn(request.getBaseDn());
     sr.setBinaryAttributes(request.getBinaryAttributes());
     sr.setDerefAliases(request.getDerefAliases());
-    sr.setLdapResultHandlers(request.getLdapResultHandlers());
+    sr.setLdapEntryHandlers(request.getLdapEntryHandlers());
     sr.setReferralBehavior(request.getReferralBehavior());
     sr.setReturnAttributes(request.getReturnAttributes());
     sr.setSearchFilter(
@@ -544,7 +544,7 @@ public class SearchRequest extends AbstractRequest
       binaryAttrs,
       derefAliases,
       referralBehavior,
-      resultHandlers,
+      entryHandlers,
       retAttrs,
       searchFilter,
       searchScope,
@@ -569,7 +569,7 @@ public class SearchRequest extends AbstractRequest
         "[%s@%d::baseDn=%s, searchFilter=%s, returnAttributes=%s, " +
         "searchScope=%s, timeLimit=%s, sizeLimit=%s, derefAliases=%s, " +
         "referralBehavior=%s, typesOnly=%s, binaryAttributes=%s, " +
-        "sortBehavior=%s, ldapResultHandlers=%s, controls=%s]",
+        "sortBehavior=%s, ldapEntryHandlers=%s, controls=%s]",
         getClass().getName(),
         hashCode(),
         baseDn,
@@ -583,7 +583,7 @@ public class SearchRequest extends AbstractRequest
         typesOnly,
         Arrays.toString(binaryAttrs),
         sortBehavior,
-        Arrays.toString(resultHandlers),
+        Arrays.toString(entryHandlers),
         Arrays.toString(getControls()));
   }
 }

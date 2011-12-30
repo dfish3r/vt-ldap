@@ -1,5 +1,5 @@
 /*
-  $Id$
+  $Id: ExtendedLdapResultHandler.java 2097 2011-08-29 15:58:30Z dfisher $
 
   Copyright (C) 2003-2010 Virginia Tech.
   All rights reserved.
@@ -8,21 +8,21 @@
 
   Author:  Middleware Services
   Email:   middleware@vt.edu
-  Version: $Revision$
-  Updated: $Date$
+  Version: $Revision: 2097 $
+  Updated: $Date: 2011-08-29 11:58:30 -0400 (Mon, 29 Aug 2011) $
 */
 package edu.vt.middleware.ldap.handler;
 
 import edu.vt.middleware.ldap.Connection;
 
 /**
- * Provides an interface for search result handlers that require the use of the
+ * Provides an interface for entry handlers that require the use of the
  * connection that was used to perform the original search.
  *
  * @author  Middleware Services
- * @version  $Revision$
+ * @version  $Revision: 2097 $
  */
-public interface ExtendedLdapResultHandler extends LdapResultHandler
+public interface ExtendedLdapEntryHandler extends LdapEntryHandler
 {
 
 

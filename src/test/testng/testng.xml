@@ -115,10 +115,8 @@
   <parameter name="recursiveSearchDn" value="ou=test,dc=vt,dc=edu"/>
   <parameter name="recursiveSearchFilter" value="(uugid={0})"/>
   <parameter name="recursiveSearchFilterArgs" value="group2"/>
-  <parameter name="recursiveAttributeHandlerResults"
-             value="/edu/vt/middleware/ldap/recursiveAttributeHandlerResults.ldif"/>
-  <parameter name="recursiveSearchResultHandlerResults"
-             value="/edu/vt/middleware/ldap/recursiveSearchResultHandlerResults.ldif"/>
+  <parameter name="recursiveHandlerResults"
+             value="/edu/vt/middleware/ldap/recursiveHandlerResults.ldif"/>
 
   <parameter name="mergeSearchDn" value="ou=test,dc=vt,dc=edu"/>
   <parameter name="mergeSearchFilter" value="(|(uugid=group3)(uugid=group4)(uugid=group5))"/>

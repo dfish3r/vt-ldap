@@ -14,10 +14,9 @@
 package edu.vt.middleware.ldap;
 
 import edu.vt.middleware.ldap.cache.Cache;
-import edu.vt.middleware.ldap.handler.ExtendedLdapAttributeHandler;
-import edu.vt.middleware.ldap.handler.ExtendedLdapResultHandler;
-import edu.vt.middleware.ldap.handler.LdapAttributeHandler;
-import edu.vt.middleware.ldap.handler.LdapResultHandler;
+import edu.vt.middleware.ldap.handler.ExtendedLdapEntryHandler;
+import edu.vt.middleware.ldap.handler.HandlerResult;
+import edu.vt.middleware.ldap.handler.LdapEntryHandler;
 import edu.vt.middleware.ldap.handler.SearchCriteria;
 
 /**
@@ -78,40 +77,28 @@ public abstract class AbstractSearchOperation<Q extends SearchRequest>
   protected void initializeRequest(
     final Q request, final ConnectionConfig cc)
   {
-    request.setLdapResultHandlers(
-      initializeLdapResultHandlers(request, getConnection()));
+    initializeLdapEntryHandlers(request, getConnection());
   }
 
 
   /**
-   * Initializes those ldap result handlers that require access to the ldap
+   * Initializes those ldap entry handlers that require access to the ldap
    * connection.
    *
-   * @param  request  to read result handlers from
-   * @param  c  to provide to result handlers
-   * @return  initialized result handlers
+   * @param  request  to read entry handlers from
+   * @param  c  to provide to entry handlers
    */
-  protected LdapResultHandler[] initializeLdapResultHandlers(
+  protected void initializeLdapEntryHandlers(
     final Q request, final Connection c)
   {
-    final LdapResultHandler[] handler = request.getLdapResultHandlers();
-    if (handler != null && handler.length > 0) {
-      for (LdapResultHandler h : handler) {
-        if (ExtendedLdapResultHandler.class.isInstance(h)) {
-          ((ExtendedLdapResultHandler) h).setResultConnection(c);
-        }
-
-        final LdapAttributeHandler[] attrHandler = h.getAttributeHandlers();
-        if (attrHandler != null && attrHandler.length > 0) {
-          for (LdapAttributeHandler ah : attrHandler) {
-            if (ExtendedLdapAttributeHandler.class.isInstance(ah)) {
-              ((ExtendedLdapAttributeHandler) ah).setResultConnection(c);
-            }
-          }
+    final LdapEntryHandler[] handlers = request.getLdapEntryHandlers();
+    if (handlers != null && handlers.length > 0) {
+      for (LdapEntryHandler h : handlers) {
+        if (ExtendedLdapEntryHandler.class.isInstance(h)) {
+          ((ExtendedLdapEntryHandler) h).setResultConnection(c);
         }
       }
     }
-    return handler;
   }
 
 
@@ -131,41 +118,59 @@ public abstract class AbstractSearchOperation<Q extends SearchRequest>
   protected Response<LdapResult> invoke(final Q request)
     throws LdapException
   {
+    logger.debug("invoke request={}", request);
     Response<LdapResult> response = null;
     if (cache != null) {
       final LdapResult lr = cache.get(request);
       if (lr == null) {
         response = executeSearch(request);
         cache.put(request, response.getResult());
+        logger.debug("invoke stored result={} in cache", response.getResult());
       } else {
+        logger.debug("invoke found result={} in cache", lr);
         response = new Response<LdapResult>(lr, null);
       }
     } else {
       response = executeSearch(request);
     }
+    logger.debug("invoke response={} for request={}", response, request);
     return response;
   }
 
 
   /**
-   * Processes each ldap result handler after a search has been performed.
+   * Processes each ldap entry handler after a search has been performed.
+   * Returns a handler result containing an ldap entry processed by all
+   * handlers. If any handler indicates that the search should be aborted, that
+   * flag is returned to the search operation after all handlers have been
+   * invoked.
    *
    * @param  request  the search was performed with
-   * @param  result  ldap result of the search
+   * @param  entry  from a search
+   *
+   * @return  handler result
+   *
    * @throws LdapException if an error occurs processing a handler
    */
-  protected void executeLdapResultHandlers(
-    final SearchRequest request, final LdapResult result)
+  protected HandlerResult executeLdapEntryHandlers(
+    final SearchRequest request, final LdapEntry entry)
     throws LdapException
   {
-    final LdapResultHandler[] handler = request.getLdapResultHandlers();
+    LdapEntry processedEntry = entry;
+    boolean abort = false;
+    final LdapEntryHandler[] handler = request.getLdapEntryHandlers();
     if (handler != null && handler.length > 0) {
       final SearchCriteria sc = new SearchCriteria(request);
       for (int i = 0; i < handler.length; i++) {
         if (handler[i] != null) {
-          handler[i].process(sc, result);
+          final HandlerResult hr = handler[i].process(sc, processedEntry);
+          if (hr.getAbortSearch()) {
+            abort = true;
+          }
+          processedEntry = hr.getLdapEntry();
         }
       }
     }
+    return new HandlerResult(processedEntry, abort);
   }
 }

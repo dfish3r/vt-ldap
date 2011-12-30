@@ -1,5 +1,5 @@
 /*
-  $Id$
+  $Id: RecursiveResultHandler.java 2193 2011-12-15 22:01:04Z dfisher $
 
   Copyright (C) 2003-2010 Virginia Tech.
   All rights reserved.
@@ -8,8 +8,8 @@
 
   Author:  Middleware Services
   Email:   middleware@vt.edu
-  Version: $Revision$
-  Updated: $Date$
+  Version: $Revision: 2193 $
+  Updated: $Date: 2011-12-15 17:01:04 -0500 (Thu, 15 Dec 2011) $
 */
 package edu.vt.middleware.ldap.handler;
 
@@ -27,7 +27,7 @@ import edu.vt.middleware.ldap.SearchRequest;
 
 /**
  * This recursively searches based on a supplied attribute and merges those
- * results into the original result set. For the following LDIF:
+ * results into the original entry. For the following LDIF:
  *
  * <pre>
    dn: uugid=group1,ou=groups,dc=vt,dc=edu
@@ -41,7 +41,7 @@ import edu.vt.middleware.ldap.SearchRequest;
  * <p>With the following code:</p>
  *
  * <pre>
-   RecursiveResultHandler rrh = new RecursiveResultHandler(
+   RecursiveEntryHandler reh = new RecursiveEntryHandler(
      conn, "member", new String[]{"uugid"});
  * </pre>
  *
@@ -55,10 +55,10 @@ import edu.vt.middleware.ldap.SearchRequest;
  * </pre>
  *
  * @author  Middleware Services
- * @version  $Revision$ $Date$
+ * @version  $Revision: 2193 $ $Date: 2011-12-15 17:01:04 -0500 (Thu, 15 Dec 2011) $
  */
-public class RecursiveResultHandler extends CopyLdapResultHandler
-  implements ExtendedLdapResultHandler
+public class RecursiveEntryHandler extends AbstractLdapEntryHandler
+  implements ExtendedLdapEntryHandler
 {
 
   /** hash code seed. */
@@ -78,16 +78,16 @@ public class RecursiveResultHandler extends CopyLdapResultHandler
 
 
   /** Default constructor. */
-  public RecursiveResultHandler() {}
+  public RecursiveEntryHandler() {}
 
 
   /**
-   * Creates a new recursive attribute handler.
+   * Creates a new recursive entry handler.
    *
    * @param  searchAttr  attribute to search on
    * @param  mergeAttrs  attribute names to merge
    */
-  public RecursiveResultHandler(
+  public RecursiveEntryHandler(
     final String searchAttr, final String[] mergeAttrs)
   {
     this(null, searchAttr, mergeAttrs);
@@ -95,13 +95,13 @@ public class RecursiveResultHandler extends CopyLdapResultHandler
 
 
   /**
-   * Creates a new recursive attribute handler.
+   * Creates a new recursive entry handler.
    *
    * @param  c  connection
    * @param  searchAttr  attribute to search on
    * @param  mergeAttrs  attribute names to merge
    */
-  public RecursiveResultHandler(
+  public RecursiveEntryHandler(
     final Connection c,
     final String searchAttr,
     final String[] mergeAttrs)
@@ -197,20 +197,20 @@ public class RecursiveResultHandler extends CopyLdapResultHandler
 
   /** {@inheritDoc} */
   @Override
-  public void process(final SearchCriteria criteria, final LdapResult result)
+  public HandlerResult process(
+    final SearchCriteria criteria, final LdapEntry entry)
     throws LdapException
   {
     // Recursively searches a list of attributes and merges those results with
-    // the existing search result set.
-    for (LdapEntry le : result.getEntries()) {
-      final List<String> searchedDns = new ArrayList<String>();
-      if (le.getAttribute(searchAttribute) != null) {
-        searchedDns.add(le.getDn());
-        readSearchAttribute(le, searchedDns);
-      } else {
-        recursiveSearch(le.getDn(), le, searchedDns);
-      }
+    // the existing entry.
+    final List<String> searchedDns = new ArrayList<String>();
+    if (entry.getAttribute(searchAttribute) != null) {
+      searchedDns.add(entry.getDn());
+      readSearchAttribute(entry, searchedDns);
+    } else {
+      recursiveSearch(entry.getDn(), entry, searchedDns);
     }
+    return new HandlerResult(entry);
   }
 
 
@@ -306,10 +306,6 @@ public class RecursiveResultHandler extends CopyLdapResultHandler
   public int hashCode()
   {
     return LdapUtil.computeHashCode(
-      HASH_CODE_SEED,
-      mergeAttributes,
-      retAttrs,
-      searchAttribute,
-      getAttributeHandlers());
+      HASH_CODE_SEED, mergeAttributes, retAttrs, searchAttribute);
   }
 }

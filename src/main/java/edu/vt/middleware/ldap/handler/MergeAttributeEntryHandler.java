@@ -1,5 +1,5 @@
 /*
-  $Id$
+  $Id: MergeAttributeResultHandler.java 2193 2011-12-15 22:01:04Z dfisher $
 
   Copyright (C) 2003-2010 Virginia Tech.
   All rights reserved.
@@ -8,8 +8,8 @@
 
   Author:  Middleware Services
   Email:   middleware@vt.edu
-  Version: $Revision$
-  Updated: $Date$
+  Version: $Revision: 2193 $
+  Updated: $Date: 2011-12-15 17:01:04 -0500 (Thu, 15 Dec 2011) $
 */
 package edu.vt.middleware.ldap.handler;
 
@@ -24,9 +24,9 @@ import edu.vt.middleware.ldap.LdapUtil;
  * it's existing values will remain intact.
  *
  * @author  Middleware Services
- * @version  $Revision$ $Date$
+ * @version  $Revision: 2193 $ $Date: 2011-12-15 17:01:04 -0500 (Thu, 15 Dec 2011) $
  */
-public class MergeAttributeResultHandler extends CopyLdapResultHandler
+public class MergeAttributeEntryHandler extends AbstractLdapEntryHandler
 {
 
   /** hash code seed. */
@@ -34,7 +34,6 @@ public class MergeAttributeResultHandler extends CopyLdapResultHandler
 
   /** Attribute name to add merge values into. */
   private String mergeAttributeName;
-
 
   /** Attribute names to read values from. */
   private String[] attributeNames;

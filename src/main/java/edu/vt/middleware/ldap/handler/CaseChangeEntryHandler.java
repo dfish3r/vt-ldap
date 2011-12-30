@@ -17,13 +17,13 @@ import edu.vt.middleware.ldap.LdapEntry;
 import edu.vt.middleware.ldap.LdapUtil;
 
 /**
- * Provides the ability to modify the case of ldap search result DNs, attribute
- * names, and attribute values.
+ * Provides the ability to modify the case of ldap entry DNs, attribute names,
+ * and attribute values.
  *
  * @author  Middleware Services
  * @version  $Revision: 1330 $ $Date: 2010-05-23 18:10:53 -0400 (Sun, 23 May 2010) $
  */
-public class CaseChangeResultHandler extends CopyLdapResultHandler
+public class CaseChangeEntryHandler extends AbstractLdapEntryHandler
 {
 
   /** Enum to define the type of case change. */
@@ -67,17 +67,11 @@ public class CaseChangeResultHandler extends CopyLdapResultHandler
   /** Type of case modification to make to the entry DN. */
   private CaseChange dnCaseChange = CaseChange.NONE;
 
-  /** Attribute handler for case modifications. */
-  private CaseChangeAttributeHandler caseChangeAttributeHandler =
-    new CaseChangeAttributeHandler();
+  /** Type of case modification to make to the attribute names. */
+  private CaseChange attributeNameCaseChange = CaseChange.NONE;
 
-
-  /** Default constructor. */
-  public CaseChangeResultHandler()
-  {
-    setAttributeHandlers(
-      new LdapAttributeHandler[] {caseChangeAttributeHandler});
-  }
+  /** Type of case modification to make to the attributes values. */
+  private CaseChange attributeValueCaseChange = CaseChange.NONE;
 
 
   /**
@@ -109,7 +103,7 @@ public class CaseChangeResultHandler extends CopyLdapResultHandler
    */
   public CaseChange getAttributeNameCaseChange()
   {
-    return caseChangeAttributeHandler.getAttributeNameCaseChange();
+    return attributeNameCaseChange;
   }
 
 
@@ -120,7 +114,7 @@ public class CaseChangeResultHandler extends CopyLdapResultHandler
    */
   public void setAttributeNameCaseChange(final CaseChange cc)
   {
-    caseChangeAttributeHandler.setAttributeNameCaseChange(cc);
+    attributeNameCaseChange = cc;
   }
 
 
@@ -131,7 +125,7 @@ public class CaseChangeResultHandler extends CopyLdapResultHandler
    */
   public CaseChange getAttributeValueCaseChange()
   {
-    return caseChangeAttributeHandler.getAttributeValueCaseChange();
+    return attributeValueCaseChange;
   }
 
 
@@ -142,7 +136,7 @@ public class CaseChangeResultHandler extends CopyLdapResultHandler
    */
   public void setAttributeValueCaseChange(final CaseChange cc)
   {
-    caseChangeAttributeHandler.setAttributeValueCaseChange(cc);
+    attributeValueCaseChange = cc;
   }
 
 
@@ -157,9 +151,39 @@ public class CaseChangeResultHandler extends CopyLdapResultHandler
 
   /** {@inheritDoc} */
   @Override
+  protected String processAttributeName(
+    final SearchCriteria sc, final String name)
+  {
+    return CaseChange.perform(attributeNameCaseChange, name);
+  }
+
+
+  /** {@inheritDoc} */
+  @Override
+  protected String processAttributeValue(
+    final SearchCriteria sc, final String value)
+  {
+    return CaseChange.perform(attributeValueCaseChange, value);
+  }
+
+
+  /** {@inheritDoc} */
+  @Override
+  protected byte[] processAttributeValue(
+    final SearchCriteria sc, final byte[] value)
+  {
+    return value;
+  }
+
+
+  /** {@inheritDoc} */
+  @Override
   public int hashCode()
   {
     return LdapUtil.computeHashCode(
-      HASH_CODE_SEED, dnCaseChange, getAttributeHandlers());
+      HASH_CODE_SEED,
+      dnCaseChange,
+      attributeNameCaseChange,
+      attributeValueCaseChange);
   }
 }

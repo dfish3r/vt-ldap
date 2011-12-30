@@ -21,10 +21,10 @@ import edu.vt.middleware.ldap.auth.Authenticator;
 import edu.vt.middleware.ldap.auth.PooledSearchDnResolver;
 import edu.vt.middleware.ldap.auth.SearchDnResolver;
 import edu.vt.middleware.ldap.control.PagedResultsControl;
-import edu.vt.middleware.ldap.handler.DnAttributeResultHandler;
-import edu.vt.middleware.ldap.handler.LdapResultHandler;
-import edu.vt.middleware.ldap.handler.MergeResultHandler;
-import edu.vt.middleware.ldap.handler.RecursiveResultHandler;
+import edu.vt.middleware.ldap.handler.DnAttributeEntryHandler;
+import edu.vt.middleware.ldap.handler.LdapEntryHandler;
+import edu.vt.middleware.ldap.handler.MergeAttributeEntryHandler;
+import edu.vt.middleware.ldap.handler.RecursiveEntryHandler;
 import edu.vt.middleware.ldap.jaas.RoleResolver;
 import edu.vt.middleware.ldap.jaas.TestCallbackHandler;
 import edu.vt.middleware.ldap.pool.BlockingConnectionPool;
@@ -83,7 +83,7 @@ public class PropertiesTest
           "/edu/vt/middleware/ldap/ldap.null.properties"));
     srSource.initialize();
 
-    AssertJUnit.assertNull(sr.getLdapResultHandlers());
+    AssertJUnit.assertNull(sr.getLdapEntryHandlers());
   }
 
 
@@ -136,18 +136,18 @@ public class PropertiesTest
     AssertJUnit.assertEquals(
       5, ((PagedResultsControl) sr.getControls()[0]).getSize());
 
-    for (LdapResultHandler rh : sr.getLdapResultHandlers()) {
-      if (RecursiveResultHandler.class.isInstance(rh)) {
-        final RecursiveResultHandler h = (RecursiveResultHandler) rh;
+    for (LdapEntryHandler rh : sr.getLdapEntryHandlers()) {
+      if (RecursiveEntryHandler.class.isInstance(rh)) {
+        final RecursiveEntryHandler h = (RecursiveEntryHandler) rh;
         AssertJUnit.assertEquals("member", h.getSearchAttribute());
         AssertJUnit.assertEquals(
           Arrays.asList(new String[] {"mail", "department"}),
           Arrays.asList(h.getMergeAttributes()));
-      } else if (MergeResultHandler.class.isInstance(rh)) {
-        final MergeResultHandler h = (MergeResultHandler) rh;
+      } else if (MergeAttributeEntryHandler.class.isInstance(rh)) {
+        final MergeAttributeEntryHandler h = (MergeAttributeEntryHandler) rh;
         AssertJUnit.assertNotNull(h);
-      } else if (DnAttributeResultHandler.class.isInstance(rh)) {
-        final DnAttributeResultHandler h = (DnAttributeResultHandler) rh;
+      } else if (DnAttributeEntryHandler.class.isInstance(rh)) {
+        final DnAttributeEntryHandler h = (DnAttributeEntryHandler) rh;
         AssertJUnit.assertEquals("myDN", h.getDnAttributeName());
       } else {
         throw new Exception("Unknown search result handler type " + rh);
@@ -252,19 +252,19 @@ public class PropertiesTest
     AssertJUnit.assertEquals(
       "jpegPhoto", searchRequest.getBinaryAttributes()[0]);
 
-    for (LdapResultHandler srh : searchRequest.getLdapResultHandlers()) {
-      if (RecursiveResultHandler.class.isInstance(srh)) {
-        final RecursiveResultHandler h = (RecursiveResultHandler)
+    for (LdapEntryHandler srh : searchRequest.getLdapEntryHandlers()) {
+      if (RecursiveEntryHandler.class.isInstance(srh)) {
+        final RecursiveEntryHandler h = (RecursiveEntryHandler)
           srh;
         AssertJUnit.assertEquals("member", h.getSearchAttribute());
         AssertJUnit.assertEquals(
           Arrays.asList(new String[] {"mail", "department"}),
           Arrays.asList(h.getMergeAttributes()));
-      } else if (MergeResultHandler.class.isInstance(srh)) {
-        final MergeResultHandler h = (MergeResultHandler) srh;
+      } else if (MergeAttributeEntryHandler.class.isInstance(srh)) {
+        final MergeAttributeEntryHandler h = (MergeAttributeEntryHandler) srh;
         AssertJUnit.assertNotNull(h);
-      } else if (DnAttributeResultHandler.class.isInstance(srh)) {
-        final DnAttributeResultHandler h = (DnAttributeResultHandler) srh;
+      } else if (DnAttributeEntryHandler.class.isInstance(srh)) {
+        final DnAttributeEntryHandler h = (DnAttributeEntryHandler) srh;
         AssertJUnit.assertEquals("myDN", h.getDnAttributeName());
       } else {
         throw new Exception("Unknown search result handler type " + srh);
