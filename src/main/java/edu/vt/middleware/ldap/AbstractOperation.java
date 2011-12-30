@@ -170,9 +170,7 @@ public abstract class AbstractOperation<Q extends Request, S>
   public Response<S> execute(final Q request)
     throws LdapException
   {
-    logger.debug(
-      "request={}, connection={}", request, connection);
-
+    logger.debug("execute request={} with connection={}", request, connection);
     Response<S> response = null;
     initializeRequest(
       request, connection.getConnectionConfig());
@@ -186,6 +184,9 @@ public abstract class AbstractOperation<Q extends Request, S>
         operationRetry(e, i);
       }
     }
+    logger.debug(
+      "execute response={} for request={} with connection={}",
+      new Object[] {response, request, connection});
     return response;
   }
 

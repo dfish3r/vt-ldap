@@ -301,6 +301,8 @@ public class ConnectionConfig extends AbstractConfig
    */
   public void setBindControls(final RequestControl... c)
   {
+    checkImmutable();
+    logger.trace("setting bindControls: {}", Arrays.toString(c));
     bindControls = c;
   }
 

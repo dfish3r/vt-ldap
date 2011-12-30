@@ -24,7 +24,7 @@ public class BindOperation extends AbstractOperation<BindRequest, Void>
 
 
   /**
-   * Creates a new add operation.
+   * Creates a new bind operation.
    *
    * @param  conn  connection
    */

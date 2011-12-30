@@ -203,6 +203,7 @@ public abstract class AbstractSearchDnResolver implements DnResolver
    */
   public void setDerefAliases(final DerefAliases da)
   {
+    logger.trace("setting derefAliases: {}", da);
     derefAliases = da;
   }
 
@@ -225,6 +226,7 @@ public abstract class AbstractSearchDnResolver implements DnResolver
    */
   public void setReferralBehavior(final ReferralBehavior rb)
   {
+    logger.trace("setting referralBehavior: {}", rb);
     referralBehavior = rb;
   }
 
@@ -245,6 +247,7 @@ public abstract class AbstractSearchDnResolver implements DnResolver
   public String resolve(final String user)
     throws LdapException
   {
+    logger.debug("resolve user={}", user);
     String dn = null;
     if (user != null && !"".equals(user)) {
       // create the search filter
@@ -259,7 +262,7 @@ public abstract class AbstractSearchDnResolver implements DnResolver
           dn = answer.next().getDn();
           if (answer.hasNext()) {
             logger.debug(
-              "Multiple results found for user: {} using filter: {}",
+              "multiple results found for user={} using filter={}",
               user,
               filter);
             if (!allowMultipleDns) {
@@ -268,7 +271,7 @@ public abstract class AbstractSearchDnResolver implements DnResolver
           }
         } else {
           logger.info(
-            "Search for user: {} failed using filter: {}", user, filter);
+            "search for user={} failed using filter={}", user, filter);
         }
       } else {
         logger.error("DN search filter not found, no search performed");
@@ -277,6 +280,7 @@ public abstract class AbstractSearchDnResolver implements DnResolver
       logger.warn(
         "DN resolution cannot occur, user input was empty or null");
     }
+    logger.debug("resolve dn={} for user={}", dn, user);
     return dn;
   }
 
@@ -293,7 +297,7 @@ public abstract class AbstractSearchDnResolver implements DnResolver
   {
     final SearchFilter filter = new SearchFilter();
     if (userFilter != null) {
-      logger.debug("Looking up DN using userFilter");
+      logger.debug("searching for DN using userFilter");
       filter.setFilter(userFilter);
       filter.setFilterArgs(userFilterArgs);
 
@@ -302,7 +306,6 @@ public abstract class AbstractSearchDnResolver implements DnResolver
       filterArgs.add(user);
       filterArgs.addAll(filter.getFilterArgs());
       filter.setFilterArgs(filterArgs);
-
     } else {
       logger.error("Invalid userFilter, cannot be null or empty.");
     }

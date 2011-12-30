@@ -65,8 +65,7 @@ public class Authenticator extends AbstractAuthenticator
   /**
    * Performs authentication by opening a new connection to the LDAP and binding
    * as the supplied DN. If return attributes have been request, the user entry
-   * will be searched on the same connection. Authentication result handlers are
-   * processed and then the connection is closed.
+   * will be searched on the same connection.
    *
    * @param  dn  to authenticate as
    * @param  request  containing authentication parameters
@@ -77,6 +76,7 @@ public class Authenticator extends AbstractAuthenticator
     final String dn, final AuthenticationRequest request)
     throws LdapException
   {
+    logger.debug("authenticate dn={} with request={}", dn, request);
     // check the credential
     final Credential credential = request.getCredential();
     if (credential == null || credential.getBytes() == null) {
@@ -132,6 +132,9 @@ public class Authenticator extends AbstractAuthenticator
       }
     }
 
+    logger.debug(
+      "authenticate response={} for dn={} with request={}",
+      new Object[] {response, dn, request});
     return authResponse;
   }
 

@@ -31,10 +31,7 @@ import org.apache.commons.codec.binary.Base64;
 public final class LdapUtil
 {
 
-  /**
-   * UTF-8 character set identifier. The value of this constant is
-   * {@value}.
-   */
+  /** UTF-8 character set. */
   private static final Charset UTF8_CHARSET = Charset.forName("UTF-8");
 
   /** Size of buffer in bytes to use when reading files. */

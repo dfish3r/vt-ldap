@@ -13,6 +13,7 @@
 */
 package edu.vt.middleware.ldap.auth;
 
+import java.util.Arrays;
 import edu.vt.middleware.ldap.LdapEntry;
 import edu.vt.middleware.ldap.Response;
 import edu.vt.middleware.ldap.ResultCode;
@@ -136,5 +137,28 @@ public class AuthenticationResponse extends Response<Boolean>
   public void setAccountState(final AccountState state)
   {
     accountState = state;
+  }
+
+
+  /**
+   * Provides a descriptive string representation of this instance.
+   *
+   * @return  string representation
+   */
+  @Override
+  public String toString()
+  {
+    return
+      String.format(
+        "[%s@%d::ldapEntry=%s, message=%s, accountState=%s, result=%s, " +
+        "resultCode=%s, controls=%s]",
+        getClass().getName(),
+        hashCode(),
+        ldapEntry,
+        message,
+        accountState,
+        getResult(),
+        getResultCode(),
+        Arrays.toString(getControls()));
   }
 }

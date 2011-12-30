@@ -83,13 +83,21 @@ public class SearchEntryResolver implements EntryResolver
     throws LdapException
   {
     logger.debug(
-      "Resolving entry attributes: {}",
+      "resolve criteria={} with attributes={}",
+      ac,
       returnAttributes == null ?
-        "all attributes" : Arrays.toString(returnAttributes));
+        "<all attributes>" : Arrays.toString(returnAttributes));
     final SearchOperation search = new SearchOperation(conn);
     final LdapResult result = search.execute(
       SearchRequest.newObjectScopeSearchRequest(
         ac.getDn(), returnAttributes)).getResult();
+    logger.debug(
+      "resolve entry={} for criteria={} with attributes={}",
+      new Object[] {
+        result.getEntry(),
+        ac,
+        returnAttributes == null ?
+          "<all attributes>" : Arrays.toString(returnAttributes), });
     return result.getEntry();
   }
 }

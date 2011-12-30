@@ -25,10 +25,7 @@ import java.nio.charset.Charset;
 public class Credential
 {
 
-  /**
-   * UTF-8 character set identifier. The value of this constant is
-   * {@value}.
-   */
+  /** UTF-8 character set. */
   private static final Charset UTF8_CHARSET = Charset.forName("UTF-8");
 
   /** Credential stored as a byte array. */
@@ -114,6 +111,6 @@ public class Credential
         "[%s@%d::bytes=%s]",
         getClass().getName(),
         hashCode(),
-        new String(bytes));
+        new String(bytes, UTF8_CHARSET));
   }
 }

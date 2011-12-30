@@ -64,6 +64,7 @@ public abstract class AbstractAuthenticationHandler
     final AuthenticationCriteria ac)
     throws LdapException
   {
+    logger.debug("authenticate criteria={}", ac);
     AuthenticationHandlerResponse response = null;
     final Connection conn = getConnection();
     boolean closeConn = false;
@@ -80,6 +81,7 @@ public abstract class AbstractAuthenticationHandler
         conn.close();
       }
     }
+    logger.debug("authenticate response={} for criteria={}", response, ac);
     return response;
   }
 

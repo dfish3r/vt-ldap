@@ -113,7 +113,7 @@ public final class SearchServlet extends AbstractServlet
     throws ServletException, IOException
   {
     logger.info(
-      "Performing search: {} for attributes: {}",
+      "search={} for attributes={}",
       request.getParameter("query"),
       request.getParameter("attrs"));
     try {
