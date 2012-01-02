@@ -1,7 +1,7 @@
 /*
   $Id$
 
-  Copyright (C) 2003-2010 Virginia Tech.
+  Copyright (C) 2003-2012 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
@@ -19,8 +19,7 @@ package edu.vt.middleware.ldap;
  * @author  Middleware Services
  * @version  $Revision: 1330 $ $Date: 2010-05-23 18:10:53 -0400 (Sun, 23 May 2010) $
  */
-public enum ResultCode
-{
+public enum ResultCode {
 
   /** success. */
   SUCCESS(0),
@@ -235,6 +234,7 @@ public enum ResultCode
    * Returns the result code for the supplied integer constant.
    *
    * @param  code  to find result code for
+   *
    * @return  result code
    */
   public static ResultCode valueOf(final int code)

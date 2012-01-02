@@ -1,15 +1,15 @@
 /*
-  $Id: ConnectionHandler.java 1616 2010-09-21 17:22:27Z dfisher $
+  $Id$
 
-  Copyright (C) 2003-2010 Virginia Tech.
+  Copyright (C) 2003-2012 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
 
   Author:  Middleware Services
   Email:   middleware@vt.edu
-  Version: $Revision: 1616 $
-  Updated: $Date: 2010-09-21 13:22:27 -0400 (Tue, 21 Sep 2010) $
+  Version: $Revision$
+  Updated: $Date$
 */
 package edu.vt.middleware.ldap.provider;
 
@@ -19,8 +19,8 @@ package edu.vt.middleware.ldap.provider;
  * @author  Middleware Services
  * @version  $Revision: 1616 $
  */
-public enum ConnectionStrategy
-{
+public enum ConnectionStrategy {
+
   /** default strategy. */
   DEFAULT,
 

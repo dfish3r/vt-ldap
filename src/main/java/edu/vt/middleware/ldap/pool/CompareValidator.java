@@ -1,7 +1,7 @@
 /*
   $Id$
 
-  Copyright (C) 2003-2010 Virginia Tech.
+  Copyright (C) 2003-2012 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
@@ -90,7 +90,9 @@ public class CompareValidator implements Validator<Connection>
         success = b.booleanValue();
       } catch (Exception e) {
         logger.debug(
-          "validation failed for compare request {}", compareRequest, e);
+          "validation failed for compare request {}",
+          compareRequest,
+          e);
       }
     }
     return success;

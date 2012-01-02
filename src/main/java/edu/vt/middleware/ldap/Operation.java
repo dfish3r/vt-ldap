@@ -1,7 +1,7 @@
 /*
   $Id$
 
-  Copyright (C) 2003-2010 Virginia Tech.
+  Copyright (C) 2003-2012 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
@@ -30,8 +30,11 @@ public interface Operation<Q extends Request, S>
    * Execute this ldap operation.
    *
    * @param  request  containing the data required by this operation
+   *
    * @return  response for this operation
+   *
    * @throws  LdapException  if the operation fails
    */
-  Response<S> execute(Q request) throws LdapException;
+  Response<S> execute(Q request)
+    throws LdapException;
 }

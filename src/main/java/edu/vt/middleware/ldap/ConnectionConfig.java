@@ -1,7 +1,7 @@
 /*
   $Id$
 
-  Copyright (C) 2003-2010 Virginia Tech.
+  Copyright (C) 2003-2012 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
@@ -345,8 +345,8 @@ public class ConnectionConfig extends AbstractConfig
 
 
   /**
-   * Sets the amount of time in milliseconds that operations should wait
-   * before retrying.
+   * Sets the amount of time in milliseconds that operations should wait before
+   * retrying.
    *
    * @param  wait  time in milliseconds to wait
    */
@@ -359,10 +359,10 @@ public class ConnectionConfig extends AbstractConfig
 
 
   /**
-   * Returns the factor by which to multiply the operation retry wait time.
-   * This allows clients to progressively delay each retry. The formula for
-   * backoff is (wait * backoff * attempt). So a wait time of 2s with a backoff
-   * of 3 will delay by 6s, then 12s, then 18s, and so forth.
+   * Returns the factor by which to multiply the operation retry wait time. This
+   * allows clients to progressively delay each retry. The formula for backoff
+   * is (wait * backoff * attempt). So a wait time of 2s with a backoff of 3
+   * will delay by 6s, then 12s, then 18s, and so forth.
    *
    * @return  backoff factor
    */

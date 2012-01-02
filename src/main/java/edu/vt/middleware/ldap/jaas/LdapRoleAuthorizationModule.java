@@ -1,7 +1,7 @@
 /*
   $Id$
 
-  Copyright (C) 2003-2010 Virginia Tech.
+  Copyright (C) 2003-2012 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
@@ -110,7 +110,8 @@ public class LdapRoleAuthorizationModule extends AbstractLoginModule
         roleResolverFactory,
         roleFilter,
         Arrays.toString(roleAttribute),
-        noResultsIsError, });
+        noResultsIsError,
+      });
 
     roleResolver = roleResolverFactory.createRoleResolver(options);
     logger.debug("Retrieved role resolver from factory: {}", roleResolver);
@@ -151,6 +152,7 @@ public class LdapRoleAuthorizationModule extends AbstractLoginModule
 
       final Object[] filterArgs = new Object[] {loginDn, loginName, };
       searchRequest.setSearchFilter(new SearchFilter(roleFilter, filterArgs));
+
       final Set<LdapRole> lr = roleResolver.search(searchRequest);
       if (lr.size() == 0 && noResultsIsError) {
         loginSuccess = false;

@@ -1,7 +1,7 @@
 /*
   $Id$
 
-  Copyright (C) 2003-2010 Virginia Tech.
+  Copyright (C) 2003-2012 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
@@ -25,6 +25,9 @@ import edu.vt.middleware.ldap.LdapUtil;
  */
 public class CaseChangeEntryHandler extends AbstractLdapEntryHandler
 {
+
+  /** hash code seed. */
+  private static final int HASH_CODE_SEED = 821;
 
   /** Enum to define the type of case change. */
   public enum CaseChange {
@@ -60,9 +63,6 @@ public class CaseChangeEntryHandler extends AbstractLdapEntryHandler
       return s;
     }
   }
-
-  /** hash code seed. */
-  private static final int HASH_CODE_SEED = 821;
 
   /** Type of case modification to make to the entry DN. */
   private CaseChange dnCaseChange = CaseChange.NONE;
@@ -143,7 +143,8 @@ public class CaseChangeEntryHandler extends AbstractLdapEntryHandler
   /** {@inheritDoc} */
   @Override
   protected String processDn(
-    final SearchCriteria criteria, final LdapEntry entry)
+    final SearchCriteria criteria,
+    final LdapEntry entry)
   {
     return CaseChange.perform(dnCaseChange, entry.getDn());
   }
@@ -152,7 +153,8 @@ public class CaseChangeEntryHandler extends AbstractLdapEntryHandler
   /** {@inheritDoc} */
   @Override
   protected String processAttributeName(
-    final SearchCriteria sc, final String name)
+    final SearchCriteria sc,
+    final String name)
   {
     return CaseChange.perform(attributeNameCaseChange, name);
   }
@@ -161,7 +163,8 @@ public class CaseChangeEntryHandler extends AbstractLdapEntryHandler
   /** {@inheritDoc} */
   @Override
   protected String processAttributeValue(
-    final SearchCriteria sc, final String value)
+    final SearchCriteria sc,
+    final String value)
   {
     return CaseChange.perform(attributeValueCaseChange, value);
   }
@@ -170,7 +173,8 @@ public class CaseChangeEntryHandler extends AbstractLdapEntryHandler
   /** {@inheritDoc} */
   @Override
   protected byte[] processAttributeValue(
-    final SearchCriteria sc, final byte[] value)
+    final SearchCriteria sc,
+    final byte[] value)
   {
     return value;
   }
@@ -180,10 +184,11 @@ public class CaseChangeEntryHandler extends AbstractLdapEntryHandler
   @Override
   public int hashCode()
   {
-    return LdapUtil.computeHashCode(
-      HASH_CODE_SEED,
-      dnCaseChange,
-      attributeNameCaseChange,
-      attributeValueCaseChange);
+    return
+      LdapUtil.computeHashCode(
+        HASH_CODE_SEED,
+        dnCaseChange,
+        attributeNameCaseChange,
+        attributeValueCaseChange);
   }
 }

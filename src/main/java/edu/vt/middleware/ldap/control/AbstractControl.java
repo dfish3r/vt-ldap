@@ -1,7 +1,7 @@
 /*
   $Id$
 
-  Copyright (C) 2003-2010 Virginia Tech.
+  Copyright (C) 2003-2012 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
@@ -85,8 +85,7 @@ public abstract class AbstractControl implements Control
       return false;
     }
     return
-      o == this ||
-        (getClass() == o.getClass() && o.hashCode() == hashCode());
+      o == this || (getClass() == o.getClass() && o.hashCode() == hashCode());
   }
 
 

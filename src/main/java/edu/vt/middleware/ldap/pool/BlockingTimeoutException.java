@@ -1,7 +1,7 @@
 /*
   $Id$
 
-  Copyright (C) 2003-2010 Virginia Tech.
+  Copyright (C) 2003-2012 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
@@ -14,8 +14,8 @@
 package edu.vt.middleware.ldap.pool;
 
 /**
- * Thrown when a blocking operation times out. See
- * {@link ConnectionPool#getConnection()}.
+ * Thrown when a blocking operation times out. See {@link
+ * ConnectionPool#getConnection()}.
  *
  * @author  Middleware Services
  * @version  $Revision$

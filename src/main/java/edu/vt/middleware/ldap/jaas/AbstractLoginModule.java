@@ -1,7 +1,7 @@
 /*
   $Id$
 
-  Copyright (C) 2003-2010 Virginia Tech.
+  Copyright (C) 2003-2012 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
@@ -171,7 +171,8 @@ public abstract class AbstractLoginModule implements LoginModule
         Boolean.toString(setLdapCredential),
         defaultRole,
         principalGroupName,
-        roleGroupName, });
+        roleGroupName,
+      });
 
     principals = new TreeSet<Principal>();
     credentials = new HashSet<LdapCredential>();
@@ -195,8 +196,7 @@ public abstract class AbstractLoginModule implements LoginModule
       throw new LoginException("Subject is read-only.");
     }
     subject.getPrincipals().addAll(principals);
-    logger.debug(
-      "Committed the following principals: {}", principals);
+    logger.debug("Committed the following principals: {}", principals);
     subject.getPrivateCredentials().addAll(credentials);
     subject.getPrincipals().addAll(roles);
     logger.debug("Committed the following roles: {}", roles);
@@ -263,20 +263,20 @@ public abstract class AbstractLoginModule implements LoginModule
       subject.getPrincipals().remove(dnPrinIter.next());
     }
 
-    final Iterator<LdapRole> roleIter = subject.getPrincipals(
-      LdapRole.class).iterator();
+    final Iterator<LdapRole> roleIter = subject.getPrincipals(LdapRole.class)
+      .iterator();
     while (roleIter.hasNext()) {
       subject.getPrincipals().remove(roleIter.next());
     }
 
-    final Iterator<LdapGroup> groupIter = subject.getPrincipals(
-      LdapGroup.class).iterator();
+    final Iterator<LdapGroup> groupIter = subject.getPrincipals(LdapGroup.class)
+      .iterator();
     while (groupIter.hasNext()) {
       subject.getPrincipals().remove(groupIter.next());
     }
 
-    final Iterator<LdapCredential> credIter = subject
-        .getPrivateCredentials(LdapCredential.class).iterator();
+    final Iterator<LdapCredential> credIter = subject.getPrivateCredentials(
+      LdapCredential.class).iterator();
     while (credIter.hasNext()) {
       subject.getPrivateCredentials().remove(credIter.next());
     }
@@ -333,7 +333,8 @@ public abstract class AbstractLoginModule implements LoginModule
         Boolean.toString(useCallback),
         callbackHandler.getClass().getName(),
         nameCb.getClass().getName(),
-        passCb.getClass().getName(), });
+        passCb.getClass().getName(),
+      });
     try {
       if ((useFirstPass || tryFirstPass) && !useCallback) {
         nameCb.setName((String) sharedState.get(LOGIN_NAME));

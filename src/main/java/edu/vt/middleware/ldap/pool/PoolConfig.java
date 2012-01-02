@@ -1,7 +1,7 @@
 /*
   $Id$
 
-  Copyright (C) 2003-2010 Virginia Tech.
+  Copyright (C) 2003-2012 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
@@ -165,9 +165,9 @@ public class PoolConfig extends AbstractConfig
   /**
    * Returns the expiration time. Default value is {@link
    * #DEFAULT_EXPIRATION_TIME}. The expiration time represents the max time a
-   * connection should be available before it is considered stale. This
-   * value does not apply to connections in the pool if the pool has only the
-   * minimum number of connections available.
+   * connection should be available before it is considered stale. This value
+   * does not apply to connections in the pool if the pool has only the minimum
+   * number of connections available.
    *
    * @return  expiration time in seconds
    */

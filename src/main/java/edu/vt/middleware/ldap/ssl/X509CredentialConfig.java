@@ -1,7 +1,7 @@
 /*
   $Id$
 
-  Copyright (C) 2003-2010 Virginia Tech.
+  Copyright (C) 2003-2012 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
@@ -122,16 +122,14 @@ public class X509CredentialConfig implements CredentialConfig
     final X509SSLContextInitializer sslInit = new X509SSLContextInitializer();
     try {
       if (trustCertificates != null) {
-        sslInit.setTrustCertificates(
-          certsReader.read(trustCertificates));
+        sslInit.setTrustCertificates(certsReader.read(trustCertificates));
       }
       if (authenticationCertificate != null) {
         sslInit.setAuthenticationCertificate(
           certReader.read(authenticationCertificate));
       }
       if (authenticationKey != null) {
-        sslInit.setAuthenticationKey(
-          keyReader.read(authenticationKey));
+        sslInit.setAuthenticationKey(keyReader.read(authenticationKey));
       }
     } catch (IOException e) {
       throw new GeneralSecurityException(e);

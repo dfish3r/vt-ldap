@@ -1,7 +1,7 @@
 /*
   $Id$
 
-  Copyright (C) 2003-2010 Virginia Tech.
+  Copyright (C) 2003-2012 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
@@ -59,8 +59,8 @@ public class AddOperationCli extends AbstractCli
   protected void initOptions()
   {
     options.addOption(new Option(OPT_FILE, true, "LDIF file"));
-    final Map<String, String> desc = getArgDesc(
-      ConnectionConfig.class);
+
+    final Map<String, String> desc = getArgDesc(ConnectionConfig.class);
     for (String s : ConnectionConfigPropertySource.getProperties()) {
       options.addOption(new Option(s, true, desc.get(s)));
     }
@@ -76,8 +76,7 @@ public class AddOperationCli extends AbstractCli
     if (line.hasOption(OPT_HELP)) {
       printHelp();
     } else {
-      add(
-        initConnectionFactory(line), line.getOptionValue(OPT_FILE));
+      add(initConnectionFactory(line), line.getOptionValue(OPT_FILE));
     }
   }
 

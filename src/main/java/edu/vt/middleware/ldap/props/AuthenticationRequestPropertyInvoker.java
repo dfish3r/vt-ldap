@@ -1,7 +1,7 @@
 /*
   $Id$
 
-  Copyright (C) 2003-2010 Virginia Tech.
+  Copyright (C) 2003-2012 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
@@ -16,8 +16,8 @@ package edu.vt.middleware.ldap.props;
 import edu.vt.middleware.ldap.Credential;
 
 /**
- * Handles properties for
- * {@link edu.vt.middleware.ldap.auth.AuthenticationRequest}.
+ * Handles properties for {@link
+ * edu.vt.middleware.ldap.auth.AuthenticationRequest}.
  *
  * @author  Middleware Services
  * @version  $Revision$ $Date$

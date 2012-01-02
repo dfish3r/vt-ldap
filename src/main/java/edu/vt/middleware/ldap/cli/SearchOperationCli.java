@@ -1,7 +1,7 @@
 /*
   $Id$
 
-  Copyright (C) 2003-2010 Virginia Tech.
+  Copyright (C) 2003-2012 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
@@ -64,8 +64,10 @@ public class SearchOperationCli extends AbstractCli
   {
     options.addOption(
       new Option(OPT_DSMLV1, false, "output results in DSML v1"));
+
     final Map<String, String> desc = getArgDesc(
-      ConnectionConfig.class, SearchRequest.class);
+      ConnectionConfig.class,
+      SearchRequest.class);
     for (String s : ConnectionConfigPropertySource.getProperties()) {
       options.addOption(new Option(s, true, desc.get(s)));
     }
@@ -91,7 +93,8 @@ public class SearchOperationCli extends AbstractCli
     final SearchRequest request = new SearchRequest();
     final SearchRequestPropertySource srSource =
       new SearchRequestPropertySource(
-        request, getPropertiesFromOptions(PropertyDomain.LDAP.value(), line));
+        request,
+        getPropertiesFromOptions(PropertyDomain.LDAP.value(), line));
     srSource.initialize();
     return request;
   }
@@ -108,9 +111,7 @@ public class SearchOperationCli extends AbstractCli
     if (line.hasOption(OPT_HELP)) {
       printHelp();
     } else {
-      search(
-        initConnectionFactory(line),
-        initSearchRequest(line));
+      search(initConnectionFactory(line), initSearchRequest(line));
     }
   }
 

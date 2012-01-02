@@ -1,7 +1,7 @@
 /*
   $Id$
 
-  Copyright (C) 2003-2010 Virginia Tech.
+  Copyright (C) 2003-2012 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
@@ -53,10 +53,16 @@ public class JndiProviderConfig extends ProviderConfig
   /** Default constructor. */
   public JndiProviderConfig()
   {
-    setOperationRetryResultCodes(new ResultCode[] {
-      ResultCode.PROTOCOL_ERROR, ResultCode.BUSY, ResultCode.UNAVAILABLE, });
+    setOperationRetryResultCodes(
+      new ResultCode[] {
+        ResultCode.PROTOCOL_ERROR,
+        ResultCode.BUSY,
+        ResultCode.UNAVAILABLE,
+      });
     searchIgnoreResultCodes = new ResultCode[] {
-      ResultCode.TIME_LIMIT_EXCEEDED, ResultCode.SIZE_LIMIT_EXCEEDED, };
+      ResultCode.TIME_LIMIT_EXCEEDED,
+      ResultCode.SIZE_LIMIT_EXCEEDED,
+    };
     controlProcessor = new ControlProcessor<Control>(new JndiControlHandler());
   }
 
@@ -209,22 +215,23 @@ public class JndiProviderConfig extends ProviderConfig
   @Override
   public String toString()
   {
-    return String.format(
-      "[%s@%d::operationRetryResultCodes=%s, properties=%s, " +
-      "connectionStrategy=%s, logCredentials=%s, tracePackets=%s, " +
-      "removeDnUrls=%s, searchIgnoreResultCodes=%s, sslSocketFactory=%s, " +
-      "hostnameVerifier=%s, controlProcessor=%s]",
-      getClass().getName(),
-      hashCode(),
-      Arrays.toString(getOperationRetryResultCodes()),
-      getProperties(),
-      getConnectionStrategy(),
-      getLogCredentials(),
-      tracePackets,
-      removeDnUrls,
-      Arrays.toString(searchIgnoreResultCodes),
-      sslSocketFactory,
-      hostnameVerifier,
-      controlProcessor);
+    return
+      String.format(
+        "[%s@%d::operationRetryResultCodes=%s, properties=%s, " +
+        "connectionStrategy=%s, logCredentials=%s, tracePackets=%s, " +
+        "removeDnUrls=%s, searchIgnoreResultCodes=%s, sslSocketFactory=%s, " +
+        "hostnameVerifier=%s, controlProcessor=%s]",
+        getClass().getName(),
+        hashCode(),
+        Arrays.toString(getOperationRetryResultCodes()),
+        getProperties(),
+        getConnectionStrategy(),
+        getLogCredentials(),
+        tracePackets,
+        removeDnUrls,
+        Arrays.toString(searchIgnoreResultCodes),
+        sslSocketFactory,
+        hostnameVerifier,
+        controlProcessor);
   }
 }

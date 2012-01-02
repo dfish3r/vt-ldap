@@ -1,7 +1,7 @@
 /*
   $Id$
 
-  Copyright (C) 2003-2010 Virginia Tech.
+  Copyright (C) 2003-2012 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
@@ -46,5 +46,6 @@ public class RenameOperation extends AbstractOperation<RenameRequest, Void>
   /** {@inheritDoc} */
   @Override
   protected void initializeRequest(
-    final RenameRequest request, final ConnectionConfig cc) {}
+    final RenameRequest request,
+    final ConnectionConfig cc) {}
 }

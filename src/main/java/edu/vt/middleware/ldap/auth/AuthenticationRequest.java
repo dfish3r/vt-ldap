@@ -1,7 +1,7 @@
 /*
   $Id$
 
-  Copyright (C) 2003-2010 Virginia Tech.
+  Copyright (C) 2003-2012 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
@@ -60,7 +60,9 @@ public class AuthenticationRequest
    * @param  attrs  attributes to return
    */
   public AuthenticationRequest(
-    final String id, final Credential c, final String[] attrs)
+    final String id,
+    final Credential c,
+    final String[] attrs)
   {
     setUser(id);
     setCredential(c);
@@ -81,6 +83,7 @@ public class AuthenticationRequest
 
   /**
    * Sets the user.
+   *
    * @param  id  of the user
    */
   public void setUser(final String id)

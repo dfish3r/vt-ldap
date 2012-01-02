@@ -1,15 +1,15 @@
 /*
-  $Id: MergeAttributeResultHandler.java 2193 2011-12-15 22:01:04Z dfisher $
+  $Id$
 
-  Copyright (C) 2003-2010 Virginia Tech.
+  Copyright (C) 2003-2012 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
 
   Author:  Middleware Services
   Email:   middleware@vt.edu
-  Version: $Revision: 2193 $
-  Updated: $Date: 2011-12-15 17:01:04 -0500 (Thu, 15 Dec 2011) $
+  Version: $Revision$
+  Updated: $Date$
 */
 package edu.vt.middleware.ldap.handler;
 
@@ -86,7 +86,8 @@ public class MergeAttributeEntryHandler extends AbstractLdapEntryHandler
   /** {@inheritDoc} */
   @Override
   protected void processAttributes(
-    final SearchCriteria criteria, final LdapEntry entry)
+    final SearchCriteria criteria,
+    final LdapEntry entry)
     throws LdapException
   {
     boolean newAttribute = false;
@@ -116,7 +117,10 @@ public class MergeAttributeEntryHandler extends AbstractLdapEntryHandler
   @Override
   public int hashCode()
   {
-    return LdapUtil.computeHashCode(
-      HASH_CODE_SEED, attributeNames, mergeAttributeName);
+    return
+      LdapUtil.computeHashCode(
+        HASH_CODE_SEED,
+        attributeNames,
+        mergeAttributeName);
   }
 }

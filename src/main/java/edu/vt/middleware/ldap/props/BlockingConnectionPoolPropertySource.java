@@ -1,7 +1,7 @@
 /*
   $Id$
 
-  Copyright (C) 2003-2010 Virginia Tech.
+  Copyright (C) 2003-2012 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
@@ -58,7 +58,8 @@ public final class BlockingConnectionPoolPropertySource
    * @param  is  to read properties from
    */
   public BlockingConnectionPoolPropertySource(
-    final BlockingConnectionPool cp, final InputStream is)
+    final BlockingConnectionPool cp,
+    final InputStream is)
   {
     this(cp, loadProperties(is));
   }
@@ -71,7 +72,8 @@ public final class BlockingConnectionPoolPropertySource
    * @param  props  to read properties from
    */
   public BlockingConnectionPoolPropertySource(
-    final BlockingConnectionPool cp, final Properties props)
+    final BlockingConnectionPool cp,
+    final Properties props)
   {
     this(cp, PropertyDomain.POOL, props);
   }
@@ -102,9 +104,12 @@ public final class BlockingConnectionPoolPropertySource
     DefaultConnectionFactory cf = object.getConnectionFactory();
     if (cf == null) {
       cf = new DefaultConnectionFactory();
+
       final DefaultConnectionFactoryPropertySource cfPropSource =
         new DefaultConnectionFactoryPropertySource(
-          (DefaultConnectionFactory) cf, propertiesDomain, properties);
+          (DefaultConnectionFactory) cf,
+          propertiesDomain,
+          properties);
       cfPropSource.initialize();
       object.setConnectionFactory(cf);
     }
@@ -112,14 +117,14 @@ public final class BlockingConnectionPoolPropertySource
     PoolConfig pc = object.getPoolConfig();
     if (pc == null) {
       pc = new PoolConfig();
+
       final PoolConfigPropertySource pcPropSource =
         new PoolConfigPropertySource(pc, propertiesDomain, properties);
       pcPropSource.initialize();
       object.setPoolConfig(pc);
     } else {
       final SimplePropertySource<PoolConfig> sPropSource =
-        new SimplePropertySource<PoolConfig>(
-          pc, propertiesDomain, properties);
+        new SimplePropertySource<PoolConfig>(pc, propertiesDomain, properties);
       sPropSource.initialize();
     }
   }

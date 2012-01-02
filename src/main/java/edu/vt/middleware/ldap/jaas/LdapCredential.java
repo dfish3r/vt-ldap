@@ -1,7 +1,7 @@
 /*
   $Id$
 
-  Copyright (C) 2003-2010 Virginia Tech.
+  Copyright (C) 2003-2012 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
@@ -71,8 +71,7 @@ public class LdapCredential implements Serializable
       return false;
     }
     return
-      o == this ||
-        (getClass() == o.getClass() && o.hashCode() == hashCode());
+      o == this || (getClass() == o.getClass() && o.hashCode() == hashCode());
   }
 
 
@@ -96,7 +95,8 @@ public class LdapCredential implements Serializable
   @Override
   public String toString()
   {
-    return String.format(
+    return
+      String.format(
         "[%s@%d::%s]",
         getClass().getName(),
         hashCode(),

@@ -1,7 +1,7 @@
 /*
   $Id$
 
-  Copyright (C) 2003-2010 Virginia Tech.
+  Copyright (C) 2003-2012 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
@@ -56,7 +56,8 @@ public final class SearchDnResolverPropertySource
    * @param  is  to read properties from
    */
   public SearchDnResolverPropertySource(
-    final SearchDnResolver resolver, final InputStream is)
+    final SearchDnResolver resolver,
+    final InputStream is)
   {
     this(resolver, loadProperties(is));
   }
@@ -69,7 +70,8 @@ public final class SearchDnResolverPropertySource
    * @param  props  to read properties from
    */
   public SearchDnResolverPropertySource(
-    final SearchDnResolver resolver, final Properties props)
+    final SearchDnResolver resolver,
+    final Properties props)
   {
     this(resolver, PropertyDomain.AUTH, props);
   }

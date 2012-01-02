@@ -1,7 +1,7 @@
 /*
   $Id$
 
-  Copyright (C) 2003-2010 Virginia Tech.
+  Copyright (C) 2003-2012 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
@@ -49,7 +49,7 @@ public class AuthenticationCriteria
   /**
    * Returns the dn.
    *
-   * @return  dn  to authenticate
+   * @return  dn to authenticate
    */
   public String getDn()
   {
@@ -71,7 +71,7 @@ public class AuthenticationCriteria
   /**
    * Returns the credential.
    *
-   * @return  credential  to authenticate dn
+   * @return  credential to authenticate dn
    */
   public Credential getCredential()
   {

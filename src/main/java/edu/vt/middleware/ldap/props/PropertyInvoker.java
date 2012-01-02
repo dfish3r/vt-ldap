@@ -1,7 +1,7 @@
 /*
   $Id$
 
-  Copyright (C) 2003-2010 Virginia Tech.
+  Copyright (C) 2003-2012 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
@@ -40,6 +40,7 @@ public interface PropertyInvoker
    * Returns whether a property with the supplied name exists on this invoker.
    *
    * @param  name  of the property to check
+   *
    * @return  whether a property with the supplied name exists on this invoker
    */
   boolean hasProperty(String name);

@@ -1,7 +1,7 @@
 /*
   $Id$
 
-  Copyright (C) 2003-2010 Virginia Tech.
+  Copyright (C) 2003-2012 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
@@ -30,9 +30,7 @@ public class PooledConnectionFactory implements ConnectionFactory
   private ConnectionPool pool;
 
 
-  /**
-   * Default constructor.
-   */
+  /** Default constructor. */
   public PooledConnectionFactory() {}
 
 
@@ -93,10 +91,6 @@ public class PooledConnectionFactory implements ConnectionFactory
   public String toString()
   {
     return
-      String.format(
-        "[%s@%d::pool=%s]",
-        getClass().getName(),
-        hashCode(),
-        pool);
+      String.format("[%s@%d::pool=%s]", getClass().getName(), hashCode(), pool);
   }
 }

@@ -1,7 +1,7 @@
 /*
   $Id$
 
-  Copyright (C) 2003-2010 Virginia Tech.
+  Copyright (C) 2003-2012 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
@@ -32,8 +32,8 @@ import edu.vt.middleware.ldap.provider.ConnectionException;
  * @author  Middleware Services
  * @version  $Revision$
  */
-public class JndiTlsConnectionFactory extends
-  AbstractConnectionFactory<JndiProviderConfig>
+public class JndiTlsConnectionFactory
+  extends AbstractConnectionFactory<JndiProviderConfig>
 {
 
   /** Environment properties. */
@@ -47,7 +47,8 @@ public class JndiTlsConnectionFactory extends
    * @param  env  jndi context environment
    */
   public JndiTlsConnectionFactory(
-    final String url, final Map<String, Object> env)
+    final String url,
+    final Map<String, Object> env)
   {
     super(url);
     environment = env;
@@ -83,7 +84,8 @@ public class JndiTlsConnectionFactory extends
     } catch (NamingException e) {
       closeConn = true;
       throw new ConnectionException(
-        e, NamingExceptionUtil.getResultCode(e.getClass()));
+        e,
+        NamingExceptionUtil.getResultCode(e.getClass()));
     } catch (IOException e) {
       closeConn = true;
       throw new ConnectionException(e);
@@ -124,12 +126,14 @@ public class JndiTlsConnectionFactory extends
       new StartTlsRequest());
     if (getProviderConfig().getHostnameVerifier() != null) {
       logger.trace(
-        "TLS hostnameVerifier = {}", getProviderConfig().getHostnameVerifier());
+        "TLS hostnameVerifier = {}",
+        getProviderConfig().getHostnameVerifier());
       tls.setHostnameVerifier(getProviderConfig().getHostnameVerifier());
     }
     if (getProviderConfig().getSslSocketFactory() != null) {
       logger.trace(
-        "TLS sslSocketFactory = {}", getProviderConfig().getSslSocketFactory());
+        "TLS sslSocketFactory = {}",
+        getProviderConfig().getSslSocketFactory());
       tls.negotiate(getProviderConfig().getSslSocketFactory());
     } else {
       tls.negotiate();

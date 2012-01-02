@@ -1,7 +1,7 @@
 /*
   $Id$
 
-  Copyright (C) 2003-2010 Virginia Tech.
+  Copyright (C) 2003-2012 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
@@ -79,14 +79,16 @@ public class SearchEntryResolver implements EntryResolver
   /** {@inheritDoc} */
   @Override
   public LdapEntry resolve(
-    final Connection conn, final AuthenticationCriteria ac)
+    final Connection conn,
+    final AuthenticationCriteria ac)
     throws LdapException
   {
     logger.debug(
       "resolve criteria={} with attributes={}",
       ac,
-      returnAttributes == null ?
-        "<all attributes>" : Arrays.toString(returnAttributes));
+      returnAttributes == null ? "<all attributes>"
+                               : Arrays.toString(returnAttributes));
+
     final SearchOperation search = new SearchOperation(conn);
     final LdapResult result = search.execute(
       SearchRequest.newObjectScopeSearchRequest(
@@ -96,8 +98,9 @@ public class SearchEntryResolver implements EntryResolver
       new Object[] {
         result.getEntry(),
         ac,
-        returnAttributes == null ?
-          "<all attributes>" : Arrays.toString(returnAttributes), });
+        returnAttributes == null ? "<all attributes>"
+                                 : Arrays.toString(returnAttributes),
+      });
     return result.getEntry();
   }
 }

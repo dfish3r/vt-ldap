@@ -1,7 +1,7 @@
 /*
   $Id$
 
-  Copyright (C) 2003-2010 Virginia Tech.
+  Copyright (C) 2003-2012 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
@@ -39,7 +39,8 @@ public interface Connection
    *
    * @throws  LdapException  if the LDAP cannot be reached
    */
-  Response<Void> open() throws LdapException;
+  Response<Void> open()
+    throws LdapException;
 
 
   /**
@@ -54,7 +55,8 @@ public interface Connection
    * @throws  IllegalStateException  if the connection is already open
    * @throws  LdapException  if the LDAP cannot be reached
    */
-  Response<Void> open(BindRequest request) throws LdapException;
+  Response<Void> open(BindRequest request)
+    throws LdapException;
 
 
   /**

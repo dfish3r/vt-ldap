@@ -1,7 +1,7 @@
 /*
   $Id$
 
-  Copyright (C) 2003-2010 Virginia Tech.
+  Copyright (C) 2003-2012 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
@@ -156,15 +156,16 @@ public abstract class AbstractAuthenticator
   /**
    * Attempts to find the ldap entry for the supplied DN. If the supplied
    * connection is null, a {@link NoOpEntryResolver} is used. If an entry
-   * resolver has been provided it is used, otherwise a
-   * {@link SearchEntryResolver} is used if return attributes have been
-   * requested.
+   * resolver has been provided it is used, otherwise a {@link
+   * SearchEntryResolver} is used if return attributes have been requested.
    *
    * @param  request  authentication request
    * @param  conn  that authentication occurred on
    * @param  criteria  needed by the entry resolver
+   *
    * @return  ldap entry
-   * @throws LdapException  if an error occurs resolving the entry
+   *
+   * @throws  LdapException  if an error occurs resolving the entry
    */
   protected LdapEntry resolveEntry(
     final AuthenticationRequest request,
@@ -178,7 +179,8 @@ public abstract class AbstractAuthenticator
     } else if (entryResolver != null) {
       entry = entryResolver.resolve(conn, criteria);
     } else {
-      if (request.getReturnAttributes() == null ||
+      if (
+        request.getReturnAttributes() == null ||
           request.getReturnAttributes().length > 0) {
         final EntryResolver er = new SearchEntryResolver(
           request.getReturnAttributes());

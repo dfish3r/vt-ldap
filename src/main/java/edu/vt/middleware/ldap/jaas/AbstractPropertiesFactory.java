@@ -1,7 +1,7 @@
 /*
   $Id$
 
-  Copyright (C) 2003-2010 Virginia Tech.
+  Copyright (C) 2003-2012 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
@@ -58,7 +58,7 @@ public abstract class AbstractPropertiesFactory
         // if property name contains a dot, it isn't a vt-ldap property
         if (entry.getKey().indexOf(".") != -1) {
           p.setProperty(entry.getKey(), entry.getValue().toString());
-        // add the domain to vt-ldap properties
+          // add the domain to vt-ldap properties
         } else {
           p.setProperty(
             PropertyDomain.AUTH.value() + entry.getKey(),

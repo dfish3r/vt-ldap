@@ -1,7 +1,7 @@
 /*
   $Id$
 
-  Copyright (C) 2003-2010 Virginia Tech.
+  Copyright (C) 2003-2012 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
@@ -37,7 +37,6 @@ public class X509CertificateCredentialReader
     throws IOException, GeneralSecurityException
   {
     final CertificateFactory cf = CertificateFactory.getInstance("X.509");
-    return
-      (X509Certificate) cf.generateCertificate(getBufferedInputStream(is));
+    return (X509Certificate) cf.generateCertificate(getBufferedInputStream(is));
   }
 }

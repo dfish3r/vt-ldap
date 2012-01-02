@@ -1,7 +1,7 @@
 /*
   $Id$
 
-  Copyright (C) 2003-2010 Virginia Tech.
+  Copyright (C) 2003-2012 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
@@ -42,6 +42,7 @@ public abstract class AbstractSearchRoleResolver implements RoleResolver
     Connection conn = null;
     try {
       conn = getConnection();
+
       final SearchOperation search = new SearchOperation(conn);
       return LdapRole.toRoles(search.execute(request).getResult());
     } finally {
@@ -57,7 +58,7 @@ public abstract class AbstractSearchRoleResolver implements RoleResolver
    *
    * @return  connection
    *
-   * @throws LdapException  if an error occurs opening the connection
+   * @throws  LdapException  if an error occurs opening the connection
    */
   protected abstract Connection getConnection()
     throws LdapException;

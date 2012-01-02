@@ -1,7 +1,7 @@
 /*
   $Id$
 
-  Copyright (C) 2003-2010 Virginia Tech.
+  Copyright (C) 2003-2012 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
@@ -17,7 +17,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Provides common implementation for ldap operations
+ * Provides common implementation for ldap operations.
  *
  * @param  <Q>  type of ldap request
  * @param  <S>  type of ldap response
@@ -53,6 +53,7 @@ public abstract class AbstractOperation<Q extends Request, S>
   public AbstractOperation(final Connection conn)
   {
     connection = conn;
+
     final ConnectionConfig cc = conn.getConnectionConfig();
     operationRetry = cc.getOperationRetry();
     operationRetryWait = cc.getOperationRetryWait();
@@ -72,8 +73,8 @@ public abstract class AbstractOperation<Q extends Request, S>
 
 
   /**
-   * Returns the operation retry. This is the number of times an operation
-   * will be retried when it throws OperationException. What constitutes an
+   * Returns the operation retry. This is the number of times an operation will
+   * be retried when it throws OperationException. What constitutes an
    * OperationException is configured per each provider implementation.
    *
    * @return  operation retry
@@ -147,7 +148,9 @@ public abstract class AbstractOperation<Q extends Request, S>
    * Call the provider specific implementation of this ldap operation.
    *
    * @param  request  ldap request
+   *
    * @return  ldap response
+   *
    * @throws  LdapException  if the invocation fails
    */
   protected abstract Response<S> invoke(final Q request)
@@ -162,7 +165,8 @@ public abstract class AbstractOperation<Q extends Request, S>
    * @param  cc  connection configuration to initialize request with
    */
   protected abstract void initializeRequest(
-    final Q request, final ConnectionConfig cc);
+    final Q request,
+    final ConnectionConfig cc);
 
 
   /** {@inheritDoc} */
@@ -171,12 +175,10 @@ public abstract class AbstractOperation<Q extends Request, S>
     throws LdapException
   {
     logger.debug("execute request={} with connection={}", request, connection);
+
     Response<S> response = null;
-    initializeRequest(
-      request, connection.getConnectionConfig());
-    for (int i = 0;
-         i <= operationRetry || operationRetry == -1;
-         i++) {
+    initializeRequest(request, connection.getConnectionConfig());
+    for (int i = 0; i <= operationRetry || operationRetry == -1; i++) {
       try {
         response = invoke(request);
         break;
@@ -207,7 +209,9 @@ public abstract class AbstractOperation<Q extends Request, S>
   {
     if (count < operationRetry || operationRetry == -1) {
       logger.warn(
-        "Error performing LDAP operation, retrying (attempt {})", count, e);
+        "Error performing LDAP operation, retrying (attempt {})",
+        count,
+        e);
       connection.close();
       if (operationRetryWait > 0) {
         long sleepTime = operationRetryWait;

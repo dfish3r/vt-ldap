@@ -1,7 +1,7 @@
 /*
   $Id$
 
-  Copyright (C) 2003-2010 Virginia Tech.
+  Copyright (C) 2003-2012 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
@@ -16,8 +16,8 @@ package edu.vt.middleware.ldap.props;
 import edu.vt.middleware.ldap.provider.Provider;
 
 /**
- * Handles properties for
- * {@link edu.vt.middleware.ldap.DefaultConnectionFactory}.
+ * Handles properties for {@link
+ * edu.vt.middleware.ldap.DefaultConnectionFactory}.
  *
  * @author  Middleware Services
  * @version  $Revision$ $Date$
@@ -46,9 +46,7 @@ public class DefaultConnectionFactoryPropertyInvoker
     Object newValue = value;
     if (type != String.class) {
       if (Provider.class.isAssignableFrom(type)) {
-        newValue = createTypeFromPropertyValue(
-          Provider.class,
-          value);
+        newValue = createTypeFromPropertyValue(Provider.class, value);
       } else {
         newValue = convertSimpleType(type, value);
       }

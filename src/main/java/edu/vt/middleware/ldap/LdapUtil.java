@@ -1,7 +1,7 @@
 /*
   $Id$
 
-  Copyright (C) 2003-2010 Virginia Tech.
+  Copyright (C) 2003-2012 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
@@ -55,8 +55,9 @@ public final class LdapUtil
    */
   public static String base64Encode(final byte[] value)
   {
-    return value != null ?
-      new String(Base64.encodeBase64(value), UTF8_CHARSET) : null;
+    return
+      value != null ? new String(Base64.encodeBase64(value), UTF8_CHARSET)
+                    : null;
   }
 
 
@@ -150,6 +151,7 @@ public final class LdapUtil
    * @param  <T>  type of array
    * @param  first  array to concatenate. Cannot be null.
    * @param  rest  of the arrays to concatenate. May be null.
+   *
    * @return  array containing the concatenation of all parameters
    */
   public static <T> T[] concatArrays(final T[] first, final T[]... rest)
@@ -160,6 +162,7 @@ public final class LdapUtil
         totalLength += array.length;
       }
     }
+
     final T[] result = Arrays.copyOf(first, totalLength);
 
     int offset = first.length;
@@ -174,19 +177,20 @@ public final class LdapUtil
 
 
   /**
-   * Computes a hash code for the supplied objects using the supplied seed.
-   * If a Collection type is found it is iterated over.
+   * Computes a hash code for the supplied objects using the supplied seed. If a
+   * Collection type is found it is iterated over.
    *
    * @param  seed  odd/prime number
    * @param  objects  to calculate hashCode for
    *
    * @return  hash code for the supplied objects
    */
-  public static int computeHashCode(final int seed, final Object ... objects)
+  public static int computeHashCode(final int seed, final Object... objects)
   {
     if (objects == null || objects.length == 0) {
       return seed * HASH_CODE_PRIME;
     }
+
     int hc = seed;
     for (Object object : objects) {
       hc = HASH_CODE_PRIME * hc;

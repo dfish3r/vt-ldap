@@ -1,7 +1,7 @@
 /*
   $Id$
 
-  Copyright (C) 2003-2010 Virginia Tech.
+  Copyright (C) 2003-2012 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
@@ -58,7 +58,8 @@ public final class BindAuthenticationHandlerPropertySource
    * @param  is  to read properties from
    */
   public BindAuthenticationHandlerPropertySource(
-    final BindAuthenticationHandler handler, final InputStream is)
+    final BindAuthenticationHandler handler,
+    final InputStream is)
   {
     this(handler, loadProperties(is));
   }
@@ -71,7 +72,8 @@ public final class BindAuthenticationHandlerPropertySource
    * @param  props  to read properties from
    */
   public BindAuthenticationHandlerPropertySource(
-    final BindAuthenticationHandler handler, final Properties props)
+    final BindAuthenticationHandler handler,
+    final Properties props)
   {
     this(handler, PropertyDomain.AUTH, props);
   }

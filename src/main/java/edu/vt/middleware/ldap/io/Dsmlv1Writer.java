@@ -1,7 +1,7 @@
 /*
   $Id$
 
-  Copyright (C) 2003-2010 Virginia Tech.
+  Copyright (C) 2003-2012 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
@@ -51,14 +51,16 @@ public class Dsmlv1Writer implements LdapResultWriter
   private static final TransformerFactory TRANSFORMER_FACTORY =
     TransformerFactory.newInstance();
 
-  /** Writer to write to. */
-  private final Writer dsmlWriter;
 
-
-  /** Initialize the document builder factory. */
+  /**
+   * Initialize the document builder factory.
+   */
   static {
     DOC_BUILDER_FACTORY.setNamespaceAware(true);
   }
+
+  /** Writer to write to. */
+  private final Writer dsmlWriter;
 
 
   /**
@@ -76,6 +78,7 @@ public class Dsmlv1Writer implements LdapResultWriter
    * Writes the supplied ldap result to the writer.
    *
    * @param  result  ldap result to write
+   *
    * @throws  IOException  if an error occurs using the writer
    */
   public void write(final LdapResult result)
@@ -85,7 +88,8 @@ public class Dsmlv1Writer implements LdapResultWriter
       final Transformer transformer = TRANSFORMER_FACTORY.newTransformer();
       transformer.setOutputProperty(OutputKeys.INDENT, "yes");
       transformer.setOutputProperty(
-        "{http://xml.apache.org/xslt}indent-amount", "2");
+        "{http://xml.apache.org/xslt}indent-amount",
+        "2");
 
       final StreamResult sr = new StreamResult(dsmlWriter);
       final DOMSource source = new DOMSource(createDsml(result));
@@ -104,10 +108,10 @@ public class Dsmlv1Writer implements LdapResultWriter
    *
    * @param  result  ldap result to parse
    *
+   * @return  DSML
+   *
    * @throws  ParserConfigurationException  if a document builder cannot be
    * created
-   *
-   * @return  DSML
    */
   protected Document createDsml(final LdapResult result)
     throws ParserConfigurationException
@@ -115,7 +119,9 @@ public class Dsmlv1Writer implements LdapResultWriter
     final DocumentBuilder db = DOC_BUILDER_FACTORY.newDocumentBuilder();
     final DOMImplementation domImpl = db.getDOMImplementation();
     final Document doc = domImpl.createDocument(
-      "http://www.dsml.org/DSML", "dsml:dsml", null);
+      "http://www.dsml.org/DSML",
+      "dsml:dsml",
+      null);
     doc.setXmlStandalone(true);
 
     final Element entriesElement = doc.createElement("dsml:directory-entries");
@@ -144,10 +150,12 @@ public class Dsmlv1Writer implements LdapResultWriter
    *
    * @param  doc  to source elements from
    * @param  attrs  to iterate over
+   *
    * @return  list of elements contains attributes
    */
   protected List<Element> createDsmlAttributes(
-    final Document doc, final Collection<LdapAttribute> attrs)
+    final Document doc,
+    final Collection<LdapAttribute> attrs)
   {
     final List<Element> attrElements = new ArrayList<Element>();
     for (LdapAttribute attr : attrs) {
@@ -174,10 +182,12 @@ public class Dsmlv1Writer implements LdapResultWriter
    *
    * @param  doc  to source elements from
    * @param  attr  ldap attribute to add
+   *
    * @return  element containing the attribute
    */
   protected Element createAttrElement(
-    final Document doc, final LdapAttribute attr)
+    final Document doc,
+    final LdapAttribute attr)
   {
     final Element attrElement = doc.createElement("dsml:attr");
     attrElement.setAttribute("name", attr.getName());
@@ -195,10 +205,12 @@ public class Dsmlv1Writer implements LdapResultWriter
    *
    * @param  doc  to source elements from
    * @param  attr  ldap attribute to add
+   *
    * @return  element containing the attribute values
    */
   protected Element createObjectclassElement(
-    final Document doc, final LdapAttribute attr)
+    final Document doc,
+    final LdapAttribute attr)
   {
     final Element ocElement = doc.createElement("dsml:objectclass");
     for (String s : attr.getStringValues()) {

@@ -1,7 +1,7 @@
 /*
   $Id$
 
-  Copyright (C) 2003-2010 Virginia Tech.
+  Copyright (C) 2003-2012 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
@@ -68,6 +68,7 @@ public class AuthenticatorCli extends AbstractCli
   {
     options.addOption(
       new Option(OPT_DSMLV1, false, "output results in DSML v1"));
+
     final Map<String, String> desc = getArgDesc(
       ConnectionConfig.class,
       Authenticator.class,
@@ -105,9 +106,8 @@ public class AuthenticatorCli extends AbstractCli
     throws Exception
   {
     final Authenticator auth = new Authenticator();
-    final AuthenticatorPropertySource aSource =
-      new AuthenticatorPropertySource(
-        auth, getPropertiesFromOptions(PropertyDomain.AUTH.value(), line));
+    final AuthenticatorPropertySource aSource = new AuthenticatorPropertySource(
+      auth, getPropertiesFromOptions(PropertyDomain.AUTH.value(), line));
     aSource.initialize();
     return auth;
   }
@@ -129,7 +129,8 @@ public class AuthenticatorCli extends AbstractCli
     final AuthenticationRequest request = new AuthenticationRequest();
     final AuthenticationRequestPropertySource arSource =
       new AuthenticationRequestPropertySource(
-        request, getPropertiesFromOptions(PropertyDomain.AUTH.value(), line));
+        request,
+        getPropertiesFromOptions(PropertyDomain.AUTH.value(), line));
     arSource.initialize();
     if (request.getUser() == null) {
       // prompt for a user name
@@ -140,7 +141,8 @@ public class AuthenticatorCli extends AbstractCli
     if (request.getCredential() == null) {
       // prompt the user to enter a password
       final char[] pass = System.console().readPassword(
-        "[Enter password for %s]: ", request.getUser());
+        "[Enter password for %s]: ",
+        request.getUser());
       request.setCredential(new Credential(pass));
     }
 
@@ -159,9 +161,7 @@ public class AuthenticatorCli extends AbstractCli
     if (line.hasOption(OPT_HELP)) {
       printHelp();
     } else {
-      authenticate(
-        initAuthenticator(line),
-        initAuthenticationRequest(line));
+      authenticate(initAuthenticator(line), initAuthenticationRequest(line));
     }
   }
 
@@ -180,10 +180,12 @@ public class AuthenticatorCli extends AbstractCli
     throws Exception
   {
     // by default return all attributes
-    if (request.getReturnAttributes() != null &&
+    if (
+      request.getReturnAttributes() != null &&
         request.getReturnAttributes().length == 0) {
       request.setReturnAttributes(null);
     }
+
     final AuthenticationResponse response = auth.authenticate(request);
     final LdapEntry entry = response.getLdapEntry();
     if (entry != null) {

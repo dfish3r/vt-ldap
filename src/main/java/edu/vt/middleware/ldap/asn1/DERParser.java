@@ -1,7 +1,7 @@
 /*
   $Id$
 
-  Copyright (C) 2011 Virginia Tech.
+  Copyright (C) 2003-2012 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
@@ -30,7 +30,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author  Middleware Services
  * @version  $Revision$
- * @see DERPath
+ * @see  DERPath
  */
 public class DERParser
 {
@@ -61,7 +61,7 @@ public class DERParser
    *
    * @param  applicationSpecificTags  list of application specific tags.
    */
-  public DERParser(final DERTag ... applicationSpecificTags)
+  public DERParser(final DERTag... applicationSpecificTags)
   {
     this(new LinkedHashSet<DERTag>(Arrays.asList(applicationSpecificTags)));
   }
@@ -69,9 +69,9 @@ public class DERParser
 
   /**
    * Creates a new parser that uses the given application-specific tags to
-   * supplement universal tags during parsing.  The order of tags is preserved
-   * in the underlying collection, which is helpful for cases where different
-   * contextual tags share the same tag number.  In that case tags should be
+   * supplement universal tags during parsing. The order of tags is preserved in
+   * the underlying collection, which is helpful for cases where different
+   * contextual tags share the same tag number. In that case tags should be
    * provided in the order they are expected during parsing.
    *
    * @param  applicationSpecificTags  set of application specific tags.
@@ -124,8 +124,8 @@ public class DERParser
    * Gets the current state of the parser in terms of the path that describes
    * the position in the parse tree currently visited by the parser.
    *
-   * @return  current path in parse tree.  Changes to the returned object do
-   * not affect parser position.
+   * @return  current path in parse tree. Changes to the returned object do not
+   * affect parser position.
    */
   public DERPath getCurrentPath()
   {
@@ -135,7 +135,7 @@ public class DERParser
 
   /**
    * Reads a DER tag from a single byte at the current position of the given
-   * buffer.  The buffer position is naturally advanced one byte in this
+   * buffer. The buffer position is naturally advanced one byte in this
    * operation.
    *
    * @param  encoded  Buffer containing DER-encoded bytes positioned at tag.
@@ -148,6 +148,7 @@ public class DERParser
     if (encoded.position() >= encoded.limit()) {
       return null;
     }
+
     DERTag tag = null;
     final byte b = encoded.get();
     // CheckStyle:MagicNumber OFF
@@ -166,17 +167,18 @@ public class DERParser
 
 
   /**
-   * Reads the length of a DER-encoded value from the given byte buffer.  The
+   * Reads the length of a DER-encoded value from the given byte buffer. The
    * buffer is expected to be positioned at the byte immediately following the
-   * tag byte, which is where the length byte(s) begin(s).  Invocation of
-   * this method has two generally beneficial side effects:
+   * tag byte, which is where the length byte(s) begin(s). Invocation of this
+   * method has two generally beneficial side effects:
+   *
    * <ol>
    *   <li>Buffer is positioned at <em>start</em> of value bytes.</li>
    *   <li>Buffer limit is set to the <em>end</em> of value bytes.</li>
    * </ol>
    *
-   * @param  encoded  buffer containing DER-encoded bytes positioned at start
-   * of length byte(s).
+   * @param  encoded  buffer containing DER-encoded bytes positioned at start of
+   * length byte(s).
    *
    * @return  number of bytes occupied by tag value.
    */
@@ -246,6 +248,7 @@ public class DERParser
    * Returns the application tag that matches the supplied tag number.
    *
    * @param  tagNo  to search for
+   *
    * @return  application tag
    */
   private DERTag lookupApplicationTag(final int tagNo)

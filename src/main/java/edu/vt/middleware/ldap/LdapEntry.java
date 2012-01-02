@@ -1,7 +1,7 @@
 /*
   $Id$
 
-  Copyright (C) 2003-2010 Virginia Tech.
+  Copyright (C) 2003-2012 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
@@ -84,7 +84,7 @@ public class LdapEntry extends AbstractLdapBean
    * @param  dn  dn for this entry
    * @param  attr  ldap attribute for this entry
    */
-  public LdapEntry(final String dn, final LdapAttribute ... attr)
+  public LdapEntry(final String dn, final LdapAttribute... attr)
   {
     this();
     setDn(dn);
@@ -161,6 +161,7 @@ public class LdapEntry extends AbstractLdapBean
    * Returns the attribute with the supplied name.
    *
    * @param  name  of the attribute to return
+   *
    * @return  ldap attribute
    */
   public LdapAttribute getAttribute(final String name)
@@ -193,7 +194,7 @@ public class LdapEntry extends AbstractLdapBean
    *
    * @param  attr  attribute to add
    */
-  public void addAttribute(final LdapAttribute ... attr)
+  public void addAttribute(final LdapAttribute... attr)
   {
     for (LdapAttribute a : attr) {
       entryAttributes.put(a.getName().toLowerCase(), a);
@@ -219,7 +220,7 @@ public class LdapEntry extends AbstractLdapBean
    *
    * @param  attr  attribute to remove
    */
-  public void removeAttribute(final LdapAttribute ... attr)
+  public void removeAttribute(final LdapAttribute... attr)
   {
     for (LdapAttribute a : attr) {
       entryAttributes.remove(a.getName().toLowerCase());
@@ -262,9 +263,7 @@ public class LdapEntry extends AbstractLdapBean
   }
 
 
-  /**
-   * Removes all the attributes in this ldap attributes.
-   */
+  /** Removes all the attributes in this ldap attributes. */
   public void clear()
   {
     entryAttributes.clear();
@@ -275,10 +274,11 @@ public class LdapEntry extends AbstractLdapBean
   @Override
   public int hashCode()
   {
-    return LdapUtil.computeHashCode(
-      HASH_CODE_SEED,
-      entryDn != null ? entryDn.toLowerCase() : null,
-      entryAttributes.values());
+    return
+      LdapUtil.computeHashCode(
+        HASH_CODE_SEED,
+        entryDn != null ? entryDn.toLowerCase() : null,
+        entryAttributes.values());
   }
 
 

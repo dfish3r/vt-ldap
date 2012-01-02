@@ -1,7 +1,7 @@
 /*
   $Id$
 
-  Copyright (C) 2003-2010 Virginia Tech.
+  Copyright (C) 2003-2012 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
@@ -97,7 +97,9 @@ public class PropertiesRoleResolverFactory extends AbstractPropertiesFactory
       final PooledConnectionFactory cf = new PooledConnectionFactory();
       final PooledConnectionFactoryPropertySource source =
         new PooledConnectionFactoryPropertySource(
-          cf, PropertyDomain.AUTH, createProperties(options));
+          cf,
+          PropertyDomain.AUTH,
+          createProperties(options));
       source.initialize();
       cfm.setConnectionFactory(cf);
     }
@@ -106,7 +108,9 @@ public class PropertiesRoleResolverFactory extends AbstractPropertiesFactory
       final DefaultConnectionFactory cf = new DefaultConnectionFactory();
       final DefaultConnectionFactoryPropertySource source =
         new DefaultConnectionFactoryPropertySource(
-          cf, PropertyDomain.AUTH, createProperties(options));
+          cf,
+          PropertyDomain.AUTH,
+          createProperties(options));
       source.initialize();
       cfm.setConnectionFactory(cf);
     }
@@ -119,20 +123,17 @@ public class PropertiesRoleResolverFactory extends AbstractPropertiesFactory
   public SearchRequest createSearchRequest(final Map<String, ?> jaasOptions)
   {
     final SearchRequest sr = new SearchRequest();
-    final SearchRequestPropertySource source =
-      new SearchRequestPropertySource(
-        sr,
-        PropertyDomain.AUTH,
-        createProperties(jaasOptions));
+    final SearchRequestPropertySource source = new SearchRequestPropertySource(
+      sr,
+      PropertyDomain.AUTH,
+      createProperties(jaasOptions));
     source.initialize();
     logger.trace("Created search request {} from {}", sr, jaasOptions);
     return sr;
   }
 
 
-  /**
-   * Iterates over the cache and closes all role resolvers.
-   */
+  /** Iterates over the cache and closes all role resolvers. */
   public static void close()
   {
     for (RoleResolver rr : cache.values()) {

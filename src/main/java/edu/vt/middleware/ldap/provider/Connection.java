@@ -1,7 +1,7 @@
 /*
   $Id$
 
-  Copyright (C) 2003-2010 Virginia Tech.
+  Copyright (C) 2003-2012 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
@@ -42,7 +42,8 @@ public interface Connection
    *
    * @throws  LdapException  if an error occurs
    */
-  Response<Void> bind(BindRequest request) throws LdapException;
+  Response<Void> bind(BindRequest request)
+    throws LdapException;
 
 
   /**
@@ -54,7 +55,8 @@ public interface Connection
    *
    * @throws  LdapException  if an error occurs
    */
-  Response<Void> add(AddRequest request) throws LdapException;
+  Response<Void> add(AddRequest request)
+    throws LdapException;
 
 
   /**
@@ -66,7 +68,8 @@ public interface Connection
    *
    * @throws  LdapException  if an error occurs
    */
-  Response<Boolean> compare(CompareRequest request) throws LdapException;
+  Response<Boolean> compare(CompareRequest request)
+    throws LdapException;
 
 
   /**
@@ -78,7 +81,8 @@ public interface Connection
    *
    * @throws  LdapException  if an error occurs
    */
-  Response<Void> delete(DeleteRequest request) throws LdapException;
+  Response<Void> delete(DeleteRequest request)
+    throws LdapException;
 
 
   /**
@@ -90,7 +94,8 @@ public interface Connection
    *
    * @throws  LdapException  if an error occurs
    */
-  Response<Void> modify(ModifyRequest request) throws LdapException;
+  Response<Void> modify(ModifyRequest request)
+    throws LdapException;
 
 
   /**
@@ -102,7 +107,8 @@ public interface Connection
    *
    * @throws  LdapException  if an error occurs
    */
-  Response<Void> rename(RenameRequest request) throws LdapException;
+  Response<Void> rename(RenameRequest request)
+    throws LdapException;
 
 
   /**
@@ -114,7 +120,8 @@ public interface Connection
    *
    * @throws  LdapException  if an error occurs
    */
-  SearchIterator search(SearchRequest request) throws LdapException;
+  SearchIterator search(SearchRequest request)
+    throws LdapException;
 
 
   /**
@@ -122,5 +129,6 @@ public interface Connection
    *
    * @throws  LdapException  if an LDAP error occurs
    */
-  void close() throws LdapException;
+  void close()
+    throws LdapException;
 }

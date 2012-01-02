@@ -1,7 +1,7 @@
 /*
   $Id$
 
-  Copyright (C) 2003-2010 Virginia Tech.
+  Copyright (C) 2003-2012 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
@@ -30,7 +30,9 @@ public interface LdapResultWriter
    * Writes the supplied ldap result.
    *
    * @param  result  ldap result to write
+   *
    * @throws  IOException  if an error occurs using the writer
    */
-  void write(final LdapResult result) throws IOException;
+  void write(final LdapResult result)
+    throws IOException;
 }

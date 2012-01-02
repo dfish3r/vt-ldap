@@ -1,7 +1,7 @@
 /*
   $Id$
 
-  Copyright (C) 2003-2010 Virginia Tech.
+  Copyright (C) 2003-2012 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
@@ -37,7 +37,7 @@ public class SearchRequest extends AbstractRequest
   /** Attributes to return. */
   private String[] retAttrs;
 
-  /** Search scope.*/
+  /** Search scope. */
   private SearchScope searchScope = SearchScope.SUBTREE;
 
   /** Time search operation will block. */
@@ -143,7 +143,9 @@ public class SearchRequest extends AbstractRequest
    * @param  attrs  to return
    */
   public SearchRequest(
-    final String dn, final SearchFilter filter, final String[] attrs)
+    final String dn,
+    final SearchFilter filter,
+    final String[] attrs)
   {
     setBaseDn(dn);
     setSearchFilter(filter);
@@ -186,7 +188,7 @@ public class SearchRequest extends AbstractRequest
   /**
    * Sets the base DN.
    *
-   * @param  dn base DN
+   * @param  dn  base DN
    */
   public void setBaseDn(final String dn)
   {
@@ -440,6 +442,7 @@ public class SearchRequest extends AbstractRequest
    * Returns a search request initialized with the supplied request.
    *
    * @param  request  search request to read properties from
+   *
    * @return  search request
    */
   public static SearchRequest newSearchRequest(final SearchRequest request)
@@ -452,9 +455,8 @@ public class SearchRequest extends AbstractRequest
     sr.setReferralBehavior(request.getReferralBehavior());
     sr.setReturnAttributes(request.getReturnAttributes());
     sr.setSearchFilter(
-      request.getSearchFilter() != null ?
-        SearchFilter.newSearchFilter(request.getSearchFilter()) :
-        null);
+      request.getSearchFilter() != null
+        ? SearchFilter.newSearchFilter(request.getSearchFilter()) : null);
     sr.setSearchScope(request.getSearchScope());
     sr.setSizeLimit(request.getSizeLimit());
     sr.setSortBehavior(request.getSortBehavior());
@@ -470,6 +472,7 @@ public class SearchRequest extends AbstractRequest
    * scope.
    *
    * @param  dn  of an ldap entry
+   *
    * @return  search request
    */
   public static SearchRequest newObjectScopeSearchRequest(final String dn)
@@ -483,14 +486,19 @@ public class SearchRequest extends AbstractRequest
    * scope.
    *
    * @param  dn  of an ldap entry
-   * @param attrs  to return
+   * @param  attrs  to return
+   *
    * @return  search request
    */
   public static SearchRequest newObjectScopeSearchRequest(
-    final String dn, final String[] attrs)
+    final String dn,
+    final String[] attrs)
   {
-    return newObjectScopeSearchRequest(
-      dn, attrs, new SearchFilter("(objectClass=*)"));
+    return
+      newObjectScopeSearchRequest(
+        dn,
+        attrs,
+        new SearchFilter("(objectClass=*)"));
   }
 
 
@@ -499,12 +507,15 @@ public class SearchRequest extends AbstractRequest
    * scope.
    *
    * @param  dn  of an ldap entry
-   * @param attrs  to return
-   * @param filter  to execute on the ldap entry
+   * @param  attrs  to return
+   * @param  filter  to execute on the ldap entry
+   *
    * @return  search request
    */
   public static SearchRequest newObjectScopeSearchRequest(
-    final String dn, final String[] attrs, final SearchFilter filter)
+    final String dn,
+    final String[] attrs,
+    final SearchFilter filter)
   {
     final SearchRequest request = new SearchRequest();
     request.setBaseDn(dn);
@@ -529,8 +540,7 @@ public class SearchRequest extends AbstractRequest
       return false;
     }
     return
-      o == this ||
-        (getClass() == o.getClass() && o.hashCode() == hashCode());
+      o == this || (getClass() == o.getClass() && o.hashCode() == hashCode());
   }
 
 
@@ -538,21 +548,22 @@ public class SearchRequest extends AbstractRequest
   @Override
   public int hashCode()
   {
-    return LdapUtil.computeHashCode(
-      HASH_CODE_SEED,
-      baseDn,
-      binaryAttrs,
-      derefAliases,
-      referralBehavior,
-      entryHandlers,
-      retAttrs,
-      searchFilter,
-      searchScope,
-      sizeLimit,
-      sortBehavior,
-      timeLimit,
-      typesOnly,
-      getControls());
+    return
+      LdapUtil.computeHashCode(
+        HASH_CODE_SEED,
+        baseDn,
+        binaryAttrs,
+        derefAliases,
+        referralBehavior,
+        entryHandlers,
+        retAttrs,
+        searchFilter,
+        searchScope,
+        sizeLimit,
+        sortBehavior,
+        timeLimit,
+        typesOnly,
+        getControls());
   }
 
 

@@ -1,7 +1,7 @@
 /*
   $Id$
 
-  Copyright (C) 2003-2010 Virginia Tech.
+  Copyright (C) 2003-2012 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
@@ -35,8 +35,8 @@ public final class ProviderConfigPropertySource
 
 
   /**
-   * Creates a new provider config property source using the default
-   * properties file.
+   * Creates a new provider config property source using the default properties
+   * file.
    *
    * @param  pc  provider config to invoke properties on
    */
@@ -44,8 +44,7 @@ public final class ProviderConfigPropertySource
   {
     this(
       pc,
-      ProviderConfigPropertySource.class.getResourceAsStream(
-        PROPERTIES_FILE));
+      ProviderConfigPropertySource.class.getResourceAsStream(PROPERTIES_FILE));
   }
 
 
@@ -56,7 +55,8 @@ public final class ProviderConfigPropertySource
    * @param  is  to read properties from
    */
   public ProviderConfigPropertySource(
-    final ProviderConfig pc, final InputStream is)
+    final ProviderConfig pc,
+    final InputStream is)
   {
     this(pc, loadProperties(is));
   }
@@ -69,7 +69,8 @@ public final class ProviderConfigPropertySource
    * @param  props  to read properties from
    */
   public ProviderConfigPropertySource(
-    final ProviderConfig pc, final Properties props)
+    final ProviderConfig pc,
+    final Properties props)
   {
     this(pc, PropertyDomain.LDAP, props);
   }

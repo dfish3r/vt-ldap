@@ -1,7 +1,7 @@
 /*
   $Id$
 
-  Copyright (C) 2003-2010 Virginia Tech.
+  Copyright (C) 2003-2012 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
@@ -82,14 +82,17 @@ public class PooledBindAuthenticationHandler
   /** {@inheritDoc} */
   @Override
   protected AuthenticationHandlerResponse authenticateInternal(
-    final Connection c, final AuthenticationCriteria criteria)
+    final Connection c,
+    final AuthenticationCriteria criteria)
     throws LdapException
   {
     AuthenticationHandlerResponse response = null;
     final BindRequest request = new BindRequest(
-      criteria.getDn(), criteria.getCredential());
+      criteria.getDn(),
+      criteria.getCredential());
     request.setSaslConfig(getAuthenticationSaslConfig());
     request.setControls(getAuthenticationControls());
+
     final BindOperation op = new BindOperation(c);
     try {
       final Response<Void> bindResponse = op.execute(request);

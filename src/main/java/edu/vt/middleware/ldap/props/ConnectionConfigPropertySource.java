@@ -1,7 +1,7 @@
 /*
   $Id$
 
-  Copyright (C) 2003-2010 Virginia Tech.
+  Copyright (C) 2003-2012 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
@@ -56,7 +56,8 @@ public final class ConnectionConfigPropertySource
    * @param  is  to read properties from
    */
   public ConnectionConfigPropertySource(
-    final ConnectionConfig cc, final InputStream is)
+    final ConnectionConfig cc,
+    final InputStream is)
   {
     this(cc, loadProperties(is));
   }
@@ -69,7 +70,8 @@ public final class ConnectionConfigPropertySource
    * @param  props  to read properties from
    */
   public ConnectionConfigPropertySource(
-    final ConnectionConfig cc, final Properties props)
+    final ConnectionConfig cc,
+    final Properties props)
   {
     this(cc, PropertyDomain.LDAP, props);
   }

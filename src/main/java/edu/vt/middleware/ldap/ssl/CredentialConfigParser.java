@@ -1,7 +1,7 @@
 /*
   $Id$
 
-  Copyright (C) 2003-2010 Virginia Tech.
+  Copyright (C) 2003-2012 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
@@ -85,7 +85,7 @@ public class CredentialConfigParser
   {
     final Matcher fullMatcher = FULL_CONFIG_PATTERN.matcher(config);
     final Matcher credentialOnlyMatcher = CREDENTIAL_ONLY_CONFIG_PATTERN
-        .matcher(config);
+      .matcher(config);
     final Matcher paramsOnlyMatcher = PARAMS_ONLY_CONFIG_PATTERN.matcher(
       config);
     Matcher m = null;
@@ -166,8 +166,8 @@ public class CredentialConfigParser
   {
     return
       FULL_CONFIG_PATTERN.matcher(config).matches() ||
-        CREDENTIAL_ONLY_CONFIG_PATTERN.matcher(config).matches() ||
-        PARAMS_ONLY_CONFIG_PATTERN.matcher(config).matches();
+      CREDENTIAL_ONLY_CONFIG_PATTERN.matcher(config).matches() ||
+      PARAMS_ONLY_CONFIG_PATTERN.matcher(config).matches();
   }
 
 

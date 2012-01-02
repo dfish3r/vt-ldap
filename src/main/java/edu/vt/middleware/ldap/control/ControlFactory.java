@@ -1,7 +1,7 @@
 /*
   $Id$
 
-  Copyright (C) 2003-2010 Virginia Tech.
+  Copyright (C) 2003-2012 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
@@ -37,7 +37,9 @@ public final class ControlFactory
    * @return  response control
    */
   public static ResponseControl createResponseControl(
-    final String oid, final boolean critical, final byte[] encoded)
+    final String oid,
+    final boolean critical,
+    final byte[] encoded)
   {
     ResponseControl ctl = null;
     if (SortResponseControl.OID.equals(oid)) {

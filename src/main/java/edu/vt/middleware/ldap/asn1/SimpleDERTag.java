@@ -1,7 +1,7 @@
 /*
   $Id$
 
-  Copyright (C) 2011 Virginia Tech.
+  Copyright (C) 2003-2012 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
@@ -40,7 +40,9 @@ public class SimpleDERTag implements DERTag
    * @param  isConstructed  whether this tag is primitive or constructed
    */
   public SimpleDERTag(
-    final int number, final String name, final boolean isConstructed)
+    final int number,
+    final String name,
+    final boolean isConstructed)
   {
     tagNo = number;
     tagName = name;

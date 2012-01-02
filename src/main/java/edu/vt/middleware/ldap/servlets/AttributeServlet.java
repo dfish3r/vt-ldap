@@ -1,7 +1,7 @@
 /*
   $Id$
 
-  Copyright (C) 2003-2010 Virginia Tech.
+  Copyright (C) 2003-2012 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
@@ -31,6 +31,7 @@ import edu.vt.middleware.ldap.LdapResult;
  * text/plain, if you want to receive the content as application/octet-stream
  * that can be specified by passing the content-type=octet param. The following
  * init params can be set for this servlet:
+ *
  * <ul>
  *   <li>edu.vt.middleware.ldap.servlets.propertiesFile</li>
  *   <li>edu.vt.middleware.ldap.servlets.poolPropertiesFile</li>

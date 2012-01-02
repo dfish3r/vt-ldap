@@ -1,7 +1,7 @@
 /*
   $Id$
 
-  Copyright (C) 2003-2010 Virginia Tech.
+  Copyright (C) 2003-2012 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
@@ -61,7 +61,8 @@ public abstract class AbstractPropertyInvoker implements PropertyInvoker
       PROPERTIES_CACHE.put(cacheKey, properties);
       for (Method method : c.getMethods()) {
         if (!method.isBridge()) {
-          if (method.getName().startsWith("set") &&
+          if (
+            method.getName().startsWith("set") &&
               method.getParameterTypes().length == 1) {
             final String mName = method.getName().substring(3);
             final String pName = new StringBuilder(
@@ -74,8 +75,9 @@ public abstract class AbstractPropertyInvoker implements PropertyInvoker
             } else {
               properties.put(pName, new Method[] {null, method});
             }
-          } else if (method.getName().startsWith("get") &&
-                     method.getParameterTypes().length == 0) {
+          } else if (
+            method.getName().startsWith("get") &&
+              method.getParameterTypes().length == 0) {
             final String mName = method.getName().substring(3);
             final String pName = new StringBuilder(
               mName.substring(0, 1).toLowerCase()).append(
@@ -95,6 +97,7 @@ public abstract class AbstractPropertyInvoker implements PropertyInvoker
           }
         }
       }
+
       // remove any properties that don't have both getters and setters
       final Iterator<Method[]> i = properties.values().iterator();
       while (i.hasNext()) {
@@ -129,26 +132,21 @@ public abstract class AbstractPropertyInvoker implements PropertyInvoker
         " on object of type " + object.getClass().getName());
     }
 
-    final Method getter = properties.get(name) != null
-      ? properties.get(name)[0] : null;
+    final Method getter = properties.get(name) != null ? properties.get(name)[0]
+                                                       : null;
     if (getter == null) {
       throw new IllegalArgumentException(
-        "No getter method found for " + name + " on object " +
-        clazz.getName());
+        "No getter method found for " + name + " on object " + clazz.getName());
     }
 
-    final Method setter = properties.get(name) != null
-      ? properties.get(name)[1] : null;
+    final Method setter = properties.get(name) != null ? properties.get(name)[1]
+                                                       : null;
     if (setter == null) {
       throw new IllegalArgumentException(
-        "No setter method found for " + name + " on object " +
-        clazz.getName());
+        "No setter method found for " + name + " on object " + clazz.getName());
     }
 
-    invokeMethod(
-      setter,
-      object,
-      convertValue(getter.getReturnType(), value));
+    invokeMethod(setter, object, convertValue(getter.getReturnType(), value));
   }
 
 
@@ -237,7 +235,8 @@ public abstract class AbstractPropertyInvoker implements PropertyInvoker
       return Class.forName(className);
     } catch (ClassNotFoundException e) {
       throw new IllegalArgumentException(
-        String.format("Could not find class '%s'", className), e);
+        String.format("Could not find class '%s'", className),
+        e);
     }
   }
 
@@ -248,6 +247,7 @@ public abstract class AbstractPropertyInvoker implements PropertyInvoker
    *
    * @param  type  of object to convert value into
    * @param  value  to parse
+   *
    * @return  object of the supplied type
    */
   protected Object convertSimpleType(final Class<?> type, final String value)
@@ -394,7 +394,8 @@ public abstract class AbstractPropertyInvoker implements PropertyInvoker
    * @return  Enum[] of the supplied type or null
    */
   protected Object createArrayEnumFromPropertyValue(
-    final Class<?> c, final String s)
+    final Class<?> c,
+    final String s)
   {
     Object newObject = null;
     if ("null".equals(s)) {

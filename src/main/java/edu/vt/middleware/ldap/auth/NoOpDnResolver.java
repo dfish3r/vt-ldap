@@ -1,15 +1,15 @@
 /*
-  $Id: NoopDnResolver.java 2105 2011-09-14 19:14:47Z dfisher $
+  $Id$
 
-  Copyright (C) 2003-2010 Virginia Tech.
+  Copyright (C) 2003-2012 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
 
   Author:  Middleware Services
   Email:   middleware@vt.edu
-  Version: $Revision: 2105 $
-  Updated: $Date: 2011-09-14 15:14:47 -0400 (Wed, 14 Sep 2011) $
+  Version: $Revision$
+  Updated: $Date$
 */
 package edu.vt.middleware.ldap.auth;
 

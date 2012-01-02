@@ -1,7 +1,7 @@
 /*
   $Id$
 
-  Copyright (C) 2003-2010 Virginia Tech.
+  Copyright (C) 2003-2012 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
@@ -54,7 +54,8 @@ public final class SearchRequestPropertySource
    * @param  is  to read properties from
    */
   public SearchRequestPropertySource(
-    final SearchRequest request, final InputStream is)
+    final SearchRequest request,
+    final InputStream is)
   {
     this(request, loadProperties(is));
   }
@@ -67,7 +68,8 @@ public final class SearchRequestPropertySource
    * @param  props  to read properties from
    */
   public SearchRequestPropertySource(
-    final SearchRequest request, final Properties props)
+    final SearchRequest request,
+    final Properties props)
   {
     this(request, PropertyDomain.LDAP, props);
   }

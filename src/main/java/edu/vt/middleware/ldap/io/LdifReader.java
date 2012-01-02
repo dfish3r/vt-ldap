@@ -1,7 +1,7 @@
 /*
   $Id$
 
-  Copyright (C) 2003-2010 Virginia Tech.
+  Copyright (C) 2003-2012 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
@@ -70,6 +70,7 @@ public class LdifReader implements LdapResultReader
    * Reads LDIF data from the reader and returns an ldap result.
    *
    * @return  ldap result derived from the LDIF
+   *
    * @throws  IOException  if an error occurs using the reader
    */
   public LdapResult read()

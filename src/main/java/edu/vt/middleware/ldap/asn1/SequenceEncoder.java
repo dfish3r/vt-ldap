@@ -1,7 +1,7 @@
 /*
   $Id$
 
-  Copyright (C) 2011 Virginia Tech.
+  Copyright (C) 2003-2012 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
@@ -37,7 +37,7 @@ public class SequenceEncoder extends AbstractDERType implements DEREncoder
    *
    * @param  encoders  to encode in this sequence
    */
-  public SequenceEncoder(final DEREncoder ... encoders)
+  public SequenceEncoder(final DEREncoder... encoders)
   {
     derEncoders = encoders;
   }
@@ -59,7 +59,9 @@ public class SequenceEncoder extends AbstractDERType implements DEREncoder
     } catch (IOException e) {
       throw new IllegalStateException("Encode failed", e);
     }
-    return encode(
-      UniversalDERTag.SEQ.getTagNo() | ASN_CONSTRUCTED, bytes.toByteArray());
+    return
+      encode(
+        UniversalDERTag.SEQ.getTagNo() | ASN_CONSTRUCTED,
+        bytes.toByteArray());
   }
 }

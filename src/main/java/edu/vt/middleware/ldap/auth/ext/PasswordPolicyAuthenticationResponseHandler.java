@@ -1,7 +1,7 @@
 /*
   $Id$
 
-  Copyright (C) 2003-2010 Virginia Tech.
+  Copyright (C) 2003-2012 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
@@ -47,7 +47,8 @@ public class PasswordPolicyAuthenticationResponseHandler
           if (exp != null || ppc.getGraceAuthNsRemaining() > 0) {
             response.setAccountState(
               new PasswordPolicyAccountState(
-                exp, ppc.getGraceAuthNsRemaining()));
+                exp,
+                ppc.getGraceAuthNsRemaining()));
           }
           if (response.getAccountState() == null && ppc.getError() != null) {
             response.setAccountState(

@@ -1,7 +1,7 @@
 /*
   $Id$
 
-  Copyright (C) 2003-2010 Virginia Tech.
+  Copyright (C) 2003-2012 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
@@ -31,33 +31,39 @@ import edu.vt.middleware.ldap.auth.AccountState;
  * Request/response control for password policy. See
  * http://tools.ietf.org/html/draft-behera-ldap-password-policy-10. Control is
  * defined as:
+ *
  * <pre>
- * PasswordPolicyResponseValue ::= SEQUENCE {
- *    warning [0] CHOICE {
- *    timeBeforeExpiration [0] INTEGER (0 .. maxInt),
- *    graceAuthNsRemaining [1] INTEGER (0 .. maxInt) } OPTIONAL,
- *    error   [1] ENUMERATED {
- *    passwordExpired             (0),
- *    accountLocked               (1),
- *    changeAfterReset            (2),
- *    passwordModNotAllowed       (3),
- *    mustSupplyOldPassword       (4),
- *    insufficientPasswordQuality (5),
- *    passwordTooShort            (6),
- *    passwordTooYoung            (7),
- *    passwordInHistory           (8) } OPTIONAL }
+   PasswordPolicyResponseValue ::= SEQUENCE {
+      warning [0] CHOICE {
+      timeBeforeExpiration [0] INTEGER (0 .. maxInt),
+      graceAuthNsRemaining [1] INTEGER (0 .. maxInt) } OPTIONAL,
+      error   [1] ENUMERATED {
+      passwordExpired             (0),
+      accountLocked               (1),
+      changeAfterReset            (2),
+      passwordModNotAllowed       (3),
+      mustSupplyOldPassword       (4),
+      insufficientPasswordQuality (5),
+      passwordTooShort            (6),
+      passwordTooYoung            (7),
+      passwordInHistory           (8) } OPTIONAL }
  * </pre>
  *
  * @author  Middleware Services
  * @version  $Revision$ $Date$
  */
 public class PasswordPolicyControl extends AbstractControl
-                                   implements RequestControl, ResponseControl
+  implements RequestControl, ResponseControl
 {
 
+  /** OID of this control. */
+  public static final String OID = "1.3.6.1.4.1.42.2.27.8.5.1";
+
+  /** hash code seed. */
+  private static final int HASH_CODE_SEED = 719;
+
   /** Enum for ppolicy errors. */
-  public enum Error implements AccountState.Error
-  {
+  public enum Error implements AccountState.Error {
 
     /** password expired. */
     PASSWORD_EXPIRED(0),
@@ -123,24 +129,34 @@ public class PasswordPolicyControl extends AbstractControl
       throws LoginException
     {
       switch (this) {
+
       case PASSWORD_EXPIRED:
         throw new CredentialExpiredException(name());
+
       case ACCOUNT_LOCKED:
         throw new AccountLockedException(name());
+
       case CHANGE_AFTER_RESET:
         throw new CredentialExpiredException(name());
+
       case PASSWORD_MOD_NOT_ALLOWED:
         throw new AccountException(name());
+
       case MUST_SUPPLY_OLD_PASSWORD:
         throw new AccountException(name());
+
       case INSUFFICIENT_PASSWORD_QUALITY:
         throw new CredentialException(name());
+
       case PASSWORD_TOO_SHORT:
         throw new CredentialException(name());
+
       case PASSWORD_TOO_YOUNG:
         throw new CredentialException(name());
+
       case PASSWORD_IN_HISTORY:
         throw new CredentialException(name());
+
       default:
         throw new IllegalStateException(
           "Unknown password policy error: " + this);
@@ -152,6 +168,7 @@ public class PasswordPolicyControl extends AbstractControl
      * Returns the error for the supplied integer constant.
      *
      * @param  code  to find error for
+     *
      * @return  error
      */
     public static Error valueOf(final int code)
@@ -163,13 +180,7 @@ public class PasswordPolicyControl extends AbstractControl
       }
       return null;
     }
-  };
-
-  /** OID of this control. */
-  public static final String OID = "1.3.6.1.4.1.42.2.27.8.5.1";
-
-  /** hash code seed. */
-  private static final int HASH_CODE_SEED = 719;
+  }
 
   /** Ppolicy warning. */
   private int timeBeforeExpiration;
@@ -181,9 +192,7 @@ public class PasswordPolicyControl extends AbstractControl
   private Error error;
 
 
-  /**
-   * Default constructor.
-   */
+  /** Default constructor. */
   public PasswordPolicyControl()
   {
     super(OID);
@@ -271,13 +280,14 @@ public class PasswordPolicyControl extends AbstractControl
   @Override
   public int hashCode()
   {
-    return LdapUtil.computeHashCode(
-      HASH_CODE_SEED,
-      getOID(),
-      getCriticality(),
-      timeBeforeExpiration,
-      graceAuthNsRemaining,
-      error);
+    return
+      LdapUtil.computeHashCode(
+        HASH_CODE_SEED,
+        getOID(),
+        getCriticality(),
+        timeBeforeExpiration,
+        graceAuthNsRemaining,
+        error);
   }
 
 
@@ -316,16 +326,15 @@ public class PasswordPolicyControl extends AbstractControl
   {
     final PasswordPolicyHandler handler = new PasswordPolicyHandler(this);
     final DERParser parser = new DERParser(
-      new SimpleDERTag(0, "CHOICE", true), new SimpleDERTag(1, "ENUM", true));
+      new SimpleDERTag(0, "CHOICE", true),
+      new SimpleDERTag(1, "ENUM", true));
     parser.registerHandler(PasswordPolicyHandler.WARNING_PATH, handler);
     parser.registerHandler(PasswordPolicyHandler.ERROR_PATH, handler);
     parser.parse(ByteBuffer.wrap(encoded));
   }
 
 
-  /**
-   * Parse handler implementation for the password policy control.
-   */
+  /** Parse handler implementation for the password policy control. */
   private static class PasswordPolicyHandler implements ParseHandler
   {
 
@@ -399,8 +408,8 @@ public class PasswordPolicyControl extends AbstractControl
     private void handleError(final DERParser parser, final ByteBuffer encoded)
     {
       final int errValue = IntegerType.decode(encoded).intValue();
-      final PasswordPolicyControl.Error e =
-        PasswordPolicyControl.Error.valueOf(errValue);
+      final PasswordPolicyControl.Error e = PasswordPolicyControl.Error.valueOf(
+        errValue);
       if (e == null) {
         throw new IllegalArgumentException("Unknown error code " + errValue);
       }

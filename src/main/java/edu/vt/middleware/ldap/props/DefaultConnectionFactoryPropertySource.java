@@ -1,7 +1,7 @@
 /*
   $Id$
 
-  Copyright (C) 2003-2010 Virginia Tech.
+  Copyright (C) 2003-2012 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
@@ -21,9 +21,9 @@ import edu.vt.middleware.ldap.DefaultConnectionFactory;
 import edu.vt.middleware.ldap.provider.ProviderConfig;
 
 /**
- * Reads properties specific to
- * {@link edu.vt.middleware.ldap.DefaultConnectionFactory} and returns an
- * initialized object of that type.
+ * Reads properties specific to {@link
+ * edu.vt.middleware.ldap.DefaultConnectionFactory} and returns an initialized
+ * object of that type.
  *
  * @author  Middleware Services
  * @version  $Revision$ $Date$
@@ -60,7 +60,8 @@ public final class DefaultConnectionFactoryPropertySource
    * @param  is  to read properties from
    */
   public DefaultConnectionFactoryPropertySource(
-    final DefaultConnectionFactory cf, final InputStream is)
+    final DefaultConnectionFactory cf,
+    final InputStream is)
   {
     this(cf, loadProperties(is));
   }
@@ -73,7 +74,8 @@ public final class DefaultConnectionFactoryPropertySource
    * @param  props  to read properties from
    */
   public DefaultConnectionFactoryPropertySource(
-    final DefaultConnectionFactory cf, final Properties props)
+    final DefaultConnectionFactory cf,
+    final Properties props)
   {
     this(cf, PropertyDomain.LDAP, props);
   }

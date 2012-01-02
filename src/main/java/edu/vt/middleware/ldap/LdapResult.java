@@ -1,7 +1,7 @@
 /*
   $Id$
 
-  Copyright (C) 2003-2010 Virginia Tech.
+  Copyright (C) 2003-2012 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
@@ -69,7 +69,7 @@ public class LdapResult extends AbstractLdapBean
    *
    * @param  entry  ldap entry
    */
-  public LdapResult(final LdapEntry ... entry)
+  public LdapResult(final LdapEntry... entry)
   {
     this();
     for (LdapEntry e : entry) {
@@ -121,6 +121,7 @@ public class LdapResult extends AbstractLdapBean
    * Returns the ldap in this result with the supplied DN.
    *
    * @param  dn  of the entry to return
+   *
    * @return  ldap entry
    */
   public LdapEntry getEntry(final String dn)
@@ -136,8 +137,8 @@ public class LdapResult extends AbstractLdapBean
    */
   public String[] getEntryDns()
   {
-    return resultEntries.keySet().toArray(
-      new String[resultEntries.keySet().size()]);
+    return
+      resultEntries.keySet().toArray(new String[resultEntries.keySet().size()]);
   }
 
 
@@ -146,7 +147,7 @@ public class LdapResult extends AbstractLdapBean
    *
    * @param  entry  entry to add
    */
-  public void addEntry(final LdapEntry ... entry)
+  public void addEntry(final LdapEntry... entry)
   {
     for (LdapEntry e : entry) {
       resultEntries.put(e.getDn().toLowerCase(), e);
@@ -172,7 +173,7 @@ public class LdapResult extends AbstractLdapBean
    *
    * @param  entry  entry to remove
    */
-  public void removeEntry(final LdapEntry ... entry)
+  public void removeEntry(final LdapEntry... entry)
   {
     for (LdapEntry e : entry) {
       resultEntries.remove(e.getDn().toLowerCase());
@@ -215,9 +216,7 @@ public class LdapResult extends AbstractLdapBean
   }
 
 
-  /**
-   * Removes all the entries in this ldap result.
-   */
+  /** Removes all the entries in this ldap result. */
   public void clear()
   {
     resultEntries.clear();
@@ -264,8 +263,8 @@ public class LdapResult extends AbstractLdapBean
           mergedEntry = le;
         } else {
           for (LdapAttribute la : le.getAttributes()) {
-            final LdapAttribute oldAttr =
-              mergedEntry.getAttribute(la.getName());
+            final LdapAttribute oldAttr = mergedEntry.getAttribute(
+              la.getName());
             if (oldAttr == null) {
               mergedEntry.addAttribute(la);
             } else {

@@ -1,7 +1,7 @@
 /*
   $Id$
 
-  Copyright (C) 2003-2010 Virginia Tech.
+  Copyright (C) 2003-2012 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
@@ -19,9 +19,9 @@ import java.util.Set;
 import edu.vt.middleware.ldap.auth.AuthenticationRequest;
 
 /**
- * Reads properties specific to
- * {@link edu.vt.middleware.ldap.auth.AuthenticationRequest} and returns an
- * initialized object of that type.
+ * Reads properties specific to {@link
+ * edu.vt.middleware.ldap.auth.AuthenticationRequest} and returns an initialized
+ * object of that type.
  *
  * @author  Middleware Services
  * @version  $Revision$ $Date$
@@ -58,7 +58,8 @@ public final class AuthenticationRequestPropertySource
    * @param  is  to read properties from
    */
   public AuthenticationRequestPropertySource(
-    final AuthenticationRequest request, final InputStream is)
+    final AuthenticationRequest request,
+    final InputStream is)
   {
     this(request, loadProperties(is));
   }
@@ -71,7 +72,8 @@ public final class AuthenticationRequestPropertySource
    * @param  props  to read properties from
    */
   public AuthenticationRequestPropertySource(
-    final AuthenticationRequest request, final Properties props)
+    final AuthenticationRequest request,
+    final Properties props)
   {
     this(request, PropertyDomain.AUTH, props);
   }

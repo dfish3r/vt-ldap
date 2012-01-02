@@ -1,7 +1,7 @@
 /*
   $Id$
 
-  Copyright (C) 2003-2010 Virginia Tech.
+  Copyright (C) 2003-2012 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
@@ -44,8 +44,7 @@ public class SearchOperation extends AbstractSearchOperation<SearchRequest>
    * @param  conn  connection
    * @param  c  cache
    */
-  public SearchOperation(
-    final Connection conn, final Cache<SearchRequest> c)
+  public SearchOperation(final Connection conn, final Cache<SearchRequest> c)
   {
     super(conn, c);
   }
@@ -76,8 +75,12 @@ public class SearchOperation extends AbstractSearchOperation<SearchRequest>
     } finally {
       si.close();
     }
+
     final Response<Void> response = si.getResponse();
-    return new Response<LdapResult>(
-      lr, response.getResultCode(), response.getControls());
+    return
+      new Response<LdapResult>(
+        lr,
+        response.getResultCode(),
+        response.getControls());
   }
 }

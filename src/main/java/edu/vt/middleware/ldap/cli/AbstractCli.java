@@ -1,7 +1,7 @@
 /*
   $Id$
 
-  Copyright (C) 2003-2010 Virginia Tech.
+  Copyright (C) 2003-2012 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
@@ -106,20 +106,22 @@ public abstract class AbstractCli
    *
    * @throws  Exception  if a connection config cannot be created
    */
-  protected ConnectionFactory initConnectionFactory(
-    final CommandLine line)
+  protected ConnectionFactory initConnectionFactory(final CommandLine line)
     throws Exception
   {
     final DefaultConnectionFactory factory = new DefaultConnectionFactory();
     final DefaultConnectionFactoryPropertySource cfSource =
       new DefaultConnectionFactoryPropertySource(
-        factory, getPropertiesFromOptions(PropertyDomain.LDAP.value(), line));
+        factory,
+        getPropertiesFromOptions(PropertyDomain.LDAP.value(), line));
     cfSource.initialize();
-    if (factory.getConnectionConfig().getBindDn() != null &&
+    if (
+      factory.getConnectionConfig().getBindDn() != null &&
         factory.getConnectionConfig().getBindCredential() == null) {
       // prompt the user to enter a password
       final char[] pass = System.console().readPassword(
-        "[Enter password for %s]: ", factory.getConnectionConfig().getBindDn());
+        "[Enter password for %s]: ",
+        factory.getConnectionConfig().getBindDn());
       factory.getConnectionConfig().setBindCredential(new Credential(pass));
     }
     return factory;
@@ -159,8 +161,7 @@ public abstract class AbstractCli
   protected void printExamples()
   {
     final String name = getClass().getSimpleName();
-    final InputStream in = getClass().getResourceAsStream(
-      name + ".examples");
+    final InputStream in = getClass().getResourceAsStream(name + ".examples");
     if (in != null) {
       final BufferedReader reader = new BufferedReader(
         new InputStreamReader(in));
@@ -191,6 +192,7 @@ public abstract class AbstractCli
    * Returns the command line argument descriptions for this CLI.
    *
    * @param  classes  that contain arguments used by this CLI
+   *
    * @return  map of argument name to description
    */
   protected Map<String, String> getArgDesc(final Class<?>... classes)
@@ -198,8 +200,7 @@ public abstract class AbstractCli
     final Map<String, String> args = new HashMap<String, String>();
     for (Class<?> c : classes) {
       final String name = c.getSimpleName();
-      final InputStream in = getClass().getResourceAsStream(
-        name + ".args");
+      final InputStream in = getClass().getResourceAsStream(name + ".args");
       if (in != null) {
         final BufferedReader reader = new BufferedReader(
           new InputStreamReader(in));
@@ -235,10 +236,12 @@ public abstract class AbstractCli
    *
    * @param  domain  to place property names in
    * @param  line  command line
-   * @return  properties  for each option and value
+   *
+   * @return  properties for each option and value
    */
   protected Properties getPropertiesFromOptions(
-    final String domain, final CommandLine line)
+    final String domain,
+    final CommandLine line)
   {
     final Properties props = new Properties();
     for (Option o : line.getOptions()) {
@@ -247,7 +250,7 @@ public abstract class AbstractCli
         if (o.getOpt().equals(OPT_PROVIDER_PROPERTIES)) {
           final String[] s = o.getValue().split("=");
           props.setProperty(s[0], s[1]);
-        // add the domain to vt-ldap properties
+          // add the domain to vt-ldap properties
         } else {
           props.setProperty(domain + o.getOpt(), o.getValue());
         }

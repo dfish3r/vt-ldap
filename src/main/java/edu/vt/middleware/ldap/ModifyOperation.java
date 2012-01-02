@@ -1,7 +1,7 @@
 /*
   $Id$
 
-  Copyright (C) 2003-2010 Virginia Tech.
+  Copyright (C) 2003-2012 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
@@ -46,5 +46,6 @@ public class ModifyOperation extends AbstractOperation<ModifyRequest, Void>
   /** {@inheritDoc} */
   @Override
   protected void initializeRequest(
-    final ModifyRequest request, final ConnectionConfig cc) {}
+    final ModifyRequest request,
+    final ConnectionConfig cc) {}
 }

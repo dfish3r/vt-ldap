@@ -1,7 +1,7 @@
 /*
   $Id$
 
-  Copyright (C) 2003-2010 Virginia Tech.
+  Copyright (C) 2003-2012 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
@@ -90,8 +90,7 @@ public class LdapDnPrincipal
       return false;
     }
     return
-      o == this ||
-        (getClass() == o.getClass() && o.hashCode() == hashCode());
+      o == this || (getClass() == o.getClass() && o.hashCode() == hashCode());
   }
 
 
@@ -115,18 +114,19 @@ public class LdapDnPrincipal
   @Override
   public String toString()
   {
-    return String.format(
-      "[%s@%d::%s%s]",
-      getClass().getName(),
-      hashCode(),
-      ldapDn,
-      ldapEntry != null ? ldapEntry : "");
+    return
+      String.format(
+        "[%s@%d::%s%s]",
+        getClass().getName(),
+        hashCode(),
+        ldapDn,
+        ldapEntry != null ? ldapEntry : "");
   }
 
 
   /**
-   * Principals are compared lexicographically by name. See
-   * {@link Comparable#compareTo(Object)}.
+   * Principals are compared lexicographically by name. See {@link
+   * Comparable#compareTo(Object)}.
    *
    * @param  p  principal to compare
    *

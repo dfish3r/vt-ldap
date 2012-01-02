@@ -1,7 +1,7 @@
 /*
   $Id$
 
-  Copyright (C) 2003-2010 Virginia Tech.
+  Copyright (C) 2003-2012 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
@@ -28,22 +28,27 @@ import edu.vt.middleware.ldap.io.LdifWriter;
 /**
  * Queries an LDAP and returns the result as LDIF or DSML. The following init
  * params can be set for this servlet:
+ *
  * <ul>
  *   <li>edu.vt.middleware.ldap.servlets.propertiesFile</li>
  *   <li>edu.vt.middleware.ldap.servlets.poolPropertiesFile</li>
  *   <li>edu.vt.middleware.ldap.servlets.poolType</li>
  *   <li>edu.vt.middleware.ldap.servlets.outputFormat</li>
  * </ul>
- * Example: http://www.server.com/Search?query=uid=dfisher
- * If you need to pass complex queries, such as (&(cn=daniel*)(surname=fisher)),
- * then the query must be form encoded. If you only want to receive a subset of
- * attributes those can be specified. Example:
+ *
+ * <p>Example: http://www.server.com/Search?query=uid=dfisher If you need to
+ * pass complex queries, such as (&(cn=daniel*)(surname=fisher)), then the query
+ * must be form encoded. If you only want to receive a subset of attributes
+ * those can be specified. Example:
  * http://www.server.com/Search?query=uid=dfisher&attrs=givenname&attrs=surname
+ * </p>
  *
  * <h3>LDIF</h3>
+ *
  * <p>The content returned by the servlet is of type text/plain.</p>
  * <hr/>
  * <h3>DSML</h3>
+ *
  * <p>The content returned by the servlet is of type text/xml, if you want to
  * receive the content as text/plain that can be specified as well. Example:
  * http://www.server.com/Search?query=uid=dfisher&content-type=text</p>

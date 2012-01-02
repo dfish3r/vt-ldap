@@ -1,7 +1,7 @@
 /*
   $Id$
 
-  Copyright (C) 2011 Virginia Tech.
+  Copyright (C) 2003-2012 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION

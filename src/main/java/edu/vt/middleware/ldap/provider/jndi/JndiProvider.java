@@ -1,7 +1,7 @@
 /*
   $Id$
 
-  Copyright (C) 2003-2010 Virginia Tech.
+  Copyright (C) 2003-2012 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
@@ -75,8 +75,7 @@ public class JndiProvider implements Provider<JndiProviderConfig>
    * milliseconds that an operation will abort if a response is not received.
    * The value of this constant is {@value}.
    */
-  public static final String READ_TIMEOUT =
-    "com.sun.jndi.ldap.read.timeout";
+  public static final String READ_TIMEOUT = "com.sun.jndi.ldap.read.timeout";
 
   /**
    * The value of this property is a java.io.OutputStream object into which a
@@ -139,10 +138,10 @@ public class JndiProvider implements Provider<JndiProviderConfig>
    * properties found in the supplied connection config.
    *
    * @param  cc  connection config
+   *
    * @return  JNDI ldap context environment
    */
-  protected Map<String, Object> createEnvironment(
-    final ConnectionConfig cc)
+  protected Map<String, Object> createEnvironment(final ConnectionConfig cc)
   {
     final Map<String, Object> env = new HashMap<String, Object>();
     env.put(CONTEXT_FACTORY, "com.sun.jndi.ldap.LdapCtxFactory");

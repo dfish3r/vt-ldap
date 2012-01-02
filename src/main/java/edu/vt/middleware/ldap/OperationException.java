@@ -1,7 +1,7 @@
 /*
   $Id$
 
-  Copyright (C) 2003-2010 Virginia Tech.
+  Copyright (C) 2003-2012 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
@@ -59,7 +59,9 @@ public class OperationException extends LdapException
    * @param  c  response controls
    */
   public OperationException(
-    final String msg, final ResultCode code, final ResponseControl[] c)
+    final String msg,
+    final ResultCode code,
+    final ResponseControl[] c)
   {
     super(msg, code, c);
   }
@@ -96,7 +98,9 @@ public class OperationException extends LdapException
    * @param  c  response controls
    */
   public OperationException(
-    final Exception e, final ResultCode code, final ResponseControl[] c)
+    final Exception e,
+    final ResultCode code,
+    final ResponseControl[] c)
   {
     super(e, code, c);
   }
@@ -122,7 +126,9 @@ public class OperationException extends LdapException
    * @param  code  result code
    */
   public OperationException(
-    final String msg, final Exception e, final ResultCode code)
+    final String msg,
+    final Exception e,
+    final ResultCode code)
   {
     super(msg, e, code);
   }

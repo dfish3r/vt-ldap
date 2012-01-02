@@ -1,7 +1,7 @@
 /*
   $Id$
 
-  Copyright (C) 2003-2010 Virginia Tech.
+  Copyright (C) 2003-2012 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
@@ -83,9 +83,11 @@ public abstract class AbstractServlet extends HttpServlet
     logger.debug("{} = {}", PROPERTIES_FILE, propertiesFile);
 
     searchRequest = new SearchRequest();
+
     final SearchRequestPropertySource srSource =
       new SearchRequestPropertySource(
-        searchRequest, SearchServlet.class.getResourceAsStream(propertiesFile));
+        searchRequest,
+        SearchServlet.class.getResourceAsStream(propertiesFile));
     srSource.initialize();
 
     final String poolPropertiesFile = getInitParameter(POOL_PROPERTIES_FILE);
@@ -95,6 +97,7 @@ public abstract class AbstractServlet extends HttpServlet
     logger.debug("{} = {}", POOL_TYPE, poolType);
 
     connectionFactory = new PooledConnectionFactory();
+
     final PooledConnectionFactoryPropertySource cfPropSource =
       new PooledConnectionFactoryPropertySource(
         connectionFactory,
@@ -109,12 +112,12 @@ public abstract class AbstractServlet extends HttpServlet
    *
    * @param  query  to execute
    * @param  attrs  to return
+   *
    * @return  ldap result
+   *
    * @throws  LdapException  if an error occurs
    */
-  protected LdapResult search(
-    final String query,
-    final String[] attrs)
+  protected LdapResult search(final String query, final String[] attrs)
     throws LdapException
   {
     LdapResult result = null;
@@ -123,6 +126,7 @@ public abstract class AbstractServlet extends HttpServlet
         Connection conn = null;
         try {
           conn = connectionFactory.getConnection();
+
           final SearchOperation search = new SearchOperation(conn);
           final SearchRequest sr = SearchRequest.newSearchRequest(
             searchRequest);

@@ -1,7 +1,7 @@
 /*
   $Id$
 
-  Copyright (C) 2003-2010 Virginia Tech.
+  Copyright (C) 2003-2012 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
@@ -104,7 +104,7 @@ public class LdapAttribute extends AbstractLdapBean
    * @param  name  of this attribute
    * @param  values  of this attribute
    */
-  public LdapAttribute(final String name, final String ... values)
+  public LdapAttribute(final String name, final String... values)
   {
     this(false);
     setName(name);
@@ -120,7 +120,7 @@ public class LdapAttribute extends AbstractLdapBean
    * @param  name  of this attribute
    * @param  values  of this attribute
    */
-  public LdapAttribute(final String name, final byte[] ... values)
+  public LdapAttribute(final String name, final byte[]... values)
   {
     this(true);
     setName(name);
@@ -165,8 +165,8 @@ public class LdapAttribute extends AbstractLdapBean
 
 
   /**
-   * Returns a single string value of this attribute. See
-   * {@link #getStringValues()}.
+   * Returns a single string value of this attribute. See {@link
+   * #getStringValues()}.
    *
    * @return  single string attribute value
    */
@@ -193,8 +193,8 @@ public class LdapAttribute extends AbstractLdapBean
 
 
   /**
-   * Returns a single byte array value of this attribute. See
-   * {@link #getBinaryValues()}.
+   * Returns a single byte array value of this attribute. See {@link
+   * #getBinaryValues()}.
    *
    * @return  single byte array attribute value
    */
@@ -223,9 +223,10 @@ public class LdapAttribute extends AbstractLdapBean
    * Adds the supplied string as a value for this attribute.
    *
    * @param  value  to add
-   * @throws  NullPointerException if value is null
+   *
+   * @throws  NullPointerException  if value is null
    */
-  public void addStringValue(final String ... value)
+  public void addStringValue(final String... value)
   {
     for (String s : value) {
       attributeValues.add(s);
@@ -251,9 +252,10 @@ public class LdapAttribute extends AbstractLdapBean
    * Adds the supplied byte array as a value for this attribute.
    *
    * @param  value  to add
-   * @throws  NullPointerException if value is null
+   *
+   * @throws  NullPointerException  if value is null
    */
-  public void addBinaryValue(final byte[] ... value)
+  public void addBinaryValue(final byte[]... value)
   {
     for (byte[] b : value) {
       attributeValues.add(b);
@@ -280,7 +282,7 @@ public class LdapAttribute extends AbstractLdapBean
    *
    * @param  value  to remove
    */
-  public void removeStringValue(final String ... value)
+  public void removeStringValue(final String... value)
   {
     for (String s : value) {
       attributeValues.remove(s);
@@ -307,7 +309,7 @@ public class LdapAttribute extends AbstractLdapBean
    *
    * @param  value  to remove
    */
-  public void removeBinaryValue(final byte[] ... value)
+  public void removeBinaryValue(final byte[]... value)
   {
     for (byte[] b : value) {
       attributeValues.remove(b);
@@ -340,9 +342,7 @@ public class LdapAttribute extends AbstractLdapBean
   }
 
 
-  /**
-   * Removes all the values in this ldap attribute.
-   */
+  /** Removes all the values in this ldap attribute. */
   public void clear()
   {
     attributeValues.clear();
@@ -353,10 +353,11 @@ public class LdapAttribute extends AbstractLdapBean
   @Override
   public int hashCode()
   {
-    return LdapUtil.computeHashCode(
-      HASH_CODE_SEED,
-      attributeName != null ? attributeName.toLowerCase() : null,
-      attributeValues);
+    return
+      LdapUtil.computeHashCode(
+        HASH_CODE_SEED,
+        attributeName != null ? attributeName.toLowerCase() : null,
+        attributeValues);
   }
 
 
@@ -380,13 +381,15 @@ public class LdapAttribute extends AbstractLdapBean
    * @param  name  of this attribute
    * @param  values  of this attribute
    *
+   * @return  ldap attribute
+   *
    * @throws  IllegalArgumentException  if values contains something other than
    * String or byte[]
-   *
-   * @return  ldap attribute
    */
   public static LdapAttribute createLdapAttribute(
-    final SortBehavior sb, final String name, final Collection<Object> values)
+    final SortBehavior sb,
+    final String name,
+    final Collection<Object> values)
   {
     final Set<String> stringValues = new HashSet<String>();
     final Set<byte[]> binaryValues = new HashSet<byte[]>();
@@ -400,6 +403,7 @@ public class LdapAttribute extends AbstractLdapBean
           "Values must contain either String or byte[]");
       }
     }
+
     LdapAttribute la = null;
     if (!binaryValues.isEmpty()) {
       la = new LdapAttribute(sb, true);
@@ -438,12 +442,13 @@ public class LdapAttribute extends AbstractLdapBean
      *
      * @param  t  type of values
      *
-     * @throws  IllegalArgumentException if t is not a String or byte[]
+     * @throws  IllegalArgumentException  if t is not a String or byte[]
      */
     public LdapAttributeValues(final Class<T> t)
     {
-      if (!(t.isAssignableFrom(String.class) ||
-          t.isAssignableFrom(byte[].class))) {
+      if (
+        !(t.isAssignableFrom(String.class) ||
+            t.isAssignableFrom(byte[].class))) {
         throw new IllegalArgumentException(
           "Only String and byte[] values are supported");
       }
@@ -456,6 +461,7 @@ public class LdapAttribute extends AbstractLdapBean
      * Returns whether this ldap attribute values is of the supplied type.
      *
      * @param  c  type to check
+     *
      * @return  whether this ldap attribute values is of the supplied type
      */
     public boolean isType(final Class<?> c)
@@ -477,8 +483,9 @@ public class LdapAttribute extends AbstractLdapBean
       if (isType(String.class)) {
         return Collections.unmodifiableSet((Set<String>) values);
       }
-      return Collections.unmodifiableSet(
-        convertValuesToString((Set<byte[]>) values));
+      return
+        Collections.unmodifiableSet(
+          convertValuesToString((Set<byte[]>) values));
     }
 
 
@@ -495,8 +502,9 @@ public class LdapAttribute extends AbstractLdapBean
       if (isType(byte[].class)) {
         return Collections.unmodifiableSet((Set<byte[]>) values);
       }
-      return Collections.unmodifiableSet(
-        convertValuesToByteArray((Set<String>) values));
+      return
+        Collections.unmodifiableSet(
+          convertValuesToByteArray((Set<String>) values));
     }
 
 
@@ -505,8 +513,8 @@ public class LdapAttribute extends AbstractLdapBean
      *
      * @param  o  to add
      *
-     * @throws  IllegalArgumentException if o is null or if o is not the correct
-     * type
+     * @throws  IllegalArgumentException  if o is null or if o is not the
+     * correct type
      */
     public void add(final Object o)
     {
@@ -520,8 +528,8 @@ public class LdapAttribute extends AbstractLdapBean
      *
      * @param  o  to remove
      *
-     * @throws  IllegalArgumentException if o is null or if o is not the correct
-     * type
+     * @throws  IllegalArgumentException  if o is null or if o is not the
+     * correct type
      */
     public void remove(final Object o)
     {
@@ -535,8 +543,8 @@ public class LdapAttribute extends AbstractLdapBean
      *
      * @param  o  object to check
      *
-     * @throws  IllegalArgumentException if o is null or if o is not the correct
-     * type
+     * @throws  IllegalArgumentException  if o is null or if o is not the
+     * correct type
      */
     private void checkValue(final Object o)
     {
@@ -564,9 +572,7 @@ public class LdapAttribute extends AbstractLdapBean
     }
 
 
-    /**
-     * Removes all the values.
-     */
+    /** Removes all the values. */
     public void clear()
     {
       values.clear();
@@ -631,7 +637,6 @@ public class LdapAttribute extends AbstractLdapBean
      * Returns an implementation of set for the sort behavior of this bean.
      *
      * @param  <E>  type contained in the set
-     *
      * @param  c  type of set to create
      *
      * @return  set

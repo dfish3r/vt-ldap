@@ -1,7 +1,7 @@
 /*
   $Id$
 
-  Copyright (C) 2003-2010 Virginia Tech.
+  Copyright (C) 2003-2012 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
@@ -79,8 +79,8 @@ public abstract class AbstractTLSSocketFactory extends SSLSocketFactory
 
 
   /**
-   * Returns the names of the protocol versions which are currently enabled
-   * for use on sockets created by this factory. A null value indicates that no
+   * Returns the names of the protocol versions which are currently enabled for
+   * use on sockets created by this factory. A null value indicates that no
    * specific protocols have been enabled and that the default protocols are in
    * use.
    *
@@ -136,8 +136,8 @@ public abstract class AbstractTLSSocketFactory extends SSLSocketFactory
 
 
   /**
-   * Returns a socket layered over an existing socket connected to the
-   * named host, at the given port.
+   * Returns a socket layered over an existing socket connected to the named
+   * host, at the given port.
    *
    * @param  socket  existing socket
    * @param  host  server hostname
@@ -198,8 +198,7 @@ public abstract class AbstractTLSSocketFactory extends SSLSocketFactory
   {
     SSLSocket socket = null;
     if (factory != null) {
-      socket = initSSLSocket(
-        (SSLSocket) factory.createSocket(host, port));
+      socket = initSSLSocket((SSLSocket) factory.createSocket(host, port));
     }
     return socket;
   }
@@ -255,8 +254,7 @@ public abstract class AbstractTLSSocketFactory extends SSLSocketFactory
   {
     SSLSocket socket = null;
     if (factory != null) {
-      socket = initSSLSocket(
-        (SSLSocket) factory.createSocket(host, port));
+      socket = initSSLSocket((SSLSocket) factory.createSocket(host, port));
     }
     return socket;
   }
@@ -286,11 +284,7 @@ public abstract class AbstractTLSSocketFactory extends SSLSocketFactory
     SSLSocket socket = null;
     if (factory != null) {
       socket = initSSLSocket(
-        (SSLSocket) factory.createSocket(
-          host,
-          port,
-          localHost,
-          localPort));
+        (SSLSocket) factory.createSocket(host, port, localHost, localPort));
     }
     return socket;
   }
@@ -299,7 +293,7 @@ public abstract class AbstractTLSSocketFactory extends SSLSocketFactory
   /**
    * Returns the list of cipher suites which are enabled by default.
    *
-   * @return cipher suites
+   * @return  cipher suites
    */
   public String[] getDefaultCipherSuites()
   {
@@ -312,8 +306,8 @@ public abstract class AbstractTLSSocketFactory extends SSLSocketFactory
 
 
   /**
-   * Returns the names of the cipher suites which could be enabled for use
-   * on an SSL connection.
+   * Returns the names of the cipher suites which could be enabled for use on an
+   * SSL connection.
    *
    * @return  cipher suites
    */

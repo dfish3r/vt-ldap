@@ -1,7 +1,7 @@
 /*
   $Id$
 
-  Copyright (C) 2003-2010 Virginia Tech.
+  Copyright (C) 2003-2012 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
@@ -29,8 +29,7 @@ import edu.vt.middleware.ldap.ResultCode;
  * @author  Middleware Services
  * @version  $Revision$
  */
-public class BindAuthenticationHandler
-  extends AbstractBindAuthenticationHandler
+public class BindAuthenticationHandler extends AbstractBindAuthenticationHandler
   implements ConnectionFactoryManager
 {
 
@@ -81,12 +80,14 @@ public class BindAuthenticationHandler
   /** {@inheritDoc} */
   @Override
   protected AuthenticationHandlerResponse authenticateInternal(
-    final Connection c, final AuthenticationCriteria criteria)
+    final Connection c,
+    final AuthenticationCriteria criteria)
     throws LdapException
   {
     AuthenticationHandlerResponse response = null;
     final BindRequest request = new BindRequest(
-      criteria.getDn(), criteria.getCredential());
+      criteria.getDn(),
+      criteria.getCredential());
     request.setSaslConfig(getAuthenticationSaslConfig());
     request.setControls(getAuthenticationControls());
     try {

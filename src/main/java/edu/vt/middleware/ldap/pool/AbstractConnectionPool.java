@@ -1,7 +1,7 @@
 /*
   $Id$
 
-  Copyright (C) 2003-2010 Virginia Tech.
+  Copyright (C) 2003-2012 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
@@ -31,10 +31,10 @@ import edu.vt.middleware.ldap.LdapUtil;
 
 /**
  * Contains the base implementation for pooling connections. The main design
- * objective for the supplied pooling implementations is to provide a
- * pool that does not block on connection creation or destruction. This is what
- * accounts for the multiple locks available on this class. The pool is backed
- * by two queues, one for available connections and one for active connections.
+ * objective for the supplied pooling implementations is to provide a pool that
+ * does not block on connection creation or destruction. This is what accounts
+ * for the multiple locks available on this class. The pool is backed by two
+ * queues, one for available connections and one for active connections.
  * Connections that are available via {@link #getConnection()} exist in the
  * available queue. Connections that are actively in use exist in the active
  * queue.
@@ -107,10 +107,10 @@ public abstract class AbstractConnectionPool extends AbstractPool<Connection>
 
 
   /**
-   * Returns whether connections will attempt to connect after creation.
-   * Default is true.
+   * Returns whether connections will attempt to connect after creation. Default
+   * is true.
    *
-   * @return   whether connections will attempt to connect after creation
+   * @return  whether connections will attempt to connect after creation
    */
   public boolean getConnectOnCreate()
   {
@@ -119,7 +119,7 @@ public abstract class AbstractConnectionPool extends AbstractPool<Connection>
 
 
   /**
-   * Sets whether newly created  connections will attempt to connect. Default is
+   * Sets whether newly created connections will attempt to connect. Default is
    * true.
    *
    * @param  b  connect on create
@@ -172,7 +172,7 @@ public abstract class AbstractConnectionPool extends AbstractPool<Connection>
 
     initializePool();
 
-    logger.debug("pool initialized to size {}",  available.size());
+    logger.debug("pool initialized to size {}", available.size());
   }
 
 
@@ -180,7 +180,8 @@ public abstract class AbstractConnectionPool extends AbstractPool<Connection>
   private void initializePool()
   {
     logger.debug(
-      "checking ldap pool size >= {}", getPoolConfig().getMinPoolSize());
+      "checking ldap pool size >= {}",
+      getPoolConfig().getMinPoolSize());
 
     int count = 0;
     poolLock.lock();
@@ -242,7 +243,8 @@ public abstract class AbstractConnectionPool extends AbstractPool<Connection>
    * @throws  PoolInterruptedException  if this pool is configured with a block
    * time and the current thread is interrupted
    */
-  public abstract Connection getConnection() throws PoolException;
+  public abstract Connection getConnection()
+    throws PoolException;
 
 
   /**
@@ -421,7 +423,8 @@ public abstract class AbstractConnectionPool extends AbstractPool<Connection>
       removeAvailableAndActiveConnection(pc);
       throw new ActivationException("Activation of connection failed");
     }
-    if (getPoolConfig().isValidateOnCheckOut() &&
+    if (
+      getPoolConfig().isValidateOnCheckOut() &&
         !validate(pc.getConnection())) {
       logger.warn("connection failed check out validation: {}", pc);
       removeAvailableAndActiveConnection(pc);
@@ -466,7 +469,8 @@ public abstract class AbstractConnectionPool extends AbstractPool<Connection>
   public void prune()
   {
     logger.trace(
-      "waiting for pool lock to prune {}", poolLock.getQueueLength());
+      "waiting for pool lock to prune {}",
+      poolLock.getQueueLength());
     poolLock.lock();
     try {
       if (active.size() == 0) {
@@ -474,7 +478,8 @@ public abstract class AbstractConnectionPool extends AbstractPool<Connection>
         while (available.size() > getPoolConfig().getMinPoolSize()) {
           PooledConnectionHandler pc = available.peek();
           final long time = System.currentTimeMillis() - pc.getCreatedTime();
-          if (time >
+          if (
+            time >
               TimeUnit.SECONDS.toMillis(getPoolConfig().getExpirationTime())) {
             pc = available.remove();
             logger.trace("removing {} in the pool for {}ms", pc, time);
@@ -504,8 +509,7 @@ public abstract class AbstractConnectionPool extends AbstractPool<Connection>
     try {
       if (active.size() == 0) {
         if (getPoolConfig().isValidatePeriodically()) {
-          logger.debug(
-            "validate for pool of size {}", available.size());
+          logger.debug("validate for pool of size {}", available.size());
 
           final Queue<PooledConnectionHandler> remove =
             new LinkedList<PooledConnectionHandler>();
@@ -526,8 +530,7 @@ public abstract class AbstractConnectionPool extends AbstractPool<Connection>
           }
         }
         initializePool();
-        logger.debug(
-          "pool size after validation is {}", available.size());
+        logger.debug("pool size after validation is {}", available.size());
       } else {
         logger.debug("pool is currently active, no validation performed");
       }
@@ -563,12 +566,16 @@ public abstract class AbstractConnectionPool extends AbstractPool<Connection>
    * Creates a connection proxy using the supplied pool connection.
    *
    * @param  pc  pool connection to create proxy with
+   *
    * @return  connection proxy
    */
   protected Connection createConnectionProxy(final PooledConnectionHandler pc)
   {
-    return (Connection) Proxy.newProxyInstance(
-      Connection.class.getClassLoader(), new Class[] {Connection.class}, pc);
+    return
+      (Connection) Proxy.newProxyInstance(
+        Connection.class.getClassLoader(),
+        new Class[] {Connection.class},
+        pc);
   }
 
 
@@ -576,6 +583,7 @@ public abstract class AbstractConnectionPool extends AbstractPool<Connection>
    * Retrieves the invocation handler from the supplied connection proxy.
    *
    * @param  proxy  connection proxy
+   *
    * @return  pooled connection handler
    */
   protected PooledConnectionHandler retrieveInvocationHandler(
@@ -689,7 +697,8 @@ public abstract class AbstractConnectionPool extends AbstractPool<Connection>
         return false;
       }
       return
-        o == this || (getClass() == o.getClass() && o.hashCode() == hashCode());
+        o == this || (getClass() == o.getClass() &&
+          o.hashCode() == hashCode());
     }
 
 
@@ -708,7 +717,9 @@ public abstract class AbstractConnectionPool extends AbstractPool<Connection>
     /** {@inheritDoc} */
     @Override
     public Object invoke(
-      final Object proxy, final Method method, final Object[] args)
+      final Object proxy,
+      final Method method,
+      final Object[] args)
       throws Throwable
     {
       if ("close".equals(method.getName())) {

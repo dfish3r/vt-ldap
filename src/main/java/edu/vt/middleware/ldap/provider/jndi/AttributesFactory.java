@@ -1,7 +1,7 @@
 /*
   $Id$
 
-  Copyright (C) 2003-2010 Virginia Tech.
+  Copyright (C) 2003-2012 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
@@ -74,7 +74,8 @@ public final class AttributesFactory
    * @return  attributes
    */
   public static Attributes createAttributes(
-    final String name, final Object value)
+    final String name,
+    final Object value)
   {
     return createAttributes(name, value, DEFAULT_IGNORE_CASE);
   }
@@ -90,7 +91,9 @@ public final class AttributesFactory
    * @return  attributes
    */
   public static Attributes createAttributes(
-    final String name, final Object value, final boolean ignoreCase)
+    final String name,
+    final Object value,
+    final boolean ignoreCase)
   {
     if (value == null) {
       return createAttributes(name, null, ignoreCase);
@@ -109,7 +112,8 @@ public final class AttributesFactory
    * @return  attributes
    */
   public static Attributes createAttributes(
-    final String name, final Object[] values)
+    final String name,
+    final Object[] values)
   {
     return createAttributes(name, values, DEFAULT_IGNORE_CASE);
   }
@@ -125,7 +129,9 @@ public final class AttributesFactory
    * @return  attributes
    */
   public static Attributes createAttributes(
-    final String name, final Object[] values, final boolean ignoreCase)
+    final String name,
+    final Object[] values,
+    final boolean ignoreCase)
   {
     final Attributes attrs = new BasicAttributes(ignoreCase);
     attrs.put(createAttribute(name, values));
@@ -173,7 +179,8 @@ public final class AttributesFactory
    * @return  attribute
    */
   public static Attribute createAttribute(
-    final String name, final Object[] values)
+    final String name,
+    final Object[] values)
   {
     final Attribute attr = new BasicAttribute(name);
     if (values != null) {

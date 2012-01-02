@@ -1,7 +1,7 @@
 /*
   $Id$
 
-  Copyright (C) 2003-2010 Virginia Tech.
+  Copyright (C) 2003-2012 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
@@ -24,18 +24,19 @@ import edu.vt.middleware.ldap.asn1.SequenceEncoder;
 
 /**
  * Request control for server side sorting. See RFC 2891. Control is defined as:
+ *
  * <pre>
- * SortKeyList ::= SEQUENCE OF SEQUENCE {
- *    attributeType   AttributeDescription,
- *    orderingRule    [0] MatchingRuleId OPTIONAL,
- *    reverseOrder    [1] BOOLEAN DEFAULT FALSE }
+   SortKeyList ::= SEQUENCE OF SEQUENCE {
+      attributeType   AttributeDescription,
+      orderingRule    [0] MatchingRuleId OPTIONAL,
+      reverseOrder    [1] BOOLEAN DEFAULT FALSE }
  * </pre>
  *
  * @author  Middleware Services
  * @version  $Revision$ $Date$
  */
 public class SortRequestControl extends AbstractControl
-                                implements RequestControl
+  implements RequestControl
 {
 
   /** OID of this control. */
@@ -48,9 +49,7 @@ public class SortRequestControl extends AbstractControl
   private SortKey[] sortKeys;
 
 
-  /**
-   * Default constructor.
-   */
+  /** Default constructor. */
   public SortRequestControl()
   {
     super(OID);
@@ -108,8 +107,12 @@ public class SortRequestControl extends AbstractControl
   @Override
   public int hashCode()
   {
-    return LdapUtil.computeHashCode(
-      HASH_CODE_SEED, getOID(), getCriticality(), sortKeys);
+    return
+      LdapUtil.computeHashCode(
+        HASH_CODE_SEED,
+        getOID(),
+        getCriticality(),
+        sortKeys);
   }
 
 
@@ -147,6 +150,7 @@ public class SortRequestControl extends AbstractControl
       }
       keyEncoders[i] = new SequenceEncoder(l.toArray(new DEREncoder[l.size()]));
     }
+
     final SequenceEncoder se = new SequenceEncoder(keyEncoders);
     return se.encode();
   }

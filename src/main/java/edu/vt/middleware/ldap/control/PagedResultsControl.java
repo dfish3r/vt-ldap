@@ -1,7 +1,7 @@
 /*
   $Id$
 
-  Copyright (C) 2003-2010 Virginia Tech.
+  Copyright (C) 2003-2012 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
@@ -26,20 +26,21 @@ import edu.vt.middleware.ldap.asn1.SequenceEncoder;
 /**
  * Request/response control for PagedResults. See RFC 2696. Control is defined
  * as:
+ *
  * <pre>
- * realSearchControlValue ::= SEQUENCE {
- *   size            INTEGER (0..maxInt),
- *                           -- requested page size from client
- *                           -- result set size estimate from server
- *   cookie          OCTET STRING
- * }
+   realSearchControlValue ::= SEQUENCE {
+     size            INTEGER (0..maxInt),
+                             -- requested page size from client
+                             -- result set size estimate from server
+     cookie          OCTET STRING
+   }
  * </pre>
  *
  * @author  Middleware Services
  * @version  $Revision$ $Date$
  */
 public class PagedResultsControl extends AbstractControl
-                                 implements RequestControl, ResponseControl
+  implements RequestControl, ResponseControl
 {
 
   /** OID of this control. */
@@ -58,9 +59,7 @@ public class PagedResultsControl extends AbstractControl
   private byte[] cookie;
 
 
-  /**
-   * Default constructor.
-   */
+  /** Default constructor. */
   public PagedResultsControl()
   {
     super(OID);
@@ -111,7 +110,9 @@ public class PagedResultsControl extends AbstractControl
    * @param  critical  whether this control is critical
    */
   public PagedResultsControl(
-    final int size, final byte[] value, final boolean critical)
+    final int size,
+    final byte[] value,
+    final boolean critical)
   {
     super(OID, critical);
     setSize(size);
@@ -177,8 +178,13 @@ public class PagedResultsControl extends AbstractControl
   @Override
   public int hashCode()
   {
-    return LdapUtil.computeHashCode(
-      HASH_CODE_SEED, getOID(), getCriticality(), resultSize, cookie);
+    return
+      LdapUtil.computeHashCode(
+        HASH_CODE_SEED,
+        getOID(),
+        getCriticality(),
+        resultSize,
+        cookie);
   }
 
 
@@ -224,9 +230,7 @@ public class PagedResultsControl extends AbstractControl
   }
 
 
-  /**
-   * Parse handler implementation for the paged results control.
-   */
+  /** Parse handler implementation for the paged results control. */
   private static class PagedResultsHandler implements ParseHandler
   {
 

@@ -1,7 +1,7 @@
 /*
   $Id$
 
-  Copyright (C) 2003-2010 Virginia Tech.
+  Copyright (C) 2003-2012 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
@@ -61,12 +61,12 @@ public class LRUCache<Q extends SearchRequest> implements Cache<Q>
    *
    * @param  size  number of results to cache
    * @param  timeToLive  in seconds that results should stay in the cache
-   * @param interval  in seconds to enforce timeToLive
+   * @param  interval  in seconds to enforce timeToLive
    */
   public LRUCache(final int size, final long timeToLive, final long interval)
   {
-    cache = new LinkedHashMap<Q, Item>(INITIAL_CAPACITY, LOAD_FACTOR, true)
-    {
+    cache = new LinkedHashMap<Q, Item>(INITIAL_CAPACITY, LOAD_FACTOR, true) {
+
       /** serialVersionUID. */
       private static final long serialVersionUID = -4082551016104288539L;
 
@@ -98,9 +98,7 @@ public class LRUCache<Q extends SearchRequest> implements Cache<Q>
   }
 
 
-  /**
-   * Removes all data from this cache.
-   */
+  /** Removes all data from this cache. */
   public void clear()
   {
     synchronized (cache) {
@@ -146,9 +144,7 @@ public class LRUCache<Q extends SearchRequest> implements Cache<Q>
   }
 
 
-  /**
-   * Frees any resources associated with this cache.
-   */
+  /** Frees any resources associated with this cache. */
   public void close()
   {
     executor.shutdown();
@@ -156,9 +152,7 @@ public class LRUCache<Q extends SearchRequest> implements Cache<Q>
   }
 
 
-  /**
-   * Container for data related to cached ldap results.
-   */
+  /** Container for data related to cached ldap results. */
   private class Item
   {
 

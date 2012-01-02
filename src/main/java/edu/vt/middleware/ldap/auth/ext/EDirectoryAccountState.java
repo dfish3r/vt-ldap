@@ -1,7 +1,7 @@
 /*
   $Id$
 
-  Copyright (C) 2003-2010 Virginia Tech.
+  Copyright (C) 2003-2012 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
@@ -35,12 +35,11 @@ public class EDirectoryAccountState extends AccountState
 {
 
   /**
-   * Enum to define edirectory errors.
-   * See http://support.novell.com/docs/Tids/Solutions/10067240.html and
+   * Enum to define edirectory errors. See
+   * http://support.novell.com/docs/Tids/Solutions/10067240.html and
    * http://www.novell.com/documentation/nwec/nwec_enu/nwec_nds_error_codes.html
    */
-  public enum Error implements AccountState.Error
-  {
+  public enum Error implements AccountState.Error {
 
     /** failed authentication. */
     FAILED_AUTHENTICATION(-669),
@@ -63,7 +62,7 @@ public class EDirectoryAccountState extends AccountState
     /** login lockout. */
     LOGIN_LOCKOUT(-197);
 
-    /** pattern to find decimal code in  edirectory messages. */
+    /** pattern to find decimal code in edirectory messages. */
     private static final Pattern PATTERN = Pattern.compile(
       "NDS error: (.+) \\((-\\d+)\\)");
 
@@ -104,20 +103,28 @@ public class EDirectoryAccountState extends AccountState
       throws LoginException
     {
       switch (this) {
+
       case FAILED_AUTHENTICATION:
         throw new FailedLoginException(name());
+
       case PASSWORD_EXPIRED:
         throw new CredentialExpiredException(name());
+
       case BAD_PASSWORD:
         throw new FailedLoginException(name());
+
       case ACCOUNT_EXPIRED:
         throw new AccountExpiredException(name());
+
       case MAXIMUM_LOGINS_EXCEEDED:
         throw new AccountLockedException(name());
+
       case LOGIN_TIME_LIMITED:
         throw new AccountLockedException(name());
+
       case LOGIN_LOCKOUT:
         throw new AccountLockedException(name());
+
       default:
         throw new IllegalStateException(
           "Unknown active directory error: " + this);

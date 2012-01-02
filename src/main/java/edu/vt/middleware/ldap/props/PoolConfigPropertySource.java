@@ -1,7 +1,7 @@
 /*
   $Id$
 
-  Copyright (C) 2003-2010 Virginia Tech.
+  Copyright (C) 2003-2012 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
@@ -19,8 +19,8 @@ import java.util.Set;
 import edu.vt.middleware.ldap.pool.PoolConfig;
 
 /**
- * Reads properties specific to {@link PoolConfig} and returns an
- * initialized object of that type.
+ * Reads properties specific to {@link PoolConfig} and returns an initialized
+ * object of that type.
  *
  * @author  Middleware Services
  * @version  $Revision$ $Date$
@@ -43,7 +43,8 @@ public final class PoolConfigPropertySource
   public PoolConfigPropertySource(final PoolConfig pc)
   {
     this(
-      pc, PoolConfigPropertySource.class.getResourceAsStream(PROPERTIES_FILE));
+      pc,
+      PoolConfigPropertySource.class.getResourceAsStream(PROPERTIES_FILE));
   }
 
 
@@ -79,7 +80,9 @@ public final class PoolConfigPropertySource
    * @param  props  to read properties from
    */
   public PoolConfigPropertySource(
-    final PoolConfig pc, final PropertyDomain domain, final Properties props)
+    final PoolConfig pc,
+    final PropertyDomain domain,
+    final Properties props)
   {
     super(pc, domain, props);
   }

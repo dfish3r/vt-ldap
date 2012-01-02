@@ -1,7 +1,7 @@
 /*
   $Id$
 
-  Copyright (C) 2003-2010 Virginia Tech.
+  Copyright (C) 2003-2012 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
@@ -22,7 +22,7 @@ import edu.vt.middleware.ldap.LdapUtil;
  * @version  $Revision$ $Date$
  */
 public class ManageDsaITControl extends AbstractControl
-                                implements RequestControl
+  implements RequestControl
 {
 
   /** OID of this control. */
@@ -32,9 +32,7 @@ public class ManageDsaITControl extends AbstractControl
   private static final int HASH_CODE_SEED = 701;
 
 
-  /**
-   * Default constructor.
-   */
+  /** Default constructor. */
   public ManageDsaITControl()
   {
     super(OID);

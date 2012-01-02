@@ -1,7 +1,7 @@
 /*
   $Id$
 
-  Copyright (C) 2003-2010 Virginia Tech.
+  Copyright (C) 2003-2012 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
@@ -25,37 +25,38 @@ import edu.vt.middleware.ldap.asn1.ParseHandler;
 /**
  * Response control for server side sorting. See RFC 2891. Control is defined
  * as:
+ *
  * <pre>
- *     SortResult ::= SEQUENCE {
- *        sortResult  ENUMERATED {
- *            success                   (0), -- results are sorted
- *            operationsError           (1), -- server internal failure
- *            timeLimitExceeded         (3), -- timelimit reached before
- *                                           -- sorting was completed
- *            strongAuthRequired        (8), -- refused to return sorted
- *                                           -- results via insecure
- *                                           -- protocol
- *            adminLimitExceeded       (11), -- too many matching entries
- *                                           -- for the server to sort
- *            noSuchAttribute          (16), -- unrecognized attribute
- *                                           -- type in sort key
- *            inappropriateMatching    (18), -- unrecognized or
- *                                           -- inappropriate matching
- *                                           -- rule in sort key
- *            insufficientAccessRights (50), -- refused to return sorted
- *                                           -- results to this client
- *            busy                     (51), -- too busy to process
- *            unwillingToPerform       (53), -- unable to sort
- *            other                    (80)
- *            },
- *      attributeType [0] AttributeDescription OPTIONAL }
+       SortResult ::= SEQUENCE {
+          sortResult  ENUMERATED {
+              success                   (0), -- results are sorted
+              operationsError           (1), -- server internal failure
+              timeLimitExceeded         (3), -- timelimit reached before
+                                             -- sorting was completed
+              strongAuthRequired        (8), -- refused to return sorted
+                                             -- results via insecure
+                                             -- protocol
+              adminLimitExceeded       (11), -- too many matching entries
+                                             -- for the server to sort
+              noSuchAttribute          (16), -- unrecognized attribute
+                                             -- type in sort key
+              inappropriateMatching    (18), -- unrecognized or
+                                             -- inappropriate matching
+                                             -- rule in sort key
+              insufficientAccessRights (50), -- refused to return sorted
+                                             -- results to this client
+              busy                     (51), -- too busy to process
+              unwillingToPerform       (53), -- unable to sort
+              other                    (80)
+              },
+        attributeType [0] AttributeDescription OPTIONAL }
  * </pre>
  *
  * @author  Middleware Services
  * @version  $Revision$ $Date$
  */
 public class SortResponseControl extends AbstractControl
-                                 implements ResponseControl
+  implements ResponseControl
 {
 
   /** OID of this control. */
@@ -71,9 +72,7 @@ public class SortResponseControl extends AbstractControl
   private String attributeName;
 
 
-  /**
-   * Default constructor.
-   */
+  /** Default constructor. */
   public SortResponseControl()
   {
     super(OID);
@@ -112,7 +111,9 @@ public class SortResponseControl extends AbstractControl
    * @param  critical  whether this control is critical
    */
   public SortResponseControl(
-    final ResultCode code, final String attrName, final boolean critical)
+    final ResultCode code,
+    final String attrName,
+    final boolean critical)
   {
     super(OID, critical);
     setSortResult(code);
@@ -168,8 +169,13 @@ public class SortResponseControl extends AbstractControl
   @Override
   public int hashCode()
   {
-    return LdapUtil.computeHashCode(
-      HASH_CODE_SEED, getOID(), getCriticality(), sortResult, attributeName);
+    return
+      LdapUtil.computeHashCode(
+        HASH_CODE_SEED,
+        getOID(),
+        getCriticality(),
+        sortResult,
+        attributeName);
   }
 
 
@@ -204,9 +210,7 @@ public class SortResponseControl extends AbstractControl
   }
 
 
-  /**
-   * Parse handler implementation for the sort response control.
-   */
+  /** Parse handler implementation for the sort response control. */
   private static class SortResponseHandler implements ParseHandler
   {
 

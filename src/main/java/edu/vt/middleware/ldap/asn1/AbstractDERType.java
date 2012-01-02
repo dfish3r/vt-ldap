@@ -1,7 +1,7 @@
 /*
   $Id$
 
-  Copyright (C) 2011 Virginia Tech.
+  Copyright (C) 2003-2012 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
@@ -29,7 +29,7 @@ public abstract class AbstractDERType
 
 
   /**
-   * DER encode the supplied items with the supplied tag.  Does not support
+   * DER encode the supplied items with the supplied tag. Does not support
    * encodings where the length is greater than 127 bytes long.
    *
    * @param  tag  for this DER type
@@ -37,7 +37,7 @@ public abstract class AbstractDERType
    *
    * @return  DER encoded items
    */
-  protected static byte[] encode(final int tag, final byte[] ... items)
+  protected static byte[] encode(final int tag, final byte[]... items)
   {
     int itemLength = 0;
     for (byte[] b : items) {
@@ -46,6 +46,7 @@ public abstract class AbstractDERType
     if (itemLength > MAX_LENGTH) {
       throw new IllegalArgumentException("Long form is not supported");
     }
+
     // add 1 for the type tag and 1 for the asn length
     final ByteBuffer encodedItem = ByteBuffer.allocate(itemLength + 2);
     encodedItem.put((byte) tag);

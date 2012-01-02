@@ -1,7 +1,7 @@
 /*
   $Id$
 
-  Copyright (C) 2003-2010 Virginia Tech.
+  Copyright (C) 2003-2012 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
@@ -55,7 +55,8 @@ public class JndiTlsConnection extends JndiConnection
    * @param  tlsResponse  of successful TLS handshake
    */
   public JndiTlsConnection(
-    final LdapContext lc, final StartTlsResponse tlsResponse)
+    final LdapContext lc,
+    final StartTlsResponse tlsResponse)
   {
     super(lc);
     startTlsResponse = tlsResponse;

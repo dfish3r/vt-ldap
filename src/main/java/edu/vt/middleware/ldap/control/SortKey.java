@@ -1,7 +1,7 @@
 /*
   $Id$
 
-  Copyright (C) 2003-2010 Virginia Tech.
+  Copyright (C) 2003-2012 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
@@ -37,9 +37,7 @@ public class SortKey
   private boolean reverseOrder;
 
 
-  /**
-   * Default constructor.
-   */
+  /** Default constructor. */
   public SortKey() {}
 
 
@@ -97,7 +95,7 @@ public class SortKey
 
 
   /**
-   * Sets the attribute description
+   * Sets the attribute description.
    *
    * @param  s  attribute description
    */
@@ -166,8 +164,7 @@ public class SortKey
       return false;
     }
     return
-      o == this ||
-        (getClass() == o.getClass() && o.hashCode() == hashCode());
+      o == this || (getClass() == o.getClass() && o.hashCode() == hashCode());
   }
 
 
@@ -175,8 +172,12 @@ public class SortKey
   @Override
   public int hashCode()
   {
-    return LdapUtil.computeHashCode(
-      HASH_CODE_SEED, attributeDescription, matchingRuleId, reverseOrder);
+    return
+      LdapUtil.computeHashCode(
+        HASH_CODE_SEED,
+        attributeDescription,
+        matchingRuleId,
+        reverseOrder);
   }
 
 

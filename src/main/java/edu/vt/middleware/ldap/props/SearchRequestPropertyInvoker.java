@@ -1,7 +1,7 @@
 /*
   $Id$
 
-  Copyright (C) 2003-2010 Virginia Tech.
+  Copyright (C) 2003-2012 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
@@ -49,14 +49,14 @@ public class SearchRequestPropertyInvoker extends AbstractPropertyInvoker
         newValue = new SearchFilter(value);
       } else if (RequestControl[].class.isAssignableFrom(type)) {
         newValue = createArrayTypeFromPropertyValue(
-          RequestControl.class, value);
+          RequestControl.class,
+          value);
       } else if (LdapEntryHandler[].class.isAssignableFrom(type)) {
         newValue = createArrayTypeFromPropertyValue(
           LdapEntryHandler.class,
           value);
       } else if (ResultCode[].class.isAssignableFrom(type)) {
-        newValue = createArrayEnumFromPropertyValue(
-          ResultCode.class, value);
+        newValue = createArrayEnumFromPropertyValue(ResultCode.class, value);
       } else {
         newValue = convertSimpleType(type, value);
       }

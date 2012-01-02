@@ -1,7 +1,7 @@
 /*
   $Id$
 
-  Copyright (C) 2003-2010 Virginia Tech.
+  Copyright (C) 2003-2012 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
@@ -79,6 +79,37 @@ public class AccountState
   }
 
 
+  /** Contains error information for an account state. */
+  public interface Error
+  {
+
+
+    /**
+     * Returns the error code.
+     *
+     * @return  error code
+     */
+    int getCode();
+
+
+    /**
+     * Returns the error message.
+     *
+     * @return  error message
+     */
+    String getMessage();
+
+
+    /**
+     * Throws the LoginException that best maps to this error.
+     *
+     * @throws  LoginException  for this account state error
+     */
+    void throwSecurityException()
+      throws LoginException;
+  }
+
+
   /**
    * Contains warning information for an account state. <T> indicates the type
    * of expirationTime the LDAP uses.
@@ -126,37 +157,5 @@ public class AccountState
     {
       return loginsRemaining;
     }
-  }
-
-
-  /**
-   * Contains error information for an account state.
-   */
-  public interface Error
-  {
-
-
-    /**
-     * Returns the error code.
-     *
-     * @return  error code
-     */
-    int getCode();
-
-
-    /**
-     * Returns the error message.
-     *
-     * @return  error message
-     */
-    String getMessage();
-
-
-    /**
-     * Throws the LoginException that best maps to this error.
-     *
-     * @throws  LoginException  for this account state error
-     */
-    void throwSecurityException() throws LoginException;
   }
 }

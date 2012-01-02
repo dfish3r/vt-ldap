@@ -1,7 +1,7 @@
 /*
   $Id$
 
-  Copyright (C) 2003-2010 Virginia Tech.
+  Copyright (C) 2003-2012 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
@@ -27,8 +27,8 @@ import edu.vt.middleware.ldap.provider.ConnectionException;
  * @author  Middleware Services
  * @version  $Revision$
  */
-public class JndiConnectionFactory extends
-  AbstractConnectionFactory<JndiProviderConfig>
+public class JndiConnectionFactory
+  extends AbstractConnectionFactory<JndiProviderConfig>
 {
 
   /** Environment properties. */
@@ -74,7 +74,8 @@ public class JndiConnectionFactory extends
       conn.setControlProcessor(getProviderConfig().getControlProcessor());
     } catch (NamingException e) {
       throw new ConnectionException(
-        e, NamingExceptionUtil.getResultCode(e.getClass()));
+        e,
+        NamingExceptionUtil.getResultCode(e.getClass()));
     }
     return conn;
   }

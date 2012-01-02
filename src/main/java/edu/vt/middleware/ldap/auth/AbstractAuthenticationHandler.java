@@ -1,7 +1,7 @@
 /*
   $Id$
 
-  Copyright (C) 2003-2010 Virginia Tech.
+  Copyright (C) 2003-2012 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
@@ -65,6 +65,7 @@ public abstract class AbstractAuthenticationHandler
     throws LdapException
   {
     logger.debug("authenticate criteria={}", ac);
+
     AuthenticationHandlerResponse response = null;
     final Connection conn = getConnection();
     boolean closeConn = false;
@@ -94,7 +95,8 @@ public abstract class AbstractAuthenticationHandler
    *
    * @throws  LdapException  if an error occurs provisioning the connection
    */
-  protected abstract Connection getConnection() throws LdapException;
+  protected abstract Connection getConnection()
+    throws LdapException;
 
 
   /**
@@ -108,6 +110,7 @@ public abstract class AbstractAuthenticationHandler
    * @throws  LdapException  if the authentication fails
    */
   protected abstract AuthenticationHandlerResponse authenticateInternal(
-    final Connection c, final AuthenticationCriteria criteria)
+    final Connection c,
+    final AuthenticationCriteria criteria)
     throws LdapException;
 }

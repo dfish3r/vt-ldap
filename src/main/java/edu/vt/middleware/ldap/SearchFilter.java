@@ -1,7 +1,7 @@
 /*
   $Id$
 
-  Copyright (C) 2003-2010 Virginia Tech.
+  Copyright (C) 2003-2012 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
@@ -138,10 +138,11 @@ public class SearchFilter
 
 
   /**
-   * Returns an ldap filter with it's arguments encoded and replaced. See
-   * {@link #encode(Object)}.
+   * Returns an ldap filter with it's arguments encoded and replaced. See {@link
+   * #encode(Object)}.
    *
    * @param  filter  to format
+   *
    * @return  formated and encoded filter
    */
   public static String format(final SearchFilter filter)
@@ -164,6 +165,7 @@ public class SearchFilter
    * string format of the object is escaped. See {@link #escape(String)}.
    *
    * @param  obj  to encode
+   *
    * @return  encoded object
    */
   private static String encode(final Object obj)
@@ -171,6 +173,7 @@ public class SearchFilter
     if (obj == null) {
       return null;
     }
+
     String str;
     if (obj instanceof byte[]) {
       final String s = Hex.encodeHexString((byte[]) obj);
@@ -197,6 +200,7 @@ public class SearchFilter
    * Escapes the supplied string per RFC 2254.
    *
    * @param  s  to escape
+   *
    * @return  escaped string
    */
   private static String escape(final String s)
@@ -207,21 +211,27 @@ public class SearchFilter
     for (int i = 0; i < len; i++) {
       ch = s.charAt(i);
       switch (ch) {
+
       case '*':
         sb.append("\\2a");
         break;
+
       case '(':
         sb.append("\\28");
         break;
+
       case ')':
         sb.append("\\29");
         break;
+
       case '\\':
         sb.append("\\5c");
         break;
+
       case 0:
         sb.append("\\00");
         break;
+
       default:
         sb.append(ch);
       }
@@ -234,6 +244,7 @@ public class SearchFilter
    * Returns a search filter initialized with the supplied filter.
    *
    * @param  filter  search filter to read properties from
+   *
    * @return  search filter
    */
   public static SearchFilter newSearchFilter(final SearchFilter filter)
@@ -259,8 +270,7 @@ public class SearchFilter
       return false;
     }
     return
-      o == this ||
-        (getClass() == o.getClass() && o.hashCode() == hashCode());
+      o == this || (getClass() == o.getClass() && o.hashCode() == hashCode());
   }
 
 
@@ -268,8 +278,8 @@ public class SearchFilter
   @Override
   public int hashCode()
   {
-    return LdapUtil.computeHashCode(
-      HASH_CODE_SEED, searchFilter, searchFilterArgs);
+    return
+      LdapUtil.computeHashCode(HASH_CODE_SEED, searchFilter, searchFilterArgs);
   }
 
 

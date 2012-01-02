@@ -1,7 +1,7 @@
 /*
   $Id$
 
-  Copyright (C) 2003-2010 Virginia Tech.
+  Copyright (C) 2003-2012 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
@@ -36,5 +36,6 @@ public interface RoleResolver
    *
    * @throws  LdapException  if the ldap operation fails
    */
-  Set<LdapRole> search(final SearchRequest request) throws LdapException;
+  Set<LdapRole> search(final SearchRequest request)
+    throws LdapException;
 }

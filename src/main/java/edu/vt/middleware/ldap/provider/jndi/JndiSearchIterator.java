@@ -1,7 +1,7 @@
 /*
   $Id$
 
-  Copyright (C) 2003-2010 Virginia Tech.
+  Copyright (C) 2003-2012 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
@@ -185,6 +185,7 @@ public class JndiSearchIterator implements SearchIterator
    * Initializes this jndi search iterator.
    *
    * @param  ctx  to call {@link LdapContext#newInstance(Control[])} on
+   *
    * @throws  LdapException  if an error occurs
    */
   public void initialize(final LdapContext ctx)
@@ -202,7 +203,9 @@ public class JndiSearchIterator implements SearchIterator
         operationRetryResultCodes,
         e,
         JndiUtil.processResponseControls(
-          controlProcessor, request.getControls(), context));
+          controlProcessor,
+          request.getControls(),
+          context));
     } finally {
       if (closeContext) {
         try {
@@ -223,19 +226,23 @@ public class JndiSearchIterator implements SearchIterator
    *
    * @param  ctx  to initialize for searching
    * @param  sr  to read properties from
+   *
    * @throws  NamingException  if a property cannot be added to the context
    */
   protected void initializeSearchContext(
-    final LdapContext ctx, final SearchRequest sr)
+    final LdapContext ctx,
+    final SearchRequest sr)
     throws NamingException
   {
     if (sr.getReferralBehavior() != null) {
       ctx.addToEnvironment(
-        REFERRAL, sr.getReferralBehavior().name().toLowerCase());
+        REFERRAL,
+        sr.getReferralBehavior().name().toLowerCase());
     }
     if (sr.getDerefAliases() != null) {
       ctx.addToEnvironment(
-        DEREF_ALIASES, sr.getDerefAliases().name().toLowerCase());
+        DEREF_ALIASES,
+        sr.getDerefAliases().name().toLowerCase());
     }
     if (sr.getBinaryAttributes() != null) {
       final String[] a = sr.getBinaryAttributes();
@@ -250,31 +257,35 @@ public class JndiSearchIterator implements SearchIterator
     }
     if (sr.getTypesOnly()) {
       ctx.addToEnvironment(
-        TYPES_ONLY, Boolean.valueOf(sr.getTypesOnly()).toString());
+        TYPES_ONLY,
+        Boolean.valueOf(sr.getTypesOnly()).toString());
     }
   }
 
 
   /**
-   * Executes {@link LdapContext#search(
-   * javax.naming.Name, String, Object[], SearchControls)}.
+   * Executes {@link LdapContext#search( javax.naming.Name, String, Object[],
+   * SearchControls)}.
    *
    * @param  ctx  to search
    * @param  sr  to read properties from
+   *
    * @return  naming enumeration of search results
-   * @throws NamingException  if an error occurs
+   *
+   * @throws  NamingException  if an error occurs
    */
   protected NamingEnumeration<SearchResult> search(
-    final LdapContext ctx, final SearchRequest sr)
+    final LdapContext ctx,
+    final SearchRequest sr)
     throws NamingException
   {
-    return ctx.search(
-      sr.getBaseDn(),
-      sr.getSearchFilter() != null ?
-        sr.getSearchFilter().getFilter() : null,
-      sr.getSearchFilter() != null ?
-        sr.getSearchFilter().getFilterArgs().toArray() : null,
-      getSearchControls(sr));
+    return
+      ctx.search(
+        sr.getBaseDn(),
+        sr.getSearchFilter() != null ? sr.getSearchFilter().getFilter() : null,
+        sr.getSearchFilter() != null
+          ? sr.getSearchFilter().getFilterArgs().toArray() : null,
+        getSearchControls(sr));
   }
 
 
@@ -291,6 +302,7 @@ public class JndiSearchIterator implements SearchIterator
   {
     final SearchControls ctls = new SearchControls();
     ctls.setReturningAttributes(sr.getReturnAttributes());
+
     final int searchScope = getSearchScope(sr.getSearchScope());
     if (searchScope != -1) {
       ctls.setSearchScope(searchScope);
@@ -310,6 +322,7 @@ public class JndiSearchIterator implements SearchIterator
    * Returns the jndi integer constant for the supplied search scope.
    *
    * @param  ss  search scope
+   *
    * @return  integer constant
    */
   protected static int getSearchScope(final SearchScope ss)
@@ -334,13 +347,13 @@ public class JndiSearchIterator implements SearchIterator
     if (results == null || response != null) {
       return false;
     }
+
     boolean more = false;
     try {
       more = results.hasMore();
       if (!more) {
-        final ResponseControl[] respControls =
-          JndiUtil.processResponseControls(
-            controlProcessor, request.getControls(), context);
+        final ResponseControl[] respControls = JndiUtil.processResponseControls(
+          controlProcessor, request.getControls(), context);
         final boolean searchAgain = ControlProcessor.searchAgain(respControls);
         if (searchAgain) {
           context.setRequestControls(
@@ -351,8 +364,8 @@ public class JndiSearchIterator implements SearchIterator
         if (!more) {
           response = new Response<Void>(
             null,
-            responseResultCode != null ?
-              responseResultCode : ResultCode.SUCCESS,
+            responseResultCode != null ? responseResultCode
+                                       : ResultCode.SUCCESS,
             respControls);
         }
       }
@@ -363,13 +376,17 @@ public class JndiSearchIterator implements SearchIterator
           operationRetryResultCodes,
           e,
           JndiUtil.processResponseControls(
-            controlProcessor, request.getControls(), context));
+            controlProcessor,
+            request.getControls(),
+            context));
       }
       response = new Response<Void>(
         null,
         rc,
         JndiUtil.processResponseControls(
-          controlProcessor, request.getControls(), context));
+          controlProcessor,
+          request.getControls(),
+          context));
     }
     return more;
   }
@@ -394,7 +411,9 @@ public class JndiSearchIterator implements SearchIterator
           operationRetryResultCodes,
           e,
           JndiUtil.processResponseControls(
-            controlProcessor, request.getControls(), context));
+            controlProcessor,
+            request.getControls(),
+            context));
       }
       responseResultCode = rc;
     }
@@ -407,10 +426,12 @@ public class JndiSearchIterator implements SearchIterator
    *
    * @param  ignoreResultCodes  to match against the exception
    * @param  e  naming exception to match
+   *
    * @return  result code that should be ignored or null
    */
   protected ResultCode ignoreSearchException(
-    final ResultCode[] ignoreResultCodes, final NamingException e)
+    final ResultCode[] ignoreResultCodes,
+    final NamingException e)
   {
     ResultCode ignore = null;
     if (ignoreResultCodes != null && ignoreResultCodes.length > 0) {
@@ -435,13 +456,15 @@ public class JndiSearchIterator implements SearchIterator
 
 
   /**
-   * Determines the DN of the supplied search request. Returns
-   * {@link LdapContext#getNameInNamespace()} if it is available, otherwise
-   * returns {@link SearchRequest#getBaseDn()}.
+   * Determines the DN of the supplied search request. Returns {@link
+   * LdapContext#getNameInNamespace()} if it is available, otherwise returns
+   * {@link SearchRequest#getBaseDn()}.
    *
    * @param  ctx  ldap context the search was performed on
    * @param  sr  search request
+   *
    * @return  DN
+   *
    * @throws  NamingException  if an error occurs
    */
   protected String getSearchDn(final LdapContext ctx, final SearchRequest sr)
@@ -463,7 +486,9 @@ public class JndiSearchIterator implements SearchIterator
    *
    * @param  sr  to determine DN for
    * @param  baseDn  that search was performed on
+   *
    * @return  fully qualified DN
+   *
    * @throws  NamingException  if search result name cannot be formatted as a DN
    */
   protected String formatDn(final SearchResult sr, final String baseDn)
@@ -477,8 +502,8 @@ public class JndiSearchIterator implements SearchIterator
         logger.trace("formatting relative dn {}", resultName);
         if (baseDn != null) {
           if (!"".equals(resultName)) {
-            fqName = new StringBuilder(
-              readCompositeName(resultName)).append(",").append(baseDn);
+            fqName = new StringBuilder(readCompositeName(resultName)).append(
+              ",").append(baseDn);
           } else {
             fqName = new StringBuilder(baseDn);
           }
@@ -505,7 +530,9 @@ public class JndiSearchIterator implements SearchIterator
    * Uses a composite name to parse the supplied string.
    *
    * @param  s  composite name to read
+   *
    * @return  ldap name
+   *
    * @throws  InvalidNameException  if the supplied string is not a valid
    * composite name
    */

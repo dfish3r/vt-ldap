@@ -1,7 +1,7 @@
 /*
   $Id$
 
-  Copyright (C) 2011 Virginia Tech.
+  Copyright (C) 2003-2012 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
@@ -20,35 +20,21 @@ import java.util.regex.Pattern;
 import edu.vt.middleware.ldap.LdapUtil;
 
 /**
- * Describes paths to individual elements of an encoded DER object that may
- * be addressed during parsing to associate a parsed element with a handler to
- * process that element.  Consider the following production rule for a complex
- * type that may be DER encoded:
+ * Describes paths to individual elements of an encoded DER object that may be
+ * addressed during parsing to associate a parsed element with a handler to
+ * process that element. Consider the following production rule for a complex
+ * type that may be DER encoded: <code>BankAccountSet ::= SET OF { account
+ * BankAccount } BankAccount ::= SEQUENCE OF { accountNumber OCTET STRING,
+ * accountName OCTET STRING, accountType AccountType, balance REAL } AccountType
+ * ::= ENUM { checking (0), savings (0 }</code>
  *
- * <code>
- * BankAccountSet ::= SET OF {
- *   account       BankAccount
- * }
- * BankAccount ::= SEQUENCE OF {
- *   accountNumber OCTET STRING,
- *   accountName   OCTET STRING,
- *   accountType   AccountType,
- *   balance       REAL
- * }
- * AccountType ::= ENUM {
- *   checking (0),
- *   savings (0
- * }
- * </code>
+ * <p>Given a BankAccountSet type with two elements, the path to the balance of
+ * the second account is given by the following canonical path (using tag names
+ * from {@link UniversalDERTag}): <code>/SET[1]/SEQ/REAL</code></p>
  *
- * Given a BankAccountSet type with two elements, the path to the balance of the
- * second account is given by the following canonical path (using tag names from
- * {@link UniversalDERTag}):
- *
- * <code>/SET[1]/SEQ/REAL</code>
- *
- * The index of the first element in a set or sequence is optional and omitted
- * in the canonical path, which is produced by the {@link #toString()} method.
+ * <p>The index of the first element in a set or sequence is optional and
+ * omitted in the canonical path, which is produced by the {@link #toString()}
+ * method.</p>
  *
  * @author  Middleware Services
  * @version  $Revision$
@@ -56,12 +42,12 @@ import edu.vt.middleware.ldap.LdapUtil;
 public class DERPath
 {
 
-  /** Separates nodes in a path specification.  */
+  /** Separates nodes in a path specification. */
   public static final String PATH_SEPARATOR = "/";
 
   /** Pattern for matching nodes. */
-  public static final Pattern NODE_PATTERN =
-      Pattern.compile("([A-Za-z]+)(\\[(\\d+)\\])*");
+  public static final Pattern NODE_PATTERN = Pattern.compile(
+    "([A-Za-z]+)(\\[(\\d+)\\])*");
 
   /** Pattern group index for matching the child index. */
   private static final int CHILD_INDEX_PATTERN_GROUP = 3;
@@ -103,10 +89,12 @@ public class DERPath
       if ("".equals(node)) {
         continue;
       }
+
       final Matcher matcher = NODE_PATTERN.matcher(node);
       if (!matcher.matches()) {
         throw new IllegalArgumentException("Invalid node name " + node);
       }
+
       int childIndex = 0;
       if (matcher.group(CHILD_INDEX_PATTERN_GROUP) != null) {
         childIndex = Integer.parseInt(matcher.group(CHILD_INDEX_PATTERN_GROUP));
@@ -168,8 +156,7 @@ public class DERPath
       return false;
     }
     return
-      o == this ||
-        (getClass() == o.getClass() && o.hashCode() == hashCode());
+      o == this || (getClass() == o.getClass() && o.hashCode() == hashCode());
   }
 
 
@@ -207,8 +194,8 @@ public class DERPath
   /**
    * Node which encapsulates the path name and it's location in the path.
    *
-   * @author Middleware Services
-   * @version: $Revision$
+   * @author  Middleware Services
+   * @version:  $Revision$
    */
   private class Node
   {
@@ -266,8 +253,8 @@ public class DERPath
         return false;
       }
       return
-        o == this ||
-          (getClass() == o.getClass() && o.hashCode() == hashCode());
+        o == this || (getClass() == o.getClass() &&
+          o.hashCode() == hashCode());
     }
 
 

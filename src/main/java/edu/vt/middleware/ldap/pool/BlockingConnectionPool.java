@@ -1,7 +1,7 @@
 /*
   $Id$
 
-  Copyright (C) 2003-2010 Virginia Tech.
+  Copyright (C) 2003-2012 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
@@ -39,9 +39,7 @@ public class BlockingConnectionPool extends AbstractConnectionPool
   private long blockWaitTime;
 
 
-  /**
-   * Creates a new blocking pool.
-   */
+  /** Creates a new blocking pool. */
   public BlockingConnectionPool() {}
 
 
@@ -64,7 +62,8 @@ public class BlockingConnectionPool extends AbstractConnectionPool
    * @param  cf  connection factory
    */
   public BlockingConnectionPool(
-    final PoolConfig pc, final DefaultConnectionFactory cf)
+    final PoolConfig pc,
+    final DefaultConnectionFactory cf)
   {
     setPoolConfig(pc);
     setConnectionFactory(cf);
@@ -104,7 +103,8 @@ public class BlockingConnectionPool extends AbstractConnectionPool
     PooledConnectionHandler pc = null;
     boolean create = false;
     logger.trace(
-      "waiting on pool lock for check out {}", poolLock.getQueueLength());
+      "waiting on pool lock for check out {}",
+      poolLock.getQueueLength());
     poolLock.lock();
     try {
       // if an available connection exists, use it
@@ -219,10 +219,7 @@ public class BlockingConnectionPool extends AbstractConnectionPool
       while (pc == null) {
         logger.trace("available pool is empty, waiting...");
         if (blockWaitTime > 0) {
-          if (
-            !poolNotEmpty.await(
-                blockWaitTime,
-                TimeUnit.MILLISECONDS)) {
+          if (!poolNotEmpty.await(blockWaitTime, TimeUnit.MILLISECONDS)) {
             logger.debug("block time exceeded, throwing exception");
             throw new BlockingTimeoutException("Block time exceeded");
           }
@@ -255,7 +252,8 @@ public class BlockingConnectionPool extends AbstractConnectionPool
     final PooledConnectionHandler pc = retrieveInvocationHandler(c);
     final boolean valid = validateAndPassivateConnection(pc);
     logger.trace(
-      "waiting on pool lock for check in {}", poolLock.getQueueLength());
+      "waiting on pool lock for check in {}",
+      poolLock.getQueueLength());
     poolLock.lock();
     try {
       if (active.remove(pc)) {

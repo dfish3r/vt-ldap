@@ -1,15 +1,15 @@
 /*
-  $Id: NoopEntryResolver.java 2115 2011-10-03 14:43:46Z dfisher $
+  $Id$
 
-  Copyright (C) 2003-2010 Virginia Tech.
+  Copyright (C) 2003-2012 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
 
   Author:  Middleware Services
   Email:   middleware@vt.edu
-  Version: $Revision: 2115 $
-  Updated: $Date: 2011-10-03 10:43:46 -0400 (Mon, 03 Oct 2011) $
+  Version: $Revision$
+  Updated: $Date$
 */
 package edu.vt.middleware.ldap.auth;
 
@@ -34,7 +34,8 @@ public class NoOpEntryResolver implements EntryResolver
   /** {@inheritDoc} */
   @Override
   public LdapEntry resolve(
-    final Connection conn, final AuthenticationCriteria ac)
+    final Connection conn,
+    final AuthenticationCriteria ac)
     throws LdapException
   {
     return new LdapEntry(ac.getDn());

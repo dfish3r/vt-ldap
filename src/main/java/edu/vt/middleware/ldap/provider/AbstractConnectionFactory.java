@@ -1,7 +1,7 @@
 /*
   $Id$
 
-  Copyright (C) 2003-2010 Virginia Tech.
+  Copyright (C) 2003-2012 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
@@ -29,8 +29,7 @@ import org.slf4j.LoggerFactory;
  * @author  Middleware Services
  * @version  $Revision$
  */
-public abstract class
-AbstractConnectionFactory<T extends ProviderConfig>
+public abstract class AbstractConnectionFactory<T extends ProviderConfig>
   implements ConnectionFactory<T>
 {
 
@@ -114,7 +113,8 @@ AbstractConnectionFactory<T extends ProviderConfig>
           new Object[] {
             connectionCount,
             url,
-            config.getConnectionStrategy(), });
+            config.getConnectionStrategy(),
+          });
         conn = createInternal(url);
         connectionCount.incrementCount();
         lastThrown = null;
@@ -135,6 +135,7 @@ AbstractConnectionFactory<T extends ProviderConfig>
    * Create the provider connection and prepare the connection for use.
    *
    * @param  url  to connect to
+   *
    * @return  provider connection
    *
    * @throws  LdapException  if a connection cannot be established
@@ -153,7 +154,8 @@ AbstractConnectionFactory<T extends ProviderConfig>
    * @return  array of ldap URLs
    */
   protected String[] parseLdapUrl(
-    final String url, final ConnectionStrategy strategy)
+    final String url,
+    final ConnectionStrategy strategy)
   {
     String[] urls = null;
     if (strategy == ConnectionStrategy.DEFAULT) {
@@ -217,9 +219,7 @@ AbstractConnectionFactory<T extends ProviderConfig>
   }
 
 
-  /**
-   * Provides an object to track the connection count.
-   */
+  /** Provides an object to track the connection count. */
   private class ConnectionCount
   {
 

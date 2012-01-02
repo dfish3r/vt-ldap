@@ -1,7 +1,7 @@
 /*
   $Id$
 
-  Copyright (C) 2011 Virginia Tech.
+  Copyright (C) 2003-2012 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
@@ -22,55 +22,55 @@ import java.util.Map;
  * @author  Middleware Services
  * @version  $Revision$
  */
-public enum UniversalDERTag implements DERTag
-{
+public enum UniversalDERTag implements DERTag {
 
-  /** BOOLEAN type */
+  /** BOOLEAN type. */
   BOOL(1, false),
 
-  /** INTEGER type */
+  /** INTEGER type. */
   INT(2, false),
 
-  /** BITSTRING type */
+  /** BITSTRING type. */
   BITSTR(3, false),
 
-  /** OCTETSTRING type */
+  /** OCTETSTRING type. */
   OCTSTR(4, false),
 
-  /** OBJECT IDENTIFIER type */
+  /** OBJECT IDENTIFIER type. */
   OID(6, false),
 
-  /** ENUMERATED type */
+  /** ENUMERATED type. */
   ENUM(10, false),
 
-  /** SEQUENCE type */
+  /** SEQUENCE type. */
   SEQ(16, true),
 
-  /** SET type */
+  /** SET type. */
   SET(17, true),
 
-  /** CONTEXT type */
+  /** CONTEXT type. */
   CTX(128, false);
 
 
   /** Maps tag values to tags. */
   private static final Map<Integer, UniversalDERTag> TAG_MAP =
-      new HashMap<Integer, UniversalDERTag>();
-
-  /** Tag number */
-  private int tagNo;
-
-  /** Flag indicating whether value is primitive or constructed. */
-  private boolean constructed;
+    new HashMap<Integer, UniversalDERTag>();
 
 
-  /** Initializes tag mapping. */
-  static
-  {
+  /**
+   * Initializes tag mapping.
+   */
+  static {
     for (UniversalDERTag tag : UniversalDERTag.values()) {
       TAG_MAP.put(tag.getTagNo(), tag);
     }
   }
+
+  /** Tag number. */
+  private int tagNo;
+
+  /** Flag indicating whether value is primitive or constructed. */
+  private boolean constructed;
 
 
   /**

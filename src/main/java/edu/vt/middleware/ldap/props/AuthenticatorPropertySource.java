@@ -1,7 +1,7 @@
 /*
   $Id$
 
-  Copyright (C) 2003-2010 Virginia Tech.
+  Copyright (C) 2003-2012 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
@@ -27,9 +27,9 @@ import edu.vt.middleware.ldap.pool.PooledConnectionFactory;
 import edu.vt.middleware.ldap.pool.PooledConnectionFactoryManager;
 
 /**
- * Reads properties specific to
- * {@link edu.vt.middleware.ldap.auth.Authenticator} and returns an initialized
- * object of that type.
+ * Reads properties specific to {@link
+ * edu.vt.middleware.ldap.auth.Authenticator} and returns an initialized object
+ * of that type.
  *
  * @author  Middleware Services
  * @version  $Revision$ $Date$
@@ -64,7 +64,8 @@ public final class AuthenticatorPropertySource
    * @param  is  to read properties from
    */
   public AuthenticatorPropertySource(
-    final Authenticator a, final InputStream is)
+    final Authenticator a,
+    final InputStream is)
   {
     this(a, loadProperties(is));
   }
@@ -77,7 +78,8 @@ public final class AuthenticatorPropertySource
    * @param  props  to read properties from
    */
   public AuthenticatorPropertySource(
-    final Authenticator a, final Properties props)
+    final Authenticator a,
+    final Properties props)
   {
     this(a, PropertyDomain.AUTH, props);
   }
@@ -91,7 +93,9 @@ public final class AuthenticatorPropertySource
    * @param  props  to read properties from
    */
   public AuthenticatorPropertySource(
-    final Authenticator a, final PropertyDomain domain, final Properties props)
+    final Authenticator a,
+    final PropertyDomain domain,
+    final Properties props)
   {
     super(a, domain, props);
   }
@@ -107,15 +111,20 @@ public final class AuthenticatorPropertySource
     DnResolver dnResolver = object.getDnResolver();
     if (dnResolver == null) {
       dnResolver = new SearchDnResolver();
+
       final SearchDnResolverPropertySource dnPropSource =
         new SearchDnResolverPropertySource(
-          (SearchDnResolver) dnResolver, propertiesDomain, properties);
+          (SearchDnResolver) dnResolver,
+          propertiesDomain,
+          properties);
       dnPropSource.initialize();
       object.setDnResolver(dnResolver);
     } else {
       final SimplePropertySource<DnResolver> sPropSource =
         new SimplePropertySource<DnResolver>(
-          dnResolver, propertiesDomain, properties);
+          dnResolver,
+          propertiesDomain,
+          properties);
       sPropSource.initialize();
     }
     if (dnResolver instanceof PooledConnectionFactoryManager) {
@@ -126,8 +135,8 @@ public final class AuthenticatorPropertySource
       }
     }
     if (dnResolver instanceof ConnectionFactoryManager) {
-      final ConnectionFactoryManager cfm =
-        (ConnectionFactoryManager) dnResolver;
+      final ConnectionFactoryManager cfm = (ConnectionFactoryManager)
+        dnResolver;
       if (cfm.getConnectionFactory() == null) {
         initConnectionFactoryManager(cfm);
       }
@@ -137,6 +146,7 @@ public final class AuthenticatorPropertySource
     AuthenticationHandler authHandler = object.getAuthenticationHandler();
     if (authHandler == null) {
       authHandler = new BindAuthenticationHandler();
+
       final BindAuthenticationHandlerPropertySource ahPropSource =
         new BindAuthenticationHandlerPropertySource(
           (BindAuthenticationHandler) authHandler,
@@ -147,7 +157,9 @@ public final class AuthenticatorPropertySource
     } else {
       final SimplePropertySource<AuthenticationHandler> sPropSource =
         new SimplePropertySource<AuthenticationHandler>(
-          authHandler, propertiesDomain, properties);
+          authHandler,
+          propertiesDomain,
+          properties);
       sPropSource.initialize();
     }
     if (authHandler instanceof PooledConnectionFactoryManager) {
@@ -158,8 +170,8 @@ public final class AuthenticatorPropertySource
       }
     }
     if (authHandler instanceof ConnectionFactoryManager) {
-      final ConnectionFactoryManager cfm =
-        (ConnectionFactoryManager) authHandler;
+      final ConnectionFactoryManager cfm = (ConnectionFactoryManager)
+        authHandler;
       if (cfm.getConnectionFactory() == null) {
         initConnectionFactoryManager(cfm);
       }
@@ -168,8 +180,8 @@ public final class AuthenticatorPropertySource
 
 
   /**
-   * Initializes the supplied connection factory manager using the properties
-   * in this property source.
+   * Initializes the supplied connection factory manager using the properties in
+   * this property source.
    *
    * @param  cfm  to initialize
    */
@@ -178,15 +190,17 @@ public final class AuthenticatorPropertySource
     final DefaultConnectionFactory cf = new DefaultConnectionFactory();
     final DefaultConnectionFactoryPropertySource cfPropSource =
       new DefaultConnectionFactoryPropertySource(
-        cf, propertiesDomain, properties);
+        cf,
+        propertiesDomain,
+        properties);
     cfPropSource.initialize();
     cfm.setConnectionFactory(cf);
   }
 
 
   /**
-   * Initializes the supplied connection factory manager using the properties
-   * in this property source.
+   * Initializes the supplied connection factory manager using the properties in
+   * this property source.
    *
    * @param  cfm  to initialize
    */
@@ -196,7 +210,9 @@ public final class AuthenticatorPropertySource
     final PooledConnectionFactory cf = new PooledConnectionFactory();
     final PooledConnectionFactoryPropertySource cfPropSource =
       new PooledConnectionFactoryPropertySource(
-        cf, propertiesDomain, properties);
+        cf,
+        propertiesDomain,
+        properties);
     cfPropSource.initialize();
     cfm.setConnectionFactory(cf);
   }

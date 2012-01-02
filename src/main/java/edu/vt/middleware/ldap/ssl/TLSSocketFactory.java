@@ -1,7 +1,7 @@
 /*
   $Id$
 
-  Copyright (C) 2003-2010 Virginia Tech.
+  Copyright (C) 2003-2012 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
@@ -67,8 +67,7 @@ public class TLSSocketFactory extends AbstractTLSSocketFactory
   public void initialize()
     throws GeneralSecurityException
   {
-    final SSLContext ctx = contextInitializer.initSSLContext(
-      DEFAULT_PROTOCOL);
+    final SSLContext ctx = contextInitializer.initSSLContext(DEFAULT_PROTOCOL);
     factory = ctx.getSocketFactory();
   }
 
@@ -85,7 +84,8 @@ public class TLSSocketFactory extends AbstractTLSSocketFactory
       sf.initialize();
     } catch (GeneralSecurityException e) {
       LoggerFactory.getLogger(TLSSocketFactory.class).error(
-        "Error initializing socket factory", e);
+        "Error initializing socket factory",
+        e);
     }
     return sf;
   }

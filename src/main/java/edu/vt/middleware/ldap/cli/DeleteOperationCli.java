@@ -1,7 +1,7 @@
 /*
   $Id$
 
-  Copyright (C) 2003-2010 Virginia Tech.
+  Copyright (C) 2003-2012 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
@@ -55,8 +55,8 @@ public class DeleteOperationCli extends AbstractCli
   protected void initOptions()
   {
     options.addOption(new Option(OPT_DN, true, "entry DN"));
-    final Map<String, String> desc = getArgDesc(
-      ConnectionConfig.class);
+
+    final Map<String, String> desc = getArgDesc(ConnectionConfig.class);
     for (String s : ConnectionConfigPropertySource.getProperties()) {
       options.addOption(new Option(s, true, desc.get(s)));
     }
@@ -72,8 +72,7 @@ public class DeleteOperationCli extends AbstractCli
     if (line.hasOption(OPT_HELP)) {
       printHelp();
     } else {
-      delete(
-        initConnectionFactory(line), line.getOptionValues(OPT_DN));
+      delete(initConnectionFactory(line), line.getOptionValues(OPT_DN));
     }
   }
 

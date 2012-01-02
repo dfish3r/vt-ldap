@@ -1,7 +1,7 @@
 /*
   $Id$
 
-  Copyright (C) 2003-2010 Virginia Tech.
+  Copyright (C) 2003-2012 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
@@ -69,7 +69,8 @@ public class ProviderConfig extends AbstractConfig
   public void setOperationRetryResultCodes(final ResultCode[] codes)
   {
     logger.trace(
-      "setting operationRetryResultCodes: {}", Arrays.toString(codes));
+      "setting operationRetryResultCodes: {}",
+      Arrays.toString(codes));
     operationRetryResultCodes = codes;
   }
 

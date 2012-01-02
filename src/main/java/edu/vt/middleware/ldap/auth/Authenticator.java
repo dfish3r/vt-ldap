@@ -1,7 +1,7 @@
 /*
   $Id$
 
-  Copyright (C) 2003-2010 Virginia Tech.
+  Copyright (C) 2003-2012 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
@@ -51,7 +51,9 @@ public class Authenticator extends AbstractAuthenticator
    * Authenticate the user in the supplied request.
    *
    * @param  request  authentication request
+   *
    * @return  response containing the ldap entry of the user authenticated
+   *
    * @throws  LdapException  if an LDAP error occurs
    */
   public AuthenticationResponse authenticate(
@@ -69,14 +71,18 @@ public class Authenticator extends AbstractAuthenticator
    *
    * @param  dn  to authenticate as
    * @param  request  containing authentication parameters
+   *
    * @return  ldap entry for the supplied DN
+   *
    * @throws  LdapException  if an LDAP error occurs
    */
   protected AuthenticationResponse authenticate(
-    final String dn, final AuthenticationRequest request)
+    final String dn,
+    final AuthenticationRequest request)
     throws LdapException
   {
     logger.debug("authenticate dn={} with request={}", dn, request);
+
     // check the credential
     final Credential credential = request.getCredential();
     if (credential == null || credential.getBytes() == null) {
@@ -113,18 +119,19 @@ public class Authenticator extends AbstractAuthenticator
 
     logger.info(
       "Authentication {} for dn: {}",
-      response.getResult() ? "succeeded" : "failed", dn);
+      response.getResult() ? "succeeded" : "failed",
+      dn);
 
-    final AuthenticationResponse authResponse =
-      new AuthenticationResponse(
-        response.getResult(),
-        response.getResultCode(),
-        entry,
-        response.getMessage(),
-        response.getControls());
+    final AuthenticationResponse authResponse = new AuthenticationResponse(
+      response.getResult(),
+      response.getResultCode(),
+      entry,
+      response.getMessage(),
+      response.getControls());
 
     // execute authentication response handlers
-    if (getAuthenticationResponseHandlers() != null &&
+    if (
+      getAuthenticationResponseHandlers() != null &&
         getAuthenticationResponseHandlers().length > 0) {
       for (AuthenticationResponseHandler ah :
            getAuthenticationResponseHandlers()) {

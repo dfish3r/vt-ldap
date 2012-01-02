@@ -1,7 +1,7 @@
 /*
   $Id$
 
-  Copyright (C) 2003-2010 Virginia Tech.
+  Copyright (C) 2003-2012 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
@@ -75,7 +75,8 @@ public class PropertiesAuthenticatorFactory extends AbstractPropertiesFactory
   {
     final Authenticator a = new Authenticator();
     final AuthenticatorPropertySource source = new AuthenticatorPropertySource(
-      a, createProperties(options));
+      a,
+      createProperties(options));
     source.initialize();
     return a;
   }
@@ -89,7 +90,8 @@ public class PropertiesAuthenticatorFactory extends AbstractPropertiesFactory
     final AuthenticationRequest ar = new AuthenticationRequest();
     final AuthenticationRequestPropertySource source =
       new AuthenticationRequestPropertySource(
-        ar, createProperties(jaasOptions));
+        ar,
+        createProperties(jaasOptions));
     source.initialize();
     logger.trace("Created authentication request {} from {}", ar, jaasOptions);
     return ar;
@@ -109,6 +111,7 @@ public class PropertiesAuthenticatorFactory extends AbstractPropertiesFactory
           (PooledConnectionFactoryManager) a.getDnResolver();
         cfm.getConnectionFactory().getConnectionPool().close();
       }
+
       final AuthenticationHandler ah = a.getAuthenticationHandler();
       if (ah instanceof PooledConnectionFactoryManager) {
         final PooledConnectionFactoryManager cfm =

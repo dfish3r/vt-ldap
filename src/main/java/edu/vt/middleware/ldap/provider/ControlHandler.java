@@ -1,7 +1,7 @@
 /*
   $Id$
 
-  Copyright (C) 2003-2010 Virginia Tech.
+  Copyright (C) 2003-2012 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
@@ -29,9 +29,10 @@ public interface ControlHandler<T>
 
 
   /**
-   * Returns the OID of the supplied control
+   * Returns the OID of the supplied control.
    *
    * @param  control  to return oid for
+   *
    * @return  control oid
    */
   String getOID(T control);
@@ -41,6 +42,7 @@ public interface ControlHandler<T>
    * Converts the supplied control to a provider specific request control.
    *
    * @param  requestControl  to convert
+   *
    * @return  provider specific controls
    */
   T processRequest(RequestControl requestControl);
@@ -50,6 +52,7 @@ public interface ControlHandler<T>
    * Converts the supplied provider control to a response control.
    *
    * @param  responseControl  to convert
+   *
    * @return  control
    */
   ResponseControl processResponse(T responseControl);

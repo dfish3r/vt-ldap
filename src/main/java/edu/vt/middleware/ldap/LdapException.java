@@ -1,7 +1,7 @@
 /*
   $Id$
 
-  Copyright (C) 2003-2010 Virginia Tech.
+  Copyright (C) 2003-2012 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
@@ -70,7 +70,9 @@ public class LdapException extends Exception implements Message<ResponseControl>
    * @param  c  response controls
    */
   public LdapException(
-    final String msg, final ResultCode code, final ResponseControl[] c)
+    final String msg,
+    final ResultCode code,
+    final ResponseControl[] c)
   {
     super(msg);
     resultCode = code;
@@ -113,7 +115,9 @@ public class LdapException extends Exception implements Message<ResponseControl>
    * @param  c  response controls
    */
   public LdapException(
-    final Exception e, final ResultCode code, final ResponseControl[] c)
+    final Exception e,
+    final ResultCode code,
+    final ResponseControl[] c)
   {
     super(e);
     resultCode = code;
@@ -143,7 +147,9 @@ public class LdapException extends Exception implements Message<ResponseControl>
    * @param  code  result code
    */
   public LdapException(
-    final String msg, final Exception e, final ResultCode code)
+    final String msg,
+    final Exception e,
+    final ResultCode code)
   {
     super(msg, e);
     resultCode = code;
@@ -172,8 +178,8 @@ public class LdapException extends Exception implements Message<ResponseControl>
 
 
   /**
-   * Returns the ldap result code associated with this exception. May be null
-   * if the provider did not set this value or could not determine this value.
+   * Returns the ldap result code associated with this exception. May be null if
+   * the provider did not set this value or could not determine this value.
    *
    * @return  ldap result code
    */

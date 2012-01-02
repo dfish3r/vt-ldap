@@ -1,15 +1,15 @@
 /*
-  $Id: ExtendedLdapResultHandler.java 2097 2011-08-29 15:58:30Z dfisher $
+  $Id$
 
-  Copyright (C) 2003-2010 Virginia Tech.
+  Copyright (C) 2003-2012 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
 
   Author:  Middleware Services
   Email:   middleware@vt.edu
-  Version: $Revision: 2097 $
-  Updated: $Date: 2011-08-29 11:58:30 -0400 (Mon, 29 Aug 2011) $
+  Version: $Revision$
+  Updated: $Date$
 */
 package edu.vt.middleware.ldap.handler;
 

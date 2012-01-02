@@ -1,7 +1,7 @@
 /*
   $Id$
 
-  Copyright (C) 2003-2010 Virginia Tech.
+  Copyright (C) 2003-2012 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
@@ -43,7 +43,9 @@ public class AuthenticationHandlerResponse extends Response<Boolean>
    * @param  conn  connection the authentication occurred on
    */
   public AuthenticationHandlerResponse(
-    final Boolean success, final ResultCode rc, final Connection conn)
+    final Boolean success,
+    final ResultCode rc,
+    final Connection conn)
   {
     super(success, rc);
     connection = conn;
@@ -125,7 +127,7 @@ public class AuthenticationHandlerResponse extends Response<Boolean>
   {
     return
       String.format(
-        "[%s@%d::connection=%s, message=%s, result=%s, resultCode=%s, "+
+        "[%s@%d::connection=%s, message=%s, result=%s, resultCode=%s, " +
         "controls=%s]",
         getClass().getName(),
         hashCode(),

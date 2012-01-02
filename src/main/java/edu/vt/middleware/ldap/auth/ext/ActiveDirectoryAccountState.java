@@ -1,7 +1,7 @@
 /*
   $Id$
 
-  Copyright (C) 2003-2010 Virginia Tech.
+  Copyright (C) 2003-2012 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
@@ -27,8 +27,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Represents the state of an Active Directory account. This implementation
- * only supports errors, the warning will always be null.
+ * Represents the state of an Active Directory account. This implementation only
+ * supports errors, the warning will always be null.
  *
  * @author  Middleware Services
  * @version  $Revision: 1330 $ $Date: 2010-05-23 18:10:53 -0400 (Sun, 23 May 2010) $
@@ -37,13 +37,11 @@ public class ActiveDirectoryAccountState extends AccountState
 {
 
   /**
-   * Enum to define active directory errors.
-   * See
+   * Enum to define active directory errors. See
    * http://ldapwiki.willeke.com/wiki/
    * Common%20Active%20Directory%20Bind%20Errors
    */
-  public enum Error implements AccountState.Error
-  {
+  public enum Error implements AccountState.Error {
 
     /** no such user. 0x525. */
     NO_SUCH_USER(1317),
@@ -115,24 +113,34 @@ public class ActiveDirectoryAccountState extends AccountState
       throws LoginException
     {
       switch (this) {
+
       case NO_SUCH_USER:
         throw new AccountNotFoundException(name());
+
       case LOGON_FAILURE:
         throw new FailedLoginException(name());
+
       case INVALID_LOGON_HOURS:
         throw new AccountLockedException(name());
+
       case INVALID_WORKSTATION:
         throw new AccountException(name());
+
       case PASSWORD_EXPIRED:
         throw new CredentialExpiredException(name());
+
       case ACCOUNT_DISABLED:
         throw new AccountLockedException(name());
+
       case ACCOUNT_EXPIRED:
         throw new AccountExpiredException(name());
+
       case PASSWORD_MUST_CHANGE:
         throw new CredentialExpiredException(name());
+
       case ACCOUNT_LOCKED_OUT:
         throw new AccountLockedException(name());
+
       default:
         throw new IllegalStateException(
           "Unknown active directory error: " + this);
@@ -173,8 +181,9 @@ public class ActiveDirectoryAccountState extends AccountState
         final Matcher matcher = PATTERN.matcher(message);
         if (matcher.find()) {
           try {
-            return Error.valueOf(
-              Integer.parseInt(matcher.group(1).toUpperCase(), HEX_RADIX));
+            return
+              Error.valueOf(
+                Integer.parseInt(matcher.group(1).toUpperCase(), HEX_RADIX));
           } catch (NumberFormatException e) {
             final Logger l = LoggerFactory.getLogger(Error.class);
             l.warn("Error parsing active directory error", e);

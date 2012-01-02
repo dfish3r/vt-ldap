@@ -1,7 +1,7 @@
 /*
   $Id$
 
-  Copyright (C) 2003-2010 Virginia Tech.
+  Copyright (C) 2003-2012 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
@@ -191,20 +191,13 @@ public class KeyStoreCredentialConfig implements CredentialConfig
     try {
       if (trustStore != null) {
         sslInit.setTrustKeystore(
-          keyStoreReader.read(
-            trustStore,
-            trustStorePassword,
-            trustStoreType));
+          keyStoreReader.read(trustStore, trustStorePassword, trustStoreType));
       }
       if (keyStore != null) {
         sslInit.setAuthenticationKeystore(
-          keyStoreReader.read(
-            keyStore,
-            keyStorePassword,
-            keyStoreType));
+          keyStoreReader.read(keyStore, keyStorePassword, keyStoreType));
         sslInit.setAuthenticationPassword(
-          keyStorePassword != null ? keyStorePassword.toCharArray()
-                                        : null);
+          keyStorePassword != null ? keyStorePassword.toCharArray() : null);
       }
     } catch (IOException e) {
       throw new GeneralSecurityException(e);

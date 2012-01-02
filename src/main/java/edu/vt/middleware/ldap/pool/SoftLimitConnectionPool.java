@@ -1,7 +1,7 @@
 /*
   $Id$
 
-  Copyright (C) 2003-2010 Virginia Tech.
+  Copyright (C) 2003-2012 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
@@ -34,9 +34,7 @@ public class SoftLimitConnectionPool extends BlockingConnectionPool
 {
 
 
-  /**
-   * Creates a new soft limit pool.
-   */
+  /** Creates a new soft limit pool. */
   public SoftLimitConnectionPool() {}
 
 
@@ -58,7 +56,8 @@ public class SoftLimitConnectionPool extends BlockingConnectionPool
    * @param  cf  connection factory
    */
   public SoftLimitConnectionPool(
-    final PoolConfig pc, final DefaultConnectionFactory cf)
+    final PoolConfig pc,
+    final DefaultConnectionFactory cf)
   {
     super(pc, cf);
   }
@@ -71,7 +70,8 @@ public class SoftLimitConnectionPool extends BlockingConnectionPool
   {
     PooledConnectionHandler pc = null;
     logger.trace(
-      "waiting on pool lock for check out {}", poolLock.getQueueLength());
+      "waiting on pool lock for check out {}",
+      poolLock.getQueueLength());
     poolLock.lock();
     try {
       // if an available connection exists, use it

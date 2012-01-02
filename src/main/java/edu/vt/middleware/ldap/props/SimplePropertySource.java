@@ -1,7 +1,7 @@
 /*
   $Id$
 
-  Copyright (C) 2003-2010 Virginia Tech.
+  Copyright (C) 2003-2012 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
@@ -75,7 +75,9 @@ public final class SimplePropertySource<T> extends AbstractPropertySource<T>
    * @param  props  to read properties from
    */
   public SimplePropertySource(
-    final T t, final PropertyDomain domain, final Properties props)
+    final T t,
+    final PropertyDomain domain,
+    final Properties props)
   {
     super(t, domain, props);
     invoker = new SimplePropertyInvoker(t.getClass());

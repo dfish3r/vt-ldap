@@ -1,7 +1,7 @@
 /*
   $Id$
 
-  Copyright (C) 2003-2010 Virginia Tech.
+  Copyright (C) 2003-2012 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
@@ -78,7 +78,7 @@ public abstract class AbstractSearchDnResolver implements DnResolver
   /**
    * Sets the base DN.
    *
-   * @param  dn base DN
+   * @param  dn  base DN
    */
   public void setBaseDn(final String dn)
   {
@@ -90,7 +90,7 @@ public abstract class AbstractSearchDnResolver implements DnResolver
   /**
    * Returns the filter used to search for the user.
    *
-   * @return  filter  for searching
+   * @return  filter for searching
    */
   public String getUserFilter()
   {
@@ -128,8 +128,7 @@ public abstract class AbstractSearchDnResolver implements DnResolver
    */
   public void setUserFilterArgs(final Object[] filterArgs)
   {
-    logger.trace(
-      "setting userFilterArgs: {}", Arrays.toString(filterArgs));
+    logger.trace("setting userFilterArgs: {}", Arrays.toString(filterArgs));
     userFilterArgs = filterArgs;
   }
 
@@ -146,10 +145,9 @@ public abstract class AbstractSearchDnResolver implements DnResolver
 
 
   /**
-   * Sets whether DN resolution should fail if multiple DNs are found
-   * If false an exception will be thrown if {@link #resolve(String)}
-   * finds more than one DN matching it's filter. Otherwise the first DN found
-   * is returned.
+   * Sets whether DN resolution should fail if multiple DNs are found If false
+   * an exception will be thrown if {@link #resolve(String)} finds more than one
+   * DN matching it's filter. Otherwise the first DN found is returned.
    *
    * @param  b  whether multiple DNs are allowed
    */
@@ -232,11 +230,10 @@ public abstract class AbstractSearchDnResolver implements DnResolver
 
 
   /**
-   * Attempts to find the DN for the supplied user. {@link
-   * #getUserFilter()} is used to look up the DN. The user is
-   * provided as the {0} variable filter argument. If more than one entry
-   * matches the search, the result is controlled by
-   * {@link #setAllowMultipleDns(boolean)}.
+   * Attempts to find the DN for the supplied user. {@link #getUserFilter()} is
+   * used to look up the DN. The user is provided as the {0} variable filter
+   * argument. If more than one entry matches the search, the result is
+   * controlled by {@link #setAllowMultipleDns(boolean)}.
    *
    * @param  user  to find DN for
    *
@@ -248,6 +245,7 @@ public abstract class AbstractSearchDnResolver implements DnResolver
     throws LdapException
   {
     logger.debug("resolve user={}", user);
+
     String dn = null;
     if (user != null && !"".equals(user)) {
       // create the search filter
@@ -271,14 +269,15 @@ public abstract class AbstractSearchDnResolver implements DnResolver
           }
         } else {
           logger.info(
-            "search for user={} failed using filter={}", user, filter);
+            "search for user={} failed using filter={}",
+            user,
+            filter);
         }
       } else {
         logger.error("DN search filter not found, no search performed");
       }
     } else {
-      logger.warn(
-        "DN resolution cannot occur, user input was empty or null");
+      logger.warn("DN resolution cannot occur, user input was empty or null");
     }
     logger.debug("resolve dn={} for user={}", dn, user);
     return dn;
@@ -290,7 +289,8 @@ public abstract class AbstractSearchDnResolver implements DnResolver
    * authentication config. The user parameter is injected as the first filter
    * argument.
    *
-   * @param  user identifier
+   * @param  user  identifier
+   *
    * @return  search filter
    */
   protected SearchFilter createSearchFilter(final String user)
@@ -318,6 +318,7 @@ public abstract class AbstractSearchDnResolver implements DnResolver
    * returning no attributes.
    *
    * @param  filter  to execute
+   *
    * @return  search request
    */
   protected SearchRequest createSearchRequest(final SearchFilter filter)
@@ -341,7 +342,9 @@ public abstract class AbstractSearchDnResolver implements DnResolver
    * Executes the ldap search operation with the supplied filter.
    *
    * @param  filter  to execute
+   *
    * @return  ldap search result
+   *
    * @throws  LdapException  if an error occurs
    */
   protected LdapResult performLdapSearch(final SearchFilter filter)
@@ -351,6 +354,7 @@ public abstract class AbstractSearchDnResolver implements DnResolver
     Connection conn = null;
     try {
       conn = getConnection();
+
       final SearchOperation op = new SearchOperation(conn);
       return op.execute(request).getResult();
     } finally {
@@ -366,7 +370,8 @@ public abstract class AbstractSearchDnResolver implements DnResolver
    *
    * @return  connection
    *
-   * @throws LdapException  if an error occurs opening the connection
+   * @throws  LdapException  if an error occurs opening the connection
    */
-  protected abstract Connection getConnection() throws LdapException;
+  protected abstract Connection getConnection()
+    throws LdapException;
 }

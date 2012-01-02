@@ -1,7 +1,7 @@
 /*
   $Id$
 
-  Copyright (C) 2003-2010 Virginia Tech.
+  Copyright (C) 2003-2012 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
@@ -34,15 +34,13 @@ public class DefaultConnectionFactory implements ConnectionFactory
   private static final Provider<?> DEFAULT_PROVIDER = getDefaultProvider();
 
   /** Provider used by this factory. */
-  private Provider<?> provider = DEFAULT_PROVIDER.newInstance();;
+  private Provider<?> provider = DEFAULT_PROVIDER.newInstance();
 
   /** Connection configuration used by this factory. */
   private ConnectionConfig config;
 
 
-  /**
-   * Default constructor.
-   */
+  /** Default constructor. */
   public DefaultConnectionFactory() {}
 
 
@@ -75,7 +73,8 @@ public class DefaultConnectionFactory implements ConnectionFactory
    * @param  p  provider
    */
   public DefaultConnectionFactory(
-    final ConnectionConfig cc, final Provider<?> p)
+    final ConnectionConfig cc,
+    final Provider<?> p)
   {
     setConnectionConfig(cc);
     setProvider(p);
@@ -290,13 +289,13 @@ public class DefaultConnectionFactory implements ConnectionFactory
 
     /**
      * This will establish a connection if one does not already exist by binding
-     * to the LDAP using parameters given by
-     * {@link ConnectionConfig#getBindDn()},
-     * {@link ConnectionConfig#getBindCredential()},
-     * {@link ConnectionConfig#getBindSaslConfig()}, and
-     * {@link ConnectionConfig#getBindControls()}. If these parameters
-     * have not been set then an anonymous bind will be attempted. This
-     * connection should be closed using {@link #close()}.
+     * to the LDAP using parameters given by {@link
+     * ConnectionConfig#getBindDn()}, {@link
+     * ConnectionConfig#getBindCredential()}, {@link
+     * ConnectionConfig#getBindSaslConfig()}, and {@link
+     * ConnectionConfig#getBindControls()}. If these parameters have not been
+     * set then an anonymous bind will be attempted. This connection should be
+     * closed using {@link #close()}.
      *
      * @return  response associated with the bind operation
      *
@@ -316,8 +315,8 @@ public class DefaultConnectionFactory implements ConnectionFactory
 
     /**
      * This will establish a connection if one does not already exist by binding
-     * to the LDAP using the supplied bind request. This connection should
-     * be closed using {@link #close()}.
+     * to the LDAP using the supplied bind request. This connection should be
+     * closed using {@link #close()}.
      *
      * @param  request  bind request
      *

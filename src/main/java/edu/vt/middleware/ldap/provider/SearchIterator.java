@@ -1,7 +1,7 @@
 /*
   $Id$
 
-  Copyright (C) 2003-2010 Virginia Tech.
+  Copyright (C) 2003-2012 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
@@ -34,7 +34,8 @@ public interface SearchIterator
    *
    * @throws  LdapException  if an error occurs
    */
-  boolean hasNext() throws LdapException;
+  boolean hasNext()
+    throws LdapException;
 
 
   /**
@@ -44,7 +45,8 @@ public interface SearchIterator
    *
    * @throws  LdapException  if an error occurs
    */
-  LdapEntry next() throws LdapException;
+  LdapEntry next()
+    throws LdapException;
 
 
   /**
@@ -61,5 +63,6 @@ public interface SearchIterator
    *
    * @throws  LdapException  if an error occurs
    */
-  void close() throws LdapException;
+  void close()
+    throws LdapException;
 }

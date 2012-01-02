@@ -1,7 +1,7 @@
 /*
   $Id$
 
-  Copyright (C) 2003-2010 Virginia Tech.
+  Copyright (C) 2003-2012 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
@@ -83,6 +83,7 @@ public class JndiUtil
    * attribute.
    *
    * @param  attr  ldap attribute
+   *
    * @return  jndi attribute
    */
   public Attribute fromLdapAttribute(final LdapAttribute attr)
@@ -105,6 +106,7 @@ public class JndiUtil
    * Returns an ldap attribute using the supplied jndi attribute.
    *
    * @param  attr  jndi attribute
+   *
    * @return  ldap attribute
    *
    * @throws  NamingException  if the attribute values cannot be read
@@ -117,8 +119,8 @@ public class JndiUtil
     while (ne.hasMore()) {
       values.add(ne.next());
     }
-    return LdapAttribute.createLdapAttribute(
-      sortBehavior, attr.getID(), values);
+    return
+      LdapAttribute.createLdapAttribute(sortBehavior, attr.getID(), values);
   }
 
 
@@ -127,6 +129,7 @@ public class JndiUtil
    * attributes.
    *
    * @param  attrs  ldap attributes
+   *
    * @return  jndi attributes
    */
   public Attributes fromLdapAttributes(final Collection<LdapAttribute> attrs)
@@ -143,12 +146,16 @@ public class JndiUtil
    * Returns a jndi search result that represents the supplied ldap entry.
    *
    * @param  entry  ldap entry
+   *
    * @return  jndi search result
    */
   public SearchResult fromLdapEntry(final LdapEntry entry)
   {
-    return new SearchResult(
-      entry.getDn(), null, fromLdapAttributes(entry.getAttributes()));
+    return
+      new SearchResult(
+        entry.getDn(),
+        null,
+        fromLdapAttributes(entry.getAttributes()));
   }
 
 
@@ -156,6 +163,7 @@ public class JndiUtil
    * Returns an ldap entry using the supplied jndi search result.
    *
    * @param  result  jndi search result
+   *
    * @return  ldap entry
    *
    * @throws  NamingException  if the search result cannot be read
@@ -165,6 +173,7 @@ public class JndiUtil
   {
     final LdapEntry le = new LdapEntry(sortBehavior);
     le.setDn(result.getName());
+
     final Attributes a = result.getAttributes();
     final NamingEnumeration<? extends Attribute> ne = a.getAll();
     while (ne.hasMore()) {
@@ -178,6 +187,7 @@ public class JndiUtil
    * Returns jndi modification items using the supplied attribute modifications.
    *
    * @param  mods  attribute modifications
+   *
    * @return  jndi modification items
    */
   public ModificationItem[] fromAttributeModification(
@@ -195,8 +205,8 @@ public class JndiUtil
 
   /**
    * Determines whether to throw operation exception or ldap exception. If
-   * operation exception is thrown, the operation will be retried. Otherwise
-   * the exception is propagated out.
+   * operation exception is thrown, the operation will be retried. Otherwise the
+   * exception is propagated out.
    *
    * @param  operationRetryResultCodes  to compare result code against
    * @param  e  naming exception to examine
@@ -213,7 +223,8 @@ public class JndiUtil
   {
     final ResultCode exResultCode = NamingExceptionUtil.getResultCode(
       e.getClass());
-    if (operationRetryResultCodes != null &&
+    if (
+      operationRetryResultCodes != null &&
         operationRetryResultCodes.length > 0) {
       for (ResultCode rc : operationRetryResultCodes) {
         if (rc == exResultCode) {
@@ -229,6 +240,7 @@ public class JndiUtil
    * Returns jndi sort keys using the supplied sort keys.
    *
    * @param  keys  sort keys
+   *
    * @return  jndi sort keys
    */
   public static javax.naming.ldap.SortKey[] fromSortKey(final SortKey[] keys)
@@ -252,6 +264,7 @@ public class JndiUtil
    * modification type.
    *
    * @param  type  attribute modification type
+   *
    * @return  integer constant
    */
   protected static int getAttributeModification(
@@ -273,21 +286,26 @@ public class JndiUtil
    * Returns the SASL quality of protection string for the supplied enum.
    *
    * @param  qop  quality of protection enum
+   *
    * @return  SASL quality of protection string
    */
   public static String getQualityOfProtection(final QualityOfProtection qop)
   {
     String s = null;
     switch (qop) {
+
     case AUTH:
       s = "auth";
       break;
+
     case AUTH_INT:
       s = "auth-int";
       break;
+
     case AUTH_CONF:
       s = "auth-conf";
       break;
+
     default:
       throw new IllegalArgumentException(
         "Unknown SASL quality of protection: " + qop);
@@ -300,21 +318,26 @@ public class JndiUtil
    * Returns the SASL security strength string for the supplied enum.
    *
    * @param  ss  security strength enum
+   *
    * @return  SASL security strength string
    */
   public static String getSecurityStrength(final SecurityStrength ss)
   {
     String s = null;
     switch (ss) {
+
     case HIGH:
       s = "high";
       break;
+
     case MEDIUM:
       s = "medium";
       break;
+
     case LOW:
       s = "low";
       break;
+
     default:
       throw new IllegalArgumentException(
         "Unknown SASL security strength: " + ss);
@@ -328,24 +351,30 @@ public class JndiUtil
    * type.
    *
    * @param  m  sasl mechanism
+   *
    * @return  JNDI authentication string
    */
   public static String getAuthenticationType(final Mechanism m)
   {
     String s = null;
     switch (m) {
+
     case EXTERNAL:
       s = "EXTERNAL";
       break;
+
     case DIGEST_MD5:
       s = "DIGEST-MD5";
       break;
+
     case CRAM_MD5:
       s = "CRAM-MD5";
       break;
+
     case GSSAPI:
       s = "GSSAPI";
       break;
+
     default:
       throw new IllegalArgumentException(
         "Unknown SASL authentication mechanism: " + m);
@@ -374,7 +403,8 @@ public class JndiUtil
     if (ctx != null) {
       try {
         ctls = processor.processResponseControls(
-          requestControls, ctx.getResponseControls());
+          requestControls,
+          ctx.getResponseControls());
       } catch (NamingException e) {
         final Logger l = LoggerFactory.getLogger(JndiUtil.class);
         l.warn("Error retrieving response controls.", e);

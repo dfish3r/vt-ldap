@@ -1,7 +1,7 @@
 /*
   $Id$
 
-  Copyright (C) 2003-2010 Virginia Tech.
+  Copyright (C) 2003-2012 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
@@ -57,6 +57,7 @@ public class ControlProcessor<T>
    * controls.
    *
    * @param  requestControls  to convert
+   *
    * @return  provider specific controls
    */
   @SuppressWarnings("unchecked")
@@ -66,6 +67,7 @@ public class ControlProcessor<T>
       return null;
     }
     logger.debug("processing request controls: {}", requestControls);
+
     final List<T> providerCtls = new ArrayList<T>(requestControls.length);
     for (RequestControl c : requestControls) {
       final T providerCtl = processRequest(c);
@@ -74,11 +76,12 @@ public class ControlProcessor<T>
       }
     }
     logger.debug("produced provider request controls: {}", providerCtls);
-    return !providerCtls.isEmpty() ?
-      providerCtls.toArray(
+    return
+      !providerCtls.isEmpty()
+      ? providerCtls.toArray(
         (T[]) Array.newInstance(
-          providerCtls.iterator().next().getClass(), providerCtls.size())) :
-      null;
+          providerCtls.iterator().next().getClass(),
+          providerCtls.size())) : null;
   }
 
 
@@ -86,6 +89,7 @@ public class ControlProcessor<T>
    * Converts the supplied control to a provider control.
    *
    * @param  ctl  to convert
+   *
    * @return  provider control
    */
   protected T processRequest(final RequestControl ctl)
@@ -93,6 +97,7 @@ public class ControlProcessor<T>
     if (ctl == null) {
       return null;
     }
+
     final T providerCtl = controlHandler.processRequest(ctl);
     if (providerCtl == null) {
       throw new UnsupportedOperationException(
@@ -108,15 +113,18 @@ public class ControlProcessor<T>
    *
    * @param  requestControls  that produced the response
    * @param  responseControls  to convert
+   *
    * @return  controls
    */
   public ResponseControl[] processResponseControls(
-    final RequestControl[] requestControls, final T[] responseControls)
+    final RequestControl[] requestControls,
+    final T[] responseControls)
   {
     if (responseControls == null) {
       return null;
     }
     logger.debug("processing provider response controls: {}", responseControls);
+
     final List<ResponseControl> ctls = new ArrayList<ResponseControl>(
       responseControls.length);
     for (T c : responseControls) {
@@ -135,19 +143,23 @@ public class ControlProcessor<T>
    *
    * @param  requestControls  that produced the response controls
    * @param  providerCtl  to convert
+   *
    * @return  control
    */
   protected ResponseControl processResponse(
-    final RequestControl[] requestControls, final T providerCtl)
+    final RequestControl[] requestControls,
+    final T providerCtl)
   {
     if (providerCtl == null) {
       return null;
     }
+
     final ResponseControl ctl = controlHandler.processResponse(providerCtl);
     if (ctl == null) {
       throw new UnsupportedOperationException(
         "Response control not supported: " + providerCtl);
     }
+
     final RequestControl rc = findControl(requestControls, ctl.getOID());
     if (rc != null) {
       updateRequestControl(ctl, rc);
@@ -163,7 +175,8 @@ public class ControlProcessor<T>
    * @param  requestControl  to update if necessary
    */
   protected void updateRequestControl(
-    final ResponseControl responseControl, final RequestControl requestControl)
+    final ResponseControl responseControl,
+    final RequestControl requestControl)
   {
     if (PagedResultsControl.OID.equals(responseControl.getOID())) {
       ((PagedResultsControl) requestControl).setCookie(
@@ -177,14 +190,15 @@ public class ControlProcessor<T>
    * search should be executed.
    *
    * @param  responseControls  to inspect
+   *
    * @return  whether another search should be executed
    */
-  public static boolean searchAgain(
-    final ResponseControl[] responseControls)
+  public static boolean searchAgain(final ResponseControl[] responseControls)
   {
     boolean b = false;
     final PagedResultsControl ctl = (PagedResultsControl) findControl(
-      responseControls, PagedResultsControl.OID);
+      responseControls,
+      PagedResultsControl.OID);
     if (ctl != null) {
       if (ctl.getCookie() != null && ctl.getCookie().length > 0) {
         b = true;
@@ -200,14 +214,17 @@ public class ControlProcessor<T>
    * @param  <T>  type of control
    * @param  controls  to search
    * @param  oid  to search for
+   *
    * @return  control that matches the oid
    */
   private static <T extends Control> T findControl(
-    final T[] controls, final String oid)
+    final T[] controls,
+    final String oid)
   {
     if (controls == null || controls.length == 0) {
       return null;
     }
+
     T match = null;
     for (T c : controls) {
       if (c.getOID().equals(oid)) {

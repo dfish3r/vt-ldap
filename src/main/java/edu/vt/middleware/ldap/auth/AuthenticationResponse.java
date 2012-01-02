@@ -1,7 +1,7 @@
 /*
   $Id$
 
-  Copyright (C) 2003-2010 Virginia Tech.
+  Copyright (C) 2003-2012 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
@@ -46,7 +46,9 @@ public class AuthenticationResponse extends Response<Boolean>
    * @param  entry  of the authenticated user
    */
   public AuthenticationResponse(
-    final Boolean success, final ResultCode rc, final LdapEntry entry)
+    final Boolean success,
+    final ResultCode rc,
+    final LdapEntry entry)
   {
     super(success, rc);
     ldapEntry = entry;

@@ -1,15 +1,15 @@
 /*
-  $Id: CopyLdapResultHandler.java 2193 2011-12-15 22:01:04Z dfisher $
+  $Id$
 
-  Copyright (C) 2003-2010 Virginia Tech.
+  Copyright (C) 2003-2012 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
 
   Author:  Middleware Services
   Email:   middleware@vt.edu
-  Version: $Revision: 2193 $
-  Updated: $Date: 2011-12-15 17:01:04 -0500 (Thu, 15 Dec 2011) $
+  Version: $Revision$
+  Updated: $Date$
 */
 package edu.vt.middleware.ldap.handler;
 
@@ -37,7 +37,8 @@ public abstract class AbstractLdapEntryHandler implements LdapEntryHandler
   /** {@inheritDoc} */
   @Override
   public HandlerResult process(
-    final SearchCriteria criteria, final LdapEntry entry)
+    final SearchCriteria criteria,
+    final LdapEntry entry)
     throws LdapException
   {
     if (entry != null) {
@@ -57,7 +58,8 @@ public abstract class AbstractLdapEntryHandler implements LdapEntryHandler
    * @return  processed dn
    */
   protected String processDn(
-    final SearchCriteria criteria, final LdapEntry entry)
+    final SearchCriteria criteria,
+    final LdapEntry entry)
   {
     return entry.getDn();
   }
@@ -72,7 +74,8 @@ public abstract class AbstractLdapEntryHandler implements LdapEntryHandler
    * @throws  LdapException  if the LDAP returns an error
    */
   protected void processAttributes(
-    final SearchCriteria criteria, final LdapEntry entry)
+    final SearchCriteria criteria,
+    final LdapEntry entry)
     throws LdapException
   {
     for (LdapAttribute la : entry.getAttributes()) {
@@ -90,22 +93,21 @@ public abstract class AbstractLdapEntryHandler implements LdapEntryHandler
    * @throws  LdapException  if the LDAP returns an error
    */
   protected void processAttribute(
-    final SearchCriteria criteria, final LdapAttribute attr)
+    final SearchCriteria criteria,
+    final LdapAttribute attr)
     throws LdapException
   {
     if (attr != null) {
       attr.setName(processAttributeName(criteria, attr.getName()));
       if (attr.isBinary()) {
-        final Set<byte[]> newValues =
-          new HashSet<byte[]>(attr.size());
+        final Set<byte[]> newValues = new HashSet<byte[]>(attr.size());
         for (byte[] b : attr.getBinaryValues()) {
           newValues.add(processAttributeValue(criteria, b));
         }
         attr.clear();
         attr.addBinaryValues(newValues);
       } else {
-        final Set<String> newValues =
-          new HashSet<String>(attr.size());
+        final Set<String> newValues = new HashSet<String>(attr.size());
         for (String s : attr.getStringValues()) {
           newValues.add(processAttributeValue(criteria, s));
         }
@@ -125,7 +127,8 @@ public abstract class AbstractLdapEntryHandler implements LdapEntryHandler
    * @return  processed name
    */
   protected String processAttributeName(
-    final SearchCriteria criteria, final String name)
+    final SearchCriteria criteria,
+    final String name)
   {
     return name;
   }
@@ -140,7 +143,8 @@ public abstract class AbstractLdapEntryHandler implements LdapEntryHandler
    * @return  processed value
    */
   protected String processAttributeValue(
-    final SearchCriteria criteria, final String value)
+    final SearchCriteria criteria,
+    final String value)
   {
     return value;
   }
@@ -155,7 +159,8 @@ public abstract class AbstractLdapEntryHandler implements LdapEntryHandler
    * @return  processed value
    */
   protected byte[] processAttributeValue(
-    final SearchCriteria criteria, final byte[] value)
+    final SearchCriteria criteria,
+    final byte[] value)
   {
     return value;
   }
@@ -169,8 +174,7 @@ public abstract class AbstractLdapEntryHandler implements LdapEntryHandler
       return false;
     }
     return
-      o == this ||
-        (getClass() == o.getClass() && o.hashCode() == hashCode());
+      o == this || (getClass() == o.getClass() && o.hashCode() == hashCode());
   }
 
 

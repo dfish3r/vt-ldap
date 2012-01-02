@@ -1,7 +1,7 @@
 /*
   $Id$
 
-  Copyright (C) 2003-2010 Virginia Tech.
+  Copyright (C) 2003-2012 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
@@ -32,8 +32,8 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
 /**
- * Reads DSML version 1 from a {@link Reader} and supplies an
- * {@link LdapResult}.
+ * Reads DSML version 1 from a {@link Reader} and supplies an {@link
+ * LdapResult}.
  *
  * @author  Middleware Services
  * @version  $Revision: 1330 $ $Date: 2010-05-23 18:10:53 -0400 (Sun, 23 May 2010) $
@@ -45,17 +45,19 @@ public class Dsmlv1Reader implements LdapResultReader
   private static final DocumentBuilderFactory DOC_BUILDER_FACTORY =
     DocumentBuilderFactory.newInstance();
 
+
+  /**
+   * Initialize the document builder factory.
+   */
+  static {
+    DOC_BUILDER_FACTORY.setNamespaceAware(true);
+  }
+
   /** Reader to read from. */
   private final Reader dsmlReader;
 
   /** Sort behavior. */
   private final SortBehavior sortBehavior;
-
-
-  /** Initialize the document builder factory. */
-  static {
-    DOC_BUILDER_FACTORY.setNamespaceAware(true);
-  }
 
 
   /**
@@ -89,6 +91,7 @@ public class Dsmlv1Reader implements LdapResultReader
    * Reads DSML data from the reader and returns an ldap result.
    *
    * @return  ldap result derived from the DSML
+   *
    * @throws  IOException  if an error occurs using the reader
    */
   public LdapResult read()
@@ -135,6 +138,7 @@ public class Dsmlv1Reader implements LdapResultReader
    * Converts the supplied DSML entry element into an ldap entry object.
    *
    * @param  entryElement  to parse
+   *
    * @return  ldap entry
    */
   protected LdapEntry createLdapEntry(final Element entryElement)
@@ -157,7 +161,8 @@ public class Dsmlv1Reader implements LdapResultReader
           final Element ocElement = (Element) ocNodes.item(0);
           if (ocElement != null && ocElement.hasChildNodes()) {
             final LdapAttribute ldapAttribute = createLdapAttribute(
-              "objectClass", ocElement.getElementsByTagName("dsml:oc-value"));
+              "objectClass",
+              ocElement.getElementsByTagName("dsml:oc-value"));
             ldapEntry.addAttribute(ldapAttribute);
           }
         }
@@ -166,12 +171,12 @@ public class Dsmlv1Reader implements LdapResultReader
           "dsml:attr");
         for (int i = 0; i < attrNodes.getLength(); i++) {
           final Element attrElement = (Element) attrNodes.item(i);
-          final String attrName =
-            attrElement.hasAttribute("name") ?
-              attrElement.getAttribute("name") : null;
+          final String attrName = attrElement.hasAttribute("name")
+            ? attrElement.getAttribute("name") : null;
           if (attrName != null && attrElement.hasChildNodes()) {
             final LdapAttribute ldapAttribute = createLdapAttribute(
-              attrName, attrElement.getElementsByTagName("dsml:value"));
+              attrName,
+              attrElement.getElementsByTagName("dsml:value"));
             ldapEntry.addAttribute(ldapAttribute);
           }
         }
@@ -187,17 +192,20 @@ public class Dsmlv1Reader implements LdapResultReader
    *
    * @param  name  of the ldap attribute
    * @param  nodes  to parse
+   *
    * @return  ldap attribute
    */
   protected LdapAttribute createLdapAttribute(
-    final String name, final NodeList nodes)
+    final String name,
+    final NodeList nodes)
   {
     boolean isBase64 = false;
     final Set<Object> values = new HashSet<Object>();
     for (int i = 0; i < nodes.getLength(); i++) {
       final Element valueElement = (Element) nodes.item(i);
       if (valueElement != null) {
-        if (valueElement.hasAttribute("encoding") &&
+        if (
+          valueElement.hasAttribute("encoding") &&
             "base64".equals(valueElement.getAttribute("encoding"))) {
           isBase64 = true;
         }
@@ -218,10 +226,10 @@ public class Dsmlv1Reader implements LdapResultReader
    * @return  String or byte[] depending on the base64 flag
    */
   protected Object getAttrValue(
-    final Element valueElement, final boolean base64)
+    final Element valueElement,
+    final boolean base64)
   {
-    final String value =
-      valueElement.getChildNodes().item(0).getNodeValue();
+    final String value = valueElement.getChildNodes().item(0).getNodeValue();
     if (base64) {
       return LdapUtil.base64Decode(value);
     }

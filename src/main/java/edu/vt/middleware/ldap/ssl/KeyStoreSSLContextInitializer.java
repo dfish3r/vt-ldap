@@ -1,7 +1,7 @@
 /*
   $Id$
 
-  Copyright (C) 2003-2010 Virginia Tech.
+  Copyright (C) 2003-2012 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
@@ -95,9 +95,7 @@ public class KeyStoreSSLContextInitializer extends AbstractSSLContextInitializer
     throws GeneralSecurityException
   {
     KeyManager[] km = null;
-    if (
-      authenticationKeystore != null &&
-        authenticationPassword != null) {
+    if (authenticationKeystore != null && authenticationPassword != null) {
       final KeyManagerFactory kmf = KeyManagerFactory.getInstance(
         KeyManagerFactory.getDefaultAlgorithm());
       kmf.init(authenticationKeystore, authenticationPassword);

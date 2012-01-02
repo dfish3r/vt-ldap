@@ -1,7 +1,7 @@
 /*
   $Id$
 
-  Copyright (C) 2003-2010 Virginia Tech.
+  Copyright (C) 2003-2012 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
@@ -32,6 +32,7 @@ public interface Cache<Q extends SearchRequest>
    * Returns the ldap result for the supplied request.
    *
    * @param  request  to find ldap result with
+   *
    * @return  ldap result
    */
   LdapResult get(Q request);

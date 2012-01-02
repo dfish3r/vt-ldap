@@ -1,7 +1,7 @@
 /*
   $Id$
 
-  Copyright (C) 2003-2010 Virginia Tech.
+  Copyright (C) 2003-2012 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
@@ -74,8 +74,7 @@ public abstract class AbstractSearchOperation<Q extends SearchRequest>
 
   /** {@inheritDoc} */
   @Override
-  protected void initializeRequest(
-    final Q request, final ConnectionConfig cc)
+  protected void initializeRequest(final Q request, final ConnectionConfig cc)
   {
     initializeLdapEntryHandlers(request, getConnection());
   }
@@ -89,7 +88,8 @@ public abstract class AbstractSearchOperation<Q extends SearchRequest>
    * @param  c  to provide to entry handlers
    */
   protected void initializeLdapEntryHandlers(
-    final Q request, final Connection c)
+    final Q request,
+    final Connection c)
   {
     final LdapEntryHandler[] handlers = request.getLdapEntryHandlers();
     if (handlers != null && handlers.length > 0) {
@@ -106,8 +106,10 @@ public abstract class AbstractSearchOperation<Q extends SearchRequest>
    * Performs the ldap search.
    *
    * @param  request  to invoke search with
+   *
    * @return  ldap result
-   * @throws LdapException if an error occurs
+   *
+   * @throws  LdapException  if an error occurs
    */
   protected abstract Response<LdapResult> executeSearch(final Q request)
     throws LdapException;
@@ -119,6 +121,7 @@ public abstract class AbstractSearchOperation<Q extends SearchRequest>
     throws LdapException
   {
     logger.debug("invoke request={}", request);
+
     Response<LdapResult> response = null;
     if (cache != null) {
       final LdapResult lr = cache.get(request);
@@ -150,10 +153,11 @@ public abstract class AbstractSearchOperation<Q extends SearchRequest>
    *
    * @return  handler result
    *
-   * @throws LdapException if an error occurs processing a handler
+   * @throws  LdapException  if an error occurs processing a handler
    */
   protected HandlerResult executeLdapEntryHandlers(
-    final SearchRequest request, final LdapEntry entry)
+    final SearchRequest request,
+    final LdapEntry entry)
     throws LdapException
   {
     LdapEntry processedEntry = entry;

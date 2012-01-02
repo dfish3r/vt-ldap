@@ -1,7 +1,7 @@
 /*
   $Id$
 
-  Copyright (C) 2003-2010 Virginia Tech.
+  Copyright (C) 2003-2012 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
@@ -60,7 +60,8 @@ public final class PooledConnectionFactoryPropertySource
    * @param  is  to read properties from
    */
   public PooledConnectionFactoryPropertySource(
-    final PooledConnectionFactory cf, final InputStream is)
+    final PooledConnectionFactory cf,
+    final InputStream is)
   {
     this(cf, loadProperties(is));
   }
@@ -73,7 +74,8 @@ public final class PooledConnectionFactoryPropertySource
    * @param  props  to read properties from
    */
   public PooledConnectionFactoryPropertySource(
-    final PooledConnectionFactory cf, final Properties props)
+    final PooledConnectionFactory cf,
+    final Properties props)
   {
     this(cf, PropertyDomain.POOL, props);
   }
@@ -106,10 +108,7 @@ public final class PooledConnectionFactoryPropertySource
   }
 
 
-  /**
-   *
-   * @param  pt  pool type
-   */
+  /** @param  pt  pool type */
   public void setPoolType(final ConnectionPoolType pt)
   {
     poolType = pt;
@@ -123,15 +122,21 @@ public final class PooledConnectionFactoryPropertySource
     ConnectionPool cp = null;
     if (poolType == ConnectionPoolType.BLOCKING) {
       cp = new BlockingConnectionPool();
+
       final BlockingConnectionPoolPropertySource cpPropSource =
         new BlockingConnectionPoolPropertySource(
-          (BlockingConnectionPool) cp, propertiesDomain, properties);
+          (BlockingConnectionPool) cp,
+          propertiesDomain,
+          properties);
       cpPropSource.initialize();
     } else if (poolType == ConnectionPoolType.SOFTLIMIT) {
       cp = new SoftLimitConnectionPool();
+
       final BlockingConnectionPoolPropertySource cpPropSource =
         new BlockingConnectionPoolPropertySource(
-          (SoftLimitConnectionPool) cp, propertiesDomain, properties);
+          (SoftLimitConnectionPool) cp,
+          propertiesDomain,
+          properties);
       cpPropSource.initialize();
     } else {
       throw new IllegalStateException("Unknown pool type: " + poolType);

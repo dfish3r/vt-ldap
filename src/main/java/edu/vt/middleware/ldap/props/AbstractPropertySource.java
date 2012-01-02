@@ -1,7 +1,7 @@
 /*
   $Id$
 
-  Copyright (C) 2003-2010 Virginia Tech.
+  Copyright (C) 2003-2012 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
@@ -62,7 +62,9 @@ public abstract class AbstractPropertySource<T> implements PropertySource<T>
    * @param  p  properties to set
    */
   public AbstractPropertySource(
-    final T t, final PropertyDomain pd, final Properties p)
+    final T t,
+    final PropertyDomain pd,
+    final Properties p)
   {
     object = t;
     propertiesDomain = pd;
@@ -71,8 +73,8 @@ public abstract class AbstractPropertySource<T> implements PropertySource<T>
 
 
   /**
-   * Creates properties from the supplied input stream. See
-   * {@link Properties#load(InputStream)}.
+   * Creates properties from the supplied input stream. See {@link
+   * Properties#load(InputStream)}.
    *
    * @param  is  input stream to read properties from
    *
@@ -124,8 +126,8 @@ public abstract class AbstractPropertySource<T> implements PropertySource<T>
             if (invoker.hasProperty(propName)) {
               props.put(propName, value);
             }
-          // check if this is a super class property
-          // if it is, set it now, it may be overridden with the props map
+            // check if this is a super class property
+            // if it is, set it now, it may be overridden with the props map
           } else if (propertiesDomain.value().startsWith(propDomain)) {
             if (invoker.hasProperty(propName)) {
               invoker.setProperty(object, propName, value);

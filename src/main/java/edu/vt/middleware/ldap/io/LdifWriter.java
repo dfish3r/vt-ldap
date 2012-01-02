@@ -1,7 +1,7 @@
 /*
   $Id$
 
-  Copyright (C) 2003-2010 Virginia Tech.
+  Copyright (C) 2003-2012 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
@@ -73,6 +73,7 @@ public class LdifWriter implements LdapResultWriter
    * Writes the supplied ldap result to the writer.
    *
    * @param  result  ldap result to write
+   *
    * @throws  IOException  if an error occurs using the writer
    */
   public void write(final LdapResult result)
@@ -134,11 +135,11 @@ public class LdifWriter implements LdapResultWriter
       final String attrName = attr.getName();
       for (String attrValue : attr.getStringValues()) {
         if (attr.isBinary()) {
-          entryLdif.append(attrName).append(":: ").append(attrValue)
-            .append(LINE_SEPARATOR);
+          entryLdif.append(attrName).append(":: ").append(attrValue).append(
+            LINE_SEPARATOR);
         } else if (encodeData(attrValue)) {
-          entryLdif.append(attrName).append(":: ").append(LdapUtil.base64Encode(
-            attrValue)).append(LINE_SEPARATOR);
+          entryLdif.append(attrName).append(":: ").append(
+            LdapUtil.base64Encode(attrValue)).append(LINE_SEPARATOR);
         } else {
           entryLdif.append(attrName).append(": ").append(attrValue).append(
             LINE_SEPARATOR);

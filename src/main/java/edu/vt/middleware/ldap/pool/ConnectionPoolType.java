@@ -1,7 +1,7 @@
 /*
   $Id$
 
-  Copyright (C) 2003-2010 Virginia Tech.
+  Copyright (C) 2003-2012 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
@@ -19,8 +19,8 @@ package edu.vt.middleware.ldap.pool;
  * @author  Middleware Services
  * @version  $Revision$ $Date$
  */
-public enum ConnectionPoolType
-{
+public enum ConnectionPoolType {
+
   /** blocking. */
   BLOCKING,
 

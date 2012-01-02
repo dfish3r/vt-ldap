@@ -1,7 +1,7 @@
 /*
   $Id$
 
-  Copyright (C) 2003-2010 Virginia Tech.
+  Copyright (C) 2003-2012 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
@@ -42,10 +42,11 @@ public class JndiControlHandler
   public javax.naming.ldap.Control processRequest(
     final RequestControl requestControl)
   {
-    return new javax.naming.ldap.BasicControl(
-      requestControl.getOID(),
-      requestControl.getCriticality(),
-      requestControl.encode());
+    return
+      new javax.naming.ldap.BasicControl(
+        requestControl.getOID(),
+        requestControl.getCriticality(),
+        requestControl.encode());
   }
 
 
@@ -54,9 +55,10 @@ public class JndiControlHandler
   public ResponseControl processResponse(
     final javax.naming.ldap.Control responseControl)
   {
-    return ControlFactory.createResponseControl(
-      responseControl.getID(),
-      responseControl.isCritical(),
-      responseControl.getEncodedValue());
+    return
+      ControlFactory.createResponseControl(
+        responseControl.getID(),
+        responseControl.isCritical(),
+        responseControl.getEncodedValue());
   }
 }

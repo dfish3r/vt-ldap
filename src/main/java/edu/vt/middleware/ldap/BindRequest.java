@@ -1,7 +1,7 @@
 /*
   $Id$
 
-  Copyright (C) 2003-2010 Virginia Tech.
+  Copyright (C) 2003-2012 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
@@ -35,9 +35,7 @@ public class BindRequest extends AbstractRequest
   private SaslConfig saslConfig;
 
 
-  /**
-   * Default constructor.
-   */
+  /** Default constructor. */
   public BindRequest() {}
 
 
@@ -62,7 +60,9 @@ public class BindRequest extends AbstractRequest
    * @param  config  sasl configuration
    */
   public BindRequest(
-    final String dn, final Credential credential, final SaslConfig config)
+    final String dn,
+    final Credential credential,
+    final SaslConfig config)
   {
     setDn(dn);
     setCredential(credential);

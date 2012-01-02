@@ -1,7 +1,7 @@
 /*
   $Id$
 
-  Copyright (C) 2003-2010 Virginia Tech.
+  Copyright (C) 2003-2012 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
@@ -17,8 +17,8 @@ import edu.vt.middleware.ldap.control.RequestControl;
 import edu.vt.middleware.ldap.sasl.SaslConfig;
 
 /**
- * Handles properties for
- * {@link edu.vt.middleware.ldap.auth.BindAuthenticationHandler}.
+ * Handles properties for {@link
+ * edu.vt.middleware.ldap.auth.BindAuthenticationHandler}.
  *
  * @author  Middleware Services
  * @version  $Revision$ $Date$
@@ -51,13 +51,13 @@ public class BindAuthenticationHandlerPropertyInvoker
           newValue = null;
         } else {
           if (PropertyValueParser.isParamsOnlyConfig(value)) {
-            final PropertyValueParser configParser =
-              new PropertyValueParser(
-                value, "edu.vt.middleware.ldap.sasl.SaslConfig");
+            final PropertyValueParser configParser = new PropertyValueParser(
+              value,
+              "edu.vt.middleware.ldap.sasl.SaslConfig");
             newValue = configParser.initializeType();
           } else if (PropertyValueParser.isConfig(value)) {
-            final PropertyValueParser configParser =
-              new PropertyValueParser(value);
+            final PropertyValueParser configParser = new PropertyValueParser(
+              value);
             newValue = configParser.initializeType();
           } else {
             newValue = instantiateType(SaslConfig.class, value);
@@ -65,7 +65,8 @@ public class BindAuthenticationHandlerPropertyInvoker
         }
       } else if (RequestControl[].class.isAssignableFrom(type)) {
         newValue = createArrayTypeFromPropertyValue(
-          RequestControl.class, value);
+          RequestControl.class,
+          value);
       } else {
         newValue = convertSimpleType(type, value);
       }

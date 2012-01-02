@@ -1,7 +1,7 @@
 /*
   $Id$
 
-  Copyright (C) 2003-2010 Virginia Tech.
+  Copyright (C) 2003-2012 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
@@ -19,15 +19,14 @@ package edu.vt.middleware.ldap;
  * @author  Middleware Services
  * @version  $Revision: 1330 $ $Date: 2010-05-23 18:10:53 -0400 (Sun, 23 May 2010) $
  */
-public enum AttributeModificationType
-{
+public enum AttributeModificationType {
 
-    /** add an attribute. */
-    ADD,
+  /** add an attribute. */
+  ADD,
 
-    /** replace an attribute. */
-    REPLACE,
+  /** replace an attribute. */
+  REPLACE,
 
-    /** remove an attribute. */
-    REMOVE;
+  /** remove an attribute. */
+  REMOVE;
 }

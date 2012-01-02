@@ -1,7 +1,7 @@
 /*
   $Id$
 
-  Copyright (C) 2003-2010 Virginia Tech.
+  Copyright (C) 2003-2012 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
@@ -68,7 +68,8 @@ public abstract class AbstractCompareAuthenticationHandler
   /** {@inheritDoc} */
   @Override
   protected AuthenticationHandlerResponse authenticateInternal(
-    final Connection c, final AuthenticationCriteria criteria)
+    final Connection c,
+    final AuthenticationCriteria criteria)
     throws LdapException
   {
     byte[] hash = new byte[DIGEST_SIZE];
@@ -82,18 +83,20 @@ public abstract class AbstractCompareAuthenticationHandler
 
     final LdapAttribute la = new LdapAttribute(
       "userPassword",
-      String.format(
-        "{%s}%s", passwordScheme, LdapUtil.base64Encode(hash)).getBytes());
+      String.format("{%s}%s", passwordScheme, LdapUtil.base64Encode(hash))
+        .getBytes());
     final CompareOperation compare = new CompareOperation(c);
     final CompareRequest request = new CompareRequest(criteria.getDn(), la);
     request.setControls(getAuthenticationControls());
+
     final Response<Boolean> compareResponse = compare.execute(request);
-    return new AuthenticationHandlerResponse(
-      compareResponse.getResult(),
-      compareResponse.getResultCode(),
-      c,
-      null,
-      compareResponse.getControls());
+    return
+      new AuthenticationHandlerResponse(
+        compareResponse.getResult(),
+        compareResponse.getResultCode(),
+        c,
+        null,
+        compareResponse.getControls());
   }
 
 
@@ -104,5 +107,6 @@ public abstract class AbstractCompareAuthenticationHandler
    *
    * @throws  LdapException  if an error occurs provisioning the connection
    */
-  protected abstract Connection getConnection() throws LdapException;
+  protected abstract Connection getConnection()
+    throws LdapException;
 }

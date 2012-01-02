@@ -1,7 +1,7 @@
 /*
   $Id$
 
-  Copyright (C) 2003-2010 Virginia Tech.
+  Copyright (C) 2003-2012 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
@@ -28,8 +28,8 @@ import org.slf4j.LoggerFactory;
    MyClass{{propertyOne=foo}{propertyTwo=bar}}
  * </pre>
  *
- * If the class name is supplied to the constructor, the property string need
- * not contain the class declaration.
+ * <p>If the class name is supplied to the constructor, the property string need
+ * not contain the class declaration.</p>
  *
  * @author  Middleware Services
  * @version  $Revision$ $Date$
@@ -166,9 +166,7 @@ public class PropertyValueParser
   public Object initializeType()
   {
     final Class<?> c = SimplePropertyInvoker.createClass(getClassName());
-    final Object o = SimplePropertyInvoker.instantiateType(
-      c,
-      getClassName());
+    final Object o = SimplePropertyInvoker.instantiateType(c, getClassName());
     setProperties(c, o);
     return o;
   }

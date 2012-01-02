@@ -1,15 +1,15 @@
 /*
-  $Id: RecursiveResultHandler.java 2193 2011-12-15 22:01:04Z dfisher $
+  $Id$
 
-  Copyright (C) 2003-2010 Virginia Tech.
+  Copyright (C) 2003-2012 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
 
   Author:  Middleware Services
   Email:   middleware@vt.edu
-  Version: $Revision: 2193 $
-  Updated: $Date: 2011-12-15 17:01:04 -0500 (Thu, 15 Dec 2011) $
+  Version: $Revision$
+  Updated: $Date$
 */
 package edu.vt.middleware.ldap.handler;
 
@@ -88,7 +88,8 @@ public class RecursiveEntryHandler extends AbstractLdapEntryHandler
    * @param  mergeAttrs  attribute names to merge
    */
   public RecursiveEntryHandler(
-    final String searchAttr, final String[] mergeAttrs)
+    final String searchAttr,
+    final String[] mergeAttrs)
   {
     this(null, searchAttr, mergeAttrs);
   }
@@ -184,12 +185,7 @@ public class RecursiveEntryHandler extends AbstractLdapEntryHandler
     if (mergeAttributes != null && searchAttribute != null) {
       // return attributes must include the search attribute
       retAttrs = new String[mergeAttributes.length + 1];
-      System.arraycopy(
-        mergeAttributes,
-        0,
-        retAttrs,
-        0,
-        mergeAttributes.length);
+      System.arraycopy(mergeAttributes, 0, retAttrs, 0, mergeAttributes.length);
       retAttrs[retAttrs.length - 1] = searchAttribute;
     }
   }
@@ -198,7 +194,8 @@ public class RecursiveEntryHandler extends AbstractLdapEntryHandler
   /** {@inheritDoc} */
   @Override
   public HandlerResult process(
-    final SearchCriteria criteria, final LdapEntry entry)
+    final SearchCriteria criteria,
+    final LdapEntry entry)
     throws LdapException
   {
     // Recursively searches a list of attributes and merges those results with
@@ -261,7 +258,8 @@ public class RecursiveEntryHandler extends AbstractLdapEntryHandler
       try {
         final SearchOperation search = new SearchOperation(connection);
         final SearchRequest sr = SearchRequest.newObjectScopeSearchRequest(
-          dn, retAttrs);
+          dn,
+          retAttrs);
         final LdapResult result = search.execute(sr).getResult();
         newEntry = result.getEntry(dn);
       } catch (LdapException e) {
@@ -305,7 +303,11 @@ public class RecursiveEntryHandler extends AbstractLdapEntryHandler
   @Override
   public int hashCode()
   {
-    return LdapUtil.computeHashCode(
-      HASH_CODE_SEED, mergeAttributes, retAttrs, searchAttribute);
+    return
+      LdapUtil.computeHashCode(
+        HASH_CODE_SEED,
+        mergeAttributes,
+        retAttrs,
+        searchAttribute);
   }
 }

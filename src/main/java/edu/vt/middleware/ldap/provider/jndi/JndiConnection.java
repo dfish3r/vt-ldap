@@ -1,7 +1,7 @@
 /*
   $Id$
 
-  Copyright (C) 2003-2010 Virginia Tech.
+  Copyright (C) 2003-2012 Virginia Tech.
   All rights reserved.
 
   SEE LICENSE FOR MORE INFORMATION
@@ -52,8 +52,8 @@ public class JndiConnection implements Connection
 
   /**
    * The value of this property is a string that specifies the authentication
-   * mechanism(s) for the provider to use. The value of this constant is
-   * {@value}.
+   * mechanism(s) for the provider to use. The value of this constant is {@value
+   * }.
    */
   public static final String AUTHENTICATION =
     "java.naming.security.authentication";
@@ -78,20 +78,20 @@ public class JndiConnection implements Connection
     "java.naming.security.sasl.authorizationId";
 
   /**
-   * The value of this property is a string that specifies the sasl
-   * quality of protection. The value of this constant is {@value}.
+   * The value of this property is a string that specifies the sasl quality of
+   * protection. The value of this constant is {@value}.
    */
   public static final String SASL_QOP = "javax.security.sasl.qop";
 
   /**
-   * The value of this property is a string that specifies the sasl
-   * security strength. The value of this constant is {@value}.
+   * The value of this property is a string that specifies the sasl security
+   * strength. The value of this constant is {@value}.
    */
   public static final String SASL_STRENGTH = "javax.security.sasl.strength";
 
   /**
-   * The value of this property is a string that specifies the sasl
-   * mutual authentication flag. The value of this constant is {@value}.
+   * The value of this property is a string that specifies the sasl mutual
+   * authentication flag. The value of this constant is {@value}.
    */
   public static final String SASL_MUTUAL_AUTH =
     "javax.security.sasl.server.authentication";
@@ -244,7 +244,8 @@ public class JndiConnection implements Connection
       }
     } catch (NamingException e) {
       throw new LdapException(
-        e, NamingExceptionUtil.getResultCode(e.getClass()));
+        e,
+        NamingExceptionUtil.getResultCode(e.getClass()));
     } finally {
       context = null;
     }
@@ -272,7 +273,9 @@ public class JndiConnection implements Connection
    * Performs an anonymous bind.
    *
    * @param  request  to bind with
+   *
    * @return  bind response
+   *
    * @throws  LdapException  if an error occurs
    */
   protected Response<Void> anonymousBind(final BindRequest request)
@@ -289,13 +292,17 @@ public class JndiConnection implements Connection
         null,
         ResultCode.SUCCESS,
         JndiUtil.processResponseControls(
-          controlProcessor, request.getControls(), context));
+          controlProcessor,
+          request.getControls(),
+          context));
     } catch (NamingException e) {
       JndiUtil.throwOperationException(
         operationRetryResultCodes,
         e,
         JndiUtil.processResponseControls(
-          controlProcessor, request.getControls(), context));
+          controlProcessor,
+          request.getControls(),
+          context));
     }
     return response;
   }
@@ -305,7 +312,9 @@ public class JndiConnection implements Connection
    * Performs a simple bind.
    *
    * @param  request  to bind with
+   *
    * @return  bind response
+   *
    * @throws  LdapException  if an error occurs
    */
   protected Response<Void> simpleBind(final BindRequest request)
@@ -322,13 +331,17 @@ public class JndiConnection implements Connection
         null,
         ResultCode.SUCCESS,
         JndiUtil.processResponseControls(
-          controlProcessor, request.getControls(), context));
+          controlProcessor,
+          request.getControls(),
+          context));
     } catch (NamingException e) {
       JndiUtil.throwOperationException(
         operationRetryResultCodes,
         e,
         JndiUtil.processResponseControls(
-          controlProcessor, request.getControls(), context));
+          controlProcessor,
+          request.getControls(),
+          context));
     }
     return response;
   }
@@ -338,7 +351,9 @@ public class JndiConnection implements Connection
    * Performs a sasl bind.
    *
    * @param  request  to bind with
+   *
    * @return  bind response
+   *
    * @throws  LdapException  if an error occurs
    */
   protected Response<Void> saslBind(final BindRequest request)
@@ -348,8 +363,9 @@ public class JndiConnection implements Connection
     try {
       final String authenticationType = JndiUtil.getAuthenticationType(
         request.getSaslConfig().getMechanism());
-      for (Map.Entry<String, Object> entry :
-           getSaslProperties(request.getSaslConfig()).entrySet()) {
+      for (
+        Map.Entry<String, Object> entry :
+        getSaslProperties(request.getSaslConfig()).entrySet()) {
         context.addToEnvironment(entry.getKey(), entry.getValue());
       }
       context.addToEnvironment(AUTHENTICATION, authenticationType);
@@ -357,7 +373,8 @@ public class JndiConnection implements Connection
         context.addToEnvironment(PRINCIPAL, request.getDn());
         if (request.getCredential() != null) {
           context.addToEnvironment(
-            CREDENTIALS, request.getCredential().getBytes());
+            CREDENTIALS,
+            request.getCredential().getBytes());
         }
       }
       context.reconnect(
@@ -366,13 +383,17 @@ public class JndiConnection implements Connection
         null,
         ResultCode.SUCCESS,
         JndiUtil.processResponseControls(
-          controlProcessor, request.getControls(), context));
+          controlProcessor,
+          request.getControls(),
+          context));
     } catch (NamingException e) {
       JndiUtil.throwOperationException(
         operationRetryResultCodes,
         e,
         JndiUtil.processResponseControls(
-          controlProcessor, request.getControls(), context));
+          controlProcessor,
+          request.getControls(),
+          context));
     }
     return response;
   }
@@ -389,6 +410,7 @@ public class JndiConnection implements Connection
       try {
         ctx = context.newInstance(
           controlProcessor.processRequestControls(request.getControls()));
+
         final JndiUtil bu = new JndiUtil();
         ctx.createSubcontext(
           new LdapName(request.getDn()),
@@ -397,7 +419,9 @@ public class JndiConnection implements Connection
           null,
           ResultCode.SUCCESS,
           JndiUtil.processResponseControls(
-            controlProcessor, request.getControls(), ctx));
+            controlProcessor,
+            request.getControls(),
+            ctx));
       } finally {
         if (ctx != null) {
           ctx.close();
@@ -408,7 +432,9 @@ public class JndiConnection implements Connection
         operationRetryResultCodes,
         e,
         JndiUtil.processResponseControls(
-          controlProcessor, request.getControls(), ctx));
+          controlProcessor,
+          request.getControls(),
+          ctx));
     }
     return response;
   }
@@ -439,7 +465,9 @@ public class JndiConnection implements Connection
           success,
           success ? ResultCode.COMPARE_TRUE : ResultCode.COMPARE_FALSE,
           JndiUtil.processResponseControls(
-            controlProcessor, request.getControls(), ctx));
+            controlProcessor,
+            request.getControls(),
+            ctx));
       } finally {
         if (en != null) {
           en.close();
@@ -453,7 +481,9 @@ public class JndiConnection implements Connection
         operationRetryResultCodes,
         e,
         JndiUtil.processResponseControls(
-          controlProcessor, request.getControls(), ctx));
+          controlProcessor,
+          request.getControls(),
+          ctx));
     }
     return response;
   }
@@ -475,7 +505,9 @@ public class JndiConnection implements Connection
           null,
           ResultCode.SUCCESS,
           JndiUtil.processResponseControls(
-            controlProcessor, request.getControls(), ctx));
+            controlProcessor,
+            request.getControls(),
+            ctx));
       } finally {
         if (ctx != null) {
           ctx.close();
@@ -486,7 +518,9 @@ public class JndiConnection implements Connection
         operationRetryResultCodes,
         e,
         JndiUtil.processResponseControls(
-          controlProcessor, request.getControls(), ctx));
+          controlProcessor,
+          request.getControls(),
+          ctx));
     }
     return response;
   }
@@ -503,6 +537,7 @@ public class JndiConnection implements Connection
       try {
         ctx = context.newInstance(
           controlProcessor.processRequestControls(request.getControls()));
+
         final JndiUtil bu = new JndiUtil();
         ctx.modifyAttributes(
           new LdapName(request.getDn()),
@@ -511,7 +546,9 @@ public class JndiConnection implements Connection
           null,
           ResultCode.SUCCESS,
           JndiUtil.processResponseControls(
-            controlProcessor, request.getControls(), ctx));
+            controlProcessor,
+            request.getControls(),
+            ctx));
       } finally {
         if (ctx != null) {
           ctx.close();
@@ -522,7 +559,9 @@ public class JndiConnection implements Connection
         operationRetryResultCodes,
         e,
         JndiUtil.processResponseControls(
-          controlProcessor, request.getControls(), ctx));
+          controlProcessor,
+          request.getControls(),
+          ctx));
     }
     return response;
   }
@@ -546,7 +585,9 @@ public class JndiConnection implements Connection
           null,
           ResultCode.SUCCESS,
           JndiUtil.processResponseControls(
-            controlProcessor, request.getControls(), ctx));
+            controlProcessor,
+            request.getControls(),
+            ctx));
       } finally {
         if (ctx != null) {
           ctx.close();
@@ -557,7 +598,9 @@ public class JndiConnection implements Connection
         operationRetryResultCodes,
         e,
         JndiUtil.processResponseControls(
-          controlProcessor, request.getControls(), ctx));
+          controlProcessor,
+          request.getControls(),
+          ctx));
     }
     return response;
   }
@@ -569,7 +612,8 @@ public class JndiConnection implements Connection
     throws LdapException
   {
     final JndiSearchIterator i = new JndiSearchIterator(
-      request, controlProcessor);
+      request,
+      controlProcessor);
     i.setRemoveDnUrls(removeDnUrls);
     i.setOperationRetryResultCodes(operationRetryResultCodes);
     i.setSearchIgnoreResultCodes(searchIgnoreResultCodes);
@@ -597,6 +641,7 @@ public class JndiConnection implements Connection
    * Returns the JNDI properties for the supplied sasl configuration.
    *
    * @param  config  sasl configuration
+   *
    * @return  JNDI properties for use in a context environment
    */
   protected static Map<String, Object> getSaslProperties(
