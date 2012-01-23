@@ -17,6 +17,8 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.security.GeneralSecurityException;
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.SSLPeerUnverifiedException;
 import javax.net.ssl.SSLSocket;
 import javax.net.ssl.SSLSocketFactory;
 
@@ -34,6 +36,9 @@ public abstract class AbstractTLSSocketFactory extends SSLSocketFactory
 
   /** SSLSocketFactory used for creating SSL sockets. */
   protected SSLSocketFactory factory;
+
+  /** Hostname verifier for this socket factory. */
+  protected HostnameVerifier hostnameVerifier;
 
   /** Enabled cipher suites. */
   protected String[] cipherSuites;
@@ -65,6 +70,28 @@ public abstract class AbstractTLSSocketFactory extends SSLSocketFactory
 
 
   /**
+   * Returns the hostname verifier to invoke when sockets are created.
+   *
+   * @return  hostname verifier
+   */
+  public HostnameVerifier getHostnameVerifier()
+  {
+    return hostnameVerifier;
+  }
+
+
+  /**
+   * Sets the hostname verifier to invoke when sockets are created.
+   *
+   * @param  verifier  for SSL hostnames
+   */
+  public void setHostnameVerifier(final HostnameVerifier verifier)
+  {
+    hostnameVerifier = verifier;
+  }
+
+
+  /**
    * This returns the names of the SSL cipher suites which are currently enabled
    * for use on sockets created by this factory. A null value indicates that no
    * specific cipher suites have been enabled and that the default suites are in
@@ -79,6 +106,18 @@ public abstract class AbstractTLSSocketFactory extends SSLSocketFactory
 
 
   /**
+   * Sets the cipher suites enabled for use on sockets created by this factory.
+   * See {@link javax.net.ssl.SSLSocket#setEnabledCipherSuites(String[])}.
+   *
+   * @param  s  <code>String[]</code> of cipher suites
+   */
+  public void setEnabledCipherSuites(final String[] s)
+  {
+    this.cipherSuites = s;
+  }
+
+
+  /**
    * This returns the names of the protocol versions which are currently enabled
    * for use on sockets created by this factory. A null value indicates that no
    * specific protocols have been enabled and that the default protocols are in
@@ -89,18 +128,6 @@ public abstract class AbstractTLSSocketFactory extends SSLSocketFactory
   public String[] getEnabledProtocols()
   {
     return this.protocols;
-  }
-
-
-  /**
-   * Sets the cipher suites enabled for use on sockets created by this factory.
-   * See {@link javax.net.ssl.SSLSocket#setEnabledCipherSuites(String[])}.
-   *
-   * @param  s  <code>String[]</code> of cipher suites
-   */
-  public void setEnabledCipherSuites(final String[] s)
-  {
-    this.cipherSuites = s;
   }
 
 
@@ -122,14 +149,29 @@ public abstract class AbstractTLSSocketFactory extends SSLSocketFactory
    * @param  s  <code>SSLSocket</code> to initialize
    *
    * @return  <code>SSLSocket</code>
+   *
+   * @throws  IOException  if an I/O error occurs when initializing the socket
    */
   protected SSLSocket initSSLSocket(final SSLSocket s)
+    throws IOException
   {
     if (this.cipherSuites != null) {
       s.setEnabledCipherSuites(this.cipherSuites);
     }
     if (this.protocols != null) {
       s.setEnabledProtocols(this.protocols);
+    }
+    if (hostnameVerifier != null) {
+      // calling getSession() will initiate the handshake if necessary
+      final String hostname = s.getSession().getPeerHost();
+      if (!hostnameVerifier.verify(hostname, s.getSession())) {
+        s.close();
+        s.getSession().invalidate();
+        throw new SSLPeerUnverifiedException(
+          String.format(
+            "Hostname '%s' does not match the hostname in the server's " +
+            "certificate", hostname));
+      }
     }
     return s;
   }

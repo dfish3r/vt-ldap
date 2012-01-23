@@ -18,6 +18,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
+import java.util.regex.Pattern;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -33,6 +34,23 @@ public final class LdapUtil
 
   /** Size of buffer in bytes to use when reading files. */
   private static final int READ_BUFFER_SIZE = 128;
+
+  /** Pattern to match ipv4 addresses. */
+  private static final Pattern IPV4_PATTERN =
+    Pattern.compile(
+      "^(25[0-5]|2[0-4]\\d|[0-1]?\\d?\\d)" +
+      "(\\.(25[0-5]|2[0-4]\\d|[0-1]?\\d?\\d)){3}$");
+
+  /** Pattern to match ipv6 addresses. */
+  private static final Pattern IPV6_STD_PATTERN =
+    Pattern.compile("^(?:[0-9a-fA-F]{1,4}:){7}[0-9a-fA-F]{1,4}$");
+
+  /** Pattern to match ipv6 hex compressed addresses. */
+  private static final Pattern IPV6_HEX_COMPRESSED_PATTERN =
+    Pattern.compile(
+      "^((?:[0-9A-Fa-f]{1,4}(?::[0-9A-Fa-f]{1,4})*)?)::" +
+      "((?:[0-9A-Fa-f]{1,4}(?::[0-9A-Fa-f]{1,4})*)?)$");
+
 
   /** Default constructor. */
   private LdapUtil() {}
@@ -183,5 +201,22 @@ public final class LdapUtil
       data.close();
     }
     return data.toByteArray();
+  }
+
+
+  /**
+   * Returns whether the supplied string represents an IP address. Matches both
+   * IPv4 and IPv6 addresses.
+   *
+   * @param  s  to match
+   *
+   * @return  whether the supplied string represents an IP address
+   */
+  public static boolean isIPAddress(final String s)
+  {
+    return s != null &&
+      (IPV4_PATTERN.matcher(s).matches() ||
+       IPV6_STD_PATTERN.matcher(s).matches() ||
+       IPV6_HEX_COMPRESSED_PATTERN.matcher(s).matches());
   }
 }

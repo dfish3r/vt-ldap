@@ -18,6 +18,7 @@ import javax.naming.NamingException;
 import javax.naming.ldap.InitialLdapContext;
 import edu.vt.middleware.ldap.LdapConfig;
 import edu.vt.middleware.ldap.LdapConstants;
+import edu.vt.middleware.ldap.ssl.DefaultHostnameVerifier;
 
 /**
  * <code>DefaultConnectionHandler</code> creates a new <code>LdapContext</code>
@@ -95,6 +96,18 @@ public class DefaultConnectionHandler extends AbstractConnectionHandler
       env.put(LdapConstants.PRINCIPAL, dn);
       if (credential != null) {
         env.put(LdapConstants.CREDENTIALS, credential);
+      }
+    }
+
+    // JNDI does not perform hostname validation for LDAPS
+    // set a socket factory that will
+    if (LdapConstants.SSL_PROTOCOL.equals(env.get(LdapConstants.PROTOCOL)) ||
+        ((String) env.get(LdapConstants.PROVIDER_URL)).toLowerCase().contains(
+          "ldaps://")) {
+      if (env.get(LdapConstants.SOCKET_FACTORY) == null) {
+        env.put(
+          LdapConstants.SOCKET_FACTORY,
+          DefaultHostnameVerifier.SSLSocketFactory.class.getName());
       }
     }
 
