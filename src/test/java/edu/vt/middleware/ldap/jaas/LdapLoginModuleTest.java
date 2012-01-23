@@ -230,6 +230,7 @@ public class LdapLoginModuleTest
   @Parameters({ "jaasDn", "jaasUser", "jaasUserRole", "jaasCredential" })
   @Test(
     groups = {"jaastest"},
+    enabled = false, // requires JVM wide truststore to pass
     threadPoolSize = 10,
     invocationCount = 100,
     timeOut = 60000

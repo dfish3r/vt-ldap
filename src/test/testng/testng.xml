@@ -198,7 +198,7 @@
              value="telephoneNumber=12223334444|homePhone=155566677777"/>
 
   <parameter name="krb5Realm" value="VT.EDU"/>
-  <parameter name="krb5Kdc" value="ed-dev.middleware.vt.edu"/>
+  <parameter name="krb5Kdc" value="ldap-test-1.middleware.vt.edu"/>
   <parameter name="gssApiSearchDn" value="ou=test,dc=vt,dc=edu"/>
   <parameter name="gssApiSearchFilter" value="(uid={0})"/>
   <parameter name="gssApiSearchFilterArgs" value="2"/>
@@ -206,7 +206,7 @@
   <parameter name="gssApiSearchResults"
              value="/edu/vt/middleware/ldap/searchResults-2.ldif"/>
 
-  <parameter name="loadPropertiesUrl" value="ldap://ed-dev.middleware.vt.edu:389 ldap://ed-dev.middleware.vt.edu:14389"/>
+  <parameter name="loadPropertiesUrl" value="ldap://ldap-test-1.middleware.vt.edu:389 ldap://ldap-test-1.middleware.vt.edu:10389"/>
   <parameter name="loadPropertiesBaseDn" value="ou=test,dc=vt,dc=edu"/>
 
   <parameter name="getDnUid" value="3"/>
@@ -242,12 +242,12 @@
              value="/edu/vt/middleware/ldap/searchResults-4.ldif"/>
 
   <parameter name="cliSearchArgs"
-             value="-ldapUrl|ldap://ed-dev.middleware.vt.edu:14389|-baseDn|ou=test,dc=vt,dc=edu|-bindDn|uid=1,ou=test,dc=vt,dc=edu|-bindCredential|VKSxXwlU7YssGl1foLMH2mGMWkifbODb1djfJ4t2|-query|(mail=jdoe5@vt.edu)|departmentNumber|givenName|sn"/>
+             value="-ldapUrl|ldap://ldap-test-1.middleware.vt.edu:10389|-baseDn|ou=test,dc=vt,dc=edu|-bindDn|uid=1,ou=test,dc=vt,dc=edu|-bindCredential|VKSxXwlU7YssGl1foLMH2mGMWkifbODb1djfJ4t2|-query|(mail=jdoe5@vt.edu)|departmentNumber|givenName|sn"/>
   <parameter name="cliSearchResults"
              value="/edu/vt/middleware/ldap/searchResults-5.ldif"/>
 
   <parameter name="cliAuthArgs"
-             value="-ldapUrl|ldap://ed-dev.middleware.vt.edu:14389|-baseDn|ou=test,dc=vt,dc=edu|-tls|true|-hostnameVerifier|edu.vt.middleware.ldap.AnyHostnameVerifier|-bindDn|uid=1,ou=test,dc=vt,dc=edu|-bindCredential|VKSxXwlU7YssGl1foLMH2mGMWkifbODb1djfJ4t2|-userField|mail|-user|jdoe6@vt.edu|-credential|password6|-authorizationFilter|(departmentNumber=0826)|departmentNumber|givenName|sn"/>
+             value="-ldapUrl|ldap://ldap-test-1.middleware.vt.edu:10389|-baseDn|ou=test,dc=vt,dc=edu|-tls|true|-hostnameVerifier|edu.vt.middleware.ldap.AnyHostnameVerifier|-bindDn|uid=1,ou=test,dc=vt,dc=edu|-bindCredential|VKSxXwlU7YssGl1foLMH2mGMWkifbODb1djfJ4t2|-userField|mail|-user|jdoe6@vt.edu|-credential|password6|-authorizationFilter|(departmentNumber=0826)|departmentNumber|givenName|sn"/>
   <parameter name="cliAuthResults"
              value="/edu/vt/middleware/ldap/searchResults-6.ldif"/>
 

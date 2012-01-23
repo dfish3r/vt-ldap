@@ -31,7 +31,7 @@ http://www.springframework.org/schema/util http://www.springframework.org/schema
   
   <bean id="ldapConfig"
     class="edu.vt.middleware.ldap.LdapConfig"
-    p:ldapUrl="ldap://ed-dev.middleware.vt.edu:14389"
+    p:ldapUrl="ldap://ldap-test-1.middleware.vt.edu:10389"
     p:tls="true"
     p:authtype="EXTERNAL"
     p:searchScope="SUBTREE">

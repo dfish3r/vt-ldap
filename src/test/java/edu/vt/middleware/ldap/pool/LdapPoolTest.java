@@ -154,7 +154,8 @@ public class LdapPoolTest
 
     final LdapConfig connStrategyLc = TestUtil.createLdap().getLdapConfig();
     connStrategyLc.setLdapUrl(
-      "ldap://ed-dev.middleware.vt.edu:14389 ldap://ed-dne.middleware.vt.edu");
+      "ldap://ldap-test-1.middleware.vt.edu:10389 " +
+      "ldap://dne.middleware.vt.edu");
     connStrategyLc.getConnectionHandler().setConnectionStrategy(
       ConnectionHandler.ConnectionStrategy.ROUND_ROBIN);
     final DefaultLdapFactory connStrategyFactory = new DefaultLdapFactory(
