@@ -18,7 +18,7 @@ import javax.naming.NamingException;
 import javax.naming.ldap.InitialLdapContext;
 import edu.vt.middleware.ldap.LdapConfig;
 import edu.vt.middleware.ldap.LdapConstants;
-import edu.vt.middleware.ldap.ssl.DefaultHostnameVerifier;
+import edu.vt.middleware.ldap.ssl.ThreadLocalTLSSocketFactory;
 
 /**
  * <code>DefaultConnectionHandler</code> creates a new <code>LdapContext</code>
@@ -105,9 +105,28 @@ public class DefaultConnectionHandler extends AbstractConnectionHandler
         ((String) env.get(LdapConstants.PROVIDER_URL)).toLowerCase().contains(
           "ldaps://")) {
       if (env.get(LdapConstants.SOCKET_FACTORY) == null) {
+        // parse hostnames for validation
+        final String[] hostnames =
+          ((String) env.get(LdapConstants.PROVIDER_URL)).split(" ");
+        for (int i = 0; i < hostnames.length; i++) {
+          // remove scheme, if it exists
+          if (hostnames[i].startsWith("ldap://")) {
+            hostnames[i] = hostnames[i].substring("ldap://".length());
+          } else if (hostnames[i].startsWith("ldaps://")) {
+            hostnames[i] = hostnames[i].substring("ldaps://".length());
+          }
+          // remove port, if it exist
+          if (hostnames[i].indexOf(":") != -1) {
+            hostnames[i] = hostnames[i].substring(0, hostnames[i].indexOf(":"));
+          }
+        }
+        ThreadLocalTLSSocketFactory.getHostnameVerifierFactory(hostnames);
         env.put(
           LdapConstants.SOCKET_FACTORY,
-          DefaultHostnameVerifier.SSLSocketFactory.class.getName());
+          ThreadLocalTLSSocketFactory.class.getName());
+        if (this.logger.isDebugEnabled()) {
+          this.logger.debug("Set hostname verifier for ldaps");
+        }
       }
     }
 

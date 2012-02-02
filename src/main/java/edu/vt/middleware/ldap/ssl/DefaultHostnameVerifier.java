@@ -13,7 +13,6 @@
 */
 package edu.vt.middleware.ldap.ssl;
 
-import javax.net.SocketFactory;
 import java.security.GeneralSecurityException;
 import java.security.cert.CertificateParsingException;
 import java.security.cert.X509Certificate;
@@ -22,6 +21,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.StringTokenizer;
+import javax.net.SocketFactory;
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLPeerUnverifiedException;
 import javax.net.ssl.SSLSession;
@@ -42,7 +42,8 @@ import org.apache.commons.logging.LogFactory;
  * @author  Middleware Services
  * @version  $Revision$ $Date$
  */
-public class DefaultHostnameVerifier implements HostnameVerifier
+public class DefaultHostnameVerifier
+  implements HostnameVerifier, CertificateHostnameVerifier
 {
 
   /** Log for this class. */

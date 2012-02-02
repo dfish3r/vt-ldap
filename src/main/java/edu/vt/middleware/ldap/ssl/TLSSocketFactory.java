@@ -68,7 +68,7 @@ public class TLSSocketFactory extends AbstractTLSSocketFactory
   public void initialize()
     throws GeneralSecurityException
   {
-    final SSLContext ctx = this.contextInitializer.initSSLContext(
+    final SSLContext ctx = this.getSSLContextInitializer().initSSLContext(
       DEFAULT_PROTOCOL);
     this.factory = ctx.getSocketFactory();
   }
