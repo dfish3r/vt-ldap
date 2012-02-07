@@ -133,7 +133,12 @@ public abstract class AbstractLdapPool<T extends BaseLdap>
   }
 
 
-  /** Attempts to fill the pool to its minimum size. */
+  /**
+   * Attempts to fill the pool to its minimum size.
+   *
+   * @throws  IllegalStateException  if the pool does not contain at least one
+   * connection and it's minimum size is greater than zero
+   */
   private void initializePool()
   {
     if (this.logger.isDebugEnabled()) {
@@ -163,6 +168,9 @@ public abstract class AbstractLdapPool<T extends BaseLdap>
           }
         }
         count++;
+      }
+      if (this.available.size() == 0 && this.poolConfig.getMinPoolSize() > 0) {
+        throw new IllegalStateException("Could not initialize pool");
       }
     } finally {
       this.poolLock.unlock();

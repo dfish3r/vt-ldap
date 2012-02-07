@@ -101,11 +101,16 @@ public class SoftLimitLdapPool extends BlockingLdapPool
         this.logger.trace("created new active ldap object: " + l);
       }
       if (l == null) {
-        // create failed, block until an object is available
+        if (this.available.size() == 0 && this.active.size() == 0) {
+          if (this.logger.isErrorEnabled()) {
+            this.logger.error("Could not service check out request");
+          }
+          throw new LdapPoolExhaustedException(
+            "Pool is empty and object creation failed");
+        }
         if (this.logger.isDebugEnabled()) {
           this.logger.debug(
-            "created failed, block until an object " +
-            "is available");
+            "create failed, block until an object is available");
         }
         l = this.blockAvailable();
       } else {

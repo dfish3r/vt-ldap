@@ -165,6 +165,13 @@ public class BlockingLdapPool extends AbstractLdapPool<Ldap>
         this.checkOutLock.unlock();
       }
       if (l == null) {
+        if (this.available.size() == 0 && this.active.size() == 0) {
+          if (this.logger.isErrorEnabled()) {
+            this.logger.error("Could not service check out request");
+          }
+          throw new LdapPoolExhaustedException(
+            "Pool is empty and object creation failed");
+        }
         if (this.logger.isDebugEnabled()) {
           this.logger.debug(
             "create failed, block until ldap object " +
