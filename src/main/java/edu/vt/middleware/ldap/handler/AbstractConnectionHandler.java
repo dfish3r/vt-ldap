@@ -139,13 +139,13 @@ public abstract class AbstractConnectionHandler implements ConnectionHandler
   public void connect(final String dn, final Object credential)
     throws NamingException
   {
-    final Hashtable<String, Object> env = new Hashtable<String, Object>(
-      this.config.getEnvironment());
     NamingException lastThrown = null;
     final String[] urls = this.parseLdapUrl(
       this.config.getLdapUrl(),
       this.connectionStrategy);
     for (String url : urls) {
+      final Hashtable<String, Object> env = new Hashtable<String, Object>(
+        this.config.getEnvironment());
       env.put(LdapConstants.PROVIDER_URL, url);
       try {
         if (this.logger.isTraceEnabled()) {
