@@ -57,7 +57,13 @@ public class ValidatePoolTask<T extends BaseLdap> extends TimerTask
     if (this.logger.isDebugEnabled()) {
       this.logger.debug("Begin validate task for " + this.pool);
     }
-    this.pool.validate();
+    try {
+      this.pool.validate();
+    } catch (Exception e) {
+      if (this.logger.isErrorEnabled()) {
+        this.logger.error("Validate task failed for " + this.pool, e); 
+      }
+    }
     if (this.logger.isDebugEnabled()) {
       this.logger.debug("End validate task for " + this.pool);
     }

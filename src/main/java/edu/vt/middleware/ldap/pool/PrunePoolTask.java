@@ -59,7 +59,13 @@ public class PrunePoolTask<T extends BaseLdap> extends TimerTask
     if (this.logger.isDebugEnabled()) {
       this.logger.debug("Begin prune task for " + this.pool);
     }
-    this.pool.prune();
+    try {
+      this.pool.prune();
+    } catch (Exception e) {
+      if (this.logger.isErrorEnabled()) {
+        this.logger.error("Prune task failed for " + this.pool, e);
+      }
+    }
     if (this.logger.isDebugEnabled()) {
       this.logger.debug("End prune task for " + this.pool);
     }
