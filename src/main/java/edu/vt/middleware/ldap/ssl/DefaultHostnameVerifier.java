@@ -20,7 +20,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
-import java.util.StringTokenizer;
+import javax.naming.NamingEnumeration;
+import javax.naming.NamingException;
+import javax.naming.directory.Attribute;
+import javax.naming.directory.Attributes;
+import javax.naming.ldap.LdapName;
+import javax.naming.ldap.Rdn;
 import javax.net.SocketFactory;
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLPeerUnverifiedException;
@@ -214,9 +219,11 @@ public class DefaultHostnameVerifier
         this.logger.debug("verifyDNS using CN = " + Arrays.toString(cns));
       }
       if (cns.length > 0) {
-        if (isMatch(hostname, cns[0])) {
+        // the most specific CN refers to the last CN
+        if (isMatch(hostname, cns[cns.length - 1])) {
           if (this.logger.isDebugEnabled()) {
-            this.logger.debug("verifyDNS found hostname match: " + cns[0]);
+            this.logger.debug(
+              "verifyDNS found hostname match: " + cns[cns.length - 1]);
           }
           verified = true;
         }
@@ -269,15 +276,39 @@ public class DefaultHostnameVerifier
   private String[] getCNs(final X509Certificate cert)
   {
     final List<String> names = new ArrayList<String>();
-    // not a perfect implementation but appears to work for >99% of certificates
-    // and has the virtue of not requiring any dependencies
     final String subjectPrincipal = cert.getSubjectX500Principal().toString();
-    final StringTokenizer st = new StringTokenizer(subjectPrincipal, ",");
-    while (st.hasMoreTokens()) {
-      final String tok = st.nextToken();
-      final int x = tok.indexOf("CN=");
-      if (x >= 0) {
-        names.add(tok.substring(x + "CN=".length()));
+    if (subjectPrincipal != null) {
+      try {
+        final LdapName subjectDn = new LdapName(subjectPrincipal);
+        for (Rdn rdn : subjectDn.getRdns()) {
+          final Attributes attrs = rdn.toAttributes();
+          final NamingEnumeration<String> ids = attrs.getIDs();
+          while (ids.hasMore()) {
+            final String id = ids.next();
+            if (id.toLowerCase().equals("cn") ||
+                id.toLowerCase().equals("commonname") ||
+                id.toLowerCase().equals("2.5.4.3")) {
+              final Object value = attrs.get(id).get();
+              if (value != null) {
+                if (value instanceof String) {
+                  names.add((String) value);
+                } else if (value instanceof Attribute) {
+                  // for multi value RDNs the first value is used
+                  final Object multiValue = ((Attribute) value).get();
+                  if (multiValue != null && multiValue instanceof String) {
+                    names.add((String) multiValue);
+                  }
+                }
+              }
+            }
+          }
+        }
+      } catch (NamingException e) {
+        if (this.logger.isWarnEnabled()) {
+          this.logger.warn(
+            "Could not get distinguished name from subject " + subjectPrincipal,
+            e);
+        }
       }
     }
     return names.toArray(new String[names.size()]);
