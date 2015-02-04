@@ -16,6 +16,7 @@ package edu.vt.middleware.ldap.handler;
 import java.io.IOException;
 import java.util.Hashtable;
 import javax.naming.CommunicationException;
+import javax.naming.ConfigurationException;
 import javax.naming.NamingException;
 import javax.naming.ldap.InitialLdapContext;
 import javax.naming.ldap.LdapContext;
@@ -155,6 +156,15 @@ public class TlsConnectionHandler extends DefaultConnectionHandler
       if (dn != null) {
         this.context.addToEnvironment(LdapConstants.PRINCIPAL, dn);
         if (credential != null) {
+          // JNDI does not startTLS when chasing referrals
+          if (this.context.getEnvironment().containsKey(
+                LdapConstants.REFERRAL) &&
+              "follow".equals(
+                this.context.getEnvironment().get(LdapConstants.REFERRAL))) {
+            throw new ConfigurationException(
+              "Referral following with credentials is not supported with " +
+              "startTLS, use LDAPS instead.");
+          }
           this.context.addToEnvironment(LdapConstants.CREDENTIALS, credential);
         }
       }
